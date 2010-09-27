@@ -1,0 +1,14 @@
+/.project
+/.settings
+jstuff-core/.classpath
+jstuff-core/.project
+jstuff-core/.settings
+jstuff-core/target
+jstuff-integration/.classpath
+jstuff-integration/.project
+jstuff-integration/.settings
+jstuff-integration/target
+jstuff-xml/.classpath
+jstuff-xml/.project
+jstuff-xml/.settings
+jstuff-xml/target
