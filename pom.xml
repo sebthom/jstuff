@@ -44,8 +44,8 @@
 
 	<scm>
 		<url>http://sourceforge.net/p/jstuff/svn/LATEST/tree/</url>
-		<connection>scm:svn://sebthom@svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</connection>
-		<developerConnection>scm:svn:svn+ssh://sebthom@svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</developerConnection>
+		<connection>scm:svn://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</connection>
+		<developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</developerConnection>
 	</scm>
 
 	<mailingLists>
@@ -72,7 +72,7 @@
 	</pluginRepositories>
 
 	<distributionManagement>
-		<!-- TODO<downloadUrl>http://sourceforge.net/project/showfiles.php?group_id=145963</downloadUrl> -->
+		<downloadUrl>https://sourceforge.net/downloads/jstuff/</downloadUrl>
 		<repository>
 			<id>jstuff-release</id>
 			<url>sftp://web.sourceforge.net/home/groups/j/js/jstuff/htdocs/mvn-repo/release</url>
