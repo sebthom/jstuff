@@ -267,6 +267,7 @@ public class DOMUtils
 	 */
 	public static Document parseFile(final File xmlFile) throws IOException, XMLException
 	{
+		Assert.argumentNotNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
 		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null,
@@ -281,6 +282,7 @@ public class DOMUtils
 	 */
 	public static Document parseFile(final File xmlFile, final File... xmlSchemaFiles) throws IOException, XMLException
 	{
+		Assert.argumentNotNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
 		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null,
@@ -315,6 +317,8 @@ public class DOMUtils
 	public static Document parseInputSource(final InputSource input, final String inputId,
 			final String rootElementNamespace, final File... xmlSchemaFiles) throws IOException, XMLException
 	{
+		Assert.argumentNotNull("input", input);
+
 		try
 		{
 			LOG.debug("Parsing %s", inputId);
@@ -331,7 +335,7 @@ public class DOMUtils
 			Document domDocument;
 
 			// associate schema to the XML    
-			if (xmlSchemaFiles.length == 0)
+			if (xmlSchemaFiles == null || xmlSchemaFiles.length == 0)
 			{
 				domBuilder = domFactory.newDocumentBuilder();
 				domDocument = domBuilder.parse(input);
@@ -374,7 +378,7 @@ public class DOMUtils
 				}
 
 				Assert.isTrue(errorHandler.violations.size() == 0,
-						errorHandler.violations.size() + " XML schema violation(s) detected in [" + input
+						errorHandler.violations.size() + " XML schema violation(s) detected in [" + inputId
 								+ "]:\n\n => " + StringUtils.join(errorHandler.violations, "\n => "));
 			}
 			return domDocument;
@@ -398,6 +402,8 @@ public class DOMUtils
 	 */
 	public static Document parseString(final String input, final String inputId) throws IOException, XMLException
 	{
+		Assert.argumentNotNull("input", input);
+
 		return parseInputSource(new InputSource(new StringReader(input)), inputId, null, (File[]) null);
 	}
 
@@ -413,6 +419,8 @@ public class DOMUtils
 	public static Document parseString(final String input, final String inputId, final String rootElementNamespace,
 			final File... xmlSchemaFiles) throws IOException, XMLException
 	{
+		Assert.argumentNotNull("input", input);
+
 		return parseInputSource(new InputSource(new StringReader(input)), inputId, rootElementNamespace, xmlSchemaFiles);
 	}
 

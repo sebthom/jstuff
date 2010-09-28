@@ -525,6 +525,28 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	/**
 	 * Searches a string from left to right and returns the leftmost characters of the string.
 	 *  
+	 * substringBefore("this is a test", "s") -> "thi"
+	 *
+	 * @param searchIn The string whose leftmost characters you want to find.
+	 * @param searchFor A substring of searchIn. Left returns the characters to the left of searchFor. It finds searchFor by searching searchIn from left to right.
+	 * @return The leftmost characters in searchIn. 
+	 *         The number of characters returned is determined by searchFor. 
+	 *         Returns "" if searchFor is not part of searchIn.
+	 *         Returns "" if searchIn is null.
+	 */
+	public static String substringBefore(final String searchIn, final char searchFor)
+	{
+		if (isEmpty(searchIn)) return searchIn;
+
+		final int pos = searchIn.indexOf(searchFor);
+		if (pos < 0) return "";
+
+		return searchIn.substring(0, pos);
+	}
+
+	/**
+	 * Searches a string from left to right and returns the leftmost characters of the string.
+	 *  
 	 * substringBeforeIgnoreCare("this is a test", "s") -> "thi"
 	 *
 	 * @param searchIn The string whose leftmost characters you want to find.
