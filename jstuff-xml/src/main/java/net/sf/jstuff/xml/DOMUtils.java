@@ -261,7 +261,33 @@ public class DOMUtils
 	}
 
 	/**
-	 * 
+	 * Parses the given file and returns a org.w3c.dom.Document.
+	 * @throws IOException
+	 * @throws XMLException
+	 */
+	public static Document parseFile(final File xmlFile) throws IOException, XMLException
+	{
+		Assert.isFileReadable(xmlFile);
+
+		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null,
+				(File[]) null);
+	}
+
+	/**
+	 * Parses the given file and returns a org.w3c.dom.Document.
+	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
+	 * @throws IOException
+	 * @throws XMLException
+	 */
+	public static Document parseFile(final File xmlFile, final File... xmlSchemaFiles) throws IOException, XMLException
+	{
+		Assert.isFileReadable(xmlFile);
+
+		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null,
+				xmlSchemaFiles);
+	}
+
+	/**
 	 * Parses the given file and returns a org.w3c.dom.Document.
 	 * @param rootElementNamespace optional, may be null
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
@@ -278,25 +304,7 @@ public class DOMUtils
 	}
 
 	/**
-	 * 
-	 * @param rootElementNamespace optional, may be null
-	 * @param xmlSchemaFilePaths the paths to XML schema files to validate against, the schema files are also required to apply default values
-	 * @throws IOException
-	 * @throws XMLException
-	 */
-	public static Document parseFile(final String xmlFilePath, final String rootElementNamespace,
-			final String... xmlSchemaFilePaths) throws IOException, XMLException
-	{
-		final File[] xmlSchemaFiles = new File[xmlSchemaFilePaths.length];
-		for (int i = 0; i < xmlSchemaFilePaths.length; i++)
-			xmlSchemaFiles[i] = new File(xmlSchemaFilePaths[i]);
-
-		return parseFile(new File(xmlFilePath), rootElementNamespace, xmlSchemaFiles);
-	}
-
-	/**
-	 * 
-	 * Parses the given file and returns a org.w3c.dom.Document.
+	 * Parses the content of given input source and returns a org.w3c.dom.Document.
 	 * @param input the input to parse
 	 * @param inputId an identifier / label for the input source, e.g. a file name
 	 * @param rootElementNamespace optional, may be null
@@ -382,6 +390,33 @@ public class DOMUtils
 	}
 
 	/**
+	 * Parses the given string and returns a org.w3c.dom.Document.
+	 * @param input the input to parse
+	 * @param inputId an identifier / label for the input source, e.g. a file name
+	 * @throws IOException
+	 * @throws XMLException
+	 */
+	public static Document parseString(final String input, final String inputId) throws IOException, XMLException
+	{
+		return parseInputSource(new InputSource(new StringReader(input)), inputId, null, (File[]) null);
+	}
+
+	/**
+	 * Parses the given string and returns a org.w3c.dom.Document.
+	 * @param input the input to parse
+	 * @param inputId an identifier / label for the input source, e.g. a file name
+	 * @param rootElementNamespace optional, may be null
+	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
+	 * @throws IOException
+	 * @throws XMLException
+	 */
+	public static Document parseString(final String input, final String inputId, final String rootElementNamespace,
+			final File... xmlSchemaFiles) throws IOException, XMLException
+	{
+		return parseInputSource(new InputSource(new StringReader(input)), inputId, rootElementNamespace, xmlSchemaFiles);
+	}
+
+	/**
 	 * Registers a namespace for the XPath Expression Engine
 	 */
 	public static void registerNamespace(final String namespaceURI, final String prefix)
@@ -427,23 +462,8 @@ public class DOMUtils
 		Assert.argumentNotNull("domDocument", domDocument);
 		Assert.argumentNotNull("file", file);
 
-		saveToFile(domDocument, file.getAbsolutePath(), true);
-	}
-
-	/**
-	 * @throws IOException
-	 * @throws XMLException
-	 */
-	public static void saveToFile(final Document domDocument, final File file, final boolean createFileBackup)
-			throws IOException, XMLException
-	{
-		Assert.argumentNotNull("domDocument", domDocument);
-		Assert.argumentNotNull("file", file);
-
 		try
 		{
-			if (createFileBackup) FileUtils.backupFile(file);
-
 			final FileWriter fw = new FileWriter(file);
 			final Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
 
@@ -467,25 +487,15 @@ public class DOMUtils
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static void saveToFile(final Document domDocument, final String filePath) throws IOException, XMLException
+	public static void saveToFileAfterBackup(final Document domDocument, final File file) throws IOException,
+			XMLException
 	{
 		Assert.argumentNotNull("domDocument", domDocument);
-		Assert.argumentNotNull("filePath", filePath);
+		Assert.argumentNotNull("file", file);
 
-		saveToFile(domDocument, filePath, true);
-	}
+		FileUtils.backupFile(file);
 
-	/**
-	 * @throws IOException
-	 * @throws XMLException
-	 */
-	public static void saveToFile(final Document domDocument, final String filePath, final boolean createFileBackup)
-			throws IOException, XMLException
-	{
-		Assert.argumentNotNull("domDocument", domDocument);
-		Assert.argumentNotNull("filePath", filePath);
-
-		saveToFile(domDocument, new File(filePath), createFileBackup);
+		saveToFile(domDocument, file);
 	}
 
 	protected DOMUtils()

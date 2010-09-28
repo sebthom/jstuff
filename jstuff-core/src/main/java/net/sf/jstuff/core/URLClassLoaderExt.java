@@ -49,13 +49,6 @@ public class URLClassLoaderExt extends URLClassLoader
 		addURL(jarFile.toURL());
 	}
 
-	public void addJAR(final String jarFilePath) throws IOException
-	{
-		Assert.argumentNotNull("jarFilePath", jarFilePath);
-
-		addJAR(new File(jarFilePath));
-	}
-
 	public boolean addJARs(final File jarDirectory, final boolean recursive) throws IOException
 	{
 		Assert.argumentNotNull("jarDirectory", jarDirectory);
@@ -114,22 +107,6 @@ public class URLClassLoaderExt extends URLClassLoader
 			else if (recursive && child.isDirectory()) if (addJARs(child, true, pattern)) jarsAdded = true;
 
 		return jarsAdded;
-	}
-
-	public boolean addJARs(final String jarDirectory, final boolean recursive) throws IOException
-	{
-		Assert.argumentNotNull("jarDirectory", jarDirectory);
-
-		return addJARs(new File(jarDirectory), recursive);
-	}
-
-	public boolean addJARs(final String jarDirectory, final boolean recursive, final String jarNamePattern)
-			throws IOException
-	{
-		Assert.argumentNotNull("jarDirectory", jarDirectory);
-		Assert.argumentNotNull("jarNamePattern", jarNamePattern);
-
-		return addJARs(new File(jarDirectory), recursive, jarNamePattern);
 	}
 
 	public boolean isParentLast()

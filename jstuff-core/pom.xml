@@ -9,7 +9,7 @@
 	<parent>
 		<artifactId>jstuff-parent</artifactId>
 		<groupId>net.sf.jstuff</groupId>
-		<version>0.1.0</version>
+		<version>0.1.1</version>
 	</parent>
 
 	<artifactId>jstuff-core</artifactId>

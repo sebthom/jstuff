@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.net;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.JarURLConnection;
@@ -81,7 +82,7 @@ public class NetUtils
 		 * getLastmodified() method.
 		 * http://www.orionserver.com/docs/tutorials/taglibs/8.html
 		 */
-		if (resourceURL.getProtocol().equals("file")) return new java.io.File(resourceURL.getFile()).lastModified();
+		if (resourceURL.getProtocol().equals("file")) return new File(resourceURL.getFile()).lastModified();
 
 		return con.getLastModified();
 	}

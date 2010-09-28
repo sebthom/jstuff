@@ -39,6 +39,21 @@ public class DOMFile
 	private final Element domRoot;
 	private final File xmlFile;
 
+	public DOMFile(final File xmlFile) throws IOException, XMLException
+	{
+		this(xmlFile, null, (File[]) null);
+	}
+
+	public DOMFile(final File xmlFile, final File... xmlSchemaFiles) throws IOException, XMLException
+	{
+		this(xmlFile, null, xmlSchemaFiles);
+	}
+
+	public DOMFile(final File xmlFile, final String rootElementNamespace) throws IOException, XMLException
+	{
+		this(xmlFile, rootElementNamespace, (File[]) null);
+	}
+
 	/**
 	 * @param rootElementNamespace optional, may be null
 	 */
@@ -63,15 +78,6 @@ public class DOMFile
 			throw ex;
 		}
 		domRoot = domDocument.getDocumentElement();
-	}
-
-	/**
-	 * @param rootElementNamespace optional, may be null
-	 */
-	public DOMFile(final String xmlFilePath, final String rootElementNamespace, final String... xmlSchemaFilePath)
-			throws IOException, XMLException
-	{
-		this(new File(xmlFilePath), rootElementNamespace, FileUtils.asFileArray(xmlSchemaFilePath));
 	}
 
 	public Comment createCommentBefore(final String commentString, final Node childToCreateBefore)
@@ -219,12 +225,5 @@ public class DOMFile
 		Assert.argumentNotNull("file", file);
 
 		DOMUtils.saveToFile(domDocument, file);
-	}
-
-	public void saveAs(final String filePath) throws IOException, XMLException
-	{
-		Assert.argumentNotEmpty("filePath", filePath);
-
-		DOMUtils.saveToFile(domDocument, filePath);
 	}
 }
