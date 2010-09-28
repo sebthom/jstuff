@@ -64,7 +64,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/StringUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/CharSequenceReaderTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/FileUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/DateTimeHelperTest.java -text
-jstuff-core/src/test/java/net/sf/jstuff/core/localization/NumberHelberTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/localization/NumberHelperTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/net/NetUtilsTest.java -text
 jstuff-integration/pom.xml -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/AtomBlog.java -text
