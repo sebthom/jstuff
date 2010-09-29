@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 import javax.swing.text.html.parser.ParserDelegator;
 
+import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.CharSequenceReader;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -147,7 +148,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 
 	public static CharSequence ansiColorsToHTML(final CharSequence txt)
 	{
-		if (txt == null || txt.length() == 0) return null;
+		if (isEmpty(txt)) return txt;
 		return ansiColorsToHTML(txt, new ANSIState());
 	}
 
@@ -250,30 +251,34 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	/**
 	 * @return true if searchIn contains ANY of the strings in searchFor
 	 */
-	public static boolean containsAny(final String searchIn, final String... searchFor)
+	public static boolean containsAny(final CharSequence searchIn, final String... searchFor)
 	{
-		for (final String sf : searchFor)
-			if (searchIn.indexOf(sf) > -1) return true;
-		return false;
-	}
+		if (isEmpty(searchIn) || ArrayUtils.isEmpty(searchFor)) return false;
 
-	/**
-	 * @return true if searchIn contains ANY of the strings in searchFor
-	 */
-	public static boolean containsAny(final StringBuffer searchIn, final String... searchFor)
-	{
-		for (final String sf : searchFor)
-			if (searchIn.indexOf(sf) > -1) return true;
-		return false;
-	}
-
-	/**
-	 * @return true if searchIn contains ANY of the strings in searchFor
-	 */
-	public static boolean containsAny(final StringBuilder searchIn, final String... searchFor)
-	{
-		for (final String sf : searchFor)
-			if (searchIn.indexOf(sf) > -1) return true;
+		if (searchIn instanceof String)
+		{
+			final String searchIn2 = (String) searchIn;
+			for (final String sf : searchFor)
+				if (searchIn2.indexOf(sf) > -1) return true;
+		}
+		else if (searchIn instanceof StringBuffer)
+		{
+			final StringBuffer searchIn2 = (StringBuffer) searchIn;
+			for (final String sf : searchFor)
+				if (searchIn2.indexOf(sf) > -1) return true;
+		}
+		else if (searchIn instanceof StringBuilder)
+		{
+			final StringBuilder searchIn2 = (StringBuilder) searchIn;
+			for (final String sf : searchFor)
+				if (searchIn2.indexOf(sf) > -1) return true;
+		}
+		else
+		{
+			final String searchIn2 = searchIn.toString();
+			for (final String sf : searchFor)
+				if (searchIn2.indexOf(sf) > -1) return true;
+		}
 		return false;
 	}
 
@@ -368,6 +373,48 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	}
 
 	/**
+	 * <p>Checks if a CharSequence is whitespace, empty ("") or null.</p>
+	 *
+	 * <pre>
+	 * StringUtils.isBlank(null)      = true
+	 * StringUtils.isBlank("")        = true
+	 * StringUtils.isBlank(" ")       = true
+	 * StringUtils.isBlank("bob")     = false
+	 * StringUtils.isBlank("  bob  ") = false
+	 * </pre>
+	 *
+	 * @param txt  the CharSequence to check, may be null
+	 * @return <code>true</code> if the CharSequence is null, empty or whitespace
+	 */
+	public static boolean isBlank(final CharSequence txt)
+	{
+		final int txtLen = txt.length();
+		if (txt == null || txtLen == 0) return true;
+		for (int i = 0; i < txtLen; i++)
+			if (Character.isWhitespace(txt.charAt(i)) == false) return false;
+		return true;
+	}
+
+	/**
+	 * <p>Checks if a CharSequence is empty ("") or null.</p>
+	 *
+	 * <pre>
+	 * StringUtils.isEmpty(null)      = true
+	 * StringUtils.isEmpty("")        = true
+	 * StringUtils.isEmpty(" ")       = false
+	 * StringUtils.isEmpty("bob")     = false
+	 * StringUtils.isEmpty("  bob  ") = false
+	 * </pre>
+	 *
+	 * @param txt  the CharSequence to check, may be null
+	 * @return <code>true</code> if the CharSequence is empty or null
+	 */
+	public static boolean isEmpty(final CharSequence txt)
+	{
+		return txt == null || txt.length() == 0;
+	}
+
+	/**
 	 * <p>Repeat a char <code>repeat</code> times to form a new String.</p>
 	 */
 	public static CharSequence repeat(final char ch, final int repeat)
@@ -403,14 +450,14 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	 * If startAt is negative, the replacing will begin at the startAt'th character from the end of searchIn.
 	 * If length is not given, then it will default to searchIn.length, i.e. end the replacing at the end of string.
 	 * 
-	 * behaviour is based on PHP's substr_replace function http://www.php.net/manual/en/function.substr-replace.php
+	 * behavior is based on PHP's substr_replace function http://www.php.net/manual/en/function.substr-replace.php
 	 * 
 	 * @param searchIn
 	 * @param replaceWith
 	 * @param start position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
 	 * @return String
 	 */
-	public static String replace(final String searchIn, final String replaceWith, final int start)
+	public static String replace(final String searchIn, final CharSequence replaceWith, final int start)
 	{
 		return replace(searchIn, replaceWith, start, searchIn.length());
 	}
@@ -435,7 +482,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	 * @param length number of characters to overwrite
 	 * @return String
 	 */
-	public static String replace(final String searchIn, final String replaceWith, int startAt, int length)
+	public static String replace(final String searchIn, final CharSequence replaceWith, int startAt, int length)
 	{
 		if (searchIn == null || replaceWith == null) return searchIn;
 
@@ -567,6 +614,28 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 		return searchIn.substring(0, pos);
 	}
 
+	public static char[] toCharArray(final CharSequence txt)
+	{
+		if (isEmpty(txt)) return ArrayUtils.EMPTY_CHAR_ARRAY;
+
+		if (txt instanceof String) return ((String) txt).toCharArray();
+
+		final int txtLen = txt.length();
+		final char[] chars = new char[txtLen];
+
+		if (txt instanceof StringBuilder)
+			((StringBuilder) txt).getChars(0, txtLen, chars, 0);
+
+		else if (txt instanceof StringBuffer)
+			((StringBuilder) txt).getChars(0, txtLen, chars, 0);
+
+		else
+			for (int i = 0; i < txtLen - 1; i++)
+				chars[i] = txt.charAt(i);
+
+		return chars;
+	}
+
 	public static String toString(final Object object)
 	{
 		if (object == null) return "null";
@@ -580,7 +649,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	public static String trimLines(final String text)
 	{
 		if (text == null) return null;
-		if (text.length() == 0) return "";
+		if (text.length() == 0) return text;
 
 		final String[] lines = splitPreserveAllTokens(text, NEW_LINE);
 		for (int i = 0; i < lines.length; i++)
@@ -592,6 +661,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	{
 		if (text == null) return null;
 		if (text.length() <= maxLength) return text;
+
 		return text.substring(0, maxLength - 1);
 	}
 
@@ -599,7 +669,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	{
 		if (text == null) return null;
 		final int len = text.length();
-		if (len == 0) return "";
+		if (len == 0) return text;
 		if (len == 1) return text.toString().toLowerCase();
 
 		return new StringBuilder(Character.toLowerCase(text.charAt(0))).append(text.toString().substring(1));
@@ -607,7 +677,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 
 	public static String urlDecode(final String text)
 	{
-		if (isEmpty(text)) return "";
+		if (isEmpty(text)) return text;
 
 		try
 		{
@@ -627,7 +697,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	 */
 	public static String urlEncode(final String text)
 	{
-		if (isEmpty(text)) return "";
+		if (isEmpty(text)) return text;
 
 		try
 		{
