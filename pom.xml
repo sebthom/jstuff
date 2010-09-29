@@ -10,7 +10,7 @@
 	<artifactId>jstuff-parent</artifactId>
 	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
-	<version>0.1.2</version>
+	<version>0.1.3</version>
 
 	<url>http://jstuff.sf.net</url>
 
@@ -175,6 +175,22 @@
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 				</configuration>
+			</plugin>
+
+			<!--*********************************************************************
+				phase: package
+				********************************************************************* -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<!--*********************************************************************
