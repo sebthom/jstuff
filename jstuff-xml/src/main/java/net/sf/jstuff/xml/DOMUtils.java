@@ -299,6 +299,7 @@ public class DOMUtils
 	public static Document parseFile(final File xmlFile, final String rootElementNamespace,
 			final File... xmlSchemaFiles) throws IOException, XMLException
 	{
+		Assert.argumentNotNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
 		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(),
