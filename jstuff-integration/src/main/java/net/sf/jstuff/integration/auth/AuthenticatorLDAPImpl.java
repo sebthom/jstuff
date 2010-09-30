@@ -41,7 +41,7 @@ public class AuthenticatorLDAPImpl implements Authenticator
 		LOG.trace("Trying to authenticate user %s", logonName);
 		try
 		{
-			ldapTemplate.execute(new Invocable<LdapContext, Object>()
+			ldapTemplate.execute(new Invocable<Object, LdapContext>()
 				{
 					public Object invoke(final LdapContext ctx) throws NamingException
 					{

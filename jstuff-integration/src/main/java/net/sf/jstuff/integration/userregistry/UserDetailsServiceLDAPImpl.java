@@ -50,7 +50,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	{
 		Assert.argumentNotNull("filter", filter);
 
-		return (UserDetails) ldapTemplate.execute(new Invocable<LdapContext, Object>()
+		return (UserDetails) ldapTemplate.execute(new Invocable<Object, LdapContext>()
 			{
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{

@@ -58,7 +58,7 @@ public class LDAPTemplate implements InitializingBean
 		if (pooled) ldapSettings.put("com.sun.jndi.ldap.connect.pool", "true");
 	}
 
-	public Object execute(final Invocable<LdapContext, Object> callback)
+	public Object execute(final Invocable<Object, LdapContext> callback)
 	{
 		LdapContext ctx = null;
 

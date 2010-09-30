@@ -54,7 +54,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	{
 		Assert.argumentNotNull("groupDN", groupDN);
 
-		return (GroupDetails) ldapTemplate.execute(new Invocable<LdapContext, Object>()
+		return (GroupDetails) ldapTemplate.execute(new Invocable<Object, LdapContext>()
 			{
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{
@@ -83,7 +83,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	{
 		Assert.argumentNotNull("userDN", userDN);
 
-		return (Set<String>) ldapTemplate.execute(new Invocable<LdapContext, Object>()
+		return (Set<String>) ldapTemplate.execute(new Invocable<Object, LdapContext>()
 			{
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{

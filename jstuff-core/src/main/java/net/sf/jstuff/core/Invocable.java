@@ -15,7 +15,7 @@ package net.sf.jstuff.core;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Invocable<AType, RType>
+public interface Invocable<ReturnType, MethodArgumentType>
 {
-	RType invoke(AType obj) throws Exception;
+	ReturnType invoke(MethodArgumentType arg) throws Exception;
 }
