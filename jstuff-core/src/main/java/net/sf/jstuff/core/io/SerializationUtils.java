@@ -169,7 +169,7 @@ public class SerializationUtils
 		}
 		catch (final Exception e)
 		{
-			throw new ObjectSerializationException("Serialization failed.", e);
+			throw new ObjectSerializationException("Serialization of object [" + obj + "] failed.", e);
 		}
 		finally
 		{

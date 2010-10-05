@@ -33,6 +33,11 @@ jstuff-core/src/main/java/net/sf/jstuff/core/comparator/ToStringComparator.java 
 jstuff-core/src/main/java/net/sf/jstuff/core/date/DateUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/Day.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/Month.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/event/EventListenable.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/event/EventListener.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/event/EventManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/event/EventUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/event/FilteringEventListener.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedInputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedOutputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/CharSequenceReader.java -text
@@ -61,6 +66,7 @@ jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month.properties -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month_de.properties -text
 jstuff-core/src/test/java/net/sf/jstuff/core/AssertTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/StringUtilsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/event/EventTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/CharSequenceReaderTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/FileUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/DateTimeHelperTest.java -text
