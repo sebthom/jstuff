@@ -20,9 +20,10 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * <bean name="beanLocator" class="net.sf.j5utils.spring.BeanLocator" factory-method="init" destroy-method="destroy" />
+ * <bean name="beanLocator" class="net.sf.jstuff.integration.spring.BeanLocator" factory-method="init" destroy-method="destroy" />
  *  
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -88,6 +89,7 @@ public class BeanLocator implements BeanFactoryAware
 		return instance;
 	}
 
+	@Autowired
 	private ListableBeanFactory factory;
 
 	private BeanLocator()

@@ -143,6 +143,7 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ResponseHeade
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ServletUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/BeanLocator.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/HttpInvokerServicesServlet.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringInjector.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/GroupDetails.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/GroupDetailsImpl.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/GroupDetailsService.java -text
