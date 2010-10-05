@@ -12,22 +12,69 @@
  *******************************************************************************/
 package net.sf.jstuff.core.event;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import net.sf.jstuff.core.Assert;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EventManager<T> extends EventListenable<T>
+public class EventManager<T> implements EventListenable<T>
 {
-	@Override
-	public int notify(final T event)
+	private final Set<EventListener<T>> eventListeners = new LinkedHashSet<EventListener<T>>();
+
+	private ExecutorService executorService;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean addEventListener(final EventListener<T> listener)
 	{
-		return super.notify(event);
+		Assert.argumentNotNull("listener", listener);
+
+		return eventListeners.add(listener);
 	}
 
-	@Override
+	protected ExecutorService createExecutorService()
+	{
+		return Executors.newFixedThreadPool(5);
+	}
+
+	protected final synchronized ExecutorService getExecutorService()
+	{
+		if (executorService == null) executorService = createExecutorService();
+		return executorService;
+	}
+
+	public int notify(final T event)
+	{
+		return EventUtils.notify(event, eventListeners);
+	}
+
 	public Future<Integer> notifyAsync(final T event)
 	{
-		return super.notifyAsync(event);
+		final Set<EventListener<T>> copy = new LinkedHashSet<EventListener<T>>(eventListeners);
+		return getExecutorService().submit(new Callable<Integer>()
+			{
+				public Integer call() throws Exception
+				{
+					return EventUtils.notify(event, copy);
+				}
+			});
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean removeEventListener(final EventListener<T> listener)
+	{
+		Assert.argumentNotNull("listener", listener);
+
+		return eventListeners.remove(listener);
 	}
 }
