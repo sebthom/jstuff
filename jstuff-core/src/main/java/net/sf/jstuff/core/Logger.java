@@ -28,7 +28,10 @@ public final class Logger
 	 */
 	public static Logger get()
 	{
-		return new Logger(LoggerFactory.getLogger(StackTraceUtils.getCallingClassName()));
+		// getCallingClassName() must be in a separate line otherwise it will return a wrong name
+		final String name = StackTraceUtils.getCallingClassName();
+
+		return new Logger(LoggerFactory.getLogger(name));
 	}
 
 	/**
