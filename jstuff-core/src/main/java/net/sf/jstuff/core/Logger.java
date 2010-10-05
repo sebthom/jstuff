@@ -28,7 +28,7 @@ public final class Logger
 	 */
 	public static Logger get()
 	{
-		return new Logger(LoggerFactory.getLogger(StackTraceUtils.getThisClassName()));
+		return new Logger(LoggerFactory.getLogger(StackTraceUtils.getCallingClassName()));
 	}
 
 	/**
