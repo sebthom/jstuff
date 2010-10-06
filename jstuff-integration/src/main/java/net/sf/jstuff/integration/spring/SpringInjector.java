@@ -56,7 +56,7 @@ public class SpringInjector
 
 	private SpringInjector()
 	{
-		LOG.debug("instantiated");
+		LOG.info("Instantiated.");
 
 		INSTANCE = this;
 	}
