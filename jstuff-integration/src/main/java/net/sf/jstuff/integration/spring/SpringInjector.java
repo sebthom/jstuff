@@ -12,9 +12,12 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.spring;
 
+import net.sf.jstuff.core.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * Injects spring beans into unmanaged Java objects having {@link org.springframework.beans.factory.annotation.Autowired},
@@ -35,10 +38,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpringInjector
 {
+	private static final Logger LOG = Logger.get();
+
 	private static SpringInjector INSTANCE;
 
 	public static SpringInjector get()
 	{
+		Assert.notNull(INSTANCE,
+				"No SpringInjector instance created yet. Add  <bean class=\"" + SpringInjector.class.getName()
+						+ "\" /> to your spring configuration!");
+
 		return INSTANCE;
 	}
 
@@ -47,11 +56,15 @@ public class SpringInjector
 
 	private SpringInjector()
 	{
+		LOG.debug("instantiated");
+
 		INSTANCE = this;
 	}
 
 	public void inject(final Object unmanagedBean)
 	{
+		LOG.traceMethodEntry(unmanagedBean);
 		processor.processInjection(unmanagedBean);
+		LOG.traceMethodExit();
 	}
 }
