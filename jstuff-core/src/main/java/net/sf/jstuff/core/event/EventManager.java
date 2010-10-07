@@ -21,16 +21,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class EventManager<T> implements EventListenable<T>
 {
+	private static final Logger LOG = Logger.get();
+
 	private final Set<EventListener<T>> eventListeners = new LinkedHashSet<EventListener<T>>();
 	private final Set<EventListener<T>> eventListenersUnmodifiable = Collections.unmodifiableSet(eventListeners);
 
 	private ExecutorService executorService;
+
+	public EventManager()
+	{
+		LOG.info("Instantiated.");
+	}
 
 	/**
 	 * {@inheritDoc}

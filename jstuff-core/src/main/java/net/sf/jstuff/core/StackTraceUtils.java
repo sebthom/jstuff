@@ -17,64 +17,86 @@ package net.sf.jstuff.core;
  */
 public class StackTraceUtils
 {
-	public static String getCallingClassName()
+	private static StackTraceElement _getCallingStackTraceElement()
 	{
-		return Thread.currentThread().getStackTrace()[3].getClassName();
+		return Thread.currentThread().getStackTrace()[4];
 	}
 
-	public static String getCallingClassSimpleName()
-	{
-		return StringUtils.substringAfterLast(Thread.currentThread().getStackTrace()[3].getClassName(), ".");
-	}
-
-	public static String getCallingFileName()
-	{
-		return Thread.currentThread().getStackTrace()[3].getFileName();
-	}
-
-	public static int getCallingLineNumber()
-	{
-		return Thread.currentThread().getStackTrace()[3].getLineNumber();
-	}
-
-	public static String getCallingMethodName()
-	{
-		return Thread.currentThread().getStackTrace()[3].getMethodName();
-	}
-
-	public static StackTraceElement getCallingStackTraceElement()
+	private static StackTraceElement _getThisStackTraceElement()
 	{
 		return Thread.currentThread().getStackTrace()[3];
 	}
 
+	public static String getCallingClassName()
+	{
+		final StackTraceElement ste = _getCallingStackTraceElement();
+		return ste.getClassName();
+	}
+
+	public static String getCallingClassSimpleName()
+	{
+		final StackTraceElement ste = _getCallingStackTraceElement();
+		return StringUtils.substringAfterLast(ste.getClassName(), ".");
+	}
+
+	public static String getCallingFileName()
+	{
+		final StackTraceElement ste = _getCallingStackTraceElement();
+		return ste.getFileName();
+	}
+
+	public static int getCallingLineNumber()
+	{
+		final StackTraceElement ste = _getCallingStackTraceElement();
+		return ste.getLineNumber();
+	}
+
+	public static String getCallingMethodName()
+	{
+		final StackTraceElement ste = _getCallingStackTraceElement();
+		return ste.getMethodName();
+	}
+
+	public static StackTraceElement getCallingStackTraceElement()
+	{
+		final StackTraceElement ste = _getCallingStackTraceElement();
+		return ste;
+	}
+
 	public static String getThisClassName()
 	{
-		return Thread.currentThread().getStackTrace()[2].getClassName();
+		final StackTraceElement ste = _getThisStackTraceElement();
+		return ste.getClassName();
 	}
 
 	public static String getThisClassSimpleName()
 	{
-		return StringUtils.substringAfterLast(Thread.currentThread().getStackTrace()[2].getClassName(), ".");
+		final StackTraceElement ste = _getThisStackTraceElement();
+		return StringUtils.substringAfterLast(ste.getClassName(), ".");
 	}
 
 	public static String getThisFileName()
 	{
-		return Thread.currentThread().getStackTrace()[2].getFileName();
+		final StackTraceElement ste = _getThisStackTraceElement();
+		return ste.getFileName();
 	}
 
 	public static int getThisLineNumber()
 	{
-		return Thread.currentThread().getStackTrace()[2].getLineNumber();
+		final StackTraceElement ste = _getThisStackTraceElement();
+		return ste.getLineNumber();
 	}
 
 	public static String getThisMethodName()
 	{
-		return Thread.currentThread().getStackTrace()[2].getMethodName();
+		final StackTraceElement ste = _getThisStackTraceElement();
+		return ste.getMethodName();
 	}
 
 	public static StackTraceElement getThisStackTraceElement()
 	{
-		return Thread.currentThread().getStackTrace()[2];
+		final StackTraceElement ste = _getThisStackTraceElement();
+		return ste;
 	}
 
 	public static <T extends Throwable> T removeFirstStackTraceElement(final T t)
