@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.event;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -27,6 +28,7 @@ import net.sf.jstuff.core.Assert;
 public class EventManager<T> implements EventListenable<T>
 {
 	private final Set<EventListener<T>> eventListeners = new LinkedHashSet<EventListener<T>>();
+	private final Set<EventListener<T>> eventListenersUnmodifiable = Collections.unmodifiableSet(eventListeners);
 
 	private ExecutorService executorService;
 
@@ -43,6 +45,15 @@ public class EventManager<T> implements EventListenable<T>
 	protected ExecutorService createExecutorService()
 	{
 		return Executors.newFixedThreadPool(5);
+	}
+
+	/**
+	 * 
+	 * @return an unmodifiable set of the registered event listeners
+	 */
+	public Set<EventListener<T>> getEventListeners()
+	{
+		return eventListenersUnmodifiable;
 	}
 
 	protected final synchronized ExecutorService getExecutorService()
