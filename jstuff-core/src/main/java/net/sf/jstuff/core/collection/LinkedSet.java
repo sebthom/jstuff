@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -21,16 +23,29 @@ import java.util.Set;
 /**
  *  @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class LinkedSet<E> implements Cloneable, Set<E>, List<E>
+public final class LinkedSet<E> implements Set<E>, List<E>, Serializable, Cloneable
 {
+	private static final long serialVersionUID = 1L;
+
+	public static <E> LinkedSet<E> create()
+	{
+		return new LinkedSet<E>();
+	}
+
+	public static <E> LinkedSet<E> create(final int initialCapacity)
+	{
+		return new LinkedSet<E>(initialCapacity);
+	}
+
 	private final List<E> list;
 
 	/**
-	 * Constructs a new, empty collection with an initial capacity (8).
+	 * Constructs a new, empty <tt>IdentitySet</tt>; the backing <tt>Map</tt> instance has
+	 * default initial capacity (16).
 	 */
 	public LinkedSet()
 	{
-		list = CollectionUtils.newArrayList(8);
+		list = new ArrayList<E>(16);
 	}
 
 	/**
@@ -40,7 +55,7 @@ public final class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 	 */
 	public LinkedSet(final int initialCapacity)
 	{
-		list = CollectionUtils.newArrayList(initialCapacity);
+		list = new ArrayList<E>(initialCapacity);
 	}
 
 	/**
@@ -99,9 +114,8 @@ public final class LinkedSet<E> implements Cloneable, Set<E>, List<E>
 	@Override
 	public Object clone() throws CloneNotSupportedException
 	{
-		@SuppressWarnings("unchecked")
-		final LinkedSet<E> os = (LinkedSet<E>) super.clone();
-		os.list.addAll(list);
+		final IdentitySet<E> os = new IdentitySet<E>(this.size());
+		os.addAll(this);
 		return os;
 	}
 

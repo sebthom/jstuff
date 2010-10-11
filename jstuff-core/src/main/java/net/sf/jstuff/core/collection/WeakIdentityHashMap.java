@@ -45,14 +45,36 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 		}
 	}
 
+	public static <K, V> WeakIdentityHashMap<K, V> create()
+	{
+		return new WeakIdentityHashMap<K, V>();
+	}
+
+	public static <K, V> WeakIdentityHashMap<K, V> create(final int initialCapacity)
+	{
+		return new WeakIdentityHashMap<K, V>(initialCapacity);
+	}
+
+	public static <K, V> WeakIdentityHashMap<K, V> create(final int initialCapacity, final float growthFactor)
+	{
+		return new WeakIdentityHashMap<K, V>(initialCapacity, growthFactor);
+	}
+
 	private final WeakHashMap<ReferenceWrapper<K>, V> weakMap;
 
-	/**
-	 * public constructor
-	 */
 	public WeakIdentityHashMap()
 	{
 		weakMap = new WeakHashMap<ReferenceWrapper<K>, V>();
+	}
+
+	public WeakIdentityHashMap(final int initialCapacity)
+	{
+		weakMap = new WeakHashMap<ReferenceWrapper<K>, V>(initialCapacity);
+	}
+
+	public WeakIdentityHashMap(final int initialCapacity, final float growthFactor)
+	{
+		weakMap = new WeakHashMap<ReferenceWrapper<K>, V>(initialCapacity, growthFactor);
 	}
 
 	/**
@@ -147,13 +169,13 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 		return weakMap.values();
 	}
 
-	protected ReferenceWrapper<Object> wrapO(final Object key)
-	{
-		return new ReferenceWrapper<Object>(key);
-	}
-
 	protected ReferenceWrapper<K> wrapK(final K key)
 	{
 		return new ReferenceWrapper<K>(key);
+	}
+
+	protected ReferenceWrapper<Object> wrapO(final Object key)
+	{
+		return new ReferenceWrapper<Object>(key);
 	}
 }

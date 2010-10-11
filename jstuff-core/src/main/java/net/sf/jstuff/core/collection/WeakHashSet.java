@@ -29,6 +29,21 @@ public final class WeakHashSet<E> implements Set<E>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
+	public static <E> WeakHashSet<E> create()
+	{
+		return new WeakHashSet<E>();
+	}
+
+	public static <E> WeakHashSet<E> create(final int initialCapacity)
+	{
+		return new WeakHashSet<E>(initialCapacity);
+	}
+
+	public static <E> WeakHashSet<E> create(final int initialCapacity, final float growthFactor)
+	{
+		return new WeakHashSet<E>(initialCapacity, growthFactor);
+	}
+
 	private transient WeakHashMap<E, Object> map;
 
 	/**
@@ -42,11 +57,20 @@ public final class WeakHashSet<E> implements Set<E>, Serializable
 
 	/**
 	 * Constructs a new, empty <tt>WeakHashSet</tt>; the backing <tt>WeakHashMap</tt> instance has
-	 * the given initial capacity and the default load factor (0.75).
+	 * the given initial capacity and the default growth factor (0.75).
 	 */
 	public WeakHashSet(final int initialCapacity)
 	{
 		map = new WeakHashMap<E, Object>(initialCapacity);
+	}
+
+	/**
+	 * Constructs a new, empty <tt>WeakHashSet</tt>; the backing <tt>WeakHashMap</tt> instance has
+	 * the given initial capacity and the given growth factor.
+	 */
+	public WeakHashSet(final int initialCapacity, final float growthFactor)
+	{
+		map = new WeakHashMap<E, Object>(initialCapacity, growthFactor);
 	}
 
 	/**

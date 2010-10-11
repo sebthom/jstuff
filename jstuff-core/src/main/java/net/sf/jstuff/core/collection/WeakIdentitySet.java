@@ -69,6 +69,21 @@ public class WeakIdentitySet<E>
 		}
 	}
 
+	public static <E> WeakIdentitySet<E> create()
+	{
+		return new WeakIdentitySet<E>();
+	}
+
+	public static <E> WeakIdentitySet<E> create(final int initialCapacity)
+	{
+		return new WeakIdentitySet<E>(initialCapacity);
+	}
+
+	public static <E> WeakIdentitySet<E> create(final int initialCapacity, final float growthFactor)
+	{
+		return new WeakIdentitySet<E>(initialCapacity, growthFactor);
+	}
+
 	private static int hash(final Object x)
 	{
 		final int h = System.identityHashCode(x);
@@ -90,7 +105,7 @@ public class WeakIdentitySet<E>
 
 	private int threshold;
 
-	private final float loadFactor;
+	private final float growthFactor;
 
 	private final ReferenceQueue<E> queue = new ReferenceQueue<E>();
 
@@ -117,25 +132,25 @@ public class WeakIdentitySet<E>
 	 * the given initial capacity and the given load factor (0.75).
 	 */
 	@SuppressWarnings("unchecked")
-	public WeakIdentitySet(final int initialCapacity, final float loadFactor)
+	public WeakIdentitySet(final int initialCapacity, final float growthFactor)
 	{
 		threshold = initialCapacity;
 		table = new Entry[initialCapacity];
-		this.loadFactor = loadFactor;
+		this.growthFactor = growthFactor;
 	}
 
-	public synchronized void add(final E o)
+	public synchronized boolean add(final E o)
 	{
 		final int h = hash(o);
 		final Entry<E>[] tab = getTable();
 		final int i = indexFor(h, tab.length);
 
 		for (Entry<E> e = tab[i]; e != null; e = e.next)
-			if (h == e.hash && o == e.get()) return;
+			if (h == e.hash && o == e.get()) return false;
 
 		tab[i] = new Entry<E>(o, queue, h, tab[i]);
 		if (++size >= threshold) resize(tab.length * 2);
-		return;
+		return true;
 	}
 
 	public synchronized boolean contains(final Object key)
@@ -191,7 +206,7 @@ public class WeakIdentitySet<E>
 		return table;
 	}
 
-	public void remove(final Object k)
+	public boolean remove(final Object k)
 	{
 		final int h = hash(k);
 		final Entry<E>[] tab = getTable();
@@ -209,11 +224,12 @@ public class WeakIdentitySet<E>
 					tab[i] = next;
 				else
 					prev.next = next;
-				return;
+				return true;
 			}
 			prev = e;
 			e = next;
 		}
+		return false;
 	}
 
 	private void resize(final int newCapacity)
@@ -236,7 +252,7 @@ public class WeakIdentitySet<E>
 		 * unbounded expansion of garbage-filled tables.
 		 */
 		if (size >= threshold / 2)
-			threshold = (int) (newCapacity * loadFactor);
+			threshold = (int) (newCapacity * growthFactor);
 		else
 		{
 			expungeStaleEntries();
@@ -264,7 +280,7 @@ public class WeakIdentitySet<E>
 				final Object key = e.get();
 				if (key == null)
 				{
-					e.next = null; // Help GC
+					e.next = null; // help the GC
 					size--;
 				}
 				else

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,14 +25,55 @@ import java.util.Set;
  */
 public class MapWithLists<K, V> implements Map<K, List<V>>
 {
-	private final Map<K, List<V>> map = new HashMap<K, List<V>>();
+	public static <K, V> MapWithLists<K, V> create()
+	{
+		return new MapWithLists<K, V>();
+	}
+
+	public static <K, V> MapWithLists<K, V> create(final int initialCapacity, final int initialSetCapacity)
+	{
+		return new MapWithLists<K, V>(initialCapacity, initialSetCapacity);
+	}
+
+	private final Map<K, List<V>> map;
+	private int initialListCapacity = 2;
+	private float listGrowthFactor = 0.75f;
+
+	public MapWithLists()
+	{
+		map = new HashMap<K, List<V>>();
+	}
+
+	public MapWithLists(final int initialCapacity)
+	{
+		map = new HashMap<K, List<V>>(initialCapacity);
+	}
+
+	public MapWithLists(final int initialCapacity, final float growthFactor)
+	{
+		map = new HashMap<K, List<V>>(initialCapacity, growthFactor);
+	}
+
+	public MapWithLists(final int initialCapacity, final float growthFactor, final int initialListCapacity,
+			final float listGrowthFactor)
+	{
+		map = new HashMap<K, List<V>>(initialCapacity, growthFactor);
+		this.initialListCapacity = initialListCapacity;
+		this.listGrowthFactor = listGrowthFactor;
+	}
+
+	public MapWithLists(final int initialCapacity, final int initialListCapacity)
+	{
+		map = new HashMap<K, List<V>>(initialCapacity);
+		this.initialListCapacity = initialListCapacity;
+	}
 
 	public void add(final K key, final V value)
 	{
 		List<V> values = map.get(key);
 		if (values == null)
 		{
-			values = CollectionUtils.newArrayList();
+			values = createList(initialListCapacity, listGrowthFactor);
 			map.put(key, values);
 		}
 		values.add(value);
@@ -42,7 +84,7 @@ public class MapWithLists<K, V> implements Map<K, List<V>>
 		List<V> values2 = map.get(key);
 		if (values2 == null)
 		{
-			values2 = CollectionUtils.newArrayList();
+			values2 = createList(initialListCapacity, listGrowthFactor);
 			map.put(key, values2);
 		}
 		values2.addAll(values);
@@ -77,6 +119,11 @@ public class MapWithLists<K, V> implements Map<K, List<V>>
 	{
 		final List<V> values = map.get(key);
 		return values != null && values.contains(value);
+	}
+
+	protected List<V> createList(final int initialCapacity, final float growthFactor)
+	{
+		return new ArrayList<V>(initialCapacity);
 	}
 
 	public Set<Map.Entry<K, List<V>>> entrySet()

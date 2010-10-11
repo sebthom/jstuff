@@ -16,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -23,11 +24,27 @@ import java.util.Set;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class IdentitySet<E> implements Set<E>, Serializable
+public final class IdentitySet<E> implements Set<E>, Serializable, Cloneable
 {
 	private static final long serialVersionUID = 1L;
 
+	public static <E> IdentitySet<E> create()
+	{
+		return new IdentitySet<E>();
+	}
+
+	public static <E> IdentitySet<E> create(final int initialCapacity)
+	{
+		return new IdentitySet<E>(initialCapacity);
+	}
+
+	public static <E> IdentitySet<E> create(final int initialCapacity, final float growthFactor)
+	{
+		return new IdentitySet<E>(initialCapacity, growthFactor);
+	}
+
 	private transient Map<Integer, E> map;
+	private float growthFactor = 0.75f;
 
 	/**
 	 * Constructs a new, empty <tt>IdentitySet</tt>; the backing <tt>Map</tt> instance has
@@ -35,7 +52,7 @@ public final class IdentitySet<E> implements Set<E>, Serializable
 	 */
 	public IdentitySet()
 	{
-		map = CollectionUtils.newHashMap();
+		map = new HashMap<Integer, E>(16, growthFactor);
 	}
 
 	/**
@@ -44,7 +61,13 @@ public final class IdentitySet<E> implements Set<E>, Serializable
 	 */
 	public IdentitySet(final int initialCapacity)
 	{
-		map = CollectionUtils.newHashMap(initialCapacity);
+		map = new HashMap<Integer, E>(initialCapacity, growthFactor);
+	}
+
+	public IdentitySet(final int initialCapacity, final float growthFactor)
+	{
+		map = new HashMap<Integer, E>(initialCapacity, growthFactor);
+		this.growthFactor = growthFactor;
 	}
 
 	/**
@@ -73,6 +96,17 @@ public final class IdentitySet<E> implements Set<E>, Serializable
 	public void clear()
 	{
 		map.clear();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException
+	{
+		final IdentitySet<E> os = new IdentitySet<E>(this.size(), growthFactor);
+		os.addAll(this);
+		return os;
 	}
 
 	/**
