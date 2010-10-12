@@ -26,12 +26,12 @@ import net.sf.jstuff.core.Logger;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EventManager<T> implements EventListenable<T>
+public class EventManager<EventType> implements EventListenable<EventType>
 {
 	private static final Logger LOG = Logger.get();
 
-	private final Set<EventListener<T>> eventListeners = new LinkedHashSet<EventListener<T>>();
-	private final Set<EventListener<T>> eventListenersUnmodifiable = Collections.unmodifiableSet(eventListeners);
+	private final Set<EventListener<EventType>> eventListeners = new LinkedHashSet<EventListener<EventType>>();
+	private final Set<EventListener<EventType>> eventListenersUnmodifiable = Collections.unmodifiableSet(eventListeners);
 
 	private ExecutorService executorService;
 
@@ -43,7 +43,7 @@ public class EventManager<T> implements EventListenable<T>
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean addEventListener(final EventListener<T> listener)
+	public boolean addEventListener(final EventListener<EventType> listener)
 	{
 		Assert.argumentNotNull("listener", listener);
 
@@ -59,7 +59,7 @@ public class EventManager<T> implements EventListenable<T>
 	 * 
 	 * @return an unmodifiable set of the registered event listeners
 	 */
-	public Set<EventListener<T>> getEventListeners()
+	public Set<EventListener<EventType>> getEventListeners()
 	{
 		return eventListenersUnmodifiable;
 	}
@@ -70,15 +70,15 @@ public class EventManager<T> implements EventListenable<T>
 		return executorService;
 	}
 
-	public int notify(final T event)
+	public int notify(final EventType event)
 	{
 		return EventUtils.notify(event, eventListeners);
 	}
 
-	public Future<Integer> notifyAsync(final T event)
+	public Future<Integer> notifyAsync(final EventType event)
 	{
 		@SuppressWarnings("unchecked")
-		final EventListener<T>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
+		final EventListener<EventType>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
 
 		return getExecutorService().submit(new Callable<Integer>()
 			{
@@ -97,7 +97,7 @@ public class EventManager<T> implements EventListenable<T>
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean removeEventListener(final EventListener<T> listener)
+	public boolean removeEventListener(final EventListener<EventType> listener)
 	{
 		Assert.argumentNotNull("listener", listener);
 

@@ -42,6 +42,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/date/Month.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/EventListenable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/EventListener.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/EventManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/event/EventManagerWithHistory.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/EventUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/FilteringEventListener.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedInputStreamExt.java -text
