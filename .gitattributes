@@ -21,7 +21,9 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/FIFOMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/IdentitySet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/LRUMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/LinkedSet.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithCollections.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithLists.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithQueues.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithSets.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentityHashMap.java -text
@@ -34,6 +36,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/comparator/StringComparator.java -t
 jstuff-core/src/main/java/net/sf/jstuff/core/comparator/ToStringComparator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/DateUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/Day.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/date/ImmutableDate.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/Month.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/EventListenable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/EventListener.java -text
