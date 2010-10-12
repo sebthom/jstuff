@@ -34,14 +34,21 @@ public class EventManagerWithHistory<EventType> extends EventManager<EventType>
 		setupEventHistory();
 	}
 
+	/**
+	 * Sends all recorded events to the given listeners in case it was not added already.
+	 */
 	public boolean addEventListenerAndReplayHistory(final EventListener<EventType> listener)
 	{
 		Assert.argumentNotNull("listener", listener);
 
-		for (final Iterator<EventType> it = getEventHistory(); it.hasNext();)
-			listener.onEvent(it.next());
+		if (super.addEventListener(listener))
+		{
+			for (final Iterator<EventType> it = getEventHistory(); it.hasNext();)
+				listener.onEvent(it.next());
+			return true;
+		}
 
-		return super.addEventListener(listener);
+		return false;
 	}
 
 	protected void addEventToHistory(final EventType event)
