@@ -77,7 +77,9 @@ public class EventManager<T> implements EventListenable<T>
 
 	public Future<Integer> notifyAsync(final T event)
 	{
-		final Set<EventListener<T>> copy = new LinkedHashSet<EventListener<T>>(eventListeners);
+		@SuppressWarnings("unchecked")
+		final EventListener<T>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
+
 		return getExecutorService().submit(new Callable<Integer>()
 			{
 				public Integer call() throws Exception
@@ -85,6 +87,11 @@ public class EventManager<T> implements EventListenable<T>
 					return EventUtils.notify(event, copy);
 				}
 			});
+	}
+
+	public void removeAllEventListeners()
+	{
+		eventListeners.clear();
 	}
 
 	/**
