@@ -19,12 +19,14 @@ public class StackTraceUtils
 {
 	private static StackTraceElement _getCallingStackTraceElement()
 	{
-		return Thread.currentThread().getStackTrace()[4];
+		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
+		return stes[4];
 	}
 
 	private static StackTraceElement _getThisStackTraceElement()
 	{
-		return Thread.currentThread().getStackTrace()[3];
+		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
+		return stes[3];
 	}
 
 	public static String getCallingClassName()
