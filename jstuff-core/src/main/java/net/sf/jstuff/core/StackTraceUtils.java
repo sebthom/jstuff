@@ -20,13 +20,21 @@ public class StackTraceUtils
 	private static StackTraceElement _getCallingStackTraceElement()
 	{
 		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
-		return stes[4];
+		for (int i = 0; i < stes.length; i++)
+			if ("_getCallingStackTraceElement".equals(stes[i].getMethodName())) return stes[i + 3];
+
+		// should never be reached
+		throw new IllegalStateException("Unexpected stack trace " + stes);
 	}
 
 	private static StackTraceElement _getThisStackTraceElement()
 	{
 		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
-		return stes[3];
+		for (int i = 0; i < stes.length; i++)
+			if ("_getThisStackTraceElement".equals(stes[i].getMethodName())) return stes[i + 2];
+
+		// should never be reached
+		throw new IllegalStateException("Unexpected stack trace " + stes);
 	}
 
 	public static String getCallingClassName()
