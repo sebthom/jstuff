@@ -557,6 +557,16 @@ public class ReflectionUtils
 		return false;
 	}
 
+	/**
+	 * @return true if objects of type <code>from</code> can be casted to type <code>to</code>
+	 */
+	public static boolean isCastable(final Class< ? > fromType, final Class< ? > toType)
+	{
+		Assert.argumentNotNull("fromType", fromType);
+		Assert.argumentNotNull("toType", toType);
+		return toType.isAssignableFrom(fromType);
+	}
+
 	public static boolean isClassPresent(final String className)
 	{
 		Assert.argumentNotNull("className", className);
@@ -588,6 +598,13 @@ public class ReflectionUtils
 
 		return method.getParameterTypes().length == 0
 				&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
+	}
+
+	public static boolean isInnerClass(final Class< ? > clazz)
+	{
+		Assert.argumentNotNull("clazz", clazz);
+
+		return clazz.getName().indexOf('$') > -1;
 	}
 
 	public static boolean isNonStaticInnerClass(final Class< ? > clazz)

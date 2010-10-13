@@ -56,6 +56,11 @@ public class EventManagerWithHistory<EventType> extends EventManager<EventType>
 		eventHistory.add(event);
 	}
 
+	public void clearHistory()
+	{
+		eventHistory.clear();
+	}
+
 	protected Iterator<EventType> getEventHistory()
 	{
 		return eventHistory.iterator();
