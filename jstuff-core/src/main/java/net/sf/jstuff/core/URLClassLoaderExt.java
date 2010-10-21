@@ -109,6 +109,19 @@ public class URLClassLoaderExt extends URLClassLoader
 		return jarsAdded;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public URL getResource(final String name)
+	{
+		// if class loader strategy is parent first, then use the default resource loading behavior
+		if (!parentLast) return super.getResource(name);
+
+		final URL url = findResource(name);
+		return url == null ? super.getResource(name) : url;
+	}
+
 	public boolean isParentLast()
 	{
 		return parentLast;

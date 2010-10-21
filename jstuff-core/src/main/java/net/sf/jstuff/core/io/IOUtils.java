@@ -31,10 +31,10 @@ public class IOUtils extends org.apache.commons.io.IOUtils
 {
 	private static final Logger LOG = Logger.get();
 
-	public static String readChunkAsString(final InputStream is, final int blockSize) throws IOException
+	public static String readChunkAsString(final InputStream is, final int maxSize) throws IOException
 	{
 		if (is.available() == 0) return "";
-		final byte[] buff = new byte[blockSize];
+		final byte[] buff = new byte[maxSize];
 		final int readLen = is.read(buff);
 		if (readLen == -1) return "";
 		return new String(buff, 0, readLen);

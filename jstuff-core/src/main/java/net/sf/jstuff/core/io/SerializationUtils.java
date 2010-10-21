@@ -142,7 +142,7 @@ public class SerializationUtils
 
 	public static Serializable deserializeWithEncryption(final byte[] data, final String passphrase)
 	{
-		return deserialize(CryptoUtils.decrypt(data, passphrase));
+		return deserialize(CryptoUtils.decryptDES(data, passphrase));
 
 	}
 
@@ -179,7 +179,7 @@ public class SerializationUtils
 
 	public static byte[] serializeWithEncryption(final Serializable obj, final String passphrase)
 	{
-		return CryptoUtils.encrypt(serialize(obj), passphrase);
+		return CryptoUtils.encryptDES(serialize(obj), passphrase);
 	}
 
 	/**

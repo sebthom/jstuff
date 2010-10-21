@@ -44,11 +44,11 @@ public class CryptoUtils
 
 	private static final Map<String, SecretKey> CACHED_KEYS = new WeakHashMap<String, SecretKey>();
 
-	public static byte[] decrypt(final byte[] data, final String passphrase) throws CryptoException
+	public static byte[] decryptDES(final byte[] data, final String passphrase) throws CryptoException
 	{
 		try
 		{
-			return getCipher(passphrase, Cipher.DECRYPT_MODE).doFinal(data);
+			return getDESCipher(passphrase, Cipher.DECRYPT_MODE).doFinal(data);
 		}
 		catch (final Exception ex)
 		{
@@ -56,11 +56,11 @@ public class CryptoUtils
 		}
 	}
 
-	public static byte[] encrypt(final byte[] data, final String passphrase) throws CryptoException
+	public static byte[] encryptDES(final byte[] data, final String passphrase) throws CryptoException
 	{
 		try
 		{
-			return getCipher(passphrase, Cipher.ENCRYPT_MODE).doFinal(data);
+			return getDESCipher(passphrase, Cipher.ENCRYPT_MODE).doFinal(data);
 		}
 		catch (final Exception ex)
 		{
@@ -68,7 +68,7 @@ public class CryptoUtils
 		}
 	}
 
-	private static Cipher getCipher(final String passphrase, final int mode) throws NoSuchAlgorithmException,
+	private static Cipher getDESCipher(final String passphrase, final int mode) throws NoSuchAlgorithmException,
 			NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException
 	{
 		SecretKey key = CACHED_KEYS.get(passphrase);
@@ -96,11 +96,11 @@ public class CryptoUtils
 		}
 	}
 
-	public SealedObject seal(final Serializable object, final String passphrase) throws CryptoException
+	public SealedObject sealDES(final Serializable object, final String passphrase) throws CryptoException
 	{
 		try
 		{
-			return new SealedObject(object, getCipher(passphrase, Cipher.ENCRYPT_MODE));
+			return new SealedObject(object, getDESCipher(passphrase, Cipher.ENCRYPT_MODE));
 		}
 		catch (final Exception ex)
 		{
@@ -108,11 +108,11 @@ public class CryptoUtils
 		}
 	}
 
-	public Serializable unseal(final SealedObject obj, final String passphrase) throws CryptoException
+	public Serializable unsealDES(final SealedObject obj, final String passphrase) throws CryptoException
 	{
 		try
 		{
-			return (Serializable) obj.getObject(getCipher(passphrase, Cipher.DECRYPT_MODE));
+			return (Serializable) obj.getObject(getDESCipher(passphrase, Cipher.DECRYPT_MODE));
 		}
 		catch (final Exception ex)
 		{
