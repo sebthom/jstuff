@@ -140,10 +140,12 @@ public class SerializationUtils
 		}
 	}
 
-	public static Serializable deserializeWithEncryption(final byte[] data, final String passphrase)
+	/**
+	 * Deserializes an object from the given DES encrypted byte array
+	 */
+	public static Serializable deserializeDES(final byte[] data, final String passphrase)
 	{
-		return deserialize(CryptoUtils.decryptDES(data, passphrase));
-
+		return deserialize(CryptoUtils.decryptWithDES(data, passphrase));
 	}
 
 	public static byte[] serialize(final Serializable obj) throws ObjectSerializationException
@@ -177,9 +179,12 @@ public class SerializationUtils
 		}
 	}
 
-	public static byte[] serializeWithEncryption(final Serializable obj, final String passphrase)
+	/**
+	 * Serializes the given object and encrypts it via DES using the given passphrase
+	 */
+	public static byte[] serializeDES(final Serializable obj, final String passphrase)
 	{
-		return CryptoUtils.encryptDES(serialize(obj), passphrase);
+		return CryptoUtils.encryptWithDES(serialize(obj), passphrase);
 	}
 
 	/**

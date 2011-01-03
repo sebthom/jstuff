@@ -19,10 +19,13 @@ import net.sf.jstuff.core.Logger;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class EventUtils
+public class EventUtils
 {
 	private static final Logger LOG = Logger.get();
 
+	/**
+	 * @return the number of listeners notified successfully
+	 */
 	public static <T> int notify(final T event, final Collection<EventListener<T>> listeners)
 	{
 		int count = 0;
@@ -31,6 +34,9 @@ public final class EventUtils
 		return count;
 	}
 
+	/**
+	 * @return true if the listener was notified successfully
+	 */
 	public static <T> boolean notify(final T event, final EventListener<T> listener)
 	{
 		if (listener != null) try
@@ -54,6 +60,9 @@ public final class EventUtils
 		return false;
 	}
 
+	/**
+	 * @return the number of listeners notified successfully
+	 */
 	public static <T> int notify(final T event, final EventListener<T>... listeners)
 	{
 		int count = 0;
@@ -62,7 +71,7 @@ public final class EventUtils
 		return count;
 	}
 
-	private EventUtils()
+	protected EventUtils()
 	{
 		super();
 	}

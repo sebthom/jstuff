@@ -13,9 +13,9 @@
 package net.sf.jstuff.core.event;
 
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -30,8 +30,9 @@ public class EventManager<EventType> implements EventListenable<EventType>
 {
 	private static final Logger LOG = Logger.get();
 
-	private final Set<EventListener<EventType>> eventListeners = new LinkedHashSet<EventListener<EventType>>();
-	private final Set<EventListener<EventType>> eventListenersUnmodifiable = Collections.unmodifiableSet(eventListeners);
+	private final Set<EventListener<EventType>> eventListeners = new CopyOnWriteArraySet<EventListener<EventType>>();
+	private final Set<EventListener<EventType>> eventListenersUnmodifiable = Collections
+			.unmodifiableSet(eventListeners);
 
 	private ExecutorService executorService;
 
@@ -70,12 +71,12 @@ public class EventManager<EventType> implements EventListenable<EventType>
 		return executorService;
 	}
 
-	public int notify(final EventType event)
+	public int dispatch(final EventType event)
 	{
 		return EventUtils.notify(event, eventListeners);
 	}
 
-	public Future<Integer> notifyAsync(final EventType event)
+	public Future<Integer> dispatchAsync(final EventType event)
 	{
 		@SuppressWarnings("unchecked")
 		final EventListener<EventType>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);

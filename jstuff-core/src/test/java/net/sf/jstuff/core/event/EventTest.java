@@ -55,16 +55,16 @@ public class EventTest extends TestCase
 		assertTrue(em.addEventListener(listener2));
 		assertFalse(em.addEventListener(listener2));
 
-		assertEquals(2, em.notify("123"));
+		assertEquals(2, em.dispatch("123"));
 		assertEquals(1, listener1Count.get());
 		assertEquals(1, listener2Count.get());
 
-		assertEquals(1, em.notify("1234567890"));
+		assertEquals(1, em.dispatch("1234567890"));
 		assertEquals(2, listener1Count.get());
 		assertEquals(1, listener2Count.get());
 
-		assertEquals(2, em.notifyAsync("123").get().intValue());
-		assertEquals(1, em.notifyAsync("1234567890").get().intValue());
+		assertEquals(2, em.dispatchAsync("123").get().intValue());
+		assertEquals(1, em.dispatchAsync("1234567890").get().intValue());
 		assertEquals(4, listener1Count.get());
 		assertEquals(2, listener2Count.get());
 	}

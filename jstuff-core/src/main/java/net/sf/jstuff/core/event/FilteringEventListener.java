@@ -12,12 +12,10 @@
  *******************************************************************************/
 package net.sf.jstuff.core.event;
 
-import net.sf.jstuff.core.Filter;
-
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface FilteringEventListener<T> extends EventListener<T>, Filter<T>
+public interface FilteringEventListener<T> extends EventListener<T>
 {
 	/**
 	 * Determines if this event listener accepts the given event.

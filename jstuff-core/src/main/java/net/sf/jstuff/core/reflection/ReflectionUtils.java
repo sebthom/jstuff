@@ -14,10 +14,12 @@ package net.sf.jstuff.core.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
 import java.util.Arrays;
@@ -57,6 +59,61 @@ public class ReflectionUtils
 						"Current security manager configuration does not allow access to private fields and methods.",
 						ex);
 			}
+	}
+
+	/**
+	 * @return true if <code>duckLikeObject</code> implements all public methods declared on <code>duckType</code>
+	 */
+	public static boolean isDuckType(final Object duckLikeObject, final Class< ? > duckType)
+	{
+		final Class< ? > duckLikeClass = duckLikeObject.getClass();
+		if (duckType.isAssignableFrom(duckLikeClass)) return true;
+		for (final Method method : duckType.getMethods())
+			try
+			{
+				duckLikeClass.getMethod(method.getName(), method.getParameterTypes());
+			}
+			catch (final NoSuchMethodException e)
+			{
+				return false;
+			}
+		return true;
+	}
+
+	/**
+	 * Creates a dynamic proxy object of type <code>duckClass</code> forwarding all method invocations
+	 * to methods with the same signature on <code>duckLikeObject</code>.
+	 * 
+	 * @return <code>duckLikeObject</code> if instanceof <code>duckType</code> or a dynamic proxy object.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T duckType(final Object duckLikeObject, final Class<T> duckType)
+	{
+		final Class< ? > duckLikeClass = duckLikeObject.getClass();
+		if (duckType.isAssignableFrom(duckLikeClass)) return (T) duckLikeObject;
+
+		LOG.debug("Ducktyping {} to type {}", duckLikeObject, duckType);
+
+		return (T) Proxy.newProxyInstance(duckType.getClassLoader(), new Class[]{duckType}, new InvocationHandler()
+			{
+				public Object invoke(final Object duckProxy, final Method duckMethod, final Object[] args)
+						throws Throwable
+				{
+					try
+					{
+						final Method duckLikeMethod = duckLikeClass.getMethod(duckMethod.getName(),
+								duckMethod.getParameterTypes());
+
+						// delegate method invocation on duck proxy to duckLikeObject's method
+						return duckLikeMethod.invoke(duckLikeObject, args);
+					}
+					catch (final NoSuchMethodException ex)
+					{
+						throw new ReflectionException("Duck typed object " + duckLikeObject
+								+ " does not implement duck method " + duckType + ".");
+					}
+				}
+			});
 	}
 
 	/**

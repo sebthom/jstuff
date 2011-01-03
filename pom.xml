@@ -10,7 +10,7 @@
 	<artifactId>jstuff-parent</artifactId>
 	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
-	<version>0.1.15</version>
+	<version>0.1.16</version>
 
 	<url>http://jstuff.sf.net</url>
 
@@ -107,7 +107,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
+			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -142,7 +142,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.0-beta-1</version>
+				<version>1.0</version>
 				<executions>
 					<execution>
 						<id>enforce-versions</id>
@@ -183,6 +183,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>

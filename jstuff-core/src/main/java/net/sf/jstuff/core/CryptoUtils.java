@@ -44,7 +44,7 @@ public class CryptoUtils
 
 	private static final Map<String, SecretKey> CACHED_KEYS = new WeakHashMap<String, SecretKey>();
 
-	public static byte[] decryptDES(final byte[] data, final String passphrase) throws CryptoException
+	public static byte[] decryptWithDES(final byte[] data, final String passphrase) throws CryptoException
 	{
 		try
 		{
@@ -56,7 +56,7 @@ public class CryptoUtils
 		}
 	}
 
-	public static byte[] encryptDES(final byte[] data, final String passphrase) throws CryptoException
+	public static byte[] encryptWithDES(final byte[] data, final String passphrase) throws CryptoException
 	{
 		try
 		{
@@ -96,7 +96,7 @@ public class CryptoUtils
 		}
 	}
 
-	public SealedObject sealDES(final Serializable object, final String passphrase) throws CryptoException
+	public static SealedObject sealWithDES(final Serializable object, final String passphrase) throws CryptoException
 	{
 		try
 		{
@@ -108,7 +108,7 @@ public class CryptoUtils
 		}
 	}
 
-	public Serializable unsealDES(final SealedObject obj, final String passphrase) throws CryptoException
+	public static Serializable unsealWithDES(final SealedObject obj, final String passphrase) throws CryptoException
 	{
 		try
 		{
@@ -118,5 +118,10 @@ public class CryptoUtils
 		{
 			throw new CryptoException(ex);
 		}
+	}
+
+	protected CryptoUtils()
+	{
+		super();
 	}
 }

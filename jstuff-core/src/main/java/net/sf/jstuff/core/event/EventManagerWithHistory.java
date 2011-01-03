@@ -67,19 +67,19 @@ public class EventManagerWithHistory<EventType> extends EventManager<EventType>
 	}
 
 	@Override
-	public int notify(final EventType event)
+	public int dispatch(final EventType event)
 	{
 		addEventToHistory(event);
 
-		return super.notify(event);
+		return super.dispatch(event);
 	}
 
 	@Override
-	public Future<Integer> notifyAsync(final EventType event)
+	public Future<Integer> dispatchAsync(final EventType event)
 	{
 		addEventToHistory(event);
 
-		return super.notifyAsync(event);
+		return super.dispatchAsync(event);
 	}
 
 	protected void setupEventHistory()
