@@ -101,6 +101,7 @@ public class CollectionUtils
 			throws IllegalArgumentException
 	{
 		Assert.argumentNotNull("collection", collection);
+		Assert.argumentNotNull("filter", filter);
 
 		int count = 0;
 		for (final T item : collection)
@@ -110,12 +111,16 @@ public class CollectionUtils
 
 	public static <K, V> V get(final Map<K, V> map, final K key, final V defaultValue)
 	{
+		Assert.argumentNotNull("map", map);
+
 		if (map.containsKey(key)) return map.get(key);
 		return defaultValue;
 	}
 
 	public static <K, V> ArrayList<K> keysAsArrayList(final Map<K, V> map)
 	{
+		Assert.argumentNotNull("map", map);
+
 		return newArrayList(map.keySet());
 	}
 

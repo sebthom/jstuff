@@ -156,6 +156,16 @@ public class FileUtils extends org.apache.commons.io.FileUtils
 		return "";
 	}
 
+	public static File getTempDirecory()
+	{
+		return new File(getTempDirectoryPath());
+	}
+
+	public static String getTempDirectoryPath()
+	{
+		return System.getProperty("java.io.tmpdir");
+	}
+
 	protected FileUtils()
 	{
 		super();

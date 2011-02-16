@@ -13,7 +13,7 @@
 package net.sf.jstuff.core.collection;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.sf.jstuff.core.Assert;
@@ -33,7 +33,14 @@ public class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 	{
 		Assert.argumentNotNull("array", array);
 
-		if (array instanceof Object[]) return Arrays.asList((Object[]) array);
+		if (array instanceof Object[])
+		{
+			// we are not using Arrays.asList since this returns an unmodifiable list
+			final Object[] arrayCasted = (Object[]) array;
+			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
+			Collections.addAll(result, arrayCasted);
+			return result;
+		}
 		if (array instanceof byte[])
 		{
 			final byte[] arrayCasted = (byte[]) array;
@@ -100,6 +107,15 @@ public class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 		}
 
 		throw new IllegalArgumentException("Argument [array] must be an array");
+	}
+
+	public static <T> List<T> asList(final T[] array)
+	{
+		Assert.argumentNotNull("array", array);
+
+		final List<T> result = new ArrayList<T>(array.length);
+		Collections.addAll(result, array);
+		return result;
 	}
 
 	public static <T> boolean containsEqual(final T[] theArray, final T theItem)
