@@ -96,22 +96,18 @@ public class DOMUtils
 
 	private static final class SAXParseExceptionHandler extends org.xml.sax.helpers.DefaultHandler
 	{
-		private static final Logger LOG = Logger.get();
-
 		public final List<SAXParseException> violations = new ArrayList<SAXParseException>();
 
 		@Override
 		public void error(final SAXParseException ex) throws SAXException
 		{
 			violations.add(ex);
-			LOG.warn("XML Schema Violation: %s [%s:%s]", ex.getMessage(), ex.getLineNumber(), ex.getColumnNumber());
 		}
 
 		@Override
 		public void warning(final SAXParseException ex) throws SAXException
 		{
 			violations.add(ex);
-			LOG.warn("XML Schema Violation: %s [%s:%s]", ex.getMessage(), ex.getLineNumber(), ex.getColumnNumber());
 		}
 	}
 
