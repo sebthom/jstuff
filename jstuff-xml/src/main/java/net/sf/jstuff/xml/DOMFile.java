@@ -226,4 +226,11 @@ public class DOMFile
 
 		DOMUtils.saveToFile(domDocument, file);
 	}
+
+	public void saveAs(final String filePath) throws IOException, XMLException
+	{
+		Assert.argumentNotNull("filePath", filePath);
+
+		DOMUtils.saveToFile(domDocument, new File(filePath));
+	}
 }
