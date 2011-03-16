@@ -112,11 +112,11 @@ public final class LinkedSet<E> implements Set<E>, List<E>, Serializable, Clonea
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Object clone() throws CloneNotSupportedException
+	public LinkedSet<E> clone() throws CloneNotSupportedException
 	{
-		final IdentitySet<E> os = new IdentitySet<E>(this.size());
-		os.addAll(this);
-		return os;
+		final LinkedSet<E> copy = new LinkedSet<E>(this.size());
+		copy.addAll(this);
+		return copy;
 	}
 
 	/**

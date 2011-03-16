@@ -44,6 +44,34 @@ public final class Assert
 					+ "] must be in range of " + min + " to " + max));
 	}
 
+	public static void argumentMinSize(final String argumentName, final byte value, final byte min)
+	{
+		if (value < min)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min
+					+ " or greater"));
+	}
+
+	public static void argumentMinSize(final String argumentName, final int value, final int min)
+	{
+		if (value < min)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min
+					+ " or greater"));
+	}
+
+	public static void argumentMinSize(final String argumentName, final long value, final long min)
+	{
+		if (value < min)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min
+					+ " or greater"));
+	}
+
+	public static void argumentMinSize(final String argumentName, final short value, final short min)
+	{
+		if (value < min)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min
+					+ " or greater"));
+	}
+
 	/**
 	 * @throws IllegalArgumentException if <code>value</code> collection is null or empty
 	 */

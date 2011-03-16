@@ -25,6 +25,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithCollections.java 
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithLists.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithQueues.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithSets.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/SoftHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentityHashMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentitySet.java -text
@@ -52,6 +53,8 @@ jstuff-core/src/main/java/net/sf/jstuff/core/io/FileModificationMonitor.java -te
 jstuff-core/src/main/java/net/sf/jstuff/core/io/FileUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/IOUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/SerializationUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/io/ZippedBlockInputStream.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/io/ZippedBlockOutputStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateFormatStyle.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateTimeHelper.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/NumberHelper.java -text
@@ -80,6 +83,8 @@ jstuff-core/src/test/java/net/sf/jstuff/core/comparator/PropertyComparatorTest.j
 jstuff-core/src/test/java/net/sf/jstuff/core/event/EventTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/CharSequenceReaderTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/FileUtilsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/io/IOUtilsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/io/ZippedBlockStreamTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/DateTimeHelperTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/NumberHelperTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/net/NetUtilsTest.java -text

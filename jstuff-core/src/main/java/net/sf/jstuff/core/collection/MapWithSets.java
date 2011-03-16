@@ -20,6 +20,8 @@ import java.util.Set;
  */
 public class MapWithSets<K, V> extends MapWithCollections<K, V, Set<V>>
 {
+	private static final long serialVersionUID = 1L;
+
 	public static <K, V> MapWithSets<K, V> create()
 	{
 		return new MapWithSets<K, V>();

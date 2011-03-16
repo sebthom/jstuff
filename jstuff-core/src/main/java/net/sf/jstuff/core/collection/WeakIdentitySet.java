@@ -33,7 +33,7 @@ public class WeakIdentitySet<E>
 	 * The entries in this hash table extend WeakReference, using its main ref
 	 * field as the key. 
 	 */
-	private final static class Entry<E> extends WeakReference<E>
+	private static final class Entry<E> extends WeakReference<E>
 	{
 		protected int hash;
 		protected Entry<E> next;
@@ -139,7 +139,7 @@ public class WeakIdentitySet<E>
 		this.growthFactor = growthFactor;
 	}
 
-	public synchronized boolean add(final E o)
+	public boolean add(final E o)
 	{
 		final int h = hash(o);
 		final Entry<E>[] tab = getTable();
@@ -153,7 +153,7 @@ public class WeakIdentitySet<E>
 		return true;
 	}
 
-	public synchronized boolean contains(final Object key)
+	public boolean contains(final Object key)
 	{
 		return getEntry(key) != null;
 	}
@@ -261,7 +261,7 @@ public class WeakIdentitySet<E>
 		}
 	}
 
-	public synchronized int size()
+	public int size()
 	{
 		if (size == 0) return 0;
 		expungeStaleEntries();

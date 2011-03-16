@@ -10,16 +10,25 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.event;
+package net.sf.jstuff.core.io;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import junit.framework.TestCase;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface FilteringEventListener<T> extends EventListener<T>
+public class IOUtilsTest extends TestCase
 {
-	/**
-	 * Determines if this event listener accepts the given event.
-	 * The {@link #onEvent(T)} method is only called when <code>true</code> is returned.
-	 */
-	boolean accept(T event);
+	public void testReadBytes() throws IOException
+	{
+		final ByteArrayInputStream is = new ByteArrayInputStream("Hello World!".getBytes());
+		assertEquals(5, IOUtils.readBytes(is, 5).length);
+
+		is.reset();
+		assertEquals("Hello World!", new String(IOUtils.readBytes(is, 12)));
+	}
+
 }

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,8 +22,10 @@ import java.util.Set;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class MapWithCollections<K, V, C extends Collection<V>> implements Map<K, C>
+public abstract class MapWithCollections<K, V, C extends Collection<V>> implements Map<K, C>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final Map<K, C> map;
 	private int initialCapacityOfCollection = 2;
 	private float growthFactorOfCollection = 0.75f;

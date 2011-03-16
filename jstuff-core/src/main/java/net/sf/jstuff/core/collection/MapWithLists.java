@@ -20,6 +20,8 @@ import java.util.List;
  */
 public class MapWithLists<K, V> extends MapWithCollections<K, V, List<V>>
 {
+	private static final long serialVersionUID = 1L;
+
 	public static <K, V> MapWithLists<K, V> create()
 	{
 		return new MapWithLists<K, V>();

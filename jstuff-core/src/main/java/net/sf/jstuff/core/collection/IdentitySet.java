@@ -102,11 +102,11 @@ public final class IdentitySet<E> implements Set<E>, Serializable, Cloneable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Object clone() throws CloneNotSupportedException
+	public IdentitySet<E> clone() throws CloneNotSupportedException
 	{
-		final IdentitySet<E> os = new IdentitySet<E>(this.size(), growthFactor);
-		os.addAll(this);
-		return os;
+		final IdentitySet<E> copy = new IdentitySet<E>(this.size(), growthFactor);
+		copy.addAll(this);
+		return copy;
 	}
 
 	/**

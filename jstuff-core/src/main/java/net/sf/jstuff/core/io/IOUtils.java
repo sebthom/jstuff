@@ -13,13 +13,17 @@
 package net.sf.jstuff.core.io;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.ThreadUtils;
@@ -31,6 +35,42 @@ public class IOUtils extends org.apache.commons.io.IOUtils
 {
 	private static final Logger LOG = Logger.get();
 
+	/**
+	 * Reads <code>len</code> bytes of data from the input stream into
+	 * an array of bytes. This method blocks until the given number of bytes could be read.
+	 * @param b   the buffer into which the data is read.
+	 * @param off the start offset in array <code>b</code> at which the data is written.
+	 * @param len the exact number of bytes to read.
+	 */
+	public static void readBytes(final InputStream is, final byte b[], final int off, final int len) throws IOException
+	{
+		Assert.argumentNotNull("b", b);
+		Assert.argumentInRange("off", off, 0, b.length - 1);
+		Assert.argumentInRange("len", len, 0, b.length - off);
+
+		int currentOffset = off;
+		int bytesMissing = len;
+		while (bytesMissing > 0)
+		{
+			final int bytesRead = is.read(b, currentOffset, bytesMissing);
+			if (bytesRead == -1) throw new EOFException("Unexpected end of input stream reached.");
+			currentOffset += bytesRead;
+			bytesMissing -= bytesRead;
+		}
+	}
+
+	/**
+	 * Reads <code>len</code> bytes of data from the input stream into
+	 * an array of bytes. This method blocks until the given number of bytes could be read.
+	 * @param len the exact number of bytes to read.
+	 */
+	public static byte[] readBytes(final InputStream is, final int len) throws IOException
+	{
+		final byte[] bytes = new byte[len];
+		readBytes(is, bytes, 0, len);
+		return bytes;
+	}
+
 	public static String readChunkAsString(final InputStream is, final int maxSize) throws IOException
 	{
 		if (is.available() == 0) return "";
@@ -38,6 +78,19 @@ public class IOUtils extends org.apache.commons.io.IOUtils
 		final int readLen = is.read(buff);
 		if (readLen == -1) return "";
 		return new String(buff, 0, readLen);
+	}
+
+	/**
+	 * Reads an int value from the given input stream using the same way as {@link DataInputStream#readInt()}
+	 */
+	public static int readInt(final InputStream is) throws IOException
+	{
+		final int ch1 = is.read();
+		final int ch2 = is.read();
+		final int ch3 = is.read();
+		final int ch4 = is.read();
+		if ((ch1 | ch2 | ch3 | ch4) < 0) throw new EOFException("Unexpected end of input stream reached.");
+		return (ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0);
 	}
 
 	public static List<String> readLines(final InputStream in) throws IOException
@@ -81,6 +134,17 @@ public class IOUtils extends org.apache.commons.io.IOUtils
 			ThreadUtils.sleep(100);
 		}
 		return result;
+	}
+
+	/**
+	 * Writes the given value to the output stream the same way as {@link DataOutputStream#writeInt(int)}
+	 */
+	public static void writeInt(final OutputStream os, final int value) throws IOException
+	{
+		os.write(value >>> 24 & 0xFF);
+		os.write(value >>> 16 & 0xFF);
+		os.write(value >>> 8 & 0xFF);
+		os.write(value >>> 0 & 0xFF);
 	}
 
 	protected IOUtils()

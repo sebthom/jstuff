@@ -14,9 +14,6 @@ package net.sf.jstuff.core.collection;
 
 import static java.lang.Boolean.TRUE;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -25,23 +22,21 @@ import java.util.WeakHashMap;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class WeakHashSet<E> implements Set<E>, Serializable, Cloneable
+public final class SoftHashSet<E> implements Set<E>
 {
-	private static final long serialVersionUID = 1L;
-
-	public static <E> WeakHashSet<E> create()
+	public static <E> SoftHashSet<E> create()
 	{
-		return new WeakHashSet<E>();
+		return new SoftHashSet<E>();
 	}
 
-	public static <E> WeakHashSet<E> create(final int initialCapacity)
+	public static <E> SoftHashSet<E> create(final int initialCapacity)
 	{
-		return new WeakHashSet<E>(initialCapacity);
+		return new SoftHashSet<E>(initialCapacity);
 	}
 
-	public static <E> WeakHashSet<E> create(final int initialCapacity, final float growthFactor)
+	public static <E> SoftHashSet<E> create(final int initialCapacity, final float growthFactor)
 	{
-		return new WeakHashSet<E>(initialCapacity, growthFactor);
+		return new SoftHashSet<E>(initialCapacity, growthFactor);
 	}
 
 	private transient WeakHashMap<E, Object> map;
@@ -50,7 +45,7 @@ public final class WeakHashSet<E> implements Set<E>, Serializable, Cloneable
 	 * Constructs a new, empty <tt>WeakHashSet</tt>; the backing <tt>WeakHashMap</tt> instance has
 	 * default initial capacity (16) and load factor (0.75).
 	 */
-	public WeakHashSet()
+	public SoftHashSet()
 	{
 		map = new WeakHashMap<E, Object>();
 	}
@@ -59,7 +54,7 @@ public final class WeakHashSet<E> implements Set<E>, Serializable, Cloneable
 	 * Constructs a new, empty <tt>WeakHashSet</tt>; the backing <tt>WeakHashMap</tt> instance has
 	 * the given initial capacity and the default growth factor (0.75).
 	 */
-	public WeakHashSet(final int initialCapacity)
+	public SoftHashSet(final int initialCapacity)
 	{
 		map = new WeakHashMap<E, Object>(initialCapacity);
 	}
@@ -68,7 +63,7 @@ public final class WeakHashSet<E> implements Set<E>, Serializable, Cloneable
 	 * Constructs a new, empty <tt>WeakHashSet</tt>; the backing <tt>WeakHashMap</tt> instance has
 	 * the given initial capacity and the given growth factor.
 	 */
-	public WeakHashSet(final int initialCapacity, final float growthFactor)
+	public SoftHashSet(final int initialCapacity, final float growthFactor)
 	{
 		map = new WeakHashMap<E, Object>(initialCapacity, growthFactor);
 	}
@@ -95,17 +90,6 @@ public final class WeakHashSet<E> implements Set<E>, Serializable, Cloneable
 	public void clear()
 	{
 		map.clear();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected WeakHashSet<E> clone() throws CloneNotSupportedException
-	{
-		final WeakHashSet<E> copy = new WeakHashSet<E>(this.size());
-		copy.addAll(this);
-		return copy;
 	}
 
 	/**
@@ -170,24 +154,6 @@ public final class WeakHashSet<E> implements Set<E>, Serializable, Cloneable
 	}
 
 	/**
-	 * Reads the <tt>WeakHashSet</tt> instance from a stream.
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(final ObjectInputStream ois) throws java.io.IOException, ClassNotFoundException
-	{
-		// materialize any hidden serialization magic
-		ois.defaultReadObject();
-
-		// materialize the size
-		final int size = ois.readInt();
-
-		// materialize the elements
-		map = new WeakHashMap<E, Object>(size);
-		for (int i = 0; i < size; i++)
-			map.put((E) ois.readObject(), TRUE);
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public boolean remove(final Object o)
@@ -233,21 +199,5 @@ public final class WeakHashSet<E> implements Set<E>, Serializable, Cloneable
 	public <T> T[] toArray(final T[] a)
 	{
 		return map.keySet().toArray(a);
-	}
-
-	/**
-	 * Writes the state of this <tt>WeakHashSet</tt> instance to a stream.
-	 */
-	private void writeObject(final ObjectOutputStream oos) throws java.io.IOException
-	{
-		// serialize any hidden serialization magic
-		oos.defaultWriteObject();
-
-		// serialize the set's size
-		oos.writeInt(map.size());
-
-		// serialize the set's elements
-		for (final E e : map.keySet())
-			oos.writeObject(e);
 	}
 }

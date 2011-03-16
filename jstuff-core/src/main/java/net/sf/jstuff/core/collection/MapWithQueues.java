@@ -20,6 +20,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class MapWithQueues<K, V> extends MapWithCollections<K, V, Queue<V>>
 {
+	private static final long serialVersionUID = 1L;
+
 	public static <K, V> MapWithQueues<K, V> create()
 	{
 		return new MapWithQueues<K, V>();
