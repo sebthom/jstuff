@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -20,20 +21,85 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
 import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Filter;
 import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.collection.CollectionUtils.MapDiff.EntryValueDiff;
+
+import org.apache.commons.lang.ObjectUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class CollectionUtils
 {
+	public static class MapDiff<K, V> implements Serializable
+	{
+		public static class EntryValueDiff<K, V> implements Serializable
+		{
+			private static final long serialVersionUID = 1L;
+
+			public final Map<K, V> leftMap;
+			public final Map<K, V> rightMap;
+
+			public final K key;
+			public final V leftValue;
+			public final V rightValue;
+
+			public EntryValueDiff(final Map<K, V> leftMap, final Map<K, V> rightMap, final K key, final V leftValue,
+					final V rightValue)
+			{
+				this.leftMap = leftMap;
+				this.rightMap = rightMap;
+				this.key = key;
+				this.leftValue = leftValue;
+				this.rightValue = rightValue;
+			}
+
+			@Override
+			public String toString()
+			{
+				return EntryValueDiff.class.getSimpleName() + " [key=" + key + ", leftValue=" + leftValue
+						+ ", rightValue=" + rightValue + "]";
+			}
+		}
+
+		private static final long serialVersionUID = 1L;
+
+		public final Map<K, V> leftMap;
+
+		public final Map<K, V> rightMap;
+		public final List<EntryValueDiff<K, V>> entryValueDiffs = CollectionUtils.newArrayList();
+		public final Map<K, V> leftOnlyEntries = CollectionUtils.newHashMap();
+		public final Map<K, V> rightOnlyEntries = CollectionUtils.newHashMap();
+
+		public MapDiff(final Map<K, V> leftMap, final Map<K, V> rightMap)
+		{
+			this.leftMap = leftMap;
+			this.rightMap = rightMap;
+		}
+
+		public boolean isDifferent()
+		{
+			return entryValueDiffs.size() > 0 || leftOnlyEntries.size() > 0 || rightOnlyEntries.size() > 0;
+		}
+
+		@Override
+		public String toString()
+		{
+			return MapDiff.class.getSimpleName() + "MapDiff [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries="
+					+ leftOnlyEntries + ", rightOnlyEntries=" + rightOnlyEntries + "]";
+		}
+	}
+
 	/**
 	 * adds all items to the collection accepted by the filter
 	 * @return number of items added 
@@ -88,6 +154,48 @@ public class CollectionUtils
 			map.put(valuePairSplitted[0], valuePairSplitted[1]);
 		}
 		return map;
+	}
+
+	public static <K, V> MapDiff<K, V> diff(final Map<K, V> leftMap, final Map<K, V> rightMap)
+	{
+		Assert.argumentNotNull("leftMap", leftMap);
+		Assert.argumentNotNull("rightMap", rightMap);
+
+		final MapDiff<K, V> mapDiff = new MapDiff<K, V>(leftMap, rightMap);
+		final Set<K> processedLeftKeys = CollectionUtils.newHashSet(Math.max(leftMap.size(), rightMap.size()));
+
+		/*
+		 * process the entries of the left map
+		 */
+		for (final Entry<K, V> leftEntry : leftMap.entrySet())
+		{
+			final K leftKey = leftEntry.getKey();
+			final V leftValue = leftEntry.getValue();
+
+			if (rightMap.containsKey(leftKey))
+			{
+				final V rightValue = rightMap.get(leftKey);
+				if (!ObjectUtils.equals(leftValue, rightValue))
+					mapDiff.entryValueDiffs.add(new EntryValueDiff<K, V>(leftMap, rightMap, leftKey, leftValue,
+							rightValue));
+			}
+			else
+				mapDiff.leftOnlyEntries.put(leftKey, leftValue);
+			processedLeftKeys.add(leftKey);
+		}
+
+		/*
+		 * process remaining entries of the right map
+		 */
+		for (final Entry<K, V> rightEntry : rightMap.entrySet())
+		{
+			final K rightKey = rightEntry.getKey();
+
+			if (processedLeftKeys.contains(rightKey)) continue;
+			mapDiff.rightOnlyEntries.put(rightKey, rightEntry.getValue());
+		}
+
+		return mapDiff;
 	}
 
 	/**

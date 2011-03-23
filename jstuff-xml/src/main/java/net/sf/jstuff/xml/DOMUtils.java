@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -46,8 +48,10 @@ import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.io.FileUtils;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -159,6 +163,92 @@ public class DOMUtils
 		}
 	}
 
+	public static List<Attr> getAttributes(final Element element)
+	{
+		Assert.argumentNotNull("element", element);
+
+		final NamedNodeMap nodeMap = element.getAttributes();
+		final List<Attr> result = CollectionUtils.newArrayList(nodeMap.getLength());
+		for (int i = 0, l = nodeMap.getLength(); i < l; i++)
+			result.add((Attr) nodeMap.item(i));
+		return result;
+	}
+
+	/**
+	 * Returns a sorted map containing all attributes xpath as key and their value as value.
+	 * @param recursive if true also returns the xpaths/values of all child elements
+	 */
+	public static SortedMap<String, String> getAttributesXPathAndValue(final Element element, final boolean recursive)
+	{
+		Assert.argumentNotNull("element", element);
+
+		final SortedMap<String, String> valuesByXPath = new TreeMap<String, String>();
+		getAttributesXPathAndValue(element, recursive, null, "", valuesByXPath);
+		return valuesByXPath;
+	}
+
+	/**
+	 * Returns a sorted map containing all attributes xpath as key and their value as value.
+	 * @param recursive if true also returns the xpaths/values of all child elements
+	 */
+	public static SortedMap<String, String> getAttributesXPathAndValue(final Element element, final boolean recursive,
+			final List<String> fallbackIdAttributes)
+	{
+		Assert.argumentNotNull("element", element);
+
+		final SortedMap<String, String> valuesByXPath = new TreeMap<String, String>();
+		getAttributesXPathAndValue(element, recursive, fallbackIdAttributes, "", valuesByXPath);
+		return valuesByXPath;
+	}
+
+	private static void getAttributesXPathAndValue(final Element element, final boolean recursive,
+			final List<String> fallbackIdAttributes, final CharSequence parentXPath,
+			final Map<String, String> valuesByXPath)
+	{
+		/*
+		 * build the xPath of the current element
+		 */
+		final StringBuilder xPath = new StringBuilder(parentXPath);
+		xPath.append('/');
+		xPath.append(element.getTagName());
+		final List<Attr> attrs = getIdAttributes(element, fallbackIdAttributes);
+		if (attrs.size() > 0)
+		{
+			xPath.append('[');
+			boolean isFirst = true;
+			for (final Attr idAttribute : getIdAttributes(element, fallbackIdAttributes))
+			{
+				if (isFirst)
+					isFirst = false;
+				else
+					xPath.append(" and ");
+				xPath.append('@');
+				xPath.append(idAttribute.getName());
+				xPath.append("='");
+				xPath.append(idAttribute.getValue());
+				xPath.append('\'');
+			}
+			xPath.append(']');
+		}
+
+		/*
+		 * iterate attributes
+		 */
+		for (final Attr attr : getAttributes(element))
+			valuesByXPath.put(xPath + "/@" + attr.getName(), attr.getValue());
+		/*
+		 * iterate child elements
+		 */
+		if (recursive) for (final Node child : DOMUtils.nodeListToList(element.getChildNodes()))
+			if (child instanceof Element)
+				getAttributesXPathAndValue((Element) child, true, fallbackIdAttributes, xPath, valuesByXPath);
+			else if ("#text".equals(child.getNodeName()))
+			{
+				final String nodeValue = child.getNodeValue().trim();
+				if (nodeValue.length() > 0) valuesByXPath.put(xPath + "/text()", child.getNodeValue().trim());
+			}
+	}
+
 	public static List<Node> getChildNodes(final Node node)
 	{
 		return nodeListToList(node.getChildNodes());
@@ -172,6 +262,40 @@ public class DOMUtils
 		Assert.argumentNotNull("node", node);
 
 		return findNode("*", node);
+	}
+
+	public static List<Attr> getIdAttributes(final Element element)
+	{
+		Assert.argumentNotNull("element", element);
+
+		final NamedNodeMap nodeMap = element.getAttributes();
+		final List<Attr> result = CollectionUtils.newArrayList(nodeMap.getLength());
+		for (int i = 0, l = nodeMap.getLength(); i < l; i++)
+		{
+			final Attr attr = (Attr) nodeMap.item(i);
+			if (attr.isId()) result.add((Attr) nodeMap.item(i));
+		}
+		return result;
+	}
+
+	public static List<Attr> getIdAttributes(final Element element, final List<String> fallbackIdAttributes)
+	{
+		Assert.argumentNotNull("element", element);
+
+		final NamedNodeMap nodeMap = element.getAttributes();
+		final List<Attr> result = CollectionUtils.newArrayList(nodeMap.getLength());
+		for (int i = 0, l = nodeMap.getLength(); i < l; i++)
+		{
+			final Attr attr = (Attr) nodeMap.item(i);
+			if (attr.isId()) result.add((Attr) nodeMap.item(i));
+		}
+		if (result.size() == 0 && fallbackIdAttributes != null) for (final String idAttrName : fallbackIdAttributes)
+			if (element.hasAttribute(idAttrName))
+			{
+				result.add(element.getAttributeNode(idAttrName));
+				break;
+			}
+		return result;
 	}
 
 	/**
