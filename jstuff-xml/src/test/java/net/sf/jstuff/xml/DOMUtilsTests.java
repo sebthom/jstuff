@@ -17,8 +17,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.CollectionUtils;
-import net.sf.jstuff.xml.DOMUtils.XPathAttributeConfiguration;
-import net.sf.jstuff.xml.DOMUtils.XPathAttribute;
+import net.sf.jstuff.xml.DOMUtils.XPathNodeConfiguration;
+import net.sf.jstuff.xml.DOMUtils.XPathNode;
 
 import org.w3c.dom.Element;
 
@@ -32,19 +32,19 @@ public class DOMUtilsTests extends TestCase
 		final Element elem = DOMUtils.parseString("<foo id='1'><bar name='name'>blabla</bar></foo>", null)
 				.getDocumentElement();
 
-		final XPathAttributeConfiguration cfg = new XPathAttributeConfiguration();
+		final XPathNodeConfiguration cfg = new XPathNodeConfiguration();
 		cfg.recursive = true;
 		assertEquals("{/foo/@id=1, /foo/bar/@name=name, /foo/bar/text()=blabla, /foo/text()=null}", DOMUtils
-				.getXPathAttributes(elem, cfg).toString());
+				.getXPathNodes(elem, cfg).toString());
 
 		cfg.recursive = false;
-		assertEquals("{/foo/@id=1, /foo/text()=null}", DOMUtils.getXPathAttributes(elem, cfg).toString());
+		assertEquals("{/foo/@id=1, /foo/text()=null}", DOMUtils.getXPathNodes(elem, cfg).toString());
 
 		cfg.recursive = true;
 		cfg.idAttributesByXMLTagName.addAll("*", "id", "name");
 		assertEquals(
 				"{/foo[@id='1']/@id=1, /foo[@id='1']/bar[@name='name']/@name=name, /foo[@id='1']/bar[@name='name']/text()=blabla, /foo[@id='1']/text()=null}",
-				DOMUtils.getXPathAttributes(elem, cfg).toString());
+				DOMUtils.getXPathNodes(elem, cfg).toString());
 
 		final Element elem1 = DOMUtils.parseString("<top><child name='foo' weight='1'>1234</child></top>", null)
 				.getDocumentElement();
@@ -53,8 +53,8 @@ public class DOMUtilsTests extends TestCase
 				.getDocumentElement();
 
 		cfg.idAttributesByXMLTagName.put("*", "name");
-		final Map<String, XPathAttribute> attrs1 = DOMUtils.getXPathAttributes(elem1, cfg);
-		final Map<String, XPathAttribute> attrs2 = DOMUtils.getXPathAttributes(elem2, cfg);
+		final Map<String, XPathNode> attrs1 = DOMUtils.getXPathNodes(elem1, cfg);
+		final Map<String, XPathNode> attrs2 = DOMUtils.getXPathNodes(elem2, cfg);
 		assertEquals(
 				"MapDiff [entryValueDiffs=[EntryValueDiff [key=/top/child[@name='foo']/@weight, leftValue=1, rightValue=2], EntryValueDiff [key=/top/child[@name='foo']/text(), leftValue=1234, rightValue=ABCD]], leftOnlyEntries={}, rightOnlyEntries={/top/child[@name='bar']/@name=bar, /top/child[@name='bar']/text()=ABCD, /top/child[@name='bar']/@weight=2}]",
 				CollectionUtils.diff(attrs1, attrs2).toString());
