@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,9 +59,23 @@ public class MapWithSets<K, V> extends MapWithCollections<K, V, Set<V>>
 		super(initialCapacity, initialCapacityOfSet);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected Set<V> createCollection(final int initialCapacity, final float growthFactor)
 	{
 		return new HashSet<V>(initialCapacity, growthFactor);
+	}
+
+	/**
+	 * Returns the value to which this map maps the specified key.
+	 * Returns an unmodifiable empty set if the map contains no mapping for this key.
+	 */
+	@SuppressWarnings("unchecked")
+	public Set<V> getSafe(final Object key)
+	{
+		final Set<V> coll = super.get(key);
+		return coll == null ? Collections.EMPTY_SET : coll;
 	}
 }

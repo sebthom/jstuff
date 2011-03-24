@@ -15,6 +15,7 @@ package net.sf.jstuff.xml;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -46,8 +47,10 @@ import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.collection.MapWithLists;
 import net.sf.jstuff.core.io.FileUtils;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -115,10 +118,72 @@ public class DOMUtils
 		}
 	}
 
-	private static final Logger LOG = Logger.get();
+	public static class XPathAttributeConfiguration implements Serializable
+	{
+		private static final long serialVersionUID = 1L;
+		private static final XPathAttributeConfiguration INSTANCE = new XPathAttributeConfiguration();
 
+		public boolean recursive = true;
+		public boolean useSchemaIdAttributes = true;
+		public MapWithLists<String, String> idAttributesByXMLTagName = new MapWithLists<String, String>();
+
+		public List<String> getIdAttributesForXMLTagName(final String xmlTagName)
+		{
+			return idAttributesByXMLTagName.getSafe(xmlTagName);
+		}
+	}
+
+	public static class XPathAttribute implements Serializable
+	{
+		private static final long serialVersionUID = 1L;
+
+		public final String name;
+		public final String value;
+		public final String xpath;
+
+		public XPathAttribute(final String name, final String value, final String xpath)
+		{
+			this.name = name;
+			this.value = value;
+			this.xpath = xpath;
+		}
+
+		@Override
+		public boolean equals(final Object obj)
+		{
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			final XPathAttribute other = (XPathAttribute) obj;
+
+			if (!ObjectUtils.equals(name, other.name)) return false;
+			if (!ObjectUtils.equals(value, other.value)) return false;
+			if (!ObjectUtils.equals(xpath, other.xpath)) return false;
+			return true;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (name == null ? 0 : name.hashCode());
+			result = prime * result + (value == null ? 0 : value.hashCode());
+			result = prime * result + (xpath == null ? 0 : xpath.hashCode());
+			return result;
+		}
+
+		@Override
+		public String toString()
+		{
+			return value;
+		}
+	}
+
+	private static final Logger LOG = Logger.get();
 	private static final NamespaceContextImpl NAMESPACE_CONTEXT = new NamespaceContextImpl();
 	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
+
 	private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
 
 	/**
@@ -174,81 +239,6 @@ public class DOMUtils
 		return result;
 	}
 
-	/**
-	 * Returns a sorted map containing all attributes xpath as key and their value as value.
-	 * @param recursive if true also returns the xpaths/values of all child elements
-	 */
-	public static SortedMap<String, String> getAttributesXPathAndValue(final Element element, final boolean recursive)
-	{
-		Assert.argumentNotNull("element", element);
-
-		final SortedMap<String, String> valuesByXPath = new TreeMap<String, String>();
-		getAttributesXPathAndValue(element, recursive, null, "", valuesByXPath);
-		return valuesByXPath;
-	}
-
-	/**
-	 * Returns a sorted map containing all attributes xpath as key and their value as value.
-	 * @param recursive if true also returns the xpaths/values of all child elements
-	 */
-	public static SortedMap<String, String> getAttributesXPathAndValue(final Element element, final boolean recursive,
-			final List<String> fallbackIdAttributes)
-	{
-		Assert.argumentNotNull("element", element);
-
-		final SortedMap<String, String> valuesByXPath = new TreeMap<String, String>();
-		getAttributesXPathAndValue(element, recursive, fallbackIdAttributes, "", valuesByXPath);
-		return valuesByXPath;
-	}
-
-	private static void getAttributesXPathAndValue(final Element element, final boolean recursive,
-			final List<String> fallbackIdAttributes, final CharSequence parentXPath,
-			final Map<String, String> valuesByXPath)
-	{
-		/*
-		 * build the xPath of the current element
-		 */
-		final StringBuilder xPath = new StringBuilder(parentXPath);
-		xPath.append('/');
-		xPath.append(element.getTagName());
-		final List<Attr> attrs = getIdAttributes(element, fallbackIdAttributes);
-		if (attrs.size() > 0)
-		{
-			xPath.append('[');
-			boolean isFirst = true;
-			for (final Attr idAttribute : getIdAttributes(element, fallbackIdAttributes))
-			{
-				if (isFirst)
-					isFirst = false;
-				else
-					xPath.append(" and ");
-				xPath.append('@');
-				xPath.append(idAttribute.getName());
-				xPath.append("='");
-				xPath.append(idAttribute.getValue());
-				xPath.append('\'');
-			}
-			xPath.append(']');
-		}
-
-		/*
-		 * iterate attributes
-		 */
-		for (final Attr attr : getAttributes(element))
-			valuesByXPath.put(xPath + "/@" + attr.getName(), attr.getValue());
-		/*
-		 * iterate child elements
-		 */
-		if (recursive) for (final Node child : DOMUtils.nodeListToList(element.getChildNodes()))
-			if (child instanceof Element)
-				getAttributesXPathAndValue((Element) child, true, fallbackIdAttributes, xPath, valuesByXPath);
-			else if ("#text".equals(child.getNodeName()))
-			{
-				final String nodeValue = child.getNodeValue().trim();
-				if (nodeValue.length() > 0) valuesByXPath.put(xPath + "/text()", child.getNodeValue().trim());
-			}
-	}
-
 	public static List<Node> getChildNodes(final Node node)
 	{
 		return nodeListToList(node.getChildNodes());
@@ -278,24 +268,120 @@ public class DOMUtils
 		return result;
 	}
 
-	public static List<Attr> getIdAttributes(final Element element, final List<String> fallbackIdAttributes)
+	private static List<Attr> getIdAttributes(final Element element, final XPathAttributeConfiguration config)
 	{
 		Assert.argumentNotNull("element", element);
 
 		final NamedNodeMap nodeMap = element.getAttributes();
 		final List<Attr> result = CollectionUtils.newArrayList(nodeMap.getLength());
-		for (int i = 0, l = nodeMap.getLength(); i < l; i++)
+		if (config.useSchemaIdAttributes) for (int i = 0, l = nodeMap.getLength(); i < l; i++)
 		{
 			final Attr attr = (Attr) nodeMap.item(i);
 			if (attr.isId()) result.add((Attr) nodeMap.item(i));
 		}
-		if (result.size() == 0 && fallbackIdAttributes != null) for (final String idAttrName : fallbackIdAttributes)
-			if (element.hasAttribute(idAttrName))
-			{
-				result.add(element.getAttributeNode(idAttrName));
-				break;
-			}
+		if (result.size() == 0 && config.idAttributesByXMLTagName.size() > 0)
+		{
+			for (final String idAttrName : config.getIdAttributesForXMLTagName(element.getTagName()))
+				if (element.hasAttribute(idAttrName))
+				{
+					result.add(element.getAttributeNode(idAttrName));
+					break;
+				}
+			if (result.size() == 0) for (final String idAttrName : config.getIdAttributesForXMLTagName("*"))
+				if (element.hasAttribute(idAttrName))
+				{
+					result.add(element.getAttributeNode(idAttrName));
+					break;
+				}
+		}
 		return result;
+	}
+
+	/**
+	 * Returns a sorted map containing the XPath expression of all attributes as entry key and their value as entry value.
+	 */
+	public static SortedMap<String, XPathAttribute> getXPathAttributes(final Element element)
+	{
+		Assert.argumentNotNull("element", element);
+
+		final SortedMap<String, XPathAttribute> valuesByXPath = new TreeMap<String, XPathAttribute>();
+		getXPathAttributes(element, XPathAttributeConfiguration.INSTANCE, "", valuesByXPath);
+		return valuesByXPath;
+	}
+
+	/**
+	 * Returns a sorted map containing the XPath expression of all attributes as entry key and their value as entry value.
+	 */
+	public static SortedMap<String, XPathAttribute> getXPathAttributes(final Element element,
+			final XPathAttributeConfiguration config)
+	{
+		Assert.argumentNotNull("element", element);
+		Assert.argumentNotNull("config", config);
+
+		final SortedMap<String, XPathAttribute> valuesByXPath = new TreeMap<String, XPathAttribute>();
+		getXPathAttributes(element, config, "", valuesByXPath);
+		return valuesByXPath;
+	}
+
+	private static void getXPathAttributes(final Element element, final XPathAttributeConfiguration config,
+			final CharSequence parentXPath, final Map<String, XPathAttribute> valuesByXPath)
+	{
+		/*
+		 * build the xPath of the current element
+		 */
+		final StringBuilder xPath = new StringBuilder(parentXPath);
+		xPath.append('/');
+		xPath.append(element.getTagName());
+		final List<Attr> attrs = getIdAttributes(element, config);
+		if (attrs.size() > 0)
+		{
+			xPath.append('[');
+			boolean isFirst = true;
+			for (final Attr idAttribute : getIdAttributes(element, config))
+			{
+				if (isFirst)
+					isFirst = false;
+				else
+					xPath.append(" and ");
+				xPath.append('@');
+				xPath.append(idAttribute.getName());
+				xPath.append("='");
+				xPath.append(idAttribute.getValue());
+				xPath.append('\'');
+			}
+			xPath.append(']');
+		}
+
+		/*
+		 * iterate attributes
+		 */
+		for (final Attr attr : getAttributes(element))
+		{
+			final String attrXPath = xPath + "/@" + attr.getName();
+			valuesByXPath.put(attrXPath, new XPathAttribute(attr.getName(), attr.getValue(), attrXPath));
+		}
+		/*
+		 * iterate child elements
+		 */
+		boolean foundTextNode = false;
+		for (final Node child : DOMUtils.nodeListToList(element.getChildNodes()))
+			if (config.recursive && child instanceof Element)
+				getXPathAttributes((Element) child, config, xPath, valuesByXPath);
+			else if ("#text".equals(child.getNodeName()))
+			{
+				foundTextNode = true;
+				final String nodeValue = child.getNodeValue().trim();
+				if (nodeValue.length() > 0)
+				{
+					final String attrXPath = xPath + "/text()";
+					valuesByXPath.put(attrXPath, new XPathAttribute("#text", nodeValue, attrXPath));
+				}
+			}
+		if (!foundTextNode)
+		{
+			final String attrXPath = xPath + "/text()";
+			valuesByXPath.put(attrXPath, new XPathAttribute("#text", null, attrXPath));
+		}
 	}
 
 	/**

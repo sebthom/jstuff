@@ -31,10 +31,9 @@ import java.util.WeakHashMap;
 
 import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Filter;
+import net.sf.jstuff.core.IsEqual;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils.MapDiff.EntryValueDiff;
-
-import org.apache.commons.lang.ObjectUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -95,7 +94,7 @@ public class CollectionUtils
 		@Override
 		public String toString()
 		{
-			return MapDiff.class.getSimpleName() + "MapDiff [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries="
+			return MapDiff.class.getSimpleName() + " [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries="
 					+ leftOnlyEntries + ", rightOnlyEntries=" + rightOnlyEntries + "]";
 		}
 	}
@@ -158,6 +157,12 @@ public class CollectionUtils
 
 	public static <K, V> MapDiff<K, V> diff(final Map<K, V> leftMap, final Map<K, V> rightMap)
 	{
+		return diff(leftMap, rightMap, IsEqual.DEFAULT);
+	}
+
+	public static <K, V> MapDiff<K, V> diff(final Map<K, V> leftMap, final Map<K, V> rightMap,
+			final IsEqual< ? super V> isEqual)
+	{
 		Assert.argumentNotNull("leftMap", leftMap);
 		Assert.argumentNotNull("rightMap", rightMap);
 
@@ -175,7 +180,7 @@ public class CollectionUtils
 			if (rightMap.containsKey(leftKey))
 			{
 				final V rightValue = rightMap.get(leftKey);
-				if (!ObjectUtils.equals(leftValue, rightValue))
+				if (!isEqual.isEqual(leftValue, rightValue))
 					mapDiff.entryValueDiffs.add(new EntryValueDiff<K, V>(leftMap, rightMap, leftKey, leftValue,
 							rightValue));
 			}

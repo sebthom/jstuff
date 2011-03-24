@@ -10,34 +10,22 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.collection;
+package net.sf.jstuff.core;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import org.apache.commons.lang.ObjectUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MapWithQueues<K, V> extends MapWithCollections<K, V, Queue<V>>
+public interface IsEqual<T>
 {
-	private static final long serialVersionUID = 1L;
+	IsEqual<Object> DEFAULT = new IsEqual<Object>()
+		{
+			public boolean isEqual(final Object obj1, final Object obj2)
+			{
+				return ObjectUtils.equals(obj1, obj2);
+			}
+		};
 
-	public static <K, V> MapWithQueues<K, V> create()
-	{
-		return new MapWithQueues<K, V>();
-	}
-
-	public MapWithQueues()
-	{
-		super();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Queue<V> createCollection(final int initialCapacity, final float growthFactor)
-	{
-		return new ConcurrentLinkedQueue<V>();
-	}
+	boolean isEqual(T obj1, T obj2);
 }

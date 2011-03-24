@@ -72,20 +72,41 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> implemen
 
 	public void addAll(final K key, final Collection<V> values)
 	{
+		if (values == null) return;
+
 		C values2 = map.get(key);
 		if (values2 == null)
 		{
-			values2 = createCollection(initialCapacityOfCollection, growthFactorOfCollection);
+			values2 = createCollection(Math.max(initialCapacityOfCollection, values.size()), growthFactorOfCollection);
 			map.put(key, values2);
 		}
 		values2.addAll(values);
 	}
 
+	public void addAll(final K key, final V... values)
+	{
+		if (values == null) return;
+
+		C values2 = map.get(key);
+		if (values2 == null)
+		{
+			values2 = createCollection(Math.max(initialCapacityOfCollection, values.length), growthFactorOfCollection);
+			map.put(key, values2);
+		}
+		CollectionUtils.addAll(values2, values);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void clear()
 	{
 		map.clear();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean containsKey(final Object key)
 	{
 		return map.containsKey(key);
@@ -114,16 +135,25 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> implemen
 
 	protected abstract C createCollection(final int initialCapacity, final float growthFactor);
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Set<Map.Entry<K, C>> entrySet()
 	{
 		return map.entrySet();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public C get(final Object key)
 	{
 		return map.get(key);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean isEmpty()
 	{
 		return map.isEmpty();
@@ -136,16 +166,41 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> implemen
 		return values == null ? (Iterator<V>) CollectionUtils.newEmptyIterator() : values.iterator();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Set<K> keySet()
 	{
 		return map.keySet();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public C put(final K key, final C values)
 	{
 		return map.put(key, values);
 	}
 
+	/**
+	 * Associates the specified value with the specified key in this map (optional operation).
+	 * If the map previously contained a mapping for this key, the old value is replaced by the specified value.
+	 * @param key key with which the specified value is to be associated
+	 * @param values value to be associated with the specified key.
+	 * @return previous value associated with specified key, or null if there was no mapping for key. 
+	 *         A null return can also indicate that the map previously associated null with the specified key,
+	 *         if the implementation supports null values.
+	 */
+	public C put(final K key, final V... values)
+	{
+		final C coll = createCollection(Math.max(initialCapacityOfCollection, values.length), growthFactorOfCollection);
+		CollectionUtils.addAll(coll, values);
+		return put(key, coll);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void putAll(final Map< ? extends K, ? extends C> t)
 	{
 		map.putAll(t);
@@ -157,11 +212,17 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> implemen
 		return values == null ? false : values.remove(value);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public C remove(final Object key)
 	{
 		return map.remove(key);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public int size()
 	{
 		return map.size();
@@ -173,6 +234,9 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> implemen
 		return values == null ? 0 : values.size();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public Collection<C> values()
 	{
 		return map.values();

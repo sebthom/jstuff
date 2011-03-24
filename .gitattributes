@@ -6,6 +6,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/CryptoUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Filter.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ImageUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Invocable.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/IsEqual.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Logger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Mutable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/OSUtils.java -text

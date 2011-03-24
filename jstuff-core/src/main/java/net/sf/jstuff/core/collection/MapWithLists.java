@@ -13,6 +13,7 @@
 package net.sf.jstuff.core.collection;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,9 +58,23 @@ public class MapWithLists<K, V> extends MapWithCollections<K, V, List<V>>
 		super(initialCapacity, initialCapacityOfList);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected List<V> createCollection(final int initialCapacity, final float growthFactor)
 	{
 		return new ArrayList<V>(initialCapacity);
+	}
+
+	/**
+	 * Returns the value to which this map maps the specified key.
+	 * Returns an unmodifiable empty list if the map contains no mapping for this key.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<V> getSafe(final Object key)
+	{
+		final List<V> coll = super.get(key);
+		return coll == null ? Collections.EMPTY_LIST : coll;
 	}
 }
