@@ -159,9 +159,10 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/CountingHttpS
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/HttpServletResponseStringWrapper.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ResponseHeaderSettingFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ServletUtils.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/BeanLocator.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/HttpInvokerServicesServlet.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringInjector.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanInjector.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanLocator.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanRef.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringHttpInvokerServicesServlet.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/GroupDetails.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/GroupDetailsImpl.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/GroupDetailsService.java -text
@@ -170,6 +171,11 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/UserDeta
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/UserDetailsImpl.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/UserDetailsService.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/UserDetailsServiceLDAPImpl.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanInjectorTest.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanLocatorTest.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanRefTest.java -text
+jstuff-integration/src/test/resources/net/sf/jstuff/integration/spring/SpringBeanInjectorTest.xml -text
+jstuff-integration/src/test/resources/net/sf/jstuff/integration/spring/SpringBeanLocatorTest.xml -text
 jstuff-xml/pom.xml -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/DOMFile.java -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/DOMUtils.java -text

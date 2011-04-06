@@ -15,21 +15,48 @@ package net.sf.jstuff.integration.spring;
 import java.util.Map;
 
 import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.Logger;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * <bean name="beanLocator" class="net.sf.jstuff.integration.spring.BeanLocator" factory-method="init" destroy-method="destroy" />
  *  
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class BeanLocator implements BeanFactoryAware
+@Component
+public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 {
-	private static BeanLocator instance;
+	private static final Logger LOG = Logger.get();
+
+	private static SpringBeanLocator DEFAULT_INSTANCE;
+
+	/**
+	 * @return the default instance (the last instantiated one by any spring context)
+	 */
+	public static SpringBeanLocator get()
+	{
+		Assert.notNull(DEFAULT_INSTANCE, "Spring context not initialized yet.");
+		return DEFAULT_INSTANCE;
+	}
+
+	@Autowired
+	private ListableBeanFactory factory;
+
+	private SpringBeanLocator()
+	{
+		Assert.isNull(DEFAULT_INSTANCE, "A instance of " + this.getClass().getName() + " already exists.");
+
+		LOG.info("Instantiated.");
+
+		DEFAULT_INSTANCE = this;
+	}
 
 	/**
 	 * Returns the spring managed bean with the given type
@@ -39,12 +66,11 @@ public class BeanLocator implements BeanFactoryAware
 	 * @return the spring managed bean with the given name
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getByClass(final Class<T> beanType)
+	public <T> T byClass(final Class<T> beanType)
 	{
 		Assert.argumentNotNull("beanType", beanType);
-		Assert.notNull(instance, "Spring context not initialized yet.");
 
-		final Map< ? , ? > beans = instance.factory.getBeansOfType(beanType, true, true);
+		final Map< ? , ? > beans = factory.getBeansOfType(beanType, true, true);
 
 		if (beans == null || beans.isEmpty())
 			throw new IllegalArgumentException("No Spring managed bean for type '" + beanType.getName() //
@@ -62,14 +88,13 @@ public class BeanLocator implements BeanFactoryAware
 	 *
 	 * @return  the spring managed bean with the given name
 	 */
-	public static Object getByName(final String beanName)
+	@SuppressWarnings("unchecked")
+	public <T> T byName(final String beanName)
 	{
-		Assert.notNull(instance, "Spring context not initialized yet.");
-
 		Assert.notNull(beanName, "[beanName] must not be null.");
 		try
 		{
-			return instance.factory.getBean(beanName);
+			return (T) factory.getBean(beanName);
 		}
 		catch (final NoSuchBeanDefinitionException e)
 		{
@@ -78,32 +103,17 @@ public class BeanLocator implements BeanFactoryAware
 	}
 
 	/**
-	 * For use by Spring only.
-	 *
-	 * @return  the beanLocator instance
+	 * <p><b>For use by Spring only!</b></p>
+	 * {@inheritDoc}
 	 */
-	public static synchronized BeanLocator init()
-	{
-		Assert.isNull(instance, "A instance of BeanLocator already exists.");
-		instance = new BeanLocator();
-		return instance;
-	}
-
-	@Autowired
-	private ListableBeanFactory factory;
-
-	private BeanLocator()
-	{
-		super();
-	}
-
-	/**
-	 * for use by Spring only.
-	 */
-
 	public void destroy()
 	{
-		instance = null;
+		DEFAULT_INSTANCE = null;
+	}
+
+	public ListableBeanFactory getBeanFactory()
+	{
+		return factory;
 	}
 
 	/**
@@ -113,8 +123,10 @@ public class BeanLocator implements BeanFactoryAware
 	{
 		Assert.argumentNotNull("beanFactory", beanFactory);
 
-		if (!ListableBeanFactory.class.isAssignableFrom(beanFactory.getClass()))
-			throw new IllegalStateException("Bean factory must be of type ListableBeanFactory.");
-		this.factory = (ListableBeanFactory) beanFactory;
+		if (!(beanFactory instanceof ListableBeanFactory))
+			throw new IllegalStateException("Argument [beanFactory] must be of type "
+					+ beanFactory.getClass().getName());
+
+		factory = (ListableBeanFactory) beanFactory;
 	}
 }

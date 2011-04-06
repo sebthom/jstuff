@@ -39,17 +39,16 @@ public final class ObjectCache<K, V>
 			};
 	}
 
-	private final Map<K, SoftReference<V>> map = new HashMap<K, SoftReference<V>>();
-
+	private final Map<K, SoftReference<V>> objectsByKey = new HashMap<K, SoftReference<V>>();
 	private final LinkedList<V> objectsLastAccessed = new LinkedList<V>();
-	private final int objectsToKeepCount;
+	private final int maxObjectsToKeep;
 
 	/**
 	 * Creates a new cache keeping all objects.
 	 */
 	public ObjectCache()
 	{
-		objectsToKeepCount = -1;
+		maxObjectsToKeep = -1;
 	}
 
 	/**
@@ -58,46 +57,56 @@ public final class ObjectCache<K, V>
 	 */
 	public ObjectCache(final int maxObjectsToKeep)
 	{
-		this.objectsToKeepCount = maxObjectsToKeep;
+		this.maxObjectsToKeep = maxObjectsToKeep;
 	}
 
 	public void compact()
 	{
-		for (final Map.Entry<K, SoftReference<V>> entry : map.entrySet())
+		for (final Map.Entry<K, SoftReference<V>> entry : objectsByKey.entrySet())
 		{
 			final SoftReference<V> ref = entry.getValue();
-			if (ref.get() == null) map.remove(entry.getKey());
+			if (ref.get() == null) objectsByKey.remove(entry.getKey());
 		}
 	}
 
 	public boolean contains(final K key)
 	{
-		return map.containsKey(key);
+		return objectsByKey.containsKey(key);
 	}
 
 	public V get(final K key)
 	{
-		final SoftReference<V> softReference = map.get(key);
+		final SoftReference<V> softReference = objectsByKey.get(key);
 		if (softReference != null)
 		{
 			final V value = softReference.get();
 
 			if (value == null)
-				map.remove(key);
-			else if (objectsToKeepCount > 0 && value != objectsLastAccessed.getFirst())
+				objectsByKey.remove(key);
+			else if (maxObjectsToKeep > 0 && value != objectsLastAccessed.getFirst())
 			{
 				objectsLastAccessed.remove(value);
 				objectsLastAccessed.addFirst(value);
-				if (objectsLastAccessed.size() > objectsToKeepCount) objectsLastAccessed.removeLast();
+				if (objectsLastAccessed.size() > maxObjectsToKeep) objectsLastAccessed.removeLast();
 			}
 			return softReference.get();
 		}
 		return null;
 	}
 
+	public int getMaxObjectsToKeep()
+	{
+		return maxObjectsToKeep;
+	}
+
 	public void put(final K key, final V value)
 	{
-		map.remove(key);
-		map.put(key, new SoftReference<V>(value));
+		objectsByKey.remove(key);
+		objectsByKey.put(key, new SoftReference<V>(value));
+	}
+
+	public void remove(final K key)
+	{
+		objectsByKey.remove(key);
 	}
 }

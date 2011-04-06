@@ -43,7 +43,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * <pre>
  * &lt;servlet&gt;
  *    &lt;servlet-name&gt;httpInvokerServicesServlet&lt;/servlet-name&gt;
- *    &lt;servlet-class&gt;net.sf.jstuff.integration.spring.HttpInvokerServicesServlet&lt;/servlet-class&gt; 
+ *    &lt;servlet-class&gt;net.sf.jstuff.integration.spring.SpringHttpInvokerServicesServlet&lt;/servlet-class&gt; 
  * &lt;/servlet&gt;
  * &lt;servlet-mapping&gt;
  *    &lt;servlet-name&gt;httpInvokerServicesServlet&lt;/servlet-name&gt; 
@@ -53,12 +53,15 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * 
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class HttpInvokerServicesServlet extends HttpServlet
+public class SpringHttpInvokerServicesServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
 	private final Map<String, HttpRequestHandler> mappedBeans = new HashMap<String, HttpRequestHandler>(16);
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void service(final HttpServletRequest request, final HttpServletResponse response)
 			throws ServletException, IOException

@@ -19,6 +19,28 @@ import junit.framework.TestCase;
  */
 public class ReflectionUtilsTest extends TestCase
 {
+	private static interface Duck
+	{
+		void walk();
+	}
+
+	public static class DuckLike
+	{
+		public int count = 0;
+
+		public void walk()
+		{
+			count++;
+		}
+	}
+
+	public void testDuckType()
+	{
+		final DuckLike duckLike = new DuckLike();
+		assertEquals(0, duckLike.count);
+		ReflectionUtils.duckType(duckLike, Duck.class).walk();
+		assertEquals(1, duckLike.count);
+	}
 
 	public void testIsCastable()
 	{
