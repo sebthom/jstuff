@@ -182,4 +182,5 @@ jstuff-xml/src/main/java/net/sf/jstuff/xml/DOMUtils.java -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/StAXUtils.java -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/XMLException.java -text
 jstuff-xml/src/test/java/net/sf/jstuff/xml/DOMUtilsTests.java -text
+jstuff-xml/src/test/resources/net/sf/jstuff/xml/wrong-dtd-location.xml -text
 /pom.xml -text

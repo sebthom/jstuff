@@ -57,6 +57,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -201,6 +202,22 @@ public class DOMUtils
 			return idAttributesByXMLTagName.getSafe(xmlTagName);
 		}
 	}
+
+	private static final EntityResolver NOREMOTE_DTD_RESOLVER = new EntityResolver()
+		{
+			private final Logger LOG = Logger.get();
+
+			public InputSource resolveEntity(final String schemaId, final String schemaLocation) throws SAXException,
+					IOException
+			{
+				if (!schemaLocation.startsWith("file://"))
+				{
+					LOG.debug("Ignoring DTD [%s] [%s]", schemaId, schemaLocation);
+					return new InputSource(new StringReader(""));
+				}
+				return null;
+			}
+		};
 
 	private static final Logger LOG = Logger.get();
 
@@ -566,6 +583,10 @@ public class DOMUtils
 			if (xmlSchemaFiles == null || xmlSchemaFiles.length == 0)
 			{
 				domBuilder = domFactory.newDocumentBuilder();
+
+				// disabling external DTD resolution to avoid errors like "java.net.UnknownHostException: java.sun.com"
+				domBuilder.setEntityResolver(NOREMOTE_DTD_RESOLVER);
+
 				domDocument = domBuilder.parse(input);
 			}
 			else
@@ -580,6 +601,10 @@ public class DOMUtils
 				domFactory.setFeature("http://apache.org/xml/features/honour-all-schemaLocations", true);
 
 				domBuilder = domFactory.newDocumentBuilder();
+
+				// disabling external DTD resolution to avoid errors like "java.net.UnknownHostException: java.sun.com"
+				domBuilder.setEntityResolver(NOREMOTE_DTD_RESOLVER);
+
 				final SAXParseExceptionHandler errorHandler = new SAXParseExceptionHandler();
 				domBuilder.setErrorHandler(errorHandler);
 				domDocument = domBuilder.parse(input);
@@ -672,7 +697,6 @@ public class DOMUtils
 
 		try
 		{
-			final StringWriter sw = new StringWriter();
 			final Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
 
 			// http://xerces.apache.org/xerces2-j/javadocs/api/javax/xml/transform/OutputKeys.html
@@ -680,6 +704,8 @@ public class DOMUtils
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 			transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+
+			final StringWriter sw = new StringWriter();
 			transformer.transform(new DOMSource(domDocument), new StreamResult(sw));
 			return sw.toString();
 		}
@@ -693,14 +719,13 @@ public class DOMUtils
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static void saveToFile(final Document domDocument, final File file) throws IOException, XMLException
+	public static void saveToFile(final Document domDocument, final File targetFile) throws IOException, XMLException
 	{
 		Assert.argumentNotNull("domDocument", domDocument);
-		Assert.argumentNotNull("file", file);
+		Assert.argumentNotNull("targetFile", targetFile);
 
 		try
 		{
-			final FileWriter fw = new FileWriter(file);
 			final Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
 
 			// http://xerces.apache.org/xerces2-j/javadocs/api/javax/xml/transform/OutputKeys.html
@@ -708,8 +733,9 @@ public class DOMUtils
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 			transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-			transformer.transform(new DOMSource(domDocument), new StreamResult(fw));
 
+			final FileWriter fw = new FileWriter(targetFile);
+			transformer.transform(new DOMSource(domDocument), new StreamResult(fw));
 			fw.flush();
 			fw.close();
 		}
@@ -720,18 +746,20 @@ public class DOMUtils
 	}
 
 	/**
+	 * First creates a backup of the targetFile and then saves the document to the targetFile.
+	 * 
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static void saveToFileAfterBackup(final Document domDocument, final File file) throws IOException,
+	public static void saveToFileAfterBackup(final Document domDocument, final File targetFile) throws IOException,
 			XMLException
 	{
 		Assert.argumentNotNull("domDocument", domDocument);
-		Assert.argumentNotNull("file", file);
+		Assert.argumentNotNull("targetFile", targetFile);
 
-		FileUtils.backupFile(file);
+		FileUtils.backupFile(targetFile);
 
-		saveToFile(domDocument, file);
+		saveToFile(domDocument, targetFile);
 	}
 
 	protected DOMUtils()

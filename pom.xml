@@ -10,7 +10,7 @@
 	<artifactId>jstuff-parent</artifactId>
 	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
-	<version>0.1.25</version>
+	<version>0.1.26</version>
 
 	<url>http://jstuff.sf.net</url>
 
