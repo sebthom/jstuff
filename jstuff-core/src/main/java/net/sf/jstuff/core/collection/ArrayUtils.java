@@ -12,112 +12,19 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 
 import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.functional.Transform;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ArrayUtils extends org.apache.commons.lang.ArrayUtils
+public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 {
-
-	public static <T> T[] asArray(final T... values)
-	{
-		return values;
-	}
-
-	public static List< ? > asList(final Object array)
-	{
-		Assert.argumentNotNull("array", array);
-
-		if (array instanceof Object[])
-		{
-			// we are not using Arrays.asList since this returns an unmodifiable list
-			final Object[] arrayCasted = (Object[]) array;
-			final List<Object> result = new ArrayList<Object>(arrayCasted.length);
-			Collections.addAll(result, arrayCasted);
-			return result;
-		}
-		if (array instanceof byte[])
-		{
-			final byte[] arrayCasted = (byte[]) array;
-			final List<Byte> result = new ArrayList<Byte>(arrayCasted.length);
-			for (final byte i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof char[])
-		{
-			final char[] arrayCasted = (char[]) array;
-			final List<Character> result = new ArrayList<Character>(arrayCasted.length);
-			for (final char i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof short[])
-		{
-			final short[] arrayCasted = (short[]) array;
-			final List<Short> result = new ArrayList<Short>(arrayCasted.length);
-			for (final short i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof int[])
-		{
-			final int[] arrayCasted = (int[]) array;
-			final List<Integer> result = new ArrayList<Integer>(arrayCasted.length);
-			for (final int i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof long[])
-		{
-			final long[] arrayCasted = (long[]) array;
-			final List<Long> result = new ArrayList<Long>(arrayCasted.length);
-			for (final long i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof double[])
-		{
-			final double[] arrayCasted = (double[]) array;
-			final List<Double> result = new ArrayList<Double>(arrayCasted.length);
-			for (final double i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof float[])
-		{
-			final float[] arrayCasted = (float[]) array;
-			final List<Float> result = new ArrayList<Float>(arrayCasted.length);
-			for (final float i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-		if (array instanceof boolean[])
-		{
-			final boolean[] arrayCasted = (boolean[]) array;
-			final List<Boolean> result = new ArrayList<Boolean>(arrayCasted.length);
-			for (final boolean i : arrayCasted)
-				result.add(i);
-			return result;
-		}
-
-		throw new IllegalArgumentException("Argument [array] must be an array");
-	}
-
-	public static <T> List<T> asList(final T[] array)
-	{
-		Assert.argumentNotNull("array", array);
-
-		final List<T> result = new ArrayList<T>(array.length);
-		Collections.addAll(result, array);
-		return result;
-	}
-
 	public static <T> boolean containsEqual(final T[] theArray, final T theItem)
 	{
 		Assert.argumentNotNull("theArray", theArray);
@@ -137,6 +44,120 @@ public class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 		for (final T t : theArray)
 			if (t == theItem) return true;
 		return false;
+	}
+
+	public static <T> T[] copy(final T[] array)
+	{
+		if (array == null) return null;
+		return array.clone();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T[] toArray(final Collection<T> values, final Class<T> itemType)
+	{
+		if (values == null) return null;
+
+		return values.toArray((T[]) Array.newInstance(itemType, values.size()));
+	}
+
+	public static <T> T[] toArray(final T... values)
+	{
+		return values;
+	}
+
+	public static List<Boolean> toList(final boolean[] array)
+	{
+		final ArrayList<Boolean> result = new ArrayList<Boolean>(array.length);
+		for (final boolean i : array)
+			result.add(i);
+		return result;
+	}
+
+	public static List<Byte> toList(final byte[] array)
+	{
+		final ArrayList<Byte> result = new ArrayList<Byte>(array.length);
+		for (final byte i : array)
+			result.add(i);
+		return result;
+	}
+
+	public static List<Character> toList(final char[] array)
+	{
+		final ArrayList<Character> result = new ArrayList<Character>(array.length);
+		for (final char i : array)
+			result.add(i);
+		return result;
+	}
+
+	public static List<Double> toList(final double[] array)
+	{
+		final ArrayList<Double> result = new ArrayList<Double>(array.length);
+		for (final double i : array)
+			result.add(i);
+		return result;
+	}
+
+	public static List<Float> toList(final float[] array)
+	{
+		final ArrayList<Float> result = new ArrayList<Float>(array.length);
+		for (final float i : array)
+			result.add(i);
+		return result;
+	}
+
+	public static List<Integer> toList(final int[] array)
+	{
+		final ArrayList<Integer> result = new ArrayList<Integer>(array.length);
+		for (final int i : array)
+			result.add(i);
+		return result;
+	}
+
+	public static List<Long> toList(final long[] array)
+	{
+		final ArrayList<Long> result = new ArrayList<Long>(array.length);
+		for (final long i : array)
+			result.add(i);
+		return result;
+	}
+
+	/**
+	 * <b>Hinte:</b> If you are looking for a toList(T...) method use {@link CollectionUtils#newArrayList(Object...)}
+	 */
+	public static List< ? > toList(final Object array)
+	{
+		if (array == null) return null;
+
+		if (array instanceof Object[]) return toList(array);
+		if (array instanceof byte[]) return toList((byte[]) array);
+		if (array instanceof char[]) return toList((char[]) array);
+		if (array instanceof short[]) return toList((short[]) array);
+		if (array instanceof int[]) return toList((int[]) array);
+		if (array instanceof long[]) return toList((long[]) array);
+		if (array instanceof double[]) return toList((double[]) array);
+		if (array instanceof float[]) return toList((float[]) array);
+		if (array instanceof boolean[]) return toList((boolean[]) array);
+
+		throw new IllegalArgumentException("Argument [array] must be an array");
+	}
+
+	public static List<Short> toList(final short[] array)
+	{
+		final ArrayList<Short> result = new ArrayList<Short>(array.length);
+		for (final short i : array)
+			result.add(i);
+		return result;
+	}
+
+	public static <S, T> T[] transform(final S[] source, final Class<T> targetType, final Transform< ? super S, T> op)
+	{
+		if (source == null) return null;
+
+		@SuppressWarnings("unchecked")
+		final T[] target = (T[]) Array.newInstance(targetType, source.length);
+		for (int i = 0, l = source.length; i < l; i++)
+			target[i] = op.transform(source[i]);
+		return target;
 	}
 
 	protected ArrayUtils()

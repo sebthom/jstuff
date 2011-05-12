@@ -26,7 +26,7 @@ import org.apache.commons.lang.time.DateFormatUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FileUtils extends org.apache.commons.io.FileUtils
+public abstract class FileUtils extends org.apache.commons.io.FileUtils
 {
 	private static Logger LOG = Logger.get();
 

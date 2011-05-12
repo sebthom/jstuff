@@ -10,22 +10,12 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
-
-import org.apache.commons.lang.ObjectUtils;
+package net.sf.jstuff.core.functional;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface IsEqual<T>
+public interface Invocable<ReturnType, MethodArgumentType>
 {
-	IsEqual<Object> DEFAULT = new IsEqual<Object>()
-		{
-			public boolean isEqual(final Object obj1, final Object obj2)
-			{
-				return ObjectUtils.equals(obj1, obj2);
-			}
-		};
-
-	boolean isEqual(T obj1, T obj2);
+	ReturnType invoke(MethodArgumentType arg) throws Exception;
 }

@@ -16,8 +16,8 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapContext;
 
-import net.sf.jstuff.core.Invocable;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.integration.ldap.LDAPTemplate;
 import net.sf.jstuff.integration.ldap.LDAPTemplate.LDAPException;
 import net.sf.jstuff.integration.userregistry.UserDetails;

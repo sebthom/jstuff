@@ -28,7 +28,7 @@ import net.sf.jstuff.core.Assert;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class BeanUtils
+public abstract class BeanUtils
 {
 	private final static WeakHashMap<Class< ? >, Map<String, PropertyDescriptor>> BEAN_PROPERTIES_CACHE = new WeakHashMap<Class< ? >, Map<String, PropertyDescriptor>>();
 

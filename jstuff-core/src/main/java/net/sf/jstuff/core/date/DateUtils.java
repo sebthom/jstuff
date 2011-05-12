@@ -25,7 +25,7 @@ import org.apache.commons.lang.time.FastDateFormat;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DateUtils extends org.apache.commons.lang.time.DateUtils
+public abstract class DateUtils extends org.apache.commons.lang.time.DateUtils
 {
 	private final static FastDateFormat RFC3399_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
 

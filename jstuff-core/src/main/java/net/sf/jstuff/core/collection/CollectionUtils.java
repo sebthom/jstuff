@@ -30,15 +30,16 @@ import java.util.TreeMap;
 import java.util.WeakHashMap;
 
 import net.sf.jstuff.core.Assert;
-import net.sf.jstuff.core.Filter;
-import net.sf.jstuff.core.IsEqual;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils.MapDiff.EntryValueDiff;
+import net.sf.jstuff.core.functional.Accept;
+import net.sf.jstuff.core.functional.IsEqual;
+import net.sf.jstuff.core.functional.Transform;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CollectionUtils
+public abstract class CollectionUtils
 {
 	public static class MapDiff<K, V> implements Serializable
 	{
@@ -76,9 +77,9 @@ public class CollectionUtils
 		public final Map<K, V> leftMap;
 
 		public final Map<K, V> rightMap;
-		public final List<EntryValueDiff<K, V>> entryValueDiffs = CollectionUtils.newArrayList();
-		public final Map<K, V> leftOnlyEntries = CollectionUtils.newHashMap();
-		public final Map<K, V> rightOnlyEntries = CollectionUtils.newHashMap();
+		public final List<EntryValueDiff<K, V>> entryValueDiffs = newArrayList();
+		public final Map<K, V> leftOnlyEntries = newHashMap();
+		public final Map<K, V> rightOnlyEntries = newHashMap();
 
 		public MapDiff(final Map<K, V> leftMap, final Map<K, V> rightMap)
 		{
@@ -104,7 +105,7 @@ public class CollectionUtils
 	 * @return number of items added 
 	 * @throws IllegalArgumentException if <code>collection == null</code>
 	 */
-	public static <T> int addAll(final Collection<T> collection, final Filter<T> filter, final T... items)
+	public static <T> int addAll(final Collection<T> collection, final Accept<T> filter, final T... items)
 	{
 		Assert.argumentNotNull("collection", collection);
 		Assert.argumentNotNull("filter", filter);
@@ -134,27 +135,6 @@ public class CollectionUtils
 		return count;
 	}
 
-	/**
-	 * Converts key/value pairs defined in a string into a map.
-	 * 
-	 * E.g. asMap("name1=value1,name2=value2", "\"", "=")
-	 */
-	public static Map<String, String> asMap(final String values, final String valueSeparator,
-			final String assignmentOperator)
-	{
-		Assert.argumentNotNull("values", values);
-		Assert.argumentNotNull("valueSeparator", valueSeparator);
-		Assert.argumentNotNull("assignmentOperator", assignmentOperator);
-
-		final HashMap<String, String> map = newHashMap();
-		for (final String element : StringUtils.split(values, valueSeparator))
-		{
-			final String[] valuePairSplitted = StringUtils.split(element, assignmentOperator);
-			map.put(valuePairSplitted[0], valuePairSplitted[1]);
-		}
-		return map;
-	}
-
 	public static <K, V> MapDiff<K, V> diff(final Map<K, V> leftMap, final Map<K, V> rightMap)
 	{
 		return diff(leftMap, rightMap, IsEqual.DEFAULT);
@@ -165,9 +145,10 @@ public class CollectionUtils
 	{
 		Assert.argumentNotNull("leftMap", leftMap);
 		Assert.argumentNotNull("rightMap", rightMap);
+		Assert.argumentNotNull("isEqual", isEqual);
 
 		final MapDiff<K, V> mapDiff = new MapDiff<K, V>(leftMap, rightMap);
-		final Set<K> processedLeftKeys = CollectionUtils.newHashSet(Math.max(leftMap.size(), rightMap.size()));
+		final Set<K> processedLeftKeys = newHashSet(Math.max(leftMap.size(), rightMap.size()));
 
 		/*
 		 * process the entries of the left map
@@ -204,21 +185,39 @@ public class CollectionUtils
 	}
 
 	/**
+	 * Returns a new list with all items accepted by the filter
+	 * @throws IllegalArgumentException if <code>accept == null</code>
+	 */
+	public static <T> List<T> filter(final Collection<T> collection, final Accept<T> accept)
+			throws IllegalArgumentException
+	{
+		if (collection == null) return null;
+
+		Assert.argumentNotNull("accept", accept);
+
+		final List<T> result = newArrayList();
+		for (final T item : collection)
+			if (accept.accept(item)) result.add(item);
+		return result;
+	}
+
+	/**
 	 * removes all items not accepted by the filter
 	 * @param coll
 	 * @param filter
 	 * @return number of items removed
-	 * @throws IllegalArgumentException if <code>collection == null</code>
+	 * @throws IllegalArgumentException if <code>accept == null</code>
 	 */
-	public static <T> int filter(final Collection<T> collection, final Filter<T> filter)
+	public static <T> int filterInPlace(final Collection<T> collection, final Accept<T> accept)
 			throws IllegalArgumentException
 	{
-		Assert.argumentNotNull("collection", collection);
-		Assert.argumentNotNull("filter", filter);
+		if (collection == null) return 0;
+
+		Assert.argumentNotNull("accept", accept);
 
 		int count = 0;
 		for (final T item : collection)
-			if (!filter.accept(item)) if (collection.remove(item)) count++;
+			if (!accept.accept(item)) if (collection.remove(item)) count++;
 		return count;
 	}
 
@@ -240,7 +239,7 @@ public class CollectionUtils
 	/**
 	 * Returns string in the format of "name1=value1,name2=value2" (if valueSeparator="," and assignmentOperator="=")
 	 * 
-	 * Opposite to {@link #asMap(String, String, String)}
+	 * Opposite to {@link #toMap(String, String, String)}
 	 */
 	public static <K, V> CharSequence map2string(final Map<K, V> values, final String valueSeparator,
 			final String assignmentOperator)
@@ -280,6 +279,7 @@ public class CollectionUtils
 	public static <K> ArrayList<K> newArrayList(final K... values)
 	{
 		final ArrayList<K> l = new ArrayList<K>(values.length);
+		// faster than Collections.addAll(result, array);
 		for (final K v : values)
 			l.add(v);
 		return l;
@@ -473,6 +473,56 @@ public class CollectionUtils
 				nextIsValue = true;
 			}
 		return map;
+	}
+
+	public static <T> Iterable<T> toIterable(final Iterator<T> it)
+	{
+		return new Iterable<T>()
+			{
+				public Iterator<T> iterator()
+				{
+					return it;
+				}
+			};
+	}
+
+	public static <T> List<T> toList(final Iterator<T> it)
+	{
+		final List<T> result = newArrayList();
+		while (it.hasNext())
+			result.add(it.next());
+		return result;
+	}
+
+	/**
+	 * Converts key/value pairs defined in a string into a map.
+	 * 
+	 * E.g. asMap("name1=value1,name2=value2", "\"", "=")
+	 */
+	public static Map<String, String> toMap(final String values, final String valueSeparator,
+			final String assignmentOperator)
+	{
+		Assert.argumentNotNull("values", values);
+		Assert.argumentNotNull("valueSeparator", valueSeparator);
+		Assert.argumentNotNull("assignmentOperator", assignmentOperator);
+
+		final HashMap<String, String> map = newHashMap();
+		for (final String element : StringUtils.split(values, valueSeparator))
+		{
+			final String[] valuePairSplitted = StringUtils.split(element, assignmentOperator);
+			map.put(valuePairSplitted[0], valuePairSplitted[1]);
+		}
+		return map;
+	}
+
+	public static <S, T> List<T> transform(final List<S> source, final Transform< ? super S, T> op)
+	{
+		if (source == null) return null;
+
+		final List<T> target = newArrayList(source.size());
+		for (final S sourceItem : source)
+			target.add(op.transform(sourceItem));
+		return target;
 	}
 
 	protected CollectionUtils()

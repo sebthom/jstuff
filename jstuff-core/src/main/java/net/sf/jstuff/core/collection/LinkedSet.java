@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -94,7 +96,7 @@ public final class LinkedSet<E> implements Set<E>, List<E>, Serializable, Clonea
 	 */
 	public boolean addAll(final int index, final Collection< ? extends E> c)
 	{
-		final List<E> tmp = CollectionUtils.newArrayList(c.size());
+		final List<E> tmp = newArrayList(c.size());
 		for (final E o : c)
 			if (!list.contains(o)) tmp.add(o);
 		return list.addAll(index, tmp);

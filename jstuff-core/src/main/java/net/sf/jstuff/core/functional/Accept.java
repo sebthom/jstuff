@@ -1,0 +1,27 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Thomschke.
+ * 
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
+package net.sf.jstuff.core.functional;
+
+import java.io.Serializable;
+
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
+public interface Accept<T> extends Serializable
+{
+	boolean accept(final T obj);
+
+	<V extends T> Accept<V> and(final Accept< ? super V> next);
+
+	<V extends T> Accept<V> or(final Accept< ? super V> next);
+}

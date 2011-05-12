@@ -23,6 +23,26 @@ import java.util.Map;
  */
 public final class Assert
 {
+	public static <T> void argumentContainsNoNulls(final String argumentName, final Collection<T> entries)
+	{
+		if (entries == null) return;
+
+		for (final T entry : entries)
+			if (entry == null)
+				throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
+						+ "] must not contain elements with value <null>"));
+	}
+
+	public static <T> void argumentContainsNoNulls(final String argumentName, final T... entries)
+	{
+		if (entries == null) return;
+
+		for (final T entry : entries)
+			if (entry == null)
+				throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
+						+ "] must not contain elements with value <null>"));
+	}
+
 	public static void argumentInRange(final String argumentName, final byte value, final byte min, final byte max)
 	{
 		if (value < min || value > max)

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.atom.feed;
 
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jstuff.core.StringUtils;
-import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.date.DateUtils;
 
 import org.apache.commons.lang.time.FastDateFormat;
@@ -57,7 +58,7 @@ public abstract class AtomFeedExporter extends RemoteExporter implements HttpReq
 
 	protected AtomEntry[] getEntries(final HttpServletRequest request)
 	{
-		final List<AtomEntry> entries = CollectionUtils.newArrayList();
+		final List<AtomEntry> entries = newArrayList();
 
 		for (final SimpleEntry< ? > se : getSimpleEntries(request))
 		{

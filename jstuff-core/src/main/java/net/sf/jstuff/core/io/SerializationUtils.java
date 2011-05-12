@@ -30,7 +30,7 @@ import net.sf.jstuff.core.CryptoUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SerializationUtils
+public abstract class SerializationUtils
 {
 	public static final class CloningFailedException extends RuntimeException
 	{

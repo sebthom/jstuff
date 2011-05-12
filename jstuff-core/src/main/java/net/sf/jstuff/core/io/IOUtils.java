@@ -31,7 +31,7 @@ import net.sf.jstuff.core.ThreadUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class IOUtils extends org.apache.commons.io.IOUtils
+public abstract class IOUtils extends org.apache.commons.io.IOUtils
 {
 	private static final Logger LOG = Logger.get();
 

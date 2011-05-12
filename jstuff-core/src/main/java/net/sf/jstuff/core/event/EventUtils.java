@@ -19,7 +19,7 @@ import net.sf.jstuff.core.Logger;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EventUtils
+public abstract class EventUtils
 {
 	private static final Logger LOG = Logger.get();
 

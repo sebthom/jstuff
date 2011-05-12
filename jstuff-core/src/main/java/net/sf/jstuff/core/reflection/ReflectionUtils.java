@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core.reflection;
 
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -30,12 +32,11 @@ import java.util.Set;
 
 import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
-import net.sf.jstuff.core.collection.CollectionUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ReflectionUtils
+public abstract class ReflectionUtils
 {
 	private static final Logger LOG = Logger.get();
 
@@ -317,7 +318,7 @@ public class ReflectionUtils
 		final String methodName = method.getName();
 		final Class< ? >[] parameterTypes = method.getParameterTypes();
 
-		final List<Method> methods = CollectionUtils.newArrayList(interfaces.length);
+		final List<Method> methods = newArrayList(interfaces.length);
 		for (final Class< ? > iface : interfaces)
 		{
 			final Method m = getMethod(iface, methodName, parameterTypes);

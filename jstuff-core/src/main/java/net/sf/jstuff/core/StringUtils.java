@@ -16,11 +16,13 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.List;
 
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 import javax.swing.text.html.parser.ParserDelegator;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.io.CharSequenceReader;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -306,6 +308,11 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 		return txt == null ? "" : txt instanceof String ? (String) txt : txt.toString();
 	}
 
+	public static boolean endsWith(final String str, final char ch)
+	{
+		return isEmpty(str) ? false : str.charAt(str.length() - 1) == ch;
+	}
+
 	public static CharSequence htmlEncode(final CharSequence text)
 	{
 		final int textLen = text.length();
@@ -569,6 +576,11 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 		return new String[]{text};
 	}
 
+	public static boolean startsWith(final String str, final char ch)
+	{
+		return isEmpty(str) ? false : str.charAt(0) == ch;
+	}
+
 	/**
 	 * Searches a string from left to right and returns the leftmost characters of the string.
 	 *  
@@ -715,5 +727,27 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	protected StringUtils()
 	{
 		super();
+	}
+
+	public List<String> addPrefix(final String prefix, final List<String> source)
+	{
+		final List<String> result = CollectionUtils.newArrayList(source.size());
+		for (final String line : source)
+			result.add(prefix + line);
+		return result;
+	}
+
+	public String[] addPrefix(final String prefix, final String... source)
+	{
+		if (source == null) return null;
+		if (source.length == 0) return ArrayUtils.EMPTY_STRING_ARRAY;
+
+		final String[] result = new String[source.length];
+		for (int i = 0, l = source.length; i < l; i++)
+		{
+			final String orig = source[i];
+			if (orig != null) result[i] = prefix + orig;
+		}
+		return result;
 	}
 }

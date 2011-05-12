@@ -18,7 +18,7 @@ import java.io.IOException;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class OSUtils
+public abstract class OSUtils
 {
 	private static final Logger LOG = Logger.get();
 

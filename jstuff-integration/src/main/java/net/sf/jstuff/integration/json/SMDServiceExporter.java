@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.json;
 
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -28,7 +30,6 @@ import net.sf.json.JSONFunction;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 import net.sf.jstuff.core.Logger;
-import net.sf.jstuff.core.collection.CollectionUtils;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.support.RemoteExporter;
@@ -70,8 +71,8 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 	 */
 	private Map<String, Method> buildExportedMethodsByName()
 	{
-		final Map<String, Method> methodsByMethodName = CollectionUtils.newTreeMap();
-		final Map<String, Class< ? >[]> parameterTypesByMethodName = CollectionUtils.newHashMap();
+		final Map<String, Method> methodsByMethodName = newTreeMap();
+		final Map<String, Class< ? >[]> parameterTypesByMethodName = newHashMap();
 
 		// loop through the service interface and all super interfaces to collect the public methods
 		Class< ? > clazz = getServiceInterface();

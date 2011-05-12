@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.xml;
 
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -69,8 +71,8 @@ public class DOMUtils
 {
 	private static final class NamespaceContextImpl implements NamespaceContext
 	{
-		private final Map<String, LinkedHashSet<String>> namespaceURIsByPrefix = CollectionUtils.newHashMap(2);
-		private final Map<String, LinkedHashSet<String>> prefixesByNamespaceURI = CollectionUtils.newHashMap(2);
+		private final Map<String, LinkedHashSet<String>> namespaceURIsByPrefix = newHashMap(2);
+		private final Map<String, LinkedHashSet<String>> prefixesByNamespaceURI = newHashMap(2);
 
 		public String getNamespaceURI(final String prefix)
 		{

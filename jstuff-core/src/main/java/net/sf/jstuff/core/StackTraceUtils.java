@@ -15,7 +15,7 @@ package net.sf.jstuff.core;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class StackTraceUtils
+public abstract class StackTraceUtils
 {
 	private static StackTraceElement _getCallingStackTraceElement()
 	{

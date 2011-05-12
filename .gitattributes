@@ -3,10 +3,7 @@
 jstuff-core/pom.xml -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Assert.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/CryptoUtils.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/Filter.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ImageUtils.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/Invocable.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/IsEqual.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Logger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Mutable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/OSUtils.java -text
@@ -27,6 +24,11 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithLists.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithQueues.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithSets.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/SoftHashSet.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple1.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple2.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple3.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple4.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentityHashMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentitySet.java -text
@@ -47,6 +49,12 @@ jstuff-core/src/main/java/net/sf/jstuff/core/event/EventManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/EventManagerWithHistory.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/EventUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/FilteringEventListener.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/functional/Accept.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/functional/Accepts.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/functional/Invocable.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/functional/IsEqual.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/functional/Transform.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/functional/Transforms.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedInputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedOutputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/CharSequenceReader.java -text
@@ -82,6 +90,8 @@ jstuff-core/src/test/java/net/sf/jstuff/core/collection/FIFOMapTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/LRUMapTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/comparator/PropertyComparatorTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/event/EventTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/functional/AcceptsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/functional/TransformsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/CharSequenceReaderTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/FileUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/IOUtilsTest.java -text
@@ -124,6 +134,7 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/PermissionDenied
 jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/SecurityFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/UnknownApplicationRoleException.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/cache/EhcacheSupport.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/config/INIFileConfiguration.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/jmx/JMXUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/json/ExtJSUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/json/JSONUtils.java -text

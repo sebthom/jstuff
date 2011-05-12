@@ -31,7 +31,7 @@ import net.sf.jstuff.core.StringUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NetUtils
+public abstract class NetUtils
 {
 	private static final Logger LOG = Logger.get();
 

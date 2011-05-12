@@ -25,8 +25,8 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 
 import net.sf.jstuff.core.Assert;
-import net.sf.jstuff.core.Invocable;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.integration.ldap.LDAPTemplate;
 
 import org.springframework.beans.factory.annotation.Required;

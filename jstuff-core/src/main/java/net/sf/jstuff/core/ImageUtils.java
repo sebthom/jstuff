@@ -30,7 +30,7 @@ import javax.imageio.ImageIO;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ImageUtils
+public abstract class ImageUtils
 {
 	private static GraphicsConfiguration _gc;
 

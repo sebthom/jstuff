@@ -23,7 +23,7 @@ import net.sf.jstuff.core.Logger;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SSLUtils
+public abstract class SSLUtils
 {
 	private final static Logger LOG = Logger.get();
 

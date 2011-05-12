@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -155,7 +157,7 @@ public final class IdentitySet<E> implements Set<E>, Serializable, Cloneable
 		final int size = ois.readInt();
 
 		// materialize the elements
-		map = CollectionUtils.newHashMap(size);
+		map = newHashMap(size);
 		for (int i = 0; i < size; i++)
 		{
 			final E o = (E) ois.readObject();

@@ -30,7 +30,7 @@ import javax.crypto.spec.DESedeKeySpec;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CryptoUtils
+public abstract class CryptoUtils
 {
 	public static final class CryptoException extends RuntimeException
 	{
