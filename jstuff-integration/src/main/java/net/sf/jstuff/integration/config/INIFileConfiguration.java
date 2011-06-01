@@ -33,8 +33,8 @@ import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.collection.LinkedSet;
 import net.sf.jstuff.core.collection.Tuple2;
+import net.sf.jstuff.core.functional.Transform;
 import net.sf.jstuff.core.functional.Transforms;
-import net.sf.jstuff.core.functional.Transforms.AbstractTransform;
 
 import org.apache.commons.configuration.AbstractFileConfiguration;
 import org.apache.commons.configuration.Configuration;
@@ -58,7 +58,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 	private boolean isAutoSort = true;
 
 	/**
-	 * Create a new empty INI Configuration.
+	 * Create a new empty INI configuration.
 	 */
 	public INIFileConfiguration()
 	{
@@ -66,9 +66,9 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 	}
 
 	/**
-	 * Create and load the ini configuration from the given file.
+	 * Create and load the INI configuration from the given file.
 	 *
-	 * @param file The ini file to load.
+	 * @param file The INI file to load.
 	 * @throws ConfigurationException If an error occurs while loading the file
 	 */
 	public INIFileConfiguration(final File file) throws ConfigurationException
@@ -77,9 +77,9 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 	}
 
 	/**
-	 * Create and load the ini configuration from the given file.
+	 * Create and load the INI configuration from the given file.
 	 *
-	 * @param filename The name pr path of the ini file to load.
+	 * @param filename The name or path of the INI file to load.
 	 * @throws ConfigurationException If an error occurs while loading the file
 	 */
 	public INIFileConfiguration(final String fileName) throws ConfigurationException
@@ -88,9 +88,9 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 	}
 
 	/**
-	 * Create and load the ini configuration from the given url.
+	 * Create and load the INI configuration from the given URL.
 	 *
-	 * @param url The url of the ini file to load.
+	 * @param url The URL of the INI file to load.
 	 * @throws ConfigurationException If an error occurs while loading the file
 	 */
 	public INIFileConfiguration(final URL url) throws ConfigurationException
@@ -103,12 +103,12 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 	 */
 	public String[] getComments(final String key)
 	{
-		return ArrayUtils.toArray(transform(comments.get(key), new AbstractTransform<String, String>()
+		return ArrayUtils.toArray(transform(comments.get(key), new Transform<String, String>()
 			{
 				public String transform(final String source)
 				{
 					// strip the comment character
-					return source.length() == 0 ? "" : source.substring(1);
+					return source.startsWith("#") || source.startsWith(";") ? "" : source.substring(1);
 				}
 			}), String.class);
 	}
@@ -302,33 +302,33 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 	 */
 	public void save(final Writer out) throws ConfigurationException
 	{
-		final BufferedWriter output = new BufferedWriter(out);
+		final BufferedWriter bw = new BufferedWriter(out);
 
 		try
 		{
 			final List<String> headerComments = comments.get("");
 			if (headerComments != null) for (final String headerComment : headerComments)
 			{
-				output.write(headerComment);
-				output.newLine();
+				bw.write(headerComment);
+				bw.newLine();
 			}
 
 			// process all sections
 			for (final String section : getSections())
 			{
-				if (isAutoSort) output.newLine();
+				if (isAutoSort) bw.newLine();
 
-				output.write('[');
-				output.write(section);
-				output.write(']');
-				output.newLine();
+				bw.write('[');
+				bw.write(section);
+				bw.write(']');
+				bw.newLine();
 
 				final List<String> sectionComments = comments.get(section);
 				if (sectionComments != null) for (final String sectionComment : sectionComments)
 				{
 					if (isAutoSort && sectionComment.length() == 0) continue;
-					output.write(sectionComment);
-					output.newLine();
+					bw.write(sectionComment);
+					bw.newLine();
 				}
 
 				final Configuration subset = subset(section);
@@ -341,31 +341,31 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 				{
 					final String fqName = section + "." + key;
 					final String value = (String) subset.getProperty(key);
-					output.write(key);
-					output.write('=');
+					bw.write(key);
+					bw.write('=');
 					if (value.indexOf("#") > -1 || value.indexOf(";") > -1 || value.indexOf(" ") > -1)
 					{
 						// add quotes around the specified value if it contains a comment character
-						output.write('"');
-						output.write(StringUtils.replace(value, "\"", "\\\""));
-						output.write('"');
+						bw.write('"');
+						bw.write(StringUtils.replace(value, "\"", "\\\""));
+						bw.write('"');
 					}
 					else
-						output.write(value);
+						bw.write(value);
 					final String inlineComment = inlineComments.get(fqName);
 					if (inlineComment != null)
 					{
-						output.write(" # ");
-						output.write(inlineComment);
+						bw.write(" # ");
+						bw.write(inlineComment);
 					}
-					output.newLine();
+					bw.newLine();
 
 					final List<String> propertyComments = comments.get(fqName);
 					if (propertyComments != null) for (final String propertyComment : propertyComments)
 					{
 						if (isAutoSort && propertyComment.length() == 0) continue;
-						output.write(propertyComment);
-						output.newLine();
+						bw.write(propertyComment);
+						bw.newLine();
 					}
 				}
 			}

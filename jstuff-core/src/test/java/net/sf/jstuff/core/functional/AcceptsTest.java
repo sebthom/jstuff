@@ -12,15 +12,9 @@
  *******************************************************************************/
 package net.sf.jstuff.core.functional;
 
-import static net.sf.jstuff.core.functional.Accepts.endingWith;
-import static net.sf.jstuff.core.functional.Accepts.equalTo;
-import static net.sf.jstuff.core.functional.Accepts.largerThan;
-import static net.sf.jstuff.core.functional.Accepts.nonNull;
-import static net.sf.jstuff.core.functional.Accepts.notEndingWith;
-import static net.sf.jstuff.core.functional.Accepts.notStartingWith;
-import static net.sf.jstuff.core.functional.Accepts.smallerThan;
-import static net.sf.jstuff.core.functional.Accepts.startingWith;
+import static net.sf.jstuff.core.functional.Accepts.*;
 import junit.framework.TestCase;
+import net.sf.jstuff.core.functional.Accepts.ChainableAccept;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -29,7 +23,7 @@ public class AcceptsTest extends TestCase
 {
 	public void testAccepts()
 	{
-		final Accept<String> a2 = startingWith("#");
+		final ChainableAccept<String> a2 = startingWith("#");
 		assertTrue(a2.accept("#foo"));
 		assertFalse(a2.accept(null));
 		assertFalse(a2.accept("foo"));
@@ -41,7 +35,7 @@ public class AcceptsTest extends TestCase
 		assertFalse(a3.accept(null));
 		assertFalse(a3.accept("foo"));
 
-		final Accept<String> a4 = notStartingWith("#");
+		final ChainableAccept<String> a4 = notStartingWith("#");
 		assertFalse(a4.accept("#foo"));
 		assertTrue(a4.accept(null));
 		assertTrue(a4.accept("foo"));

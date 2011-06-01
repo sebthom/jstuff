@@ -17,7 +17,5 @@ package net.sf.jstuff.core.functional;
  */
 public interface Transform<From, To>
 {
-	<NextTo> Transform<From, NextTo> and(final Transform< ? super To, NextTo> next);
-
 	To transform(From source);
 }

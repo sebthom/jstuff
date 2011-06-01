@@ -15,7 +15,7 @@ package net.sf.jstuff.core.functional;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Invocable<ReturnType, MethodArgumentType>
+public interface Invocable<ReturnType, ArgumentType>
 {
-	ReturnType invoke(MethodArgumentType arg) throws Exception;
+	ReturnType invoke(ArgumentType arg) throws Exception;
 }

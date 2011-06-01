@@ -23,18 +23,18 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public abstract class Accepts
 {
-	public static abstract class AbstractAccept<T> implements Accept<T>
+	public static abstract class AbstractAccept<T> implements ChainableAccept<T>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public <V extends T> Accept<V> and(final Accept< ? super V> next)
+		public <V extends T> And<V> and(final Accept< ? super V> next)
 		{
 			Assert.argumentNotNull("next", next);
 
 			return new And<V>(AbstractAccept.this, next);
 		}
 
-		public <V extends T> Accept<V> or(final Accept< ? super V> next)
+		public <V extends T> Or<V> or(final Accept< ? super V> next)
 		{
 			Assert.argumentNotNull("next", next);
 
@@ -74,6 +74,13 @@ public abstract class Accepts
 		{
 			return "(" + first.toString() + " && " + second.toString() + ")";
 		}
+	}
+
+	public interface ChainableAccept<T> extends Accept<T>
+	{
+		<V extends T> ChainableAccept<V> and(final Accept< ? super V> next);
+
+		<V extends T> ChainableAccept<V> or(final Accept< ? super V> next);
 	}
 
 	public static class EndingWith<V> extends AbstractAccept<V>
@@ -237,47 +244,47 @@ public abstract class Accepts
 		}
 	}
 
-	public static <V> Accept<V> and(final Accept<V> first, final Accept<V> second)
+	public static <V> And<V> and(final Accept<V> first, final Accept<V> second)
 	{
 		return new And<V>(first, second);
 	}
 
-	public static <V> Accept<V> endingWith(final String suffix)
+	public static <V> EndingWith<V> endingWith(final String suffix)
 	{
 		return new EndingWith<V>(suffix);
 	}
 
-	public static <V> Accept<V> equalTo(final V equivalent)
+	public static <V> EqualTo<V> equalTo(final V equivalent)
 	{
 		return new EqualTo<V>(equivalent);
 	}
 
-	public static <V extends Comparable<V>> Accept<V> largerThan(final V compareTo)
+	public static <V extends Comparable<V>> LargerThan<V> largerThan(final V compareTo)
 	{
 		return new LargerThan<V>(compareTo);
 	}
 
-	public static <V> Accept<V> nonNull()
+	public static <V> NonNull<V> nonNull()
 	{
 		return new NonNull<V>();
 	}
 
-	public static <V> Accept<V> notEndingWith(final String suffix)
+	public static <V> NotEndingWith<V> notEndingWith(final String suffix)
 	{
 		return new NotEndingWith<V>(suffix);
 	}
 
-	public static <V> Accept<V> notStartingWith(final String prefix)
+	public static <V> NotStartingWith<V> notStartingWith(final String prefix)
 	{
 		return new NotStartingWith<V>(prefix);
 	}
 
-	public static <V extends Comparable<V>> Accept<V> smallerThan(final V compareTo)
+	public static <V extends Comparable<V>> SmallerThan<V> smallerThan(final V compareTo)
 	{
 		return new SmallerThan<V>(compareTo);
 	}
 
-	public static <V> Accept<V> startingWith(final String prefix)
+	public static <V> StartingWith<V> startingWith(final String prefix)
 	{
 		return new StartingWith<V>(prefix);
 	};

@@ -20,8 +20,4 @@ import java.io.Serializable;
 public interface Accept<T> extends Serializable
 {
 	boolean accept(final T obj);
-
-	<V extends T> Accept<V> and(final Accept< ? super V> next);
-
-	<V extends T> Accept<V> or(final Accept< ? super V> next);
 }

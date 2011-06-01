@@ -22,11 +22,11 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public abstract class Transforms
 {
-	public static abstract class AbstractTransform<From, To> implements Transform<From, To>
+	public static abstract class AbstractTransform<From, To> implements ChainableTransform<From, To>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public <NextTo> Transform<From, NextTo> and(final Transform< ? super To, NextTo> next)
+		public <NextTo> ChainableTransform<From, NextTo> and(final Transform< ? super To, NextTo> next)
 		{
 			return new And<From, To, NextTo>(this, next);
 		}
@@ -67,6 +67,11 @@ public abstract class Transforms
 		{
 			return (To) source;
 		}
+	}
+
+	public interface ChainableTransform<From, To> extends Transform<From, To>
+	{
+		<NextTo> ChainableTransform<From, NextTo> and(final Transform< ? super To, NextTo> next);
 	}
 
 	public static class ObjectToString<From> extends AbstractTransform<From, String>

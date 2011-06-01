@@ -91,7 +91,7 @@ public abstract class NetUtils
 	{
 		try
 		{
-			return InetAddress.getLocalHost().getHostName();
+			return InetAddress.getLocalHost().getCanonicalHostName();
 		}
 		catch (final UnknownHostException ex)
 		{
