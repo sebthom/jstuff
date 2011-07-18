@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core;
 
+import java.util.Arrays;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -24,7 +26,7 @@ public abstract class StackTraceUtils
 			if ("_getCallingStackTraceElement".equals(stes[i].getMethodName())) return stes[i + 3];
 
 		// should never be reached
-		throw new IllegalStateException("Unexpected stack trace " + stes);
+		throw new IllegalStateException("Unexpected stack trace " + Arrays.toString(stes));
 	}
 
 	private static StackTraceElement _getThisStackTraceElement()
@@ -34,7 +36,7 @@ public abstract class StackTraceUtils
 			if ("_getThisStackTraceElement".equals(stes[i].getMethodName())) return stes[i + 2];
 
 		// should never be reached
-		throw new IllegalStateException("Unexpected stack trace " + stes);
+		throw new IllegalStateException("Unexpected stack trace " + Arrays.toString(stes));
 	}
 
 	public static String getCallingClassName()

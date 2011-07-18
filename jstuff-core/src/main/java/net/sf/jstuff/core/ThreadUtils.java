@@ -17,7 +17,7 @@ package net.sf.jstuff.core;
  */
 public class ThreadUtils
 {
-	private final static Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.get();
 
 	/**
 	 * Handles InterruptedException correctly.

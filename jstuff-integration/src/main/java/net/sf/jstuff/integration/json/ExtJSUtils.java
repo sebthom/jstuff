@@ -24,7 +24,7 @@ import net.sf.jstuff.core.reflection.BeanUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class ExtJSUtils
+public abstract class ExtJSUtils
 {
 	public static List<String> getRecordDefinition(final Class< ? > javaBeanType)
 	{
@@ -71,5 +71,7 @@ public final class ExtJSUtils
 	}
 
 	protected ExtJSUtils()
-	{}
+	{
+		super();
+	}
 }

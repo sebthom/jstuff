@@ -24,7 +24,7 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public final static ToStringComparator<Object> INSTANCE = new ToStringComparator<Object>();
+	public static final ToStringComparator<Object> INSTANCE = new ToStringComparator<Object>();
 
 	// collator is only serializable starting Java 6 
 	private transient Collator collator;

@@ -546,7 +546,8 @@ public abstract class ReflectionUtils
 	 * @return the return value of the invoked method
 	 * @throws InvokingMethodFailedException
 	 */
-	public static Object invokeMethod(final Method method, final Object obj, final Object... args)
+	@SuppressWarnings("unchecked")
+	public static <T> T invokeMethod(final Method method, final Object obj, final Object... args)
 			throws InvokingMethodFailedException
 	{
 		Assert.argumentNotNull("method", method);
@@ -555,7 +556,7 @@ public abstract class ReflectionUtils
 		try
 		{
 			if (!method.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(method));
-			return method.invoke(obj, args);
+			return (T) method.invoke(obj, args);
 		}
 		catch (final Exception ex)
 		{

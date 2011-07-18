@@ -17,7 +17,7 @@ import javax.xml.stream.XMLStreamReader;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class StAXUtils
+public abstract class StAXUtils
 {
 	public static String getAttributeValue(final XMLStreamReader xmlr, final String attrLocalName)
 	{
@@ -27,5 +27,10 @@ public class StAXUtils
 			if (localName.equals(attrLocalName)) return xmlr.getAttributeValue(i);
 		}
 		return null;
+	}
+
+	protected StAXUtils()
+	{
+		super();
 	}
 }

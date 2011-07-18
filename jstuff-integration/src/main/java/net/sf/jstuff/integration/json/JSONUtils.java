@@ -21,7 +21,7 @@ import net.sf.json.JSONObject;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class JSONUtils
+public abstract class JSONUtils
 {
 	/**
 	 * Returns an array containing Java objects converted from the given jsonArray.

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core;
 
-import static net.sf.jstuff.core.StackTraceUtils.removeFirstStackTraceElement;
+import static net.sf.jstuff.core.StackTraceUtils.*;
 
 import java.io.File;
 import java.util.Collection;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class Assert
+public abstract class Assert
 {
 	public static <T> void argumentContainsNoNulls(final String argumentName, final Collection<T> entries)
 	{
@@ -233,7 +233,7 @@ public final class Assert
 		if (value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 	}
 
-	private Assert()
+	protected Assert()
 	{
 		super();
 	}

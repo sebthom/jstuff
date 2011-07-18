@@ -12,12 +12,10 @@
  *******************************************************************************/
 package net.sf.jstuff.core.functional;
 
-import java.io.Serializable;
-
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Accept<T> extends Serializable
+public interface Accept<T>
 {
 	boolean accept(final T obj);
 }

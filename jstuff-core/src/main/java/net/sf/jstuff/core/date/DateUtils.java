@@ -27,7 +27,7 @@ import org.apache.commons.lang.time.FastDateFormat;
  */
 public abstract class DateUtils extends org.apache.commons.lang.time.DateUtils
 {
-	private final static FastDateFormat RFC3399_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	private static final FastDateFormat RFC3399_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 	public static Date fromRFC3399(final String dateString) throws ParseException
 	{

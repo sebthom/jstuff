@@ -25,7 +25,7 @@ import net.sf.jstuff.core.Logger;
  */
 public abstract class SSLUtils
 {
-	private final static Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.get();
 
 	public static void installAllTrustManager()
 	{

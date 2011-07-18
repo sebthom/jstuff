@@ -13,6 +13,7 @@
 package net.sf.jstuff.core.io;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 	 * @param off the start offset in array <code>b</code> at which the data is written.
 	 * @param len the exact number of bytes to read.
 	 */
-	public static void readBytes(final InputStream is, final byte b[], final int off, final int len) throws IOException
+	public static void readBytes(final InputStream is, final byte[] b, final int off, final int len) throws IOException
 	{
 		Assert.argumentNotNull("b", b);
 		Assert.argumentInRange("off", off, 0, b.length - 1);

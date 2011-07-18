@@ -25,7 +25,7 @@ import net.sf.jstuff.core.Logger;
  */
 public class DateTimeHelper
 {
-	private final static Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.get();
 
 	private final Locale locale;
 
@@ -264,7 +264,7 @@ public class DateTimeHelper
 				&& (isValidDateTime(DateFormatStyle.SHORT, dateTime)
 						|| isValidDateTime(DateFormatStyle.MEDIUM, dateTime)
 						|| isValidDateTime(DateFormatStyle.LONG, dateTime) || isValidDateTime(DateFormatStyle.FULL,
-						dateTime));
+							dateTime));
 	}
 
 	protected boolean isValidTime(final DateFormatStyle style, final String time)

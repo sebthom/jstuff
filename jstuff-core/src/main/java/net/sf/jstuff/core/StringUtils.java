@@ -30,7 +30,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class StringUtils extends org.apache.commons.lang.StringUtils
+public abstract class StringUtils extends org.apache.commons.lang.StringUtils
 {
 	public static final class ANSIState
 	{
@@ -147,6 +147,28 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	public static final char CR = 13;
 
 	public static final String CR_LF = "" + CR + LF;
+
+	public static List<String> addPrefix(final String prefix, final List<String> source)
+	{
+		final List<String> result = CollectionUtils.newArrayList(source.size());
+		for (final String line : source)
+			result.add(prefix + line);
+		return result;
+	}
+
+	public static String[] addPrefix(final String prefix, final String... source)
+	{
+		if (source == null) return null;
+		if (source.length == 0) return ArrayUtils.EMPTY_STRING_ARRAY;
+
+		final String[] result = new String[source.length];
+		for (int i = 0, l = source.length; i < l; i++)
+		{
+			final String orig = source[i];
+			if (orig != null) result[i] = prefix + orig;
+		}
+		return result;
+	}
 
 	public static CharSequence ansiColorsToHTML(final CharSequence txt)
 	{
@@ -395,10 +417,14 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 	 */
 	public static boolean isBlank(final CharSequence txt)
 	{
+		if (txt == null) return true;
+
 		final int txtLen = txt.length();
-		if (txt == null || txtLen == 0) return true;
+		if (txtLen == 0) return true;
+
 		for (int i = 0; i < txtLen; i++)
-			if (Character.isWhitespace(txt.charAt(i)) == false) return false;
+			if (!Character.isWhitespace(txt.charAt(i))) return false;
+
 		return true;
 	}
 
@@ -639,7 +665,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 			((StringBuilder) txt).getChars(0, txtLen, chars, 0);
 
 		else if (txt instanceof StringBuffer)
-			((StringBuilder) txt).getChars(0, txtLen, chars, 0);
+			((StringBuffer) txt).getChars(0, txtLen, chars, 0);
 
 		else
 			for (int i = 0; i < txtLen - 1; i++)
@@ -721,33 +747,8 @@ public class StringUtils extends org.apache.commons.lang.StringUtils
 		}
 	}
 
-	/**
-	 * private constructor
-	 */
 	protected StringUtils()
 	{
 		super();
-	}
-
-	public List<String> addPrefix(final String prefix, final List<String> source)
-	{
-		final List<String> result = CollectionUtils.newArrayList(source.size());
-		for (final String line : source)
-			result.add(prefix + line);
-		return result;
-	}
-
-	public String[] addPrefix(final String prefix, final String... source)
-	{
-		if (source == null) return null;
-		if (source.length == 0) return ArrayUtils.EMPTY_STRING_ARRAY;
-
-		final String[] result = new String[source.length];
-		for (int i = 0, l = source.length; i < l; i++)
-		{
-			final String orig = source[i];
-			if (orig != null) result[i] = prefix + orig;
-		}
-		return result;
 	}
 }

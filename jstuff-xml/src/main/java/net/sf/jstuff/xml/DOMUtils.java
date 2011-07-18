@@ -67,7 +67,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DOMUtils
+public abstract class DOMUtils
 {
 	private static final class NamespaceContextImpl implements NamespaceContext
 	{

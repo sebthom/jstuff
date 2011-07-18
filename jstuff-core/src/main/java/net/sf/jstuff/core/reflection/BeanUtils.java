@@ -30,13 +30,13 @@ import net.sf.jstuff.core.Assert;
  */
 public abstract class BeanUtils
 {
-	private final static WeakHashMap<Class< ? >, Map<String, PropertyDescriptor>> BEAN_PROPERTIES_CACHE = new WeakHashMap<Class< ? >, Map<String, PropertyDescriptor>>();
+	private static final WeakHashMap<Class< ? >, Map<String, PropertyDescriptor>> BEAN_PROPERTIES_CACHE = new WeakHashMap<Class< ? >, Map<String, PropertyDescriptor>>();
 
 	/**
 	 * list of properties
 	 * @return an unmodifiable collection
 	 */
-	public final static Map<String, PropertyDescriptor> getBeanProperties(final Class< ? > beanType)
+	public static final Map<String, PropertyDescriptor> getBeanProperties(final Class< ? > beanType)
 	{
 		final Map<String, PropertyDescriptor> properties = BEAN_PROPERTIES_CACHE.get(beanType);
 		if (properties == null)
@@ -51,7 +51,7 @@ public abstract class BeanUtils
 	 * list of properties
 	 * @return
 	 */
-	public final static Collection<PropertyDescriptor> getBeanPropertyDescriptors(final Class< ? > beanType)
+	public static final Collection<PropertyDescriptor> getBeanPropertyDescriptors(final Class< ? > beanType)
 	{
 		final Map<String, PropertyDescriptor> properties = BEAN_PROPERTIES_CACHE.get(beanType);
 		if (properties == null)
@@ -62,7 +62,7 @@ public abstract class BeanUtils
 		return properties.values();
 	}
 
-	public final static Set<String> getBeanPropertyNames(final Class< ? > beanType)
+	public static final Set<String> getBeanPropertyNames(final Class< ? > beanType)
 	{
 		final Map<String, PropertyDescriptor> properties = BEAN_PROPERTIES_CACHE.get(beanType);
 		if (properties == null)
@@ -73,7 +73,7 @@ public abstract class BeanUtils
 		return properties.keySet();
 	}
 
-	private final static void populateCache(final Class< ? > beanType)
+	private static void populateCache(final Class< ? > beanType)
 	{
 		try
 		{
@@ -90,7 +90,7 @@ public abstract class BeanUtils
 		}
 	}
 
-	public final static Object valueOf(final String stringValue, final Class< ? > targetType)
+	public static final Object valueOf(final String stringValue, final Class< ? > targetType)
 	{
 		Assert.notNull(targetType, "Argument targetType must not be null");
 
@@ -109,7 +109,7 @@ public abstract class BeanUtils
 		return stringValue;
 	}
 
-	public final static Object[] valuesOf(final String[] stringValues, final Class< ? >[] targetTypes)
+	public static final Object[] valuesOf(final String[] stringValues, final Class< ? >[] targetTypes)
 	{
 		Assert.notNull(stringValues, "Argument stringValues must not be null");
 		Assert.notNull(targetTypes, "Argument targetTypes must not be null");

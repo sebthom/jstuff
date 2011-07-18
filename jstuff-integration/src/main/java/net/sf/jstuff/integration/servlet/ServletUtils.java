@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ServletUtils
+public abstract class ServletUtils
 {
 	public static String getContextURL(final HttpServletRequest request)
 	{

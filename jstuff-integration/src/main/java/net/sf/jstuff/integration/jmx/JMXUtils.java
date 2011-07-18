@@ -22,7 +22,7 @@ import net.sf.jstuff.core.Logger;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class JMXUtils
+public abstract class JMXUtils
 {
 	private static Logger LOG = Logger.get();
 
@@ -84,5 +84,10 @@ public class JMXUtils
 		final MBeanServer server = MBeanServerFactory.createMBeanServer();
 		LOG.info("Created new MBeanServer");
 		return server;
+	}
+
+	protected JMXUtils()
+	{
+		super();
 	}
 }

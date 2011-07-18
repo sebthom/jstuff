@@ -15,6 +15,7 @@ package net.sf.jstuff.core.comparator;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Comparator;
 
 import net.sf.jstuff.core.Assert;
@@ -78,7 +79,9 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable
 		}
 		catch (final RuntimeException ex)
 		{
-			LOG.warn("Cannot compare [" + o1 + "] with [" + o2 + "] through property path [" + propertyPath + "]", ex);
+			LOG.warn(
+					"Cannot compare [" + o1 + "] with [" + o2 + "] through property path ["
+							+ Arrays.toString(propertyPath) + "]", ex);
 			return 0;
 		}
 	}

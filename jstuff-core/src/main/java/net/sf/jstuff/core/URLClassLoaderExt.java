@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLStreamHandlerFactory;
 import java.util.regex.Pattern;
 
 /**
@@ -38,6 +39,21 @@ public class URLClassLoaderExt extends URLClassLoader
 	public URLClassLoaderExt(final ClassLoader parent)
 	{
 		super(new URL[0], parent);
+	}
+
+	public URLClassLoaderExt(final URL[] urls)
+	{
+		super(urls);
+	}
+
+	public URLClassLoaderExt(final URL[] urls, final ClassLoader parent)
+	{
+		super(urls, parent);
+	}
+
+	public URLClassLoaderExt(final URL[] urls, final ClassLoader parent, final URLStreamHandlerFactory factory)
+	{
+		super(urls, parent, factory);
 	}
 
 	public void addJAR(final File jarFile) throws IOException

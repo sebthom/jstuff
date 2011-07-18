@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core.functional;
 
+import java.io.Serializable;
+
 import net.sf.jstuff.core.Assert;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -22,7 +24,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public abstract class Transforms
 {
-	public static abstract class AbstractTransform<From, To> implements ChainableTransform<From, To>
+	public static abstract class AbstractTransform<From, To> implements ChainableTransform<From, To>, Serializable
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -62,6 +64,8 @@ public abstract class Transforms
 
 	public static class Cast<From, To> extends AbstractTransform<From, To>
 	{
+		private static final long serialVersionUID = 1L;
+
 		@SuppressWarnings("unchecked")
 		public To transform(final From source)
 		{
@@ -76,6 +80,8 @@ public abstract class Transforms
 
 	public static class ObjectToString<From> extends AbstractTransform<From, String>
 	{
+		private static final long serialVersionUID = 1L;
+
 		public String transform(final From source)
 		{
 			return source == null ? null : source.toString();
@@ -84,6 +90,8 @@ public abstract class Transforms
 
 	public static class Prefix<From> extends AbstractTransform<From, String>
 	{
+		private static final long serialVersionUID = 1L;
+
 		public final String prefix;
 
 		public Prefix(final String prefix)
@@ -101,6 +109,8 @@ public abstract class Transforms
 
 	public static class StringToInt extends AbstractTransform<String, Integer>
 	{
+		private static final long serialVersionUID = 1L;
+
 		public Integer transform(final String source)
 		{
 			return source == null ? null : Integer.parseInt(source);
@@ -109,6 +119,8 @@ public abstract class Transforms
 
 	public static class Suffix<From> extends AbstractTransform<From, String>
 	{
+		private static final long serialVersionUID = 1L;
+
 		public final String suffix;
 
 		public Suffix(final String suffix)
@@ -126,6 +138,8 @@ public abstract class Transforms
 
 	public static class Trim<From> extends AbstractTransform<From, String>
 	{
+		private static final long serialVersionUID = 1L;
+
 		public String transform(final From source)
 		{
 			return source == null ? null : source.toString().trim();

@@ -122,13 +122,13 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 	}
 
 	/**
-	 * <b>Hinte:</b> If you are looking for a toList(T...) method use {@link CollectionUtils#newArrayList(Object...)}
+	 * <b>Hint:</b> If you are looking for a toList(T...) method use {@link CollectionUtils#newArrayList(Object...)}
 	 */
 	public static List< ? > toList(final Object array)
 	{
 		if (array == null) return null;
 
-		if (array instanceof Object[]) return toList(array);
+		if (array instanceof Object[]) return CollectionUtils.newArrayList((Object[]) array);
 		if (array instanceof byte[]) return toList((byte[]) array);
 		if (array instanceof char[]) return toList((char[]) array);
 		if (array instanceof short[]) return toList((short[]) array);

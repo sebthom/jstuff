@@ -38,7 +38,7 @@ import net.sf.jstuff.core.StringUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MailUtils
+public abstract class MailUtils
 {
 	public static class Mail
 	{

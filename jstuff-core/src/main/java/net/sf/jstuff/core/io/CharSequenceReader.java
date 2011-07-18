@@ -114,7 +114,7 @@ public class CharSequenceReader extends Reader
 	 * @exception  IOException  If an I/O error occurs
 	 */
 	@Override
-	public int read(final char cbuf[], final int off, final int len) throws IOException
+	public int read(final char[] cbuf, final int off, final int len) throws IOException
 	{
 		synchronized (lock)
 		{

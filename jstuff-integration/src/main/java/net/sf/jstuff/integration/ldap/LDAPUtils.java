@@ -20,7 +20,7 @@ import net.sf.jstuff.core.Assert;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class LDAPUtils
+public abstract class LDAPUtils
 {
 	public static void closeQuietly(final Context context)
 	{
@@ -51,7 +51,7 @@ public class LDAPUtils
 			final char ch = text.charAt(i);
 			switch (ch)
 			{
-				// backslash \
+			// backslash \
 				case 0x5c :
 					sb.append("\\5c");
 					break;
@@ -76,6 +76,6 @@ public class LDAPUtils
 
 	protected LDAPUtils()
 	{
-		// do nothing
+		super();
 	}
 }

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core.functional;
 
+import java.io.Serializable;
+
 import net.sf.jstuff.core.Assert;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -23,7 +25,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public abstract class Accepts
 {
-	public static abstract class AbstractAccept<T> implements ChainableAccept<T>
+	public static abstract class AbstractAccept<T> implements ChainableAccept<T>, Serializable
 	{
 		private static final long serialVersionUID = 1L;
 

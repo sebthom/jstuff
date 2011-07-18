@@ -27,7 +27,7 @@ import net.sf.jstuff.core.StringUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SQLUtils
+public abstract class SQLUtils
 {
 	/**
 	 * Create insert-preparedStatement-String for specific table and column names

@@ -115,6 +115,6 @@ public abstract class ImageUtils
 
 	protected ImageUtils()
 	{
-		//super
+		super();
 	}
 }

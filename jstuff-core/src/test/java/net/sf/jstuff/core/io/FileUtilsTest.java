@@ -14,8 +14,6 @@ package net.sf.jstuff.core.io;
 
 import java.io.File;
 
-import net.sf.jstuff.core.io.FileUtils;
-
 import junit.framework.TestCase;
 
 /**
