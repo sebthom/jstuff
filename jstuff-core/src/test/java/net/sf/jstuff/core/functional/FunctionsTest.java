@@ -10,14 +10,25 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.event;
+package net.sf.jstuff.core.functional;
+
+import static net.sf.jstuff.core.functional.Functions.objectToString;
+import static net.sf.jstuff.core.functional.Functions.stringToInt;
+import junit.framework.TestCase;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface EventListenable<T>
+public class FunctionsTest extends TestCase
 {
-	boolean subscribe(EventListener<T> listener);
+	public void testConverts()
+	{
+		final Function<Object, Integer> t1 = objectToString()//
+				.and(stringToInt())//
+				.and(objectToString())//
+				.and(stringToInt());
 
-	boolean unsubscribe(EventListener<T> listener);
+		assertEquals(null, t1.apply(null));
+		assertEquals(new Integer(1), t1.apply("1"));
+	}
 }

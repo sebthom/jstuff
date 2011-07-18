@@ -10,14 +10,12 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.event;
+package net.sf.jstuff.core.functional;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface EventListenable<T>
+public interface Function<In, Out>
 {
-	boolean subscribe(EventListener<T> listener);
-
-	boolean unsubscribe(EventListener<T> listener);
+	Out apply(In source);
 }

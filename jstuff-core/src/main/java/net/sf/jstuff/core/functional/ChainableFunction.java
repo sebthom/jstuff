@@ -15,7 +15,7 @@ package net.sf.jstuff.core.functional;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Transform<From, To>
+public interface ChainableFunction<In, Out> extends Function<In, Out>
 {
-	To transform(From source);
+	<NextOut> ChainableFunction<In, NextOut> and(final Function< ? super Out, NextOut> next);
 }

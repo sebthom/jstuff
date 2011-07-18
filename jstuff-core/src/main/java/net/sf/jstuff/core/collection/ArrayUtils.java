@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sf.jstuff.core.Assert;
-import net.sf.jstuff.core.functional.Transform;
+import net.sf.jstuff.core.functional.Function;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -49,6 +49,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 	public static <T> T[] copy(final T[] array)
 	{
 		if (array == null) return null;
+
 		return array.clone();
 	}
 
@@ -67,6 +68,8 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 
 	public static List<Boolean> toList(final boolean[] array)
 	{
+		if (array == null) return null;
+
 		final ArrayList<Boolean> result = new ArrayList<Boolean>(array.length);
 		for (final boolean i : array)
 			result.add(i);
@@ -75,6 +78,8 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 
 	public static List<Byte> toList(final byte[] array)
 	{
+		if (array == null) return null;
+
 		final ArrayList<Byte> result = new ArrayList<Byte>(array.length);
 		for (final byte i : array)
 			result.add(i);
@@ -83,6 +88,8 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 
 	public static List<Character> toList(final char[] array)
 	{
+		if (array == null) return null;
+
 		final ArrayList<Character> result = new ArrayList<Character>(array.length);
 		for (final char i : array)
 			result.add(i);
@@ -91,6 +98,8 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 
 	public static List<Double> toList(final double[] array)
 	{
+		if (array == null) return null;
+
 		final ArrayList<Double> result = new ArrayList<Double>(array.length);
 		for (final double i : array)
 			result.add(i);
@@ -99,6 +108,8 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 
 	public static List<Float> toList(final float[] array)
 	{
+		if (array == null) return null;
+
 		final ArrayList<Float> result = new ArrayList<Float>(array.length);
 		for (final float i : array)
 			result.add(i);
@@ -107,6 +118,8 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 
 	public static List<Integer> toList(final int[] array)
 	{
+		if (array == null) return null;
+
 		final ArrayList<Integer> result = new ArrayList<Integer>(array.length);
 		for (final int i : array)
 			result.add(i);
@@ -115,6 +128,8 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 
 	public static List<Long> toList(final long[] array)
 	{
+		if (array == null) return null;
+
 		final ArrayList<Long> result = new ArrayList<Long>(array.length);
 		for (final long i : array)
 			result.add(i);
@@ -143,20 +158,23 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 
 	public static List<Short> toList(final short[] array)
 	{
+		if (array == null) return null;
+
 		final ArrayList<Short> result = new ArrayList<Short>(array.length);
 		for (final short i : array)
 			result.add(i);
 		return result;
 	}
 
-	public static <S, T> T[] transform(final S[] source, final Class<T> targetType, final Transform< ? super S, T> op)
+	public static <S, T> T[] transform(final S[] source, final Class<T> targetType,
+			final Function< ? super S, ? extends T> op)
 	{
 		if (source == null) return null;
 
 		@SuppressWarnings("unchecked")
 		final T[] target = (T[]) Array.newInstance(targetType, source.length);
 		for (int i = 0, l = source.length; i < l; i++)
-			target[i] = op.transform(source[i]);
+			target[i] = op.apply(source[i]);
 		return target;
 	}
 

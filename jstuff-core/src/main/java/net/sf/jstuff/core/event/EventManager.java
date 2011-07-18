@@ -44,7 +44,7 @@ public class EventManager<EventType> implements EventListenable<EventType>
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean addEventListener(final EventListener<EventType> listener)
+	public boolean subscribe(final EventListener<EventType> listener)
 	{
 		Assert.argumentNotNull("listener", listener);
 
@@ -73,7 +73,7 @@ public class EventManager<EventType> implements EventListenable<EventType>
 
 	public int dispatch(final EventType event)
 	{
-		return EventUtils.notify(event, eventListeners);
+		return EventUtils.dispatch(event, eventListeners);
 	}
 
 	public Future<Integer> dispatchAsync(final EventType event)
@@ -85,12 +85,12 @@ public class EventManager<EventType> implements EventListenable<EventType>
 			{
 				public Integer call() throws Exception
 				{
-					return EventUtils.notify(event, copy);
+					return EventUtils.dispatch(event, copy);
 				}
 			});
 	}
 
-	public void removeAllEventListeners()
+	public void unsubscribeAll()
 	{
 		eventListeners.clear();
 	}
@@ -98,7 +98,7 @@ public class EventManager<EventType> implements EventListenable<EventType>
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean removeEventListener(final EventListener<EventType> listener)
+	public boolean unsubscribe(final EventListener<EventType> listener)
 	{
 		Assert.argumentNotNull("listener", listener);
 

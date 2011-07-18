@@ -22,15 +22,15 @@ import org.apache.commons.lang.builder.ToStringStyle;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Transforms
+public abstract class Functions
 {
-	public static abstract class AbstractTransform<From, To> implements ChainableTransform<From, To>, Serializable
+	public static abstract class AbstractFunction<In, Out> implements ChainableFunction<In, Out>, Serializable
 	{
 		private static final long serialVersionUID = 1L;
 
-		public <NextTo> ChainableTransform<From, NextTo> and(final Transform< ? super To, NextTo> next)
+		public <NextOut> ChainableFunction<In, NextOut> and(final Function< ? super Out, NextOut> next)
 		{
-			return new And<From, To, NextTo>(this, next);
+			return new And<In, Out, NextOut>(this, next);
 		}
 
 		@Override
@@ -40,14 +40,14 @@ public abstract class Transforms
 		}
 	}
 
-	public static class And<From, Via, To> extends AbstractTransform<From, To>
+	public static class And<In, Intermediate, Out> extends AbstractFunction<In, Out>
 	{
 		private static final long serialVersionUID = 1L;
 
-		private final Transform<From, Via> first;
-		private final Transform< ? super Via, To> second;
+		private final Function<In, Intermediate> first;
+		private final Function< ? super Intermediate, Out> second;
 
-		public And(final Transform<From, Via> first, final Transform< ? super Via, To> second)
+		public And(final Function<In, Intermediate> first, final Function< ? super Intermediate, Out> second)
 		{
 			Assert.argumentNotNull("first", first);
 			Assert.argumentNotNull("second", second);
@@ -56,39 +56,34 @@ public abstract class Transforms
 			this.second = second;
 		}
 
-		public final To transform(final From source)
+		public final Out apply(final In source)
 		{
-			return second.transform(first.transform(source));
+			return second.apply(first.apply(source));
 		}
 	}
 
-	public static class Cast<From, To> extends AbstractTransform<From, To>
+	public static class Cast<In, Out> extends AbstractFunction<In, Out>
 	{
 		private static final long serialVersionUID = 1L;
 
 		@SuppressWarnings("unchecked")
-		public To transform(final From source)
+		public Out apply(final In source)
 		{
-			return (To) source;
+			return (Out) source;
 		}
 	}
 
-	public interface ChainableTransform<From, To> extends Transform<From, To>
-	{
-		<NextTo> ChainableTransform<From, NextTo> and(final Transform< ? super To, NextTo> next);
-	}
-
-	public static class ObjectToString<From> extends AbstractTransform<From, String>
+	public static class ObjectToString<In> extends AbstractFunction<In, String>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public String transform(final From source)
+		public String apply(final In source)
 		{
 			return source == null ? null : source.toString();
 		}
 	}
 
-	public static class Prefix<From> extends AbstractTransform<From, String>
+	public static class Prefix<In> extends AbstractFunction<In, String>
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -101,23 +96,23 @@ public abstract class Transforms
 			this.prefix = prefix;
 		}
 
-		public String transform(final From source)
+		public String apply(final In source)
 		{
 			return source == null ? null : prefix + source.toString();
 		}
 	}
 
-	public static class StringToInt extends AbstractTransform<String, Integer>
+	public static class StringToInt extends AbstractFunction<String, Integer>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public Integer transform(final String source)
+		public Integer apply(final String source)
 		{
 			return source == null ? null : Integer.parseInt(source);
 		}
 	}
 
-	public static class Suffix<From> extends AbstractTransform<From, String>
+	public static class Suffix<In> extends AbstractFunction<In, String>
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -130,30 +125,30 @@ public abstract class Transforms
 			this.suffix = suffix;
 		}
 
-		public String transform(final From source)
+		public String apply(final In source)
 		{
 			return source == null ? null : source.toString() + suffix;
 		}
 	}
 
-	public static class Trim<From> extends AbstractTransform<From, String>
+	public static class Trim<In> extends AbstractFunction<In, String>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public String transform(final From source)
+		public String apply(final In source)
 		{
 			return source == null ? null : source.toString().trim();
 		}
 	}
 
-	public static <From> ObjectToString<From> objectToString()
+	public static <In> ObjectToString<In> objectToString()
 	{
-		return new ObjectToString<From>();
+		return new ObjectToString<In>();
 	}
 
-	public static <From> Prefix<From> prefix(final String prefix)
+	public static <In> Prefix<In> prefix(final String prefix)
 	{
-		return new Prefix<From>(prefix);
+		return new Prefix<In>(prefix);
 	}
 
 	public static StringToInt stringToInt()
@@ -161,12 +156,12 @@ public abstract class Transforms
 		return new StringToInt();
 	}
 
-	public static <From> Suffix<From> suffix(final String suffix)
+	public static <In> Suffix<In> suffix(final String suffix)
 	{
-		return new Suffix<From>(suffix);
+		return new Suffix<In>(suffix);
 	}
 
-	protected Transforms()
+	protected Functions()
 	{
 		super();
 	}

@@ -12,23 +12,12 @@
  *******************************************************************************/
 package net.sf.jstuff.core.functional;
 
-import static net.sf.jstuff.core.functional.Transforms.objectToString;
-import static net.sf.jstuff.core.functional.Transforms.stringToInt;
-import junit.framework.TestCase;
-
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TransformsTest extends TestCase
+public interface ChainableAccept<T> extends Accept<T>
 {
-	public void testConverts()
-	{
-		final Transform<Object, Integer> t1 = objectToString()//
-				.and(stringToInt())//
-				.and(objectToString())//
-				.and(stringToInt());
+	<V extends T> ChainableAccept<V> and(final Accept< ? super V> next);
 
-		assertEquals(null, t1.transform(null));
-		assertEquals(new Integer(1), t1.transform("1"));
-	}
+	<V extends T> ChainableAccept<V> or(final Accept< ? super V> next);
 }

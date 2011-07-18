@@ -34,7 +34,7 @@ import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils.MapDiff.EntryValueDiff;
 import net.sf.jstuff.core.functional.Accept;
 import net.sf.jstuff.core.functional.IsEqual;
-import net.sf.jstuff.core.functional.Transform;
+import net.sf.jstuff.core.functional.Function;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -114,7 +114,7 @@ public abstract class CollectionUtils
 
 		int count = 0;
 		for (final T item : items)
-			if (filter.accept(item)) if (collection.add(item)) count++;
+			if (filter.accept(item) && collection.add(item)) count++;
 		return count;
 	}
 
@@ -217,7 +217,7 @@ public abstract class CollectionUtils
 
 		int count = 0;
 		for (final T item : collection)
-			if (!accept.accept(item)) if (collection.remove(item)) count++;
+			if (!accept.accept(item) && collection.remove(item)) count++;
 		return count;
 	}
 
@@ -515,13 +515,13 @@ public abstract class CollectionUtils
 		return map;
 	}
 
-	public static <S, T> List<T> transform(final List<S> source, final Transform< ? super S, T> op)
+	public static <S, T> List<T> transform(final List<S> source, final Function< ? super S, ? extends T> op)
 	{
 		if (source == null) return null;
 
 		final List<T> target = newArrayList(source.size());
 		for (final S sourceItem : source)
-			target.add(op.transform(sourceItem));
+			target.add(op.apply(sourceItem));
 		return target;
 	}
 

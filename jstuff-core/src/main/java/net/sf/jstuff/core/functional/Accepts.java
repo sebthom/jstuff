@@ -13,6 +13,7 @@
 package net.sf.jstuff.core.functional;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import net.sf.jstuff.core.Assert;
 
@@ -50,6 +51,26 @@ public abstract class Accepts
 		}
 	}
 
+	public static abstract class AbstractCaseSensitiveAccept<V> extends AbstractAccept<V>
+	{
+		private static final long serialVersionUID = 1L;
+
+		protected Locale ignoreCaseLocale;
+
+		public ChainableAccept<V> ignoreCase()
+		{
+			return ignoreCase(null);
+		}
+
+		public abstract ChainableAccept<V> ignoreCase(Locale locale);
+
+		protected String stringify(final Object obj)
+		{
+			if (ignoreCaseLocale == null) return obj.toString();
+			return obj.toString().toLowerCase(ignoreCaseLocale);
+		}
+	}
+
 	public static class And<V> extends AbstractAccept<V>
 	{
 		private static final long serialVersionUID = 1L;
@@ -78,14 +99,36 @@ public abstract class Accepts
 		}
 	}
 
-	public interface ChainableAccept<T> extends Accept<T>
+	public static class Contains<V> extends AbstractCaseSensitiveAccept<V>
 	{
-		<V extends T> ChainableAccept<V> and(final Accept< ? super V> next);
+		private static final long serialVersionUID = 1L;
 
-		<V extends T> ChainableAccept<V> or(final Accept< ? super V> next);
+		public final String searchFor;
+
+		public Contains(final String searchFor)
+		{
+			Assert.argumentNotNull("searchFor", searchFor);
+
+			this.searchFor = searchFor;
+		}
+
+		public boolean accept(final V obj)
+		{
+			if (obj == null) return false;
+			return stringify(obj).indexOf(searchFor) > -1;
+		}
+
+		@Override
+		public Contains<V> ignoreCase(Locale locale)
+		{
+			if (locale == null) locale = Locale.getDefault();
+			final Contains<V> accept = new Contains<V>(searchFor.toLowerCase(locale));
+			accept.ignoreCaseLocale = locale;
+			return accept;
+		}
 	}
 
-	public static class EndingWith<V> extends AbstractAccept<V>
+	public static class EndingWith<V> extends AbstractCaseSensitiveAccept<V>
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -93,13 +136,24 @@ public abstract class Accepts
 
 		public EndingWith(final String suffix)
 		{
-			this.suffix = suffix;
+			Assert.argumentNotNull("suffix", suffix);
+
+			this.suffix = stringify(suffix);
 		}
 
 		public boolean accept(final V obj)
 		{
 			if (obj == null) return false;
-			return obj.toString().endsWith(suffix);
+			return stringify(obj).endsWith(suffix);
+		}
+
+		@Override
+		public EndingWith<V> ignoreCase(Locale locale)
+		{
+			if (locale == null) locale = Locale.getDefault();
+			final EndingWith<V> accept = new EndingWith<V>(stringify(suffix));
+			accept.ignoreCaseLocale = locale;
+			return accept;
 		}
 	}
 
@@ -120,13 +174,13 @@ public abstract class Accepts
 		}
 	}
 
-	public static class LargerThan<V extends Comparable<V>> extends AbstractAccept<V>
+	public static class GreaterThan<V extends Comparable<V>> extends AbstractAccept<V>
 	{
 		private static final long serialVersionUID = 1L;
 
 		public final V compareTo;
 
-		public LargerThan(final V compareTo)
+		public GreaterThan(final V compareTo)
 		{
 			this.compareTo = compareTo;
 		}
@@ -134,6 +188,24 @@ public abstract class Accepts
 		public boolean accept(final V obj)
 		{
 			return ObjectUtils.compare(obj, compareTo) > 0;
+		}
+	}
+
+	public static class LessThan<V extends Comparable<V>> extends AbstractAccept<V>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public final V compareTo;
+
+		public LessThan(final V compareTo)
+		{
+			this.compareTo = compareTo;
+		}
+
+		public boolean accept(final V obj)
+		{
+			if (obj == null) return false;
+			return ObjectUtils.compare(obj, compareTo) < 0;
 		}
 	}
 
@@ -147,39 +219,38 @@ public abstract class Accepts
 		}
 	}
 
-	public static class NotEndingWith<V> extends AbstractAccept<V>
+	public static class Not<V> extends AbstractAccept<V>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public final String suffix;
+		public final Accept< ? super V> accept;
 
-		public NotEndingWith(final String suffix)
+		public Not(final Accept< ? super V> accept)
 		{
-			this.suffix = suffix;
+			Assert.argumentNotNull("accept", accept);
+
+			this.accept = accept;
 		}
 
 		public boolean accept(final V obj)
 		{
-			if (obj == null) return true;
-			return !obj.toString().endsWith(suffix);
+			return !accept.accept(obj);
+		}
+
+		@Override
+		public String toString()
+		{
+			return "!" + accept.toString();
 		}
 	}
 
-	public static class NotStartingWith<V> extends AbstractAccept<V>
+	public static class Null<V> extends AbstractAccept<V>
 	{
 		private static final long serialVersionUID = 1L;
 
-		public final String prefix;
-
-		public NotStartingWith(final String prefix)
-		{
-			this.prefix = prefix;
-		}
-
 		public boolean accept(final V obj)
 		{
-			if (obj == null) return true;
-			return !obj.toString().startsWith(prefix);
+			return obj == null;
 		}
 	}
 
@@ -211,24 +282,7 @@ public abstract class Accepts
 		}
 	}
 
-	public static class SmallerThan<V extends Comparable<V>> extends AbstractAccept<V>
-	{
-		private static final long serialVersionUID = 1L;
-
-		public final V compareTo;
-
-		public SmallerThan(final V compareTo)
-		{
-			this.compareTo = compareTo;
-		}
-
-		public boolean accept(final V obj)
-		{
-			return ObjectUtils.compare(obj, compareTo) < 0;
-		}
-	}
-
-	public static class StartingWith<V> extends AbstractAccept<V>
+	public static class StartingWith<V> extends AbstractCaseSensitiveAccept<V>
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -236,19 +290,35 @@ public abstract class Accepts
 
 		public StartingWith(final String prefix)
 		{
-			this.prefix = prefix;
+			Assert.argumentNotNull("prefix", prefix);
+
+			this.prefix = stringify(prefix);
 		}
 
 		public boolean accept(final V obj)
 		{
 			if (obj == null) return false;
-			return obj.toString().startsWith(prefix);
+			return stringify(obj).startsWith(prefix);
+		}
+
+		@Override
+		public StartingWith<V> ignoreCase(Locale locale)
+		{
+			if (locale == null) locale = Locale.getDefault();
+			final StartingWith<V> accept = new StartingWith<V>(stringify(prefix));
+			accept.ignoreCaseLocale = locale;
+			return accept;
 		}
 	}
 
-	public static <V> And<V> and(final Accept<V> first, final Accept<V> second)
+	public static <V> And<V> and(final Accept< ? super V> first, final Accept< ? super V> second)
 	{
 		return new And<V>(first, second);
+	}
+
+	public static <V> Contains<V> contains(final String searchFor)
+	{
+		return new Contains<V>(searchFor);
 	}
 
 	public static <V> EndingWith<V> endingWith(final String suffix)
@@ -261,9 +331,19 @@ public abstract class Accepts
 		return new EqualTo<V>(equivalent);
 	}
 
-	public static <V extends Comparable<V>> LargerThan<V> largerThan(final V compareTo)
+	public static <V extends Comparable<V>> GreaterThan<V> greaterThan(final V compareTo)
 	{
-		return new LargerThan<V>(compareTo);
+		return new GreaterThan<V>(compareTo);
+	}
+
+	public static <V> Null<V> isNull()
+	{
+		return new Null<V>();
+	}
+
+	public static <V extends Comparable<V>> LessThan<V> lessThan(final V compareTo)
+	{
+		return new LessThan<V>(compareTo);
 	}
 
 	public static <V> NonNull<V> nonNull()
@@ -271,25 +351,20 @@ public abstract class Accepts
 		return new NonNull<V>();
 	}
 
-	public static <V> NotEndingWith<V> notEndingWith(final String suffix)
+	public static <V> Not<V> not(final Accept< ? super V> accept)
 	{
-		return new NotEndingWith<V>(suffix);
+		return new Not<V>(accept);
 	}
 
-	public static <V> NotStartingWith<V> notStartingWith(final String prefix)
+	public static <V> Or<V> or(final Accept< ? super V> first, final Accept< ? super V> second)
 	{
-		return new NotStartingWith<V>(prefix);
-	}
-
-	public static <V extends Comparable<V>> SmallerThan<V> smallerThan(final V compareTo)
-	{
-		return new SmallerThan<V>(compareTo);
+		return new Or<V>(first, second);
 	}
 
 	public static <V> StartingWith<V> startingWith(final String prefix)
 	{
 		return new StartingWith<V>(prefix);
-	};
+	}
 
 	protected Accepts()
 	{

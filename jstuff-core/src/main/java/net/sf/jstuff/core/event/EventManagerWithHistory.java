@@ -31,17 +31,17 @@ public class EventManagerWithHistory<EventType> extends EventManager<EventType>
 	public EventManagerWithHistory()
 	{
 		LOG.info("Instantiated.");
-		setupEventHistory();
+		initEventHistory();
 	}
 
 	/**
 	 * Sends all recorded events to the given listeners in case it was not added already.
 	 */
-	public boolean addEventListenerAndReplayHistory(final EventListener<EventType> listener)
+	public boolean subscribeAndReplayHistory(final EventListener<EventType> listener)
 	{
 		Assert.argumentNotNull("listener", listener);
 
-		if (super.addEventListener(listener))
+		if (super.subscribe(listener))
 		{
 			for (final Iterator<EventType> it = getEventHistory(); it.hasNext();)
 				listener.onEvent(it.next());
@@ -82,7 +82,7 @@ public class EventManagerWithHistory<EventType> extends EventManager<EventType>
 		return super.dispatchAsync(event);
 	}
 
-	protected void setupEventHistory()
+	protected void initEventHistory()
 	{
 		eventHistory = new LinkedList<EventType>();
 	}

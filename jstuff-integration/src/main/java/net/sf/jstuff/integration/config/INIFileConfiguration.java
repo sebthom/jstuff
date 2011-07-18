@@ -33,8 +33,8 @@ import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.collection.LinkedSet;
 import net.sf.jstuff.core.collection.Tuple2;
-import net.sf.jstuff.core.functional.Transform;
-import net.sf.jstuff.core.functional.Transforms;
+import net.sf.jstuff.core.functional.Function;
+import net.sf.jstuff.core.functional.Functions;
 
 import org.apache.commons.configuration.AbstractFileConfiguration;
 import org.apache.commons.configuration.Configuration;
@@ -103,9 +103,9 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 	 */
 	public String[] getComments(final String key)
 	{
-		return ArrayUtils.toArray(transform(comments.get(key), new Transform<String, String>()
+		return ArrayUtils.toArray(transform(comments.get(key), new Function<String, String>()
 			{
-				public String transform(final String source)
+				public String apply(final String source)
 				{
 					// strip the comment character
 					return source.startsWith("#") || source.startsWith(";") ? "" : source.substring(1);
@@ -389,7 +389,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 		if (comments == null)
 			this.comments.remove(key);
 		else
-			this.comments.put(key, transform(newArrayList(comments), Transforms.prefix("#")));
+			this.comments.put(key, transform(newArrayList(comments), Functions.prefix("#")));
 	}
 
 	public void setProperty(final String key, final String value, final String inlineComment)

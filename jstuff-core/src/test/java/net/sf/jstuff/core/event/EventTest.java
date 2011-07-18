@@ -35,8 +35,8 @@ public class EventTest extends TestCase
 				}
 			};
 
-		assertTrue(em.addEventListener(listener1));
-		assertFalse(em.addEventListener(listener1));
+		assertTrue(em.subscribe(listener1));
+		assertFalse(em.subscribe(listener1));
 
 		final AtomicLong listener2Count = new AtomicLong();
 		final EventListener<String> listener2 = new FilteringEventListener<String>()
@@ -52,8 +52,8 @@ public class EventTest extends TestCase
 				}
 			};
 
-		assertTrue(em.addEventListener(listener2));
-		assertFalse(em.addEventListener(listener2));
+		assertTrue(em.subscribe(listener2));
+		assertFalse(em.subscribe(listener2));
 
 		assertEquals(2, em.dispatch("123"));
 		assertEquals(1, listener1Count.get());

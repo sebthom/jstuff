@@ -51,10 +51,12 @@ jstuff-core/src/main/java/net/sf/jstuff/core/event/EventUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/FilteringEventListener.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Accept.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Accepts.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/functional/ChainableAccept.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/functional/ChainableFunction.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/functional/Function.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/functional/Functions.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Invocable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/IsEqual.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/functional/Transform.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/functional/Transforms.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedInputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedOutputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/CharSequenceReader.java -text
@@ -91,7 +93,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/collection/LRUMapTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/comparator/PropertyComparatorTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/event/EventTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/AcceptsTest.java -text
-jstuff-core/src/test/java/net/sf/jstuff/core/functional/TransformsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/functional/FunctionsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/CharSequenceReaderTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/FileUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/IOUtilsTest.java -text
