@@ -18,11 +18,9 @@ import java.io.IOException;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class OSUtils
+public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils
 {
 	private static final Logger LOG = Logger.get();
-
-	public static final String OS_NAME = System.getProperty("os.name");
 
 	public static boolean isLinux()
 	{
@@ -98,7 +96,7 @@ public abstract class OSUtils
 		return true;
 	}
 
-	protected OSUtils()
+	protected SystemUtils()
 	{
 		super();
 	}

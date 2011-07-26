@@ -71,12 +71,12 @@ public class EventManager<EventType> implements EventListenable<EventType>
 		return executorService;
 	}
 
-	public int dispatch(final EventType event)
+	public int fire(final EventType event)
 	{
-		return EventUtils.dispatch(event, eventListeners);
+		return EventUtils.fire(event, eventListeners);
 	}
 
-	public Future<Integer> dispatchAsync(final EventType event)
+	public Future<Integer> fireAsync(final EventType event)
 	{
 		@SuppressWarnings("unchecked")
 		final EventListener<EventType>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
@@ -85,7 +85,7 @@ public class EventManager<EventType> implements EventListenable<EventType>
 			{
 				public Integer call() throws Exception
 				{
-					return EventUtils.dispatch(event, copy);
+					return EventUtils.fire(event, copy);
 				}
 			});
 	}

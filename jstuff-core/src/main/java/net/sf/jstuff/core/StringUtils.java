@@ -16,21 +16,19 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.List;
 
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 import javax.swing.text.html.parser.ParserDelegator;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
-import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.io.CharSequenceReader;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class StringUtils extends org.apache.commons.lang.StringUtils
+public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 {
 	public static final class ANSIState
 	{
@@ -147,28 +145,6 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils
 	public static final char CR = 13;
 
 	public static final String CR_LF = "" + CR + LF;
-
-	public static List<String> addPrefix(final String prefix, final List<String> source)
-	{
-		final List<String> result = CollectionUtils.newArrayList(source.size());
-		for (final String line : source)
-			result.add(prefix + line);
-		return result;
-	}
-
-	public static String[] addPrefix(final String prefix, final String... source)
-	{
-		if (source == null) return null;
-		if (source.length == 0) return ArrayUtils.EMPTY_STRING_ARRAY;
-
-		final String[] result = new String[source.length];
-		for (int i = 0, l = source.length; i < l; i++)
-		{
-			final String orig = source[i];
-			if (orig != null) result[i] = prefix + orig;
-		}
-		return result;
-	}
 
 	public static CharSequence ansiColorsToHTML(final CharSequence txt)
 	{
@@ -330,7 +306,7 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils
 		return txt == null ? "" : txt instanceof String ? (String) txt : txt.toString();
 	}
 
-	public static boolean endsWith(final String str, final char ch)
+	public static boolean endsWith(final CharSequence str, final char ch)
 	{
 		return isEmpty(str) ? false : str.charAt(str.length() - 1) == ch;
 	}
@@ -399,66 +375,6 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils
 			// ignore
 		}
 		return sb;
-	}
-
-	/**
-	 * <p>Checks if a CharSequence is whitespace, empty ("") or null.</p>
-	 *
-	 * <pre>
-	 * StringUtils.isBlank(null)      = true
-	 * StringUtils.isBlank("")        = true
-	 * StringUtils.isBlank(" ")       = true
-	 * StringUtils.isBlank("bob")     = false
-	 * StringUtils.isBlank("  bob  ") = false
-	 * </pre>
-	 *
-	 * @param txt  the CharSequence to check, may be null
-	 * @return <code>true</code> if the CharSequence is null, empty or whitespace
-	 */
-	public static boolean isBlank(final CharSequence txt)
-	{
-		if (txt == null) return true;
-
-		final int txtLen = txt.length();
-		if (txtLen == 0) return true;
-
-		for (int i = 0; i < txtLen; i++)
-			if (!Character.isWhitespace(txt.charAt(i))) return false;
-
-		return true;
-	}
-
-	/**
-	 * <p>Checks if a CharSequence is empty ("") or null.</p>
-	 *
-	 * <pre>
-	 * StringUtils.isEmpty(null)      = true
-	 * StringUtils.isEmpty("")        = true
-	 * StringUtils.isEmpty(" ")       = false
-	 * StringUtils.isEmpty("bob")     = false
-	 * StringUtils.isEmpty("  bob  ") = false
-	 * </pre>
-	 *
-	 * @param txt  the CharSequence to check, may be null
-	 * @return <code>true</code> if the CharSequence is empty or null
-	 */
-	public static boolean isEmpty(final CharSequence txt)
-	{
-		return txt == null || txt.length() == 0;
-	}
-
-	/**
-	 * <p>Repeat a char <code>repeat</code> times to form a new String.</p>
-	 */
-	public static CharSequence repeat(final char ch, final int repeat)
-	{
-		Assert.isTrue(repeat > 1, "Argument [repeat] cannot be negative");
-
-		final char[] arr = new char[repeat];
-		for (int i = 0; i < repeat; i++)
-			arr[i] = ch;
-
-		return new String(arr).intern();
 	}
 
 	/**
@@ -602,7 +518,7 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils
 		return new String[]{text};
 	}
 
-	public static boolean startsWith(final String str, final char ch)
+	public static boolean startsWith(final CharSequence str, final char ch)
 	{
 		return isEmpty(str) ? false : str.charAt(0) == ch;
 	}

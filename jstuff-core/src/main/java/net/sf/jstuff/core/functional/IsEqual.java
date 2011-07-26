@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.functional;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

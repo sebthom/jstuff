@@ -36,6 +36,14 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 {
 	private static final Logger LOG = Logger.get();
 
+	public static int copyAndClose(final InputStream is, final OutputStream os) throws IOException
+	{
+		final int bytesCopied = copy(is, os);
+		closeQuietly(is);
+		closeQuietly(os);
+		return bytesCopied;
+	}
+
 	/**
 	 * Reads <code>len</code> bytes of data from the input stream into
 	 * an array of bytes. This method blocks until the given number of bytes could be read.

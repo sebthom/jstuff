@@ -20,9 +20,8 @@ import java.util.Comparator;
 
 import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.reflection.ReflectionUtils;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

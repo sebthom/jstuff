@@ -19,44 +19,24 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.CryptoUtils;
 
+import org.apache.commons.lang3.SerializationException;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class SerializationUtils
+public abstract class SerializationUtils extends org.apache.commons.lang3.SerializationUtils
 {
-	public static final class CloningFailedException extends RuntimeException
-	{
-		private static final long serialVersionUID = 1L;
-
-		protected CloningFailedException(final String message, final Throwable cause)
-		{
-			super(message, cause);
-		}
-	}
-
-	public static final class ObjectSerializationException extends RuntimeException
-	{
-		private static final long serialVersionUID = 1L;
-
-		public ObjectSerializationException(final String message, final Throwable cause)
-		{
-			super(message, cause);
-		}
-	}
-
 	/**
 	 * @see XMLEncoder
-	 * @throws ObjectSerializationException
+	 * @throws SerializationException
 	 */
-	public static String bean2xml(final Object javaBean) throws ObjectSerializationException
+	public static String bean2xml(final Object javaBean) throws SerializationException
 	{
 		Assert.argumentNotNull("javaBean", javaBean);
 
@@ -73,46 +53,11 @@ public abstract class SerializationUtils
 		e.writeObject(javaBean);
 		e.close();
 		if (exList.size() > 0)
-			throw new ObjectSerializationException("An error occured during XML serialization", exList.get(0));
+			throw new SerializationException("An error occured during XML serialization", exList.get(0));
 		return bos.toString();
 	}
 
-	/**
-	 * Returns a deep copy of an object.
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T extends Serializable> T deepCopy(final T oldObj) throws CloningFailedException
-	{
-		Assert.argumentNotNull("oldObj", oldObj);
-
-		ObjectOutputStream os = null;
-		ObjectInputStream is = null;
-
-		try
-		{
-			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			os = new ObjectOutputStream(bos);
-
-			// serialize the object
-			os.writeObject(oldObj);
-			os.flush();
-
-			final ByteArrayInputStream bin = new ByteArrayInputStream(bos.toByteArray());
-			is = new ObjectInputStream(bin);
-			return (T) is.readObject();
-		}
-		catch (final Exception ex)
-		{
-			throw new CloningFailedException("Cloning of object " + oldObj + " failed.", ex);
-		}
-		finally
-		{
-			IOUtils.closeQuietly(os);
-			IOUtils.closeQuietly(is);
-		}
-	}
-
-	public static Serializable deserialize(final byte[] serializedData) throws ObjectSerializationException
+	public static Serializable deserialize(final byte[] serializedData) throws SerializationException
 	{
 		Assert.argumentNotNull("serializedData", serializedData);
 
@@ -120,7 +65,7 @@ public abstract class SerializationUtils
 		return deserialize(bin);
 	}
 
-	public static Serializable deserialize(final InputStream is) throws ObjectSerializationException
+	public static Serializable deserialize(final InputStream is) throws SerializationException
 	{
 		Assert.argumentNotNull("is", is);
 
@@ -132,7 +77,7 @@ public abstract class SerializationUtils
 		}
 		catch (final Exception e)
 		{
-			throw new ObjectSerializationException("Deserialization failed", e);
+			throw new SerializationException("Deserialization failed", e);
 		}
 		finally
 		{
@@ -148,37 +93,6 @@ public abstract class SerializationUtils
 		return deserialize(CryptoUtils.decryptWithDES(data, passphrase));
 	}
 
-	public static byte[] serialize(final Serializable obj) throws ObjectSerializationException
-	{
-		Assert.argumentNotNull("obj", obj);
-
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		serialize(obj, bos);
-		return bos.toByteArray();
-	}
-
-	public static void serialize(final Serializable obj, final OutputStream os) throws ObjectSerializationException
-	{
-		Assert.argumentNotNull("obj", obj);
-		Assert.argumentNotNull("os", os);
-
-		ObjectOutputStream oos = null;
-		try
-		{
-			oos = new ObjectOutputStream(os);
-			oos.writeObject(obj);
-			oos.flush();
-		}
-		catch (final Exception e)
-		{
-			throw new ObjectSerializationException("Serialization of object [" + obj + "] failed.", e);
-		}
-		finally
-		{
-			IOUtils.closeQuietly(oos);
-		}
-	}
-
 	/**
 	 * Serializes the given object and encrypts it via DES using the given passphrase
 	 */
@@ -189,9 +103,9 @@ public abstract class SerializationUtils
 
 	/**
 	 * @see XMLDecoder
-	 * @throws ObjectSerializationException
+	 * @throws SerializationException
 	 */
-	public static Object xml2bean(final String xmlData) throws ObjectSerializationException
+	public static Object xml2bean(final String xmlData) throws SerializationException
 	{
 		Assert.argumentNotNull("xmlData", xmlData);
 
@@ -207,7 +121,7 @@ public abstract class SerializationUtils
 			});
 		final Object javaBean = d.readObject();
 		if (exList.size() > 0)
-			throw new ObjectSerializationException("An error occured during XML deserialization", exList.get(0));
+			throw new SerializationException("An error occured during XML deserialization", exList.get(0));
 		return javaBean;
 	}
 

@@ -6,11 +6,11 @@ jstuff-core/src/main/java/net/sf/jstuff/core/CryptoUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ImageUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Logger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Mutable.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/OSUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ObjectCache.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Profiler.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StackTraceUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ThreadUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/URLClassLoaderExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ArrayUtils.java -text
@@ -73,7 +73,9 @@ jstuff-core/src/main/java/net/sf/jstuff/core/net/AbstractServer.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/NetUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/SSLUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/AccessingFieldValueFailedException.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/AnnotationUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/BeanUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/DuckTypeUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/InvokingMethodFailedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/ReflectionException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/ReflectionUtils.java -text
@@ -101,6 +103,8 @@ jstuff-core/src/test/java/net/sf/jstuff/core/io/ZippedBlockStreamTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/DateTimeHelperTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/NumberHelperTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/net/NetUtilsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/reflection/AnnotationUtilsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/reflection/DuckTypeUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/ReflectionUtilsTest.java -text
 jstuff-integration/pom.xml -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/AtomBlog.java -text
@@ -131,7 +135,7 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/AuthenticationHo
 jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/AuthenticationImpl.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/Authenticator.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/AuthenticatorLDAPImpl.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/AuthenticatorTomcatImpl.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/AuthenticatorTomcat6Impl.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/PermissionDeniedException.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/SecurityFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/auth/UnknownApplicationRoleException.java -text

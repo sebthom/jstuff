@@ -12,36 +12,24 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.auth;
 
-import java.security.Principal;
-
 import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
-import org.apache.catalina.Host;
-import org.apache.catalina.Realm;
-import org.apache.catalina.Server;
 import org.apache.catalina.ServerFactory;
-import org.apache.catalina.Service;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AuthenticatorTomcatImpl implements Authenticator
+public class AuthenticatorTomcat6Impl implements Authenticator
 {
 	/*
 	 * based on http://wiki.apache.org/tomcat/HowTo#head-42e95596753a1fa4a4aa396d53010680e3d509b5
 	 */
 	public boolean authenticate(final String logonName, final String password)
 	{
-		final Server server = ServerFactory.getServer();
-
 		//Note: this assumes the Container is "Catalina"
-		final Service service = server.findService("Catalina");
-		final Engine engine = (Engine) service.getContainer();
-		final Host host = (Host) engine.findChild(engine.getDefaultHost());
-		final Context context = (Context) host.findChild(SecurityFilter.HTTP_SERVLET_REQUEST_HOLDER.get()
-				.getContextPath());
-		final Realm realm = context.getRealm();
-		final Principal p = realm.authenticate(logonName, password);
-		return p != null;
+		final Engine engine = (Engine) ServerFactory.getServer().findService("Catalina").getContainer();
+		final Context context = (Context) engine.findChild(engine.getDefaultHost()).findChild(
+				SecurityFilter.HTTP_SERVLET_REQUEST_HOLDER.get().getContextPath());
+		return context.getRealm().authenticate(logonName, password) != null;
 	}
 }

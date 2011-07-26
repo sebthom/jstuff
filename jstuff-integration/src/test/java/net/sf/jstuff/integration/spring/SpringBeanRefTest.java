@@ -40,7 +40,7 @@ public class SpringBeanRefTest extends TestCase
 		final Entity e = new Entity();
 		assertNotNull(e.springBean);
 		assertNotNull(e.springBean.get());
-		final Entity e2 = SerializationUtils.deepCopy(e);
+		final Entity e2 = SerializationUtils.clone(e);
 		assertNotNull(e2.springBean);
 		assertNotNull(e2.springBean.get());
 

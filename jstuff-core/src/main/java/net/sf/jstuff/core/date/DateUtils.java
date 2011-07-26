@@ -20,12 +20,12 @@ import java.util.TimeZone;
 
 import net.sf.jstuff.core.Assert;
 
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class DateUtils extends org.apache.commons.lang.time.DateUtils
+public abstract class DateUtils extends org.apache.commons.lang3.time.DateUtils
 {
 	private static final FastDateFormat RFC3399_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
 

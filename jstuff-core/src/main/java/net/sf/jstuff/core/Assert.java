@@ -64,6 +64,17 @@ public abstract class Assert
 					+ "] must be in range of " + min + " to " + max));
 	}
 
+	public static void argumentInRange(final String argumentName, final Number value, final long min, final long max)
+	{
+		if (value == null)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
+
+		final long lValue = value.longValue();
+		if (lValue < min || lValue > max)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
+					+ "] must be in range of " + min + " to " + max));
+	}
+
 	public static void argumentMinSize(final String argumentName, final byte value, final byte min)
 	{
 		if (value < min)
@@ -142,6 +153,34 @@ public abstract class Assert
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
 		if (value.length == 0)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
+	}
+
+	public static <T> void argumentNotNegative(final String argumentName, final byte value)
+	{
+		if (value < 0)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
+					+ "] must not be negative"));
+	}
+
+	public static <T> void argumentNotNegative(final String argumentName, final int value)
+	{
+		if (value < 0)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
+					+ "] must not be negative"));
+	}
+
+	public static <T> void argumentNotNegative(final String argumentName, final long value)
+	{
+		if (value < 0)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
+					+ "] must not be negative"));
+	}
+
+	public static <T> void argumentNotNegative(final String argumentName, final short value)
+	{
+		if (value < 0)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
+					+ "] must not be negative"));
 	}
 
 	/**

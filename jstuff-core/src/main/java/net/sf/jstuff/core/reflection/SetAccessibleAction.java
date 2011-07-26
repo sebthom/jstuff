@@ -22,6 +22,8 @@ public final class SetAccessibleAction implements PrivilegedAction<Object>
 {
 	private final AccessibleObject ao;
 
+	private boolean accessible = true;
+
 	public SetAccessibleAction(final AccessibleObject ao)
 	{
 		this.ao = ao;
@@ -32,7 +34,13 @@ public final class SetAccessibleAction implements PrivilegedAction<Object>
 	 */
 	public Object run()
 	{
-		ao.setAccessible(true);
+		ao.setAccessible(accessible);
 		return null;
+	}
+
+	public SetAccessibleAction setAccessible(final boolean accessible)
+	{
+		this.accessible = accessible;
+		return this;
 	}
 }

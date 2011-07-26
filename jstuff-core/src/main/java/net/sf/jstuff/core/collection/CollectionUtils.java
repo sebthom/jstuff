@@ -33,8 +33,8 @@ import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils.MapDiff.EntryValueDiff;
 import net.sf.jstuff.core.functional.Accept;
-import net.sf.jstuff.core.functional.IsEqual;
 import net.sf.jstuff.core.functional.Function;
+import net.sf.jstuff.core.functional.IsEqual;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -477,6 +477,8 @@ public abstract class CollectionUtils
 
 	public static <T> Iterable<T> toIterable(final Iterator<T> it)
 	{
+		Assert.argumentNotNull("it", it);
+
 		return new Iterable<T>()
 			{
 				public Iterator<T> iterator()
@@ -488,6 +490,8 @@ public abstract class CollectionUtils
 
 	public static <T> List<T> toList(final Iterator<T> it)
 	{
+		Assert.argumentNotNull("it", it);
+
 		final List<T> result = newArrayList();
 		while (it.hasNext())
 			result.add(it.next());

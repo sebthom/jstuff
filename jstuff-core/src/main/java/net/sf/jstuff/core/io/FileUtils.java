@@ -21,7 +21,7 @@ import java.util.Date;
 import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
 
-import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

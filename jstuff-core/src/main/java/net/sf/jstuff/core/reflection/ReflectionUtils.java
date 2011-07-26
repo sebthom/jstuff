@@ -14,7 +14,6 @@ package net.sf.jstuff.core.reflection;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -24,7 +23,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -60,93 +58,6 @@ public abstract class ReflectionUtils
 						"Current security manager configuration does not allow access to private fields and methods.",
 						ex);
 			}
-	}
-
-	/**
-	 * Creates a dynamic proxy object of type <code>duckInterface</code> forwarding all method invocations
-	 * to methods with the same signature on <code>duckLikeObject</code>.
-	 * 
-	 * @return <code>duckLikeObject</code> if instanceof <code>duckInterface</code> or a dynamic proxy object.
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T duckType(final Object duckLikeObject, final Class<T> duckInterface)
-	{
-		final Class< ? > duckLikeClass = duckLikeObject.getClass();
-		if (duckInterface.isAssignableFrom(duckLikeClass)) return (T) duckLikeObject;
-
-		LOG.debug("Ducktyping {} to type {}", duckLikeObject, duckInterface);
-
-		return (T) Proxy.newProxyInstance(duckInterface.getClassLoader(), new Class[]{duckInterface},
-				new InvocationHandler()
-					{
-						public Object invoke(final Object duckProxy, final Method duckMethod, final Object[] args)
-								throws Throwable
-						{
-							try
-							{
-								final Method duckLikeMethod = duckLikeClass.getMethod(duckMethod.getName(),
-										duckMethod.getParameterTypes());
-
-								// delegate method invocation on duck proxy to duckLikeObject's method
-								return duckLikeMethod.invoke(duckLikeObject, args);
-							}
-							catch (final NoSuchMethodException ex)
-							{
-								throw new ReflectionException("Duck typed object " + duckLikeObject
-										+ " does not implement duck method " + duckInterface + ".");
-							}
-						}
-					});
-	}
-
-	/**
-	 * Returns all annotations present on this class.
-	 * @param clazz the class to inspect
-	 * @param inspectInterfaces whether to also return annotations declared on interface declaration
-	 * @return all annotations present on this class.
-	 */
-	public static Annotation[] getAnnotations(final Class< ? > clazz, final boolean inspectInterfaces)
-	{
-		Assert.argumentNotNull("clazz", clazz);
-
-		if (!inspectInterfaces) return clazz.getAnnotations();
-
-		final List<Annotation> annotations = Arrays.asList(clazz.getAnnotations());
-		for (final Class< ? > next : ReflectionUtils.getInterfacesRecursive(clazz))
-		{
-			final Annotation[] declaredAnnotations = next.getDeclaredAnnotations();
-			annotations.addAll(Arrays.asList(declaredAnnotations));
-		}
-		return annotations.toArray(new Annotation[annotations.size()]);
-	}
-
-	/**
-	 * Returns all annotations present on this method.
-	 * @param method the method to inspect
-	 * @param inspectInterfaces whether to also return annotations declared on interface method declaration
-	 * @return all annotations present on this method.
-	 */
-	public static Annotation[] getAnnotations(final Method method, final boolean inspectInterfaces)
-	{
-		Assert.argumentNotNull("method", method);
-
-		if (!inspectInterfaces || !isPublic(method)) return method.getAnnotations();
-
-		final String methodName = method.getName();
-		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
-
-		final List<Annotation> annotations = Arrays.asList(method.getAnnotations());
-		for (final Class< ? > nextClass : ReflectionUtils.getInterfacesRecursive(method.getDeclaringClass()))
-			try
-			{
-				annotations.addAll(Arrays.asList(nextClass.getDeclaredMethod(methodName, methodParameterTypes)
-						.getDeclaredAnnotations()));
-			}
-			catch (final NoSuchMethodException e)
-			{
-				// ignore
-			}
-		return annotations.toArray(new Annotation[annotations.size()]);
 	}
 
 	/**
@@ -387,64 +298,6 @@ public abstract class ReflectionUtils
 		return getMethodRecursive(superclazz, methodName, parameterTypes);
 	}
 
-	/**
-	 * Returns an array of arrays that represent the annotations on the formal parameters, in declaration order, 
-	 * of the method represented by this method.
-	 *  
-	 * @param method the method to inspect
-	 * @param inspectInterfaces whether to also return annotations declared on interface method declaration
-	 * @return an array of arrays that represent the annotations on the formal parameters, in declaration order, 
-	 * of the method represented by this method.
-	 */
-	public static Annotation[][] getParameterAnnotations(final Method method, final boolean inspectInterfaces)
-	{
-		Assert.argumentNotNull("method", method);
-
-		if (!inspectInterfaces || !isPublic(method)) return method.getParameterAnnotations();
-
-		final String methodName = method.getName();
-		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
-		final int methodParameterTypesCount = methodParameterTypes.length;
-
-		@SuppressWarnings("unchecked")
-		final HashSet<Annotation>[] methodParameterAnnotations = new HashSet[methodParameterTypesCount];
-
-		final Class< ? > clazz = method.getDeclaringClass();
-		final Set<Class< ? >> classes = ReflectionUtils.getInterfacesRecursive(clazz);
-		classes.add(clazz);
-		for (final Class< ? > nextClass : classes)
-			try
-			{
-				final Method nextMethod = nextClass.getDeclaredMethod(methodName, methodParameterTypes);
-				for (int i = 0; i < methodParameterTypesCount; i++)
-				{
-					final Annotation[] paramAnnos = nextMethod.getParameterAnnotations()[i];
-					if (paramAnnos.length > 0)
-					{
-						HashSet<Annotation> cummulatedParamAnnos = methodParameterAnnotations[i];
-						if (cummulatedParamAnnos == null)
-							methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<Annotation>();
-						for (final Annotation anno : paramAnnos)
-							cummulatedParamAnnos.add(anno);
-					}
-				}
-			}
-			catch (final NoSuchMethodException e)
-			{
-				// ignore
-			}
-
-		final Annotation[][] result = new Annotation[methodParameterTypesCount][];
-		for (int i = 0; i < methodParameterTypesCount; i++)
-		{
-			final HashSet<Annotation> paramAnnos = methodParameterAnnotations[i];
-			result[i] = paramAnnos == null ? new Annotation[0] : methodParameterAnnotations[i]
-					.toArray(new Annotation[methodParameterAnnotations[i].size()]);
-
-		}
-		return result;
-	}
-
 	public static Method getSetter(final Class< ? > clazz, final String propertyName)
 	{
 		Assert.argumentNotNull("clazz", clazz);
@@ -555,47 +408,21 @@ public abstract class ReflectionUtils
 
 		try
 		{
-			if (!method.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(method));
-			return (T) method.invoke(obj, args);
+			final SetAccessibleAction act = method.isAccessible() ? null : new SetAccessibleAction(method);
+			if (act != null) AccessController.doPrivileged(act);
+			try
+			{
+				return (T) method.invoke(obj, args);
+			}
+			finally
+			{
+				if (act != null) AccessController.doPrivileged(act.setAccessible(false));
+			}
 		}
 		catch (final Exception ex)
 		{
 			throw new InvokingMethodFailedException(method, obj, ex);
 		}
-	}
-
-	/**
-	 * Returns true if an annotation for the specified type is present on this method, else false. 
-	 *  
-	 * @param method the method to inspect
-	 * @param annotationClass the Class object corresponding to the annotation type
-	 * @param inspectInterfaces whether to also check annotations declared on interface method declaration
-	 * @return true if an annotation for the specified annotation type is present on this method, else false
-	 */
-	public static boolean isAnnotationPresent(final Method method, final Class< ? extends Annotation> annotationClass,
-			final boolean inspectInterfaces)
-	{
-		Assert.argumentNotNull("method", method);
-		Assert.argumentNotNull("annotationClass", annotationClass);
-
-		if (method.isAnnotationPresent(annotationClass)) return true;
-
-		if (!inspectInterfaces || !isPublic(method)) return false;
-
-		final String methodName = method.getName();
-		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
-
-		for (final Class< ? > next : getInterfacesRecursive(method.getDeclaringClass()))
-			try
-			{
-				if (next.getDeclaredMethod(methodName, methodParameterTypes).isAnnotationPresent(annotationClass))
-					return true;
-			}
-			catch (final NoSuchMethodException e)
-			{
-				// ignore
-			}
-		return false;
 	}
 
 	/**
@@ -621,25 +448,6 @@ public abstract class ReflectionUtils
 		{
 			return false;
 		}
-	}
-
-	/**
-	 * @return true if <code>duckLikeObject</code> implements all public methods declared on <code>duckType</code>
-	 */
-	public static boolean isDuckType(final Object duckLikeObject, final Class< ? > duckType)
-	{
-		final Class< ? > duckLikeClass = duckLikeObject.getClass();
-		if (duckType.isAssignableFrom(duckLikeClass)) return true;
-		for (final Method method : duckType.getMethods())
-			try
-			{
-				duckLikeClass.getMethod(method.getName(), method.getParameterTypes());
-			}
-			catch (final NoSuchMethodException e)
-			{
-				return false;
-			}
-		return true;
 	}
 
 	public static boolean isFinal(final Member member)
@@ -772,7 +580,7 @@ public abstract class ReflectionUtils
 		}
 		catch (final ClassNotFoundException ex)
 		{
-			throw new RuntimeException(ex);
+			throw new ReflectionException(ex);
 		}
 	}
 
@@ -788,8 +596,25 @@ public abstract class ReflectionUtils
 		}
 		catch (final ClassNotFoundException ex)
 		{
-			throw new RuntimeException(ex);
+			throw new ReflectionException(ex);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T newProxyInstance(final Class<T> interfaceType, final InvocationHandler handler)
+	{
+		return (T) Proxy.newProxyInstance(interfaceType.getClassLoader(), new Class[]{interfaceType}, handler);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T newProxyInstance(final Class<T> interfaceType, final InvocationHandler handler,
+			final ClassLoader loader)
+	{
+		Assert.argumentNotNull("interfaceType", interfaceType);
+		Assert.argumentNotNull("handler", handler);
+		Assert.argumentNotNull("loader", loader);
+
+		return (T) Proxy.newProxyInstance(loader, new Class[]{interfaceType}, handler);
 	}
 
 	public static boolean setViaSetter(final Object target, final String propertyName, final Object propertyValue)

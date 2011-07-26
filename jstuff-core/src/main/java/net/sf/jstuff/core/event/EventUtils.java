@@ -26,18 +26,18 @@ public abstract class EventUtils
 	/**
 	 * @return the number of listeners notified successfully
 	 */
-	public static <T> int dispatch(final T event, final Collection<EventListener<T>> listeners)
+	public static <T> int fire(final T event, final Collection<EventListener<T>> listeners)
 	{
 		int count = 0;
 		if (listeners != null) for (final EventListener<T> listener : listeners)
-			if (dispatch(event, listener)) count++;
+			if (fire(event, listener)) count++;
 		return count;
 	}
 
 	/**
 	 * @return true if the listener was notified successfully
 	 */
-	public static <T> boolean dispatch(final T event, final EventListener<T> listener)
+	public static <T> boolean fire(final T event, final EventListener<T> listener)
 	{
 		if (listener != null) try
 		{
@@ -63,11 +63,11 @@ public abstract class EventUtils
 	/**
 	 * @return the number of listeners notified successfully
 	 */
-	public static <T> int dispatch(final T event, final EventListener<T>... listeners)
+	public static <T> int fire(final T event, final EventListener<T>... listeners)
 	{
 		int count = 0;
 		if (listeners != null) for (final EventListener<T> listener : listeners)
-			if (dispatch(event, listener)) count++;
+			if (fire(event, listener)) count++;
 		return count;
 	}
 

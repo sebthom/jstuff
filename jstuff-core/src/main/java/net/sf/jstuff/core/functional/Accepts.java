@@ -17,9 +17,9 @@ import java.util.Locale;
 
 import net.sf.jstuff.core.Assert;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

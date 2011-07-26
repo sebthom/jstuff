@@ -55,7 +55,6 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>>
 		Assert.notNull(beanClass, "Property beanClass must be set.");
 
 		final List<T> extractedBeans = new ArrayList<T>();
-		int count = 0;
 
 		for (final Iterator< ? > it = new ResultSetDynaClass(resultSet, true).iterator(); it.hasNext();)
 		{
@@ -73,7 +72,6 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>>
 					BeanUtils.copyProperty(bean, beanPropName, dynaPropValue);
 				}
 				extractedBeans.add(bean);
-				count++;
 			}
 			catch (final Exception ex)
 			{

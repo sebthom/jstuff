@@ -23,7 +23,7 @@ import net.sf.jstuff.core.functional.Function;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
+public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 {
 	public static <T> boolean containsEqual(final T[] theArray, final T theItem)
 	{
@@ -46,24 +46,12 @@ public abstract class ArrayUtils extends org.apache.commons.lang.ArrayUtils
 		return false;
 	}
 
-	public static <T> T[] copy(final T[] array)
-	{
-		if (array == null) return null;
-
-		return array.clone();
-	}
-
 	@SuppressWarnings("unchecked")
 	public static <T> T[] toArray(final Collection<T> values, final Class<T> itemType)
 	{
 		if (values == null) return null;
 
 		return values.toArray((T[]) Array.newInstance(itemType, values.size()));
-	}
-
-	public static <T> T[] toArray(final T... values)
-	{
-		return values;
 	}
 
 	public static List<Boolean> toList(final boolean[] array)

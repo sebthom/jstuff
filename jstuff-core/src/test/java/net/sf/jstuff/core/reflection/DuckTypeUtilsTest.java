@@ -17,13 +17,28 @@ import junit.framework.TestCase;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ReflectionUtilsTest extends TestCase
+public class DuckTypeUtilsTest extends TestCase
 {
-	public void testIsCastable()
+	private static interface Duck
 	{
-		assertTrue(ReflectionUtils.isCastable(Integer.class, Number.class));
-		assertFalse(ReflectionUtils.isCastable(Number.class, Integer.class));
+		void walk();
+	}
 
-		assertTrue(ReflectionUtils.isCastable(String.class, Object.class));
+	public static class DuckLike
+	{
+		public int count = 0;
+
+		public void walk()
+		{
+			count++;
+		}
+	}
+
+	public void testDuckType()
+	{
+		final DuckLike duckLike = new DuckLike();
+		assertEquals(0, duckLike.count);
+		DuckTypeUtils.duckType(duckLike, Duck.class).walk();
+		assertEquals(1, duckLike.count);
 	}
 }
