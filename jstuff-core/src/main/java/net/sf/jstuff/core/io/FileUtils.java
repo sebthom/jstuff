@@ -28,7 +28,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
  */
 public abstract class FileUtils extends org.apache.commons.io.FileUtils
 {
-	private static Logger LOG = Logger.get();
+	private static Logger LOG = Logger.make();
 
 	public static File[] asFileArray(final String... filePaths)
 	{

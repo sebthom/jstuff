@@ -207,7 +207,7 @@ public abstract class DOMUtils
 
 	private static final EntityResolver NOREMOTE_DTD_RESOLVER = new EntityResolver()
 		{
-			private final Logger LOG = Logger.get();
+			private final Logger LOG = Logger.make();
 
 			public InputSource resolveEntity(final String schemaId, final String schemaLocation) throws SAXException,
 					IOException
@@ -221,7 +221,7 @@ public abstract class DOMUtils
 			}
 		};
 
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private static final NamespaceContextImpl NAMESPACE_CONTEXT = new NamespaceContextImpl();
 	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();

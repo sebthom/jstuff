@@ -26,7 +26,7 @@ public final class Logger
 	/**
 	 * Returns a new logger instance named corresponding to the current class.
 	 */
-	public static Logger get()
+	public static Logger make()
 	{
 		// getCallingClassName() must be in a separate line otherwise it will return a wrong name
 		final String name = StackTraceUtils.getCallingClassName();
@@ -37,7 +37,7 @@ public final class Logger
 	/**
 	 * Returns a new logger instance named corresponding to the class passed as parameter.
 	 */
-	public static Logger get(final Class< ? > clazz)
+	public static Logger make(final Class< ? > clazz)
 	{
 		return new Logger(LoggerFactory.getLogger(clazz));
 	}
@@ -45,7 +45,7 @@ public final class Logger
 	/**
 	 * Returns a new logger instance named according to the name parameter.
 	 */
-	public static Logger get(final String name)
+	public static Logger make(final String name)
 	{
 		return new Logger(LoggerFactory.getLogger(name));
 	}

@@ -30,22 +30,6 @@ import net.sf.jstuff.core.Assert;
  */
 public abstract class AnnotationUtils extends org.apache.commons.lang3.AnnotationUtils
 {
-	public static Map<String, Object> getAnnotationParameters(final Annotation annotation) throws ReflectionException
-	{
-		final Method[] methods = annotation.annotationType().getDeclaredMethods();
-		final Map<String, Object> parameters = new HashMap<String, Object>(methods.length);
-		for (final Method m : methods)
-			try
-			{
-				parameters.put(m.getName(), m.invoke(annotation));
-			}
-			catch (final Exception ex)
-			{
-				throw new InvokingMethodFailedException(m, annotation, ex);
-			}
-		return parameters;
-	}
-
 	/**
 	 * Returns all annotations present on this class.
 	 * @param clazz the class to inspect
@@ -166,6 +150,22 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 		return result;
 	}
 
+	public static Map<String, Object> getParameters(final Annotation annotation) throws ReflectionException
+	{
+		final Method[] methods = annotation.annotationType().getDeclaredMethods();
+		final Map<String, Object> parameters = new HashMap<String, Object>(methods.length);
+		for (final Method m : methods)
+			try
+			{
+				parameters.put(m.getName(), m.invoke(annotation));
+			}
+			catch (final Exception ex)
+			{
+				throw new InvokingMethodFailedException(m, annotation, ex);
+			}
+		return parameters;
+	}
+
 	/**
 	 * Returns true if an annotation for the specified type is present on this method, else false. 
 	 *  
@@ -200,13 +200,12 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 		return false;
 	}
 
-	public static <T extends Annotation> T newAnnotationInstance(final Class<T> annotationType)
-			throws ReflectionException
+	public static <T extends Annotation> T makeAnnotationInstance(final Class<T> annotationType) throws ReflectionException
 	{
-		return newAnnotationInstance(annotationType, null);
+		return makeAnnotationInstance(annotationType, null);
 	}
 
-	public static <T extends Annotation> T newAnnotationInstance(final Class<T> annotationType,
+	public static <T extends Annotation> T makeAnnotationInstance(final Class<T> annotationType,
 			final Map<String, Object> attributes) throws ReflectionException
 	{
 		/*
@@ -240,7 +239,7 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 		 */
 		try
 		{
-			return ReflectionUtils.newProxyInstance(annotationType, new InvocationHandler()
+			return ReflectionUtils.makeProxyInstance(annotationType, new InvocationHandler()
 				{
 					public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 					{

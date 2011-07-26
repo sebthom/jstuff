@@ -25,7 +25,7 @@ import net.sf.jstuff.core.Logger;
  */
 public abstract class AbstractServer
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	protected final Executor executor;
 	protected volatile boolean isRunning;

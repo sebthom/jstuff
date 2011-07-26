@@ -36,7 +36,7 @@ import net.sf.jstuff.core.Logger;
  */
 public abstract class ReflectionUtils
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission(
 			"suppressAccessChecks");
@@ -601,13 +601,13 @@ public abstract class ReflectionUtils
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T newProxyInstance(final Class<T> interfaceType, final InvocationHandler handler)
+	public static <T> T makeProxyInstance(final Class<T> interfaceType, final InvocationHandler handler)
 	{
 		return (T) Proxy.newProxyInstance(interfaceType.getClassLoader(), new Class[]{interfaceType}, handler);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T newProxyInstance(final Class<T> interfaceType, final InvocationHandler handler,
+	public static <T> T makeProxyInstance(final Class<T> interfaceType, final InvocationHandler handler,
 			final ClassLoader loader)
 	{
 		Assert.argumentNotNull("interfaceType", interfaceType);
@@ -615,6 +615,25 @@ public abstract class ReflectionUtils
 		Assert.argumentNotNull("loader", loader);
 
 		return (T) Proxy.newProxyInstance(loader, new Class[]{interfaceType}, handler);
+	}
+
+	public static <T> T makeSynchronized(final Class<T> objectInterface, final T object)
+	{
+		return makeSynchronized(objectInterface, object, object);
+	}
+
+	public static <T> T makeSynchronized(final Class<T> objectInterface, final T object, final Object lock)
+	{
+		return makeProxyInstance(objectInterface, new InvocationHandler()
+			{
+				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+				{
+					synchronized (lock)
+					{
+						return method.invoke(object, args);
+					}
+				}
+			});
 	}
 
 	public static boolean setViaSetter(final Object target, final String propertyName, final Object propertyValue)

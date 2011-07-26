@@ -33,7 +33,7 @@ import org.springframework.util.PatternMatchUtils;
  */
 public class AuthServiceImpl implements AuthService
 {
-	private final static Logger LOG = Logger.get();
+	private final static Logger LOG = Logger.make();
 
 	private Set<String> applicationRoles;
 	private Authenticator authenticator;

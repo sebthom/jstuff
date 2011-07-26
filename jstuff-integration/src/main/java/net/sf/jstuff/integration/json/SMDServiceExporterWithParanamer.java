@@ -25,7 +25,7 @@ import com.thoughtworks.paranamer.Paranamer;
  */
 public class SMDServiceExporterWithParanamer extends SMDServiceExporter
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private final Paranamer paranamer = new CachingParanamer(new BytecodeReadingParanamer());
 

@@ -28,7 +28,7 @@ import net.sf.jstuff.core.Logger;
  */
 public class EventManager<EventType> implements EventListenable<EventType>
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private final Set<EventListener<EventType>> eventListeners = new CopyOnWriteArraySet<EventListener<EventType>>();
 	private final Set<EventListener<EventType>> eventListenersUnmodifiable = Collections

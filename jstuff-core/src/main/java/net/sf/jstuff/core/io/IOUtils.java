@@ -34,7 +34,7 @@ import net.sf.jstuff.core.ThreadUtils;
  */
 public abstract class IOUtils extends org.apache.commons.io.IOUtils
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	public static int copyAndClose(final InputStream is, final OutputStream os) throws IOException
 	{

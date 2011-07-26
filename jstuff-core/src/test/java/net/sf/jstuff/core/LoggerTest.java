@@ -19,7 +19,7 @@ import junit.framework.TestCase;
  */
 public class LoggerTest extends TestCase
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	public void testLogger()
 	{

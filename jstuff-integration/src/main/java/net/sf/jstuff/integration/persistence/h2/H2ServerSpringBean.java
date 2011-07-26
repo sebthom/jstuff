@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class H2ServerSpringBean implements InitializingBean, DisposableBean
 {
-	private final static Logger LOG = Logger.get();
+	private final static Logger LOG = Logger.make();
 
 	private String dataDir;
 

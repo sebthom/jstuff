@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  */
 public class URLClassLoaderExt extends URLClassLoader
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private boolean parentLast = false;
 

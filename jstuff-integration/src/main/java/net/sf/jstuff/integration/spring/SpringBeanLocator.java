@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private static SpringBeanLocator DEFAULT_INSTANCE;
 

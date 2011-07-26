@@ -27,7 +27,7 @@ import com.thoughtworks.paranamer.Paranamer;
  */
 public abstract class AbstractRESTServiceExporterWithParanamer extends AbstractRESTServiceExporter
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private final Paranamer paranamer = new CachingParanamer(new BytecodeReadingParanamer());
 

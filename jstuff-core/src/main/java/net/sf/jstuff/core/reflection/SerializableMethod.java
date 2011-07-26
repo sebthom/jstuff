@@ -27,7 +27,7 @@ import net.sf.jstuff.core.Logger;
  */
 public final class SerializableMethod implements Serializable
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private static final WeakHashMap<Method, SerializableMethod> CACHE = new WeakHashMap<Method, SerializableMethod>();
 

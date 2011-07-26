@@ -29,9 +29,9 @@ public class AnnotationUtilsTest extends TestCase
 		final Map<String, Object> m1 = CollectionUtils.newHashMap("value", "hello!");
 		final Map<String, Object> m2 = CollectionUtils.newHashMap("value", "hi!");
 
-		final Ignore a1a = AnnotationUtils.newAnnotationInstance(Ignore.class, m1);
-		final Ignore a1b = AnnotationUtils.newAnnotationInstance(Ignore.class, m1);
-		final Ignore a2 = AnnotationUtils.newAnnotationInstance(Ignore.class, m2);
+		final Ignore a1a = AnnotationUtils.makeAnnotationInstance(Ignore.class, m1);
+		final Ignore a1b = AnnotationUtils.makeAnnotationInstance(Ignore.class, m1);
+		final Ignore a2 = AnnotationUtils.makeAnnotationInstance(Ignore.class, m2);
 
 		assertEquals(a1a, a1b);
 		assertFalse(a1a.equals(a2));

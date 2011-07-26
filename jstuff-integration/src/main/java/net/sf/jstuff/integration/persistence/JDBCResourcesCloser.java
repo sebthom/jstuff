@@ -29,7 +29,7 @@ import net.sf.jstuff.core.Logger;
  */
 public class JDBCResourcesCloser
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private final LinkedList<Object> resources = new LinkedList<Object>();
 
@@ -71,10 +71,11 @@ public class JDBCResourcesCloser
 	/**
 	 * Closes the resources registered at last.
 	 */
-	public void closeLast()
+	public Object closeLast()
 	{
 		final Object resource = resources.removeFirst();
 		close(resource);
+		return resource;
 	}
 
 	/**

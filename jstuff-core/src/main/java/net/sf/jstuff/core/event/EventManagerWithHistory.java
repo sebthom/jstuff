@@ -24,7 +24,7 @@ import net.sf.jstuff.core.Logger;
  */
 public class EventManagerWithHistory<EventType> extends EventManager<EventType>
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private LinkedList<EventType> eventHistory;
 
@@ -32,23 +32,6 @@ public class EventManagerWithHistory<EventType> extends EventManager<EventType>
 	{
 		LOG.info("Instantiated.");
 		initEventHistory();
-	}
-
-	/**
-	 * Sends all recorded events to the given listeners in case it was not added already.
-	 */
-	public boolean subscribeAndReplayHistory(final EventListener<EventType> listener)
-	{
-		Assert.argumentNotNull("listener", listener);
-
-		if (super.subscribe(listener))
-		{
-			for (final Iterator<EventType> it = getEventHistory(); it.hasNext();)
-				listener.onEvent(it.next());
-			return true;
-		}
-
-		return false;
 	}
 
 	protected void addEventToHistory(final EventType event)
@@ -59,11 +42,6 @@ public class EventManagerWithHistory<EventType> extends EventManager<EventType>
 	public void clearHistory()
 	{
 		eventHistory.clear();
-	}
-
-	protected Iterator<EventType> getEventHistory()
-	{
-		return eventHistory.iterator();
 	}
 
 	@Override
@@ -82,8 +60,30 @@ public class EventManagerWithHistory<EventType> extends EventManager<EventType>
 		return super.fireAsync(event);
 	}
 
+	protected Iterator<EventType> getEventHistory()
+	{
+		return eventHistory.iterator();
+	}
+
 	protected void initEventHistory()
 	{
 		eventHistory = new LinkedList<EventType>();
+	}
+
+	/**
+	 * Sends all recorded events to the given listeners in case it was not added already.
+	 */
+	public boolean subscribeAndReplayHistory(final EventListener<EventType> listener)
+	{
+		Assert.argumentNotNull("listener", listener);
+
+		if (super.subscribe(listener))
+		{
+			for (final Iterator<EventType> it = getEventHistory(); it.hasNext();)
+				listener.onEvent(it.next());
+			return true;
+		}
+
+		return false;
 	}
 }

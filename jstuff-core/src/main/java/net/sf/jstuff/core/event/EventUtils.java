@@ -21,7 +21,7 @@ import net.sf.jstuff.core.Logger;
  */
 public abstract class EventUtils
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	/**
 	 * @return the number of listeners notified successfully

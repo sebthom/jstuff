@@ -24,7 +24,7 @@ import net.sf.jstuff.core.Logger;
  */
 public abstract class JMXUtils
 {
-	private static Logger LOG = Logger.get();
+	private static Logger LOG = Logger.make();
 
 	public static MBeanServer getMBeanServer()
 	{

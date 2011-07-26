@@ -22,7 +22,7 @@ import net.sf.jstuff.core.Logger;
  */
 public abstract class DuckTypeUtils
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	/**
 	 * Creates a dynamic proxy object of type <code>duckInterface</code> forwarding all method invocations
@@ -38,7 +38,7 @@ public abstract class DuckTypeUtils
 
 		LOG.debug("Ducktyping {} to type {}", duckLikeObject, duckInterface);
 
-		return ReflectionUtils.newProxyInstance(duckInterface, new InvocationHandler()
+		return ReflectionUtils.makeProxyInstance(duckInterface, new InvocationHandler()
 			{
 				public Object invoke(final Object duckProxy, final Method duckMethod, final Object[] args)
 						throws Throwable

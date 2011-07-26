@@ -30,7 +30,7 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
  */
 public class RESTServiceExporterXStreamImpl extends AbstractRESTServiceExporter
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private final XStream xStream;
 

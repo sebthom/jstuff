@@ -42,7 +42,7 @@ import org.springframework.jdbc.core.RowMapper;
  */
 public class BeanRowMapper<T> implements RowMapper<T>
 {
-	private final static Logger LOG = Logger.get();
+	private final static Logger LOG = Logger.make();
 
 	private Class<T> beanClass;
 

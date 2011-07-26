@@ -33,7 +33,7 @@ import org.xml.sax.SAXParseException;
  */
 public class DOMFile
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private final Document domDocument;
 	private final Element domRoot;

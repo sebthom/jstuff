@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class AuthenticatorLDAPImpl implements Authenticator
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private LDAPTemplate ldapTemplate;
 

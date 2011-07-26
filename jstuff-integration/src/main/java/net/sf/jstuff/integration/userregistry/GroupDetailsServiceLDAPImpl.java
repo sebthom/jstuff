@@ -36,7 +36,7 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 {
-	private final static Logger LOG = Logger.get();
+	private final static Logger LOG = Logger.make();
 
 	protected String groupAttributeDisplayName;
 	protected String groupAttributeGroupId;

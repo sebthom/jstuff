@@ -33,7 +33,7 @@ import net.sf.jstuff.core.StringUtils;
  */
 public abstract class NetUtils
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	/**
 	 * TODO should return all the bound IP addresses, but returns currently all local ip addresses

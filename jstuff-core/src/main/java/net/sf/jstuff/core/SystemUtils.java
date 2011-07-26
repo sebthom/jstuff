@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	public static boolean isLinux()
 	{

@@ -46,7 +46,7 @@ import org.springframework.web.util.NestedServletException;
  */
 public class SMDServiceExporter extends RemoteExporter implements HttpRequestHandler, InitializingBean
 {
-	private final static Logger LOG = Logger.get();
+	private final static Logger LOG = Logger.make();
 
 	/**
 	 * The exported methods by name.

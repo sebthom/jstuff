@@ -25,7 +25,7 @@ import net.sf.jstuff.core.Logger;
  */
 public class DateTimeHelper
 {
-	private static final Logger LOG = Logger.get();
+	private static final Logger LOG = Logger.make();
 
 	private final Locale locale;
 

@@ -34,7 +34,7 @@ import net.sf.jstuff.core.Logger;
  */
 public class ResponseHeaderSettingFilter implements Filter
 {
-	private final static Logger LOG = Logger.get();
+	private final static Logger LOG = Logger.make();
 	private final Map<String, String> parameter = new LinkedHashMap<String, String>();
 
 	public void destroy()
