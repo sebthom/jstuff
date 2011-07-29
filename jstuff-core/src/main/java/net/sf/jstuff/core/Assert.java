@@ -104,6 +104,19 @@ public abstract class Assert
 	}
 
 	/**
+	 * @throws IllegalArgumentException if string <code>value</code> is null or has a length of 0
+	 */
+	public static <T> void argumentNotEmpty(final String argumentName, final CharSequence value)
+	{
+		argumentNotNull("argumentName", argumentName);
+
+		if (value == null)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
+		if (value.length() == 0)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
+	}
+
+	/**
 	 * @throws IllegalArgumentException if <code>value</code> collection is null or empty
 	 */
 	public static <T> void argumentNotEmpty(final String argumentName, final Collection<T> value)
@@ -126,19 +139,6 @@ public abstract class Assert
 		if (value == null)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
 		if (value.isEmpty())
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
-	}
-
-	/**
-	 * @throws IllegalArgumentException if string <code>value</code> is null or has a length of 0
-	 */
-	public static <T> void argumentNotEmpty(final String argumentName, final String value)
-	{
-		argumentNotNull("argumentName", argumentName);
-
-		if (value == null)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
-		if (value.length() == 0)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
 	}
 
@@ -236,7 +236,7 @@ public abstract class Assert
 		if (!value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 	}
 
-	public static <T> void notEmpty(final String value, final String errorMessage)
+	public static <T> void notEmpty(final CharSequence value, final String errorMessage)
 	{
 		if (value == null || value.length() == 0)
 			throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));

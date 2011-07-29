@@ -154,7 +154,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 
 	public static CharSequence ansiColorsToHTML(final CharSequence txt, final ANSIState initialState)
 	{
-		if (txt == null || txt.length() == 0) return null;
+		if (isEmpty(txt)) return txt;
 		Assert.argumentNotNull("initialState", initialState);
 
 		final char ESCAPE = '\u001B';
@@ -241,11 +241,13 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	public static CharSequence capitalize(final CharSequence seq)
 	{
 		if (seq == null) return null;
+
 		final int len = seq.length();
 		if (len == 0) return "";
-		if (len == 1) return seq.toString().toUpperCase();
 
-		return new StringBuilder(Character.toUpperCase(seq.charAt(0))).append(seq.toString().substring(1));
+		final StringBuilder sb = new StringBuilder(Character.toUpperCase(seq.charAt(0)));
+		if (len > 1) sb.append(seq.toString().substring(1));
+		return sb;
 	}
 
 	/**
@@ -472,7 +474,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	 * @param searchIn The string to search
 	 * @param searchFor The string to find
 	 * @param replaceWith The string to replace searchFor with.
-	 * @return Returns searchIn with all occurences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be returned. 
+	 * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be returned. 
 	 */
 	public static CharSequence replaceIgnoreCase(final String searchIn, String searchFor, CharSequence replaceWith)
 	{

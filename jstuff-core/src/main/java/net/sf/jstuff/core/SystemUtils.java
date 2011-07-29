@@ -22,31 +22,6 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils
 {
 	private static final Logger LOG = Logger.make();
 
-	public static boolean isLinux()
-	{
-		return OS_NAME != null && OS_NAME.toLowerCase().contains("linux");
-	}
-
-	public static boolean isMac()
-	{
-		return OS_NAME != null && OS_NAME.toLowerCase().contains("mac");
-	}
-
-	public static boolean isSun()
-	{
-		return OS_NAME != null && OS_NAME.toLowerCase().contains("sun");
-	}
-
-	public static boolean isUnix()
-	{
-		return File.separatorChar == '/';
-	}
-
-	public static boolean isWindows()
-	{
-		return OS_NAME != null && OS_NAME.toLowerCase().contains("windows");
-	}
-
 	/**
 	 * opens the given file with the default application handler
 	 * 
@@ -54,10 +29,10 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils
 	 */
 	public static void launchWithDefaultApplication(final File file) throws IOException
 	{
-		if (isWindows())
+		if (IS_OS_WINDOWS)
 			Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler \"" + file.getAbsolutePath() + "\"");
 		//"rundll32 SHELL32.DLL,ShellExec_RunDLL " + absoluteFilePath
-		else if (isMac()) Runtime.getRuntime().exec("open \"" + file.getAbsolutePath() + "\"");
+		else if (IS_OS_MAC) Runtime.getRuntime().exec("open \"" + file.getAbsolutePath() + "\"");
 
 		throw new UnsupportedOperationException("Not supported on platform " + OS_NAME);
 	}
@@ -66,12 +41,12 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils
 	{
 		try
 		{
-			if (isWindows())
+			if (IS_OS_WINDOWS)
 				Runtime.getRuntime()
 						.exec("rundll32 url.dll,FileProtocolHandler javascript:location.href='" + url + "'");
-			else if (isMac())
+			else if (IS_OS_MAC)
 				Runtime.getRuntime().exec("open " + url);
-			else if (isSun())
+			else if (IS_OS_SUN_OS)
 				Runtime.getRuntime().exec("/usr/dt/bin/sdtwebclient " + url);
 			else
 			{
