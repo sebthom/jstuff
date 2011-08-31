@@ -12,6 +12,9 @@
  *******************************************************************************/
 package net.sf.jstuff.core.net;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+
 import junit.framework.TestCase;
 
 /**
@@ -25,4 +28,20 @@ public class NetUtilsTest extends TestCase
 		assertFalse(NetUtils.isKnownHost("qwerwerdfsdfwer"));
 	}
 
+	public void testIsPortOpen() throws IOException
+	{
+		final ServerSocket serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort());
+		assertTrue(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(),
+				serverSocket.getLocalPort()));
+
+		NetUtils.closeQuietly(serverSocket);
+		assertFalse(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(),
+				serverSocket.getLocalPort()));
+	}
+
+	public void testIsReachable()
+	{
+		assertTrue(NetUtils.isHostReachable("localhost", 2000));
+		assertFalse(NetUtils.isHostReachable("qwerwerdfsdfwer", 2000));
+	}
 }

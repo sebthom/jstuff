@@ -7,7 +7,6 @@ jstuff-core/src/main/java/net/sf/jstuff/core/ImageUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Logger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Mutable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ObjectCache.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/Profiler.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StackTraceUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text

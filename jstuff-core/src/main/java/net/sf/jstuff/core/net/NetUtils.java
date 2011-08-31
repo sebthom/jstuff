@@ -14,9 +14,12 @@ package net.sf.jstuff.core.net;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.JarURLConnection;
 import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
@@ -34,6 +37,57 @@ import net.sf.jstuff.core.StringUtils;
 public abstract class NetUtils
 {
 	private static final Logger LOG = Logger.make();
+
+	public static void closeQuietly(final DatagramSocket socket)
+	{
+		if (socket == null) return;
+		socket.close();
+	}
+
+	public static void closeQuietly(final ServerSocket socket)
+	{
+		if (socket == null) return;
+		try
+		{
+			socket.close();
+		}
+		catch (final IOException ex)
+		{
+			LOG.debug("Exception occured while closing socket.", ex);
+		}
+	}
+
+	public static void closeQuietly(final Socket socket)
+	{
+		if (socket == null) return;
+		try
+		{
+			if (!socket.isClosed())
+			{
+				if (!socket.isOutputShutdown()) socket.shutdownOutput();
+				if (!socket.isClosed()) socket.close();
+			}
+		}
+		catch (final IOException ex)
+		{
+			LOG.debug("Exception occured while closing socket.", ex);
+		}
+	}
+
+	public static int getAvailableLocalPort()
+	{
+		try
+		{
+			final ServerSocket socket = new ServerSocket(0);
+			socket.setReuseAddress(true);
+			socket.close();
+			return socket.getLocalPort();
+		}
+		catch (final IOException ex)
+		{
+			throw new IllegalStateException("Failed to determine an available local port.", ex);
+		}
+	}
 
 	/**
 	 * TODO should return all the bound IP addresses, but returns currently all local ip addresses
@@ -114,6 +168,20 @@ public abstract class NetUtils
 		}
 	}
 
+	public static boolean isHostReachable(final String hostname, final int timeoutInMS)
+	{
+		Assert.argumentNotNull("hostname", hostname);
+		try
+		{
+			return InetAddress.getByName(hostname).isReachable(timeoutInMS);
+		}
+		catch (final IOException ex)
+		{
+			LOG.trace("Failed to reach host [%s].", ex, hostname);
+			return false;
+		}
+	}
+
 	public static boolean isKnownHost(final String hostname)
 	{
 		Assert.argumentNotNull("hostname", hostname);
@@ -127,6 +195,37 @@ public abstract class NetUtils
 			LOG.trace("Host [%s] is unknown.", hostname);
 			return false;
 		}
+	}
+
+	public static boolean isLocalPortAvailable(final int port)
+	{
+		try
+		{
+			final ServerSocket socket = new ServerSocket(port);
+			socket.setReuseAddress(true);
+			socket.close();
+			return true;
+		}
+		catch (final IOException ex)
+		{
+			return false;
+		}
+	}
+
+	public static boolean isRemotePortOpen(final String hostname, final int port)
+	{
+		Assert.argumentNotNull("hostname", hostname);
+		Socket socket = null;
+		try
+		{
+			socket = new Socket(hostname, port);
+		}
+		catch (final IOException ex)
+		{
+			return false;
+		}
+		closeQuietly(socket);
+		return true;
 	}
 
 	protected NetUtils()
