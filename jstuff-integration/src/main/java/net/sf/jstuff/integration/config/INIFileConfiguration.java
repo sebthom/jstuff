@@ -23,7 +23,6 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -135,14 +134,13 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 		return StringUtils.toString(resolveContainerStore(key));
 	}
 
-	@SuppressWarnings("unchecked")
 	public Set<String> getSections()
 	{
 		final Set<String> sections = isAutoSort ? new TreeSet<String>() : new LinkedSet<String>();
 		sections.addAll(loadedSections);
 
 		// this will result in new sections being added to the end of the file
-		for (final String key : toIterable((Iterator<String>) getKeys()))
+		for (final String key : toIterable(getKeys()))
 		{
 			final int index = key.indexOf('.');
 			if (index > -1) sections.add(key.substring(0, index - 1));
@@ -333,7 +331,6 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 
 				final Configuration subset = subset(section);
 
-				@SuppressWarnings("unchecked")
 				final List<String> keys = toList(subset.getKeys());
 				if (isAutoSort) Collections.sort(keys);
 
