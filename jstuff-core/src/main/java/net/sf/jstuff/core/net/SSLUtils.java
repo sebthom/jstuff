@@ -29,7 +29,7 @@ public abstract class SSLUtils
 
 	public static void installAllTrustManager()
 	{
-		final TrustManager[] trustAllCerts = new TrustManager[]{new javax.net.ssl.X509TrustManager()
+		final TrustManager[] trustAllCerts = {new javax.net.ssl.X509TrustManager()
 			{
 				public void checkClientTrusted(final java.security.cert.X509Certificate[] certs, final String authType)
 				{

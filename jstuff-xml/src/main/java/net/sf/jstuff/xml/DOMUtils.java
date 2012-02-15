@@ -45,12 +45,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.MapWithLists;
 import net.sf.jstuff.core.io.FileUtils;
+import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.validation.Assert;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.w3c.dom.Attr;
@@ -229,7 +230,7 @@ public abstract class DOMUtils
 
 	private static List<Attr> _getIdAttributes(final Element element, final XPathNodeConfiguration config)
 	{
-		Assert.argumentNotNull("element", element);
+		Args.notNull("element", element);
 
 		final NamedNodeMap nodeMap = element.getAttributes();
 		final List<Attr> result = CollectionUtils.newArrayList(nodeMap.getLength());
@@ -322,7 +323,7 @@ public abstract class DOMUtils
 	 */
 	public static Node findNode(final String xPathExpression, final Node searchScope) throws XMLException
 	{
-		Assert.argumentNotNull("xPathExpression", xPathExpression);
+		Args.notNull("xPathExpression", xPathExpression);
 
 		try
 		{
@@ -342,8 +343,8 @@ public abstract class DOMUtils
 	 */
 	public static List<Node> findNodes(final String xPathExpression, final Node searchScope) throws XMLException
 	{
-		Assert.argumentNotNull("xPathExpression", xPathExpression);
-		Assert.argumentNotNull("searchScope", searchScope);
+		Args.notNull("xPathExpression", xPathExpression);
+		Args.notNull("searchScope", searchScope);
 
 		try
 		{
@@ -361,7 +362,7 @@ public abstract class DOMUtils
 
 	public static List<Attr> getAttributes(final Element element)
 	{
-		Assert.argumentNotNull("element", element);
+		Args.notNull("element", element);
 
 		final NamedNodeMap nodeMap = element.getAttributes();
 		final List<Attr> result = CollectionUtils.newArrayList(nodeMap.getLength());
@@ -380,14 +381,14 @@ public abstract class DOMUtils
 	 */
 	public static Node getFirstChild(final Node node) throws XMLException
 	{
-		Assert.argumentNotNull("node", node);
+		Args.notNull("node", node);
 
 		return findNode("*", node);
 	}
 
 	public static List<Attr> getIdAttributes(final Element element)
 	{
-		Assert.argumentNotNull("element", element);
+		Args.notNull("element", element);
 
 		final NamedNodeMap nodeMap = element.getAttributes();
 		final List<Attr> result = CollectionUtils.newArrayList(nodeMap.getLength());
@@ -404,7 +405,7 @@ public abstract class DOMUtils
 	 */
 	public static SortedMap<String, XPathNode> getXPathNodes(final Element element)
 	{
-		Assert.argumentNotNull("element", element);
+		Args.notNull("element", element);
 
 		final SortedMap<String, XPathNode> valuesByXPath = new TreeMap<String, XPathNode>();
 		_getXPathNodes(element, XPathNodeConfiguration.INTERNAL_SHARED_INSTANCE, "", valuesByXPath);
@@ -416,8 +417,8 @@ public abstract class DOMUtils
 	 */
 	public static SortedMap<String, XPathNode> getXPathNodes(final Element element, final XPathNodeConfiguration config)
 	{
-		Assert.argumentNotNull("element", element);
-		Assert.argumentNotNull("config", config);
+		Args.notNull("element", element);
+		Args.notNull("config", config);
 
 		final SortedMap<String, XPathNode> valuesByXPath = new TreeMap<String, XPathNode>();
 		_getXPathNodes(element, config, "", valuesByXPath);
@@ -430,16 +431,16 @@ public abstract class DOMUtils
 	@SuppressWarnings("unchecked")
 	public static <T extends Node> T importNode(final T nodeToImport, final Node newParentNode)
 	{
-		Assert.argumentNotNull("nodeToImport", nodeToImport);
-		Assert.argumentNotNull("newParentNode", newParentNode);
+		Args.notNull("nodeToImport", nodeToImport);
+		Args.notNull("newParentNode", newParentNode);
 
 		return (T) newParentNode.appendChild(newParentNode.getOwnerDocument().importNode(nodeToImport, true));
 	}
 
 	public static <T extends Node> List<T> importNodes(final Collection<T> nodesToImport, final Node newParentNode)
 	{
-		Assert.argumentNotNull("nodesToImport", nodesToImport);
-		Assert.argumentNotNull("newParentNode", newParentNode);
+		Args.notNull("nodesToImport", nodesToImport);
+		Args.notNull("newParentNode", newParentNode);
 
 		return importNodes(nodesToImport, newParentNode, null);
 	}
@@ -451,8 +452,8 @@ public abstract class DOMUtils
 	public static <T extends Node> List<T> importNodes(final Collection<T> nodesToImport, final Node newParentNode,
 			final Node insertBeforeNode)
 	{
-		Assert.argumentNotNull("nodesToImport", nodesToImport);
-		Assert.argumentNotNull("newParentNode", newParentNode);
+		Args.notNull("nodesToImport", nodesToImport);
+		Args.notNull("newParentNode", newParentNode);
 
 		final List<T> newNodes = new ArrayList<T>(nodesToImport.size());
 		for (final T nodeToImport : nodesToImport)
@@ -467,8 +468,8 @@ public abstract class DOMUtils
 
 	public static List<Node> importNodes(final NodeList nodesToImport, final Node newParentNode)
 	{
-		Assert.argumentNotNull("nodesToImport", nodesToImport);
-		Assert.argumentNotNull("newParentNode", newParentNode);
+		Args.notNull("nodesToImport", nodesToImport);
+		Args.notNull("newParentNode", newParentNode);
 
 		return importNodes(nodeListToList(nodesToImport), newParentNode, null);
 	}
@@ -479,15 +480,15 @@ public abstract class DOMUtils
 	public static List<Node> importNodes(final NodeList nodesToImport, final Node newParentNode,
 			final Node insertBeforeNode)
 	{
-		Assert.argumentNotNull("nodesToImport", nodesToImport);
-		Assert.argumentNotNull("newParentNode", newParentNode);
+		Args.notNull("nodesToImport", nodesToImport);
+		Args.notNull("newParentNode", newParentNode);
 
 		return importNodes(nodeListToList(nodesToImport), newParentNode, insertBeforeNode);
 	}
 
 	public static Node[] nodeListToArray(final NodeList nodes)
 	{
-		Assert.argumentNotNull("nodes", nodes);
+		Args.notNull("nodes", nodes);
 
 		final Node[] result = new Node[nodes.getLength()];
 		for (int i = 0, l = nodes.getLength(); i < l; i++)
@@ -497,7 +498,7 @@ public abstract class DOMUtils
 
 	public static List<Node> nodeListToList(final NodeList nodes)
 	{
-		Assert.argumentNotNull("nodes", nodes);
+		Args.notNull("nodes", nodes);
 
 		final List<Node> result = CollectionUtils.newArrayList(nodes.getLength());
 
@@ -513,7 +514,7 @@ public abstract class DOMUtils
 	 */
 	public static Document parseFile(final File xmlFile) throws IOException, XMLException
 	{
-		Assert.argumentNotNull("xmlFile", xmlFile);
+		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
 		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null,
@@ -528,7 +529,7 @@ public abstract class DOMUtils
 	 */
 	public static Document parseFile(final File xmlFile, final File... xmlSchemaFiles) throws IOException, XMLException
 	{
-		Assert.argumentNotNull("xmlFile", xmlFile);
+		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
 		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null,
@@ -545,7 +546,7 @@ public abstract class DOMUtils
 	public static Document parseFile(final File xmlFile, final String rootElementNamespace,
 			final File... xmlSchemaFiles) throws IOException, XMLException
 	{
-		Assert.argumentNotNull("xmlFile", xmlFile);
+		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
 		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(),
@@ -564,7 +565,7 @@ public abstract class DOMUtils
 	public static Document parseInputSource(final InputSource input, final String inputId,
 			final String rootElementNamespace, final File... xmlSchemaFiles) throws IOException, XMLException
 	{
-		Assert.argumentNotNull("input", input);
+		Args.notNull("input", input);
 
 		try
 		{
@@ -657,7 +658,7 @@ public abstract class DOMUtils
 	 */
 	public static Document parseString(final String input, final String inputId) throws IOException, XMLException
 	{
-		Assert.argumentNotNull("input", input);
+		Args.notNull("input", input);
 
 		return parseInputSource(new InputSource(new StringReader(input)), inputId, null, (File[]) null);
 	}
@@ -674,7 +675,7 @@ public abstract class DOMUtils
 	public static Document parseString(final String input, final String inputId, final String rootElementNamespace,
 			final File... xmlSchemaFiles) throws IOException, XMLException
 	{
-		Assert.argumentNotNull("input", input);
+		Args.notNull("input", input);
 
 		return parseInputSource(new InputSource(new StringReader(input)), inputId, rootElementNamespace, xmlSchemaFiles);
 	}
@@ -684,8 +685,8 @@ public abstract class DOMUtils
 	 */
 	public static void registerNamespace(final String namespaceURI, final String prefix)
 	{
-		Assert.argumentNotNull("namespaceURI", namespaceURI);
-		Assert.argumentNotNull("prefix", prefix);
+		Args.notNull("namespaceURI", namespaceURI);
+		Args.notNull("prefix", prefix);
 
 		NAMESPACE_CONTEXT.registerNamespace(namespaceURI, prefix);
 	}
@@ -695,7 +696,7 @@ public abstract class DOMUtils
 	 */
 	public static String renderToString(final Document domDocument) throws XMLException
 	{
-		Assert.argumentNotNull("domDocument", domDocument);
+		Args.notNull("domDocument", domDocument);
 
 		try
 		{
@@ -723,8 +724,8 @@ public abstract class DOMUtils
 	 */
 	public static void saveToFile(final Document domDocument, final File targetFile) throws IOException, XMLException
 	{
-		Assert.argumentNotNull("domDocument", domDocument);
-		Assert.argumentNotNull("targetFile", targetFile);
+		Args.notNull("domDocument", domDocument);
+		Args.notNull("targetFile", targetFile);
 
 		try
 		{
@@ -756,8 +757,8 @@ public abstract class DOMUtils
 	public static void saveToFileAfterBackup(final Document domDocument, final File targetFile) throws IOException,
 			XMLException
 	{
-		Assert.argumentNotNull("domDocument", domDocument);
-		Assert.argumentNotNull("targetFile", targetFile);
+		Args.notNull("domDocument", domDocument);
+		Args.notNull("targetFile", targetFile);
 
 		FileUtils.backupFile(targetFile);
 

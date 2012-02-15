@@ -12,8 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.spring;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Assert;
 
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;

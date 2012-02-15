@@ -20,8 +20,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -41,34 +41,9 @@ public class EventManager<EventType> implements EventListenable<EventType>
 		LOG.info("Instantiated.");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean subscribe(final EventListener<EventType> listener)
-	{
-		Assert.argumentNotNull("listener", listener);
-
-		return eventListeners.add(listener);
-	}
-
 	protected ExecutorService createExecutorService()
 	{
 		return Executors.newFixedThreadPool(5);
-	}
-
-	/**
-	 * 
-	 * @return an unmodifiable set of the registered event listeners
-	 */
-	public Set<EventListener<EventType>> getEventListeners()
-	{
-		return eventListenersUnmodifiable;
-	}
-
-	protected final synchronized ExecutorService getExecutorService()
-	{
-		if (executorService == null) executorService = createExecutorService();
-		return executorService;
 	}
 
 	public int fire(final EventType event)
@@ -90,9 +65,29 @@ public class EventManager<EventType> implements EventListenable<EventType>
 			});
 	}
 
-	public void unsubscribeAll()
+	/**
+	 * 
+	 * @return an unmodifiable set of the registered event listeners
+	 */
+	public Set<EventListener<EventType>> getEventListeners()
 	{
-		eventListeners.clear();
+		return eventListenersUnmodifiable;
+	}
+
+	protected final synchronized ExecutorService getExecutorService()
+	{
+		if (executorService == null) executorService = createExecutorService();
+		return executorService;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean subscribe(final EventListener<EventType> listener)
+	{
+		Args.notNull("listener", listener);
+
+		return eventListeners.add(listener);
 	}
 
 	/**
@@ -100,8 +95,13 @@ public class EventManager<EventType> implements EventListenable<EventType>
 	 */
 	public boolean unsubscribe(final EventListener<EventType> listener)
 	{
-		Assert.argumentNotNull("listener", listener);
+		Args.notNull("listener", listener);
 
 		return eventListeners.remove(listener);
+	}
+
+	public void unsubscribeAll()
+	{
+		eventListeners.clear();
 	}
 }

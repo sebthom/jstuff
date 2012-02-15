@@ -15,7 +15,7 @@ package net.sf.jstuff.core.functional;
 import java.io.Serializable;
 import java.util.Locale;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -32,14 +32,14 @@ public abstract class Accepts
 
 		public <V extends T> And<V> and(final Accept< ? super V> next)
 		{
-			Assert.argumentNotNull("next", next);
+			Args.notNull("next", next);
 
 			return new And<V>(AbstractAccept.this, next);
 		}
 
 		public <V extends T> Or<V> or(final Accept< ? super V> next)
 		{
-			Assert.argumentNotNull("next", next);
+			Args.notNull("next", next);
 
 			return new Or<V>(AbstractAccept.this, next);
 		}
@@ -80,8 +80,8 @@ public abstract class Accepts
 
 		public And(final Accept< ? super V> first, final Accept< ? super V> second)
 		{
-			Assert.argumentNotNull("first", first);
-			Assert.argumentNotNull("second", second);
+			Args.notNull("first", first);
+			Args.notNull("second", second);
 
 			this.first = first;
 			this.second = second;
@@ -107,7 +107,7 @@ public abstract class Accepts
 
 		public Contains(final String searchFor)
 		{
-			Assert.argumentNotNull("searchFor", searchFor);
+			Args.notNull("searchFor", searchFor);
 
 			this.searchFor = searchFor;
 		}
@@ -136,7 +136,7 @@ public abstract class Accepts
 
 		public EndingWith(final String suffix)
 		{
-			Assert.argumentNotNull("suffix", suffix);
+			Args.notNull("suffix", suffix);
 
 			this.suffix = stringify(suffix);
 		}
@@ -227,7 +227,7 @@ public abstract class Accepts
 
 		public Not(final Accept< ? super V> accept)
 		{
-			Assert.argumentNotNull("accept", accept);
+			Args.notNull("accept", accept);
 
 			this.accept = accept;
 		}
@@ -263,8 +263,8 @@ public abstract class Accepts
 
 		public Or(final Accept< ? super V> first, final Accept< ? super V> second)
 		{
-			Assert.argumentNotNull("first", first);
-			Assert.argumentNotNull("second", second);
+			Args.notNull("first", first);
+			Args.notNull("second", second);
 
 			this.first = first;
 			this.second = second;
@@ -290,7 +290,7 @@ public abstract class Accepts
 
 		public StartingWith(final String prefix)
 		{
-			Assert.argumentNotNull("prefix", prefix);
+			Args.notNull("prefix", prefix);
 
 			this.prefix = stringify(prefix);
 		}

@@ -17,8 +17,8 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Constructor objects since they do not implement Serializable
@@ -36,7 +36,7 @@ public final class SerializableConstructor implements Serializable
 
 	public static SerializableConstructor get(final Constructor< ? > constructor)
 	{
-		Assert.argumentNotNull("constructor", constructor);
+		Args.notNull("constructor", constructor);
 
 		/*
 		 * intentionally the following code is not synchronized

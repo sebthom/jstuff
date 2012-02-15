@@ -17,8 +17,8 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Method objects since they do not implement Serializable
@@ -35,7 +35,7 @@ public final class SerializableMethod implements Serializable
 
 	public static SerializableMethod get(final Method method)
 	{
-		Assert.argumentNotNull("method", method);
+		Args.notNull("method", method);
 
 		/*
 		 * intentionally the following code is not synchronized

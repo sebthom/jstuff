@@ -29,12 +29,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils.MapDiff.EntryValueDiff;
 import net.sf.jstuff.core.functional.Accept;
 import net.sf.jstuff.core.functional.Function;
 import net.sf.jstuff.core.functional.IsEqual;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -107,8 +107,8 @@ public abstract class CollectionUtils
 	 */
 	public static <T> int addAll(final Collection<T> collection, final Accept<T> filter, final T... items)
 	{
-		Assert.argumentNotNull("collection", collection);
-		Assert.argumentNotNull("filter", filter);
+		Args.notNull("collection", collection);
+		Args.notNull("filter", filter);
 
 		if (items == null) return 0;
 
@@ -125,7 +125,7 @@ public abstract class CollectionUtils
 	 */
 	public static <T> int addAll(final Collection<T> collection, final T... items) throws IllegalArgumentException
 	{
-		Assert.argumentNotNull("collection", collection);
+		Args.notNull("collection", collection);
 
 		if (items == null) return 0;
 
@@ -143,9 +143,9 @@ public abstract class CollectionUtils
 	public static <K, V> MapDiff<K, V> diff(final Map<K, V> leftMap, final Map<K, V> rightMap,
 			final IsEqual< ? super V> isEqual)
 	{
-		Assert.argumentNotNull("leftMap", leftMap);
-		Assert.argumentNotNull("rightMap", rightMap);
-		Assert.argumentNotNull("isEqual", isEqual);
+		Args.notNull("leftMap", leftMap);
+		Args.notNull("rightMap", rightMap);
+		Args.notNull("isEqual", isEqual);
 
 		final MapDiff<K, V> mapDiff = new MapDiff<K, V>(leftMap, rightMap);
 		final Set<K> processedLeftKeys = newHashSet(Math.max(leftMap.size(), rightMap.size()));
@@ -193,7 +193,7 @@ public abstract class CollectionUtils
 	{
 		if (collection == null) return null;
 
-		Assert.argumentNotNull("accept", accept);
+		Args.notNull("accept", accept);
 
 		final List<T> result = newArrayList();
 		for (final T item : collection)
@@ -213,7 +213,7 @@ public abstract class CollectionUtils
 	{
 		if (collection == null) return 0;
 
-		Assert.argumentNotNull("accept", accept);
+		Args.notNull("accept", accept);
 
 		int count = 0;
 		for (final T item : collection)
@@ -223,7 +223,7 @@ public abstract class CollectionUtils
 
 	public static <K, V> V get(final Map<K, V> map, final K key, final V defaultValue)
 	{
-		Assert.argumentNotNull("map", map);
+		Args.notNull("map", map);
 
 		if (map.containsKey(key)) return map.get(key);
 		return defaultValue;
@@ -231,7 +231,7 @@ public abstract class CollectionUtils
 
 	public static <K, V> ArrayList<K> keysAsArrayList(final Map<K, V> map)
 	{
-		Assert.argumentNotNull("map", map);
+		Args.notNull("map", map);
 
 		return newArrayList(map.keySet());
 	}
@@ -244,9 +244,9 @@ public abstract class CollectionUtils
 	public static <K, V> CharSequence map2string(final Map<K, V> values, final String valueSeparator,
 			final String assignmentOperator)
 	{
-		Assert.argumentNotNull("values", values);
-		Assert.argumentNotNull("valueSeparator", valueSeparator);
-		Assert.argumentNotNull("assignmentOperator", assignmentOperator);
+		Args.notNull("values", values);
+		Args.notNull("valueSeparator", valueSeparator);
+		Args.notNull("assignmentOperator", assignmentOperator);
 
 		final StringBuilder sb = new StringBuilder();
 
@@ -457,7 +457,7 @@ public abstract class CollectionUtils
 	@SuppressWarnings("unchecked")
 	public static <K, V, T extends Map<K, V>> T putAll(final T map, final Object... keysAndValues)
 	{
-		Assert.argumentNotNull("map", map);
+		Args.notNull("map", map);
 
 		boolean nextIsValue = false;
 		K key = null;
@@ -477,7 +477,7 @@ public abstract class CollectionUtils
 
 	public static <T> Iterable<T> toIterable(final Iterator<T> it)
 	{
-		Assert.argumentNotNull("it", it);
+		Args.notNull("it", it);
 
 		return new Iterable<T>()
 			{
@@ -490,7 +490,7 @@ public abstract class CollectionUtils
 
 	public static <T> List<T> toList(final Iterator<T> it)
 	{
-		Assert.argumentNotNull("it", it);
+		Args.notNull("it", it);
 
 		final List<T> result = newArrayList();
 		while (it.hasNext())
@@ -506,9 +506,9 @@ public abstract class CollectionUtils
 	public static Map<String, String> toMap(final String values, final String valueSeparator,
 			final String assignmentOperator)
 	{
-		Assert.argumentNotNull("values", values);
-		Assert.argumentNotNull("valueSeparator", valueSeparator);
-		Assert.argumentNotNull("assignmentOperator", assignmentOperator);
+		Args.notNull("values", values);
+		Args.notNull("valueSeparator", valueSeparator);
+		Args.notNull("assignmentOperator", assignmentOperator);
 
 		final HashMap<String, String> map = newHashMap();
 		for (final String element : StringUtils.split(values, valueSeparator))

@@ -10,36 +10,36 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.concurrent;
+
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class Mutable<T>
+public class RuntimeInterruptedException extends RuntimeException
 {
-	private T value;
+	private static final long serialVersionUID = 1L;
 
-	public Mutable(final T initialValue)
+	public RuntimeInterruptedException(final InterruptedException cause)
 	{
-		value = initialValue;
+		super(cause);
+		Args.notNull("cause", cause);
 	}
 
-	public T getValue()
+	public RuntimeInterruptedException(final String message, final InterruptedException cause)
 	{
-		return value;
-	}
-
-	public void setValue(final T newValue)
-	{
-		value = newValue;
+		super(message, cause);
+		Args.notNull("message", message);
+		Args.notNull("cause", cause);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@docRoot}
 	 */
 	@Override
-	public String toString()
+	public InterruptedException getCause()
 	{
-		return StringUtils.toString(this);
+		return (InterruptedException) super.getCause();
 	}
 }

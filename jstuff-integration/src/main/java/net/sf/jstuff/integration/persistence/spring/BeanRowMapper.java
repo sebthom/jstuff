@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
@@ -74,7 +74,7 @@ public class BeanRowMapper<T> implements RowMapper<T>
 
 	public BeanRowMapper(final Class<T> beanClass) throws IntrospectionException
 	{
-		Assert.argumentNotNull("beanClass", beanClass);
+		Args.notNull("beanClass", beanClass);
 
 		setBeanClass(beanClass);
 	}

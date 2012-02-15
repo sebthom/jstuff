@@ -21,8 +21,8 @@ import java.sql.Statement;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -87,7 +87,7 @@ public class JDBCResourcesCloser
 	 */
 	public CallableStatement register(final CallableStatement stmt)
 	{
-		Assert.argumentNotNull("stmt", stmt);
+		Args.notNull("stmt", stmt);
 
 		resources.addFirst(stmt);
 		return stmt;
@@ -102,7 +102,7 @@ public class JDBCResourcesCloser
 	 */
 	public Connection register(final Connection con)
 	{
-		Assert.argumentNotNull("con", con);
+		Args.notNull("con", con);
 
 		resources.addFirst(con);
 		return con;
@@ -117,7 +117,7 @@ public class JDBCResourcesCloser
 	 */
 	public PreparedStatement register(final PreparedStatement stmt)
 	{
-		Assert.argumentNotNull("stmt", stmt);
+		Args.notNull("stmt", stmt);
 
 		resources.addFirst(stmt);
 		return stmt;
@@ -132,7 +132,7 @@ public class JDBCResourcesCloser
 	 */
 	public ResultSet register(final ResultSet rs)
 	{
-		Assert.argumentNotNull("rs", rs);
+		Args.notNull("rs", rs);
 
 		resources.addFirst(rs);
 		return rs;
@@ -147,7 +147,7 @@ public class JDBCResourcesCloser
 	 */
 	public Statement register(final Statement stmt)
 	{
-		Assert.argumentNotNull("stmt", stmt);
+		Args.notNull("stmt", stmt);
 
 		resources.addFirst(stmt);
 		return stmt;

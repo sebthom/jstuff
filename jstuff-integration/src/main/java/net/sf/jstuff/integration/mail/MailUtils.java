@@ -32,8 +32,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -64,8 +64,8 @@ public abstract class MailUtils
 	public static void sendMail(final Mail mail, final MailServer mailServer) throws AddressException,
 			MessagingException
 	{
-		Assert.argumentNotNull("mail", mail);
-		Assert.argumentNotNull("mailServer", mailServer);
+		Args.notNull("mail", mail);
+		Args.notNull("mailServer", mailServer);
 
 		final Properties props = new Properties();
 		props.put("mail.smtp.host", mailServer.smtpHostname);

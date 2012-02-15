@@ -10,7 +10,10 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.concurrent;
+
+import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /** 
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -22,9 +25,9 @@ public class ThreadUtils
 	/**
 	 * Handles InterruptedException correctly.
 	 */
-	public static void join(final Thread thread)
+	public static void join(final Thread thread) throws RuntimeInterruptedException
 	{
-		Assert.argumentNotNull("thread", thread);
+		Args.notNull("thread", thread);
 
 		try
 		{
@@ -33,15 +36,14 @@ public class ThreadUtils
 		}
 		catch (final InterruptedException ex)
 		{
-			LOG.debug("Thread %s interrupted", ex, thread);
-			thread.interrupt();
+			throw new RuntimeInterruptedException(ex);
 		}
 	}
 
 	/**
 	 * Handles InterruptedException correctly.
 	 */
-	public static void sleep(final long millis)
+	public static void sleep(final long millis) throws RuntimeInterruptedException
 	{
 		try
 		{
@@ -50,11 +52,7 @@ public class ThreadUtils
 		}
 		catch (final InterruptedException ex)
 		{
-			final Thread t = Thread.currentThread();
-			LOG.debug("Current thread %s interrupted", ex, t);
-			// http://stackoverflow.com/questions/1895881/why-would-you-catch-interruptedexception-to-call-thread-currentthread-interrupt
-			// http://www.ibm.com/developerworks/java/library/j-jtp05236.html
-			t.interrupt();
+			throw new RuntimeInterruptedException(ex);
 		}
 	}
 

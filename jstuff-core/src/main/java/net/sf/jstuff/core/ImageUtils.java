@@ -27,6 +27,8 @@ import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
+import net.sf.jstuff.core.validation.Args;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -47,7 +49,7 @@ public abstract class ImageUtils
 
 	public static byte[] getJPEG(final BufferedImage image) throws IOException
 	{
-		Assert.argumentNotNull("image", image);
+		Args.notNull("image", image);
 
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ImageIO.write(image, "jpg", bos);
@@ -56,7 +58,7 @@ public abstract class ImageUtils
 
 	public static BufferedImage getScaledImage(final Image image, final int width, final int height)
 	{
-		Assert.argumentNotNull("image", image);
+		Args.notNull("image", image);
 
 		final Image scaled = image.getScaledInstance(200, 150, Image.SCALE_SMOOTH);
 		final BufferedImage scaledBuffered = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -68,15 +70,15 @@ public abstract class ImageUtils
 
 	public static BufferedImage toBufferedImage(final Image image)
 	{
-		Assert.argumentNotNull("image", image);
+		Args.notNull("image", image);
 
 		return toBufferedImage(image, getDefaultConfiguration());
 	}
 
 	public static BufferedImage toBufferedImage(final Image image, final GraphicsConfiguration gc)
 	{
-		Assert.argumentNotNull("image", image);
-		Assert.argumentNotNull("gc", gc);
+		Args.notNull("image", image);
+		Args.notNull("gc", gc);
 
 		if (image instanceof BufferedImage) return (BufferedImage) image;
 
@@ -93,7 +95,7 @@ public abstract class ImageUtils
 
 	public static BufferedImage toBufferedImage(final RenderedImage image)
 	{
-		Assert.argumentNotNull("image", image);
+		Args.notNull("image", image);
 
 		if (image instanceof BufferedImage) return (BufferedImage) image;
 

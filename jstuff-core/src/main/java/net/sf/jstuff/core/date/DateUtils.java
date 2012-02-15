@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 
@@ -46,8 +46,8 @@ public abstract class DateUtils extends org.apache.commons.lang3.time.DateUtils
 	 */
 	public static int getDaysBetween(final Date lowDate, final Date highDate)
 	{
-		Assert.argumentNotNull("lowDate", lowDate);
-		Assert.argumentNotNull("highDate", highDate);
+		Args.notNull("lowDate", lowDate);
+		Args.notNull("highDate", highDate);
 
 		Calendar cal1 = Calendar.getInstance();
 		cal1.setTime(lowDate);

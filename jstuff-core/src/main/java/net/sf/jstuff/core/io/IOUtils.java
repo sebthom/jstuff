@@ -24,10 +24,10 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
-import net.sf.jstuff.core.ThreadUtils;
+import net.sf.jstuff.core.concurrent.ThreadUtils;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -53,9 +53,9 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 	 */
 	public static void readBytes(final InputStream is, final byte[] b, final int off, final int len) throws IOException
 	{
-		Assert.argumentNotNull("b", b);
-		Assert.argumentInRange("off", off, 0, b.length - 1);
-		Assert.argumentInRange("len", len, 0, b.length - off);
+		Args.notNull("b", b);
+		Args.inRange("off", off, 0, b.length - 1);
+		Args.inRange("len", len, 0, b.length - off);
 
 		int currentOffset = off;
 		int bytesMissing = len;

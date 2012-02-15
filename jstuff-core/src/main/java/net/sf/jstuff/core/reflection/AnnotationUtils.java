@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -38,7 +38,7 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 	 */
 	public static Annotation[] getAnnotations(final Class< ? > clazz, final boolean inspectInterfaces)
 	{
-		Assert.argumentNotNull("clazz", clazz);
+		Args.notNull("clazz", clazz);
 
 		if (!inspectInterfaces) return clazz.getAnnotations();
 
@@ -59,7 +59,7 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 	 */
 	public static Annotation[] getAnnotations(final Method method, final boolean inspectInterfaces)
 	{
-		Assert.argumentNotNull("method", method);
+		Args.notNull("method", method);
 
 		if (!inspectInterfaces || !ReflectionUtils.isPublic(method)) return method.getAnnotations();
 
@@ -103,7 +103,7 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 	 */
 	public static Annotation[][] getParameterAnnotations(final Method method, final boolean inspectInterfaces)
 	{
-		Assert.argumentNotNull("method", method);
+		Args.notNull("method", method);
 
 		if (!inspectInterfaces || !ReflectionUtils.isPublic(method)) return method.getParameterAnnotations();
 
@@ -177,8 +177,8 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 	public static boolean hasAnnotation(final Method method, final Class< ? extends Annotation> annotationClass,
 			final boolean inspectInterfaces)
 	{
-		Assert.argumentNotNull("method", method);
-		Assert.argumentNotNull("annotationClass", annotationClass);
+		Args.notNull("method", method);
+		Args.notNull("annotationClass", annotationClass);
 
 		if (method.isAnnotationPresent(annotationClass)) return true;
 
@@ -200,7 +200,8 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 		return false;
 	}
 
-	public static <T extends Annotation> T makeAnnotationInstance(final Class<T> annotationType) throws ReflectionException
+	public static <T extends Annotation> T makeAnnotationInstance(final Class<T> annotationType)
+			throws ReflectionException
 	{
 		return makeAnnotationInstance(annotationType, null);
 	}

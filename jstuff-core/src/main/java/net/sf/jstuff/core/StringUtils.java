@@ -22,6 +22,8 @@ import javax.swing.text.html.parser.ParserDelegator;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.CharSequenceReader;
+import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.validation.Assert;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -155,7 +157,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	public static CharSequence ansiColorsToHTML(final CharSequence txt, final ANSIState initialState)
 	{
 		if (isEmpty(txt)) return txt;
-		Assert.argumentNotNull("initialState", initialState);
+		Args.notNull("initialState", initialState);
 
 		final char ESCAPE = '\u001B';
 
@@ -356,7 +358,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 
 	public static CharSequence htmlToPlainText(final CharSequence html)
 	{
-		Assert.argumentNotNull("html", html);
+		Args.notNull("html", html);
 
 		final StringBuilder sb = new StringBuilder();
 

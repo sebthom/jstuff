@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -123,7 +123,7 @@ public abstract class NetUtils
 	 */
 	public static long getLastModified(final URL resourceURL) throws IOException
 	{
-		Assert.argumentNotNull("resourceURL", resourceURL);
+		Args.notNull("resourceURL", resourceURL);
 
 		final URLConnection con = resourceURL.openConnection();
 
@@ -170,7 +170,7 @@ public abstract class NetUtils
 
 	public static boolean isHostReachable(final String hostname, final int timeoutInMS)
 	{
-		Assert.argumentNotNull("hostname", hostname);
+		Args.notNull("hostname", hostname);
 		try
 		{
 			return InetAddress.getByName(hostname).isReachable(timeoutInMS);
@@ -184,7 +184,7 @@ public abstract class NetUtils
 
 	public static boolean isKnownHost(final String hostname)
 	{
-		Assert.argumentNotNull("hostname", hostname);
+		Args.notNull("hostname", hostname);
 		try
 		{
 			InetAddress.getByName(hostname);
@@ -214,7 +214,7 @@ public abstract class NetUtils
 
 	public static boolean isRemotePortOpen(final String hostname, final int port)
 	{
-		Assert.argumentNotNull("hostname", hostname);
+		Args.notNull("hostname", hostname);
 		Socket socket = null;
 		try
 		{

@@ -14,8 +14,9 @@ package net.sf.jstuff.integration.spring;
 
 import java.util.Map;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.validation.Assert;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -68,7 +69,7 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 	@SuppressWarnings("unchecked")
 	public <T> T byClass(final Class<T> beanType)
 	{
-		Assert.argumentNotNull("beanType", beanType);
+		Args.notNull("beanType", beanType);
 
 		final Map< ? , ? > beans = factory.getBeansOfType(beanType, true, true);
 
@@ -121,7 +122,7 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 	 */
 	public void setBeanFactory(final BeanFactory beanFactory)
 	{
-		Assert.argumentNotNull("beanFactory", beanFactory);
+		Args.notNull("beanFactory", beanFactory);
 
 		if (!(beanFactory instanceof ListableBeanFactory))
 			throw new IllegalStateException("Argument [beanFactory] must be of type "

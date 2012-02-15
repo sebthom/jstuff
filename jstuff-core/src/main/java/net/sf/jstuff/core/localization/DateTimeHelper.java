@@ -17,8 +17,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -43,7 +43,7 @@ public class DateTimeHelper
 	 */
 	public DateTimeHelper(final Locale locale)
 	{
-		Assert.argumentNotNull("locale", locale);
+		Args.notNull("locale", locale);
 
 		this.locale = locale;
 	}
@@ -55,7 +55,7 @@ public class DateTimeHelper
 	 */
 	public Date getDate(final String date)
 	{
-		Assert.argumentNotNull("date", date);
+		Args.notNull("date", date);
 
 		final DateFormat df;
 		if (isValidDateTime(date))
@@ -82,50 +82,50 @@ public class DateTimeHelper
 
 	public DateFormat getDateFormat(final DateFormatStyle style)
 	{
-		Assert.argumentNotNull("style", style);
+		Args.notNull("style", style);
 
 		return DateFormat.getDateInstance(style.style, locale);
 	}
 
 	public String getDateFormatted(final DateFormatStyle style, final Date date)
 	{
-		Assert.argumentNotNull("style", style);
-		Assert.argumentNotNull("date", date);
+		Args.notNull("style", style);
+		Args.notNull("date", date);
 
 		return getDateFormat(style).format(date);
 	}
 
 	public String getDateFormattedFull(final Date date)
 	{
-		Assert.argumentNotNull("date", date);
+		Args.notNull("date", date);
 
 		return getDateFormat(DateFormatStyle.MEDIUM).format(date);
 	}
 
 	public String getDateFormattedLong(final Date date)
 	{
-		Assert.argumentNotNull("date", date);
+		Args.notNull("date", date);
 
 		return getDateFormat(DateFormatStyle.MEDIUM).format(date);
 	}
 
 	public String getDateFormattedMedium(final Date date)
 	{
-		Assert.argumentNotNull("date", date);
+		Args.notNull("date", date);
 
 		return getDateFormat(DateFormatStyle.MEDIUM).format(date);
 	}
 
 	public String getDateFormattedShort(final Date date)
 	{
-		Assert.argumentNotNull("date", date);
+		Args.notNull("date", date);
 
 		return getDateFormat(DateFormatStyle.SHORT).format(date);
 	}
 
 	public DateFormatStyle getDateStyle(final String date)
 	{
-		Assert.argumentNotNull("date", date);
+		Args.notNull("date", date);
 
 		if (isValidDate(DateFormatStyle.SHORT, date))
 			return DateFormatStyle.SHORT;
@@ -139,29 +139,29 @@ public class DateTimeHelper
 
 	public DateFormat getDateTimeFormat(final DateFormatStyle style)
 	{
-		Assert.argumentNotNull("style", style);
+		Args.notNull("style", style);
 
 		return DateFormat.getDateTimeInstance(style.style, style.style, locale);
 	}
 
 	public DateFormat getDateTimeFormat(final DateFormatStyle dateStyle, final DateFormatStyle timeStyle)
 	{
-		Assert.argumentNotNull("dateStyle", dateStyle);
-		Assert.argumentNotNull("timeStyle", timeStyle);
+		Args.notNull("dateStyle", dateStyle);
+		Args.notNull("timeStyle", timeStyle);
 
 		return DateFormat.getDateTimeInstance(dateStyle.style, timeStyle.style, locale);
 	}
 
 	public String getDateTimeFormatted(final DateFormatStyle style, final Date date)
 	{
-		Assert.argumentNotNull("style", style);
+		Args.notNull("style", style);
 
 		return getDateTimeFormat(style).format(date);
 	}
 
 	public DateFormatStyle getDateTimeStyle(final String style)
 	{
-		Assert.argumentNotNull("style", style);
+		Args.notNull("style", style);
 
 		if (isValidDateTime(DateFormatStyle.SHORT, style))
 			return DateFormatStyle.SHORT;
@@ -184,22 +184,22 @@ public class DateTimeHelper
 
 	public DateFormat getTimeFormat(final DateFormatStyle style)
 	{
-		Assert.argumentNotNull("style", style);
+		Args.notNull("style", style);
 
 		return DateFormat.getTimeInstance(style.style, locale);
 	}
 
 	public String getTimeFormatted(final DateFormatStyle style, final Date date)
 	{
-		Assert.argumentNotNull("style", style);
-		Assert.argumentNotNull("date", date);
+		Args.notNull("style", style);
+		Args.notNull("date", date);
 
 		return getTimeFormat(style).format(date);
 	}
 
 	public DateFormatStyle getTimeStyle(final String style)
 	{
-		Assert.argumentNotNull("style", style);
+		Args.notNull("style", style);
 
 		if (isValidTime(DateFormatStyle.SHORT, style))
 			return DateFormatStyle.SHORT;
@@ -213,7 +213,7 @@ public class DateTimeHelper
 
 	protected boolean isValidDate(final DateFormatStyle style, final String date)
 	{
-		Assert.argumentNotNull("style", style);
+		Args.notNull("style", style);
 
 		if (date == null || date.length() == 0) return false;
 
@@ -240,7 +240,7 @@ public class DateTimeHelper
 
 	protected boolean isValidDateTime(final DateFormatStyle style, final String dateTime)
 	{
-		Assert.argumentNotNull("style", style);
+		Args.notNull("style", style);
 
 		if (dateTime == null || dateTime.length() == 0) return false;
 
@@ -269,7 +269,7 @@ public class DateTimeHelper
 
 	protected boolean isValidTime(final DateFormatStyle style, final String time)
 	{
-		Assert.argumentNotNull("style", style);
+		Args.notNull("style", style);
 
 		final DateFormat df = getTimeFormat(style);
 		df.setLenient(false);

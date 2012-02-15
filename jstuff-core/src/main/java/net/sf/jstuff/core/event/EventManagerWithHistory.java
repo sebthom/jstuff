@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Future;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -75,7 +75,7 @@ public class EventManagerWithHistory<EventType> extends EventManager<EventType>
 	 */
 	public boolean subscribeAndReplayHistory(final EventListener<EventType> listener)
 	{
-		Assert.argumentNotNull("listener", listener);
+		Args.notNull("listener", listener);
 
 		if (super.subscribe(listener))
 		{

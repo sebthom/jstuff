@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.functional.Function;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -27,7 +27,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 {
 	public static <T> boolean containsEqual(final T[] theArray, final T theItem)
 	{
-		Assert.argumentNotNull("theArray", theArray);
+		Args.notNull("theArray", theArray);
 
 		for (final T t : theArray)
 		{
@@ -39,7 +39,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 
 	public static <T> boolean containsSame(final T[] theArray, final T theItem)
 	{
-		Assert.argumentNotNull("theArray", theArray);
+		Args.notNull("theArray", theArray);
 
 		for (final T t : theArray)
 			if (t == theItem) return true;

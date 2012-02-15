@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
+import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -26,7 +28,7 @@ public class AssertTest extends TestCase
 	{
 		try
 		{
-			Assert.argumentNotEmpty("password", (String) null);
+			Args.notEmpty("password", (String) null);
 			fail();
 		}
 		catch (final IllegalArgumentException ex)
@@ -36,7 +38,7 @@ public class AssertTest extends TestCase
 
 		try
 		{
-			Assert.argumentNotEmpty("password", "");
+			Args.notEmpty("password", "");
 			fail();
 		}
 		catch (final IllegalArgumentException ex)
@@ -44,11 +46,11 @@ public class AssertTest extends TestCase
 			assertEquals("[password] must not be empty", ex.getMessage());
 		}
 
-		Assert.argumentNotEmpty("password", "secret");
+		Args.notEmpty("password", "secret");
 
 		try
 		{
-			Assert.argumentNotEmpty("values", (String[]) null);
+			Args.notEmpty("values", (String[]) null);
 			fail();
 		}
 		catch (final IllegalArgumentException ex)
@@ -58,7 +60,7 @@ public class AssertTest extends TestCase
 
 		try
 		{
-			Assert.argumentNotEmpty("values", new String[0]);
+			Args.notEmpty("values", new String[0]);
 			fail();
 		}
 		catch (final IllegalArgumentException ex)
@@ -66,7 +68,7 @@ public class AssertTest extends TestCase
 			assertEquals("[values] must not be empty", ex.getMessage());
 		}
 
-		Assert.argumentNotEmpty("values", new String[]{"dfd"});
+		Args.notEmpty("values", new String[]{"dfd"});
 
 	}
 
@@ -74,7 +76,7 @@ public class AssertTest extends TestCase
 	{
 		try
 		{
-			Assert.argumentNotNull("password", null);
+			Args.notNull("password", null);
 			fail();
 		}
 		catch (final IllegalArgumentException ex)
@@ -82,8 +84,8 @@ public class AssertTest extends TestCase
 			assertEquals("[password] must not be null", ex.getMessage());
 		}
 
-		Assert.argumentNotNull("password", "");
-		Assert.argumentNotNull("password", "secret");
+		Args.notNull("password", "");
+		Args.notNull("password", "secret");
 	}
 
 	public void testIsFalse()

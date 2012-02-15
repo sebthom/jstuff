@@ -15,7 +15,7 @@ package net.sf.jstuff.core.collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  *  @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -37,7 +37,7 @@ public class LRUMap<K, V> extends LinkedHashMap<K, V>
 	public LRUMap(final int maxCapacity)
 	{
 		super(maxCapacity, 1.0f, true);
-		Assert.argumentMinSize("maxCapacity", maxCapacity, 1);
+		Args.minSize("maxCapacity", maxCapacity, 1);
 		this.maxCapacity = maxCapacity;
 	}
 

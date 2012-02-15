@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -65,8 +65,8 @@ public abstract class ReflectionUtils
 	 */
 	public static Field getField(final Class< ? > clazz, final String fieldName)
 	{
-		Assert.argumentNotNull("clazz", clazz);
-		Assert.argumentNotNull("fieldName", fieldName);
+		Args.notNull("clazz", clazz);
+		Args.notNull("fieldName", fieldName);
 
 		try
 		{
@@ -85,7 +85,7 @@ public abstract class ReflectionUtils
 	 */
 	public static Field getFieldForSetter(final Method setter)
 	{
-		Assert.argumentNotNull("setter", setter);
+		Args.notNull("setter", setter);
 
 		if (!isSetter(setter)) return null;
 
@@ -148,8 +148,8 @@ public abstract class ReflectionUtils
 
 	public static Field getFieldRecursive(final Class< ? > clazz, final String fieldName)
 	{
-		Assert.argumentNotNull("clazz", clazz);
-		Assert.argumentNotNull("fieldName", fieldName);
+		Args.notNull("clazz", clazz);
+		Args.notNull("fieldName", fieldName);
 
 		final Field f = getField(clazz, fieldName);
 		if (f != null) return f;
@@ -162,8 +162,8 @@ public abstract class ReflectionUtils
 
 	public static Object getFieldValue(final Field field, final Object obj) throws AccessingFieldValueFailedException
 	{
-		Assert.argumentNotNull("field", field);
-		Assert.argumentNotNull("obj", obj);
+		Args.notNull("field", field);
+		Args.notNull("obj", obj);
 
 		try
 		{
@@ -178,8 +178,8 @@ public abstract class ReflectionUtils
 
 	public static Method getGetter(final Class< ? > clazz, final String propertyName)
 	{
-		Assert.argumentNotNull("clazz", clazz);
-		Assert.argumentNotNull("propertyName", propertyName);
+		Args.notNull("clazz", clazz);
+		Args.notNull("propertyName", propertyName);
 
 		final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault())
 				+ propertyName.substring(1);
@@ -204,8 +204,8 @@ public abstract class ReflectionUtils
 
 	public static Method getGetterRecursive(final Class< ? > clazz, final String propertyName)
 	{
-		Assert.argumentNotNull("clazz", clazz);
-		Assert.argumentNotNull("propertyName", propertyName);
+		Args.notNull("clazz", clazz);
+		Args.notNull("propertyName", propertyName);
 
 		final Method m = getGetter(clazz, propertyName);
 		if (m != null) return m;
@@ -218,7 +218,7 @@ public abstract class ReflectionUtils
 
 	public static List<Method> getInterfaceMethods(final Method method)
 	{
-		Assert.argumentNotNull("method", method);
+		Args.notNull("method", method);
 
 		// static methods cannot be overridden
 		if (isStatic(method)) return null;
@@ -244,7 +244,7 @@ public abstract class ReflectionUtils
 	 */
 	public static Set<Class< ? >> getInterfacesRecursive(final Class< ? > clazz)
 	{
-		Assert.argumentNotNull("clazz", clazz);
+		Args.notNull("clazz", clazz);
 
 		return getInterfacesRecursive(clazz, new HashSet<Class< ? >>(2));
 	}
@@ -268,8 +268,8 @@ public abstract class ReflectionUtils
 	 */
 	public static Method getMethod(final Class< ? > clazz, final String methodName, final Class< ? >... parameterTypes)
 	{
-		Assert.argumentNotNull("clazz", clazz);
-		Assert.argumentNotNull("methodName", methodName);
+		Args.notNull("clazz", clazz);
+		Args.notNull("methodName", methodName);
 		try
 		{
 			return clazz.getDeclaredMethod(methodName, parameterTypes);
@@ -286,8 +286,8 @@ public abstract class ReflectionUtils
 	public static Method getMethodRecursive(final Class< ? > clazz, final String methodName,
 			final Class< ? >... parameterTypes)
 	{
-		Assert.argumentNotNull("clazz", clazz);
-		Assert.argumentNotNull("methodName", methodName);
+		Args.notNull("clazz", clazz);
+		Args.notNull("methodName", methodName);
 
 		final Method m = getMethod(clazz, methodName, parameterTypes);
 		if (m != null) return m;
@@ -300,8 +300,8 @@ public abstract class ReflectionUtils
 
 	public static Method getSetter(final Class< ? > clazz, final String propertyName)
 	{
-		Assert.argumentNotNull("clazz", clazz);
-		Assert.argumentNotNull("propertyName", propertyName);
+		Args.notNull("clazz", clazz);
+		Args.notNull("propertyName", propertyName);
 
 		final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault())
 				+ propertyName.substring(1);
@@ -315,8 +315,8 @@ public abstract class ReflectionUtils
 
 	public static Method getSetterRecursive(final Class< ? > clazz, final String propertyName)
 	{
-		Assert.argumentNotNull("clazz", clazz);
-		Assert.argumentNotNull("propertyName", propertyName);
+		Args.notNull("clazz", clazz);
+		Args.notNull("propertyName", propertyName);
 
 		final Method m = getSetter(clazz, propertyName);
 		if (m != null) return m;
@@ -329,7 +329,7 @@ public abstract class ReflectionUtils
 
 	public static Method getSuperMethod(final Method method)
 	{
-		Assert.argumentNotNull("method", method);
+		Args.notNull("method", method);
 
 		// static methods cannot be overridden
 		if (isStatic(method)) return null;
@@ -351,7 +351,7 @@ public abstract class ReflectionUtils
 
 	public static String guessFieldName(final Method getter)
 	{
-		Assert.argumentNotNull("getter", getter);
+		Args.notNull("getter", getter);
 
 		String fieldName = getter.getName();
 
@@ -377,16 +377,16 @@ public abstract class ReflectionUtils
 
 	public static boolean hasField(final Class< ? > clazz, final String fieldName)
 	{
-		Assert.argumentNotNull("clazz", clazz);
-		Assert.argumentNotNull("fieldName", fieldName);
+		Args.notNull("clazz", clazz);
+		Args.notNull("fieldName", fieldName);
 
 		return getField(clazz, fieldName) != null;
 	}
 
 	public static boolean hasMethod(final Class< ? > clazz, final String methodName, final Class< ? >... parameterTypes)
 	{
-		Assert.argumentNotNull("clazz", clazz);
-		Assert.argumentNotNull("methodName", methodName);
+		Args.notNull("clazz", clazz);
+		Args.notNull("methodName", methodName);
 
 		return getMethod(clazz, methodName, parameterTypes) != null;
 	}
@@ -403,8 +403,8 @@ public abstract class ReflectionUtils
 	public static <T> T invokeMethod(final Method method, final Object obj, final Object... args)
 			throws InvokingMethodFailedException
 	{
-		Assert.argumentNotNull("method", method);
-		Assert.argumentNotNull("obj", obj);
+		Args.notNull("method", method);
+		Args.notNull("obj", obj);
 
 		try
 		{
@@ -430,14 +430,14 @@ public abstract class ReflectionUtils
 	 */
 	public static boolean isCastable(final Class< ? > fromType, final Class< ? > toType)
 	{
-		Assert.argumentNotNull("fromType", fromType);
-		Assert.argumentNotNull("toType", toType);
+		Args.notNull("fromType", fromType);
+		Args.notNull("toType", toType);
 		return toType.isAssignableFrom(fromType);
 	}
 
 	public static boolean isClassPresent(final String className)
 	{
-		Assert.argumentNotNull("className", className);
+		Args.notNull("className", className);
 
 		try
 		{
@@ -452,7 +452,7 @@ public abstract class ReflectionUtils
 
 	public static boolean isFinal(final Member member)
 	{
-		Assert.argumentNotNull("member", member);
+		Args.notNull("member", member);
 
 		return (member.getModifiers() & Modifier.FINAL) != 0;
 	}
@@ -462,7 +462,7 @@ public abstract class ReflectionUtils
 	 */
 	public static boolean isGetter(final Method method)
 	{
-		Assert.argumentNotNull("method", method);
+		Args.notNull("method", method);
 
 		return method.getParameterTypes().length == 0
 				&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
@@ -470,28 +470,28 @@ public abstract class ReflectionUtils
 
 	public static boolean isInnerClass(final Class< ? > clazz)
 	{
-		Assert.argumentNotNull("clazz", clazz);
+		Args.notNull("clazz", clazz);
 
 		return clazz.getName().indexOf('$') > -1;
 	}
 
 	public static boolean isNonStaticInnerClass(final Class< ? > clazz)
 	{
-		Assert.argumentNotNull("clazz", clazz);
+		Args.notNull("clazz", clazz);
 
 		return clazz.getName().indexOf('$') > -1 && (clazz.getModifiers() & Modifier.STATIC) == 0;
 	}
 
 	public static boolean isPackage(final Member member)
 	{
-		Assert.argumentNotNull("member", member);
+		Args.notNull("member", member);
 
 		return (member.getModifiers() & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED)) == 0;
 	}
 
 	public static boolean isPrivate(final Member member)
 	{
-		Assert.argumentNotNull("member", member);
+		Args.notNull("member", member);
 
 		return (member.getModifiers() & Modifier.PRIVATE) != 0;
 	}
@@ -512,14 +512,14 @@ public abstract class ReflectionUtils
 
 	public static boolean isProtected(final Member member)
 	{
-		Assert.argumentNotNull("member", member);
+		Args.notNull("member", member);
 
 		return (member.getModifiers() & Modifier.PROTECTED) != 0;
 	}
 
 	public static boolean isPublic(final Member member)
 	{
-		Assert.argumentNotNull("member", member);
+		Args.notNull("member", member);
 
 		return (member.getModifiers() & Modifier.PUBLIC) != 0;
 	}
@@ -529,7 +529,7 @@ public abstract class ReflectionUtils
 	 */
 	public static boolean isSetter(final Method method)
 	{
-		Assert.argumentNotNull("method", method);
+		Args.notNull("method", method);
 
 		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
 
@@ -547,14 +547,14 @@ public abstract class ReflectionUtils
 
 	public static boolean isStatic(final Member member)
 	{
-		Assert.argumentNotNull("member", member);
+		Args.notNull("member", member);
 
 		return (member.getModifiers() & Modifier.STATIC) != 0;
 	}
 
 	public static boolean isTransient(final Member member)
 	{
-		Assert.argumentNotNull("member", member);
+		Args.notNull("member", member);
 
 		return (member.getModifiers() & Modifier.TRANSIENT) != 0;
 	}
@@ -564,14 +564,14 @@ public abstract class ReflectionUtils
 	 */
 	public static boolean isVoidMethod(final Method method)
 	{
-		Assert.argumentNotNull("method", method);
+		Args.notNull("method", method);
 
 		return method.getReturnType() == void.class;
 	}
 
 	public static Class< ? > loadClass(final String className)
 	{
-		Assert.argumentNotNull("className", className);
+		Args.notNull("className", className);
 
 		try
 		{
@@ -587,7 +587,7 @@ public abstract class ReflectionUtils
 	@SuppressWarnings("unchecked")
 	public static <T> Class< ? extends T> loadClass(final String className, final Class<T> baseClass)
 	{
-		Assert.argumentNotNull("className", className);
+		Args.notNull("className", className);
 
 		try
 		{
@@ -610,9 +610,9 @@ public abstract class ReflectionUtils
 	public static <T> T makeProxyInstance(final Class<T> interfaceType, final InvocationHandler handler,
 			final ClassLoader loader)
 	{
-		Assert.argumentNotNull("interfaceType", interfaceType);
-		Assert.argumentNotNull("handler", handler);
-		Assert.argumentNotNull("loader", loader);
+		Args.notNull("interfaceType", interfaceType);
+		Args.notNull("handler", handler);
+		Args.notNull("loader", loader);
 
 		return (T) Proxy.newProxyInstance(loader, new Class[]{interfaceType}, handler);
 	}
@@ -638,8 +638,8 @@ public abstract class ReflectionUtils
 
 	public static boolean setViaSetter(final Object target, final String propertyName, final Object propertyValue)
 	{
-		Assert.argumentNotNull("target", target);
-		Assert.argumentNotNull("propertyName", propertyName);
+		Args.notNull("target", target);
+		Args.notNull("propertyName", propertyName);
 
 		final Method setter = getSetterRecursive(target.getClass(), propertyName);
 		if (setter != null) try

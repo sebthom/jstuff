@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.io.IOExceptionWithCause;
 
@@ -63,7 +63,7 @@ public class ZippedBlockInputStream extends FilterInputStream
 	public ZippedBlockInputStream(final InputStream is)
 	{
 		super(is);
-		Assert.argumentNotNull("is", is);
+		Args.notNull("is", is);
 	}
 
 	protected void assertIsOpen() throws IOException
@@ -158,9 +158,9 @@ public class ZippedBlockInputStream extends FilterInputStream
 	@Override
 	public int read(final byte[] b, final int off, final int len) throws IOException
 	{
-		Assert.argumentNotNull("b", b);
-		Assert.argumentInRange("off", off, 0, b.length - 1);
-		Assert.argumentInRange("len", len, 0, b.length - off);
+		Args.notNull("b", b);
+		Args.inRange("off", off, 0, b.length - 1);
+		Args.inRange("len", len, 0, b.length - off);
 
 		if (len == 0) return 0;
 
@@ -242,7 +242,7 @@ public class ZippedBlockInputStream extends FilterInputStream
 	@Override
 	public long skip(final long n) throws IOException
 	{
-		Assert.argumentMinSize("n", n, 0);
+		Args.minSize("n", n, 0);
 
 		assertIsOpen();
 

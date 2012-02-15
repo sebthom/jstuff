@@ -22,8 +22,8 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.CryptoUtils;
+import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang3.SerializationException;
 
@@ -38,7 +38,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 	 */
 	public static String bean2xml(final Object javaBean) throws SerializationException
 	{
-		Assert.argumentNotNull("javaBean", javaBean);
+		Args.notNull("javaBean", javaBean);
 
 		final ArrayList<Exception> exList = new ArrayList<Exception>(2);
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -59,7 +59,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 
 	public static Serializable deserialize(final byte[] serializedData) throws SerializationException
 	{
-		Assert.argumentNotNull("serializedData", serializedData);
+		Args.notNull("serializedData", serializedData);
 
 		final ByteArrayInputStream bin = new ByteArrayInputStream(serializedData);
 		return deserialize(bin);
@@ -67,7 +67,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 
 	public static Serializable deserialize(final InputStream is) throws SerializationException
 	{
-		Assert.argumentNotNull("is", is);
+		Args.notNull("is", is);
 
 		ObjectInputStream ois = null;
 		try
@@ -107,7 +107,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 	 */
 	public static Object xml2bean(final String xmlData) throws SerializationException
 	{
-		Assert.argumentNotNull("xmlData", xmlData);
+		Args.notNull("xmlData", xmlData);
 
 		final ArrayList<Exception> exList = new ArrayList<Exception>(2);
 		final ByteArrayInputStream bis = new ByteArrayInputStream(xmlData.getBytes());

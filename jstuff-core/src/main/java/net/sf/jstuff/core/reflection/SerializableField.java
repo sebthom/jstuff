@@ -17,8 +17,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Field objects since they do not implement Serializable
@@ -35,7 +35,7 @@ public final class SerializableField implements Serializable
 
 	public static SerializableField get(final Field field)
 	{
-		Assert.argumentNotNull("field", field);
+		Args.notNull("field", field);
 
 		/*
 		 * intentionally the following code is not synchronized

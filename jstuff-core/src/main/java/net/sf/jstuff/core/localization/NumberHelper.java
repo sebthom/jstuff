@@ -17,7 +17,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -43,7 +43,7 @@ public class NumberHelper
 	 */
 	public NumberHelper(final Locale locale)
 	{
-		Assert.argumentNotNull("locale", locale);
+		Args.notNull("locale", locale);
 
 		this.locale = locale;
 	}
@@ -58,7 +58,7 @@ public class NumberHelper
 
 	public String getCurrencyFormatted(final Number value, final int digits)
 	{
-		Assert.argumentNotNull("value", value);
+		Args.notNull("value", value);
 
 		return getCurrencyFormat(digits, digits).format(value);
 	}
@@ -73,7 +73,7 @@ public class NumberHelper
 
 	public String getDecimalFormatted(final Number value, final int digits)
 	{
-		Assert.argumentNotNull("value", value);
+		Args.notNull("value", value);
 
 		return getDecimalFormat(digits, digits).format(value);
 	}
@@ -84,7 +84,7 @@ public class NumberHelper
 	 */
 	public double getDoubleValue(final String value) throws NumberFormatException
 	{
-		Assert.argumentNotNull("value", value);
+		Args.notNull("value", value);
 
 		if (isValidCurrency(value)) try
 		{
@@ -129,7 +129,7 @@ public class NumberHelper
 	 */
 	public int getIntValue(final String value) throws NumberFormatException
 	{
-		Assert.argumentNotNull("value", value);
+		Args.notNull("value", value);
 
 		if (isValidCurrency(value)) try
 		{
@@ -182,7 +182,7 @@ public class NumberHelper
 	 */
 	public long getLongValue(final String value) throws NumberFormatException
 	{
-		Assert.argumentNotNull("value", value);
+		Args.notNull("value", value);
 
 		if (isValidCurrency(value)) try
 		{
@@ -230,7 +230,7 @@ public class NumberHelper
 
 	public String getPercentFormatted(final Number value, final int digits)
 	{
-		Assert.argumentNotNull("value", value);
+		Args.notNull("value", value);
 
 		return getPercentFormat(digits).format(value);
 	}
@@ -242,7 +242,7 @@ public class NumberHelper
 
 	public String getWholeNumberFormatted(final Number value)
 	{
-		Assert.argumentNotNull("value", value);
+		Args.notNull("value", value);
 
 		return getWholeNumberFormat().format(value);
 	}

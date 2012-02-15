@@ -19,6 +19,9 @@ import java.net.URLClassLoader;
 import java.net.URLStreamHandlerFactory;
 import java.util.regex.Pattern;
 
+import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.validation.Assert;
+
 /**
  * Extended {@link URLClassLoader} that supports parent last classloading strategy and 
  * the recursive loading of JARs from directories.
@@ -58,7 +61,7 @@ public class URLClassLoaderExt extends URLClassLoader
 
 	public void addJAR(final File jarFile) throws IOException
 	{
-		Assert.argumentNotNull("jarFile", jarFile);
+		Args.notNull("jarFile", jarFile);
 		Assert.isFileReadable(jarFile);
 
 		LOG.trace("Adding file [%s] to classpath", jarFile);
@@ -67,7 +70,7 @@ public class URLClassLoaderExt extends URLClassLoader
 
 	public boolean addJARs(final File jarDirectory, final boolean recursive) throws IOException
 	{
-		Assert.argumentNotNull("jarDirectory", jarDirectory);
+		Args.notNull("jarDirectory", jarDirectory);
 
 		final File[] children = jarDirectory.listFiles();
 		if (children == null) return false;
@@ -86,8 +89,8 @@ public class URLClassLoaderExt extends URLClassLoader
 	public boolean addJARs(final File jarDirectory, final boolean recursive, final Pattern jarNamePattern)
 			throws IOException
 	{
-		Assert.argumentNotNull("jarDirectory", jarDirectory);
-		Assert.argumentNotNull("jarNamePattern", jarNamePattern);
+		Args.notNull("jarDirectory", jarDirectory);
+		Args.notNull("jarNamePattern", jarNamePattern);
 
 		final File[] children = jarDirectory.listFiles();
 		if (children == null) return false;
@@ -106,8 +109,8 @@ public class URLClassLoaderExt extends URLClassLoader
 	public boolean addJARs(final File jarDirectory, final boolean recursive, final String jarNamePattern)
 			throws IOException
 	{
-		Assert.argumentNotNull("jarDirectory", jarDirectory);
-		Assert.argumentNotNull("jarNamePattern", jarNamePattern);
+		Args.notNull("jarDirectory", jarDirectory);
+		Args.notNull("jarNamePattern", jarNamePattern);
 
 		final File[] children = jarDirectory.listFiles();
 		if (children == null) return false;
@@ -149,7 +152,7 @@ public class URLClassLoaderExt extends URLClassLoader
 	@Override
 	protected synchronized Class< ? > loadClass(final String name, final boolean resolve) throws ClassNotFoundException
 	{
-		Assert.argumentNotNull("name", name);
+		Args.notNull("name", name);
 
 		// if class loader strategy is parent first, then use the default class loading behavior
 		if (!parentLast) return super.loadClass(name, resolve);

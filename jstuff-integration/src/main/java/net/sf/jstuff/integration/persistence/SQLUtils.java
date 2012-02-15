@@ -21,8 +21,8 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -37,8 +37,8 @@ public abstract class SQLUtils
 	 */
 	public static String buildInsertSQL(final String table, final String... columnNames)
 	{
-		Assert.argumentNotEmpty("table", table);
-		Assert.argumentNotEmpty("columnNames", columnNames);
+		Args.notEmpty("table", table);
+		Args.notEmpty("columnNames", columnNames);
 
 		if (columnNames.length == 1) return "INSERT INTO " + table + "(" + columnNames[0] + ") VALUES (?)";
 
@@ -57,8 +57,8 @@ public abstract class SQLUtils
 	public static PreparedStatement buildInsertStatement(final Connection con, final String table,
 			final Map<String, Object> columns) throws SQLException
 	{
-		Assert.argumentNotEmpty("table", table);
-		Assert.argumentNotEmpty("columns", columns);
+		Args.notEmpty("table", table);
+		Args.notEmpty("columns", columns);
 
 		// convert column names to Array
 		final String[] columnNames = columns.keySet().toArray(new String[columns.size()]);
@@ -83,8 +83,8 @@ public abstract class SQLUtils
 	 */
 	public static String buildUpdateSQL(final String table, final String... columnNames)
 	{
-		Assert.argumentNotEmpty("table", table);
-		Assert.argumentNotEmpty("columnNames", columnNames);
+		Args.notEmpty("table", table);
+		Args.notEmpty("columnNames", columnNames);
 
 		return buildUpdateSQL(table, columnNames, null);
 	}
@@ -98,8 +98,8 @@ public abstract class SQLUtils
 	 */
 	public static String buildUpdateSQL(final String table, final String columnNames[], final String where)
 	{
-		Assert.argumentNotEmpty("table", table);
-		Assert.argumentNotEmpty("columnNames", columnNames);
+		Args.notEmpty("table", table);
+		Args.notEmpty("columnNames", columnNames);
 
 		if (columnNames.length == 1)
 			return "UPDATE " + table + " SET " + columnNames[0] + " = ? " + (where == null ? "" : " WHERE " + where);
@@ -121,8 +121,8 @@ public abstract class SQLUtils
 	public static PreparedStatement buildUpdateStatement(final Connection con, final String table,
 			final Map<String, Object> columns, final String where, final Object... whereValues) throws SQLException
 	{
-		Assert.argumentNotEmpty("table", table);
-		Assert.argumentNotEmpty("columns", columns);
+		Args.notEmpty("table", table);
+		Args.notEmpty("columns", columns);
 
 		final String[] columnNames = columns.keySet().toArray(new String[columns.size()]);
 

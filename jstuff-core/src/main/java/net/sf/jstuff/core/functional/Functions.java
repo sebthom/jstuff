@@ -14,7 +14,7 @@ package net.sf.jstuff.core.functional;
 
 import java.io.Serializable;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -49,8 +49,8 @@ public abstract class Functions
 
 		public And(final Function<In, Intermediate> first, final Function< ? super Intermediate, Out> second)
 		{
-			Assert.argumentNotNull("first", first);
-			Assert.argumentNotNull("second", second);
+			Args.notNull("first", first);
+			Args.notNull("second", second);
 
 			this.first = first;
 			this.second = second;
@@ -91,7 +91,7 @@ public abstract class Functions
 
 		public Prefix(final String prefix)
 		{
-			Assert.argumentNotNull("prefix", prefix);
+			Args.notNull("prefix", prefix);
 
 			this.prefix = prefix;
 		}
@@ -120,7 +120,7 @@ public abstract class Functions
 
 		public Suffix(final String suffix)
 		{
-			Assert.argumentNotNull("suffix", suffix);
+			Args.notNull("suffix", suffix);
 
 			this.suffix = suffix;
 		}

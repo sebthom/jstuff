@@ -1,7 +1,6 @@
 * text=auto !eol
 /LICENSE.txt -text
 jstuff-core/pom.xml -text
-jstuff-core/src/main/java/net/sf/jstuff/core/Assert.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/CryptoUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ImageUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Logger.java -text
@@ -10,7 +9,6 @@ jstuff-core/src/main/java/net/sf/jstuff/core/ObjectCache.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StackTraceUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/ThreadUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/URLClassLoaderExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ArrayUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CollectionUtils.java -text
@@ -38,6 +36,9 @@ jstuff-core/src/main/java/net/sf/jstuff/core/comparator/PropertyComparator.java 
 jstuff-core/src/main/java/net/sf/jstuff/core/comparator/ReverseComparator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/comparator/StringComparator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/comparator/ToStringComparator.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/HashLockManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/RuntimeInterruptedException.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/ThreadUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/DateUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/Day.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/ImmutableDate.java -text
@@ -82,6 +83,8 @@ jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableConstructor.
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableField.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableMethod.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SetAccessibleAction.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/validation/Args.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/validation/Assert.java -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Day.properties -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Day_de.properties -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month.properties -text

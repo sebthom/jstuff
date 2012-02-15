@@ -18,10 +18,10 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.reflection.ReflectionUtils;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -36,7 +36,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable
 
 	public PropertyComparator(final String propertyPath)
 	{
-		Assert.argumentNotNull("propertyPath", propertyPath);
+		Args.notNull("propertyPath", propertyPath);
 
 		this.propertyPath = StringUtils.split(propertyPath, '.');
 	}

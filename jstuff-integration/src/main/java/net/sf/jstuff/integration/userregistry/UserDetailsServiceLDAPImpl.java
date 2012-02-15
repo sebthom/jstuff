@@ -23,8 +23,8 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.functional.Invocable;
+import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LDAPTemplate;
 import net.sf.jstuff.integration.ldap.LDAPUtils;
 
@@ -48,7 +48,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 
 	protected UserDetails getUserDetailsByFilter(final String filter)
 	{
-		Assert.argumentNotNull("filter", filter);
+		Args.notNull("filter", filter);
 
 		return (UserDetails) ldapTemplate.execute(new Invocable<Object, LdapContext>()
 			{
@@ -86,7 +86,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	 */
 	public UserDetails getUserDetailsByLogonName(final String logonName)
 	{
-		Assert.argumentNotNull("logonName", logonName);
+		Args.notNull("logonName", logonName);
 
 		return getUserDetailsByFilter(userAttributeLogonName + "=" + LDAPUtils.ldapEscape(logonName));
 	}
@@ -96,7 +96,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	 */
 	public UserDetails getUserDetailsByUserId(final String userId)
 	{
-		Assert.argumentNotNull("userId", userId);
+		Args.notNull("userId", userId);
 
 		return getUserDetailsByFilter(userAttributeUserId + "=" + LDAPUtils.ldapEscape(userId));
 	}
@@ -119,7 +119,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	@Required
 	public void setLdapTemplate(final LDAPTemplate ldapTemplate)
 	{
-		Assert.argumentNotNull("ldapTemplate", ldapTemplate);
+		Args.notNull("ldapTemplate", ldapTemplate);
 
 		this.ldapTemplate = ldapTemplate;
 	}
@@ -130,7 +130,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	@Required
 	public void setUserAttributeDisplayName(final String userAttributeDisplayName)
 	{
-		Assert.argumentNotNull("userAttributeDisplayName", userAttributeDisplayName);
+		Args.notNull("userAttributeDisplayName", userAttributeDisplayName);
 
 		this.userAttributeDisplayName = userAttributeDisplayName;
 	}
@@ -141,7 +141,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	@Required
 	public void setUserAttributeEMailAdress(final String userAttributeEMailAdress)
 	{
-		Assert.argumentNotNull("userAttributeEMailAdress", userAttributeEMailAdress);
+		Args.notNull("userAttributeEMailAdress", userAttributeEMailAdress);
 
 		this.userAttributeEMailAdress = userAttributeEMailAdress;
 	}
@@ -152,7 +152,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	@Required
 	public void setUserAttributeLogonName(final String userAttributeLogonName)
 	{
-		Assert.argumentNotNull("userAttributeLogonName", userAttributeLogonName);
+		Args.notNull("userAttributeLogonName", userAttributeLogonName);
 
 		this.userAttributeLogonName = userAttributeLogonName;
 	}
@@ -163,7 +163,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	@Required
 	public void setUserAttributeUserId(final String userAttributeUserId)
 	{
-		Assert.argumentNotNull("userAttributeUserId", userAttributeUserId);
+		Args.notNull("userAttributeUserId", userAttributeUserId);
 
 		this.userAttributeUserId = userAttributeUserId;
 	}
@@ -174,7 +174,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	@Required
 	public void setUserSearchBase(final String userSearchBase)
 	{
-		Assert.argumentNotNull("userSearchBase", userSearchBase);
+		Args.notNull("userSearchBase", userSearchBase);
 
 		this.userSearchBase = userSearchBase;
 	}
@@ -185,7 +185,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	@Required
 	public void setUserSearchFilter(final String userSearchFilter)
 	{
-		Assert.argumentNotNull("userSearchFilter", userSearchFilter);
+		Args.notNull("userSearchFilter", userSearchFilter);
 
 		this.userSearchFilter = userSearchFilter;
 	}

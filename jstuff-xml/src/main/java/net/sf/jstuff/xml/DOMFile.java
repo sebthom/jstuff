@@ -18,9 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.io.FileUtils;
+import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.validation.Assert;
 
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -60,7 +61,7 @@ public class DOMFile
 	public DOMFile(final File xmlFile, final String rootElementNamespace, final File... xmlSchemaFiles)
 			throws IOException, XMLException
 	{
-		Assert.argumentNotNull("xmlFile", xmlFile);
+		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
 		this.xmlFile = xmlFile;
@@ -82,8 +83,8 @@ public class DOMFile
 
 	public Comment createCommentBefore(final String commentString, final Node childToCreateBefore)
 	{
-		Assert.argumentNotNull("commentString", commentString);
-		Assert.argumentNotNull("childToCreateBefore", childToCreateBefore);
+		Args.notNull("commentString", commentString);
+		Args.notNull("childToCreateBefore", childToCreateBefore);
 
 		return (Comment) domDocument.insertBefore(domDocument.createComment(commentString), childToCreateBefore);
 	}
@@ -93,8 +94,8 @@ public class DOMFile
 	 */
 	public Element createElement(final String xmlTagName, final Node parentNode)
 	{
-		Assert.argumentNotEmpty("xmlTagName", xmlTagName);
-		Assert.argumentNotNull("parentNode", parentNode);
+		Args.notEmpty("xmlTagName", xmlTagName);
+		Args.notNull("parentNode", parentNode);
 
 		return createElement(xmlTagName, parentNode, null);
 	}
@@ -105,8 +106,8 @@ public class DOMFile
 	public Element createElement(final String xmlTagName, final Node parentNode,
 			final Map<String, String> elementAttributes)
 	{
-		Assert.argumentNotEmpty("xmlTagName", xmlTagName);
-		Assert.argumentNotNull("parentNode", parentNode);
+		Args.notEmpty("xmlTagName", xmlTagName);
+		Args.notNull("parentNode", parentNode);
 
 		final Element elem = (Element) parentNode.appendChild(domDocument.createElement(xmlTagName));
 		if (elementAttributes != null) for (final Entry<String, String> attr : elementAttributes.entrySet())
@@ -116,8 +117,8 @@ public class DOMFile
 
 	public Element createElementBefore(final String xmlTagName, final Node childToCreateBefore)
 	{
-		Assert.argumentNotEmpty("tagName", xmlTagName);
-		Assert.argumentNotNull("childToCreateBefore", childToCreateBefore);
+		Args.notEmpty("tagName", xmlTagName);
+		Args.notNull("childToCreateBefore", childToCreateBefore);
 
 		return createElementBefore(xmlTagName, childToCreateBefore, null);
 	}
@@ -125,8 +126,8 @@ public class DOMFile
 	public Element createElementBefore(final String xmlTagName, final Node childToCreateBefore,
 			final Map<String, String> elementAttributes)
 	{
-		Assert.argumentNotEmpty("tagName", xmlTagName);
-		Assert.argumentNotNull("childToCreateBefore", childToCreateBefore);
+		Args.notEmpty("tagName", xmlTagName);
+		Args.notNull("childToCreateBefore", childToCreateBefore);
 
 		final Element elem = (Element) childToCreateBefore.getParentNode().insertBefore(
 				domDocument.createElement(xmlTagName), childToCreateBefore);
@@ -137,37 +138,37 @@ public class DOMFile
 
 	public Node findNode(final String xPathExpression) throws XMLException
 	{
-		Assert.argumentNotEmpty("xPathExpression", xPathExpression);
+		Args.notEmpty("xPathExpression", xPathExpression);
 
 		return findNode(xPathExpression, domRoot);
 	}
 
 	public Node findNode(final String xPathExpression, final Node searchScope) throws XMLException
 	{
-		Assert.argumentNotEmpty("xPathExpression", xPathExpression);
-		Assert.argumentNotNull("searchScope", searchScope);
+		Args.notEmpty("xPathExpression", xPathExpression);
+		Args.notNull("searchScope", searchScope);
 
 		return DOMUtils.findNode(xPathExpression, searchScope);
 	}
 
 	public List<Node> findNodes(final String xPathExpression) throws XMLException
 	{
-		Assert.argumentNotEmpty("xPathExpression", xPathExpression);
+		Args.notEmpty("xPathExpression", xPathExpression);
 
 		return DOMUtils.findNodes(xPathExpression, domRoot);
 	}
 
 	public List<Node> findNodes(final String xPathExpression, final Node searchScope) throws XMLException
 	{
-		Assert.argumentNotEmpty("xPathExpression", xPathExpression);
-		Assert.argumentNotNull("searchScope", searchScope);
+		Args.notEmpty("xPathExpression", xPathExpression);
+		Args.notNull("searchScope", searchScope);
 
 		return DOMUtils.findNodes(xPathExpression, searchScope);
 	}
 
 	public List<Node> getChildNodes(final Node node)
 	{
-		Assert.argumentNotNull("node", node);
+		Args.notNull("node", node);
 
 		return DOMUtils.getChildNodes(node);
 	}
@@ -182,9 +183,22 @@ public class DOMFile
 		return domRoot;
 	}
 
+	/**
+	 * @return the xmlFile
+	 */
+	public File getFile()
+	{
+		return xmlFile;
+	}
+
+	public String getFilePath()
+	{
+		return xmlFile.getAbsolutePath();
+	}
+
 	public Node getFirstChild(final Node parentNode)
 	{
-		Assert.argumentNotNull("parentNode", parentNode);
+		Args.notNull("parentNode", parentNode);
 
 		return DOMUtils.getFirstChild(parentNode);
 	}
@@ -192,8 +206,8 @@ public class DOMFile
 	@SuppressWarnings("unchecked")
 	public <T extends Node> T importNodeBefore(final T nodeToImport, final Node childToImportBefore)
 	{
-		Assert.argumentNotNull("nodeToImport", nodeToImport);
-		Assert.argumentNotNull("childToImportBefore", childToImportBefore);
+		Args.notNull("nodeToImport", nodeToImport);
+		Args.notNull("childToImportBefore", childToImportBefore);
 
 		final Node importedNode = DOMUtils.importNode(nodeToImport, domRoot);
 		return (T) childToImportBefore.getParentNode().insertBefore(importedNode, childToImportBefore);
@@ -201,15 +215,15 @@ public class DOMFile
 
 	public void removeNodes(final String xPathExpression) throws XMLException
 	{
-		Assert.argumentNotEmpty("xPathExpression", xPathExpression);
+		Args.notEmpty("xPathExpression", xPathExpression);
 
 		removeNodes(xPathExpression, domRoot);
 	}
 
 	public void removeNodes(final String xPathExpression, final Node searchScope) throws XMLException
 	{
-		Assert.argumentNotEmpty("xPathExpression", xPathExpression);
-		Assert.argumentNotNull("searchScope", searchScope);
+		Args.notEmpty("xPathExpression", xPathExpression);
+		Args.notNull("searchScope", searchScope);
 
 		for (final Node nodeToRemove : findNodes(xPathExpression, searchScope))
 			nodeToRemove.getParentNode().removeChild(nodeToRemove);
@@ -222,14 +236,14 @@ public class DOMFile
 
 	public void saveAs(final File file) throws IOException, XMLException
 	{
-		Assert.argumentNotNull("file", file);
+		Args.notNull("file", file);
 
 		DOMUtils.saveToFile(domDocument, file);
 	}
 
 	public void saveAs(final String filePath) throws IOException, XMLException
 	{
-		Assert.argumentNotNull("filePath", filePath);
+		Args.notNull("filePath", filePath);
 
 		DOMUtils.saveToFile(domDocument, new File(filePath));
 	}

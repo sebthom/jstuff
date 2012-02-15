@@ -15,7 +15,7 @@ package net.sf.jstuff.integration.ldap;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -39,7 +39,7 @@ public abstract class LDAPUtils
 	 */
 	public static CharSequence ldapEscape(final String text)
 	{
-		Assert.argumentNotNull("text", text);
+		Args.notNull("text", text);
 
 		// check if the string needs to be escaped at all
 		final int textLen = text.length();

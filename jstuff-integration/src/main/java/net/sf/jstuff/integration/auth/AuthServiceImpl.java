@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.MapWithSets;
+import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.userregistry.GroupDetailsService;
 import net.sf.jstuff.integration.userregistry.UserDetails;
 import net.sf.jstuff.integration.userregistry.UserDetailsService;
@@ -108,7 +108,7 @@ public class AuthServiceImpl implements AuthService
 
 	protected Set<String> getGrantedRoles(final String userDN)
 	{
-		Assert.argumentNotEmpty("userDN", userDN);
+		Args.notEmpty("userDN", userDN);
 
 		final Set<String> groupIds = groupDetailsService.getGroupIdsByUserDN(userDN);
 		final Set<String> roles = new HashSet<String>();

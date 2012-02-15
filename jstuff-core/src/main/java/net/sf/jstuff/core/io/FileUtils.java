@@ -18,8 +18,9 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.validation.Assert;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -32,7 +33,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 
 	public static File[] asFileArray(final String... filePaths)
 	{
-		Assert.argumentNotNull("filePaths", filePaths);
+		Args.notNull("filePaths", filePaths);
 
 		final File[] result = new File[filePaths.length];
 		for (int i = 0, l = filePaths.length; i < l; i++)
@@ -47,7 +48,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	 */
 	public static File backupFile(final File fileToBackup) throws IOException
 	{
-		Assert.argumentNotNull("fileToBackup", fileToBackup);
+		Args.notNull("fileToBackup", fileToBackup);
 
 		return backupFile(fileToBackup, fileToBackup.getParentFile());
 	}
@@ -59,8 +60,8 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	 */
 	public static File backupFile(final File fileToBackup, final File backupFolder) throws IOException
 	{
-		Assert.argumentNotNull("fileToBackup", fileToBackup);
-		Assert.argumentNotNull("backupFolder", backupFolder);
+		Args.notNull("fileToBackup", fileToBackup);
+		Args.notNull("backupFolder", backupFolder);
 
 		if (!backupFolder.isDirectory())
 			throw new IllegalArgumentException("backupFolder [" + backupFolder + "] is not a directory");
@@ -81,7 +82,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 
 	public static void cleanDirectory(final File directory, final Date oldestFileDate, final boolean recursive)
 	{
-		Assert.argumentNotNull("directory", directory);
+		Args.notNull("directory", directory);
 
 		cleanDirectory(directory, oldestFileDate, recursive, null);
 	}
@@ -89,8 +90,8 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	public static void cleanDirectory(final File directory, final Date purgeFilesOlderThan, final boolean recursive,
 			final FilenameFilter filenameFilter)
 	{
-		Assert.argumentNotNull("directory", directory);
-		Assert.argumentNotNull("purgeFilesOlderThan", purgeFilesOlderThan);
+		Args.notNull("directory", directory);
+		Args.notNull("purgeFilesOlderThan", purgeFilesOlderThan);
 
 		if (!directory.isDirectory()) return;
 
@@ -105,7 +106,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 
 	public static void cleanDirectory(final File directory, final int purgeFilesOlderThanXDays, final boolean recursive)
 	{
-		Assert.argumentNotNull("directory", directory);
+		Args.notNull("directory", directory);
 
 		cleanDirectory(directory, purgeFilesOlderThanXDays, recursive, null);
 	}
@@ -113,7 +114,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	public static void cleanDirectory(final File directory, final int purgeFilesOlderThanXDays,
 			final boolean recursive, final FilenameFilter filenameFilter)
 	{
-		Assert.argumentNotNull("directory", directory);
+		Args.notNull("directory", directory);
 
 		final Calendar c = Calendar.getInstance();
 		c.add(Calendar.DAY_OF_MONTH, -purgeFilesOlderThanXDays);
@@ -138,7 +139,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	 */
 	public static String getFileBaseName(final File file)
 	{
-		Assert.argumentNotNull("file", file);
+		Args.notNull("file", file);
 
 		final int lastDotPos = file.getName().lastIndexOf('.');
 		if (lastDotPos > 1 && lastDotPos <= file.getName().length() - 2)
@@ -148,7 +149,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 
 	public static String getFileExtension(final File file)
 	{
-		Assert.argumentNotNull("file", file);
+		Args.notNull("file", file);
 
 		final int lastDotPos = file.getName().lastIndexOf('.');
 		if (0 < lastDotPos && lastDotPos <= file.getName().length() - 2)

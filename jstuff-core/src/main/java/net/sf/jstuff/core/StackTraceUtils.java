@@ -14,6 +14,8 @@ package net.sf.jstuff.core;
 
 import java.util.Arrays;
 
+import net.sf.jstuff.core.validation.Args;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -113,7 +115,7 @@ public abstract class StackTraceUtils
 
 	public static <T extends Throwable> T removeFirstStackTraceElement(final T t)
 	{
-		Assert.argumentNotNull("t", t);
+		Args.notNull("t", t);
 
 		final StackTraceElement[] stack = t.getStackTrace();
 		final StackTraceElement[] newStack = new StackTraceElement[stack.length - 1];

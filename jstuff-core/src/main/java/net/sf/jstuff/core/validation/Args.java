@@ -10,20 +10,19 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.validation;
 
 import static net.sf.jstuff.core.StackTraceUtils.*;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Assert
+public abstract class Args
 {
-	public static <T> void argumentContainsNoNulls(final String argumentName, final Collection<T> entries)
+	public static <T> void containsNoNulls(final String argumentName, final Collection<T> entries)
 	{
 		if (entries == null) return;
 
@@ -33,7 +32,7 @@ public abstract class Assert
 						+ "] must not contain elements with value <null>"));
 	}
 
-	public static <T> void argumentContainsNoNulls(final String argumentName, final T... entries)
+	public static <T> void containsNoNulls(final String argumentName, final T... entries)
 	{
 		if (entries == null) return;
 
@@ -43,28 +42,28 @@ public abstract class Assert
 						+ "] must not contain elements with value <null>"));
 	}
 
-	public static void argumentInRange(final String argumentName, final byte value, final byte min, final byte max)
+	public static void inRange(final String argumentName, final byte value, final byte min, final byte max)
 	{
 		if (value < min || value > max)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
 					+ "] must be in range of " + min + " to " + max));
 	}
 
-	public static void argumentInRange(final String argumentName, final int value, final int min, final int max)
+	public static void inRange(final String argumentName, final int value, final int min, final int max)
 	{
 		if (value < min || value > max)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
 					+ "] must be in range of " + min + " to " + max));
 	}
 
-	public static void argumentInRange(final String argumentName, final long value, final long min, final long max)
+	public static void inRange(final String argumentName, final long value, final long min, final long max)
 	{
 		if (value < min || value > max)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
 					+ "] must be in range of " + min + " to " + max));
 	}
 
-	public static void argumentInRange(final String argumentName, final Number value, final long min, final long max)
+	public static void inRange(final String argumentName, final Number value, final long min, final long max)
 	{
 		if (value == null)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
@@ -75,28 +74,28 @@ public abstract class Assert
 					+ "] must be in range of " + min + " to " + max));
 	}
 
-	public static void argumentMinSize(final String argumentName, final byte value, final byte min)
+	public static void minSize(final String argumentName, final byte value, final byte min)
 	{
 		if (value < min)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min
 					+ " or greater"));
 	}
 
-	public static void argumentMinSize(final String argumentName, final int value, final int min)
+	public static void minSize(final String argumentName, final int value, final int min)
 	{
 		if (value < min)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min
 					+ " or greater"));
 	}
 
-	public static void argumentMinSize(final String argumentName, final long value, final long min)
+	public static void minSize(final String argumentName, final long value, final long min)
 	{
 		if (value < min)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min
 					+ " or greater"));
 	}
 
-	public static void argumentMinSize(final String argumentName, final short value, final short min)
+	public static void minSize(final String argumentName, final short value, final short min)
 	{
 		if (value < min)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min
@@ -106,9 +105,9 @@ public abstract class Assert
 	/**
 	 * @throws IllegalArgumentException if string <code>value</code> is null or has a length of 0
 	 */
-	public static <T> void argumentNotEmpty(final String argumentName, final CharSequence value)
+	public static <T> void notEmpty(final String argumentName, final CharSequence value)
 	{
-		argumentNotNull("argumentName", argumentName);
+		notNull("argumentName", argumentName);
 
 		if (value == null)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
@@ -119,9 +118,9 @@ public abstract class Assert
 	/**
 	 * @throws IllegalArgumentException if <code>value</code> collection is null or empty
 	 */
-	public static <T> void argumentNotEmpty(final String argumentName, final Collection<T> value)
+	public static <T> void notEmpty(final String argumentName, final Collection<T> value)
 	{
-		argumentNotNull("argumentName", argumentName);
+		notNull("argumentName", argumentName);
 
 		if (value == null)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
@@ -132,9 +131,9 @@ public abstract class Assert
 	/**
 	 * @throws IllegalArgumentException if <code>value</code> map is null or empty
 	 */
-	public static <K, V> void argumentNotEmpty(final String argumentName, final Map<K, V> value)
+	public static <K, V> void notEmpty(final String argumentName, final Map<K, V> value)
 	{
-		argumentNotNull("argumentName", argumentName);
+		notNull("argumentName", argumentName);
 
 		if (value == null)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
@@ -145,9 +144,9 @@ public abstract class Assert
 	/**
 	 * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
 	 */
-	public static <T> void argumentNotEmpty(final String argumentName, final T[] value)
+	public static <T> void notEmpty(final String argumentName, final T[] value)
 	{
-		argumentNotNull("argumentName", argumentName);
+		notNull("argumentName", argumentName);
 
 		if (value == null)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
@@ -155,28 +154,28 @@ public abstract class Assert
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
 	}
 
-	public static <T> void argumentNotNegative(final String argumentName, final byte value)
+	public static <T> void notNegative(final String argumentName, final byte value)
 	{
 		if (value < 0)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
 					+ "] must not be negative"));
 	}
 
-	public static <T> void argumentNotNegative(final String argumentName, final int value)
+	public static <T> void notNegative(final String argumentName, final int value)
 	{
 		if (value < 0)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
 					+ "] must not be negative"));
 	}
 
-	public static <T> void argumentNotNegative(final String argumentName, final long value)
+	public static <T> void notNegative(final String argumentName, final long value)
 	{
 		if (value < 0)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
 					+ "] must not be negative"));
 	}
 
-	public static <T> void argumentNotNegative(final String argumentName, final short value)
+	public static <T> void notNegative(final String argumentName, final short value)
 	{
 		if (value < 0)
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
@@ -186,7 +185,7 @@ public abstract class Assert
 	/**
 	 * @throws IllegalArgumentException if <code>value</code> is null
 	 */
-	public static void argumentNotNull(final String argumentName, final Object value)
+	public static void notNull(final String argumentName, final Object value)
 	{
 		if (argumentName == null) throw new IllegalArgumentException("[argumentName] must not be null");
 
@@ -194,85 +193,7 @@ public abstract class Assert
 			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
 	}
 
-	/**
-	 * @throws IllegalStateException if <code>value</value> is <code>true</code>
-	 */
-	public static void isFalse(final boolean value, final String errorMessage)
-	{
-		if (value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-	}
-
-	/**
-	 * @throws IllegalStateException if <code>value</value> is not readable
-	 */
-	public static void isFileReadable(final File file)
-	{
-		argumentNotNull("file", file);
-
-		if (!file.exists())
-			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath()
-					+ "] does not exist."));
-		if (!file.isFile())
-			throw removeFirstStackTraceElement(new IllegalStateException("System resource [" + file.getAbsolutePath()
-					+ "] is not a file."));
-		if (!file.canRead())
-			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath()
-					+ "] is not readable."));
-	}
-
-	/**
-	 * @throws IllegalStateException if <code>value</value> is not <code>null</code>
-	 */
-	public static void isNull(final Object value, final String errorMessage)
-	{
-		if (value != null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-	}
-
-	/**
-	 * @throws IllegalStateException if <code>value</value> is <code>false</code>
-	 */
-	public static void isTrue(final boolean value, final String errorMessage)
-	{
-		if (!value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-	}
-
-	public static <T> void notEmpty(final CharSequence value, final String errorMessage)
-	{
-		if (value == null || value.length() == 0)
-			throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-	}
-
-	public static <T> void notEmpty(final T[] value, final String errorMessage)
-	{
-		if (value == null || value.length == 0)
-			throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-	}
-
-	/**
-	 * @throws IllegalStateException if <code>value</value> is <code>false</code>
-	 */
-	public static void notFalse(final boolean value, final String errorMessage)
-	{
-		if (!value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-	}
-
-	/**
-	 * @throws IllegalStateException if <code>value</value> is <code>null</code>
-	 */
-	public static void notNull(final Object value, final String errorMessage)
-	{
-		if (value == null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-	}
-
-	/**
-	 * @throws IllegalStateException if <code>value</value> is <code>true</code>
-	 */
-	public static void notTrue(final boolean value, final String errorMessage)
-	{
-		if (value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-	}
-
-	protected Assert()
+	protected Args()
 	{
 		super();
 	}

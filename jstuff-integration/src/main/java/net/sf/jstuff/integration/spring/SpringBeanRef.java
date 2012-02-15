@@ -14,7 +14,7 @@ package net.sf.jstuff.integration.spring;
 
 import java.io.Serializable;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * A serializable reference to a Spring managed bean. Relies on a configured {@link SpringBeanLocator}.
@@ -43,14 +43,14 @@ public class SpringBeanRef<T> implements Serializable
 
 	private SpringBeanRef(final Class<T> beanType)
 	{
-		Assert.argumentNotNull("beanType", beanType);
+		Args.notNull("beanType", beanType);
 		this.beanType = beanType;
 		beanName = null;
 	}
 
 	private SpringBeanRef(final String beanName)
 	{
-		Assert.argumentNotNull("beanName", beanName);
+		Args.notNull("beanName", beanName);
 		this.beanName = beanName;
 		beanType = null;
 	}

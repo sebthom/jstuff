@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * A non-thread-safe output stream filter that performs on-the fly zip compression using a {@link Deflater}.
@@ -64,8 +64,8 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 	{
 		super(os);
 
-		Assert.argumentNotNull("os", os);
-		Assert.argumentMinSize("blockSize", blockSize, 1);
+		Args.notNull("os", os);
+		Args.minSize("blockSize", blockSize, 1);
 
 		this.compressor = compressor == null ? new Deflater() : compressor;
 		isUseDefaultCompressor = false;
@@ -82,9 +82,9 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 	{
 		super(os);
 
-		Assert.argumentNotNull("os", os);
-		Assert.argumentMinSize("blockSize", blockSize, 1);
-		Assert.argumentInRange("compressionLevel", compressionLevel, 0, 9);
+		Args.notNull("os", os);
+		Args.minSize("blockSize", blockSize, 1);
+		Args.inRange("compressionLevel", compressionLevel, 0, 9);
 
 		compressor = new Deflater(compressionLevel);
 		isUseDefaultCompressor = true;
@@ -170,9 +170,9 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 	@Override
 	public void write(final byte[] b, final int off, final int len) throws IOException
 	{
-		Assert.argumentNotNull("b", b);
-		Assert.argumentInRange("off", off, 0, b.length - 1);
-		Assert.argumentInRange("len", len, 0, b.length - off);
+		Args.notNull("b", b);
+		Args.inRange("off", off, 0, b.length - 1);
+		Args.inRange("len", len, 0, b.length - off);
 
 		if (len == 0) return;
 

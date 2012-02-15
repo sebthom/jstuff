@@ -24,9 +24,9 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 
-import net.sf.jstuff.core.Assert;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.functional.Invocable;
+import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LDAPTemplate;
 
 import org.springframework.beans.factory.annotation.Required;
@@ -52,7 +52,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	 */
 	public GroupDetails getGroupDetailsByGroupDN(final String groupDN)
 	{
-		Assert.argumentNotNull("groupDN", groupDN);
+		Args.notNull("groupDN", groupDN);
 
 		return (GroupDetails) ldapTemplate.execute(new Invocable<Object, LdapContext>()
 			{
@@ -81,7 +81,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	@SuppressWarnings("unchecked")
 	public Set<String> getGroupIdsByUserDN(final String userDN)
 	{
-		Assert.argumentNotNull("userDN", userDN);
+		Args.notNull("userDN", userDN);
 
 		return (Set<String>) ldapTemplate.execute(new Invocable<Object, LdapContext>()
 			{
@@ -122,7 +122,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	@Required
 	public void setGroupAttributeDisplayName(final String groupAttributeDisplayName)
 	{
-		Assert.argumentNotNull("groupAttributeDisplayName", groupAttributeDisplayName);
+		Args.notNull("groupAttributeDisplayName", groupAttributeDisplayName);
 
 		this.groupAttributeDisplayName = groupAttributeDisplayName;
 	}
@@ -133,7 +133,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	@Required
 	public void setGroupAttributeGroupId(final String groupAttributeGroupId)
 	{
-		Assert.argumentNotNull("groupAttributeGroupId", groupAttributeGroupId);
+		Args.notNull("groupAttributeGroupId", groupAttributeGroupId);
 
 		this.groupAttributeGroupId = groupAttributeGroupId;
 	}
@@ -144,7 +144,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	@Required
 	public void setGroupAttributeMember(final String groupAttributeMember)
 	{
-		Assert.argumentNotNull("groupAttributeMember", groupAttributeMember);
+		Args.notNull("groupAttributeMember", groupAttributeMember);
 
 		this.groupAttributeMember = groupAttributeMember;
 	}
@@ -155,7 +155,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	@Required
 	public void setGroupSearchBase(final String groupSearchBase)
 	{
-		Assert.argumentNotNull("groupSearchBase", groupSearchBase);
+		Args.notNull("groupSearchBase", groupSearchBase);
 
 		this.groupSearchBase = groupSearchBase;
 	}
@@ -166,7 +166,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	@Required
 	public void setGroupSearchFilter(final String groupSearchFilter)
 	{
-		Assert.argumentNotNull("groupSearchFilter", groupSearchFilter);
+		Args.notNull("groupSearchFilter", groupSearchFilter);
 
 		this.groupSearchFilter = groupSearchFilter;
 	}
@@ -185,7 +185,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	@Required
 	public void setLdapTemplate(final LDAPTemplate ldapTemplate)
 	{
-		Assert.argumentNotNull("ldapTemplate", ldapTemplate);
+		Args.notNull("ldapTemplate", ldapTemplate);
 
 		this.ldapTemplate = ldapTemplate;
 	}

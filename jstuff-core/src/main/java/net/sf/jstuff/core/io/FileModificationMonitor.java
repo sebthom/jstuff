@@ -17,7 +17,7 @@ import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import net.sf.jstuff.core.Assert;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * Monitors the modification date of the given file
@@ -52,14 +52,14 @@ public class FileModificationMonitor extends Observable
 
 	public FileModificationMonitor(final File file)
 	{
-		Assert.argumentNotNull("file", file);
+		Args.notNull("file", file);
 
 		this.file = file;
 	}
 
 	public FileModificationMonitor(final File file, final long interval)
 	{
-		Assert.argumentNotNull("file", file);
+		Args.notNull("file", file);
 
 		this.file = file;
 		this.interval = interval;
