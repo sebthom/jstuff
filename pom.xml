@@ -10,7 +10,7 @@
 	<artifactId>jstuff-parent</artifactId>
 	<name>${project.artifactId}</name>
 	<packaging>pom</packaging>
-	<version>0.4.0</version>
+	<version>0.5.0</version>
 
 	<url>http://jstuff.sf.net</url>
 
@@ -24,7 +24,7 @@
 			<name>Eclipse Public License - v 1.0</name>
 			<distribution>repo</distribution>
 			<!-- <url>http://www.eclipse.org/legal/epl-v10.html</url> -->
-			<url>http://oval.sf.net/license/epl-v10.txt</url>
+			<url>http://jstuff.sf.net/license/epl-v10.txt</url>
 		</license>
 	</licenses>
 
@@ -94,6 +94,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.5</java.version>
 		<slf4j.version>1.6.1</slf4j.version>
+
 	</properties>
 
 	<modules>
@@ -180,6 +181,27 @@
 			<!--*********************************************************************
 				phase: package
 				********************************************************************* -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<obrRepository>NONE</obrRepository>
+					<excludeDependencies>true</excludeDependencies>
+					<instructions>
+						<Bundle-Name>${project.artifactId}-${project.version}</Bundle-Name>
+						<Bundle-SymbolicName>${project.artifactId}-${project.version}</Bundle-SymbolicName>
+						<Bundle-Description>${project.description}</Bundle-Description>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Export-Package>*; version="${project.version}"</Export-Package>
+						<Import-Package>org.apache.wicket.*;version="[${project.version},${project.version}]",*</Import-Package>
+						<Private-Package />
+						<Embed-Dependency />
+					</instructions>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
