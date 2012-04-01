@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -12,8 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.io;
 
-import static net.sf.jstuff.core.StringUtils.CR;
-import static net.sf.jstuff.core.StringUtils.LF;
+import static net.sf.jstuff.core.StringUtils.*;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -65,7 +64,7 @@ public class BufferedInputStreamExt extends BufferedInputStream
 					if (len > 0 && sb.charAt(len - 1) == CR) sb.setLength(len - 1);
 					return sb;
 
-				case -1 :
+				case IOUtils.EOF :
 					if (sb.length() > 0) return sb;
 					return null;
 
@@ -86,7 +85,7 @@ public class BufferedInputStreamExt extends BufferedInputStream
 		final byte[] chars = new byte[length];
 		int countBytes;
 		countBytes = read(chars);
-		if (countBytes == -1) return null;
+		if (countBytes == IOUtils.EOF) return null;
 		return new String(chars, 0, countBytes);
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -24,7 +24,7 @@ import junit.framework.TestCase;
  */
 public class ZippedBlockStreamTest extends TestCase
 {
-	public void testZLIBStream() throws IOException
+	public void testZippedBlockStream() throws IOException
 	{
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		final ZippedBlockOutputStream zos = new ZippedBlockOutputStream(bos, 16, Deflater.BEST_SPEED);

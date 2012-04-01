@@ -60,10 +60,13 @@ jstuff-core/src/main/java/net/sf/jstuff/core/functional/IsEqual.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedInputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedOutputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/CharSequenceReader.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/io/FastByteArrayInputStream.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/io/FastByteArrayOutputStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/FileModificationMonitor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/FileUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/IOUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/SerializationUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/io/TeePrintStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/ZippedBlockInputStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/ZippedBlockOutputStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateFormatStyle.java -text
@@ -72,6 +75,8 @@ jstuff-core/src/main/java/net/sf/jstuff/core/localization/NumberHelper.java -tex
 jstuff-core/src/main/java/net/sf/jstuff/core/net/AbstractServer.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/NetUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/SSLUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockServerSocket.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockSocket.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/AccessingFieldValueFailedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/AnnotationUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/BeanUtils.java -text
@@ -182,6 +187,9 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanInje
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanLocator.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanRef.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringHttpInvokerServicesServlet.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/ZippedBlockRMIProxyFactoryBean.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/ZippedBlockRMIServiceExporter.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/ZippedBlockRMISocketFactory.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/GroupDetails.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/GroupDetailsImpl.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/GroupDetailsService.java -text

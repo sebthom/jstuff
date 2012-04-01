@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -34,6 +34,8 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class IOUtils extends org.apache.commons.io.IOUtils
 {
+	public final static int EOF = -1;
+
 	private static final Logger LOG = Logger.make();
 
 	public static int copyAndClose(final InputStream is, final OutputStream os) throws IOException
@@ -42,6 +44,13 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 		closeQuietly(is);
 		closeQuietly(os);
 		return bytesCopied;
+	}
+
+	public static byte[] readBytes(final InputStream is) throws IOException
+	{
+		final FastByteArrayOutputStream os = new FastByteArrayOutputStream();
+		copy(is, os);
+		return os.toByteArray();
 	}
 
 	/**
@@ -62,7 +71,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 		while (bytesMissing > 0)
 		{
 			final int bytesRead = is.read(b, currentOffset, bytesMissing);
-			if (bytesRead == -1) throw new EOFException("Unexpected end of input stream reached.");
+			if (bytesRead == IOUtils.EOF) throw new EOFException("Unexpected end of input stream reached.");
 			currentOffset += bytesRead;
 			bytesMissing -= bytesRead;
 		}
@@ -80,12 +89,20 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 		return bytes;
 	}
 
+	public static byte[] readBytesAndClose(final InputStream is) throws IOException
+	{
+		final FastByteArrayOutputStream os = new FastByteArrayOutputStream();
+		copy(is, os);
+		closeQuietly(is);
+		return os.toByteArray();
+	}
+
 	public static String readChunkAsString(final InputStream is, final int maxSize) throws IOException
 	{
 		if (is.available() == 0) return "";
 		final byte[] buff = new byte[maxSize];
 		final int readLen = is.read(buff);
-		if (readLen == -1) return "";
+		if (readLen == IOUtils.EOF) return "";
 		return new String(buff, 0, readLen);
 	}
 

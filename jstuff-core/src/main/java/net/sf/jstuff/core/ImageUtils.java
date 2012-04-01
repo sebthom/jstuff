@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -21,12 +21,12 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
+import net.sf.jstuff.core.io.FastByteArrayOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -51,7 +51,7 @@ public abstract class ImageUtils
 	{
 		Args.notNull("image", image);
 
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
 		ImageIO.write(image, "jpg", bos);
 		return bos.toByteArray();
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -96,7 +96,7 @@ public class CharSequenceReader extends Reader
 		synchronized (lock)
 		{
 			ensureOpen();
-			if (next >= text.length()) return -1;
+			if (next >= text.length()) return IOUtils.EOF;
 			return text.charAt(next++);
 		}
 	}
@@ -124,7 +124,7 @@ public class CharSequenceReader extends Reader
 				throw new IndexOutOfBoundsException();
 			else if (len == 0) return 0;
 
-			if (next >= text.length()) return -1;
+			if (next >= text.length()) return IOUtils.EOF;
 
 			final int n = Math.min(text.length() - next, len);
 

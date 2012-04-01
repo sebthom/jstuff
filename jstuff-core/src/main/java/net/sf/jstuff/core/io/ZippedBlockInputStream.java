@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -146,7 +146,7 @@ public class ZippedBlockInputStream extends FilterInputStream
 		catch (final EOFException ex)
 		{
 			isEOF = true;
-			return -1;
+			return IOUtils.EOF;
 		}
 
 		return block[blockOffset++];
@@ -181,7 +181,7 @@ public class ZippedBlockInputStream extends FilterInputStream
 			catch (final EOFException ex)
 			{
 				isEOF = true;
-				return bytesRead == 0 ? -1 : bytesRead;
+				return bytesRead == 0 ? IOUtils.EOF : bytesRead;
 			}
 
 			final int readSize = Math.min(blockSize - blockOffset, len - bytesRead);
@@ -253,7 +253,7 @@ public class ZippedBlockInputStream extends FilterInputStream
 		catch (final EOFException ex)
 		{
 			isEOF = true;
-			return -1;
+			return IOUtils.EOF;
 		}
 
 		final int skipMax = (int) n; // maximum number of bytes requested to be skipped

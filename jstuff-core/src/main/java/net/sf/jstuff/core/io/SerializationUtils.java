@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2011 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -16,7 +16,6 @@ import java.beans.ExceptionListener;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -41,7 +40,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 		Args.notNull("javaBean", javaBean);
 
 		final ArrayList<Exception> exList = new ArrayList<Exception>(2);
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
 		final XMLEncoder e = new XMLEncoder(bos);
 		e.setExceptionListener(new ExceptionListener()
 			{
@@ -61,7 +60,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 	{
 		Args.notNull("serializedData", serializedData);
 
-		final ByteArrayInputStream bin = new ByteArrayInputStream(serializedData);
+		final FastByteArrayInputStream bin = new FastByteArrayInputStream(serializedData);
 		return deserialize(bin);
 	}
 
