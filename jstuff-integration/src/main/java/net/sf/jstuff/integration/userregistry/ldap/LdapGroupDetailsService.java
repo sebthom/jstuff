@@ -10,12 +10,13 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.userregistry;
+package net.sf.jstuff.integration.userregistry.ldap;
 
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
@@ -27,14 +28,15 @@ import javax.naming.ldap.LdapContext;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.validation.Args;
-import net.sf.jstuff.integration.ldap.LDAPTemplate;
-
-import org.springframework.beans.factory.annotation.Required;
+import net.sf.jstuff.integration.ldap.LdapTemplate;
+import net.sf.jstuff.integration.userregistry.DefaultGroupDetails;
+import net.sf.jstuff.integration.userregistry.GroupDetails;
+import net.sf.jstuff.integration.userregistry.GroupDetailsService;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
+public class LdapGroupDetailsService implements GroupDetailsService
 {
 	private final static Logger LOG = Logger.make();
 
@@ -45,7 +47,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	protected String groupSearchFilter;
 	protected boolean groupSearchSubtree = true;
 
-	private LDAPTemplate ldapTemplate;
+	private LdapTemplate ldapTemplate;
 
 	/**
 	 * {@inheritDoc}
@@ -61,7 +63,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 					final Attributes attr = ctx.getAttributes(groupDN, new String[]{groupAttributeDisplayName,
 							groupAttributeGroupId, groupAttributeMember});
 
-					final GroupDetailsImpl groupDetails = new GroupDetailsImpl();
+					final DefaultGroupDetails groupDetails = new DefaultGroupDetails();
 					groupDetails.setDisplayName((String) attr.get(groupAttributeDisplayName).get());
 					groupDetails.setDistingueshedName(groupDN);
 					groupDetails.setGroupId((String) attr.get(groupAttributeGroupId).get());
@@ -119,7 +121,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	/**
 	 * @param groupAttributeDisplayName the groupAttributeDisplayName to set
 	 */
-	@Required
+	@Inject
 	public void setGroupAttributeDisplayName(final String groupAttributeDisplayName)
 	{
 		Args.notNull("groupAttributeDisplayName", groupAttributeDisplayName);
@@ -130,7 +132,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	/**
 	 * @param groupAttributeGroupId the groupAttributeGroupId to set
 	 */
-	@Required
+	@Inject
 	public void setGroupAttributeGroupId(final String groupAttributeGroupId)
 	{
 		Args.notNull("groupAttributeGroupId", groupAttributeGroupId);
@@ -141,7 +143,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	/**
 	 * @param groupAttributeMember the groupAttributeMember to set
 	 */
-	@Required
+	@Inject
 	public void setGroupAttributeMember(final String groupAttributeMember)
 	{
 		Args.notNull("groupAttributeMember", groupAttributeMember);
@@ -152,7 +154,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	/**
 	 * @param groupSearchBase the groupSearchBase to set
 	 */
-	@Required
+	@Inject
 	public void setGroupSearchBase(final String groupSearchBase)
 	{
 		Args.notNull("groupSearchBase", groupSearchBase);
@@ -163,7 +165,7 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	/**
 	 * @param groupSearchFilter the groupSearchFilter to set
 	 */
-	@Required
+	@Inject
 	public void setGroupSearchFilter(final String groupSearchFilter)
 	{
 		Args.notNull("groupSearchFilter", groupSearchFilter);
@@ -182,8 +184,8 @@ public class GroupDetailsServiceLDAPImpl implements GroupDetailsService
 	/**
 	 * @param ldapTemplate the ldapTemplate to set
 	 */
-	@Required
-	public void setLdapTemplate(final LDAPTemplate ldapTemplate)
+	@Inject
+	public void setLdapTemplate(final LdapTemplate ldapTemplate)
 	{
 		Args.notNull("ldapTemplate", ldapTemplate);
 

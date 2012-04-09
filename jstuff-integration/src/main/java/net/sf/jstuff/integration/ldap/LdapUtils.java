@@ -20,7 +20,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class LDAPUtils
+public abstract class LdapUtils
 {
 	public static void closeQuietly(final Context context)
 	{
@@ -74,7 +74,7 @@ public abstract class LDAPUtils
 		return sb;
 	}
 
-	protected LDAPUtils()
+	protected LdapUtils()
 	{
 		super();
 	}

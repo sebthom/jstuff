@@ -25,7 +25,7 @@ import com.thoughtworks.paranamer.Paranamer;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class AbstractRESTServiceExporterWithParanamer extends AbstractRESTServiceExporter
+public abstract class AbstractRestServiceExporterWithParanamer extends AbstractRestServiceExporter
 {
 	private static final Logger LOG = Logger.make();
 
@@ -35,7 +35,7 @@ public abstract class AbstractRESTServiceExporterWithParanamer extends AbstractR
 	 * @param characterEncoding
 	 * @param contentType
 	 */
-	public AbstractRESTServiceExporterWithParanamer(final String characterEncoding, final String contentType)
+	public AbstractRestServiceExporterWithParanamer(final String characterEncoding, final String contentType)
 	{
 		super(characterEncoding, contentType);
 	}

@@ -17,14 +17,14 @@ import java.io.Serializable;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RESTServiceError implements Serializable
+public class RestServiceError implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
 	private final String message;
 	private final String type;
 
-	public RESTServiceError(final String type, final String message)
+	public RestServiceError(final String type, final String message)
 	{
 		this.type = type;
 		this.message = message;

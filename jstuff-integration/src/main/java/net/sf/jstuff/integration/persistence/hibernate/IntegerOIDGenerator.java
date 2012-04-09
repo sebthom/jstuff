@@ -56,7 +56,8 @@ public class IntegerOIDGenerator extends TableHiLoGenerator
 	}
 
 	@Override
-	public Serializable generate(final SessionImplementor session, final Object obj) throws HibernateException
+	public synchronized Serializable generate(final SessionImplementor session, final Object obj)
+			throws HibernateException
 	{
 		final int id = ((Integer) super.generate(session, obj)).intValue();
 

@@ -1,0 +1,27 @@
+1. NAMING CONVENTIONS
+=====================
+
+1.1 Acronyms in names
+---------------------
+
+For 4+ letter acronyms, use lowercase. E.g. LdapUtils, HttpURL
+
+For 2 and 3 letter acronyms, use uppercase. E.g. IOUtils, XMLUtils
+
+1.2. Interfaces and Implementing Classes
+----------------------------------------
+
+Do NOT prefix interfaces with I.
+Do NOT postfix implementations with Impl.
+
+1.3. Constants (static finals)
+------------------------------
+
+Use uppercase letters and separate words with underlines, e.g. MAX_LENGTH
+
+Use normal words for interfaces, e.g. UserService.
+
+For implementations use the interface name with a meaningful prefix, e.g. LdapUserService.
+
+If only one implementation exists and an interface is only necessary for technical requirements (e.g. remoting),
+you can prefix the interface name with "Default" and use it as your implementation's class name, e.g. DefaultUserService

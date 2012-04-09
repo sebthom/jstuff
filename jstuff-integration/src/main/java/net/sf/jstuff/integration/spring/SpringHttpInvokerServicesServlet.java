@@ -21,9 +21,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
 
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.BeansException;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -57,6 +58,8 @@ public class SpringHttpInvokerServicesServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
+	private final static Logger LOG = Logger.make();
+
 	private final Map<String, HttpRequestHandler> mappedBeans = new HashMap<String, HttpRequestHandler>(16);
 
 	/**
@@ -77,8 +80,9 @@ public class SpringHttpInvokerServicesServlet extends HttpServlet
 				bean = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext()).getBean(
 						'/' + beanName, HttpRequestHandler.class);
 			}
-			catch (final NoSuchBeanDefinitionException ex)
+			catch (final BeansException ex)
 			{
+				LOG.error("Unexpected exception occured while retrieving bean [%s].", ex, beanName);
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}

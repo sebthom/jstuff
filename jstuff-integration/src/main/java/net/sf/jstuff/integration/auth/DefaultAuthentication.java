@@ -17,15 +17,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.jstuff.integration.userregistry.UserDetails;
-import net.sf.jstuff.integration.userregistry.UserDetailsImpl;
+import net.sf.jstuff.integration.userregistry.DefaultUserDetails;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-class AuthenticationImpl implements Authentication
+class DefaultAuthentication implements Authentication
 {
-	public final static Authentication UNBOUND = new AuthenticationImpl(new UserDetailsImpl("anonymous", "anonymous",
-			null, null, null), null);
+	public final static Authentication UNBOUND = new DefaultAuthentication(new DefaultUserDetails("anonymous",
+			"anonymous", null, null, null), null);
 
 	private String password;
 	private final Map<String, Serializable> properties = new HashMap<String, Serializable>(2);
@@ -35,7 +35,7 @@ class AuthenticationImpl implements Authentication
 	 * @param userDetails
 	 * @param password
 	 */
-	public AuthenticationImpl(final UserDetails userDetails, final String password)
+	public DefaultAuthentication(final UserDetails userDetails, final String password)
 	{
 		this.userDetails = userDetails;
 		this.password = password;

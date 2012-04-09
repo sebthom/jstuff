@@ -18,16 +18,16 @@ import java.util.Collection;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RESTServiceDescriptor implements Serializable
+public class RestServiceDescriptor implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private Collection<RESTResourceActionDescriptor> methods;
+	private Collection<RestResourceActionDescriptor> methods;
 
 	/**
 	 * @return the methods
 	 */
-	public Collection<RESTResourceActionDescriptor> getMethods()
+	public Collection<RestResourceActionDescriptor> getMethods()
 	{
 		return methods;
 	}
@@ -35,7 +35,7 @@ public class RESTServiceDescriptor implements Serializable
 	/**
 	 * @param methods the methods to set
 	 */
-	public void setMethods(final Collection<RESTResourceActionDescriptor> methods)
+	public void setMethods(final Collection<RestResourceActionDescriptor> methods)
 	{
 		this.methods = methods;
 	}

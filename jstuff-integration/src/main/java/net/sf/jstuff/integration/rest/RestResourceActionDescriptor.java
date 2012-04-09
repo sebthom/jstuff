@@ -17,7 +17,7 @@ import java.io.Serializable;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RESTResourceActionDescriptor implements Serializable
+public class RestResourceActionDescriptor implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -28,13 +28,13 @@ public class RESTResourceActionDescriptor implements Serializable
 	private String requestURL;
 	private String responseBodyType;
 
-	public RESTResourceActionDescriptor()
+	public RestResourceActionDescriptor()
 	{}
 
 	/**
 	 * @param isFallbackMethod
 	 */
-	public RESTResourceActionDescriptor(final boolean isFallbackMethod)
+	public RestResourceActionDescriptor(final boolean isFallbackMethod)
 	{
 		this.isFallbackMethod = isFallbackMethod;
 	}

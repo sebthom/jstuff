@@ -19,7 +19,7 @@ import org.apache.catalina.ServerFactory;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AuthenticatorTomcat6Impl implements Authenticator
+public class Tomcat6Authenticator implements Authenticator
 {
 	/*
 	 * based on http://wiki.apache.org/tomcat/HowTo#head-42e95596753a1fa4a4aa396d53010680e3d509b5

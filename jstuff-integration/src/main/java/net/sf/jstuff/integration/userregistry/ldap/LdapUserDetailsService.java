@@ -10,8 +10,9 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.userregistry;
+package net.sf.jstuff.integration.userregistry.ldap;
 
+import javax.inject.Inject;
 import javax.naming.CompositeName;
 import javax.naming.Name;
 import javax.naming.NameParser;
@@ -25,17 +26,18 @@ import javax.naming.ldap.LdapContext;
 
 import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.validation.Args;
-import net.sf.jstuff.integration.ldap.LDAPTemplate;
-import net.sf.jstuff.integration.ldap.LDAPUtils;
-
-import org.springframework.beans.factory.annotation.Required;
+import net.sf.jstuff.integration.ldap.LdapTemplate;
+import net.sf.jstuff.integration.ldap.LdapUtils;
+import net.sf.jstuff.integration.userregistry.DefaultUserDetails;
+import net.sf.jstuff.integration.userregistry.UserDetails;
+import net.sf.jstuff.integration.userregistry.UserDetailsService;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class UserDetailsServiceLDAPImpl implements UserDetailsService
+public class LdapUserDetailsService implements UserDetailsService
 {
-	protected LDAPTemplate ldapTemplate;
+	protected LdapTemplate ldapTemplate;
 
 	protected String userAttributeDisplayName;
 	protected String userAttributeEMailAdress;
@@ -70,7 +72,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 					final Name entryName = parser.parse(new CompositeName(sr.getName()).get(0));
 					final Name dn = contextName.addAll(baseName).addAll(entryName);
 
-					return new UserDetailsImpl( //
+					return new DefaultUserDetails( //
 							(String) attr.get(userAttributeUserId).get(),//
 							(String) attr.get(userAttributeDisplayName).get(),//
 							(String) attr.get(userAttributeLogonName).get(), //
@@ -88,7 +90,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	{
 		Args.notNull("logonName", logonName);
 
-		return getUserDetailsByFilter(userAttributeLogonName + "=" + LDAPUtils.ldapEscape(logonName));
+		return getUserDetailsByFilter(userAttributeLogonName + "=" + LdapUtils.ldapEscape(logonName));
 	}
 
 	/**
@@ -98,7 +100,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	{
 		Args.notNull("userId", userId);
 
-		return getUserDetailsByFilter(userAttributeUserId + "=" + LDAPUtils.ldapEscape(userId));
+		return getUserDetailsByFilter(userAttributeUserId + "=" + LdapUtils.ldapEscape(userId));
 	}
 
 	protected NamingEnumeration<SearchResult> searchUser(final DirContext ctx, final String filter, final String[] attrs)
@@ -116,8 +118,8 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	/**
 	 * @param ldapTemplate the ldapTemplate to set
 	 */
-	@Required
-	public void setLdapTemplate(final LDAPTemplate ldapTemplate)
+	@Inject
+	public void setLdapTemplate(final LdapTemplate ldapTemplate)
 	{
 		Args.notNull("ldapTemplate", ldapTemplate);
 
@@ -127,7 +129,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	/**
 	 * @param userAttributeDisplayName the userAttributeDisplayName to set
 	 */
-	@Required
+	@Inject
 	public void setUserAttributeDisplayName(final String userAttributeDisplayName)
 	{
 		Args.notNull("userAttributeDisplayName", userAttributeDisplayName);
@@ -138,7 +140,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	/**
 	 * @param userAttributeEMailAdress the userAttributeEMailAdress to set
 	 */
-	@Required
+	@Inject
 	public void setUserAttributeEMailAdress(final String userAttributeEMailAdress)
 	{
 		Args.notNull("userAttributeEMailAdress", userAttributeEMailAdress);
@@ -149,7 +151,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	/**
 	 * @param userAttributeLogonName the userAttributeLogonName to set
 	 */
-	@Required
+	@Inject
 	public void setUserAttributeLogonName(final String userAttributeLogonName)
 	{
 		Args.notNull("userAttributeLogonName", userAttributeLogonName);
@@ -160,7 +162,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	/**
 	 * @param userAttributeUserId the userAttributeUserId to set
 	 */
-	@Required
+	@Inject
 	public void setUserAttributeUserId(final String userAttributeUserId)
 	{
 		Args.notNull("userAttributeUserId", userAttributeUserId);
@@ -171,7 +173,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	/**
 	 * @param userSearchBase the userSearchBase to set
 	 */
-	@Required
+	@Inject
 	public void setUserSearchBase(final String userSearchBase)
 	{
 		Args.notNull("userSearchBase", userSearchBase);
@@ -182,7 +184,7 @@ public class UserDetailsServiceLDAPImpl implements UserDetailsService
 	/**
 	 * @param userSearchFilter the userSearchFilter to set
 	 */
-	@Required
+	@Inject
 	public void setUserSearchFilter(final String userSearchFilter)
 	{
 		Args.notNull("userSearchFilter", userSearchFilter);

@@ -17,14 +17,32 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class GroupDetailsImpl implements GroupDetails
+public class DefaultUserDetails implements UserDetails
 {
 	private static final long serialVersionUID = 1L;
 
-	private String displayName;
-	private String distingueshedName;
-	private String groupId;
-	private String[] memberDNs;
+	private final String displayName;
+	private final String distingueshedName;
+	private final String eMailAddress;
+	private final String logonName;
+	private final String userId;
+
+	/**
+	 * @param userId
+	 * @param displayName
+	 * @param logonName
+	 * @param distingueshedName
+	 * @param mailAddress
+	 */
+	public DefaultUserDetails(final String userId, final String displayName, final String logonName,
+			final String distingueshedName, final String mailAddress)
+	{
+		this.userId = userId;
+		this.displayName = displayName;
+		this.logonName = logonName;
+		this.distingueshedName = distingueshedName;
+		eMailAddress = mailAddress;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -45,51 +63,30 @@ public class GroupDetailsImpl implements GroupDetails
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getGroupId()
+	public String getEMailAddress()
 	{
-		return groupId;
+		return eMailAddress;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String[] getMemberDNs()
+	public String getLogonName()
 	{
-		return memberDNs.clone();
+		return logonName;
 	}
 
 	/**
-	 * @param displayName the displayName to set
+	 * {@inheritDoc}
 	 */
-	public void setDisplayName(final String displayName)
+	public String getUserId()
 	{
-		this.displayName = displayName;
+		return userId;
 	}
 
 	/**
-	 * @param distingueshedName the distingueshedName to set
+	 * {@inheritDoc}
 	 */
-	public void setDistingueshedName(final String distingueshedName)
-	{
-		this.distingueshedName = distingueshedName;
-	}
-
-	/**
-	 * @param groupId the groupId to set
-	 */
-	public void setGroupId(final String groupId)
-	{
-		this.groupId = groupId;
-	}
-
-	/**
-	 * @param memberDNs the memberDNs to set
-	 */
-	public void setMemberDNs(final String[] memberDNs)
-	{
-		this.memberDNs = memberDNs.clone();
-	}
-
 	@Override
 	public String toString()
 	{

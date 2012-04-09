@@ -80,44 +80,44 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		return null;
 	}
 
-	public static void cleanDirectory(final File directory, final Date oldestFileDate, final boolean recursive)
+	public static void cleanDirectory(final File directory, final Date deleteFilesOlderThan, final boolean recursive)
 	{
 		Args.notNull("directory", directory);
 
-		cleanDirectory(directory, oldestFileDate, recursive, null);
+		cleanDirectory(directory, deleteFilesOlderThan, recursive, null);
 	}
 
-	public static void cleanDirectory(final File directory, final Date purgeFilesOlderThan, final boolean recursive,
+	public static void cleanDirectory(final File directory, final Date deleteFilesOlderThan, final boolean recursive,
 			final FilenameFilter filenameFilter)
 	{
 		Args.notNull("directory", directory);
-		Args.notNull("purgeFilesOlderThan", purgeFilesOlderThan);
+		Args.notNull("deleteFilesOlderThan", deleteFilesOlderThan);
 
 		if (!directory.isDirectory()) return;
 
 		for (final File currFile : directory.listFiles(filenameFilter))
 			if (currFile.isFile())
 			{
-				if (currFile.lastModified() < purgeFilesOlderThan.getTime()) currFile.delete();
+				if (currFile.lastModified() < deleteFilesOlderThan.getTime()) currFile.delete();
 			}
 			else if (recursive && currFile.isDirectory())
-				cleanDirectory(currFile, purgeFilesOlderThan, true, filenameFilter);
+				cleanDirectory(currFile, deleteFilesOlderThan, true, filenameFilter);
 	}
 
-	public static void cleanDirectory(final File directory, final int purgeFilesOlderThanXDays, final boolean recursive)
+	public static void cleanDirectory(final File directory, final int deleteFilesOlderThanXDays, final boolean recursive)
 	{
 		Args.notNull("directory", directory);
 
-		cleanDirectory(directory, purgeFilesOlderThanXDays, recursive, null);
+		cleanDirectory(directory, deleteFilesOlderThanXDays, recursive, null);
 	}
 
-	public static void cleanDirectory(final File directory, final int purgeFilesOlderThanXDays,
+	public static void cleanDirectory(final File directory, final int deleteFilesOlderThanXDays,
 			final boolean recursive, final FilenameFilter filenameFilter)
 	{
 		Args.notNull("directory", directory);
 
 		final Calendar c = Calendar.getInstance();
-		c.add(Calendar.DAY_OF_MONTH, -purgeFilesOlderThanXDays);
+		c.add(Calendar.DAY_OF_MONTH, -deleteFilesOlderThanXDays);
 
 		cleanDirectory(directory, c.getTime(), recursive, filenameFilter);
 	}

@@ -12,39 +12,19 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.userregistry;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class UserDetailsImpl implements Serializable, UserDetails
+public class DefaultGroupDetails implements GroupDetails
 {
 	private static final long serialVersionUID = 1L;
 
-	private final String displayName;
-	private final String distingueshedName;
-	private final String eMailAddress;
-	private final String logonName;
-	private final String userId;
-
-	/**
-	 * @param userId
-	 * @param displayName
-	 * @param logonName
-	 * @param distingueshedName
-	 * @param mailAddress
-	 */
-	public UserDetailsImpl(final String userId, final String displayName, final String logonName,
-			final String distingueshedName, final String mailAddress)
-	{
-		this.userId = userId;
-		this.displayName = displayName;
-		this.logonName = logonName;
-		this.distingueshedName = distingueshedName;
-		eMailAddress = mailAddress;
-	}
+	private String displayName;
+	private String distingueshedName;
+	private String groupId;
+	private String[] memberDNs;
 
 	/**
 	 * {@inheritDoc}
@@ -65,30 +45,51 @@ public class UserDetailsImpl implements Serializable, UserDetails
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getEMailAddress()
+	public String getGroupId()
 	{
-		return eMailAddress;
+		return groupId;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getLogonName()
+	public String[] getMemberDNs()
 	{
-		return logonName;
+		return memberDNs.clone();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param displayName the displayName to set
 	 */
-	public String getUserId()
+	public void setDisplayName(final String displayName)
 	{
-		return userId;
+		this.displayName = displayName;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @param distingueshedName the distingueshedName to set
 	 */
+	public void setDistingueshedName(final String distingueshedName)
+	{
+		this.distingueshedName = distingueshedName;
+	}
+
+	/**
+	 * @param groupId the groupId to set
+	 */
+	public void setGroupId(final String groupId)
+	{
+		this.groupId = groupId;
+	}
+
+	/**
+	 * @param memberDNs the memberDNs to set
+	 */
+	public void setMemberDNs(final String[] memberDNs)
+	{
+		this.memberDNs = memberDNs.clone();
+	}
+
 	@Override
 	public String toString()
 	{

@@ -14,6 +14,8 @@ package net.sf.jstuff.integration.ldap;
 
 import java.util.Hashtable;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
@@ -22,41 +24,16 @@ import javax.naming.ldap.StartTlsResponse;
 
 import net.sf.jstuff.core.functional.Invocable;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Required;
-
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class LDAPTemplate implements InitializingBean
+public class LdapTemplate
 {
-	public static final class LDAPException extends RuntimeException
-	{
-		private static final long serialVersionUID = 1L;
-
-		protected LDAPException(final Throwable cause)
-		{
-			super(cause);
-		}
-	}
-
 	private String initialContextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
 	private Hashtable<String, Object> ldapSettings;
 	private String ldapURL;
 	private boolean pooled = true;
 	private boolean useStartTSL = false;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void afterPropertiesSet() throws Exception
-	{
-		ldapSettings = new Hashtable<String, Object>();
-		ldapSettings.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
-		ldapSettings.put(Context.PROVIDER_URL, ldapURL);
-		ldapSettings.put(Context.REFERRAL, "throw");
-		if (pooled) ldapSettings.put("com.sun.jndi.ldap.connect.pool", "true");
-	}
 
 	public Object execute(final Invocable<Object, LdapContext> callback)
 	{
@@ -70,11 +47,11 @@ public class LDAPTemplate implements InitializingBean
 		}
 		catch (final Exception ex)
 		{
-			throw new LDAPException(ex);
+			throw new LdapException(ex);
 		}
 		finally
 		{
-			LDAPUtils.closeQuietly(ctx);
+			LdapUtils.closeQuietly(ctx);
 		}
 	}
 
@@ -92,6 +69,19 @@ public class LDAPTemplate implements InitializingBean
 	public String getLdapURL()
 	{
 		return ldapURL;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@PostConstruct
+	public void initialize()
+	{
+		ldapSettings = new Hashtable<String, Object>();
+		ldapSettings.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
+		ldapSettings.put(Context.PROVIDER_URL, ldapURL);
+		ldapSettings.put(Context.REFERRAL, "throw");
+		if (pooled) ldapSettings.put("com.sun.jndi.ldap.connect.pool", "true");
 	}
 
 	/**
@@ -118,7 +108,7 @@ public class LDAPTemplate implements InitializingBean
 	/**
 	 * @param ldapURL the ldapURL to set
 	 */
-	@Required
+	@Inject
 	public void setLdapURL(final String ldapURL)
 	{
 		this.ldapURL = ldapURL;

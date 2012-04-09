@@ -12,10 +12,10 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.cache;
 
+import javax.inject.Inject;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -39,7 +39,7 @@ public class EhcacheSupport
 	/**
 	 * @param cacheManager the cacheManager to set
 	 */
-	@Required
+	@Inject
 	public void setCacheManager(final CacheManager cacheManager)
 	{
 		synchronized (lock)
@@ -52,7 +52,7 @@ public class EhcacheSupport
 	/**
 	 * @param cacheName the cacheName to set
 	 */
-	@Required
+	@Inject
 	public synchronized void setCacheName(final String cacheName)
 	{
 		synchronized (lock)

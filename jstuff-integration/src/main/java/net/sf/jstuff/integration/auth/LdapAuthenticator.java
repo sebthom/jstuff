@@ -12,27 +12,26 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.auth;
 
+import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapContext;
 
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.functional.Invocable;
-import net.sf.jstuff.integration.ldap.LDAPTemplate;
-import net.sf.jstuff.integration.ldap.LDAPTemplate.LDAPException;
+import net.sf.jstuff.integration.ldap.LdapException;
+import net.sf.jstuff.integration.ldap.LdapTemplate;
 import net.sf.jstuff.integration.userregistry.UserDetails;
 import net.sf.jstuff.integration.userregistry.UserDetailsService;
-
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AuthenticatorLDAPImpl implements Authenticator
+public class LdapAuthenticator implements Authenticator
 {
 	private static final Logger LOG = Logger.make();
 
-	private LDAPTemplate ldapTemplate;
+	protected LdapTemplate ldapTemplate;
 
 	protected UserDetailsService userDetailsService;
 
@@ -54,7 +53,7 @@ public class AuthenticatorLDAPImpl implements Authenticator
 				});
 			return true;
 		}
-		catch (final LDAPException ex)
+		catch (final LdapException ex)
 		{
 			LOG.trace("Authentication failed.", ex);
 			return false;
@@ -64,16 +63,15 @@ public class AuthenticatorLDAPImpl implements Authenticator
 	/**
 	 * @param ldapTemplate the ldapTemplate to set
 	 */
-	@Required
-	public void setLdapTemplate(final LDAPTemplate ldapTemplate)
+	@Inject
+	public void setLdapTemplate(final LdapTemplate ldapTemplate)
 	{
 		this.ldapTemplate = ldapTemplate;
 	}
 
-	@Required
+	@Inject
 	public void setUserDetailsService(final UserDetailsService userDetailsService)
 	{
 		this.userDetailsService = userDetailsService;
 	}
-
 }

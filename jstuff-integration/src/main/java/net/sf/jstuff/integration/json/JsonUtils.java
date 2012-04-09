@@ -21,7 +21,7 @@ import net.sf.json.JSONObject;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class JSONUtils
+public abstract class JsonUtils
 {
 	/**
 	 * Returns an array containing Java objects converted from the given jsonArray.
@@ -54,7 +54,7 @@ public abstract class JSONUtils
 		return array;
 	}
 
-	protected JSONUtils()
+	protected JsonUtils()
 	{
 		super();
 	}

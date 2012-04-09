@@ -27,7 +27,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class JDBCResourcesCloser
+public class JdbcResourcesCloser
 {
 	private static final Logger LOG = Logger.make();
 

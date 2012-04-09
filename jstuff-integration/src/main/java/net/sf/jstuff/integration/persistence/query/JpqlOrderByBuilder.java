@@ -18,17 +18,17 @@ import java.util.Map;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class JPQLOrderByBuilder
+public class JpqlOrderByBuilder
 {
 	private final SortBy[] defaultSortBy;
 	private final Map<String, String> mappings = new HashMap<String, String>(4);
 
-	public JPQLOrderByBuilder(final SortBy... defaultSortBy)
+	public JpqlOrderByBuilder(final SortBy... defaultSortBy)
 	{
 		this.defaultSortBy = defaultSortBy;
 	}
 
-	public JPQLOrderByBuilder addMapping(final String sortField, final String jpqlExpression)
+	public JpqlOrderByBuilder addMapping(final String sortField, final String jpqlExpression)
 	{
 		mappings.put(sortField, jpqlExpression);
 		return this;

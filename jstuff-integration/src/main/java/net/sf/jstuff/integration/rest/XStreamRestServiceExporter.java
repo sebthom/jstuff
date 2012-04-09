@@ -28,13 +28,13 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RESTServiceExporterXStreamImpl extends AbstractRESTServiceExporter
+public class XStreamRestServiceExporter extends AbstractRestServiceExporter
 {
 	private static final Logger LOG = Logger.make();
 
 	private final XStream xStream;
 
-	public RESTServiceExporterXStreamImpl()
+	public XStreamRestServiceExporter()
 	{
 		super("UTF-8", "application/xml");
 

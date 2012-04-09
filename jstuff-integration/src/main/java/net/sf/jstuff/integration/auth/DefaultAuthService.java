@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.MapWithSets;
 import net.sf.jstuff.core.validation.Args;
@@ -25,23 +27,22 @@ import net.sf.jstuff.integration.userregistry.GroupDetailsService;
 import net.sf.jstuff.integration.userregistry.UserDetails;
 import net.sf.jstuff.integration.userregistry.UserDetailsService;
 
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.PatternMatchUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AuthServiceImpl implements AuthService
+public class DefaultAuthService implements AuthService
 {
 	private final static Logger LOG = Logger.make();
 
-	private Set<String> applicationRoles;
-	private Authenticator authenticator;
-	private GroupDetailsService groupDetailsService;
-	private MapWithSets<String, String> groupIdToApplicationRoleMappings;
-	private AuthListener listener;
-	private MapWithSets<String, String> uriPatternsToApplicationRoleMappings;
-	private UserDetailsService userDetailsService;
+	protected Set<String> applicationRoles;
+	protected Authenticator authenticator;
+	protected GroupDetailsService groupDetailsService;
+	protected MapWithSets<String, String> groupIdToApplicationRoleMappings;
+	protected AuthListener listener;
+	protected MapWithSets<String, String> uriPatternsToApplicationRoleMappings;
+	protected UserDetailsService userDetailsService;
 
 	public void assertAuthenticated() throws PermissionDeniedException
 	{
@@ -162,7 +163,7 @@ public class AuthServiceImpl implements AuthService
 		if (!authenticator.authenticate(logonName, password))
 			throw new AuthenticationFailedException("Incorrect username or password.");
 
-		final Authentication auth = new AuthenticationImpl(userDetailsService.getUserDetailsByLogonName(logonName),
+		final Authentication auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(logonName),
 				password);
 		AuthenticationHolder.setAuthentication(auth);
 
@@ -179,7 +180,7 @@ public class AuthServiceImpl implements AuthService
 	/**
 	 * @param applicationRoles the applicationRoles to set
 	 */
-	@Required
+	@Inject
 	public synchronized void setApplicationRoles(final String[] applicationRoles)
 	{
 		this.applicationRoles = new HashSet<String>();
@@ -193,7 +194,7 @@ public class AuthServiceImpl implements AuthService
 	/**
 	 * @param authenticator the authenticator to set
 	 */
-	@Required
+	@Inject
 	public void setAuthenticator(final Authenticator authenticator)
 	{
 		this.authenticator = authenticator;
@@ -202,7 +203,7 @@ public class AuthServiceImpl implements AuthService
 	/**
 	 * @param groupDetailsService the groupDetailsService to set
 	 */
-	@Required
+	@Inject
 	public void setGroupDetailsService(final GroupDetailsService groupDetailsService)
 	{
 		this.groupDetailsService = groupDetailsService;
@@ -268,7 +269,7 @@ public class AuthServiceImpl implements AuthService
 	/**
 	 * @param mapping format = "/myuri*=roleXXX"
 	 */
-	@Required
+	@Inject
 	public synchronized void setUriPatternsToApplicationRoleMappings(final String[] mappings)
 			throws UnknownApplicationRoleException
 	{
@@ -293,7 +294,7 @@ public class AuthServiceImpl implements AuthService
 	/**
 	 * @param userDetailsService the userDetailsService to set
 	 */
-	@Required
+	@Inject
 	public void setUserDetailsService(final UserDetailsService userDetailsService)
 	{
 		this.userDetailsService = userDetailsService;

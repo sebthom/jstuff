@@ -36,7 +36,7 @@ public abstract class DuckTypeUtils
 		final Class< ? > duckLikeClass = duckLikeObject.getClass();
 		if (duckInterface.isAssignableFrom(duckLikeClass)) return (T) duckLikeObject;
 
-		LOG.debug("Ducktyping {} to type {}", duckLikeObject, duckInterface);
+		LOG.debug("Ducktyping %s to type %s", duckLikeObject, duckInterface);
 
 		return ReflectionUtils.makeProxyInstance(duckInterface, new InvocationHandler()
 			{

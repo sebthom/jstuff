@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -27,8 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.sf.jstuff.integration.userregistry.UserDetailsService;
-
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Class filter requests and fetch auth object from session and 
@@ -73,13 +72,13 @@ public class SecurityFilter implements Filter
 			if (auth == null) if (req.getRemoteUser() != null)
 			{
 				// build a auth object based on form-based login
-				auth = new AuthenticationImpl(userDetailsService.getUserDetailsByLogonName(req.getRemoteUser()),
+				auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(req.getRemoteUser()),
 						(String) sess.getAttribute("j_password"));
 				sess.removeAttribute("j_password");
 				sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, auth);
 			}
 			else
-				auth = AuthenticationImpl.UNBOUND;
+				auth = DefaultAuthentication.UNBOUND;
 			AuthenticationHolder.setAuthentication(auth);
 
 			wasLoggedInBeforeChain = auth.isAuthenticated();
@@ -100,7 +99,7 @@ public class SecurityFilter implements Filter
 				sess.invalidate();
 			else if (!wasLoggedInBeforeChain && auth.isAuthenticated())
 				sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, AuthenticationHolder.getAuthentication());
-			AuthenticationHolder.setAuthentication(AuthenticationImpl.UNBOUND);
+			AuthenticationHolder.setAuthentication(DefaultAuthentication.UNBOUND);
 			HTTP_SERVLET_REQUEST_HOLDER.remove();
 		}
 
@@ -114,7 +113,7 @@ public class SecurityFilter implements Filter
 	/**
 	 * @param authService the authService to set
 	 */
-	@Required
+	@Inject
 	public void setAuthService(final AuthService authService)
 	{
 		this.authService = authService;
@@ -123,7 +122,7 @@ public class SecurityFilter implements Filter
 	/**
 	 * @param userDetailsService the userDetailsService to set
 	 */
-	@Required
+	@Inject
 	public void setUserDetailsService(final UserDetailsService userDetailsService)
 	{
 		this.userDetailsService = userDetailsService;

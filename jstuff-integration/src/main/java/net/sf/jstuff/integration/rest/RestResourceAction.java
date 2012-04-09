@@ -17,14 +17,14 @@ import java.lang.reflect.Method;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RESTResourceAction
+public class RestResourceAction
 {
-	private final HTTPRequestMethod httpMethod;
+	private final HttpRequestMethod httpMethod;
 	private final Method method;
 	private final String resource;
-	private final RESTResourceAction fallbackFor;
+	private final RestResourceAction fallbackFor;
 
-	public RESTResourceAction(final Method method, final String resource, final HTTPRequestMethod httpMethod)
+	public RestResourceAction(final Method method, final String resource, final HttpRequestMethod httpMethod)
 	{
 		this.method = method;
 		this.resource = resource;
@@ -32,8 +32,8 @@ public class RESTResourceAction
 		this.fallbackFor = null;
 	}
 
-	public RESTResourceAction(final Method method, final String resource, final HTTPRequestMethod httpMethod,
-			final RESTResourceAction fallbackFor)
+	public RestResourceAction(final Method method, final String resource, final HttpRequestMethod httpMethod,
+			final RestResourceAction fallbackFor)
 	{
 		this.method = method;
 		this.resource = resource;
@@ -44,7 +44,7 @@ public class RESTResourceAction
 	/**
 	 * @return the fallbackFor
 	 */
-	public RESTResourceAction getFallbackFor()
+	public RestResourceAction getFallbackFor()
 	{
 		return fallbackFor;
 	}
@@ -52,7 +52,7 @@ public class RESTResourceAction
 	/**
 	 * @return the httpMethod
 	 */
-	public HTTPRequestMethod getHttpMethod()
+	public HttpRequestMethod getHttpMethod()
 	{
 		return httpMethod;
 	}

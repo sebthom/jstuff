@@ -12,17 +12,18 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.persistence.h2;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+
 import net.sf.jstuff.core.Logger;
 
 import org.h2.tools.Server;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Required;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class H2ServerSpringBean implements InitializingBean, DisposableBean
+public class H2ServerSpringBean
 {
 	private final static Logger LOG = Logger.make();
 
@@ -36,29 +37,7 @@ public class H2ServerSpringBean implements InitializingBean, DisposableBean
 	private int webPort = 8040;
 	private Server webServer;
 
-	public void afterPropertiesSet() throws Exception
-	{
-		if (enabled)
-		{
-			tcpServer = Server.createTcpServer(new String[]{ //
-					"-tcpPort", Integer.toString(tcpPort), //
-							"-baseDir", dataDir});
-			tcpServer.start();
-			LOG.info("Embedded H2 Databases are now available via: jdbc:h2:tcp://localhost:" + tcpPort
-					+ "/<DATABASE_NAME>");
-
-			if (webEnabled)
-			{
-				webServer = Server.createWebServer(new String[]{ //
-						"-webPort", Integer.toString(webPort), //
-								"-webAllowOthers", Boolean.toString(webAllowOthers) //
-						});
-				webServer.start();
-				LOG.info("H2 UI is now available via: http://localhost:" + webPort);
-			}
-		}
-	}
-
+	@PreDestroy
 	public void destroy() throws Exception
 	{
 		if (webServer != null) webServer.stop();
@@ -89,6 +68,30 @@ public class H2ServerSpringBean implements InitializingBean, DisposableBean
 		return webPort;
 	}
 
+	@PostConstruct
+	public void initialize() throws Exception
+	{
+		if (enabled)
+		{
+			tcpServer = Server.createTcpServer(new String[]{ //
+					"-tcpPort", Integer.toString(tcpPort), //
+							"-baseDir", dataDir});
+			tcpServer.start();
+			LOG.info("Embedded H2 Databases are now available via: jdbc:h2:tcp://localhost:" + tcpPort
+					+ "/<DATABASE_NAME>");
+
+			if (webEnabled)
+			{
+				webServer = Server.createWebServer(new String[]{ //
+						"-webPort", Integer.toString(webPort), //
+								"-webAllowOthers", Boolean.toString(webAllowOthers) //
+						});
+				webServer.start();
+				LOG.info("H2 UI is now available via: http://localhost:" + webPort);
+			}
+		}
+	}
+
 	/**
 	 * @return the enabled
 	 */
@@ -116,7 +119,7 @@ public class H2ServerSpringBean implements InitializingBean, DisposableBean
 	/**
 	 * @param dataDir the dataDir to set
 	 */
-	@Required
+	@Inject
 	public void setDataDir(final String dataDir)
 	{
 		this.dataDir = dataDir;

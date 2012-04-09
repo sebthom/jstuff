@@ -15,7 +15,7 @@ package net.sf.jstuff.integration.rest;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public enum HTTPRequestMethod
+public enum HttpRequestMethod
 {
 	DELETE,
 	GET,

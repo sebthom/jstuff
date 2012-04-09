@@ -10,29 +10,17 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.auth;
+package net.sf.jstuff.integration.ldap;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-final class AuthenticationHolder
+public final class LdapException extends RuntimeException
 {
-	private static final ThreadLocal<Authentication> threadLocal = new ThreadLocal<Authentication>();
+	private static final long serialVersionUID = 1L;
 
-	public static Authentication getAuthentication()
+	public LdapException(final Throwable cause)
 	{
-		final Authentication auth = threadLocal.get();
-		if (auth == null) return DefaultAuthentication.UNBOUND;
-		return auth;
-	}
-
-	public static void setAuthentication(final Authentication authentication)
-	{
-		threadLocal.set(authentication);
-	}
-
-	private AuthenticationHolder()
-	{
-		super();
+		super(cause);
 	}
 }
