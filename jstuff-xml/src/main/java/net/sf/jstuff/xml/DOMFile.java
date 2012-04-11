@@ -213,20 +213,29 @@ public class DOMFile
 		return (T) childToImportBefore.getParentNode().insertBefore(importedNode, childToImportBefore);
 	}
 
-	public void removeNodes(final String xPathExpression) throws XMLException
+	/**
+	 * @return a list of the removed nodes
+	 */
+	public List<Node> removeNodes(final String xPathExpression) throws XMLException
 	{
 		Args.notEmpty("xPathExpression", xPathExpression);
 
-		removeNodes(xPathExpression, domRoot);
+		return removeNodes(xPathExpression, domRoot);
 	}
 
-	public void removeNodes(final String xPathExpression, final Node searchScope) throws XMLException
+	/**
+	 * @return a list of the removed nodes
+	 */
+	public List<Node> removeNodes(final String xPathExpression, final Node searchScope) throws XMLException
 	{
 		Args.notEmpty("xPathExpression", xPathExpression);
 		Args.notNull("searchScope", searchScope);
 
-		for (final Node nodeToRemove : findNodes(xPathExpression, searchScope))
-			nodeToRemove.getParentNode().removeChild(nodeToRemove);
+		final List<Node> nodesToRemove = findNodes(xPathExpression, searchScope);
+
+		for (final Node nodeToRemove : nodesToRemove)
+			DOMUtils.removeNode(nodeToRemove);
+		return nodesToRemove;
 	}
 
 	public void save() throws IOException, XMLException

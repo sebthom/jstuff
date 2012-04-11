@@ -55,6 +55,7 @@ import net.sf.jstuff.core.validation.Assert;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -689,6 +690,21 @@ public abstract class DOMUtils
 		Args.notNull("prefix", prefix);
 
 		NAMESPACE_CONTEXT.registerNamespace(namespaceURI, prefix);
+	}
+
+	/**
+	 * @return true if the node was removed and false if the node did not have a parent node
+	 * @exception DOMException
+	 *   <li>NO_MODIFICATION_ALLOWED_ERR: Raised if this node is readonly.</li>
+	 *   <li>NOT_FOUND_ERR: Raised if <code>oldChild</code> is not a child of this node.</li>
+	 *   <li>NOT_SUPPORTED_ERR: if this node is of type <code>Document</code>, this exception might be raised if the DOM implementation doesn't support the removal of the <code>DocumentType</code> child or the <code>Element</code> child.</li>
+	 */
+	public static boolean removeNode(final Node node) throws DOMException
+	{
+		final Node parent = node.getParentNode();
+		if (parent == null) return false;
+		parent.removeChild(node);
+		return true;
 	}
 
 	/**
