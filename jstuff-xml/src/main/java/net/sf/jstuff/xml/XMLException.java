@@ -13,6 +13,8 @@
 package net.sf.jstuff.xml;
 
 /**
+ * Wrapping runtime exception for checked XML related exceptions.
+ * 
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public final class XMLException extends RuntimeException
