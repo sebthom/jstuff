@@ -50,16 +50,16 @@ public class DOMFile
 		this(xmlFile, null, xmlSchemaFiles);
 	}
 
-	public DOMFile(final File xmlFile, final String rootElementNamespace) throws IOException, XMLException
+	public DOMFile(final File xmlFile, final String rootNamespace) throws IOException, XMLException
 	{
-		this(xmlFile, rootElementNamespace, (File[]) null);
+		this(xmlFile, rootNamespace, (File[]) null);
 	}
 
 	/**
-	 * @param rootElementNamespace optional, may be null
+	 * @param rootNamespace optional, may be null
 	 */
-	public DOMFile(final File xmlFile, final String rootElementNamespace, final File... xmlSchemaFiles)
-			throws IOException, XMLException
+	public DOMFile(final File xmlFile, final String rootNamespace, final File... xmlSchemaFiles) throws IOException,
+			XMLException
 	{
 		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
@@ -68,7 +68,7 @@ public class DOMFile
 
 		try
 		{
-			domDocument = DOMUtils.parseFile(xmlFile, rootElementNamespace, xmlSchemaFiles);
+			domDocument = DOMUtils.parseFile(xmlFile, rootNamespace, xmlSchemaFiles);
 		}
 		catch (final XMLException ex)
 		{

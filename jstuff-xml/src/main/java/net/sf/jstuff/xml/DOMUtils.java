@@ -27,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.Stack;
 import java.util.TreeMap;
 
 import javax.xml.XMLConstants;
@@ -539,32 +540,32 @@ public abstract class DOMUtils
 
 	/**
 	 * Parses the given file and returns a org.w3c.dom.Document.
-	 * @param rootElementNamespace optional, may be null
+	 * @param rootNamespace optional, may be null
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static Document parseFile(final File xmlFile, final String rootElementNamespace,
-			final File... xmlSchemaFiles) throws IOException, XMLException
+	public static Document parseFile(final File xmlFile, final String rootNamespace, final File... xmlSchemaFiles)
+			throws IOException, XMLException
 	{
 		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
 		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(),
-				rootElementNamespace, xmlSchemaFiles);
+				rootNamespace, xmlSchemaFiles);
 	}
 
 	/**
 	 * Parses the content of given input source and returns a org.w3c.dom.Document.
 	 * @param input the input to parse
 	 * @param inputId an identifier / label for the input source, e.g. a file name
-	 * @param rootElementNamespace optional, may be null
+	 * @param rootNamespace optional, may be null
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static Document parseInputSource(final InputSource input, final String inputId,
-			final String rootElementNamespace, final File... xmlSchemaFiles) throws IOException, XMLException
+	public static Document parseInputSource(final InputSource input, final String inputId, final String rootNamespace,
+			final File... xmlSchemaFiles) throws IOException, XMLException
 	{
 		Args.notNull("input", input);
 
@@ -580,64 +581,70 @@ public abstract class DOMUtils
 			domFactory.setIgnoringComments(false);
 			domFactory.setXIncludeAware(true); // domFactory.setFeature("http://apache.org/xml/features/xinclude", true);
 
-			DocumentBuilder domBuilder;
-			Document domDocument;
-
-			// associate schema to the XML    
+			// if no XML schema is provided simply parse without validation
 			if (xmlSchemaFiles == null || xmlSchemaFiles.length == 0)
 			{
-				domBuilder = domFactory.newDocumentBuilder();
+				final DocumentBuilder domBuilder = domFactory.newDocumentBuilder();
 
 				// disabling external DTD resolution to avoid errors like "java.net.UnknownHostException: java.sun.com"
 				domBuilder.setEntityResolver(NOREMOTE_DTD_RESOLVER);
 
-				domDocument = domBuilder.parse(input);
+				return domBuilder.parse(input);
 			}
-			else
+
+			// enabling JAXP validation
+			domFactory.setNamespaceAware(true); // domFactory.setFeature("http://xml.org/sax/features/namespaces", true);
+			domFactory.setValidating(true);
+
+			domFactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
+					XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			domFactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaSource", xmlSchemaFiles);
+			domFactory.setFeature("http://apache.org/xml/features/honour-all-schemaLocations", true);
+
+			final DocumentBuilder domBuilder = domFactory.newDocumentBuilder();
+
+			// disabling external DTD resolution to avoid errors like "java.net.UnknownHostException: java.sun.com"
+			domBuilder.setEntityResolver(NOREMOTE_DTD_RESOLVER);
+
+			final SAXParseExceptionHandler errorHandler = new SAXParseExceptionHandler();
+			domBuilder.setErrorHandler(errorHandler);
+			Document domDocument = domBuilder.parse(input);
+			final Element domRoot = domDocument.getDocumentElement();
+
+			// remove any schema location declarations
+			domRoot.removeAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation");
+
+			// if a rootNamespace is provided and no namespace is declared or does not match, then add/change the namespace and re-parse the file
+			final String ns = domRoot.getNamespaceURI();
+			if (rootNamespace != null && !rootNamespace.equals(ns))
 			{
-				// enabling JAXP validation
-				domFactory.setNamespaceAware(true); // domFactory.setFeature("http://xml.org/sax/features/namespaces", true);
-				domFactory.setValidating(true);
-
-				domFactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
-						XMLConstants.W3C_XML_SCHEMA_NS_URI);
-				domFactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaSource", xmlSchemaFiles);
-				domFactory.setFeature("http://apache.org/xml/features/honour-all-schemaLocations", true);
-
-				domBuilder = domFactory.newDocumentBuilder();
-
-				// disabling external DTD resolution to avoid errors like "java.net.UnknownHostException: java.sun.com"
-				domBuilder.setEntityResolver(NOREMOTE_DTD_RESOLVER);
-
-				final SAXParseExceptionHandler errorHandler = new SAXParseExceptionHandler();
-				domBuilder.setErrorHandler(errorHandler);
-				domDocument = domBuilder.parse(input);
-				final Element domRoot = domDocument.getDocumentElement();
-
-				// remove any schema location declarations
-				domRoot.removeAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation");
-
-				// if a rootElementNamespace is provided and no namespace is declared or does not match, then add/change the namespace and reparse the file
-				final String ns = domRoot.getNamespaceURI();
-				if (rootElementNamespace != null && !rootElementNamespace.equals(ns))
+				// change the root namespace
+				final Stack<Node> nodes = new Stack<Node>();
+				nodes.push(domRoot);
+				while (!nodes.isEmpty())
 				{
-					// set the namespace
-					//domDocument.renameNode(domRoot, rootElementNamespace, domRoot())
-					// workaround since renameNode is ignored by the TransfomerFactory for some reason:
-					if (StringUtils.isNotBlank(domRoot.getPrefix()))
-						domRoot.setAttribute("xmlns:" + domRoot.getPrefix(), rootElementNamespace);
-					else
-						domRoot.setAttribute("xmlns", rootElementNamespace);
-
-					// reparse the file with the new namespace
-					errorHandler.violations.clear();
-					domDocument = domBuilder.parse(new InputSource(new StringReader(renderToString(domDocument))));
+					Node node = nodes.pop();
+					if (node.getNodeType() == Node.ATTRIBUTE_NODE || node.getNodeType() == Node.ELEMENT_NODE)
+					{
+						final String nns = node.getNamespaceURI();
+						if (nns == null || nns.equals(ns))
+							node = domDocument.renameNode(node, rootNamespace, node.getNodeName());
+					}
+					final NamedNodeMap attributes = node.getAttributes();
+					if (attributes != null) for (int i = 0, l = attributes.getLength(); i < l; i++)
+						nodes.push(attributes.item(i));
+					for (final Node childNode : nodeListToArray(node.getChildNodes()))
+						nodes.push(childNode);
 				}
 
-				Assert.isTrue(errorHandler.violations.size() == 0,
-						errorHandler.violations.size() + " XML schema violation(s) detected in [" + inputId
-								+ "]:\n\n => " + StringUtils.join(errorHandler.violations, "\n => "));
+				// re-parse the file with the new namespace
+				errorHandler.violations.clear();
+				domDocument = domBuilder.parse(new InputSource(new StringReader(renderToString(domDocument))));
 			}
+
+			Assert.isTrue(errorHandler.violations.size() == 0,
+					errorHandler.violations.size() + " XML schema violation(s) detected in [" + inputId + "]:\n\n => "
+							+ StringUtils.join(errorHandler.violations, "\n => "));
 			return domDocument;
 		}
 		catch (final ParserConfigurationException ex)
@@ -668,17 +675,17 @@ public abstract class DOMUtils
 	 * Parses the given string and returns a org.w3c.dom.Document.
 	 * @param input the input to parse
 	 * @param inputId an identifier / label for the input source, e.g. a file name
-	 * @param rootElementNamespace optional, may be null
+	 * @param rootNamespace optional, may be null
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static Document parseString(final String input, final String inputId, final String rootElementNamespace,
+	public static Document parseString(final String input, final String inputId, final String rootNamespace,
 			final File... xmlSchemaFiles) throws IOException, XMLException
 	{
 		Args.notNull("input", input);
 
-		return parseInputSource(new InputSource(new StringReader(input)), inputId, rootElementNamespace, xmlSchemaFiles);
+		return parseInputSource(new InputSource(new StringReader(input)), inputId, rootNamespace, xmlSchemaFiles);
 	}
 
 	/**
