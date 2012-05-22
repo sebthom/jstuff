@@ -13,8 +13,6 @@
 package net.sf.jstuff.integration.spring;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.ObjectCache;
 import net.sf.jstuff.core.StringUtils;
 
 import org.springframework.beans.BeansException;
@@ -60,7 +59,7 @@ public class SpringHttpInvokerServicesServlet extends HttpServlet
 
 	private final static Logger LOG = Logger.make();
 
-	private final Map<String, HttpRequestHandler> mappedBeans = new HashMap<String, HttpRequestHandler>(16);
+	private final ObjectCache<String, HttpRequestHandler> mappedBeans = new ObjectCache<String, HttpRequestHandler>();
 
 	/**
 	 * {@inheritDoc}
@@ -74,7 +73,7 @@ public class SpringHttpInvokerServicesServlet extends HttpServlet
 
 		if (bean == null)
 		{
-			final String beanName = StringUtils.substringAfterLast(request.getRequestURI(), "/");
+			final String beanName = StringUtils.substringAfterLast(reqURI, "/");
 			try
 			{
 				bean = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext()).getBean(

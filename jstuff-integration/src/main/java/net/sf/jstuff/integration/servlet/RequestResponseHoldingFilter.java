@@ -13,10 +13,6 @@
 package net.sf.jstuff.integration.servlet;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -24,18 +20,24 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.jstuff.core.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ResponseHeaderSettingFilter implements Filter
+public class RequestResponseHoldingFilter implements Filter
 {
-	private final static Logger LOG = Logger.make();
+	private static final ThreadLocal<ServletRequest> REQ = new ThreadLocal<ServletRequest>();
+	private static final ThreadLocal<ServletResponse> RESP = new ThreadLocal<ServletResponse>();
 
-	private final Map<String, String> parameter = new LinkedHashMap<String, String>();
+	public static ServletRequest getServletRequest()
+	{
+		return REQ.get();
+	}
+
+	public static ServletResponse getServletResponse()
+	{
+		return RESP.get();
+	}
 
 	public void destroy()
 	{}
@@ -43,23 +45,25 @@ public class ResponseHeaderSettingFilter implements Filter
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
 			throws IOException, ServletException
 	{
-		LOG.trace("For request %s setting HTTP response headers: %s", request, parameter);
-
-		final HttpServletResponse res = (HttpServletResponse) response;
-		for (final Entry<String, String> entry : parameter.entrySet())
-			res.setHeader(entry.getKey(), entry.getValue());
-
-		chain.doFilter(request, response);
-	}
-
-	@SuppressWarnings("unchecked")
-	public void init(final FilterConfig filterConfig) throws ServletException
-	{
-		final Enumeration<String> paramNames = filterConfig.getInitParameterNames();
-		while (paramNames.hasMoreElements())
+		REQ.set(request);
+		try
 		{
-			final String key = paramNames.nextElement();
-			parameter.put(key, filterConfig.getInitParameter(key));
+			RESP.set(response);
+			try
+			{
+				chain.doFilter(request, response);
+			}
+			finally
+			{
+				RESP.remove();
+			}
+		}
+		finally
+		{
+			REQ.remove();
 		}
 	}
+
+	public void init(final FilterConfig filterConfig) throws ServletException
+	{}
 }

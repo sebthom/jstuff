@@ -83,7 +83,7 @@ public final class ObjectCache<K, V>
 
 			if (value == null)
 				objectsByKey.remove(key);
-			else if (maxObjectsToKeep > 0 && value != objectsLastAccessed.getFirst())
+			else if (maxObjectsToKeep > 0 && objectsLastAccessed.size() > 0 && value != objectsLastAccessed.getFirst())
 			{
 				objectsLastAccessed.remove(value);
 				objectsLastAccessed.addFirst(value);

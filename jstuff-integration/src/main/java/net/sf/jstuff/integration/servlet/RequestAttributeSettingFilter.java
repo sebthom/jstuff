@@ -24,17 +24,15 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jstuff.core.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ResponseHeaderSettingFilter implements Filter
+public class RequestAttributeSettingFilter implements Filter
 {
 	private final static Logger LOG = Logger.make();
-
 	private final Map<String, String> parameter = new LinkedHashMap<String, String>();
 
 	public void destroy()
@@ -43,11 +41,10 @@ public class ResponseHeaderSettingFilter implements Filter
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
 			throws IOException, ServletException
 	{
-		LOG.trace("For request %s setting HTTP response headers: %s", request, parameter);
+		LOG.trace("For request %s setting request attributes: %s", request, parameter);
 
-		final HttpServletResponse res = (HttpServletResponse) response;
 		for (final Entry<String, String> entry : parameter.entrySet())
-			res.setHeader(entry.getKey(), entry.getValue());
+			request.setAttribute(entry.getKey(), entry.getValue());
 
 		chain.doFilter(request, response);
 	}
