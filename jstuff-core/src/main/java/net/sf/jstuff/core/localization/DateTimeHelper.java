@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.localization;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -23,8 +24,10 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DateTimeHelper
+public class DateTimeHelper implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger LOG = Logger.make();
 
 	private final Locale locale;

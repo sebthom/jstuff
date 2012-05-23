@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.localization;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -22,9 +23,14 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NumberHelper
+public class NumberHelper implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final Locale locale;
+
+	private transient String currencyCode;
+	private transient String currencySymbol;
 
 	/**
 	 * public constructor
@@ -48,6 +54,13 @@ public class NumberHelper
 		this.locale = locale;
 	}
 
+	public String getCurrencyCode()
+	{
+		if (currencyCode == null)
+			currencyCode = NumberFormat.getCurrencyInstance(locale).getCurrency().getCurrencyCode();
+		return currencyCode;
+	}
+
 	public NumberFormat getCurrencyFormat(final int minDigits, final int maxDigits)
 	{
 		final DecimalFormat df = (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
@@ -61,6 +74,13 @@ public class NumberHelper
 		Args.notNull("value", value);
 
 		return getCurrencyFormat(digits, digits).format(value);
+	}
+
+	public String getCurrencySymbol()
+	{
+		if (currencySymbol == null)
+			currencySymbol = NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol();
+		return currencySymbol;
 	}
 
 	public DecimalFormat getDecimalFormat(final int minDigits, final int maxDigits)
