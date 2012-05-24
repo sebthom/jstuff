@@ -506,21 +506,19 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 
 	public static String[] splitLines(final String text)
 	{
-		if (text.indexOf(NEW_LINE) > 0) return split(text, StringUtils.NEW_LINE);
-		if (!NEW_LINE.equals(CR_LF) && text.indexOf(CR_LF) > 0)
-			return splitByWholeSeparatorPreserveAllTokens(text, CR_LF);
-		if (!NEW_LINE.equals(CR_LF) && text.indexOf(LF) > 0) return split(text, LF);
-		if (!NEW_LINE.equals(CR_LF) && text.indexOf(CR) > 0) return split(text, CR);
+		if (text.indexOf(NEW_LINE) > -1) return split(text, StringUtils.NEW_LINE);
+		if (text.indexOf(CR_LF) > -1) return splitByWholeSeparatorPreserveAllTokens(text, CR_LF);
+		if (text.indexOf(LF) > -1) return split(text, LF);
+		if (text.indexOf(CR) > -1) return split(text, CR);
 		return new String[]{text};
 	}
 
 	public static String[] splitLinesPreserveAllTokens(final String text)
 	{
-		if (text.indexOf(NEW_LINE) > 0) return splitByWholeSeparatorPreserveAllTokens(text, StringUtils.NEW_LINE);
-		if (!NEW_LINE.equals(CR_LF) && text.indexOf(CR_LF) > 0)
-			return splitByWholeSeparatorPreserveAllTokens(text, CR_LF);
-		if (!NEW_LINE.equals(CR_LF) && text.indexOf(LF) > 0) return splitPreserveAllTokens(text, LF);
-		if (!NEW_LINE.equals(CR_LF) && text.indexOf(CR) > 0) return splitPreserveAllTokens(text, CR);
+		if (text.indexOf(NEW_LINE) > -1) return splitByWholeSeparatorPreserveAllTokens(text, StringUtils.NEW_LINE);
+		if (text.indexOf(CR_LF) > -1) return splitByWholeSeparatorPreserveAllTokens(text, CR_LF);
+		if (text.indexOf(LF) > -1) return splitPreserveAllTokens(text, LF);
+		if (text.indexOf(CR) > -1) return splitPreserveAllTokens(text, CR);
 		return new String[]{text};
 	}
 

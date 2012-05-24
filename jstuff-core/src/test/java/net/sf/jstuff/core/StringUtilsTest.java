@@ -668,6 +668,13 @@ public class StringUtilsTest extends TestCase
 		assertTrue(StringUtils.replace(a, b, -1000000, c).equals("abcdefghijk"));
 	}
 
+	public void testSplitLines()
+	{
+		final String lines = "A\nB\n\nC\nD";
+		assertEquals(4, StringUtils.splitLines(lines).length);
+		assertEquals(5, StringUtils.splitLinesPreserveAllTokens(lines).length);
+	}
+
 	public void testSubstringBeforeIgnoreCase()
 	{
 		String a;
