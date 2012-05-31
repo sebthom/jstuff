@@ -65,87 +65,6 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 		this.contentType = contentType;
 	}
 
-	private RestServiceDescriptor _buildRESTServiceDescriptor(final HttpServletRequest request)
-	{
-		final TreeMap<String, RestResourceActionDescriptor> result = new TreeMap<String, RestResourceActionDescriptor>();
-		for (final RestResourceAction action : resourceActions.values())
-		{
-			final boolean isPOST = action.getHttpMethod() == HttpRequestMethod.POST;
-			final boolean isPUT = action.getHttpMethod() == HttpRequestMethod.PUT;
-			final Method mappedMethod = action.getMethod();
-			final int paramCount = mappedMethod.getParameterTypes().length;
-
-			final RestResourceActionDescriptor actionDef = new RestResourceActionDescriptor(action.isFallback());
-			if (isPUT || isPOST)
-			{
-				if (paramCount < 2)
-					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource());
-				else
-					actionDef.setRequestURL(request.getRequestURL()
-							+ "/"
-							+ action.getResource()
-							+ "/${"
-							+ StringUtils.join(ArrayUtils.remove(getParameterNames(mappedMethod), paramCount - 1),
-									"}/${") + "}");
-				actionDef.setRequestBodyType(mappedMethod.getParameterTypes()[paramCount - 1].getSimpleName());
-			}
-			else
-			{
-				if (paramCount < 1)
-					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource());
-				else
-					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource() + "/${"
-							+ StringUtils.join(getParameterNames(mappedMethod), "}/${") + "}");
-				actionDef.setRequestBodyType("ignored");
-			}
-			actionDef.setHttpRequestMethod(action.getHttpMethod().toString());
-			actionDef.setResponseBodyType(mappedMethod.getReturnType().getSimpleName());
-			if (mappedMethod.getParameterTypes().length == 0)
-				actionDef.setMappedServiceMethod(mappedMethod.getDeclaringClass().getSimpleName() + "."
-						+ mappedMethod.getName() + "()");
-			else
-				actionDef.setMappedServiceMethod(mappedMethod.getDeclaringClass().getSimpleName() + "."
-						+ mappedMethod.getName() + "(" + StringUtils.join(getParameterNames(mappedMethod), ",") + ")");
-			result.put(actionDef.getRequestURL(), actionDef);
-		}
-		final RestServiceDescriptor serviceDescr = new RestServiceDescriptor();
-		serviceDescr.setMethods(new ArrayList<RestResourceActionDescriptor>(result.values()));
-		return serviceDescr;
-	}
-
-	private void _describe(final HttpServletRequest request, final HttpServletResponse response) throws IOException
-	{
-		response.getWriter().println(serializeResponse(_buildRESTServiceDescriptor(request)));
-		response.setStatus(HttpServletResponse.SC_OK);
-	}
-
-	private void _describeAsHTML(final HttpServletRequest request, final HttpServletResponse response)
-			throws IOException
-	{
-		response.setContentType("text/html;charset=" + characterEncoding);
-		final PrintWriter pw = response.getWriter();
-		pw.println("<html><head><style>* {font-family:Tahoma} table * {font-size:8pt}</style><title>");
-		pw.println(getServiceInterface().getSimpleName());
-		pw.println(" Service Definition</title></head><body>");
-		pw.println("<h1>");
-		pw.println(getServiceInterface().getSimpleName());
-		pw.println("</h1>");
-		pw.println("<p>Supported Content Type: ");
-		pw.println(contentType);
-		pw.println("</p>");
-
-		pw.println("<h3>RESTful resource actions</h3>");
-		final RestServiceDescriptor serviceDef = _buildRESTServiceDescriptor(request);
-		final String requestURL = request.getRequestURL().toString();
-		doExplainAsHTML(pw, false, serviceDef, requestURL);
-
-		pw.println("<h3>Fallback resource actions for HTTP clients without support for PUT, DELETE, HEAD</h3>");
-		doExplainAsHTML(pw, true, serviceDef, requestURL);
-
-		pw.println("</body></html>");
-		response.setStatus(HttpServletResponse.SC_OK);
-	}
-
 	public synchronized void afterPropertiesSet() throws Exception
 	{
 		// initialize resourceActions map
@@ -259,6 +178,87 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 		}
 	}
 
+	private RestServiceDescriptor buildRESTServiceDescriptor(final HttpServletRequest request)
+	{
+		final TreeMap<String, RestResourceActionDescriptor> result = new TreeMap<String, RestResourceActionDescriptor>();
+		for (final RestResourceAction action : resourceActions.values())
+		{
+			final boolean isPOST = action.getHttpMethod() == HttpRequestMethod.POST;
+			final boolean isPUT = action.getHttpMethod() == HttpRequestMethod.PUT;
+			final Method mappedMethod = action.getMethod();
+			final int paramCount = mappedMethod.getParameterTypes().length;
+
+			final RestResourceActionDescriptor actionDef = new RestResourceActionDescriptor(action.isFallback());
+			if (isPUT || isPOST)
+			{
+				if (paramCount < 2)
+					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource());
+				else
+					actionDef.setRequestURL(request.getRequestURL()
+							+ "/"
+							+ action.getResource()
+							+ "/${"
+							+ StringUtils.join(ArrayUtils.remove(getParameterNames(mappedMethod), paramCount - 1),
+									"}/${") + "}");
+				actionDef.setRequestBodyType(mappedMethod.getParameterTypes()[paramCount - 1].getSimpleName());
+			}
+			else
+			{
+				if (paramCount < 1)
+					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource());
+				else
+					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource() + "/${"
+							+ StringUtils.join(getParameterNames(mappedMethod), "}/${") + "}");
+				actionDef.setRequestBodyType("ignored");
+			}
+			actionDef.setHttpRequestMethod(action.getHttpMethod().toString());
+			actionDef.setResponseBodyType(mappedMethod.getReturnType().getSimpleName());
+			if (mappedMethod.getParameterTypes().length == 0)
+				actionDef.setMappedServiceMethod(mappedMethod.getDeclaringClass().getSimpleName() + "."
+						+ mappedMethod.getName() + "()");
+			else
+				actionDef.setMappedServiceMethod(mappedMethod.getDeclaringClass().getSimpleName() + "."
+						+ mappedMethod.getName() + "(" + StringUtils.join(getParameterNames(mappedMethod), ",") + ")");
+			result.put(actionDef.getRequestURL(), actionDef);
+		}
+		final RestServiceDescriptor serviceDescr = new RestServiceDescriptor();
+		serviceDescr.setMethods(new ArrayList<RestResourceActionDescriptor>(result.values()));
+		return serviceDescr;
+	}
+
+	private void describe(final HttpServletRequest request, final HttpServletResponse response) throws IOException
+	{
+		response.getWriter().println(serializeResponse(buildRESTServiceDescriptor(request)));
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+
+	private void describeAsHTML(final HttpServletRequest request, final HttpServletResponse response)
+			throws IOException
+	{
+		response.setContentType("text/html;charset=" + characterEncoding);
+		final PrintWriter pw = response.getWriter();
+		pw.println("<html><head><style>* {font-family:Tahoma} table * {font-size:8pt}</style><title>");
+		pw.println(getServiceInterface().getSimpleName());
+		pw.println(" Service Definition</title></head><body>");
+		pw.println("<h1>");
+		pw.println(getServiceInterface().getSimpleName());
+		pw.println("</h1>");
+		pw.println("<p>Supported Content Type: ");
+		pw.println(contentType);
+		pw.println("</p>");
+
+		pw.println("<h3>RESTful resource actions</h3>");
+		final RestServiceDescriptor serviceDef = buildRESTServiceDescriptor(request);
+		final String requestURL = request.getRequestURL().toString();
+		doExplainAsHTML(pw, false, serviceDef, requestURL);
+
+		pw.println("<h3>Fallback resource actions for HTTP clients without support for PUT, DELETE, HEAD</h3>");
+		doExplainAsHTML(pw, true, serviceDef, requestURL);
+
+		pw.println("</body></html>");
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+
 	protected abstract <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request)
 			throws IOException;
 
@@ -356,13 +356,13 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 
 		if (isGET && request.getParameter("explain") != null)
 		{
-			_describe(request, response);
+			describe(request, response);
 			return;
 		}
 
 		if (isGET && request.getParameter("explainAsHTML") != null)
 		{
-			_describeAsHTML(request, response);
+			describeAsHTML(request, response);
 			return;
 		}
 

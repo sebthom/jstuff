@@ -34,17 +34,17 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class ImageUtils
 {
-	private static GraphicsConfiguration _gc;
+	private static GraphicsConfiguration gc;
 
 	private static synchronized GraphicsConfiguration getDefaultConfiguration()
 	{
-		if (_gc == null)
+		if (gc == null)
 		{
 			final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			final GraphicsDevice gd = ge.getDefaultScreenDevice(); // not supported in headless mode
-			_gc = gd.getDefaultConfiguration();
+			gc = gd.getDefaultConfiguration();
 		}
-		return _gc;
+		return gc;
 	}
 
 	public static byte[] getJPEG(final BufferedImage image) throws IOException
