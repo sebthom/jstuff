@@ -196,6 +196,8 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringHttpInvo
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/ZippedBlockRMIProxyFactoryBean.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/ZippedBlockRMIServiceExporter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/ZippedBlockRMISocketFactory.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/convert/AbstractConverter.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/convert/StringToMapConverter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/DefaultGroupDetails.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/DefaultUserDetails.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/userregistry/GroupDetails.java -text
