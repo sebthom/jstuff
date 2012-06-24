@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
@@ -38,6 +39,8 @@ public abstract class BeanUtils
 	 */
 	public static final Map<String, PropertyDescriptor> getBeanProperties(final Class< ? > beanType)
 	{
+		Args.notNull("beanType", beanType);
+
 		final Map<String, PropertyDescriptor> properties = BEAN_PROPERTIES_CACHE.get(beanType);
 		if (properties == null)
 		{
@@ -53,6 +56,8 @@ public abstract class BeanUtils
 	 */
 	public static final Collection<PropertyDescriptor> getBeanPropertyDescriptors(final Class< ? > beanType)
 	{
+		Args.notNull("beanType", beanType);
+
 		final Map<String, PropertyDescriptor> properties = BEAN_PROPERTIES_CACHE.get(beanType);
 		if (properties == null)
 		{
@@ -64,6 +69,8 @@ public abstract class BeanUtils
 
 	public static final Set<String> getBeanPropertyNames(final Class< ? > beanType)
 	{
+		Args.notNull("beanType", beanType);
+
 		final Map<String, PropertyDescriptor> properties = BEAN_PROPERTIES_CACHE.get(beanType);
 		if (properties == null)
 		{

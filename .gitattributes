@@ -89,6 +89,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableConstructor.
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableField.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableMethod.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SetAccessibleAction.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SettingFieldValueFailedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/validation/Args.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/validation/Assert.java -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Day.properties -text

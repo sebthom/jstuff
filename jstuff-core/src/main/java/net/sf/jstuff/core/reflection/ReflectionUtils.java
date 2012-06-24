@@ -46,11 +46,11 @@ public abstract class ReflectionUtils
 	 */
 	public static void assertPrivateAccessAllowed()
 	{
-		final SecurityManager manager = System.getSecurityManager();
-		if (manager != null)
+		final SecurityManager mgr = System.getSecurityManager();
+		if (mgr != null)
 			try
 			{
-				manager.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
+				mgr.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
 			}
 			catch (final SecurityException ex)
 			{
@@ -298,6 +298,9 @@ public abstract class ReflectionUtils
 		return getMethodRecursive(superclazz, methodName, parameterTypes);
 	}
 
+	/**
+	 * @return the setter method or null if does not exist
+	 */
 	public static Method getSetter(final Class< ? > clazz, final String propertyName)
 	{
 		Args.notNull("clazz", clazz);
@@ -313,6 +316,9 @@ public abstract class ReflectionUtils
 		return null;
 	}
 
+	/**
+	 * @return the setter method or null if does not exist
+	 */
 	public static Method getSetterRecursive(final Class< ? > clazz, final String propertyName)
 	{
 		Args.notNull("clazz", clazz);
@@ -432,6 +438,7 @@ public abstract class ReflectionUtils
 	{
 		Args.notNull("fromType", fromType);
 		Args.notNull("toType", toType);
+
 		return toType.isAssignableFrom(fromType);
 	}
 
@@ -444,7 +451,7 @@ public abstract class ReflectionUtils
 			Class.forName(className);
 			return true;
 		}
-		catch (final ClassNotFoundException e)
+		catch (final ClassNotFoundException ex)
 		{
 			return false;
 		}
@@ -588,6 +595,7 @@ public abstract class ReflectionUtils
 	public static <T> Class< ? extends T> loadClass(final String className, final Class<T> baseClass)
 	{
 		Args.notNull("className", className);
+		Args.notNull("baseClass", baseClass);
 
 		try
 		{
@@ -603,6 +611,9 @@ public abstract class ReflectionUtils
 	@SuppressWarnings("unchecked")
 	public static <T> T makeProxyInstance(final Class<T> interfaceType, final InvocationHandler handler)
 	{
+		Args.notNull("interfaceType", interfaceType);
+		Args.notNull("handler", handler);
+
 		return (T) Proxy.newProxyInstance(interfaceType.getClassLoader(), new Class[]{interfaceType}, handler);
 	}
 
@@ -619,11 +630,17 @@ public abstract class ReflectionUtils
 
 	public static <T> T makeSynchronized(final Class<T> objectInterface, final T object)
 	{
+		Args.notNull("objectInterface", objectInterface);
+		Args.notNull("object", object);
+
 		return makeSynchronized(objectInterface, object, object);
 	}
 
 	public static <T> T makeSynchronized(final Class<T> objectInterface, final T object, final Object lock)
 	{
+		Args.notNull("objectInterface", objectInterface);
+		Args.notNull("object", object);
+
 		return makeProxyInstance(objectInterface, new InvocationHandler()
 			{
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
@@ -634,6 +651,23 @@ public abstract class ReflectionUtils
 					}
 				}
 			});
+	}
+
+	public static void setFieldValue(final Field field, final Object obj, final Object value)
+			throws SettingFieldValueFailedException
+	{
+		Args.notNull("field", field);
+		Args.notNull("obj", obj);
+
+		try
+		{
+			if (!field.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(field));
+			field.set(obj, value);
+		}
+		catch (final Exception ex)
+		{
+			throw new SettingFieldValueFailedException(field, obj, ex);
+		}
 	}
 
 	public static boolean setViaSetter(final Object target, final String propertyName, final Object propertyValue)

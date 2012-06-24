@@ -83,6 +83,8 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 	@SuppressWarnings("unchecked")
 	public static <A extends Annotation> A getDefaults(final Class<A> annotation)
 	{
+		Args.notNull("annotation", annotation);
+
 		return (A) Proxy.newProxyInstance(annotation.getClassLoader(), new Class[]{annotation}, new InvocationHandler()
 			{
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
@@ -152,6 +154,8 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 
 	public static Map<String, Object> getParameters(final Annotation annotation) throws ReflectionException
 	{
+		Args.notNull("annotation", annotation);
+
 		final Method[] methods = annotation.annotationType().getDeclaredMethods();
 		final Map<String, Object> parameters = new HashMap<String, Object>(methods.length);
 		for (final Method m : methods)
@@ -203,12 +207,16 @@ public abstract class AnnotationUtils extends org.apache.commons.lang3.Annotatio
 	public static <T extends Annotation> T makeAnnotationInstance(final Class<T> annotationType)
 			throws ReflectionException
 	{
+		Args.notNull("annotationType", annotationType);
+
 		return makeAnnotationInstance(annotationType, null);
 	}
 
 	public static <T extends Annotation> T makeAnnotationInstance(final Class<T> annotationType,
 			final Map<String, Object> attributes) throws ReflectionException
 	{
+		Args.notNull("annotationType", annotationType);
+
 		/*
 		 * build the final map of attributes to be used
 		 */

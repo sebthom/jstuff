@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -33,6 +34,9 @@ public abstract class DuckTypeUtils
 	@SuppressWarnings("unchecked")
 	public static <T> T duckType(final Object duckLikeObject, final Class<T> duckInterface)
 	{
+		Args.notNull("duckLikeObject", duckLikeObject);
+		Args.notNull("duckInterface", duckInterface);
+
 		final Class< ? > duckLikeClass = duckLikeObject.getClass();
 		if (duckInterface.isAssignableFrom(duckLikeClass)) return (T) duckLikeObject;
 
@@ -65,6 +69,9 @@ public abstract class DuckTypeUtils
 	 */
 	public static boolean isDuckType(final Object duckLikeObject, final Class< ? > duckType)
 	{
+		Args.notNull("duckLikeObject", duckLikeObject);
+		Args.notNull("duckType", duckType);
+
 		final Class< ? > duckLikeClass = duckLikeObject.getClass();
 		if (duckType.isAssignableFrom(duckLikeClass)) return true;
 		for (final Method method : duckType.getMethods())

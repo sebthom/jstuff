@@ -27,6 +27,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 
+import net.sf.jstuff.core.validation.Args;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -98,6 +100,8 @@ public abstract class CryptoUtils
 
 	public static SealedObject sealWithDES(final Serializable object, final String passphrase) throws CryptoException
 	{
+		Args.notNull("object", object);
+
 		try
 		{
 			return new SealedObject(object, getDESCipher(passphrase, Cipher.ENCRYPT_MODE));
@@ -108,11 +112,13 @@ public abstract class CryptoUtils
 		}
 	}
 
-	public static Serializable unsealWithDES(final SealedObject obj, final String passphrase) throws CryptoException
+	public static Serializable unsealWithDES(final SealedObject object, final String passphrase) throws CryptoException
 	{
+		Args.notNull("object", object);
+
 		try
 		{
-			return (Serializable) obj.getObject(getDESCipher(passphrase, Cipher.DECRYPT_MODE));
+			return (Serializable) object.getObject(getDESCipher(passphrase, Cipher.DECRYPT_MODE));
 		}
 		catch (final Exception ex)
 		{
