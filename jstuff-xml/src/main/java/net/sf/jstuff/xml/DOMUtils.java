@@ -380,6 +380,9 @@ public abstract class DOMUtils
 
 	public static List<Node> getElementsByTagName(final Element element, final String tagName)
 	{
+		Args.notNull("element", element);
+		Args.notNull("tagName", tagName);
+
 		return nodeListToList(element.getElementsByTagName(tagName));
 	}
 
