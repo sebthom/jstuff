@@ -378,6 +378,11 @@ public abstract class DOMUtils
 		return nodeListToList(node.getChildNodes());
 	}
 
+	public static List<Node> getElementsByTagName(final Element element, final String tagName)
+	{
+		return nodeListToList(element.getElementsByTagName(tagName));
+	}
+
 	/**
 	 * @throws XMLException
 	 */
