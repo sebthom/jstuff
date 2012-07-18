@@ -27,7 +27,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.Stack;
 import java.util.TreeMap;
 
 import javax.xml.XMLConstants;
@@ -579,7 +578,7 @@ public abstract class DOMUtils
 
 		try
 		{
-			LOG.debug("Parsing %s", inputId);
+			LOG.debug("Parsing [%s]...", inputId);
 
 			// IBM JDK: org.apache.xerces.jaxp.DocumentBuilderFactoryImpl
 			// Sun JDK: com.sun.org.apache.xerces.jaxp.DocumentBuilderFactoryImpl
@@ -626,6 +625,14 @@ public abstract class DOMUtils
 			final String ns = domRoot.getNamespaceURI();
 			if (rootNamespace != null && !rootNamespace.equals(ns))
 			{
+				LOG.debug("Fixing root namespace...");
+
+				domRoot.setAttribute("jstuffNS", rootNamespace);
+				final String newXML = renderToString(domDocument) //
+						.replaceFirst("xmlns\\s*=\\s*(['][^']*[']|[\"][^\"]*[\"])", "") //
+						.replaceFirst("jstuffNS", "xmlns");
+
+				/* unfortunately the following does not seem to work reliable on all JVM implementations
 				// change the root namespace
 				final Stack<Node> nodes = new Stack<Node>();
 				nodes.push(domRoot);
@@ -644,10 +651,12 @@ public abstract class DOMUtils
 					for (final Node childNode : nodeListToArray(node.getChildNodes()))
 						nodes.push(childNode);
 				}
+				final String newXML = renderToString(domDocument);
+				*/
 
 				// re-parse the file with the new namespace
 				errorHandler.violations.clear();
-				domDocument = domBuilder.parse(new InputSource(new StringReader(renderToString(domDocument))));
+				domDocument = domBuilder.parse(new InputSource(new StringReader(newXML)));
 			}
 
 			Assert.isTrue(errorHandler.violations.size() == 0,
