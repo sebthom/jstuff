@@ -256,4 +256,9 @@ public class DOMFile
 
 		DOMUtils.saveToFile(domDocument, new File(filePath));
 	}
+
+	public String toXML()
+	{
+		return DOMUtils.toXML(domDocument);
+	}
 }

@@ -65,6 +65,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/io/FastByteArrayInputStream.java -t
 jstuff-core/src/main/java/net/sf/jstuff/core/io/FastByteArrayOutputStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/FileModificationMonitor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/FileUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/io/FilenameUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/IOUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/SerializationUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/TeePrintStream.java -text
@@ -106,7 +107,6 @@ jstuff-core/src/test/java/net/sf/jstuff/core/event/EventTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/AcceptsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/FunctionsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/CharSequenceReaderTest.java -text
-jstuff-core/src/test/java/net/sf/jstuff/core/io/FileUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/IOUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/ZippedBlockStreamTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/DateTimeHelperTest.java -text

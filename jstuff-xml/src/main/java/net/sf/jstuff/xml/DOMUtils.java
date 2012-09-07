@@ -628,7 +628,7 @@ public abstract class DOMUtils
 				LOG.debug("Fixing root namespace...");
 
 				domRoot.setAttribute("jstuffNS", rootNamespace);
-				final String newXML = renderToString(domDocument) //
+				final String newXML = toXML(domDocument) //
 						.replaceFirst("xmlns\\s*=\\s*(['][^']*[']|[\"][^\"]*[\"])", "") //
 						.replaceFirst("jstuffNS", "xmlns");
 
@@ -732,33 +732,6 @@ public abstract class DOMUtils
 	}
 
 	/**
-	 * @throws XMLException
-	 */
-	public static String renderToString(final Document domDocument) throws XMLException
-	{
-		Args.notNull("domDocument", domDocument);
-
-		try
-		{
-			final Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
-
-			// http://xerces.apache.org/xerces2-j/javadocs/api/javax/xml/transform/OutputKeys.html
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-			transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-
-			final StringWriter sw = new StringWriter();
-			transformer.transform(new DOMSource(domDocument), new StreamResult(sw));
-			return sw.toString();
-		}
-		catch (final TransformerException ex)
-		{
-			throw new XMLException(ex);
-		}
-	}
-
-	/**
 	 * @throws IOException
 	 * @throws XMLException
 	 */
@@ -803,6 +776,36 @@ public abstract class DOMUtils
 		FileUtils.backupFile(targetFile);
 
 		saveToFile(domDocument, targetFile);
+	}
+
+	/**
+	 * @throws XMLException
+	 */
+	public static String toXML(final Document domDocument) throws XMLException
+	{
+		Args.notNull("domDocument", domDocument);
+
+		try
+		{
+			final Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
+
+			// http://xerces.apache.org/xerces2-j/javadocs/api/javax/xml/transform/OutputKeys.html
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+			// because of a bug in Xalan omitting new line characters after the <?xml...> declaration header, we output the header own our own
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			final StringWriter sw = new StringWriter();
+			sw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + StringUtils.NEW_LINE);
+			transformer.transform(new DOMSource(domDocument), new StreamResult(sw));
+			return sw.toString();
+		}
+		catch (final TransformerException ex)
+		{
+			throw new XMLException(ex);
+		}
 	}
 
 	protected DOMUtils()

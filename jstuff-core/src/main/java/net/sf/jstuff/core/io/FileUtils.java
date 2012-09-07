@@ -70,9 +70,9 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		{
 			Assert.isFileReadable(fileToBackup); // ensure it is actually a file
 
-			final File backupFile = new File(backupFolder, getFileBaseName(fileToBackup) + "_"
+			final File backupFile = new File(backupFolder, FilenameUtils.getBaseName(fileToBackup) + "_"
 					+ DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd_hhmmss") + "."
-					+ getFileExtension(fileToBackup));
+					+ FilenameUtils.getExtension(fileToBackup));
 			LOG.debug("Backing up [%s] to [%s]", fileToBackup, backupFile);
 			copyFile(fileToBackup, backupFile, true);
 			return backupFile;
@@ -132,29 +132,6 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		{
 			throw new RuntimeException(ex);
 		}
-	}
-
-	/**
-	 * @return the file name without file extension
-	 */
-	public static String getFileBaseName(final File file)
-	{
-		Args.notNull("file", file);
-
-		final int lastDotPos = file.getName().lastIndexOf('.');
-		if (lastDotPos > 1 && lastDotPos <= file.getName().length() - 2)
-			return file.getName().substring(0, lastDotPos);
-		return "";
-	}
-
-	public static String getFileExtension(final File file)
-	{
-		Args.notNull("file", file);
-
-		final int lastDotPos = file.getName().lastIndexOf('.');
-		if (0 < lastDotPos && lastDotPos <= file.getName().length() - 2)
-			return file.getName().substring(lastDotPos + 1);
-		return "";
 	}
 
 	public static File getTempDirecory()
