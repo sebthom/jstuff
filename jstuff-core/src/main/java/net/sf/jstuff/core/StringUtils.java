@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Collection;
 
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 import javax.swing.text.html.parser.ParserDelegator;
@@ -253,7 +254,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	}
 
 	/**
-	 * @return true if searchIn contains ANY of the strings in searchFor
+	 * @return true if searchIn contains ANY of the substrings in searchFor
 	 */
 	public static boolean containsAny(final CharSequence searchIn, final String... searchFor)
 	{
@@ -283,6 +284,16 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 			for (final String sf : searchFor)
 				if (searchIn2.indexOf(sf) > -1) return true;
 		}
+		return false;
+	}
+
+	/**
+	 * @return true if any searchIn contains ANY of the substrings in searchFor
+	 */
+	public static boolean containsAny(final Collection< ? extends CharSequence> searchIn, final String... searchFor)
+	{
+		for (final CharSequence s : searchIn)
+			if (containsAny(s, searchFor)) return true;
 		return false;
 	}
 
@@ -379,6 +390,12 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 			// ignore
 		}
 		return sb;
+	}
+
+	public static String join(final Iterable< ? > iterable)
+	{
+		if (iterable == null) return null;
+		return join(iterable.iterator(), null);
 	}
 
 	/**

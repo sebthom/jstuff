@@ -13,6 +13,7 @@
 package net.sf.jstuff.core;
 
 import junit.framework.TestCase;
+import net.sf.jstuff.core.collection.CollectionUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -33,7 +34,20 @@ public class StringUtilsTest extends TestCase
 		assertEquals(0, StringUtils.ansiColorsToHTML("\u001B[0m\u001B[0m").length());
 	}
 
-	public void testCountSubstrings()
+	public void testContainsAny()
+	{
+		assertTrue(StringUtils.containsAny("abcdef", "abcdef"));
+		assertTrue(StringUtils.containsAny("abcdef", "123", "bc"));
+		assertFalse(StringUtils.containsAny("abcdef", "123", "456"));
+
+		assertFalse(StringUtils.containsAny("abcdef", ""));
+		assertFalse(StringUtils.containsAny("abcdef", (String) null));
+
+		assertTrue(StringUtils.containsAny(CollectionUtils.newArrayList("abc", "def"), "de", "456"));
+		assertFalse(StringUtils.containsAny(CollectionUtils.newArrayList("abc", "def"), "123", "456"));
+	}
+
+	public void testCountMatches()
 	{
 		assertTrue(StringUtils.countMatches("1234512345", "1", 0) == 2);
 		assertTrue(StringUtils.countMatches("1234512345", "1", 1) == 1);
