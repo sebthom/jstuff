@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -21,5 +21,6 @@ public interface FilteringEventListener<T> extends EventListener<T>
 	 * Determines if this event listener accepts the given event.
 	 * The {@link #onEvent(T)} method is only called when <code>true</code> is returned.
 	 */
-	boolean accept(T event);
+	@SuppressWarnings("javadoc")
+	boolean accept(final T event);
 }

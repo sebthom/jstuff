@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -30,8 +30,7 @@ public class FIFOMap<K, V> extends LinkedHashMap<K, V>
 	private final int maxSize;
 
 	/**
-	 * 
-	 * @param initialCapacity the initial capacity.
+	 *
 	 * @param maxSize the maximum size of the cache. When maxSize is exceeded the oldest entry in the cache is removed.
 	 */
 	public FIFOMap(final int maxSize)

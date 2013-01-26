@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -54,8 +54,7 @@ public abstract class CollectionUtils
 			public final V leftValue;
 			public final V rightValue;
 
-			public EntryValueDiff(final Map<K, V> leftMap, final Map<K, V> rightMap, final K key, final V leftValue,
-					final V rightValue)
+			public EntryValueDiff(final Map<K, V> leftMap, final Map<K, V> rightMap, final K key, final V leftValue, final V rightValue)
 			{
 				this.leftMap = leftMap;
 				this.rightMap = rightMap;
@@ -67,8 +66,8 @@ public abstract class CollectionUtils
 			@Override
 			public String toString()
 			{
-				return EntryValueDiff.class.getSimpleName() + " [key=" + key + ", leftValue=" + leftValue
-						+ ", rightValue=" + rightValue + "]";
+				return EntryValueDiff.class.getSimpleName() + " [key=" + key + ", leftValue=" + leftValue + ", rightValue=" + rightValue
+						+ "]";
 			}
 		}
 
@@ -95,14 +94,14 @@ public abstract class CollectionUtils
 		@Override
 		public String toString()
 		{
-			return MapDiff.class.getSimpleName() + " [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries="
-					+ leftOnlyEntries + ", rightOnlyEntries=" + rightOnlyEntries + "]";
+			return MapDiff.class.getSimpleName() + " [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries=" + leftOnlyEntries
+					+ ", rightOnlyEntries=" + rightOnlyEntries + "]";
 		}
 	}
 
 	/**
 	 * adds all items to the collection accepted by the filter
-	 * @return number of items added 
+	 * @return number of items added
 	 * @throws IllegalArgumentException if <code>collection == null</code>
 	 */
 	public static <T> int addAll(final Collection<T> collection, final Accept<T> filter, final T... items)
@@ -120,7 +119,7 @@ public abstract class CollectionUtils
 
 	/**
 	 * Adds all items to the collection
-	 * @return number of items added 
+	 * @return number of items added
 	 * @throws IllegalArgumentException if <code>collection == null</code>
 	 */
 	public static <T> int addAll(final Collection<T> collection, final T... items) throws IllegalArgumentException
@@ -140,8 +139,7 @@ public abstract class CollectionUtils
 		return diff(leftMap, rightMap, IsEqual.DEFAULT);
 	}
 
-	public static <K, V> MapDiff<K, V> diff(final Map<K, V> leftMap, final Map<K, V> rightMap,
-			final IsEqual< ? super V> isEqual)
+	public static <K, V> MapDiff<K, V> diff(final Map<K, V> leftMap, final Map<K, V> rightMap, final IsEqual< ? super V> isEqual)
 	{
 		Args.notNull("leftMap", leftMap);
 		Args.notNull("rightMap", rightMap);
@@ -162,8 +160,7 @@ public abstract class CollectionUtils
 			{
 				final V rightValue = rightMap.get(leftKey);
 				if (!isEqual.isEqual(leftValue, rightValue))
-					mapDiff.entryValueDiffs.add(new EntryValueDiff<K, V>(leftMap, rightMap, leftKey, leftValue,
-							rightValue));
+					mapDiff.entryValueDiffs.add(new EntryValueDiff<K, V>(leftMap, rightMap, leftKey, leftValue, rightValue));
 			}
 			else
 				mapDiff.leftOnlyEntries.put(leftKey, leftValue);
@@ -188,8 +185,7 @@ public abstract class CollectionUtils
 	 * Returns a new list with all items accepted by the filter
 	 * @throws IllegalArgumentException if <code>accept == null</code>
 	 */
-	public static <T> List<T> filter(final Collection<T> collection, final Accept<T> accept)
-			throws IllegalArgumentException
+	public static <T> List<T> filter(final Collection<T> collection, final Accept<T> accept) throws IllegalArgumentException
 	{
 		if (collection == null) return null;
 
@@ -203,13 +199,12 @@ public abstract class CollectionUtils
 
 	/**
 	 * removes all items not accepted by the filter
-	 * @param coll
-	 * @param filter
+	 * @param collection
+	 * @param accept
 	 * @return number of items removed
 	 * @throws IllegalArgumentException if <code>accept == null</code>
 	 */
-	public static <T> int filterInPlace(final Collection<T> collection, final Accept<T> accept)
-			throws IllegalArgumentException
+	public static <T> int filterInPlace(final Collection<T> collection, final Accept<T> accept) throws IllegalArgumentException
 	{
 		if (collection == null) return 0;
 
@@ -238,11 +233,10 @@ public abstract class CollectionUtils
 
 	/**
 	 * Returns string in the format of "name1=value1,name2=value2" (if valueSeparator="," and assignmentOperator="=")
-	 * 
+	 *
 	 * Opposite to {@link #toMap(String, String, String)}
 	 */
-	public static <K, V> CharSequence map2string(final Map<K, V> values, final String valueSeparator,
-			final String assignmentOperator)
+	public static <K, V> CharSequence map2string(final Map<K, V> values, final String valueSeparator, final String assignmentOperator)
 	{
 		Args.notNull("values", values);
 		Args.notNull("valueSeparator", valueSeparator);
@@ -443,8 +437,7 @@ public abstract class CollectionUtils
 		return new TreeMap<K, V>(keyComparator);
 	}
 
-	public static <K, V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator,
-			final Object... initialKeysAndValues)
+	public static <K, V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator, final Object... initialKeysAndValues)
 	{
 		return putAll(new TreeMap<K, V>(keyComparator), initialKeysAndValues);
 	}
@@ -500,11 +493,10 @@ public abstract class CollectionUtils
 
 	/**
 	 * Converts key/value pairs defined in a string into a map.
-	 * 
+	 *
 	 * E.g. asMap("name1=value1,name2=value2", "\"", "=")
 	 */
-	public static Map<String, String> toMap(final String values, final String valueSeparator,
-			final String assignmentOperator)
+	public static Map<String, String> toMap(final String values, final String valueSeparator, final String assignmentOperator)
 	{
 		Args.notNull("values", values);
 		Args.notNull("valueSeparator", valueSeparator);

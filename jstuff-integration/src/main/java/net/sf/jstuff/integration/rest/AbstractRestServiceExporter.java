@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -36,15 +36,12 @@ import org.springframework.web.HttpRequestHandler;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class AbstractRestServiceExporter extends RemoteExporter
-		implements
-			HttpRequestHandler,
-			InitializingBean
+public abstract class AbstractRestServiceExporter extends RemoteExporter implements HttpRequestHandler, InitializingBean
 {
 	private final static Logger LOG = Logger.getLogger(AbstractRestServiceExporter.class.getName());
 
-	private final static String[] PARAM_NAMES = {"param0", "param1", "param2", "param3", "param4", "param5", "param6",
-			"param7", "param8", "param9"};
+	private final static String[] PARAM_NAMES = {"param0", "param1", "param2", "param3", "param4", "param5", "param6", "param7", "param8",
+			"param9"};
 
 	private String characterEncoding = "UTF-8";
 
@@ -77,8 +74,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 				final String key = "GET_" + annotation.value();
 
 				if (resourceActions.containsKey(key))
-					throw new IllegalStateException(
-							"Mapping multiple methods to the same resource+method is not supported: " + key);
+					throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: " + key);
 
 				final RestResourceAction action = new RestResourceAction(m, annotation.value(), HttpRequestMethod.GET);
 				resourceActions.put(key, action);
@@ -90,8 +86,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 				final String key = "POST_" + annotation.value();
 
 				if (resourceActions.containsKey(key))
-					throw new IllegalStateException(
-							"Mapping multiple methods to the same resource+method is not supported: " + key);
+					throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: " + key);
 
 				final RestResourceAction action = new RestResourceAction(m, annotation.value(), HttpRequestMethod.POST);
 				resourceActions.put(key, action);
@@ -103,8 +98,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 				final String key = "PUT" + annotation.value();
 
 				if (resourceActions.containsKey(key))
-					throw new IllegalStateException(
-							"Mapping multiple methods to the same resource+method is not supported: " + key);
+					throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: " + key);
 
 				final RestResourceAction action = new RestResourceAction(m, annotation.value(), HttpRequestMethod.PUT);
 				resourceActions.put(key, action);
@@ -114,12 +108,10 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 					final String fallbackKey = "POST_" + annotation.fallback();
 
 					if (resourceActions.containsKey(fallbackKey))
-						throw new IllegalStateException(
-								"Mapping multiple methods to the same resource+method is not supported: " + fallbackKey
-										+ " at " + m);
+						throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: "
+								+ fallbackKey + " at " + m);
 
-					resourceActions.put(fallbackKey, new RestResourceAction(m, annotation.fallback(),
-							HttpRequestMethod.POST, action));
+					resourceActions.put(fallbackKey, new RestResourceAction(m, annotation.fallback(), HttpRequestMethod.POST, action));
 				}
 			}
 			if (m.isAnnotationPresent(REST_DELETE.class))
@@ -129,11 +121,9 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 				final String key = "DELETE" + annotation.value();
 
 				if (resourceActions.containsKey(key))
-					throw new IllegalStateException(
-							"Mapping multiple methods to the same resource+method is not supported: " + key);
+					throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: " + key);
 
-				final RestResourceAction action = new RestResourceAction(m, annotation.value(),
-						HttpRequestMethod.DELETE);
+				final RestResourceAction action = new RestResourceAction(m, annotation.value(), HttpRequestMethod.DELETE);
 				resourceActions.put(key, action);
 
 				if (annotation.fallback().length() > 0)
@@ -141,12 +131,10 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 					final String fallbackKey = "POST_" + annotation.fallback();
 
 					if (resourceActions.containsKey(fallbackKey))
-						throw new IllegalStateException(
-								"Mapping multiple methods to the same resource+method is not supported: " + fallbackKey
-										+ " at " + m);
+						throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: "
+								+ fallbackKey + " at " + m);
 
-					resourceActions.put(fallbackKey, new RestResourceAction(m, annotation.fallback(),
-							HttpRequestMethod.POST, action));
+					resourceActions.put(fallbackKey, new RestResourceAction(m, annotation.fallback(), HttpRequestMethod.POST, action));
 				}
 			}
 			if (m.isAnnotationPresent(REST_HEAD.class))
@@ -156,8 +144,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 				final String key = "HEAD" + annotation.value();
 
 				if (resourceActions.containsKey(key))
-					throw new IllegalStateException(
-							"Mapping multiple methods to the same resource+method is not supported: " + key);
+					throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: " + key);
 
 				final RestResourceAction action = new RestResourceAction(m, annotation.value(), HttpRequestMethod.HEAD);
 				resourceActions.put(key, action);
@@ -167,12 +154,10 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 					final String fallbackKey = "GET_" + annotation.fallback();
 
 					if (resourceActions.containsKey(fallbackKey))
-						throw new IllegalStateException(
-								"Mapping multiple methods to the same resource+method is not supported: " + fallbackKey
-										+ " at " + m);
+						throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: "
+								+ fallbackKey + " at " + m);
 
-					resourceActions.put(fallbackKey, new RestResourceAction(m, annotation.fallback(),
-							HttpRequestMethod.GET, action));
+					resourceActions.put(fallbackKey, new RestResourceAction(m, annotation.fallback(), HttpRequestMethod.GET, action));
 				}
 			}
 		}
@@ -194,12 +179,8 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 				if (paramCount < 2)
 					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource());
 				else
-					actionDef.setRequestURL(request.getRequestURL()
-							+ "/"
-							+ action.getResource()
-							+ "/${"
-							+ StringUtils.join(ArrayUtils.remove(getParameterNames(mappedMethod), paramCount - 1),
-									"}/${") + "}");
+					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource() + "/${"
+							+ StringUtils.join(ArrayUtils.remove(getParameterNames(mappedMethod), paramCount - 1), "}/${") + "}");
 				actionDef.setRequestBodyType(mappedMethod.getParameterTypes()[paramCount - 1].getSimpleName());
 			}
 			else
@@ -214,11 +195,10 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 			actionDef.setHttpRequestMethod(action.getHttpMethod().toString());
 			actionDef.setResponseBodyType(mappedMethod.getReturnType().getSimpleName());
 			if (mappedMethod.getParameterTypes().length == 0)
-				actionDef.setMappedServiceMethod(mappedMethod.getDeclaringClass().getSimpleName() + "."
-						+ mappedMethod.getName() + "()");
+				actionDef.setMappedServiceMethod(mappedMethod.getDeclaringClass().getSimpleName() + "." + mappedMethod.getName() + "()");
 			else
-				actionDef.setMappedServiceMethod(mappedMethod.getDeclaringClass().getSimpleName() + "."
-						+ mappedMethod.getName() + "(" + StringUtils.join(getParameterNames(mappedMethod), ",") + ")");
+				actionDef.setMappedServiceMethod(mappedMethod.getDeclaringClass().getSimpleName() + "." + mappedMethod.getName() + "("
+						+ StringUtils.join(getParameterNames(mappedMethod), ",") + ")");
 			result.put(actionDef.getRequestURL(), actionDef);
 		}
 		final RestServiceDescriptor serviceDescr = new RestServiceDescriptor();
@@ -232,10 +212,10 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
-	private void describeAsHTML(final HttpServletRequest request, final HttpServletResponse response)
-			throws IOException
+	private void describeAsHTML(final HttpServletRequest request, final HttpServletResponse response) throws IOException
 	{
 		response.setContentType("text/html;charset=" + characterEncoding);
+		@SuppressWarnings("resource")
 		final PrintWriter pw = response.getWriter();
 		pw.println("<html><head><style>* {font-family:Tahoma} table * {font-size:8pt}</style><title>");
 		pw.println(getServiceInterface().getSimpleName());
@@ -259,11 +239,10 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
-	protected abstract <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request)
-			throws IOException;
+	protected abstract <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException;
 
-	public void doExplainAsHTML(final PrintWriter pw, final boolean fallbackMethods,
-			final RestServiceDescriptor serviceDef, final String requestURL)
+	public void doExplainAsHTML(final PrintWriter pw, final boolean fallbackMethods, final RestServiceDescriptor serviceDef,
+			final String requestURL)
 	{
 		for (final RestResourceActionDescriptor actionDef : serviceDef.getMethods())
 		{
@@ -273,8 +252,8 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 			if (actionDef.getIsFallbackMethod()) pw.println("<span style='color:red'>*isFallback*</span> ");
 			pw.println("<b>" + actionDef.getHttpRequestMethod() + "</b>");
 			pw.println(StringUtils.replace(StringUtils.replace(
-					StringUtils.replace(actionDef.getRequestURL(), "${", "<span style='color:blue'>${"), "}",
-					"}</span>"), requestURL, requestURL + "<b>")
+					StringUtils.replace(actionDef.getRequestURL(), "${", "<span style='color:blue'>${"), "}", "}</span>"), requestURL,
+					requestURL + "<b>")
 					+ "</b>");
 			pw.println("</p><table style='border: 1px solid black;width:90%;margin-bottom:0.5em'>");
 
@@ -309,21 +288,16 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 			pw.println("<span style='font-weight:bold;color:darkgreen'>" + actionDef.getResponseBodyType() + "</span>");
 
 			if (actionDef.getRequestBodyType().equals("ignored"))
-				pw.println(StringUtils.replace(
-						methodSignature,
-						StringUtils.join(requestParams, ","),
-						"<span style='color:blue'>"
-								+ StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"));
+				pw.println(StringUtils.replace(methodSignature, StringUtils.join(requestParams, ","), "<span style='color:blue'>"
+						+ StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"));
 			else
 			{
 				final String param = StringUtils.substringAfterLast(
 						"," + StringUtils.substringBetween(actionDef.getMappedServiceMethod(), "(", ")"), ",");
-				pw.println(StringUtils.replace(StringUtils.replace(
-						methodSignature,
-						StringUtils.join(requestParams, ","),
-						"<span style='color:blue'>"
-								+ StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"),
-						param + ")", "<span style='color:darkred'>" + param + "</span>)"));
+				pw.println(StringUtils.replace(
+						StringUtils.replace(methodSignature, StringUtils.join(requestParams, ","), "<span style='color:blue'>"
+								+ StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"), param + ")",
+						"<span style='color:darkred'>" + param + "</span>)"));
 			}
 			pw.println("</td></tr>");
 			pw.println("</table>");
@@ -340,8 +314,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 		return names;
 	}
 
-	public void handleRequest(final HttpServletRequest request, final HttpServletResponse response)
-			throws ServletException, IOException
+	public void handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
 		final HttpRequestMethod httpRequestMethod = HttpRequestMethod.valueOf(request.getMethod().toUpperCase());
 		final boolean isDELETE = httpRequestMethod == HttpRequestMethod.DELETE;
@@ -374,8 +347,8 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 		{
 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 			response.getWriter().println(
-					serializeResponse(new RestServiceError("UnsupportedOperationException",
-							"Unsupported HTTP request method " + httpRequestMethod + " for resource " + resource)));
+					serializeResponse(new RestServiceError("UnsupportedOperationException", "Unsupported HTTP request method "
+							+ httpRequestMethod + " for resource " + resource)));
 			return;
 		}
 
@@ -402,10 +375,9 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 		// converting URL parameters to the required object values
 		Object[] methodArguments = BeanUtils.valuesOf(stringArguments, actionMethod.getParameterTypes());
 
-		// for POST/PUT requests add the request body as additional argument for the method arguments 
+		// for POST/PUT requests add the request body as additional argument for the method arguments
 		if (isPOST || isPUT)
-			methodArguments = ArrayUtils.add(methodArguments,
-					deserializeRequestBody(actionMethod.getReturnType(), request));
+			methodArguments = ArrayUtils.add(methodArguments, deserializeRequestBody(actionMethod.getReturnType(), request));
 
 		try
 		{
@@ -425,8 +397,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 			LOG.log(Level.SEVERE, "Invoking method " + actionMethod + " failed.", ex);
 
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println(
-					serializeResponse(new RestServiceError(ex.getClass().getSimpleName(), ex.getMessage())));
+			response.getWriter().println(serializeResponse(new RestServiceError(ex.getClass().getSimpleName(), ex.getMessage())));
 			return;
 		}
 	}
@@ -436,7 +407,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter
 		// may be subclassed
 	}
 
-	protected abstract String serializeResponse(Object resultObject);
+	protected abstract String serializeResponse(final Object resultObject);
 
 	@SuppressWarnings("rawtypes")
 	@Override

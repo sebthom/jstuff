@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -21,7 +21,7 @@ import net.sf.jstuff.core.validation.Args;
 
 /**
  * A non-thread-safe output stream filter that performs on-the fly zip compression using a {@link Deflater}.
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ZippedBlockOutputStream extends FilterOutputStream
@@ -48,7 +48,7 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 	private boolean isClosed = false;
 
 	/**
-	 * @param out the underlying output stream to send the data in compressed form to
+	 * @param os the underlying output stream to send the data in compressed form to
 	 * @param blockSize the number of bytes that need to be written to the stream before the data is compressed and send to the underlying stream
 	 */
 	public ZippedBlockOutputStream(final OutputStream os, final int blockSize)
@@ -57,7 +57,7 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 	}
 
 	/**
-	 * @param out the underlying output stream to send the data in compressed form to
+	 * @param os the underlying output stream to send the data in compressed form to
 	 * @param blockSize the number of bytes that need to be written to the stream before the data is compressed and send to the underlying stream
 	 */
 	public ZippedBlockOutputStream(final OutputStream os, final int blockSize, final Deflater compressor)
@@ -74,7 +74,7 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 	}
 
 	/**
-	 * @param out the underlying output stream to send the data in compressed form to
+	 * @param os the underlying output stream to send the data in compressed form to
 	 * @param blockSize the number of bytes that need to be written to the stream before the data is compressed and send to the underlying stream
 	 * @param compressionLevel the java.util.zip.Deflater compression level (0-9)
 	 */
@@ -113,7 +113,7 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 	}
 
 	/**
-	 * Compresses the data currently in the <code>block</code> byte array into the <code>blockCompressed</code> 
+	 * Compresses the data currently in the <code>block</code> byte array into the <code>blockCompressed</code>
 	 * byte array and writes it to the underlying output stream
 	 */
 	protected void compressBlockAndWrite() throws IOException
@@ -125,8 +125,7 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 			compressor.setInput(block, 0, blockSize);
 			compressor.finish();
 			final int compressedSize = compressor.deflate(blockCompressed);
-			System.out.println(block.length + " - " + blockSize + " / " + blockCompressed.length + " - "
-					+ compressedSize);
+			System.out.println(block.length + " - " + blockSize + " / " + blockCompressed.length + " - " + compressedSize);
 			// write the size of the compressed data
 			IOUtils.writeInt(out, compressedSize);
 

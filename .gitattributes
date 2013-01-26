@@ -185,6 +185,7 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/RestServiceError
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/XStreamRestServiceExporter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/CountingHttpSessionListener.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/HttpServletResponseStringWrapper.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/HttpServletResponseWrapperWithStatus.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/RequestAttributeSettingFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/RequestResponseHoldingFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ResponseHeaderSettingFilter.java -text

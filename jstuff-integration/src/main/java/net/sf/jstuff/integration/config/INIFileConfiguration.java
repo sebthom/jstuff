@@ -1,18 +1,21 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.jstuff.integration.config;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
+import static net.sf.jstuff.core.collection.CollectionUtils.newArrayList;
+import static net.sf.jstuff.core.collection.CollectionUtils.toIterable;
+import static net.sf.jstuff.core.collection.CollectionUtils.toList;
+import static net.sf.jstuff.core.collection.CollectionUtils.transform;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -45,7 +48,7 @@ import org.apache.commons.configuration.ConfigurationException;
  *
  * Supported comment characters are: <code>#</code> and <code>;</code>
  * Supported value assignment character is <code>=</code>
- *  
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class INIFileConfiguration extends AbstractFileConfiguration
@@ -78,7 +81,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 	/**
 	 * Create and load the INI configuration from the given file.
 	 *
-	 * @param filename The name or path of the INI file to load.
+	 * @param fileName The name or path of the INI file to load.
 	 * @throws ConfigurationException If an error occurs while loading the file
 	 */
 	public INIFileConfiguration(final String fileName) throws ConfigurationException
@@ -207,7 +210,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 					final String key;
 					final String value;
 					String inlineComment = null;
-					// check if the line contains a property assignment using key=value, if not we define the line whole line is the key and the value is empty ("") 
+					// check if the line contains a property assignment using key=value, if not we define the line whole line is the key and the value is empty ("")
 					final int index = line.indexOf('=');
 					if (index > -1)
 					{

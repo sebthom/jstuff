@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -24,8 +24,8 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils
 
 	/**
 	 * opens the given file with the default application handler
-	 * 
-	 * @param absoluteFilePath
+	 *
+	 * @param file
 	 */
 	public static void launchWithDefaultApplication(final File file) throws IOException
 	{
@@ -42,8 +42,7 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils
 		try
 		{
 			if (IS_OS_WINDOWS)
-				Runtime.getRuntime()
-						.exec("rundll32 url.dll,FileProtocolHandler javascript:location.href='" + url + "'");
+				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler javascript:location.href='" + url + "'");
 			else if (IS_OS_MAC)
 				Runtime.getRuntime().exec("open " + url);
 			else if (IS_OS_SUN_OS)

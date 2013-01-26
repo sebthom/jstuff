@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -47,8 +47,7 @@ public class DefaultAuthService implements AuthService
 	public void assertAuthenticated() throws PermissionDeniedException
 	{
 		if (!isAuthenticated())
-			throw new PermissionDeniedException(
-					"You are not authorized to perform that operation. You need to authenticate first.");
+			throw new PermissionDeniedException("You are not authorized to perform that operation. You need to authenticate first.");
 	}
 
 	public void assertIdentity(final String userId) throws PermissionDeniedException
@@ -59,8 +58,7 @@ public class DefaultAuthService implements AuthService
 
 	public void assertRole(final String applicationRole) throws PermissionDeniedException
 	{
-		if (!hasRole(applicationRole))
-			throw new PermissionDeniedException("You are not authorized to perform that operation.");
+		if (!hasRole(applicationRole)) throw new PermissionDeniedException("You are not authorized to perform that operation.");
 	}
 
 	public void assertURIAccess(final String uri) throws PermissionDeniedException
@@ -83,8 +81,7 @@ public class DefaultAuthService implements AuthService
 						hasAnyRequiredRole = true;
 						break;
 					}
-				if (!hasAnyRequiredRole)
-					throw new PermissionDeniedException("You are not authorized to perform that operation.");
+				if (!hasAnyRequiredRole) throw new PermissionDeniedException("You are not authorized to perform that operation.");
 			}
 			else
 				LOG.trace("%s does NOT match %s", uri, uriPattern);
@@ -152,19 +149,15 @@ public class DefaultAuthService implements AuthService
 		return auth.isAuthenticated() && auth.getUserDetails().getUserId().equals(userId);
 	}
 
-	public void login(final String logonName, final String password) throws AuthenticationFailedException,
-			AlreadyAuthenticatedException
+	public void login(final String logonName, final String password) throws AuthenticationFailedException, AlreadyAuthenticatedException
 	{
-		if (isAuthenticated())
-			throw new AlreadyAuthenticatedException("An authentication for the active session already exists.");
+		if (isAuthenticated()) throw new AlreadyAuthenticatedException("An authentication for the active session already exists.");
 
 		if (isAuthenticated()) logout();
 
-		if (!authenticator.authenticate(logonName, password))
-			throw new AuthenticationFailedException("Incorrect username or password.");
+		if (!authenticator.authenticate(logonName, password)) throw new AuthenticationFailedException("Incorrect username or password.");
 
-		final Authentication auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(logonName),
-				password);
+		final Authentication auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(logonName), password);
 		AuthenticationHolder.setAuthentication(auth);
 
 		if (listener != null) listener.afterLogin(auth);
@@ -210,10 +203,9 @@ public class DefaultAuthService implements AuthService
 	}
 
 	/**
-	 * @param mapping format ? groupIdXXX -> roleXXX
+	 * @param mappings format ? groupIdXXX -> roleXXX
 	 */
-	public synchronized void setGroupIdToApplicationRoleMappings(final Map<String, String> mappings)
-			throws UnknownApplicationRoleException
+	public synchronized void setGroupIdToApplicationRoleMappings(final Map<String, String> mappings) throws UnknownApplicationRoleException
 	{
 		groupIdToApplicationRoleMappings = new MapWithSets<String, String>();
 		for (final Entry<String, String> mapping : mappings.entrySet())
@@ -238,7 +230,7 @@ public class DefaultAuthService implements AuthService
 	}
 
 	/**
-	 * @param mapping format = "groupIdXXX=roleXXX"
+	 * @param mappings format = "groupIdXXX=roleXXX"
 	 */
 	public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final String[] mappings)
 			throws UnknownApplicationRoleException
@@ -254,8 +246,7 @@ public class DefaultAuthService implements AuthService
 
 			LOG.trace("Registering groupId -> application role mapping: %s => %s", pair[0], pair[1]);
 
-			if (!applicationRoles.contains(pair[1]))
-				throw new UnknownApplicationRoleException("Application role is unknown: " + pair[1]);
+			if (!applicationRoles.contains(pair[1])) throw new UnknownApplicationRoleException("Application role is unknown: " + pair[1]);
 
 			groupIdToApplicationRoleMappings.add(pair[0], pair[1]);
 		}
@@ -267,11 +258,10 @@ public class DefaultAuthService implements AuthService
 	}
 
 	/**
-	 * @param mapping format = "/myuri*=roleXXX"
+	 * @param mappings format = "/myuri*=roleXXX"
 	 */
 	@Inject
-	public synchronized void setUriPatternsToApplicationRoleMappings(final String[] mappings)
-			throws UnknownApplicationRoleException
+	public synchronized void setUriPatternsToApplicationRoleMappings(final String[] mappings) throws UnknownApplicationRoleException
 	{
 		uriPatternsToApplicationRoleMappings = new MapWithSets<String, String>();
 		for (final String element : mappings)
@@ -284,8 +274,7 @@ public class DefaultAuthService implements AuthService
 
 			LOG.trace("Registering URI pattern -> application role mapping: %s => %s", pair[0], pair[1]);
 
-			if (!applicationRoles.contains(pair[1]))
-				throw new UnknownApplicationRoleException("Application role is unknown: " + pair[1]);
+			if (!applicationRoles.contains(pair[1])) throw new UnknownApplicationRoleException("Application role is unknown: " + pair[1]);
 
 			uriPatternsToApplicationRoleMappings.add(pair[0], pair[1]);
 		}

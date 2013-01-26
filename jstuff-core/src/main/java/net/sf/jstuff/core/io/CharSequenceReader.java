@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -27,7 +27,7 @@ public class CharSequenceReader extends Reader
 	/**
 	 * Create a new CharSequence reader.
 	 *
-	 * @param txt CharSequence providing the character stream.
+	 * @param text CharSequence providing the character stream.
 	 */
 	public CharSequenceReader(final CharSequence text)
 	{

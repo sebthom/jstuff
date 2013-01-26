@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -35,6 +35,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 	 * @see XMLEncoder
 	 * @throws SerializationException
 	 */
+	@SuppressWarnings("resource")
 	public static String bean2xml(final Object javaBean) throws SerializationException
 	{
 		Args.notNull("javaBean", javaBean);
@@ -51,11 +52,11 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 			});
 		e.writeObject(javaBean);
 		e.close();
-		if (exList.size() > 0)
-			throw new SerializationException("An error occured during XML serialization", exList.get(0));
+		if (exList.size() > 0) throw new SerializationException("An error occured during XML serialization", exList.get(0));
 		return bos.toString();
 	}
 
+	@SuppressWarnings("resource")
 	public static Serializable deserialize(final byte[] serializedData) throws SerializationException
 	{
 		Args.notNull("serializedData", serializedData);
@@ -64,6 +65,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 		return deserialize(bin);
 	}
 
+	@SuppressWarnings("resource")
 	public static Serializable deserialize(final InputStream is) throws SerializationException
 	{
 		Args.notNull("is", is);
@@ -119,8 +121,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 				}
 			});
 		final Object javaBean = d.readObject();
-		if (exList.size() > 0)
-			throw new SerializationException("An error occured during XML deserialization", exList.get(0));
+		if (exList.size() > 0) throw new SerializationException("An error occured during XML deserialization", exList.get(0));
 		return javaBean;
 	}
 

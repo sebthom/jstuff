@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -46,6 +46,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 		return bytesCopied;
 	}
 
+	@SuppressWarnings("resource")
 	public static byte[] readBytes(final InputStream is) throws IOException
 	{
 		final FastByteArrayOutputStream os = new FastByteArrayOutputStream();
@@ -89,12 +90,19 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 		return bytes;
 	}
 
+	@SuppressWarnings("resource")
 	public static byte[] readBytesAndClose(final InputStream is) throws IOException
 	{
 		final FastByteArrayOutputStream os = new FastByteArrayOutputStream();
-		copy(is, os);
-		closeQuietly(is);
-		return os.toByteArray();
+		try
+		{
+			copy(is, os);
+			return os.toByteArray();
+		}
+		finally
+		{
+			closeQuietly(is);
+		}
 	}
 
 	public static String readChunkAsString(final InputStream is, final int maxSize) throws IOException
@@ -126,8 +134,8 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 
 	public static List<String> readLines(final Reader reader) throws IOException
 	{
-		final BufferedReader bf = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(
-				reader);
+		@SuppressWarnings("resource")
+		final BufferedReader bf = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
 		final List<String> lines = new ArrayList<String>();
 		String line = bf.readLine();
 		while (line != null)

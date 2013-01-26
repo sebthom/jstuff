@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -220,8 +220,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 							initialState.setGraphicModeParameter(currentGraphicModeParam);
 							currentGraphicModeParam = 0;
 							if (isActiveOld) sb.append("</span>");
-							if (initialState.isActive())
-								sb.append("<span style=\"").append(initialState.toCSS()).append("\">");
+							if (initialState.isActive()) sb.append("<span style=\"").append(initialState.toCSS()).append("\">");
 							done = true;
 							break;
 						default :
@@ -299,7 +298,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 
 	/**
 	 * <p>Counts how many times the substring appears in the larger String starting at the given position.</p>
-	 * 
+	 *
 	 * @param searchIn the String to check, may be null
 	 * @param searchFor the substring to count, may be null
 	 * @param startAt
@@ -367,6 +366,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		return sb;
 	}
 
+	@SuppressWarnings("resource")
 	public static CharSequence htmlToPlainText(final CharSequence html)
 	{
 		Args.notNull("html", html);
@@ -412,16 +412,16 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		return sb;
 	}
 
-	/** 
+	/**
 	 * Replaces a copy of string delimited by the start parameters with the string given in replacement. The result is returned.
-	 * 
+	 *
 	 * startAt:
 	 * If startAt is positive, the replacing will begin at the startAt'th offset into searchIn.
 	 * If startAt is negative, the replacing will begin at the startAt'th character from the end of searchIn.
 	 * If length is not given, then it will default to searchIn.length, i.e. end the replacing at the end of string.
-	 * 
+	 *
 	 * behavior is based on PHP's substr_replace function http://www.php.net/manual/en/function.substr-replace.php
-	 * 
+	 *
 	 * @param searchIn
 	 * @param replaceWith
 	 * @param start position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
@@ -432,20 +432,20 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		return replace(searchIn, replaceWith, start, searchIn.length());
 	}
 
-	/** 
+	/**
 	 * Replaces a copy of string delimited by the start and length parameters with the string given in replacement. The result is returned.
-	 * 
+	 *
 	 * startAt:
 	 * If startAt is positive, the replacing will begin at the startAt'th offset into searchIn.
 	 * If startAt is negative, the replacing will begin at the startAt'th character from the end of searchIn.
-	 * 
+	 *
 	 * length:
 	 * If length is given and is positive, it represents the length of the portion of searchIn which is to be replaced.
 	 * If length is negative, it represents the number of characters from the end of searchIn at which to stop replacing.
 	 * If length is 0 the text will be inserted at the given position.
-	 * 
+	 *
 	 * behaviour is based on PHP's substr_replace function http://www.php.net/manual/en/function.substr-replace.php
-	 * 
+	 *
 	 * @param searchIn
 	 * @param replaceWith
 	 * @param startAt position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
@@ -480,20 +480,20 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	}
 
 	/**
-	 * Replace all occurrences of the search string with the replacement string. 
+	 * Replace all occurrences of the search string with the replacement string.
 	 * This method is case insensitive.
 	 *
 	 * Example:
-	 * 
+	 *
 	 *    String result = replaceSubString ("Kiss my ass.", "ASS", "lips");
 	 *    System.out.println(result);
-	 * 
+	 *
 	 * This prints the string "Kiss my lips." to the console.
 	 *
 	 * @param searchIn The string to search
 	 * @param searchFor The string to find
 	 * @param replaceWith The string to replace searchFor with.
-	 * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be returned. 
+	 * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be returned.
 	 */
 	public static CharSequence replaceIgnoreCase(final String searchIn, String searchFor, CharSequence replaceWith)
 	{
@@ -546,13 +546,13 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 
 	/**
 	 * Searches a string from left to right and returns the leftmost characters of the string.
-	 *  
+	 *
 	 * substringBefore("this is a test", "s") -> "thi"
 	 *
 	 * @param searchIn The string whose leftmost characters you want to find.
 	 * @param searchFor A substring of searchIn. Left returns the characters to the left of searchFor. It finds searchFor by searching searchIn from left to right.
-	 * @return The leftmost characters in searchIn. 
-	 *         The number of characters returned is determined by searchFor. 
+	 * @return The leftmost characters in searchIn.
+	 *         The number of characters returned is determined by searchFor.
 	 *         Returns "" if searchFor is not part of searchIn.
 	 *         Returns "" if searchIn is null.
 	 */
@@ -568,7 +568,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 
 	/**
 	 * Searches a string from left to right and returns the leftmost characters of the string.
-	 *  
+	 *
 	 * substringBeforeIgnoreCare("this is a test", "s") -> "thi"
 	 *
 	 * @param searchIn The string whose leftmost characters you want to find.
@@ -666,7 +666,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 
 	/**
 	 * Translates a string into application/x-www-form-urlencoded format using a specific encoding scheme.
-	 * 
+	 *
 	 * @param text the string to be translated
 	 * @return the translated String
 	 */

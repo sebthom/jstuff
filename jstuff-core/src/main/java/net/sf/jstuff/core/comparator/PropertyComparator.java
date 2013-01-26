@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -32,16 +32,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable
 
 	private static final Logger LOG = Logger.make();
 
-	private final String[] propertyPath;
-
-	public PropertyComparator(final String propertyPath)
-	{
-		Args.notNull("propertyPath", propertyPath);
-
-		this.propertyPath = StringUtils.split(propertyPath, '.');
-	}
-
-	private Object _getPropertyValue(final Object obj, final String propertyName)
+	private static Object _getPropertyValue(final Object obj, final String propertyName)
 	{
 		final Class< ? > type = obj.getClass();
 
@@ -51,6 +42,15 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable
 		final Field field = ReflectionUtils.getFieldRecursive(type, propertyName);
 		if (field == null) return null;
 		return ReflectionUtils.getFieldValue(field, obj);
+	}
+
+	private final String[] propertyPath;
+
+	public PropertyComparator(final String propertyPath)
+	{
+		Args.notNull("propertyPath", propertyPath);
+
+		this.propertyPath = StringUtils.split(propertyPath, '.');
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
@@ -78,9 +78,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable
 		}
 		catch (final RuntimeException ex)
 		{
-			LOG.warn(
-					"Cannot compare [" + o1 + "] with [" + o2 + "] through property path ["
-							+ Arrays.toString(propertyPath) + "]", ex);
+			LOG.warn("Cannot compare [" + o1 + "] with [" + o2 + "] through property path [" + Arrays.toString(propertyPath) + "]", ex);
 			return 0;
 		}
 	}

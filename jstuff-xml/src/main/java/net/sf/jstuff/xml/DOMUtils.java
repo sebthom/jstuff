@@ -1,18 +1,18 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.jstuff.xml;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
+import static net.sf.jstuff.core.collection.CollectionUtils.newHashMap;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -84,24 +84,20 @@ public abstract class DOMUtils
 
 		public String getPrefix(final String namespaceURI)
 		{
-			return prefixesByNamespaceURI.containsKey(namespaceURI) ? prefixesByNamespaceURI.get(namespaceURI)
-					.iterator().next() : null;
+			return prefixesByNamespaceURI.containsKey(namespaceURI) ? prefixesByNamespaceURI.get(namespaceURI).iterator().next() : null;
 		}
 
 		public Iterator<String> getPrefixes(final String namespaceURI)
 		{
-			return prefixesByNamespaceURI.containsKey(namespaceURI) ? prefixesByNamespaceURI.get(namespaceURI)
-					.iterator() : null;
+			return prefixesByNamespaceURI.containsKey(namespaceURI) ? prefixesByNamespaceURI.get(namespaceURI).iterator() : null;
 		}
 
 		public void registerNamespace(final String namespaceURI, final String prefix)
 		{
-			if (!namespaceURIsByPrefix.containsKey(prefix))
-				namespaceURIsByPrefix.put(prefix, new LinkedHashSet<String>(2));
+			if (!namespaceURIsByPrefix.containsKey(prefix)) namespaceURIsByPrefix.put(prefix, new LinkedHashSet<String>(2));
 			namespaceURIsByPrefix.get(prefix).add(namespaceURI);
 
-			if (!prefixesByNamespaceURI.containsKey(namespaceURI))
-				prefixesByNamespaceURI.put(namespaceURI, new LinkedHashSet<String>(2));
+			if (!prefixesByNamespaceURI.containsKey(namespaceURI)) prefixesByNamespaceURI.put(namespaceURI, new LinkedHashSet<String>(2));
 			prefixesByNamespaceURI.get(namespaceURI).add(prefix);
 		}
 	}
@@ -209,10 +205,10 @@ public abstract class DOMUtils
 
 	private static final EntityResolver NOREMOTE_DTD_RESOLVER = new EntityResolver()
 		{
+			@SuppressWarnings("hiding")
 			private final Logger LOG = Logger.make();
 
-			public InputSource resolveEntity(final String schemaId, final String schemaLocation) throws SAXException,
-					IOException
+			public InputSource resolveEntity(final String schemaId, final String schemaLocation) throws SAXException, IOException
 			{
 				if (!schemaLocation.startsWith("file://"))
 				{
@@ -258,8 +254,8 @@ public abstract class DOMUtils
 		return result;
 	}
 
-	private static void _getXPathNodes(final Element element, final XPathNodeConfiguration config,
-			final CharSequence parentXPath, final Map<String, XPathNode> valuesByXPath)
+	private static void _getXPathNodes(final Element element, final XPathNodeConfiguration config, final CharSequence parentXPath,
+			final Map<String, XPathNode> valuesByXPath)
 	{
 		/*
 		 * build the xPath of the current element
@@ -352,8 +348,7 @@ public abstract class DOMUtils
 			final XPath xPath = XPATH_FACTORY.newXPath();
 			xPath.setNamespaceContext(NAMESPACE_CONTEXT);
 
-			return DOMUtils.nodeListToList((NodeList) xPath.evaluate(xPathExpression, searchScope,
-					XPathConstants.NODESET));
+			return DOMUtils.nodeListToList((NodeList) xPath.evaluate(xPathExpression, searchScope, XPathConstants.NODESET));
 		}
 		catch (final XPathExpressionException ex)
 		{
@@ -467,8 +462,7 @@ public abstract class DOMUtils
 		final List<T> newNodes = new ArrayList<T>(nodesToImport.size());
 		for (final T nodeToImport : nodesToImport)
 		{
-			final T importedNode = (T) newParentNode.appendChild(newParentNode.getOwnerDocument().importNode(
-					nodeToImport, true));
+			final T importedNode = (T) newParentNode.appendChild(newParentNode.getOwnerDocument().importNode(nodeToImport, true));
 			newNodes.add(importedNode);
 			if (insertBeforeNode != null) newParentNode.insertBefore(importedNode, insertBeforeNode);
 		}
@@ -486,8 +480,7 @@ public abstract class DOMUtils
 	/**
 	 * @param insertBeforeNode optional, may be null
 	 */
-	public static List<Node> importNodes(final NodeList nodesToImport, final Node newParentNode,
-			final Node insertBeforeNode)
+	public static List<Node> importNodes(final NodeList nodesToImport, final Node newParentNode, final Node insertBeforeNode)
 	{
 		Args.notNull("nodesToImport", nodesToImport);
 		Args.notNull("newParentNode", newParentNode);
@@ -526,8 +519,7 @@ public abstract class DOMUtils
 		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
-		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null,
-				(File[]) null);
+		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null, (File[]) null);
 	}
 
 	/**
@@ -541,8 +533,7 @@ public abstract class DOMUtils
 		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
-		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null,
-				xmlSchemaFiles);
+		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null, xmlSchemaFiles);
 	}
 
 	/**
@@ -552,14 +543,13 @@ public abstract class DOMUtils
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static Document parseFile(final File xmlFile, final String rootNamespace, final File... xmlSchemaFiles)
-			throws IOException, XMLException
+	public static Document parseFile(final File xmlFile, final String rootNamespace, final File... xmlSchemaFiles) throws IOException,
+			XMLException
 	{
 		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
-		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(),
-				rootNamespace, xmlSchemaFiles);
+		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), rootNamespace, xmlSchemaFiles);
 	}
 
 	/**
@@ -603,8 +593,7 @@ public abstract class DOMUtils
 			domFactory.setNamespaceAware(true); // domFactory.setFeature("http://xml.org/sax/features/namespaces", true);
 			domFactory.setValidating(true);
 
-			domFactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
-					XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			domFactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			domFactory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaSource", xmlSchemaFiles);
 			domFactory.setFeature("http://apache.org/xml/features/honour-all-schemaLocations", true);
 
@@ -659,9 +648,8 @@ public abstract class DOMUtils
 				domDocument = domBuilder.parse(new InputSource(new StringReader(newXML)));
 			}
 
-			Assert.isTrue(errorHandler.violations.size() == 0,
-					errorHandler.violations.size() + " XML schema violation(s) detected in [" + inputId + "]:\n\n => "
-							+ StringUtils.join(errorHandler.violations, "\n => "));
+			Assert.isTrue(errorHandler.violations.size() == 0, errorHandler.violations.size() + " XML schema violation(s) detected in ["
+					+ inputId + "]:\n\n => " + StringUtils.join(errorHandler.violations, "\n => "));
 			return domDocument;
 		}
 		catch (final ParserConfigurationException ex)
@@ -697,8 +685,8 @@ public abstract class DOMUtils
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static Document parseString(final String input, final String inputId, final String rootNamespace,
-			final File... xmlSchemaFiles) throws IOException, XMLException
+	public static Document parseString(final String input, final String inputId, final String rootNamespace, final File... xmlSchemaFiles)
+			throws IOException, XMLException
 	{
 		Args.notNull("input", input);
 
@@ -763,12 +751,11 @@ public abstract class DOMUtils
 
 	/**
 	 * First creates a backup of the targetFile and then saves the document to the targetFile.
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static void saveToFileAfterBackup(final Document domDocument, final File targetFile) throws IOException,
-			XMLException
+	public static void saveToFileAfterBackup(final Document domDocument, final File targetFile) throws IOException, XMLException
 	{
 		Args.notNull("domDocument", domDocument);
 		Args.notNull("targetFile", targetFile);

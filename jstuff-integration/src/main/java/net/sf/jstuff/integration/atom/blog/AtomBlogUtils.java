@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -41,7 +41,6 @@ public class AtomBlogUtils
 	 * @param blogEntryEditURL e.g. http://myserver/weblogs/services/atom/me@acme.com/entries/24CG0902859327955BED3587DC5B5A0003E8
 	 * @param logonName
 	 * @param password
-	 * @throws Exception
 	 */
 	public static void deleteBlogEntry(final String blogEntryEditURL, final String logonName, final String password)
 			throws DeletingAtomBlogEntryFailedException
@@ -61,8 +60,8 @@ public class AtomBlogUtils
 				final String response = deleteEntry.getResponseBodyAsString();
 
 				if (httpStatus < 200 || httpStatus >= 300)
-					throw new DeletingAtomBlogEntryFailedException("Deleting blog entry failed: HTTP Status Code "
-							+ httpStatus + "\n" + response);
+					throw new DeletingAtomBlogEntryFailedException("Deleting blog entry failed: HTTP Status Code " + httpStatus + "\n"
+							+ response);
 				return;
 			}
 			finally
@@ -106,11 +105,10 @@ public class AtomBlogUtils
 
 				if (httpStatus < 200 || httpStatus >= 300)
 				{
-					final String response = IOUtils.toString(getBlogs.getResponseBodyAsStream(),
-							getBlogs.getResponseCharSet());
+					final String response = IOUtils.toString(getBlogs.getResponseBodyAsStream(), getBlogs.getResponseCharSet());
 
-					throw new ReceivingAtomBlogsFailedException("Receiving atom blogs failed with: HTTP Status Code "
-							+ httpStatus + "\n" + response);
+					throw new ReceivingAtomBlogsFailedException("Receiving atom blogs failed with: HTTP Status Code " + httpStatus + "\n"
+							+ response);
 				}
 
 				return AtomBlogsReader.processStream(getBlogs.getResponseBodyAsStream(), getBlogs.getResponseCharSet());
@@ -145,10 +143,10 @@ public class AtomBlogUtils
 	 *            http://myserver/weblogs/services/atom/blueComment/entries
 	 * @param logonName
 	 * @param password
-	 * @throws Exception
 	 */
-	public static void postBlogEntry(final AtomBlogEntry atomBlogEntry, final String blogAtomServiceEntriesURL,
-			final String logonName, final String password) throws PublishingAtomBlogEntryFailedException
+	@SuppressWarnings("resource")
+	public static void postBlogEntry(final AtomBlogEntry atomBlogEntry, final String blogAtomServiceEntriesURL, final String logonName,
+			final String password) throws PublishingAtomBlogEntryFailedException
 	{
 		try
 		{
@@ -161,8 +159,7 @@ public class AtomBlogUtils
 				staxWriter.writeNamespace("app", "http://purl.org/atom/app#");
 				{
 					staxWriter.writeStartElement("id");
-					staxWriter.writeCharacters("urn:uuid:"
-							+ UUID.randomUUID().toString().replaceAll("-", "").toUpperCase());
+					staxWriter.writeCharacters("urn:uuid:" + UUID.randomUUID().toString().replaceAll("-", "").toUpperCase());
 					staxWriter.writeEndElement();
 				}
 				{
@@ -214,19 +211,17 @@ public class AtomBlogUtils
 
 				if (httpStatus < 200 || httpStatus >= 300)
 				{
-					final String response = IOUtils.toString(postEntry.getResponseBodyAsStream(),
-							postEntry.getResponseCharSet());
+					final String response = IOUtils.toString(postEntry.getResponseBodyAsStream(), postEntry.getResponseCharSet());
 
-					throw new PublishingAtomBlogEntryFailedException(
-							"Publishing atom blog entry failed with: HTTP Status Code " + httpStatus + "\n" + response);
+					throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: HTTP Status Code "
+							+ httpStatus + "\n" + response);
 				}
 
 				final AtomBlogEntry responseAtomBlogEntry = AtomBlogPostEntryResponseReader.processStream(
 						postEntry.getResponseBodyAsStream(), postEntry.getResponseCharSet());
 
 				if (responseAtomBlogEntry.getId() == null)
-					throw new PublishingAtomBlogEntryFailedException(
-							"Publishing atom blog entry failed with: No blog entry ID received.");
+					throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: No blog entry ID received.");
 
 				atomBlogEntry.setId(responseAtomBlogEntry.getId());
 				atomBlogEntry.setDisplayURL(responseAtomBlogEntry.getDisplayURL());
@@ -241,10 +236,8 @@ public class AtomBlogUtils
 		}
 		catch (final Exception ex)
 		{
-			if (ex instanceof PublishingAtomBlogEntryFailedException)
-				throw (PublishingAtomBlogEntryFailedException) ex;
-			throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: "
-					+ ex.getMessage(), ex);
+			if (ex instanceof PublishingAtomBlogEntryFailedException) throw (PublishingAtomBlogEntryFailedException) ex;
+			throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: " + ex.getMessage(), ex);
 		}
 	}
 

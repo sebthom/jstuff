@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -28,7 +28,7 @@ public class TeePrintStream extends PrintStream
 
 	/**
 	 * Constructs a TeePrintStream.
-	 * @param out the main PrintStream
+	 * @param orig the main PrintStream
 	 * @param branch a file to tee the data to
 	 */
 	public TeePrintStream(final PrintStream orig, final File branch) throws IOException
@@ -38,9 +38,10 @@ public class TeePrintStream extends PrintStream
 
 	/**
 	 * Constructs a TeePrintStream.
-	 * @param out the main PrintStream
+	 * @param orig the main PrintStream
 	 * @param branch a file to tee the data to
 	 */
+	@SuppressWarnings("resource")
 	public TeePrintStream(final PrintStream orig, final File branch, final boolean autoFlush) throws IOException
 	{
 		this(orig, new BufferedOutputStream(new FileOutputStream(branch)), autoFlush);
@@ -64,7 +65,7 @@ public class TeePrintStream extends PrintStream
 	public TeePrintStream(final PrintStream out, final OutputStream branch, final boolean autoFlush)
 	{
 		super(branch, autoFlush);
-		this.original = out;
+		original = out;
 	}
 
 	/**

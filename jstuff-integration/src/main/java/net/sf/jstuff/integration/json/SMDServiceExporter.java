@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -39,14 +39,42 @@ import org.springframework.web.util.NestedServletException;
 
 /**
  * JSON-RPC Standard Method Definition
- * 
+ *
  * http://www.dojotoolkit.org/reference-guide/dojox/rpc/SMDLibrary.html
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class SMDServiceExporter extends RemoteExporter implements HttpRequestHandler, InitializingBean
 {
 	private final static Logger LOG = Logger.make();
+
+	/**
+	 * Returns an array containing Java objects converted from the given jsonArray.
+	 *
+	 * @param jsonArray the JSON array to convert
+	 * @param elementTypes the types of each array element
+	 * @return an array containing Java objects converted from the given jsonArray.
+	 */
+	private static Object[] toArray(final JSONArray jsonArray, final Class< ? >[] elementTypes)
+	{
+		final Object[] array = (Object[]) Array.newInstance(Object.class, JSONArray.getDimensions(jsonArray));
+		final int arrayLen = jsonArray.size();
+
+		for (int i = 0; i < arrayLen; i++)
+		{
+			final Object value = jsonArray.get(i);
+			if (JSONUtils.isNull(value))
+				array[i] = null;
+			else if (value instanceof JSONArray)
+				array[i] = JSONArray.toArray((JSONArray) value, elementTypes[i]);
+			else if (value instanceof String || value instanceof Boolean || value instanceof Number || value instanceof Character
+					|| value instanceof JSONFunction)
+				array[i] = value;
+			else
+				array[i] = JSONObject.toBean((JSONObject) value, elementTypes[i]);
+		}
+		return array;
+	}
 
 	/**
 	 * The exported methods by name.
@@ -66,7 +94,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 
 	/**
 	 * Map<String, Method>
-	 * 
+	 *
 	 * @return a map
 	 */
 	private Map<String, Method> buildExportedMethodsByName()
@@ -78,7 +106,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 		Class< ? > clazz = getServiceInterface();
 		while (clazz != null)
 		{
-			// retrieve the public methods 
+			// retrieve the public methods
 			final Method[] publicMethods = getServiceInterface().getMethods();
 			for (final Method method : publicMethods)
 			{
@@ -162,8 +190,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 	/**
 	 * Processes the incoming JSON request and creates a JSON response..
 	 */
-	public void handleRequest(final HttpServletRequest request, final HttpServletResponse response)
-			throws ServletException, IOException
+	public void handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
 		// on POST requests we invoke a method and return the method value as a JSON string
 		if ("POST".equals(request.getMethod()))
@@ -178,8 +205,8 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 		}
 	}
 
-	private void invokeMethod(final HttpServletRequest request, final HttpServletResponse response) throws IOException,
-			ServletException
+	@SuppressWarnings("resource")
+	private void invokeMethod(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException
 	{
 		// read the request body
 		final BufferedReader requestReader = request.getReader();
@@ -222,33 +249,5 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 		{
 			throw new NestedServletException("Invoking method " + methodName + " failed", ex);
 		}
-	}
-
-	/**
-	 * Returns an array containing Java objects converted from the given jsonArray.
-	 * 
-	 * @param jsonArray the JSON array to convert
-	 * @param elementTypes the types of each array element
-	 * @return an array containing Java objects converted from the given jsonArray.
-	 */
-	private Object[] toArray(final JSONArray jsonArray, final Class< ? >[] elementTypes)
-	{
-		final Object[] array = (Object[]) Array.newInstance(Object.class, JSONArray.getDimensions(jsonArray));
-		final int arrayLen = jsonArray.size();
-
-		for (int i = 0; i < arrayLen; i++)
-		{
-			final Object value = jsonArray.get(i);
-			if (JSONUtils.isNull(value))
-				array[i] = null;
-			else if (value instanceof JSONArray)
-				array[i] = JSONArray.toArray((JSONArray) value, elementTypes[i]);
-			else if (value instanceof String || value instanceof Boolean || value instanceof Number
-					|| value instanceof Character || value instanceof JSONFunction)
-				array[i] = value;
-			else
-				array[i] = JSONObject.toBean((JSONObject) value, elementTypes[i]);
-		}
-		return array;
 	}
 }

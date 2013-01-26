@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -20,13 +20,21 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * A lock manager that allows to issue thread-owned read-write locks on objects based on
  * object <b>equality</b> ( a.equals(b) ) and NOT on object identity ( a == b ).
- * 
+ *
  * The implementation internally uses {@link ReentrantReadWriteLock} objects.
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class HashLockManager
 {
+	/**
+	 * @return true if any thread uses this lock
+	 */
+	private static boolean isLockInUse(final ReentrantReadWriteLock lock)
+	{
+		return lock.isWriteLocked() || lock.getReadLockCount() > 0 || lock.hasQueuedThreads();
+	}
+
 	private final ConcurrentHashMap<Object, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<Object, ReentrantReadWriteLock>();
 
 	/**
@@ -42,14 +50,6 @@ public class HashLockManager
 			if (lock == null) lock = newLock;
 		}
 		return lock;
-	}
-
-	/**
-	 * @return true if any thread uses this lock
-	 */
-	private boolean isLockInUse(final ReentrantReadWriteLock lock)
-	{
-		return lock.isWriteLocked() || lock.getReadLockCount() > 0 || lock.hasQueuedThreads();
 	}
 
 	/**

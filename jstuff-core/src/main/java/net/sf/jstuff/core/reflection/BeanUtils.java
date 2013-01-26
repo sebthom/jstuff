@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -51,8 +51,7 @@ public abstract class BeanUtils
 	}
 
 	/**
-	 * list of properties
-	 * @return
+	 * @return list of properties
 	 */
 	public static final Collection<PropertyDescriptor> getBeanPropertyDescriptors(final Class< ? > beanType)
 	{
@@ -101,18 +100,12 @@ public abstract class BeanUtils
 	{
 		Assert.notNull(targetType, "Argument targetType must not be null");
 
-		if (int.class.isAssignableFrom(targetType) || Integer.class.isAssignableFrom(targetType))
-			return Integer.valueOf(stringValue);
-		if (float.class.isAssignableFrom(targetType) || Float.class.isAssignableFrom(targetType))
-			return Float.valueOf(stringValue);
-		if (double.class.isAssignableFrom(targetType) || Double.class.isAssignableFrom(targetType))
-			return Double.valueOf(stringValue);
-		if (short.class.isAssignableFrom(targetType) || Short.class.isAssignableFrom(targetType))
-			return Short.valueOf(stringValue);
-		if (byte.class.isAssignableFrom(targetType) || Byte.class.isAssignableFrom(targetType))
-			return Byte.valueOf(stringValue);
-		if (boolean.class.isAssignableFrom(targetType) || Boolean.class.isAssignableFrom(targetType))
-			return Boolean.valueOf(stringValue);
+		if (int.class.isAssignableFrom(targetType) || Integer.class.isAssignableFrom(targetType)) return Integer.valueOf(stringValue);
+		if (float.class.isAssignableFrom(targetType) || Float.class.isAssignableFrom(targetType)) return Float.valueOf(stringValue);
+		if (double.class.isAssignableFrom(targetType) || Double.class.isAssignableFrom(targetType)) return Double.valueOf(stringValue);
+		if (short.class.isAssignableFrom(targetType) || Short.class.isAssignableFrom(targetType)) return Short.valueOf(stringValue);
+		if (byte.class.isAssignableFrom(targetType) || Byte.class.isAssignableFrom(targetType)) return Byte.valueOf(stringValue);
+		if (boolean.class.isAssignableFrom(targetType) || Boolean.class.isAssignableFrom(targetType)) return Boolean.valueOf(stringValue);
 		return stringValue;
 	}
 
@@ -120,8 +113,7 @@ public abstract class BeanUtils
 	{
 		Assert.notNull(stringValues, "Argument stringValues must not be null");
 		Assert.notNull(targetTypes, "Argument targetTypes must not be null");
-		Assert.isTrue(stringValues.length == targetTypes.length,
-				"Argments stringValues and targetTypes must have the same length");
+		Assert.isTrue(stringValues.length == targetTypes.length, "Argments stringValues and targetTypes must have the same length");
 
 		final Object[] result = new Object[targetTypes.length];
 
