@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -45,8 +45,8 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> implemen
 		map = new HashMap<K, C>(initialCapacity, growthFactor);
 	}
 
-	public MapWithCollections(final int initialCapacity, final float growthFactor,
-			final int initialCapacityOfCollection, final float growthFactorOfCollection)
+	public MapWithCollections(final int initialCapacity, final float growthFactor, final int initialCapacityOfCollection,
+			final float growthFactorOfCollection)
 	{
 		map = new HashMap<K, C>(initialCapacity, growthFactor);
 		this.initialCapacityOfCollection = initialCapacityOfCollection;
@@ -163,7 +163,7 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> implemen
 	public Iterator<V> iterator(final Object key)
 	{
 		final C values = map.get(key);
-		return values == null ? (Iterator<V>) CollectionUtils.newEmptyIterator() : values.iterator();
+		return values == null ? (Iterator<V>) EmptyIterator.INSTANCE : values.iterator();
 	}
 
 	/**
@@ -187,7 +187,7 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> implemen
 	 * If the map previously contained a mapping for this key, the old value is replaced by the specified value.
 	 * @param key key with which the specified value is to be associated
 	 * @param values value to be associated with the specified key.
-	 * @return previous value associated with specified key, or null if there was no mapping for key. 
+	 * @return previous value associated with specified key, or null if there was no mapping for key.
 	 *         A null return can also indicate that the map previously associated null with the specified key,
 	 *         if the implementation supports null values.
 	 */

@@ -13,6 +13,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/URLClassLoaderExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ArrayUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CollectionUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/EmptyIterator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/FIFOMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/IdentitySet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/LRUMap.java -text

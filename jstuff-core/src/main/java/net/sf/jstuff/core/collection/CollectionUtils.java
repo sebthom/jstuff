@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
@@ -279,27 +278,6 @@ public abstract class CollectionUtils
 		return l;
 	}
 
-	public static <T> Iterator<T> newEmptyIterator()
-	{
-		return new Iterator<T>()
-			{
-				public boolean hasNext()
-				{
-					return false;
-				}
-
-				public T next()
-				{
-					throw new NoSuchElementException();
-				}
-
-				public void remove()
-				{
-					throw new NoSuchElementException();
-				}
-			};
-	}
-
 	public static <K, V> HashMap<K, V> newHashMap()
 	{
 		return new HashMap<K, V>();
@@ -310,9 +288,18 @@ public abstract class CollectionUtils
 		return new HashMap<K, V>(initialSize);
 	}
 
-	public static <K, V> HashMap<K, V> newHashMap(final Object... initialKeysAndValues)
+	public static <K, V, KK extends K, VV extends V> HashMap<K, V> newHashMap(final KK firstKey, final VV firstValue,
+			final Object... moreInitialKeysAndValues)
 	{
-		return putAll(new HashMap<K, V>(initialKeysAndValues.length / 2), initialKeysAndValues);
+		final HashMap<K, V> m = new HashMap<K, V>(1 + moreInitialKeysAndValues.length / 2);
+		m.put(firstKey, firstValue);
+		return putAll(m, moreInitialKeysAndValues);
+	}
+
+	public static <K, V> HashMap<K, V> newHashMap(final Object[] initialKeysAndValues)
+	{
+		Args.notNull("initialKeysAndValues", initialKeysAndValues);
+		return putAll(new HashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
 	}
 
 	public static <K> HashSet<K> newHashSet()
@@ -338,9 +325,28 @@ public abstract class CollectionUtils
 		return s;
 	}
 
-	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final Object... initialKeysAndValues)
+	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap()
 	{
-		return putAll(new LinkedHashMap<K, V>(initialKeysAndValues.length / 2), initialKeysAndValues);
+		return putAll(new LinkedHashMap<K, V>());
+	}
+
+	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final int initialSize)
+	{
+		return new LinkedHashMap<K, V>(initialSize);
+	}
+
+	public static <K, V, KK extends K, VV extends V> LinkedHashMap<K, V> newLinkedHashMap(final KK firstKey, final VV firstValue,
+			final Object... moreInitialKeysAndValues)
+	{
+		final LinkedHashMap<K, V> m = new LinkedHashMap<K, V>(1 + moreInitialKeysAndValues.length / 2);
+		m.put(firstKey, firstValue);
+		return putAll(m, moreInitialKeysAndValues);
+	}
+
+	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final Object[] initialKeysAndValues)
+	{
+		Args.notNull("initialKeysAndValues", initialKeysAndValues);
+		return putAll(new LinkedHashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
 	}
 
 	public static <T> ThreadLocal<ArrayList<T>> newThreadLocalArrayList()
@@ -437,14 +443,19 @@ public abstract class CollectionUtils
 		return new TreeMap<K, V>(keyComparator);
 	}
 
-	public static <K, V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator, final Object... initialKeysAndValues)
+	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator,
+			final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues)
 	{
-		return putAll(new TreeMap<K, V>(keyComparator), initialKeysAndValues);
+		final TreeMap<K, V> m = new TreeMap<K, V>(keyComparator);
+		m.put(firstKey, firstValue);
+		return putAll(m, moreInitialKeysAndValues);
 	}
 
-	public static <K, V> TreeMap<K, V> newTreeMap(final Object... initialKeysAndValues)
+	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator,
+			final Object[] initialKeysAndValues)
 	{
-		return putAll(new TreeMap<K, V>(), initialKeysAndValues);
+		Args.notNull("initialKeysAndValues", initialKeysAndValues);
+		return putAll(new TreeMap<K, V>(keyComparator), initialKeysAndValues);
 	}
 
 	@SuppressWarnings("unchecked")
