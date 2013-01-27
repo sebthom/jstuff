@@ -104,6 +104,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/StringUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/FIFOMapTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/LRUMapTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/comparator/PropertyComparatorTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/concurrent/HashLockManagerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/event/EventTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/AcceptsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/FunctionsTest.java -text

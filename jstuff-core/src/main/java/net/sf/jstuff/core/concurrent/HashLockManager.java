@@ -12,9 +12,11 @@
  *******************************************************************************/
 package net.sf.jstuff.core.concurrent;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -27,6 +29,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class HashLockManager
 {
+
 	/**
 	 * @return true if any thread uses this lock
 	 */
@@ -38,7 +41,127 @@ public class HashLockManager
 	private final ConcurrentHashMap<Object, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<Object, ReentrantReadWriteLock>();
 
 	/**
+	 * @param key the lock name/identifier
+	 */
+	public <V> V doReadLocked(final Object key, final Callable<V> callable) throws Exception
+	{
+		Args.notNull("key", key);
+		Args.notNull("callable", callable);
+
+		lockRead(key);
+		try
+		{
+			return callable.call();
+		}
+		finally
+		{
+			unlockRead(key);
+		}
+	}
+
+	/**
+	 * @param key the lock name/identifier
+	 */
+	public <R, A> R doReadLocked(final Object key, final Invocable<R, A> invocable, final A arguments) throws Exception
+	{
+		Args.notNull("key", key);
+		Args.notNull("invocable", invocable);
+
+		lockRead(key);
+		try
+		{
+			return invocable.invoke(arguments);
+		}
+		finally
+		{
+			unlockRead(key);
+		}
+	}
+
+	/**
+	 * @param key the lock name/identifier
+	 */
+	public void doReadLocked(final Object key, final Runnable runnable)
+	{
+		Args.notNull("key", key);
+		Args.notNull("runnable", runnable);
+
+		lockRead(key);
+		try
+		{
+			runnable.run();
+		}
+		finally
+		{
+			unlockRead(key);
+		}
+	}
+
+	/**
+	 * @param key the lock name/identifier
+	 */
+	public <V> V doWriteLocked(final Object key, final Callable<V> callable) throws Exception
+	{
+		Args.notNull("key", key);
+		Args.notNull("callable", callable);
+
+		lockWrite(key);
+		try
+		{
+			return callable.call();
+		}
+		finally
+		{
+			unlockWrite(key);
+		}
+	}
+
+	/**
+	 * @param key the lock name/identifier
+	 */
+	public <R, A> R doWriteLocked(final Object key, final Invocable<R, A> invocable, final A arguments) throws Exception
+	{
+		Args.notNull("key", key);
+		Args.notNull("invocable", invocable);
+
+		lockWrite(key);
+		try
+		{
+			return invocable.invoke(arguments);
+		}
+		finally
+		{
+			unlockWrite(key);
+		}
+	}
+
+	/**
+	 * @param key the lock name/identifier
+	 */
+	public void doWriteLocked(final Object key, final Runnable runnable)
+	{
+		Args.notNull("key", key);
+		Args.notNull("runnable", runnable);
+
+		lockWrite(key);
+		try
+		{
+			runnable.run();
+		}
+		finally
+		{
+			unlockWrite(key);
+		}
+	}
+
+	public int getLockCount()
+	{
+		return locksByKey.size();
+	}
+
+	/**
 	 * Get's the existing lock object or creates a new one if none exists.
+	 * @param key the lock name/identifier
 	 */
 	private ReentrantReadWriteLock getOrCreateLock(final Object key)
 	{
@@ -53,7 +176,8 @@ public class HashLockManager
 	}
 
 	/**
-	 * Acquires a non-exclusive read lock with a key equal to <code>key</code>
+	 * Acquires a non-exclusive read lock with a key equal to <code>key</code> for the current thread
+	 * @param key the lock name/identifier
 	 */
 	public void lockRead(final Object key)
 	{
@@ -70,7 +194,8 @@ public class HashLockManager
 	}
 
 	/**
-	 * Acquires an exclusive read-write lock with a key equal to <code>key</code>
+	 * Acquires an exclusive read-write lock with a key equal to <code>key</code> for the current thread
+	 * @param key the lock name/identifier
 	 */
 	public void lockWrite(final Object key)
 	{
@@ -87,7 +212,8 @@ public class HashLockManager
 	}
 
 	/**
-	 * Releases a non-exclusive read lock with a key equal <code>key</code>
+	 * Releases a non-exclusive read lock with a key equal <code>key</code> for the current thread
+	 * @param key the lock name/identifier
 	 */
 	public void unlockRead(final Object key)
 	{
@@ -104,7 +230,8 @@ public class HashLockManager
 	}
 
 	/**
-	 * Releases an exclusive read-write lock with a key equal to <code>key</code>
+	 * Releases an exclusive read-write lock with a key equal to <code>key</code> for the current thread
+	 * @param key the lock name/identifier
 	 */
 	public void unlockWrite(final Object key)
 	{
