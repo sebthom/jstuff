@@ -37,7 +37,7 @@ public class ObservableSet<E> implements Set<E>, EventListenable<ObservableSet.A
 		return new ObservableSet<E>(set);
 	}
 
-	private final EventManager<Action, E> eventManager = new EventManager<Action, E>();
+	private final EventManager<Action, E> events = new EventManager<Action, E>();
 
 	private final Set<E> wrappedSet;
 
@@ -51,7 +51,7 @@ public class ObservableSet<E> implements Set<E>, EventListenable<ObservableSet.A
 	{
 		if (wrappedSet.add(item))
 		{
-			eventManager.fire(Action.ADD, item);
+			onAdded(item);
 			return true;
 		}
 		return false;
@@ -68,12 +68,8 @@ public class ObservableSet<E> implements Set<E>, EventListenable<ObservableSet.A
 
 	public void clear()
 	{
-		for (final Iterator<E> it = wrappedSet.iterator(); it.hasNext();)
-		{
-			final E item = it.next();
+		for (final Iterator<E> it = iterator(); it.hasNext();)
 			it.remove();
-			eventManager.fire(Action.REMOVE, item);
-		}
 	}
 
 	public boolean contains(final Object item)
@@ -96,11 +92,21 @@ public class ObservableSet<E> implements Set<E>, EventListenable<ObservableSet.A
 		return wrappedSet.iterator();
 	}
 
+	protected void onAdded(final E item)
+	{
+		events.fire(Action.ADD, item);
+	}
+
+	protected void onRemoved(final E item)
+	{
+		events.fire(Action.REMOVE, item);
+	}
+
 	@SuppressWarnings("unchecked")
 	public boolean remove(final Object item)
 	{
 		final boolean removed = wrappedSet.remove(item);
-		if (removed) eventManager.fire(Action.REMOVE, (E) item);
+		if (removed) onRemoved((E) item);
 		return removed;
 	}
 
@@ -125,7 +131,7 @@ public class ObservableSet<E> implements Set<E>, EventListenable<ObservableSet.A
 
 	public boolean subscribe(final EventListener<Action, E> listener)
 	{
-		return eventManager.subscribe(listener);
+		return events.subscribe(listener);
 	}
 
 	public Object[] toArray()
@@ -140,6 +146,6 @@ public class ObservableSet<E> implements Set<E>, EventListenable<ObservableSet.A
 
 	public boolean unsubscribe(final EventListener<Action, E> listener)
 	{
-		return eventManager.unsubscribe(listener);
+		return events.unsubscribe(listener);
 	}
 }

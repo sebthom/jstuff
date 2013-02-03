@@ -37,7 +37,7 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 		return new ObservableList<E>(list);
 	}
 
-	private final EventManager<Action, E> eventManager = new EventManager<Action, E>();
+	private final EventManager<Action, E> events = new EventManager<Action, E>();
 	private final List<E> wrappedList;
 
 	public ObservableList(final List<E> list)
@@ -48,14 +48,14 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 	public boolean add(final E item)
 	{
 		wrappedList.add(item);
-		eventManager.fire(Action.ADD, item);
+		onAdded(item);
 		return true;
 	}
 
 	public void add(final int index, final E item)
 	{
 		wrappedList.add(index, item);
-		eventManager.fire(Action.ADD, item);
+		onAdded(item);
 	}
 
 	public boolean addAll(final Collection< ? extends E> itemsToAdd)
@@ -76,12 +76,8 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 
 	public void clear()
 	{
-		for (final Iterator<E> it = wrappedList.iterator(); it.hasNext();)
-		{
-			final E item = it.next();
+		for (final Iterator<E> it = iterator(); it.hasNext();)
 			it.remove();
-			eventManager.fire(Action.REMOVE, item);
-		}
 	}
 
 	public boolean contains(final Object item)
@@ -129,10 +125,20 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 		return wrappedList.listIterator(index);
 	}
 
+	protected void onAdded(final E item)
+	{
+		events.fire(Action.ADD, item);
+	}
+
+	protected void onRemoved(final E item)
+	{
+		events.fire(Action.REMOVE, item);
+	}
+
 	public E remove(final int index)
 	{
 		final E item = wrappedList.remove(index);
-		eventManager.fire(Action.REMOVE, item);
+		onRemoved(item);
 		return item;
 	}
 
@@ -140,7 +146,7 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 	public boolean remove(final Object item)
 	{
 		final boolean removed = wrappedList.remove(item);
-		if (removed) eventManager.fire(Action.REMOVE, (E) item);
+		if (removed) onRemoved((E) item);
 		return removed;
 	}
 
@@ -163,8 +169,8 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 		final E old = wrappedList.set(index, item);
 		if (old != item)
 		{
-			if (old != null) eventManager.fire(Action.REMOVE, old);
-			eventManager.fire(Action.ADD, old);
+			if (old != null) onRemoved(old);
+			onAdded(old);
 		}
 		return old;
 	}
@@ -181,7 +187,7 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 
 	public boolean subscribe(final EventListener<Action, E> listener)
 	{
-		return eventManager.subscribe(listener);
+		return events.subscribe(listener);
 	}
 
 	public Object[] toArray()
@@ -196,6 +202,6 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 
 	public boolean unsubscribe(final EventListener<Action, E> listener)
 	{
-		return eventManager.unsubscribe(listener);
+		return events.unsubscribe(listener);
 	}
 }
