@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -26,31 +26,33 @@ public abstract class EventUtils
 	/**
 	 * @return the number of listeners notified successfully
 	 */
-	public static <T> int fire(final T event, final Collection<EventListener<T>> listeners)
+	public static <EventType, EventData> int fire(final EventType type, final EventData data,
+			final Collection<EventListener<EventType, EventData>> listeners)
 	{
 		int count = 0;
-		if (listeners != null) for (final EventListener<T> listener : listeners)
-			if (fire(event, listener)) count++;
+		if (listeners != null) for (final EventListener<EventType, EventData> listener : listeners)
+			if (fire(type, data, listener)) count++;
 		return count;
 	}
 
 	/**
 	 * @return true if the listener was notified successfully
 	 */
-	public static <T> boolean fire(final T event, final EventListener<T> listener)
+	public static <EventType, EventData> boolean fire(final EventType event, final EventData data,
+			final EventListener<EventType, EventData> listener)
 	{
 		if (listener != null) try
 		{
 			if (listener instanceof FilteringEventListener)
 			{
-				final FilteringEventListener<T> flistener = (FilteringEventListener<T>) listener;
-				if (flistener.accept(event))
-					flistener.onEvent(event);
+				final FilteringEventListener<EventType, EventData> flistener = (FilteringEventListener<EventType, EventData>) listener;
+				if (flistener.accept(event, data))
+					flistener.onEvent(event, data);
 				else
 					return false;
 			}
 			else
-				listener.onEvent(event);
+				listener.onEvent(event, data);
 			return true;
 		}
 		catch (final RuntimeException ex)
@@ -63,11 +65,12 @@ public abstract class EventUtils
 	/**
 	 * @return the number of listeners notified successfully
 	 */
-	public static <T> int fire(final T event, final EventListener<T>... listeners)
+	public static <EventType, EventData> int fire(final EventType type, final EventData data,
+			final EventListener<EventType, EventData>... listeners)
 	{
 		int count = 0;
-		if (listeners != null) for (final EventListener<T> listener : listeners)
-			if (fire(event, listener)) count++;
+		if (listeners != null) for (final EventListener<EventType, EventData> listener : listeners)
+			if (fire(type, data, listener)) count++;
 		return count;
 	}
 

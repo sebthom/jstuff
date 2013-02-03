@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -296,10 +297,15 @@ public abstract class CollectionUtils
 		return putAll(m, moreInitialKeysAndValues);
 	}
 
+	public static <K, V> HashMap<K, V> newHashMap(final Map< ? extends K, ? extends V> initialValues)
+	{
+		return initialValues == null ? new HashMap<K, V>() : new HashMap<K, V>(initialValues);
+	}
+
 	public static <K, V> HashMap<K, V> newHashMap(final Object[] initialKeysAndValues)
 	{
-		Args.notNull("initialKeysAndValues", initialKeysAndValues);
-		return putAll(new HashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
+		return initialKeysAndValues == null ? new HashMap<K, V>() : putAll(new HashMap<K, V>(1 + initialKeysAndValues.length / 2),
+				initialKeysAndValues);
 	}
 
 	public static <K> HashSet<K> newHashSet()
@@ -307,9 +313,9 @@ public abstract class CollectionUtils
 		return new HashSet<K>();
 	}
 
-	public static <K> HashSet<K> newHashSet(final Collection<K> coll)
+	public static <K> HashSet<K> newHashSet(final Collection<K> initialValues)
 	{
-		return new HashSet<K>(coll);
+		return initialValues == null ? new HashSet<K>() : new HashSet<K>(initialValues);
 	}
 
 	public static <K> HashSet<K> newHashSet(final int initialSize)
@@ -327,7 +333,7 @@ public abstract class CollectionUtils
 
 	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap()
 	{
-		return putAll(new LinkedHashMap<K, V>());
+		return new LinkedHashMap<K, V>();
 	}
 
 	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final int initialSize)
@@ -347,6 +353,11 @@ public abstract class CollectionUtils
 	{
 		Args.notNull("initialKeysAndValues", initialKeysAndValues);
 		return putAll(new LinkedHashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
+	}
+
+	public static <V> LinkedHashSet<V> newLinkedHashSet()
+	{
+		return new LinkedHashSet<V>();
 	}
 
 	public static <T> ThreadLocal<ArrayList<T>> newThreadLocalArrayList()

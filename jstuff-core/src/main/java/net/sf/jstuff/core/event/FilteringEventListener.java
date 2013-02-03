@@ -15,12 +15,12 @@ package net.sf.jstuff.core.event;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface FilteringEventListener<T> extends EventListener<T>
+public interface FilteringEventListener<EventType, EventData> extends EventListener<EventType, EventData>
 {
 	/**
 	 * Determines if this event listener accepts the given event.
 	 * The {@link #onEvent(T)} method is only called when <code>true</code> is returned.
 	 */
 	@SuppressWarnings("javadoc")
-	boolean accept(final T event);
+	boolean accept(final EventType type, final EventData data);
 }

@@ -27,12 +27,14 @@ import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.text.WordUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 {
+
 	public static final class ANSIState
 	{
 		public String fgcolor;
@@ -682,6 +684,22 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		{
 			throw new RuntimeException("UTF-8 not supported", ex);
 		}
+	}
+
+	/**
+	 * {@link  WordUtils#wrap(String, int)}
+	 */
+	public static String wrap(final String str, final int wrapLength)
+	{
+		return WordUtils.wrap(str, wrapLength);
+	}
+
+	/**
+	 * {@link  WordUtils#wrap(String, int)}
+	 */
+	public static String wrap(final String str, final int wrapLength, final String newLineStr)
+	{
+		return WordUtils.wrap(str, wrapLength, newLineStr, false);
 	}
 
 	protected StringUtils()
