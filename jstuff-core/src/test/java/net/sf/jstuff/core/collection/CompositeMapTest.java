@@ -27,7 +27,7 @@ public class CompositeMapTest extends TestCase
 		final Map<String, String> m1 = CollectionUtils.toMap("a=1;b=2;c=3", ";", "=");
 		final Map<String, String> m2 = CollectionUtils.toMap("c=4;d=5;e=6", ";", "=");
 		@SuppressWarnings("unchecked")
-		final CompositeMap<String, String> cm = new CompositeMap<String, String>(m1, m2);
+		final CompositeMap<String, String> cm = CompositeMap.of(m1, m2);
 		assertEquals(5, cm.size());
 		assertEquals(5, cm.keySet().size());
 		assertEquals(5, cm.values().size());

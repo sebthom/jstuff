@@ -30,7 +30,7 @@ public class CompositeCollectionTest extends TestCase
 		final List<String> l1 = Arrays.asList("a", "b");
 		final List<String> l2 = Arrays.asList("c", "d");
 		@SuppressWarnings("unchecked")
-		final Collection<String> cc = new CompositeCollection<String>(l1, l2);
+		final Collection<String> cc = CompositeCollection.of(l1, l2);
 		assertEquals(4, cc.size());
 
 		final List<String> l3 = new ArrayList<String>();
