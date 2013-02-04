@@ -83,6 +83,8 @@ jstuff-core/src/main/java/net/sf/jstuff/core/io/ZippedBlockOutputStream.java -te
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateFormatStyle.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateTimeHelper.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/NumberHelper.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/meta/MetaClass.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/meta/MetaProperty.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/AbstractServer.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/NetUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/SSLUtils.java -text
@@ -124,6 +126,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/io/IOUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/ZippedBlockStreamTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/DateTimeHelperTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/NumberHelperTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/meta/MetaSerializationTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/net/NetUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/AnnotationUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/DuckTypeUtilsTest.java -text
