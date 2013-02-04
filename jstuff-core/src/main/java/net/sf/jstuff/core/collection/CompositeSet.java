@@ -23,6 +23,8 @@ import java.util.Set;
  */
 public class CompositeSet<V> extends CompositeCollection<V> implements Set<V>
 {
+	private static final long serialVersionUID = 1L;
+
 	public CompositeSet()
 	{
 		super();

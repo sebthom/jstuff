@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,10 @@ import java.util.List;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeList<V> extends AbstractList<V>
+public class CompositeList<V> extends AbstractList<V> implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final ArrayList<List< ? extends V>> lists = new ArrayList<List< ? extends V>>();
 
 	public CompositeList()

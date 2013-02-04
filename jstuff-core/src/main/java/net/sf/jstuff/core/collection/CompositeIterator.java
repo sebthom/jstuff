@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,8 +20,10 @@ import java.util.LinkedList;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeIterator<V> implements Iterator<V>
+public class CompositeIterator<V> implements Iterator<V>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final LinkedList<Iterator< ? extends V>> iterators = new LinkedList<Iterator< ? extends V>>();
 	private Iterator< ? extends V> lastItemIterator = EmptyIterator.get();
 	private Iterator< ? extends V> nextItemIterator = EmptyIterator.get();

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,8 +23,10 @@ import java.util.Set;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeMap<K, V> implements Map<K, V>
+public class CompositeMap<K, V> implements Map<K, V>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final ArrayList<Map< ? extends K, ? extends V>> maps = new ArrayList<Map< ? extends K, ? extends V>>();
 
 	public CompositeMap()

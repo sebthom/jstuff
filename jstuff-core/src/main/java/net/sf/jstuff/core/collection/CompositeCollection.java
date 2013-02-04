@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,8 +21,10 @@ import java.util.Iterator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeCollection<V> implements Collection<V>
+public class CompositeCollection<V> implements Collection<V>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	protected ArrayList<Collection< ? extends V>> collections = new ArrayList<Collection< ? extends V>>();
 
 	public CompositeCollection()
