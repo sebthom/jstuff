@@ -13,6 +13,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/URLClassLoaderExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ArrayUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CollectionUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeCollection.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeIterator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeList.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/EmptyIterator.java -text
@@ -105,6 +106,7 @@ jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month_de.properties -text
 jstuff-core/src/test/java/net/sf/jstuff/core/AssertTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/LoggerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/StringUtilsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/collection/CompositeCollectionTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/CompositeListTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/FIFOMapTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/LRUMapTest.java -text

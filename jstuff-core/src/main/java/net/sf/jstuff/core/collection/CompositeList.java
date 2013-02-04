@@ -13,6 +13,7 @@
 package net.sf.jstuff.core.collection;
 
 import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,11 +23,22 @@ import java.util.List;
  */
 public class CompositeList<V> extends AbstractList<V>
 {
-	private final List< ? extends V>[] lists;
+	private final ArrayList<List< ? extends V>> lists = new ArrayList<List< ? extends V>>();
+
+	public CompositeList()
+	{
+		super();
+	}
 
 	public CompositeList(final List< ? extends V>... lists)
 	{
-		this.lists = lists;
+		CollectionUtils.addAll(this.lists, lists);
+	}
+
+	public CompositeList<V> addComposite(final List< ? extends V> list)
+	{
+		this.lists.add(list);
+		return this;
 	}
 
 	@Override
