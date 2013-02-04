@@ -17,17 +17,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface Composite<Component>
 {
-	public class Default<Component> implements Composite<Component>, Serializable
+	public abstract class Default<Component> implements Composite<Component>, Serializable
 	{
 		private static final long serialVersionUID = 1L;
 
 		protected final ArrayList<Component> components = new ArrayList<Component>();
+		private final boolean canAddRemoveComponents = true;
 
 		public Default()
 		{
@@ -46,6 +48,7 @@ public interface Composite<Component>
 
 		public void addComponent(final Component component)
 		{
+			Assert.isTrue(isCompositeModifiable(), "Adding components to this composite is not allowed!");
 			components.add(component);
 		}
 
@@ -54,13 +57,21 @@ public interface Composite<Component>
 			return components.contains(component);
 		}
 
+		public boolean isCompositeModifiable()
+		{
+			return canAddRemoveComponents;
+		}
+
 		public boolean removeComponent(final Component component)
 		{
+			Assert.isTrue(isCompositeModifiable(), "Removing components from this composite is not allowed!");
 			return components.remove(component);
 		}
 	}
 
 	void addComponent(final Component component);
+
+	boolean isCompositeModifiable();
 
 	boolean removeComponent(final Component component);
 
