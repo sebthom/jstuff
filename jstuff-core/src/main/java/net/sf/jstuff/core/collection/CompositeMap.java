@@ -12,37 +12,34 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
-import java.io.Serializable;
 import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.jstuff.core.Composite;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeMap<K, V> implements Map<K, V>, Serializable
+public class CompositeMap<K, V> extends Composite.Default<Map< ? extends K, ? extends V>> implements Map<K, V>
 {
 	private static final long serialVersionUID = 1L;
-
-	private final ArrayList<Map< ? extends K, ? extends V>> maps = new ArrayList<Map< ? extends K, ? extends V>>();
 
 	public CompositeMap()
 	{
 		super();
 	}
 
-	public CompositeMap(final Map< ? extends K, ? extends V>... maps)
+	public CompositeMap(final Collection< ? extends Map< ? extends K, ? extends V>> components)
 	{
-		CollectionUtils.addAll(this.maps, maps);
+		super(components);
 	}
 
-	public CompositeMap<K, V> addComposite(final Map< ? extends K, ? extends V> map)
+	public CompositeMap(final Map< ? extends K, ? extends V>... components)
 	{
-		this.maps.add(map);
-		return this;
+		super(components);
 	}
 
 	public void clear()
@@ -52,14 +49,14 @@ public class CompositeMap<K, V> implements Map<K, V>, Serializable
 
 	public boolean containsKey(final Object key)
 	{
-		for (final Map< ? extends K, ? extends V> m : maps)
+		for (final Map< ? extends K, ? extends V> m : components)
 			if (m.containsKey(key)) return true;
 		return false;
 	}
 
 	public boolean containsValue(final Object value)
 	{
-		for (final Map< ? extends K, ? extends V> m : maps)
+		for (final Map< ? extends K, ? extends V> m : components)
 			if (m.containsValue(value)) return true;
 		return false;
 	}
@@ -68,21 +65,21 @@ public class CompositeMap<K, V> implements Map<K, V>, Serializable
 	public CompositeSet<Entry<K, V>> entrySet()
 	{
 		final CompositeSet<Entry<K, V>> entries = new CompositeSet<Entry<K, V>>();
-		for (final Map< ? extends K, ? extends V> m : maps)
-			entries.addComposite((Collection< ? extends Entry<K, V>>) m.entrySet());
+		for (final Map< ? extends K, ? extends V> m : components)
+			entries.addComponent((Collection< ? extends Entry<K, V>>) m.entrySet());
 		return entries;
 	}
 
 	public V get(final Object key)
 	{
-		for (final Map< ? extends K, ? extends V> m : maps)
+		for (final Map< ? extends K, ? extends V> m : components)
 			if (m.containsKey(key)) return m.get(key);
 		return null;
 	}
 
 	public boolean isEmpty()
 	{
-		for (final Map< ? extends K, ? extends V> m : maps)
+		for (final Map< ? extends K, ? extends V> m : components)
 			if (!m.isEmpty()) return false;
 		return true;
 	}
@@ -90,8 +87,8 @@ public class CompositeMap<K, V> implements Map<K, V>, Serializable
 	public Set<K> keySet()
 	{
 		final CompositeSet<K> keys = new CompositeSet<K>();
-		for (final Map< ? extends K, ? extends V> m : maps)
-			keys.addComposite(m.keySet());
+		for (final Map< ? extends K, ? extends V> m : components)
+			keys.addComponent(m.keySet());
 		return keys;
 	}
 

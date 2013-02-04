@@ -15,40 +15,45 @@ package net.sf.jstuff.core.collection;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import net.sf.jstuff.core.Composite;
+
 /**
- * Unmodifiable composite list
- *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeList<V> extends AbstractList<V> implements Serializable
+public class CompositeList<V> extends AbstractList<V> implements Composite<List< ? extends V>>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private final ArrayList<List< ? extends V>> lists = new ArrayList<List< ? extends V>>();
+	private final Collection<List< ? extends V>> components = new ArrayList<List< ? extends V>>();
 
 	public CompositeList()
 	{
 		super();
 	}
 
-	public CompositeList(final List< ? extends V>... lists)
+	public CompositeList(final Collection<List< ? extends V>> components)
 	{
-		CollectionUtils.addAll(this.lists, lists);
+		this.components.addAll(components);
 	}
 
-	public CompositeList<V> addComposite(final List< ? extends V> list)
+	public CompositeList(final List< ? extends V>... components)
 	{
-		this.lists.add(list);
-		return this;
+		CollectionUtils.addAll(this.components, components);
+	}
+
+	public void addComponent(final List< ? extends V> component)
+	{
+		this.components.add(component);
 	}
 
 	@Override
 	public V get(final int index)
 	{
 		int totalSizeOfCheckedLists = 0;
-		for (final List< ? extends V> list : lists)
+		for (final List< ? extends V> list : components)
 		{
 			final int currentListIndex = index - totalSizeOfCheckedLists;
 			final int currentListSize = list.size();
@@ -62,11 +67,21 @@ public class CompositeList<V> extends AbstractList<V> implements Serializable
 		throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + totalSizeOfCheckedLists);
 	}
 
+	public boolean hasComponent(final List< ? extends V> component)
+	{
+		return components.contains(component);
+	}
+
+	public boolean removeComponent(final List< ? extends V> component)
+	{
+		return components.remove(component);
+	}
+
 	@Override
 	public int size()
 	{
 		int size = 0;
-		for (final List< ? extends V> list : lists)
+		for (final List< ? extends V> list : components)
 			size += list.size();
 		return size;
 	}

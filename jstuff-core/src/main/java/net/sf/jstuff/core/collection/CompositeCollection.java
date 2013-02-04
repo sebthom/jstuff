@@ -12,29 +12,32 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
-import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
+import net.sf.jstuff.core.Composite;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeCollection<V> implements Collection<V>, Serializable
+public class CompositeCollection<V> extends Composite.Default<Collection< ? extends V>> implements Collection<V>
 {
 	private static final long serialVersionUID = 1L;
-
-	protected ArrayList<Collection< ? extends V>> collections = new ArrayList<Collection< ? extends V>>();
 
 	public CompositeCollection()
 	{
 		super();
 	}
 
-	public CompositeCollection(final Collection< ? extends V>... collections)
+	public CompositeCollection(final Collection< ? extends Collection< ? extends V>> components)
 	{
-		CollectionUtils.addAll(this.collections, collections);
+		super(components);
+	}
+
+	public CompositeCollection(final Collection< ? extends V>... components)
+	{
+		super(components);
 	}
 
 	public boolean add(final Object item)
@@ -47,12 +50,6 @@ public class CompositeCollection<V> implements Collection<V>, Serializable
 		throw new UnsupportedOperationException();
 	}
 
-	public CompositeCollection<V> addComposite(final Collection< ? extends V> coll)
-	{
-		this.collections.add(coll);
-		return this;
-	}
-
 	public void clear()
 	{
 		throw new UnsupportedOperationException();
@@ -60,7 +57,7 @@ public class CompositeCollection<V> implements Collection<V>, Serializable
 
 	public boolean contains(final Object item)
 	{
-		for (final Collection< ? extends V> coll : collections)
+		for (final Collection< ? extends V> coll : components)
 			if (!coll.contains(item)) return true;
 		return false;
 	}
@@ -74,7 +71,7 @@ public class CompositeCollection<V> implements Collection<V>, Serializable
 
 	public boolean isEmpty()
 	{
-		for (final Collection< ? extends V> coll : collections)
+		for (final Collection< ? extends V> coll : components)
 			if (!coll.isEmpty()) return true;
 		return false;
 	}
@@ -82,8 +79,8 @@ public class CompositeCollection<V> implements Collection<V>, Serializable
 	public Iterator<V> iterator()
 	{
 		final CompositeIterator<V> it = new CompositeIterator<V>();
-		for (final Collection< ? extends V> coll : collections)
-			it.addIterator(coll.iterator());
+		for (final Collection< ? extends V> coll : components)
+			it.addComponent(coll.iterator());
 		return it;
 	}
 
@@ -105,7 +102,7 @@ public class CompositeCollection<V> implements Collection<V>, Serializable
 	public int size()
 	{
 		int size = 0;
-		for (final Collection< ? extends V> coll : collections)
+		for (final Collection< ? extends V> coll : components)
 			size += coll.size();
 		return size;
 	}
@@ -125,7 +122,7 @@ public class CompositeCollection<V> implements Collection<V>, Serializable
 		final int size = this.size();
 		final T[] result = array.length >= size ? array : (T[]) Array.newInstance(array.getClass().getComponentType(), size);
 		int idx = 0;
-		for (final Collection< ? extends V> coll : collections)
+		for (final Collection< ? extends V> coll : components)
 			for (final V v : coll)
 				result[idx++] = (T) v;
 		if (result.length > size) result[size] = null;

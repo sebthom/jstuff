@@ -12,19 +12,18 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
+
+import net.sf.jstuff.core.Composite;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeIterator<V> implements Iterator<V>, Serializable
+public class CompositeIterator<V> extends Composite.Default<Iterator< ? extends V>> implements Iterator<V>
 {
 	private static final long serialVersionUID = 1L;
 
-	private final LinkedList<Iterator< ? extends V>> iterators = new LinkedList<Iterator< ? extends V>>();
 	private Iterator< ? extends V> lastItemIterator = EmptyIterator.get();
 	private Iterator< ? extends V> nextItemIterator = EmptyIterator.get();
 
@@ -33,21 +32,16 @@ public class CompositeIterator<V> implements Iterator<V>, Serializable
 		super();
 	}
 
-	public CompositeIterator(final Collection<Iterator< ? extends V>> iterators)
+	public CompositeIterator(final Collection< ? extends Iterator<V>> components)
 	{
-		this.iterators.addAll(iterators);
-		if (this.iterators.size() > 0) nextItemIterator = this.iterators.removeFirst();
+		super(components);
+		if (this.components.size() > 0) nextItemIterator = this.components.remove(0);
 	}
 
-	public CompositeIterator(final Iterator< ? extends V>... iterators)
+	public CompositeIterator(final Iterator<V>... components)
 	{
-		CollectionUtils.addAll(this.iterators, iterators);
-		if (this.iterators.size() > 0) nextItemIterator = this.iterators.removeFirst();
-	}
-
-	public void addIterator(final Iterator< ? extends V> iterator)
-	{
-		iterators.add(iterator);
+		super(components);
+		if (this.components.size() > 0) nextItemIterator = this.components.remove(0);
 	}
 
 	public boolean hasNext()
@@ -67,9 +61,9 @@ public class CompositeIterator<V> implements Iterator<V>, Serializable
 	protected void prepareNextItemIterator()
 	{
 		if (nextItemIterator.hasNext()) return;
-		if (iterators.size() > 0)
+		if (components.size() > 0)
 		{
-			nextItemIterator = this.iterators.removeFirst();
+			nextItemIterator = components.remove(0);
 			prepareNextItemIterator();
 		}
 	}

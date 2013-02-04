@@ -2,6 +2,7 @@
 /LICENSE.txt -text
 /coding-conventions.txt -text
 jstuff-core/pom.xml -text
+jstuff-core/src/main/java/net/sf/jstuff/core/Composite.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/CryptoUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ImageUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Logger.java -text

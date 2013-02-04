@@ -17,8 +17,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Unmodifiable composite set
- *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class CompositeSet<V> extends CompositeCollection<V> implements Set<V>
@@ -48,7 +46,7 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V>
 	private Set<V> getSnapshot()
 	{
 		final LinkedSet<V> values = new LinkedSet<V>();
-		for (final Collection< ? extends V> coll : collections)
+		for (final Collection< ? extends V> coll : components)
 			values.addAll(coll);
 		return values;
 	}
