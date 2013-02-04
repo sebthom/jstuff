@@ -23,12 +23,27 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V>
 {
 	private static final long serialVersionUID = 1L;
 
+	public static <V> CompositeSet<V> of(final Collection<Set< ? extends V>> components)
+	{
+		return new CompositeSet<V>(components);
+	}
+
+	public static <V> CompositeSet<V> of(final Set< ? extends V>... components)
+	{
+		return new CompositeSet<V>(components);
+	}
+
 	public CompositeSet()
 	{
 		super();
 	}
 
-	public CompositeSet(final Set<V>... sets)
+	public CompositeSet(final Collection<Set< ? extends V>> components)
+	{
+		super(components);
+	}
+
+	public CompositeSet(final Set< ? extends V>... sets)
 	{
 		super(sets);
 	}

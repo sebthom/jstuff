@@ -27,6 +27,11 @@ public class CompositeMap<K, V> extends Composite.Default<Map< ? extends K, ? ex
 {
 	private static final long serialVersionUID = 1L;
 
+	public static <K, V> CompositeMap<K, V> of(final Collection< ? extends Map< ? extends K, ? extends V>> components)
+	{
+		return new CompositeMap<K, V>(components);
+	}
+
 	public static <K, V> CompositeMap<K, V> of(final Map< ? extends K, ? extends V>... components)
 	{
 		return new CompositeMap<K, V>(components);

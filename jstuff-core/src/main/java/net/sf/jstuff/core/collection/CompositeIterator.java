@@ -24,7 +24,18 @@ public class CompositeIterator<V> extends Composite.Default<Iterator< ? extends 
 {
 	private static final long serialVersionUID = 1L;
 
+	public static <V> CompositeIterator<V> of(final Collection< ? extends Iterator<V>> components)
+	{
+		return new CompositeIterator<V>(components);
+	}
+
+	public static <V> CompositeIterator<V> of(final Iterator<V>... components)
+	{
+		return new CompositeIterator<V>(components);
+	}
+
 	private Iterator< ? extends V> lastItemIterator = EmptyIterator.get();
+
 	private Iterator< ? extends V> nextItemIterator = EmptyIterator.get();
 
 	public CompositeIterator()

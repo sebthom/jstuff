@@ -25,6 +25,16 @@ public class CompositeCollection<V> extends Composite.Default<Collection< ? exte
 {
 	private static final long serialVersionUID = 1L;
 
+	public static <V> CompositeCollection<V> of(final Collection< ? extends Collection< ? extends V>> components)
+	{
+		return new CompositeCollection<V>(components);
+	}
+
+	public static <V> CompositeCollection<V> of(final Collection< ? extends V>... components)
+	{
+		return new CompositeCollection<V>(components);
+	}
+
 	public CompositeCollection()
 	{
 		super();

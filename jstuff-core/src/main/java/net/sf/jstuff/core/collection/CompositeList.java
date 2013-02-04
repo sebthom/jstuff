@@ -27,6 +27,16 @@ public class CompositeList<V> extends AbstractList<V> implements Composite<List<
 {
 	private static final long serialVersionUID = 1L;
 
+	public static <V> CompositeList<V> of(final Collection<List< ? extends V>> components)
+	{
+		return new CompositeList<V>(components);
+	}
+
+	public static <V> CompositeList<V> of(final List< ? extends V>... components)
+	{
+		return new CompositeList<V>(components);
+	}
+
 	private final Collection<List< ? extends V>> components = new ArrayList<List< ? extends V>>();
 
 	public CompositeList()
