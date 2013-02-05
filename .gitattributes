@@ -28,6 +28,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithCollections.java 
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithLists.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithQueues.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithSets.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableCollection.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableList.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/SoftHashSet.java -text

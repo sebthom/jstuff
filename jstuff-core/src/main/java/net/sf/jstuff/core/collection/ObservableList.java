@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import net.sf.jstuff.core.collection.ObservableCollection.Action;
+import net.sf.jstuff.core.collection.ObservableList.ActionData;
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.event.EventManager;
@@ -24,12 +26,18 @@ import net.sf.jstuff.core.event.EventManager;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObservableList<E> implements List<E>, EventListenable<ObservableList.Action, E>
+public class ObservableList<E> implements List<E>, EventListenable<Action, ActionData<E>>
 {
-	public static enum Action
+	public static class ActionData<E>
 	{
-		ADD,
-		REMOVE
+		public final E item;
+		public final int index;
+
+		public ActionData(final E item, final int index)
+		{
+			this.item = item;
+			this.index = index;
+		}
 	}
 
 	public static <E> ObservableList<E> create(final List<E> list)
@@ -37,7 +45,7 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 		return new ObservableList<E>(list);
 	}
 
-	private final EventManager<Action, E> events = new EventManager<Action, E>();
+	private final EventManager<Action, ActionData<E>> events = new EventManager<Action, ActionData<E>>();
 	private final List<E> wrappedList;
 
 	public ObservableList(final List<E> list)
@@ -48,14 +56,14 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 	public boolean add(final E item)
 	{
 		wrappedList.add(item);
-		onAdded(item);
+		onAdded(item, wrappedList.size() - 1);
 		return true;
 	}
 
 	public void add(final int index, final E item)
 	{
 		wrappedList.add(index, item);
-		onAdded(item);
+		onAdded(item, index);
 	}
 
 	public boolean addAll(final Collection< ? extends E> itemsToAdd)
@@ -125,20 +133,20 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 		return wrappedList.listIterator(index);
 	}
 
-	protected void onAdded(final E item)
+	protected void onAdded(final E item, final int index)
 	{
-		events.fire(Action.ADD, item);
+		events.fire(Action.ADD, new ActionData<E>(item, index));
 	}
 
-	protected void onRemoved(final E item)
+	protected void onRemoved(final E item, final int index)
 	{
-		events.fire(Action.REMOVE, item);
+		events.fire(Action.REMOVE, new ActionData<E>(item, index));
 	}
 
 	public E remove(final int index)
 	{
 		final E item = wrappedList.remove(index);
-		onRemoved(item);
+		onRemoved(item, index);
 		return item;
 	}
 
@@ -146,7 +154,7 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 	public boolean remove(final Object item)
 	{
 		final boolean removed = wrappedList.remove(item);
-		if (removed) onRemoved((E) item);
+		if (removed) onRemoved((E) item, wrappedList.size());
 		return removed;
 	}
 
@@ -169,8 +177,8 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 		final E old = wrappedList.set(index, item);
 		if (old != item)
 		{
-			if (old != null) onRemoved(old);
-			onAdded(old);
+			if (old != null) onRemoved(old, index);
+			onAdded(old, index);
 		}
 		return old;
 	}
@@ -185,7 +193,7 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 		return wrappedList.subList(fromIndex, toIndex);
 	}
 
-	public boolean subscribe(final EventListener<Action, E> listener)
+	public boolean subscribe(final EventListener<Action, ActionData<E>> listener)
 	{
 		return events.subscribe(listener);
 	}
@@ -200,7 +208,7 @@ public class ObservableList<E> implements List<E>, EventListenable<ObservableLis
 		return wrappedList.toArray(a);
 	}
 
-	public boolean unsubscribe(final EventListener<Action, E> listener)
+	public boolean unsubscribe(final EventListener<Action, ActionData<E>> listener)
 	{
 		return events.unsubscribe(listener);
 	}
