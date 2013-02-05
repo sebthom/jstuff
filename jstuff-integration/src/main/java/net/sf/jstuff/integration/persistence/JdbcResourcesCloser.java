@@ -29,7 +29,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class JdbcResourcesCloser
 {
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
 	private static boolean close(final Object resource)
 	{

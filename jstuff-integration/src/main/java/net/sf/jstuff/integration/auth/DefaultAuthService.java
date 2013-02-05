@@ -34,7 +34,7 @@ import org.springframework.util.PatternMatchUtils;
  */
 public class DefaultAuthService implements AuthService
 {
-	private final static Logger LOG = Logger.make();
+	private final static Logger LOG = Logger.create();
 
 	protected Set<String> applicationRoles;
 	protected Authenticator authenticator;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -57,7 +57,7 @@ public class SpringHttpInvokerServicesServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
-	private final static Logger LOG = Logger.make();
+	private final static Logger LOG = Logger.create();
 
 	private final ObjectCache<String, HttpRequestHandler> mappedBeans = new ObjectCache<String, HttpRequestHandler>();
 

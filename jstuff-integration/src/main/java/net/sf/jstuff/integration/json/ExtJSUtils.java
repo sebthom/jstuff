@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.jstuff.core.reflection.BeanUtils;
+import net.sf.jstuff.core.reflection.Beans;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -28,7 +28,7 @@ public abstract class ExtJSUtils
 {
 	public static List<String> getRecordDefinition(final Class< ? > javaBeanType)
 	{
-		final Collection<PropertyDescriptor> props = BeanUtils.getBeanPropertyDescriptors(javaBeanType);
+		final Collection<PropertyDescriptor> props = Beans.getBeanPropertyDescriptors(javaBeanType);
 		final List<String> recordDef = new ArrayList<String>(props.size());
 		final StringBuilder sb = new StringBuilder();
 		for (final PropertyDescriptor prop : props)

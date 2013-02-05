@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -25,7 +25,7 @@ import org.h2.tools.Server;
  */
 public class H2ServerSpringBean
 {
-	private final static Logger LOG = Logger.make();
+	private final static Logger LOG = Logger.create();
 
 	private String dataDir;
 

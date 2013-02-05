@@ -25,7 +25,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.jstuff.core.reflection.BeanUtils;
+import net.sf.jstuff.core.reflection.Beans;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -373,7 +373,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		}
 
 		// converting URL parameters to the required object values
-		Object[] methodArguments = BeanUtils.valuesOf(stringArguments, actionMethod.getParameterTypes());
+		Object[] methodArguments = Beans.valuesOf(stringArguments, actionMethod.getParameterTypes());
 
 		// for POST/PUT requests add the request body as additional argument for the method arguments
 		if (isPOST || isPUT)

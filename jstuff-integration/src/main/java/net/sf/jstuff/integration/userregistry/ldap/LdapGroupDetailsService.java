@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -38,7 +38,7 @@ import net.sf.jstuff.integration.userregistry.GroupDetailsService;
  */
 public class LdapGroupDetailsService implements GroupDetailsService
 {
-	private final static Logger LOG = Logger.make();
+	private final static Logger LOG = Logger.create();
 
 	protected String groupAttributeDisplayName;
 	protected String groupAttributeGroupId;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpringBeanInjector implements DisposableBean
 {
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
 	private static SpringBeanInjector DEFAULT_INSTANCE;
 

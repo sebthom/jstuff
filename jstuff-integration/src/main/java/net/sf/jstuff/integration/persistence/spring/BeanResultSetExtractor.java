@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -40,7 +40,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
  */
 public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>>
 {
-	private final static Logger LOG = Logger.make();
+	private final static Logger LOG = Logger.create();
 
 	private Class<T> beanClass;
 	private Map<String, String> beanPropertiesLowerCase;
