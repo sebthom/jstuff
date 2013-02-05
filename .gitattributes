@@ -4,13 +4,11 @@
 jstuff-core/pom.xml -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Composite.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Crypto.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/CryptoUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ImageUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Logger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Mutable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ObjectCache.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StackTrace.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/StackTraceUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/URLClassLoaderExt.java -text
