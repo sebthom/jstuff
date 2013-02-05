@@ -68,7 +68,7 @@ public class MetaSerializationTest extends TestCase
 	{
 		public static final MetaClass<EntityMeta> META_CLASS = MetaClass.of(EntityMeta.class, "Entity", null, null);
 
-		public static final MetaProperty<String> PROP_comment = MetaProperty.make(META_CLASS, //
+		public static final MetaProperty<String> PROP_comment = MetaProperty.create(META_CLASS, //
 				"comment", String.class, 0, 1, false, false, true, //
 				"", newHashMap( //
 						"descr", (Serializable) "this entity's comment" //

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DuckTypeUtilsTest extends TestCase
+public class DuckTypesTest extends TestCase
 {
 	private static interface Duck
 	{
@@ -38,7 +38,7 @@ public class DuckTypeUtilsTest extends TestCase
 	{
 		final DuckLike duckLike = new DuckLike();
 		assertEquals(0, duckLike.count);
-		DuckTypeUtils.duckType(duckLike, Duck.class).walk();
+		DuckTypes.duckType(duckLike, Duck.class).walk();
 		assertEquals(1, duckLike.count);
 	}
 }

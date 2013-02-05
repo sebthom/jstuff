@@ -131,8 +131,8 @@ jstuff-core/src/test/java/net/sf/jstuff/core/localization/DateTimeHelperTest.jav
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/NumberHelperTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/meta/MetaSerializationTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/net/NetUtilsTest.java -text
-jstuff-core/src/test/java/net/sf/jstuff/core/reflection/AnnotationUtilsTest.java -text
-jstuff-core/src/test/java/net/sf/jstuff/core/reflection/DuckTypeUtilsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/reflection/AnnotationsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/reflection/DuckTypesTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/ReflectionUtilsTest.java -text
 jstuff-integration/pom.xml -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/AtomBlog.java -text
