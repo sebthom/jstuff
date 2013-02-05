@@ -13,168 +13,167 @@
 package net.sf.jstuff.core.collection;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-
-import net.sf.jstuff.core.collection.ObservableCollection.Action;
-import net.sf.jstuff.core.collection.ObservableList.ActionData;
-import net.sf.jstuff.core.event.EventListenable;
-import net.sf.jstuff.core.event.EventListener;
-import net.sf.jstuff.core.event.EventManager;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObservableList<E> implements List<E>, EventListenable<Action, ActionData<E>>
+public class ObservableList<E> extends ObservableCollection<E> implements List<E>
 {
-	public static class ActionData<E>
-	{
-		public final E item;
-		public final int index;
-
-		public ActionData(final E item, final int index)
-		{
-			this.item = item;
-			this.index = index;
-		}
-	}
-
-	public static <E> ObservableList<E> create(final List<E> list)
+	public static <E> ObservableList<E> of(final List<E> list)
 	{
 		return new ObservableList<E>(list);
 	}
 
-	private final EventManager<Action, ActionData<E>> events = new EventManager<Action, ActionData<E>>();
-	private final List<E> wrappedList;
-
 	public ObservableList(final List<E> list)
 	{
-		this.wrappedList = list;
+		super(list);
 	}
 
+	@Override
 	public boolean add(final E item)
 	{
-		wrappedList.add(item);
-		onAdded(item, wrappedList.size() - 1);
+		getWrapped().add(item);
+		onAdded(item, size() - 1);
 		return true;
 	}
 
 	public void add(final int index, final E item)
 	{
-		wrappedList.add(index, item);
+		getWrapped().add(index, item);
 		onAdded(item, index);
-	}
-
-	public boolean addAll(final Collection< ? extends E> itemsToAdd)
-	{
-		if (itemsToAdd == null || itemsToAdd.size() == 0) return false;
-		for (final E item : itemsToAdd)
-			add(item);
-		return true;
 	}
 
 	public boolean addAll(int index, final Collection< ? extends E> itemsToAdd)
 	{
 		if (itemsToAdd == null || itemsToAdd.size() == 0) return false;
-		for (final E item : itemsToAdd)
-			add(index++, item);
-		return true;
-	}
 
-	public void clear()
-	{
-		for (final Iterator<E> it = iterator(); it.hasNext();)
-			it.remove();
-	}
-
-	public boolean contains(final Object item)
-	{
-		return wrappedList.contains(item);
-	}
-
-	public boolean containsAll(final Collection< ? > items)
-	{
-		return wrappedList.containsAll(items);
+		currentBulkAction = BulkAction.ADD_ALL;
+		try
+		{
+			for (final E item : itemsToAdd)
+				add(index++, item);
+			return true;
+		}
+		finally
+		{
+			currentBulkAction = null;
+		}
 	}
 
 	public E get(final int index)
 	{
-		return wrappedList.get(index);
+		return getWrapped().get(index);
+	}
+
+	@Override
+	protected List<E> getWrapped()
+	{
+		return (List<E>) super.getWrapped();
 	}
 
 	public int indexOf(final Object item)
 	{
-		return wrappedList.indexOf(item);
-	}
-
-	public boolean isEmpty()
-	{
-		return wrappedList.isEmpty();
-	}
-
-	public Iterator<E> iterator()
-	{
-		return wrappedList.iterator();
+		return getWrapped().indexOf(item);
 	}
 
 	public int lastIndexOf(final Object item)
 	{
-		return wrappedList.lastIndexOf(item);
+		return getWrapped().lastIndexOf(item);
 	}
 
 	public ListIterator<E> listIterator()
 	{
-		return wrappedList.listIterator();
+		return listIterator(0);
 	}
 
 	public ListIterator<E> listIterator(final int index)
 	{
-		return wrappedList.listIterator(index);
-	}
+		final ListIterator<E> it = getWrapped().listIterator(index);
+		return new ListIterator<E>()
+			{
+				private E current;
 
-	protected void onAdded(final E item, final int index)
-	{
-		events.fire(Action.ADD, new ActionData<E>(item, index));
-	}
+				public boolean hasNext()
+				{
+					return it.hasNext();
+				}
 
-	protected void onRemoved(final E item, final int index)
-	{
-		events.fire(Action.REMOVE, new ActionData<E>(item, index));
+				public E next()
+				{
+					current = next();
+					return current;
+				}
+
+				public boolean hasPrevious()
+				{
+					return it.hasPrevious();
+				}
+
+				public E previous()
+				{
+					current = it.previous();
+					return current;
+				}
+
+				public int nextIndex()
+				{
+					return it.nextIndex();
+				}
+
+				public int previousIndex()
+				{
+					return it.previousIndex();
+				}
+
+				public void remove()
+				{
+					final int index = nextIndex() - 1;
+					it.remove();
+					onRemoved(current, index);
+				}
+
+				public void set(final E item)
+				{
+					if (item != current)
+					{
+						final int index = nextIndex() - 1;
+						it.set(item);
+						onRemoved(item, index);
+						onAdded(current, index);
+						current = item;
+					}
+				}
+
+				public void add(final E item)
+				{
+					final int index = nextIndex();
+					it.add(item);
+					onAdded(current, index);
+				}
+			};
 	}
 
 	public E remove(final int index)
 	{
-		final E item = wrappedList.remove(index);
+		final E item = getWrapped().remove(index);
 		onRemoved(item, index);
 		return item;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
 	public boolean remove(final Object item)
 	{
-		final boolean removed = wrappedList.remove(item);
-		if (removed) onRemoved((E) item, wrappedList.size());
-		return removed;
-	}
-
-	public boolean removeAll(final Collection< ? > itemsToRemove)
-	{
-		if (itemsToRemove == null || itemsToRemove.size() == 0) return false;
-		boolean removedAny = false;
-		for (final Object item : itemsToRemove)
-			if (remove(item)) removedAny = true;
-		return removedAny;
-	}
-
-	public boolean retainAll(final Collection< ? > itemsToKeep)
-	{
-		return wrappedList.retainAll(itemsToKeep);
+		final int index = indexOf(item);
+		if (index == -1) return false;
+		remove(index);
+		return true;
 	}
 
 	public E set(final int index, final E item)
 	{
-		final E old = wrappedList.set(index, item);
+		final E old = getWrapped().set(index, item);
 		if (old != item)
 		{
 			if (old != null) onRemoved(old, index);
@@ -183,33 +182,8 @@ public class ObservableList<E> implements List<E>, EventListenable<Action, Actio
 		return old;
 	}
 
-	public int size()
-	{
-		return wrappedList.size();
-	}
-
 	public List<E> subList(final int fromIndex, final int toIndex)
 	{
-		return wrappedList.subList(fromIndex, toIndex);
-	}
-
-	public boolean subscribe(final EventListener<Action, ActionData<E>> listener)
-	{
-		return events.subscribe(listener);
-	}
-
-	public Object[] toArray()
-	{
-		return wrappedList.toArray();
-	}
-
-	public <T> T[] toArray(final T[] a)
-	{
-		return wrappedList.toArray(a);
-	}
-
-	public boolean unsubscribe(final EventListener<Action, ActionData<E>> listener)
-	{
-		return events.unsubscribe(listener);
+		throw new UnsupportedOperationException("Not implemented");
 	}
 }

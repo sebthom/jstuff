@@ -15,6 +15,8 @@ package net.sf.jstuff.core.collection;
 import java.util.Collection;
 import java.util.Iterator;
 
+import net.sf.jstuff.core.collection.ObservableCollection.ItemAction;
+import net.sf.jstuff.core.collection.ObservableCollection.ItemActionData;
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.event.EventManager;
@@ -23,34 +25,59 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObservableCollection<E> implements Collection<E>, EventListenable<ObservableCollection.Action, E>
+public class ObservableCollection<E> implements Collection<E>, EventListenable<ItemAction, ItemActionData<E>>
 {
-	public static enum Action
+	public static enum BulkAction
+	{
+		ADD_ALL,
+		CLEAR,
+		REMOVE_ALL,
+		RETAIN_ALL
+	}
+
+	public static enum ItemAction
 	{
 		ADD,
 		REMOVE
 	}
 
-	public static <E> ObservableCollection<E> create(final Collection<E> set)
+	public static class ItemActionData<E>
+	{
+		/**
+		 * -1 means the index is not specified
+		 */
+		public final int index;
+		public final E item;
+
+		public ItemActionData(final E item, final int index)
+		{
+			this.item = item;
+			this.index = index;
+		}
+	}
+
+	public static <E> ObservableCollection<E> of(final Collection<E> set)
 	{
 		return new ObservableCollection<E>(set);
 	}
 
-	private final EventManager<Action, E> events = new EventManager<Action, E>();
+	protected BulkAction currentBulkAction;
 
-	private final Collection<E> wrappedCollection;
+	private final EventManager<ItemAction, ItemActionData<E>> events = new EventManager<ItemAction, ItemActionData<E>>();
+
+	private final Collection<E> wrapped;
 
 	public ObservableCollection(final Collection<E> coll)
 	{
 		Args.notNull("coll", coll);
-		this.wrappedCollection = coll;
+		this.wrapped = coll;
 	}
 
 	public boolean add(final E item)
 	{
-		if (wrappedCollection.add(item))
+		if (wrapped.add(item))
 		{
-			onAdded(item);
+			onAdded(item, -1);
 			return true;
 		}
 		return false;
@@ -59,91 +86,175 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<O
 	public boolean addAll(final Collection< ? extends E> itemsToAdd)
 	{
 		if (itemsToAdd == null || itemsToAdd.size() == 0) return false;
-		boolean anyAdded = false;
-		for (final E item : itemsToAdd)
-			if (add(item)) anyAdded = true;
-		return anyAdded;
+
+		currentBulkAction = BulkAction.ADD_ALL;
+		try
+		{
+			boolean anyAdded = false;
+			for (final E item : itemsToAdd)
+				if (add(item)) anyAdded = true;
+			return anyAdded;
+		}
+		finally
+		{
+			currentBulkAction = null;
+		}
+
 	}
 
 	public void clear()
 	{
-		for (final Iterator<E> it = iterator(); it.hasNext();)
-			it.remove();
+		currentBulkAction = BulkAction.CLEAR;
+		try
+		{
+			for (final Iterator<E> it = iterator(); it.hasNext();)
+				it.remove();
+		}
+		finally
+		{
+			currentBulkAction = null;
+		}
 	}
 
 	public boolean contains(final Object item)
 	{
-		return wrappedCollection.contains(item);
+		return wrapped.contains(item);
 	}
 
 	public boolean containsAll(final Collection< ? > items)
 	{
-		return wrappedCollection.containsAll(items);
+		return wrapped.containsAll(items);
+	}
+
+	public BulkAction getCurrentBulkAction()
+	{
+		return currentBulkAction;
+	}
+
+	protected Collection<E> getWrapped()
+	{
+		return wrapped;
 	}
 
 	public boolean isEmpty()
 	{
-		return wrappedCollection.isEmpty();
+		return wrapped.isEmpty();
 	}
 
 	public Iterator<E> iterator()
 	{
-		return wrappedCollection.iterator();
+		final Iterator<E> it = wrapped.iterator();
+		return new Iterator<E>()
+			{
+				int index = -1;
+				E item;
+
+				public boolean hasNext()
+				{
+					return it.hasNext();
+				}
+
+				public E next()
+				{
+					index++;
+					item = it.next();
+					return item;
+				}
+
+				public void remove()
+				{
+					it.remove();
+					onRemoved(item, index);
+				}
+			};
 	}
 
-	protected void onAdded(final E item)
+	/**
+	 * @param index negative value if index unknown
+	 */
+	protected void onAdded(final E item, final int index)
 	{
-		events.fire(Action.ADD, item);
+		events.fire(ItemAction.ADD, new ItemActionData<E>(item, index));
 	}
 
-	protected void onRemoved(final E item)
+	/**
+	 * @param index negative value if index unknown
+	 */
+	protected void onRemoved(final E item, final int index)
 	{
-		events.fire(Action.REMOVE, item);
+		events.fire(ItemAction.REMOVE, new ItemActionData<E>(item, index));
 	}
 
 	@SuppressWarnings("unchecked")
 	public boolean remove(final Object item)
 	{
-		final boolean removed = wrappedCollection.remove(item);
-		if (removed) onRemoved((E) item);
+		final boolean removed = wrapped.remove(item);
+		if (removed) onRemoved((E) item, -1);
 		return removed;
 	}
 
 	public boolean removeAll(final Collection< ? > itemsToRemove)
 	{
 		if (itemsToRemove == null || itemsToRemove.size() == 0) return false;
-		boolean removedAny = false;
-		for (final Object item : itemsToRemove)
-			if (remove(item)) removedAny = true;
-		return removedAny;
+
+		currentBulkAction = BulkAction.REMOVE_ALL;
+		try
+		{
+			boolean removedAny = false;
+			for (final Object item : itemsToRemove)
+				if (remove(item)) removedAny = true;
+			return removedAny;
+		}
+		finally
+		{
+			currentBulkAction = null;
+		}
 	}
 
 	public boolean retainAll(final Collection< ? > itemsToKeep)
 	{
-		return wrappedCollection.retainAll(itemsToKeep);
+		currentBulkAction = BulkAction.RETAIN_ALL;
+		try
+		{
+			boolean removedAny = false;
+			for (final Iterator<E> it = wrapped.iterator(); it.hasNext();)
+			{
+				final E item = it.next();
+				if (itemsToKeep == null || !itemsToKeep.contains(item))
+				{
+					it.remove();
+					removedAny = true;
+				}
+			}
+			return removedAny;
+		}
+		finally
+		{
+			currentBulkAction = null;
+		}
 	}
 
 	public int size()
 	{
-		return wrappedCollection.size();
+		return wrapped.size();
 	}
 
-	public boolean subscribe(final EventListener<Action, E> listener)
+	public boolean subscribe(final EventListener<ItemAction, ItemActionData<E>> listener)
 	{
 		return events.subscribe(listener);
 	}
 
 	public Object[] toArray()
 	{
-		return wrappedCollection.toArray();
+		return wrapped.toArray();
 	}
 
 	public <T> T[] toArray(final T[] a)
 	{
-		return wrappedCollection.toArray(a);
+		return wrapped.toArray(a);
 	}
 
-	public boolean unsubscribe(final EventListener<Action, E> listener)
+	public boolean unsubscribe(final EventListener<ItemAction, ItemActionData<E>> listener)
 	{
 		return events.unsubscribe(listener);
 	}
