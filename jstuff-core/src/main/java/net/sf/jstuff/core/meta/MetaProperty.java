@@ -12,10 +12,10 @@
  *******************************************************************************/
 package net.sf.jstuff.core.meta;
 
+import static java.util.Collections.*;
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public final class MetaProperty<P> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static <P> MetaProperty<P> make(final MetaClass< ? > metaClass, final String name, final Class<P> type, final int lowerBound,
+	public static <P> MetaProperty<P> create(final MetaClass< ? > metaClass, final String name, final Class<P> type, final int lowerBound,
 			final int upperBound, final boolean ordered, final boolean unique, final boolean container, final String description,
 			final Map<String, ? extends Serializable> properties)
 	{
@@ -43,7 +43,7 @@ public final class MetaProperty<P> implements Serializable
 			p.unique = unique;
 			p.description = description == null ? "" : description;
 			p.properties = newHashMap(properties);
-			p.propertiesReadOnly = Collections.unmodifiableMap(p.properties);
+			p.propertiesReadOnly = unmodifiableMap(p.properties);
 			metaClass.addProperty(p);
 			return p;
 		}

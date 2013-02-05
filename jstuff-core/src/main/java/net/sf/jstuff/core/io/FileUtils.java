@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -29,7 +29,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
  */
 public abstract class FileUtils extends org.apache.commons.io.FileUtils
 {
-	private static Logger LOG = Logger.make();
+	private static Logger LOG = Logger.create();
 
 	public static File[] asFileArray(final String... filePaths)
 	{
@@ -43,7 +43,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 
 	/**
 	 * Creates a backup of the given file if it exists, otherwise returns with null.
-	 * 
+	 *
 	 * @return a File object representing the backup copy or null if no backup was created because the file to backup did not exist
 	 */
 	public static File backupFile(final File fileToBackup) throws IOException
@@ -55,7 +55,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 
 	/**
 	 * Creates a backup of the given file if it exists, otherwise returns with null.
-	 * 
+	 *
 	 * @return a File object representing the backup copy or null if no backup was created because the file to backup did not exist
 	 */
 	public static File backupFile(final File fileToBackup, final File backupFolder) throws IOException
@@ -63,8 +63,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		Args.notNull("fileToBackup", fileToBackup);
 		Args.notNull("backupFolder", backupFolder);
 
-		if (!backupFolder.isDirectory())
-			throw new IllegalArgumentException("backupFolder [" + backupFolder + "] is not a directory");
+		if (!backupFolder.isDirectory()) throw new IllegalArgumentException("backupFolder [" + backupFolder + "] is not a directory");
 
 		if (fileToBackup.exists())
 		{
@@ -100,8 +99,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 			{
 				if (currFile.lastModified() < deleteFilesOlderThan.getTime()) currFile.delete();
 			}
-			else if (recursive && currFile.isDirectory())
-				cleanDirectory(currFile, deleteFilesOlderThan, true, filenameFilter);
+			else if (recursive && currFile.isDirectory()) cleanDirectory(currFile, deleteFilesOlderThan, true, filenameFilter);
 	}
 
 	public static void cleanDirectory(final File directory, final int deleteFilesOlderThanXDays, final boolean recursive)
@@ -111,8 +109,8 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		cleanDirectory(directory, deleteFilesOlderThanXDays, recursive, null);
 	}
 
-	public static void cleanDirectory(final File directory, final int deleteFilesOlderThanXDays,
-			final boolean recursive, final FilenameFilter filenameFilter)
+	public static void cleanDirectory(final File directory, final int deleteFilesOlderThanXDays, final boolean recursive,
+			final FilenameFilter filenameFilter)
 	{
 		Args.notNull("directory", directory);
 

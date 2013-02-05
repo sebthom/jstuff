@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -28,7 +28,7 @@ public class DateTimeHelper implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
 	private final Locale locale;
 

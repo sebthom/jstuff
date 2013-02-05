@@ -25,7 +25,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class EventManagerWithHistory<EventType, EventData> extends EventManager<EventType, EventData>
 {
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
 	private LinkedList<Tuple2<EventType, EventData>> eventHistory;
 

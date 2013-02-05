@@ -28,7 +28,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class EventManager<EventType, EventData> implements EventListenable<EventType, EventData>
 {
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
 	private final Set<EventListener<EventType, EventData>> eventListeners = new CopyOnWriteArraySet<EventListener<EventType, EventData>>();
 	private final Set<EventListener<EventType, EventData>> eventListenersUnmodifiable = Collections.unmodifiableSet(eventListeners);
@@ -47,7 +47,7 @@ public class EventManager<EventType, EventData> implements EventListenable<Event
 
 	public int fire(final EventType type, final EventData data)
 	{
-		return EventUtils.fire(type, data, eventListeners);
+		return Events.fire(type, data, eventListeners);
 	}
 
 	public Future<Integer> fireAsync(final EventType type, final EventData data)
@@ -59,7 +59,7 @@ public class EventManager<EventType, EventData> implements EventListenable<Event
 			{
 				public Integer call() throws Exception
 				{
-					return EventUtils.fire(type, data, copy);
+					return Events.fire(type, data, copy);
 				}
 			});
 	}

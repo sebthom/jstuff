@@ -30,7 +30,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
 	private static Object _getPropertyValue(final Object obj, final String propertyName)
 	{

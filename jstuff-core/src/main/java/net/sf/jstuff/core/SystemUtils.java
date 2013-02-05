@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils
 {
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
 	/**
 	 * opens the given file with the default application handler

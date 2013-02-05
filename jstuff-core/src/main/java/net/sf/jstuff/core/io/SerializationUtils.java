@@ -21,7 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import net.sf.jstuff.core.CryptoUtils;
+import net.sf.jstuff.core.Crypto;
 import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang3.SerializationException;
@@ -91,7 +91,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 	 */
 	public static Serializable deserializeDES(final byte[] data, final String passphrase)
 	{
-		return deserialize(CryptoUtils.decryptWithDES(data, passphrase));
+		return deserialize(Crypto.decryptWithDES(data, passphrase));
 	}
 
 	/**
@@ -99,7 +99,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 	 */
 	public static byte[] serializeDES(final Serializable obj, final String passphrase)
 	{
-		return CryptoUtils.encryptWithDES(serialize(obj), passphrase);
+		return Crypto.encryptWithDES(serialize(obj), passphrase);
 	}
 
 	/**

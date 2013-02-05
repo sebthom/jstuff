@@ -48,7 +48,7 @@ public abstract class ImageUtils
 	}
 
 	@SuppressWarnings("resource")
-	public static byte[] getJPEG(final BufferedImage image) throws IOException
+	public static byte[] toJPEG(final BufferedImage image) throws IOException
 	{
 		Args.notNull("image", image);
 
@@ -57,7 +57,7 @@ public abstract class ImageUtils
 		return bos.toByteArray();
 	}
 
-	public static BufferedImage getScaledImage(final Image image, final int width, final int height)
+	public static BufferedImage toScaledImage(final Image image, final int width, final int height)
 	{
 		Args.notNull("image", image);
 

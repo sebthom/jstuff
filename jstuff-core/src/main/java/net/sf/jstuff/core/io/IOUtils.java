@@ -36,7 +36,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 {
 	public final static int EOF = -1;
 
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
 	public static int copyAndClose(final InputStream is, final OutputStream os) throws IOException
 	{

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.validation;
 
-import static net.sf.jstuff.core.StackTraceUtils.*;
+import static net.sf.jstuff.core.StackTrace.*;
 
 import java.io.File;
 import java.util.Collection;

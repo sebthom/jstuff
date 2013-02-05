@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Logger based on SLF4J supporting Java5 varargs and the {@link Formatter} syntax.
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public final class Logger
@@ -26,10 +26,10 @@ public final class Logger
 	/**
 	 * Returns a new logger instance named corresponding to the current class.
 	 */
-	public static Logger make()
+	public static Logger create()
 	{
 		// getCallingClassName() must be in a separate line otherwise it will return a wrong name
-		final String name = StackTraceUtils.getCallingClassName();
+		final String name = StackTrace.getCallingClassName();
 
 		return new Logger(LoggerFactory.getLogger(name));
 	}
@@ -37,7 +37,7 @@ public final class Logger
 	/**
 	 * Returns a new logger instance named corresponding to the class passed as parameter.
 	 */
-	public static Logger make(final Class< ? > clazz)
+	public static Logger create(final Class< ? > clazz)
 	{
 		return new Logger(LoggerFactory.getLogger(clazz));
 	}
@@ -45,7 +45,7 @@ public final class Logger
 	/**
 	 * Returns a new logger instance named according to the name parameter.
 	 */
-	public static Logger make(final String name)
+	public static Logger create(final String name)
 	{
 		return new Logger(LoggerFactory.getLogger(name));
 	}
@@ -64,7 +64,7 @@ public final class Logger
 
 	/**
 	 * @param format A format string understandable by {@link Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored. 
+	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void debug(final String format, final Object... args)
 	{
@@ -78,7 +78,7 @@ public final class Logger
 
 	/**
 	 * @param format A format string understandable by {@link Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored. 
+	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void debug(final String format, final Throwable t, final Object... args)
 	{
@@ -92,7 +92,7 @@ public final class Logger
 
 	/**
 	 * @param format A format string understandable by {@link Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored. 
+	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void error(final String format, final Object... args)
 	{
@@ -106,7 +106,7 @@ public final class Logger
 
 	/**
 	 * @param format A format string understandable by {@link Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored. 
+	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void error(final String format, final Throwable t, final Object... args)
 	{
@@ -125,7 +125,7 @@ public final class Logger
 
 	/**
 	 * @param format A format string understandable by {@link Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored. 
+	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void info(final String format, final Object... args)
 	{
@@ -139,7 +139,7 @@ public final class Logger
 
 	/**
 	 * @param format A format string understandable by {@link Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored. 
+	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void info(final String format, final Throwable t, final Object... args)
 	{
@@ -173,32 +173,30 @@ public final class Logger
 
 	public void trace(final Object msg)
 	{
-		if (delegate.isTraceEnabled()) delegate.trace(StackTraceUtils.getCallingMethodName() + ": " + msg);
+		if (delegate.isTraceEnabled()) delegate.trace(StackTrace.getCallingMethodName() + ": " + msg);
 	}
 
 	/**
 	 * @param format A format string understandable by {@link Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored. 
+	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void trace(final String format, final Object... args)
 	{
-		if (delegate.isTraceEnabled())
-			delegate.trace(StackTraceUtils.getCallingMethodName() + ": " + String.format(format, args));
+		if (delegate.isTraceEnabled()) delegate.trace(StackTrace.getCallingMethodName() + ": " + String.format(format, args));
 	}
 
 	public void trace(final String msg, final Throwable t)
 	{
-		if (delegate.isTraceEnabled()) delegate.trace(StackTraceUtils.getCallingMethodName() + ": " + msg, t);
+		if (delegate.isTraceEnabled()) delegate.trace(StackTrace.getCallingMethodName() + ": " + msg, t);
 	}
 
 	/**
 	 * @param format A format string understandable by {@link Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored. 
+	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void trace(final String format, final Throwable t, final Object... args)
 	{
-		if (delegate.isTraceEnabled())
-			delegate.trace(StackTraceUtils.getCallingMethodName() + ": " + String.format(format, args), t);
+		if (delegate.isTraceEnabled()) delegate.trace(StackTrace.getCallingMethodName() + ": " + String.format(format, args), t);
 	}
 
 	public void traceMethodEntry(final Object... args)
@@ -206,7 +204,7 @@ public final class Logger
 		if (!delegate.isTraceEnabled()) return;
 
 		final StringBuilder sb = new StringBuilder();
-		sb.append("METHOD ENTRY: ").append(StackTraceUtils.getCallingMethodName()).append('(');
+		sb.append("METHOD ENTRY: ").append(StackTrace.getCallingMethodName()).append('(');
 		for (int i = 0; i < args.length; i++)
 		{
 			sb.append(args[i]);
@@ -220,14 +218,14 @@ public final class Logger
 	{
 		if (!delegate.isTraceEnabled()) return;
 
-		delegate.trace("METHOD EXIT: " + StackTraceUtils.getCallingMethodName());
+		delegate.trace("METHOD EXIT: " + StackTrace.getCallingMethodName());
 	}
 
 	public void traceMethodExit(final Object returnValue)
 	{
 		if (!delegate.isTraceEnabled()) return;
 
-		delegate.trace("METHOD EXIT: " + StackTraceUtils.getCallingMethodName() + " returns with " + returnValue);
+		delegate.trace("METHOD EXIT: " + StackTrace.getCallingMethodName() + " returns with " + returnValue);
 	}
 
 	public void warn(final String msg)
@@ -237,7 +235,7 @@ public final class Logger
 
 	/**
 	 * @param format A format string understandable by {@link Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored. 
+	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void warn(final String format, final Object... args)
 	{
@@ -251,7 +249,7 @@ public final class Logger
 
 	/**
 	 * @param format A format string understandable by {@link Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored. 
+	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void warn(final String format, final Throwable t, final Object... args)
 	{

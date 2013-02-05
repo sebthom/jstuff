@@ -34,7 +34,6 @@ import org.apache.commons.lang3.text.WordUtils;
  */
 public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 {
-
 	public static final class ANSIState
 	{
 		public String fgcolor;

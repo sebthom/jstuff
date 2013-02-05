@@ -19,9 +19,9 @@ import net.sf.jstuff.core.Logger;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class EventUtils
+public abstract class Events
 {
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
 	/**
 	 * @return the number of listeners notified successfully
@@ -74,7 +74,7 @@ public abstract class EventUtils
 		return count;
 	}
 
-	protected EventUtils()
+	protected Events()
 	{
 		super();
 	}
