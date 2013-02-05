@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -36,10 +36,9 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class ReflectionUtils
 {
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
-	private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission(
-			"suppressAccessChecks");
+	private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission("suppressAccessChecks");
 
 	/**
 	 * @throws SecurityException
@@ -55,8 +54,7 @@ public abstract class ReflectionUtils
 			catch (final SecurityException ex)
 			{
 				throw new ReflectionException(
-						"Current security manager configuration does not allow access to private fields and methods.",
-						ex);
+						"Current security manager configuration does not allow access to private fields and methods.", ex);
 			}
 	}
 
@@ -80,7 +78,7 @@ public abstract class ReflectionUtils
 
 	/**
 	 * @param setter
-	 * @return Returns the corresponding field for a setter method. Returns null if the method is not a 
+	 * @return Returns the corresponding field for a setter method. Returns null if the method is not a
 	 * JavaBean style setter or the field could not be located.
 	 */
 	public static Field getFieldForSetter(final Method setter)
@@ -106,9 +104,8 @@ public abstract class ReflectionUtils
 			// check if field and method parameter are of the same type
 			if (!field.getType().equals(methodParameterTypes[0]))
 			{
-				LOG.warn(
-						"Found field [%s] in class [%s] that matches setter [%s] name, but mismatches parameter type.",
-						fieldName, clazz.getName(), methodName);
+				LOG.warn("Found field [%s] in class [%s] that matches setter [%s] name, but mismatches parameter type.", fieldName,
+						clazz.getName(), methodName);
 				field = null;
 			}
 		}
@@ -119,8 +116,7 @@ public abstract class ReflectionUtils
 
 		// if method parameter type is boolean then check if a field with name isXXX exists (e.g. method setEnabled() =>
 		// field isEnabled)
-		if (field == null
-				&& (boolean.class.equals(methodParameterTypes[0]) || Boolean.class.equals(methodParameterTypes[0])))
+		if (field == null && (boolean.class.equals(methodParameterTypes[0]) || Boolean.class.equals(methodParameterTypes[0])))
 		{
 			fieldName = "is" + methodName.substring(3);
 
@@ -131,9 +127,8 @@ public abstract class ReflectionUtils
 				// check if found field is of boolean or Boolean
 				if (!boolean.class.equals(field.getType()) && Boolean.class.equals(field.getType()))
 				{
-					LOG.warn(
-							"Found field [%s] in class [%s] that matches setter [%s] name, but mismatches parameter type.",
-							fieldName, clazz.getName(), methodName);
+					LOG.warn("Found field [%s] in class [%s] that matches setter [%s] name, but mismatches parameter type.", fieldName,
+							clazz.getName(), methodName);
 					field = null;
 				}
 			}
@@ -181,8 +176,7 @@ public abstract class ReflectionUtils
 		Args.notNull("clazz", clazz);
 		Args.notNull("propertyName", propertyName);
 
-		final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault())
-				+ propertyName.substring(1);
+		final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 		try
 		{
 			return clazz.getDeclaredMethod("get" + appendix);
@@ -283,8 +277,7 @@ public abstract class ReflectionUtils
 	/**
 	 * @return the method or null if the method does not exist
 	 */
-	public static Method getMethodRecursive(final Class< ? > clazz, final String methodName,
-			final Class< ? >... parameterTypes)
+	public static Method getMethodRecursive(final Class< ? > clazz, final String methodName, final Class< ? >... parameterTypes)
 	{
 		Args.notNull("clazz", clazz);
 		Args.notNull("methodName", methodName);
@@ -306,8 +299,7 @@ public abstract class ReflectionUtils
 		Args.notNull("clazz", clazz);
 		Args.notNull("propertyName", propertyName);
 
-		final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault())
-				+ propertyName.substring(1);
+		final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
 		final Method[] declaredMethods = clazz.getDeclaredMethods();
 		for (final Method method : declaredMethods)
@@ -398,7 +390,7 @@ public abstract class ReflectionUtils
 	}
 
 	/**
-	 * 
+	 *
 	 * @param method the method to invoke
 	 * @param obj the object on which to invoke the method
 	 * @param args the method arguments
@@ -406,8 +398,7 @@ public abstract class ReflectionUtils
 	 * @throws InvokingMethodFailedException
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T invokeMethod(final Method method, final Object obj, final Object... args)
-			throws InvokingMethodFailedException
+	public static <T> T invokeMethod(final Method method, final Object obj, final Object... args) throws InvokingMethodFailedException
 	{
 		Args.notNull("method", method);
 		Args.notNull("obj", obj);
@@ -471,8 +462,7 @@ public abstract class ReflectionUtils
 	{
 		Args.notNull("method", method);
 
-		return method.getParameterTypes().length == 0
-				&& (method.getName().startsWith("is") || method.getName().startsWith("get"));
+		return method.getParameterTypes().length == 0 && (method.getName().startsWith("is") || method.getName().startsWith("get"));
 	}
 
 	public static boolean isInnerClass(final Class< ? > clazz)
@@ -609,7 +599,7 @@ public abstract class ReflectionUtils
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T makeProxyInstance(final Class<T> interfaceType, final InvocationHandler handler)
+	public static <T> T createProxyInstance(final Class<T> interfaceType, final InvocationHandler handler)
 	{
 		Args.notNull("interfaceType", interfaceType);
 		Args.notNull("handler", handler);
@@ -618,8 +608,7 @@ public abstract class ReflectionUtils
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T makeProxyInstance(final Class<T> interfaceType, final InvocationHandler handler,
-			final ClassLoader loader)
+	public static <T> T createProxyInstance(final Class<T> interfaceType, final InvocationHandler handler, final ClassLoader loader)
 	{
 		Args.notNull("interfaceType", interfaceType);
 		Args.notNull("handler", handler);
@@ -628,20 +617,20 @@ public abstract class ReflectionUtils
 		return (T) Proxy.newProxyInstance(loader, new Class[]{interfaceType}, handler);
 	}
 
-	public static <T> T makeSynchronized(final Class<T> objectInterface, final T object)
+	public static <T> T createSynchronized(final Class<T> objectInterface, final T object)
 	{
 		Args.notNull("objectInterface", objectInterface);
 		Args.notNull("object", object);
 
-		return makeSynchronized(objectInterface, object, object);
+		return createSynchronized(objectInterface, object, object);
 	}
 
-	public static <T> T makeSynchronized(final Class<T> objectInterface, final T object, final Object lock)
+	public static <T> T createSynchronized(final Class<T> objectInterface, final T object, final Object lock)
 	{
 		Args.notNull("objectInterface", objectInterface);
 		Args.notNull("object", object);
 
-		return makeProxyInstance(objectInterface, new InvocationHandler()
+		return createProxyInstance(objectInterface, new InvocationHandler()
 			{
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{
@@ -653,8 +642,7 @@ public abstract class ReflectionUtils
 			});
 	}
 
-	public static void setFieldValue(final Field field, final Object obj, final Object value)
-			throws SettingFieldValueFailedException
+	public static void setFieldValue(final Field field, final Object obj, final Object value) throws SettingFieldValueFailedException
 	{
 		Args.notNull("field", field);
 		Args.notNull("obj", obj);

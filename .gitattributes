@@ -97,6 +97,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/reflection/AccessingFieldValueFaile
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Annotations.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/BeanUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/DuckTypeUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/DuckTypes.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/InvokingMethodFailedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/ReflectionException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/ReflectionUtils.java -text
