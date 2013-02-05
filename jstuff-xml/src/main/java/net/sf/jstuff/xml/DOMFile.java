@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -34,7 +34,7 @@ import org.xml.sax.SAXParseException;
  */
 public class DOMFile
 {
-	private static final Logger LOG = Logger.make();
+	private static final Logger LOG = Logger.create();
 
 	private final Document domDocument;
 	private final Element domRoot;
