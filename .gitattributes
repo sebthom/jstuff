@@ -94,7 +94,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/net/SSLUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockServerSocket.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockSocket.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/AccessingFieldValueFailedException.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/reflection/AnnotationUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Annotations.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/BeanUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/DuckTypeUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/InvokingMethodFailedException.java -text
