@@ -99,6 +99,9 @@ jstuff-core/src/main/java/net/sf/jstuff/core/net/NetUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/SSLUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockServerSocket.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockSocket.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigationResult.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigator.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigatorDefaultImpl.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/AccessingFieldValueFailedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Annotations.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Beans.java -text

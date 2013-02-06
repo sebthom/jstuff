@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -16,6 +16,7 @@ import static net.sf.jstuff.core.functional.Accepts.*;
 import junit.framework.TestCase;
 import net.sf.jstuff.core.functional.Accepts.Contains;
 import net.sf.jstuff.core.functional.Accepts.EndingWith;
+import net.sf.jstuff.core.functional.Accepts.Property;
 import net.sf.jstuff.core.functional.Accepts.StartingWith;
 
 /**
@@ -165,6 +166,39 @@ public class AcceptsTest extends TestCase
 		final Accept<Object> a2 = not(a);
 		assertFalse(a2.accept(null));
 		assertTrue(a2.accept(""));
+	}
+
+	public void testProperty()
+	{
+		class Entity
+		{
+			@SuppressWarnings("unused")
+			String name;
+			Entity parent;
+		}
+
+		final Property<Entity, String> a = property("name", equalTo("foobar"));
+
+		final Entity e = new Entity();
+
+		e.name = "foobar";
+		assertTrue(a.accept(e));
+
+		e.name = "blub";
+		assertFalse(a.accept(e));
+
+		final Property<Entity, String> a2 = property("parent.name", equalTo("foobar"));
+
+		e.parent = new Entity();
+
+		e.parent.name = "blub";
+		assertFalse(a2.accept(e));
+
+		e.parent.name = "foobar";
+		assertTrue(a2.accept(e));
+
+		e.parent = null;
+		assertFalse(a2.accept(e));
 	}
 
 	public void testStartingWith()

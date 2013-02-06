@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -15,6 +15,7 @@ package net.sf.jstuff.core.functional;
 import java.io.Serializable;
 import java.util.Locale;
 
+import net.sf.jstuff.core.ogn.ObjectGraphNavigatorDefaultImpl;
 import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -62,7 +63,7 @@ public abstract class Accepts
 			return ignoreCase(null);
 		}
 
-		public abstract ChainableAccept<V> ignoreCase(Locale locale);
+		public abstract ChainableAccept<V> ignoreCase(final Locale locale);
 
 		protected String stringify(final Object obj)
 		{
@@ -219,6 +220,36 @@ public abstract class Accepts
 		}
 	}
 
+	public static class Property<V, PropertyType> extends AbstractAccept<V>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public final Accept<PropertyType> accept;
+		public final String propertyPath;
+
+		public Property(final String propertyPath, final Accept<PropertyType> accept)
+		{
+			Args.notNull("propertyPath", propertyPath);
+			Args.notNull("accept", accept);
+
+			this.propertyPath = propertyPath;
+			this.accept = accept;
+		}
+
+		@SuppressWarnings("unchecked")
+		public boolean accept(final V obj)
+		{
+			try
+			{
+				return accept.accept((PropertyType) ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(obj, propertyPath));
+			}
+			catch (final ClassCastException ex)
+			{
+				return false;
+			}
+		}
+	}
+
 	public static class Not<V> extends AbstractAccept<V>
 	{
 		private static final long serialVersionUID = 1L;
@@ -359,6 +390,17 @@ public abstract class Accepts
 	public static <V> Or<V> or(final Accept< ? super V> first, final Accept< ? super V> second)
 	{
 		return new Or<V>(first, second);
+	}
+
+	public static <V, PropertyType> Property<V, PropertyType> property(final String propertyPath, final Accept<PropertyType> accept)
+	{
+		return new Property<V, PropertyType>(propertyPath, accept);
+	}
+
+	public static <V, PropertyType> Property<V, PropertyType> property(final Class<V> castingHelper, final String propertyPath,
+			final Accept<PropertyType> accept)
+	{
+		return new Property<V, PropertyType>(propertyPath, accept);
 	}
 
 	public static <V> StartingWith<V> startingWith(final String prefix)
