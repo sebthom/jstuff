@@ -13,7 +13,7 @@
 package net.sf.jstuff.core.ogn;
 
 /**
- * @author Sebastian Thomschke
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface ObjectGraphNavigator
 {

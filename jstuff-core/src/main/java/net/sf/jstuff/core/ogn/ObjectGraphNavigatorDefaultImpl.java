@@ -26,7 +26,7 @@ import net.sf.jstuff.core.validation.Args;
  *
  * The implementation currently is limited to address fields and properties. Separate items of arrays, maps or keys cannot be addressed.
  *
- * @author Sebastian Thomschke
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator
 {
