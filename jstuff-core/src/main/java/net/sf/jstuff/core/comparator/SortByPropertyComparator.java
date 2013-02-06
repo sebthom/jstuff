@@ -12,30 +12,32 @@
  *******************************************************************************/
 package net.sf.jstuff.core.comparator;
 
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
+
 import java.util.Comparator;
+import java.util.Map;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ReverseComparator<T> implements Comparator<T>
+public class SortByPropertyComparator<T> extends SortByComparator<T, String>
 {
-	private final Comparator<T> delegate;
+	private final Map<String, Comparator<T>> comparators = newHashMap();
 
-	public static <T> ReverseComparator<T> of(final Comparator<T> delegate)
+	public SortByPropertyComparator(final SortBy<String>... sortBy)
 	{
-		return new ReverseComparator<T>(delegate);
+		super(sortBy);
 	}
 
-	/**
-	 * @param delegate the comparator to reverse
-	 */
-	public ReverseComparator(final Comparator<T> delegate)
+	@Override
+	protected Comparator<T> getComparator(final String sortKey)
 	{
-		this.delegate = delegate;
-	}
-
-	public int compare(final T o1, final T o2)
-	{
-		return -delegate.compare(o1, o2);
+		Comparator<T> comp = comparators.get(sortKey);
+		if (comp == null)
+		{
+			comp = new PropertyComparator<T>(sortKey);
+			comparators.put(sortKey, comp);
+		}
+		return comparators.get(sortKey);
 	}
 }

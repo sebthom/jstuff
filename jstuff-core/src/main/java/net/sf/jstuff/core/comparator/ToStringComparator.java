@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -24,9 +24,20 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static final ToStringComparator<Object> INSTANCE = new ToStringComparator<Object>();
+	private static final ToStringComparator< ? > INSTANCE = new ToStringComparator<Object>();
 
-	// collator is only serializable starting Java 6 
+	@SuppressWarnings("unchecked")
+	public static <T> ToStringComparator<T> get()
+	{
+		return (ToStringComparator<T>) INSTANCE;
+	}
+
+	public static <T> ToStringComparator<T> create(final Locale locale)
+	{
+		return new ToStringComparator<T>(locale);
+	}
+
+	// collator is only serializable starting Java 6
 	private transient Collator collator;
 	private final Locale locale;
 

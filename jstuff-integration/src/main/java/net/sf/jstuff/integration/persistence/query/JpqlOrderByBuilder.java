@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -15,15 +15,17 @@ package net.sf.jstuff.integration.persistence.query;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.jstuff.core.comparator.SortBy;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class JpqlOrderByBuilder
 {
-	private final SortBy[] defaultSortBy;
+	private final SortBy<String>[] defaultSortBy;
 	private final Map<String, String> mappings = new HashMap<String, String>(4);
 
-	public JpqlOrderByBuilder(final SortBy... defaultSortBy)
+	public JpqlOrderByBuilder(final SortBy<String>... defaultSortBy)
 	{
 		this.defaultSortBy = defaultSortBy;
 	}
@@ -34,19 +36,17 @@ public class JpqlOrderByBuilder
 		return this;
 	}
 
-	public String buildOrderBy(final SortBy[] sortBy) throws IllegalArgumentException
+	public String buildOrderBy(final SortBy<String>[] sortBy) throws IllegalArgumentException
 	{
 		final StringBuilder orderBy = new StringBuilder();
 
-		for (final SortBy sb : getActiveSortBy(sortBy))
+		for (final SortBy<String> sb : getActiveSortBy(sortBy))
 		{
 			if (sb.getDirection() == null)
-				throw new IllegalArgumentException("Sort direction not specified for sort field [" + sb.getField()
-						+ "]");
+				throw new IllegalArgumentException("Sort direction not specified for sort field [" + sb.getKey() + "]");
 
-			final String jpqlExpression = mappings.get(sb.getField());
-			if (jpqlExpression == null)
-				throw new IllegalArgumentException("Invalid sorting field [" + sb.getField() + "]");
+			final String jpqlExpression = mappings.get(sb.getKey());
+			if (jpqlExpression == null) throw new IllegalArgumentException("Invalid sorting field [" + sb.getKey() + "]");
 
 			orderBy.append(' ');
 			orderBy.append(jpqlExpression);
@@ -58,7 +58,7 @@ public class JpqlOrderByBuilder
 		return orderBy.toString();
 	}
 
-	public SortBy[] getActiveSortBy(final SortBy[] sortBy)
+	public SortBy<String>[] getActiveSortBy(final SortBy<String>[] sortBy)
 	{
 		if (sortBy == null || sortBy.length == 0) return defaultSortBy;
 		return sortBy;

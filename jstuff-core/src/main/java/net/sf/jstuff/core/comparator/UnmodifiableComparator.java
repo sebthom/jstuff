@@ -12,30 +12,34 @@
  *******************************************************************************/
 package net.sf.jstuff.core.comparator;
 
+import java.io.Serializable;
 import java.util.Comparator;
+
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ReverseComparator<T> implements Comparator<T>
+public class UnmodifiableComparator<T> implements Comparator<T>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private final Comparator<T> delegate;
 
-	public static <T> ReverseComparator<T> of(final Comparator<T> delegate)
+	public static <T> UnmodifiableComparator<T> of(final Comparator<T> delegate)
 	{
-		return new ReverseComparator<T>(delegate);
+		return new UnmodifiableComparator<T>(delegate);
 	}
 
-	/**
-	 * @param delegate the comparator to reverse
-	 */
-	public ReverseComparator(final Comparator<T> delegate)
+	public UnmodifiableComparator(final Comparator<T> delegate)
 	{
+		Args.notNull("delegate", delegate);
+
 		this.delegate = delegate;
 	}
 
 	public int compare(final T o1, final T o2)
 	{
-		return -delegate.compare(o1, o2);
+		return delegate.compare(o1, o2);
 	}
 }
