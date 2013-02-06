@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.persistence.query;
+package net.sf.jstuff.integration.persistence.jpa;
 
 import java.util.HashMap;
 import java.util.Map;
