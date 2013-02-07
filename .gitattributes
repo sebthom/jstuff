@@ -153,10 +153,10 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/AtomBlogsRe
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/DeletingAtomBlogEntryFailedException.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/PublishingAtomBlogEntryFailedException.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/ReceivingAtomBlogsFailedException.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/feed/AbstractAtomFeedExporter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/feed/AtomCategory.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/feed/AtomEntry.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/feed/AtomFeed.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/feed/AtomFeedExporter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/feed/AtomLink.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/feed/AtomPerson.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/feed/AtomText.java -text
@@ -182,7 +182,6 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/jmx/JMXUtils.java -te
 jstuff-integration/src/main/java/net/sf/jstuff/integration/json/ExtJSUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/json/JsonUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/json/SMDServiceExporter.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/json/SMDServiceExporterWithParanamer.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/ldap/LdapException.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/ldap/LdapTemplate.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/ldap/LdapUtils.java -text

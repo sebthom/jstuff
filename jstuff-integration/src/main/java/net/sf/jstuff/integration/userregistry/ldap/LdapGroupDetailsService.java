@@ -38,7 +38,7 @@ import net.sf.jstuff.integration.userregistry.GroupDetailsService;
  */
 public class LdapGroupDetailsService implements GroupDetailsService
 {
-	private final static Logger LOG = Logger.create();
+	private static final Logger LOG = Logger.create();
 
 	protected String groupAttributeDisplayName;
 	protected String groupAttributeGroupId;

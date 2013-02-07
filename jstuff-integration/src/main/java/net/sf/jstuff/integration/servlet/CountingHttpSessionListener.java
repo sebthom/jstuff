@@ -1,31 +1,32 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.jstuff.integration.servlet;
 
 import java.io.Serializable;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import net.sf.jstuff.core.Logger;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class CountingHttpSessionListener implements HttpSessionListener
 {
-	private final static class HttpSessionBindingListenerImpl implements HttpSessionBindingListener, Serializable
+	private static final class HttpSessionBindingListenerImpl implements HttpSessionBindingListener, Serializable
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -38,7 +39,7 @@ public class CountingHttpSessionListener implements HttpSessionListener
 		}
 	}
 
-	private final static Logger LOG = Logger.getLogger(CountingHttpSessionListener.class.getName());
+	private static final Logger LOG = Logger.create();
 
 	private static final HttpSessionBindingListenerImpl LISTENER = new HttpSessionBindingListenerImpl();
 

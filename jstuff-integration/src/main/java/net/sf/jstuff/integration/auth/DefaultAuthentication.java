@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -24,7 +24,7 @@ import net.sf.jstuff.integration.userregistry.DefaultUserDetails;
  */
 class DefaultAuthentication implements Authentication
 {
-	public final static Authentication UNBOUND = new DefaultAuthentication(new DefaultUserDetails("anonymous",
+	public static final Authentication UNBOUND = new DefaultAuthentication(new DefaultUserDetails("anonymous",
 			"anonymous", null, null, null), null);
 
 	private String password;

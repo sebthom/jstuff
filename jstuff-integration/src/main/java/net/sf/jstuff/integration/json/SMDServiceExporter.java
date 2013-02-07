@@ -30,6 +30,7 @@ import net.sf.json.JSONFunction;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.integration.spring.SpringBeanParanamer;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.support.RemoteExporter;
@@ -46,7 +47,7 @@ import org.springframework.web.util.NestedServletException;
  */
 public class SMDServiceExporter extends RemoteExporter implements HttpRequestHandler, InitializingBean
 {
-	private final static Logger LOG = Logger.create();
+	private static final Logger LOG = Logger.create();
 
 	/**
 	 * Returns an array containing Java objects converted from the given jsonArray.
@@ -147,10 +148,8 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 			methodDescriptor.put("name", method.getName());
 			if (method.getParameterTypes().length > 0)
 			{
-				// for some reason parameter names are not preserved in interfaces,
-				// therefore we look them up in the service implementing class instead
-				final String[] names = getParameterNames(method);/* PARANAMER.lookupParameterNames(getService().getClass()
-																	.getClassLoader(), getService().getClass().getName(), method.getName());*/
+				// for some reason parameter names are not preserved in interfaces, therefore we look them up in the service implementing class instead
+				final String[] names = SpringBeanParanamer.getParameterNames(method, getService());
 
 				final JSONArray parameterArray = new JSONArray();
 				for (int j = 0; j < method.getParameterTypes().length; j++)
@@ -177,14 +176,6 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 
 		LOG.traceMethodExit(result);
 		return result.toString();
-	}
-
-	protected String[] getParameterNames(final Method method)
-	{
-		final String[] names = new String[method.getParameterTypes().length];
-		for (int i = 0, l = method.getParameterTypes().length; i < l; i++)
-			names[i] = "param" + i;
-		return names;
 	}
 
 	/**

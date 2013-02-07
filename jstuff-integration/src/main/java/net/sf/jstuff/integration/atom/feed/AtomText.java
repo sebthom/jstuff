@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -18,8 +18,8 @@ package net.sf.jstuff.integration.atom.feed;
  */
 public class AtomText
 {
-	public final static String TYPE_HTML = "html";
-	public final static String TYPE_TEXT = "text";
+	public static final String TYPE_HTML = "html";
+	public static final String TYPE_TEXT = "text";
 
 	private String content;
 

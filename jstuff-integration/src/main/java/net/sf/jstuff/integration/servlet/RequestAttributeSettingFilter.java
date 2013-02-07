@@ -32,7 +32,7 @@ import net.sf.jstuff.core.Logger;
  */
 public class RequestAttributeSettingFilter implements Filter
 {
-	private final static Logger LOG = Logger.create();
+	private static final Logger LOG = Logger.create();
 	private final Map<String, String> parameter = new LinkedHashMap<String, String>();
 
 	public void destroy()

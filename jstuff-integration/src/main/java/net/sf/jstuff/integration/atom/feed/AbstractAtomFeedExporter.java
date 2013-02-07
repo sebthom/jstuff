@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.atom.feed;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.newArrayList;
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
 import java.io.IOException;
 import java.util.Date;
@@ -27,18 +27,17 @@ import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.date.DateUtils;
 
 import org.apache.commons.lang.time.FastDateFormat;
-import org.springframework.remoting.support.RemoteExporter;
+import org.springframework.remoting.support.RemotingSupport;
 import org.springframework.web.HttpRequestHandler;
 
 import com.thoughtworks.xstream.XStream;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
- *
  */
-public abstract class AtomFeedExporter extends RemoteExporter implements HttpRequestHandler
+public abstract class AbstractAtomFeedExporter extends RemotingSupport implements HttpRequestHandler
 {
-	private final static FastDateFormat DF = FastDateFormat.getInstance("yyyy-MM-dd");
+	private static final FastDateFormat DF = FastDateFormat.getInstance("yyyy-MM-dd");
 
 	private final XStream xstream = new XStream();
 	private final String feedAuthorName = "unknown";
@@ -47,7 +46,7 @@ public abstract class AtomFeedExporter extends RemoteExporter implements HttpReq
 	private final String feedTitle = "Recent entries";
 	private final String feedSubTitle = "";
 
-	public AtomFeedExporter()
+	public AbstractAtomFeedExporter()
 	{
 		xstream.registerConverter(new AtomTextConverter());
 		xstream.processAnnotations(AtomFeed.class);
@@ -80,6 +79,7 @@ public abstract class AtomFeedExporter extends RemoteExporter implements HttpReq
 					cats[i] = new AtomCategory(tagsArray[i]);
 				entry.setCategories(cats);
 			}
+			entries.add(entry);
 		}
 		return entries.toArray(new AtomEntry[entries.size()]);
 	}

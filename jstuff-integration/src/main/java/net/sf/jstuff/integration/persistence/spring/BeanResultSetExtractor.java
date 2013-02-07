@@ -40,7 +40,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
  */
 public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>>
 {
-	private final static Logger LOG = Logger.create();
+	private static final Logger LOG = Logger.create();
 
 	private Class<T> beanClass;
 	private Map<String, String> beanPropertiesLowerCase;

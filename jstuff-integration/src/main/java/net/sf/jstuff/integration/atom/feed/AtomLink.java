@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  * 
  * All Rights Reserved. This program and the accompanying materials
@@ -26,7 +26,7 @@ public class AtomLink
 	 * href attribute identifies an alternate version of the resource
 	 * described by the containing element.
 	 */
-	public final static String REL_ALTERNATE = "alternate";
+	public static final String REL_ALTERNATE = "alternate";
 
 	/**
 	 * The value "enclosure" signifies that the IRI in the value of the
@@ -35,7 +35,7 @@ public class AtomLink
 	 * elements with rel="enclosure", the length attribute SHOULD be
 	 * provided.
 	 */
-	public final static String REL_ENCLOSURE = "enclosure";
+	public static final String REL_ENCLOSURE = "enclosure";
 
 	/**
 	 * The value "related" signifies that the IRI in the value of the
@@ -49,14 +49,14 @@ public class AtomLink
 	 * An identical link might appear as a child of any atom:entry whose
 	 * content contains a discussion of that same search engine.
 	 */
-	public final static String REL_RELATED = "related";
+	public static final String REL_RELATED = "related";
 
 	/**
 	 * The value "self" signifies that the IRI in the value of the href
 	 * attribute identifies a resource equivalent to the containing
 	 * element.
 	 */
-	public final static String REL_SELF = "self";
+	public static final String REL_SELF = "self";
 
 	/**
 	 * The value "via" signifies that the IRI in the value of the href
@@ -66,7 +66,7 @@ public class AtomLink
 	 * attribute identifies a resource that is the source of the
 	 * information provided in the containing element.
 	 */
-	public final static String REL_VIA = "via";
+	public static final String REL_VIA = "via";
 
 	@XStreamAsAttribute
 	private String href;
@@ -77,9 +77,9 @@ public class AtomLink
 	@XStreamAsAttribute
 	private String type;
 
-	public final static String TYPE_APPLICATION_ATOM_XML = "application/atom+xml";
+	public static final String TYPE_APPLICATION_ATOM_XML = "application/atom+xml";
 
-	public final static String TYPE_TEXT_HTML = "text/html";
+	public static final String TYPE_TEXT_HTML = "text/html";
 
 	public AtomLink()
 	{}

@@ -35,7 +35,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
  */
 public class AtomBlogUtils
 {
-	private final static XMLOutputFactory STAX_OUTPUT_FACTORY = XMLOutputFactory.newInstance();
+	private static final XMLOutputFactory STAX_OUTPUT_FACTORY = XMLOutputFactory.newInstance();
 
 	/**
 	 * @param blogEntryEditURL e.g. http://myserver/weblogs/services/atom/me@acme.com/entries/24CG0902859327955BED3587DC5B5A0003E8

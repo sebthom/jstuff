@@ -1,20 +1,18 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.jstuff.integration.auth;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.servlet.Filter;
@@ -27,19 +25,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.integration.userregistry.UserDetailsService;
 
 /**
- * Class filter requests and fetch auth object from session and 
+ * Class filter requests and fetch auth object from session and
  * authenticate users session against container.
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class SecurityFilter implements Filter
 {
-	private final static Logger LOG = Logger.getLogger(SecurityFilter.class.getName());
-	private final static String SESSION_AUTHENTICATION_ATTRIBUTE = Authentication.class.getName();
+	private static final Logger LOG = Logger.create();
+	private static final String SESSION_AUTHENTICATION_ATTRIBUTE = Authentication.class.getName();
 
-	public final static ThreadLocal<HttpServletRequest> HTTP_SERVLET_REQUEST_HOLDER = new ThreadLocal<HttpServletRequest>();
+	public static final ThreadLocal<HttpServletRequest> HTTP_SERVLET_REQUEST_HOLDER = new ThreadLocal<HttpServletRequest>();
 
 	private AuthService authService;
 	private UserDetailsService userDetailsService;
@@ -54,14 +53,14 @@ public class SecurityFilter implements Filter
 		// do nothing
 	}
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
-			throws IOException, ServletException
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
+			ServletException
 	{
 		final HttpServletRequest req = (HttpServletRequest) request;
 		HTTP_SERVLET_REQUEST_HOLDER.set(req);
 
 		final HttpSession sess = req.getSession();
-		if (LOG.isLoggable(Level.FINE)) LOG.fine("URI = " + req.getRequestURI());
+		LOG.debug("URI = %s", req.getRequestURI());
 
 		boolean wasLoggedInBeforeChain = false;
 
@@ -69,16 +68,17 @@ public class SecurityFilter implements Filter
 		Authentication auth = (Authentication) sess.getAttribute(SESSION_AUTHENTICATION_ATTRIBUTE);
 		try
 		{
-			if (auth == null) if (req.getRemoteUser() != null)
-			{
-				// build a auth object based on form-based login
-				auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(req.getRemoteUser()),
-						(String) sess.getAttribute("j_password"));
-				sess.removeAttribute("j_password");
-				sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, auth);
-			}
-			else
-				auth = DefaultAuthentication.UNBOUND;
+			if (auth == null)
+				if (req.getRemoteUser() != null)
+				{
+					// build a auth object based on form-based login
+					auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(req.getRemoteUser()),
+							(String) sess.getAttribute("j_password"));
+					sess.removeAttribute("j_password");
+					sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, auth);
+				}
+				else
+					auth = DefaultAuthentication.UNBOUND;
 			AuthenticationHolder.setAuthentication(auth);
 
 			wasLoggedInBeforeChain = auth.isAuthenticated();

@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class HttpServletResponseStringWrapper extends HttpServletResponseWrapperWithStatus
 {
-	private final static class FilterServletOutputStream extends ServletOutputStream
+	private static final class FilterServletOutputStream extends ServletOutputStream
 	{
 		private final DataOutputStream stream;
 

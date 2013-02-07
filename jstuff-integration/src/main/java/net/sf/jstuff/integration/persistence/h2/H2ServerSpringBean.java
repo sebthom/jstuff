@@ -25,7 +25,7 @@ import org.h2.tools.Server;
  */
 public class H2ServerSpringBean
 {
-	private final static Logger LOG = Logger.create();
+	private static final Logger LOG = Logger.create();
 
 	private String dataDir;
 
