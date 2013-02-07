@@ -218,8 +218,9 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ServletUtils.
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/AffixesRemovingBeanNameGenerator.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanInjector.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanLocator.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanParanamer.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanRef.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringHttpInvokerServicesServlet.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringHttpServicesServlet.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/ZippedBlockRMIProxyFactoryBean.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/ZippedBlockRMIServiceExporter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/ZippedBlockRMISocketFactory.java -text
