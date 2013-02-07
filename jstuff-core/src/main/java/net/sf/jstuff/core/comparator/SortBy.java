@@ -31,6 +31,12 @@ public class SortBy<SortKeyType> implements Serializable
 		super();
 	}
 
+	public SortBy(final SortKeyType key)
+	{
+		this.key = key;
+		this.direction = SortDirection.ASC;
+	}
+
 	public SortBy(final SortKeyType key, final SortDirection direction)
 	{
 		this.key = key;

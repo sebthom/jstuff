@@ -34,9 +34,9 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class IOUtils extends org.apache.commons.io.IOUtils
 {
-	public final static int EOF = -1;
-
 	private static final Logger LOG = Logger.create();
+
+	public static final int EOF = -1;
 
 	public static int copyAndClose(final InputStream is, final OutputStream os) throws IOException
 	{

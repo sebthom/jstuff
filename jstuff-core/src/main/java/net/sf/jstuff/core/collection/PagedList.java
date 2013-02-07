@@ -22,7 +22,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class PagedList<E> extends ArrayList<E>
 {
-	private final static long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private Class<E> elementType;
 	private int start;
