@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.xml;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.newHashMap;
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -199,7 +199,7 @@ public abstract class DOMUtils
 
 		public List<String> getIdAttributesForXMLTagName(final String xmlTagName)
 		{
-			return idAttributesByXMLTagName.getSafe(xmlTagName);
+			return idAttributesByXMLTagName.getNullSafe(xmlTagName);
 		}
 	}
 
