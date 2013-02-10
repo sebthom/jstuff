@@ -75,7 +75,6 @@ public class SpringHttpServicesServlet extends HttpServlet
 
 		final WebApplicationContext springContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 
-		System.out.println(request.getContextPath());
 		if (relativePath == null || "/".equals(relativePath))
 		{
 			if (showIndex == true)
@@ -104,12 +103,13 @@ public class SpringHttpServicesServlet extends HttpServlet
 
 		try
 		{
+			// going backwards to the relativePath to find the best matching bean
 			String beanName = relativePath;
 			while (beanName.contains("/"))
 			{
 				if (springContext.containsBean(beanName))
 				{
-					request.setAttribute("relativePath", StringUtils.substringAfter(relativePath, beanName));
+					request.setAttribute("beanName", beanName);
 					springContext.getBean(beanName, HttpRequestHandler.class).handleRequest(request, response);
 					return;
 				}

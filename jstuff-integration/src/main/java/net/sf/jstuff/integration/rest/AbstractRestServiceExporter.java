@@ -15,20 +15,20 @@ package net.sf.jstuff.integration.rest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.reflection.Beans;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.support.RemoteExporter;
 import org.springframework.web.HttpRequestHandler;
@@ -38,23 +38,11 @@ import org.springframework.web.HttpRequestHandler;
  */
 public abstract class AbstractRestServiceExporter extends RemoteExporter implements HttpRequestHandler, InitializingBean
 {
-	private final static Logger LOG = Logger.getLogger(AbstractRestServiceExporter.class.getName());
+	private static final Logger LOG = Logger.create();
 
-	private final static String[] PARAM_NAMES = {"param0", "param1", "param2", "param3", "param4", "param5", "param6", "param7", "param8",
-			"param9"};
-
-	private String characterEncoding = "UTF-8";
-
-	private String contentType = "";
-
-	/**
-	 * parameter names of exported methods by name of the exported method
-	 */
-	protected Map<String, String[]> paramNamesByExportedMethodName = new TreeMap<String, String[]>();
-
-	private final Map<String, RestResourceAction> resourceActions = new TreeMap<String, RestResourceAction>();
-
-	protected String serviceName;
+	private final String characterEncoding;
+	private final String contentType;
+	private final RestResourceActionRegistry actionRegistry = new RestResourceActionRegistry();
 
 	protected AbstractRestServiceExporter(final String characterEncoding, final String contentType)
 	{
@@ -62,161 +50,80 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		this.contentType = contentType;
 	}
 
-	public synchronized void afterPropertiesSet() throws Exception
+	public String getContentType()
+	{
+		return contentType;
+	}
+
+	public String getCharacterEncoding()
+	{
+		return characterEncoding;
+	}
+
+	public synchronized void afterPropertiesSet() throws IllegalStateException
 	{
 		// initialize resourceActions map
 		for (final Method m : getServiceInterface().getMethods())
 		{
 			if (m.isAnnotationPresent(REST_GET.class))
-			{
-				final REST_GET annotation = m.getAnnotation(REST_GET.class);
+				actionRegistry.registerResourceAction(m.getAnnotation(REST_GET.class).value(), HttpRequestMethod.GET, m, getService());
 
-				final String key = "GET_" + annotation.value();
-
-				if (resourceActions.containsKey(key))
-					throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: " + key);
-
-				final RestResourceAction action = new RestResourceAction(m, annotation.value(), HttpRequestMethod.GET);
-				resourceActions.put(key, action);
-			}
 			if (m.isAnnotationPresent(REST_POST.class))
-			{
-				final REST_POST annotation = m.getAnnotation(REST_POST.class);
+				actionRegistry.registerResourceAction(m.getAnnotation(REST_POST.class).value(), HttpRequestMethod.POST, m, getService());
 
-				final String key = "POST_" + annotation.value();
-
-				if (resourceActions.containsKey(key))
-					throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: " + key);
-
-				final RestResourceAction action = new RestResourceAction(m, annotation.value(), HttpRequestMethod.POST);
-				resourceActions.put(key, action);
-			}
 			if (m.isAnnotationPresent(REST_PUT.class))
 			{
 				final REST_PUT annotation = m.getAnnotation(REST_PUT.class);
-
-				final String key = "PUT" + annotation.value();
-
-				if (resourceActions.containsKey(key))
-					throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: " + key);
-
-				final RestResourceAction action = new RestResourceAction(m, annotation.value(), HttpRequestMethod.PUT);
-				resourceActions.put(key, action);
-
+				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.PUT, m,
+						getService());
 				if (annotation.fallback().length() > 0)
-				{
-					final String fallbackKey = "POST_" + annotation.fallback();
-
-					if (resourceActions.containsKey(fallbackKey))
-						throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: "
-								+ fallbackKey + " at " + m);
-
-					resourceActions.put(fallbackKey, new RestResourceAction(m, annotation.fallback(), HttpRequestMethod.POST, action));
-				}
+					actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
 			}
 			if (m.isAnnotationPresent(REST_DELETE.class))
 			{
 				final REST_DELETE annotation = m.getAnnotation(REST_DELETE.class);
-
-				final String key = "DELETE" + annotation.value();
-
-				if (resourceActions.containsKey(key))
-					throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: " + key);
-
-				final RestResourceAction action = new RestResourceAction(m, annotation.value(), HttpRequestMethod.DELETE);
-				resourceActions.put(key, action);
-
+				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.DELETE, m,
+						getService());
 				if (annotation.fallback().length() > 0)
-				{
-					final String fallbackKey = "POST_" + annotation.fallback();
-
-					if (resourceActions.containsKey(fallbackKey))
-						throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: "
-								+ fallbackKey + " at " + m);
-
-					resourceActions.put(fallbackKey, new RestResourceAction(m, annotation.fallback(), HttpRequestMethod.POST, action));
-				}
+					actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
 			}
 			if (m.isAnnotationPresent(REST_HEAD.class))
 			{
 				final REST_HEAD annotation = m.getAnnotation(REST_HEAD.class);
-
-				final String key = "HEAD" + annotation.value();
-
-				if (resourceActions.containsKey(key))
-					throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: " + key);
-
-				final RestResourceAction action = new RestResourceAction(m, annotation.value(), HttpRequestMethod.HEAD);
-				resourceActions.put(key, action);
-
+				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.HEAD, m,
+						getService());
 				if (annotation.fallback().length() > 0)
-				{
-					final String fallbackKey = "GET_" + annotation.fallback();
-
-					if (resourceActions.containsKey(fallbackKey))
-						throw new IllegalStateException("Mapping multiple methods to the same resource+method is not supported: "
-								+ fallbackKey + " at " + m);
-
-					resourceActions.put(fallbackKey, new RestResourceAction(m, annotation.fallback(), HttpRequestMethod.GET, action));
-				}
+					actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
 			}
 		}
 	}
 
-	private RestServiceDescriptor buildRESTServiceDescriptor(final HttpServletRequest request)
+	private RestServiceDescriptor buildRESTServiceDescriptor(final HttpServletRequest req)
 	{
-		final TreeMap<String, RestResourceActionDescriptor> result = new TreeMap<String, RestResourceActionDescriptor>();
-		for (final RestResourceAction action : resourceActions.values())
-		{
-			final boolean isPOST = action.getHttpMethod() == HttpRequestMethod.POST;
-			final boolean isPUT = action.getHttpMethod() == HttpRequestMethod.PUT;
-			final Method mappedMethod = action.getMethod();
-			final int paramCount = mappedMethod.getParameterTypes().length;
-
-			final RestResourceActionDescriptor actionDef = new RestResourceActionDescriptor(action.isFallback());
-			if (isPUT || isPOST)
-			{
-				if (paramCount < 2)
-					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource());
-				else
-					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource() + "/${"
-							+ StringUtils.join(ArrayUtils.remove(getParameterNames(mappedMethod), paramCount - 1), "}/${") + "}");
-				actionDef.setRequestBodyType(mappedMethod.getParameterTypes()[paramCount - 1].getSimpleName());
-			}
-			else
-			{
-				if (paramCount < 1)
-					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource());
-				else
-					actionDef.setRequestURL(request.getRequestURL() + "/" + action.getResource() + "/${"
-							+ StringUtils.join(getParameterNames(mappedMethod), "}/${") + "}");
-				actionDef.setRequestBodyType("ignored");
-			}
-			actionDef.setHttpRequestMethod(action.getHttpMethod().toString());
-			actionDef.setResponseBodyType(mappedMethod.getReturnType().getSimpleName());
-			if (mappedMethod.getParameterTypes().length == 0)
-				actionDef.setMappedServiceMethod(mappedMethod.getDeclaringClass().getSimpleName() + "." + mappedMethod.getName() + "()");
-			else
-				actionDef.setMappedServiceMethod(mappedMethod.getDeclaringClass().getSimpleName() + "." + mappedMethod.getName() + "("
-						+ StringUtils.join(getParameterNames(mappedMethod), ",") + ")");
-			result.put(actionDef.getRequestURL(), actionDef);
-		}
+		final List<RestResourceAction> actions = actionRegistry.getAllResourceActions();
 		final RestServiceDescriptor serviceDescr = new RestServiceDescriptor();
-		serviceDescr.setMethods(new ArrayList<RestResourceActionDescriptor>(result.values()));
+		Collections.sort(actions, new Comparator<RestResourceAction>()
+			{
+				public int compare(final RestResourceAction o1, final RestResourceAction o2)
+				{
+					return ObjectUtils.compare(o1.getRequestURITemplate(), o2.getRequestURITemplate());
+				}
+			});
+		serviceDescr.setActions(actions);
 		return serviceDescr;
 	}
 
-	private void describe(final HttpServletRequest request, final HttpServletResponse response) throws IOException
+	private void describe(final HttpServletRequest req, final HttpServletResponse resp) throws IOException
 	{
-		response.getWriter().println(serializeResponse(buildRESTServiceDescriptor(request)));
-		response.setStatus(HttpServletResponse.SC_OK);
+		resp.getWriter().println(serializeResponse(buildRESTServiceDescriptor(req)));
+		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 
-	private void describeAsHTML(final HttpServletRequest request, final HttpServletResponse response) throws IOException
+	private void describeAsHTML(final HttpServletRequest req, final HttpServletResponse resp) throws IOException
 	{
-		response.setContentType("text/html;charset=" + characterEncoding);
+		resp.setContentType("text/html;charset=" + characterEncoding);
 		@SuppressWarnings("resource")
-		final PrintWriter pw = response.getWriter();
+		final PrintWriter pw = resp.getWriter();
 		pw.println("<html><head><style>* {font-family:Tahoma} table * {font-size:8pt}</style><title>");
 		pw.println(getServiceInterface().getSimpleName());
 		pw.println(" Service Definition</title></head><body>");
@@ -228,52 +135,52 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		pw.println("</p>");
 
 		pw.println("<h3>RESTful resource actions</h3>");
-		final RestServiceDescriptor serviceDef = buildRESTServiceDescriptor(request);
-		final String requestURL = request.getRequestURL().toString();
+		final RestServiceDescriptor serviceDef = buildRESTServiceDescriptor(req);
+		final String requestURL = req.getRequestURL().toString();
 		doExplainAsHTML(pw, false, serviceDef, requestURL);
 
 		pw.println("<h3>Fallback resource actions for HTTP clients without support for PUT, DELETE, HEAD</h3>");
 		doExplainAsHTML(pw, true, serviceDef, requestURL);
 
 		pw.println("</body></html>");
-		response.setStatus(HttpServletResponse.SC_OK);
+		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	protected abstract <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException;
 
 	public void doExplainAsHTML(final PrintWriter pw, final boolean fallbackMethods, final RestServiceDescriptor serviceDef,
-			final String requestURL)
+			final String baseRequestURL)
 	{
-		for (final RestResourceActionDescriptor actionDef : serviceDef.getMethods())
+		for (final RestResourceAction action : serviceDef.getActions())
 		{
-			if (actionDef.getIsFallbackMethod() != fallbackMethods) continue;
+			final String requestURL = baseRequestURL + "/" + action.getRequestURITemplate();
+			if (action.isFallBackMethod() != fallbackMethods) continue;
 
 			pw.println("<p style='font-size:8pt'>");
-			if (actionDef.getIsFallbackMethod()) pw.println("<span style='color:red'>*isFallback*</span> ");
-			pw.println("<b>" + actionDef.getHttpRequestMethod() + "</b>");
-			pw.println(StringUtils.replace(StringUtils.replace(
-					StringUtils.replace(actionDef.getRequestURL(), "${", "<span style='color:blue'>${"), "}", "}</span>"), requestURL,
-					requestURL + "<b>")
-					+ "</b>");
+			if (action.isFallBackMethod()) pw.println("<span style='color:red'>*isFallback*</span> ");
+			pw.println("<b>" + action.getHttpRequestMethod() + "</b>");
+			pw.println(StringUtils.replace(
+					StringUtils.replace(StringUtils.replace(requestURL, "${", "<span style='color:blue'>${"), "}", "}</span>"),
+					baseRequestURL, baseRequestURL + "<b>") + "</b>");
 			pw.println("</p><table style='border: 1px solid black;width:90%;margin-bottom:0.5em'>");
 
 			/*
 			 * request body type
 			 */
-			if (actionDef.getRequestBodyType().equals("ignored"))
-				pw.println("<tr><td width='200px'>Request Body Type</td><td><i>ignored</i></td></tr>");
+			if (action.getHttpRequestBodyType() == null)
+				pw.println("<tr><td width='200px'>HTTP Request Body Type</td><td><i>ignored</i></td></tr>");
 			else
 			{
-				pw.println("<tr><td width='200px'>Request Body Type</td><td style='font-weight:bold;color:darkred'>");
-				pw.println(actionDef.getRequestBodyType());
+				pw.println("<tr><td width='200px'>HTTP Request Body Type</td><td style='font-weight:bold;color:darkred'>");
+				pw.println(action.getHttpRequestBodyType().getSimpleName());
 				pw.println("</td></tr>");
 			}
 
 			/*
 			 * response body type
 			 */
-			pw.println("<tr><td width='200px'>Response Body Type</td><td style='font-weight:bold;color:darkgreen'>");
-			pw.println(actionDef.getResponseBodyType());
+			pw.println("<tr><td width='200px'>HTTP Response Body Type</td><td style='font-weight:bold;color:darkgreen'>");
+			pw.println(action.getHttpResponseBodyType().getSimpleName());
 			pw.println("</td></tr>");
 
 			/*
@@ -282,122 +189,109 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 			pw.println("<tr><td width='200px'>Mapped Service Method</td><td style='font-weight:bold;color:gray'>");
 
 			// extract the parameter names from the request url
-			final String[] requestParams = StringUtils.substringsBetween(actionDef.getRequestURL(), "${", "}");
-			final String methodSignature = actionDef.getMappedServiceMethod();
+			final String[] requestParams = StringUtils.substringsBetween(requestURL, "${", "}");
 
-			pw.println("<span style='font-weight:bold;color:darkgreen'>" + actionDef.getResponseBodyType() + "</span>");
+			pw.println("<span style='font-weight:bold;color:darkgreen'>" + action.getHttpResponseBodyType().getSimpleName() + "</span>");
 
-			if (actionDef.getRequestBodyType().equals("ignored"))
-				pw.println(StringUtils.replace(methodSignature, StringUtils.join(requestParams, ","), "<span style='color:blue'>"
-						+ StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"));
+			if (action.getHttpRequestBodyType() == null)
+				pw.println(StringUtils.replace(action.getServiceMethodSignature(), StringUtils.join(requestParams, ","),
+						"<span style='color:blue'>" + StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"));
 			else
 			{
 				final String param = StringUtils.substringAfterLast(
-						"," + StringUtils.substringBetween(actionDef.getMappedServiceMethod(), "(", ")"), ",");
-				pw.println(StringUtils.replace(
-						StringUtils.replace(methodSignature, StringUtils.join(requestParams, ","), "<span style='color:blue'>"
-								+ StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"), param + ")",
-						"<span style='color:darkred'>" + param + "</span>)"));
+						"," + StringUtils.substringBetween(action.getServiceMethodSignature(), "(", ")"), ",");
+				pw.println(StringUtils.replace(StringUtils.replace(action.getServiceMethodSignature(),
+						StringUtils.join(requestParams, ","),
+						"<span style='color:blue'>" + StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"),
+						param + ")", "<span style='color:darkred'>" + param + "</span>)"));
 			}
 			pw.println("</td></tr>");
 			pw.println("</table>");
 		}
 	}
 
-	protected String[] getParameterNames(final Method method)
+	public void handleRequest(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException
 	{
-		if (method.getParameterTypes().length == 0) return null;
+		final HttpRequestMethod reqMethod = HttpRequestMethod.valueOf(req.getMethod().toUpperCase());
+		final boolean isDELETE = reqMethod == HttpRequestMethod.DELETE;
+		final boolean isGET = reqMethod == HttpRequestMethod.GET;
+		final boolean isPOST = reqMethod == HttpRequestMethod.POST;
+		final boolean isHEAD = reqMethod == HttpRequestMethod.HEAD;
+		final boolean isPUT = reqMethod == HttpRequestMethod.PUT;
 
-		final String[] names = new String[method.getParameterTypes().length];
-		for (int i = 0, l = method.getParameterTypes().length; i < l; i++)
-			names[i] = "param" + i;
-		return names;
-	}
+		req.setCharacterEncoding(characterEncoding);
+		resp.setCharacterEncoding(characterEncoding);
+		resp.setContentType(contentType);
 
-	public void handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
-	{
-		final HttpRequestMethod httpRequestMethod = HttpRequestMethod.valueOf(request.getMethod().toUpperCase());
-		final boolean isDELETE = httpRequestMethod == HttpRequestMethod.DELETE;
-		final boolean isGET = httpRequestMethod == HttpRequestMethod.GET;
-		final boolean isPOST = httpRequestMethod == HttpRequestMethod.POST;
-		final boolean isHEAD = httpRequestMethod == HttpRequestMethod.HEAD;
-		final boolean isPUT = httpRequestMethod == HttpRequestMethod.PUT;
-
-		request.setCharacterEncoding(characterEncoding);
-		response.setCharacterEncoding(characterEncoding);
-		response.setContentType(contentType);
-
-		if (isGET && request.getParameter("explain") != null)
+		if (isGET && req.getParameter("explain") != null)
 		{
-			describe(request, response);
+			describe(req, resp);
 			return;
 		}
 
-		if (isGET && request.getParameter("explainAsHTML") != null)
+		if (isGET && req.getParameter("explainAsHTML") != null)
 		{
-			describeAsHTML(request, response);
+			describeAsHTML(req, resp);
 			return;
 		}
 
-		final String resource = request.getParameter("resource");
-		final String key = resource + "_" + httpRequestMethod;
-		final RestResourceAction action = resourceActions.get(key);
+		final String beanName = req.getAttribute("beanName").toString();
+		final String requestParameters = StringUtils.substringAfter(req.getPathInfo(), beanName + "/");
+
+		final RestResourceAction action = actionRegistry.getResourceAction(reqMethod, requestParameters);
 
 		if (action == null)
 		{
-			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-			response.getWriter().println(
-					serializeResponse(new RestServiceError("UnsupportedOperationException", "Unsupported HTTP request method "
-							+ httpRequestMethod + " for resource " + resource)));
+			resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			resp.getWriter().println(
+					serializeResponse(new RestServiceError("UnsupportedOperationException", "Unsupported HTTP request method " + reqMethod
+							+ " for resource " + requestParameters)));
 			return;
 		}
 
-		if (LOG.isLoggable(Level.FINE)) LOG.fine("Invoking " + action);
+		LOG.debug("Invoking %s", action);
 
-		final Method actionMethod = action.getMethod();
-
-		// retrieving URL parameters as strings
-		final Class< ? >[] paramTypes = actionMethod.getParameterTypes();
-		final String[] stringArguments = new String[paramTypes.length];
-		for (int i = 0; i < paramTypes.length; i++)
+		final String argsString = requestParameters.substring(action.getResourceName().length());
+		String[] args = "".equals(argsString) ? ArrayUtils.EMPTY_STRING_ARRAY : StringUtils.split(argsString.substring(1), "/");
+		if (args.length < action.getRequiredURLParameterCount())
 		{
-			stringArguments[i] = request.getParameter(PARAM_NAMES[i]);
-			if (stringArguments[i] == null)
-			{
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				response.getWriter().println(
-						serializeResponse(new RestServiceError("MissingArgumentException", "Missing parameter "
-								+ getParameterNames(actionMethod)[i])));
-				return;
-			}
+			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			resp.getWriter().println(
+					serializeResponse(new RestServiceError("MissingArgumentException", "Missing parameter "
+							+ action.getParameterNames()[args.length])));
+			return;
 		}
 
+		// if the service method has var args and the var args are not provided add a null element to the args list
+		if (args.length < action.getServiceMethod().getParameterTypes().length && action.getServiceMethod().isVarArgs())
+			args = ArrayUtils.add(args, null);
+
 		// converting URL parameters to the required object values
-		Object[] methodArguments = Beans.valuesOf(stringArguments, actionMethod.getParameterTypes());
+		Object[] methodArguments = Beans.valuesOf(args, action.getServiceMethod().getParameterTypes());
 
 		// for POST/PUT requests add the request body as additional argument for the method arguments
 		if (isPOST || isPUT)
-			methodArguments = ArrayUtils.add(methodArguments, deserializeRequestBody(actionMethod.getReturnType(), request));
+			methodArguments = ArrayUtils.add(methodArguments, deserializeRequestBody(action.getHttpRequestBodyType(), req));
 
 		try
 		{
-			final Object methodReturnValue = actionMethod.invoke(getService(), methodArguments);
-			onServiceMethodInvoked(actionMethod, methodArguments, methodReturnValue);
+			final Object methodReturnValue = action.getServiceMethod().invoke(getService(), methodArguments);
+			onServiceMethodInvoked(action.getServiceMethod(), methodArguments, methodReturnValue);
 
 			if (isGET || isHEAD)
-				response.setStatus(HttpServletResponse.SC_OK);
+				resp.setStatus(HttpServletResponse.SC_OK);
 			else if (isPOST)
-				response.setStatus(HttpServletResponse.SC_CREATED);
-			else if (isPUT || isDELETE) response.setStatus(HttpServletResponse.SC_ACCEPTED);
+				resp.setStatus(HttpServletResponse.SC_CREATED);
+			else if (isPUT || isDELETE) resp.setStatus(HttpServletResponse.SC_ACCEPTED);
 
-			response.getWriter().println(serializeResponse(methodReturnValue));
+			resp.getWriter().println(serializeResponse(methodReturnValue));
 		}
 		catch (final Exception ex)
 		{
-			LOG.log(Level.SEVERE, "Invoking method " + actionMethod + " failed.", ex);
+			LOG.error("Invoking method %s failed.", ex, action.getServiceMethod());
 
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println(serializeResponse(new RestServiceError(ex.getClass().getSimpleName(), ex.getMessage())));
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			resp.getWriter().println(serializeResponse(new RestServiceError(ex.getClass().getSimpleName(), ex.getMessage())));
 			return;
 		}
 	}
@@ -408,13 +302,4 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 	}
 
 	protected abstract String serializeResponse(final Object resultObject);
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public void setServiceInterface(final Class serviceInterface)
-	{
-		super.setServiceInterface(serviceInterface);
-		serviceName = serviceInterface.getSimpleName();
-	}
-
 }

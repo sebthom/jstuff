@@ -15,6 +15,10 @@
 	<artifactId>jstuff-integration</artifactId>
 	<name>${project.artifactId}</name>
 
+	<properties>
+		<jetty.version>7.6.3.v20120416</jetty.version>
+	</properties>
+
 	<repositories>
 		<repository>
 			<id>jboss</id>
@@ -161,6 +165,16 @@
 			<artifactId>paranamer</artifactId>
 			<version>2.5.2</version>
 			<optional>true</optional>
+		</dependency>
+
+		<!--==================================================================
+			Test dependencies
+			================================================================== -->
+		<dependency>
+			<groupId>org.eclipse.jetty.aggregate</groupId>
+			<artifactId>jetty-all-server</artifactId>
+			<version>${jetty.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

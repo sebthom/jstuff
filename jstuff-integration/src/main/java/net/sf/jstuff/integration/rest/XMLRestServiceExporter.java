@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -17,6 +17,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.collection.PagedListWithSortBy;
+import net.sf.jstuff.core.comparator.SortBy;
 import net.sf.jstuff.core.reflection.ReflectionUtils;
 
 import com.thoughtworks.xstream.XStream;
@@ -28,24 +30,46 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class XStreamRestServiceExporter extends AbstractRestServiceExporter
+public class XMLRestServiceExporter extends AbstractRestServiceExporter
 {
 	private static final Logger LOG = Logger.create();
 
 	private final XStream xStream;
 
-	public XStreamRestServiceExporter()
+	public XMLRestServiceExporter()
 	{
 		super("UTF-8", "application/xml");
-
-		final HierarchicalStreamDriver xmlDriver = //
-		ReflectionUtils.isClassPresent("javax.xml.stream.XMLStreamReader") ? new StaxDriver() : //
-				ReflectionUtils.isClassPresent("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
-						new DomDriver();
+		final HierarchicalStreamDriver xmlDriver = getXStreamDriver();
 		LOG.info("XML driver implementation: %s", xmlDriver);
 		xStream = new XStream(xmlDriver);
 
 		configureXStream(xStream);
+	}
+
+	protected HierarchicalStreamDriver getXStreamDriver()
+	{
+		if (ReflectionUtils.isClassPresent("javax.xml.stream.XMLStreamReader")) try
+		{
+
+			final StaxDriver xmlDriver = new StaxDriver();
+			xmlDriver.getInputFactory();
+			xmlDriver.getOutputFactory();
+			return xmlDriver;
+		}
+		catch (final Exception ex)
+		{
+			LOG.warn("Failed to use StaxDriver.", ex);
+		}
+		catch (final Error er)
+		{
+			if ("javax.xml.stream.FactoryConfigurationError".equals(er.getClass().getName()))
+				LOG.warn("Failed to use StaxDriver.", er);
+			else
+				throw er;
+		}
+
+		return ReflectionUtils.isClassPresent("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
+				new DomDriver();
 	}
 
 	protected void configureXStream(final XStream xStream)
@@ -66,12 +90,17 @@ public class XStreamRestServiceExporter extends AbstractRestServiceExporter
 		xStream.useAttributeFor(Integer.class);
 		xStream.useAttributeFor(Long.class);
 		xStream.useAttributeFor(String.class);
+
+		xStream.alias("pagedList", PagedListWithSortBy.class);
+		xStream.alias("sortBy", SortBy.class);
+		xStream.alias("action", RestResourceAction.class);
+		xStream.alias(RestServiceDescriptor.class.getSimpleName(), RestServiceDescriptor.class);
+		xStream.addImplicitCollection(RestServiceDescriptor.class, "actions");
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request)
-			throws IOException
+	protected <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException
 	{
 		return (T) xStream.fromXML(request.getInputStream());
 	}

@@ -15,6 +15,7 @@ package net.sf.jstuff.integration.spring;
 import java.lang.reflect.Method;
 
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.collection.ArrayUtils;
 
 import org.springframework.aop.support.AopUtils;
 
@@ -34,7 +35,7 @@ public class SpringBeanParanamer
 
 	public static String[] getParameterNames(final Method beanMethod, final Object bean)
 	{
-		if (beanMethod.getParameterTypes().length == 0) return null;
+		if (beanMethod.getParameterTypes().length == 0) return ArrayUtils.EMPTY_STRING_ARRAY;
 
 		String[] parameters = null;
 

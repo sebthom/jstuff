@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -10,27 +10,17 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.rest;
-
-import java.io.Serializable;
-import java.util.Collection;
+package net.sf.jstuff.integration.example.guestbook.service;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RestServiceDescriptor implements Serializable
+public class UnknownEntityException extends RuntimeException
 {
 	private static final long serialVersionUID = 1L;
 
-	private Collection<RestResourceAction> actions;
-
-	public Collection<RestResourceAction> getActions()
+	public UnknownEntityException(final Class< ? > type, final Integer id)
 	{
-		return actions;
-	}
-
-	public void setActions(final Collection<RestResourceAction> actions)
-	{
-		this.actions = actions;
+		super("Unknown entity of type [" + type.getSimpleName() + "] with id [" + id + "]");
 	}
 }

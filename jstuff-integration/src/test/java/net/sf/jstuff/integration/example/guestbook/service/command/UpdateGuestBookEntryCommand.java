@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -10,27 +10,16 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.rest;
+package net.sf.jstuff.integration.example.guestbook.service.command;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RestServiceDescriptor implements Serializable
+public class UpdateGuestBookEntryCommand implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private Collection<RestResourceAction> actions;
-
-	public Collection<RestResourceAction> getActions()
-	{
-		return actions;
-	}
-
-	public void setActions(final Collection<RestResourceAction> actions)
-	{
-		this.actions = actions;
-	}
+	public String message;
 }
