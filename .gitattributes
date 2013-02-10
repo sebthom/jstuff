@@ -20,12 +20,15 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeList.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/EmptyIterator.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/EmptyQueue.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/FIFOMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/IdentitySet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/LRUMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/LinkedSet.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWith.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithCollections.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithLists.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithMaps.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithQueues.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithSets.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableCollection.java -text

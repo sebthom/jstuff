@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -12,104 +12,60 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
-import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class MapWithCollections<K, V, C extends Collection<V>> implements Map<K, C>, Serializable
+public abstract class MapWithCollections<K, V, C extends Collection<V>> extends MapWith<K, C>
 {
 	private static final long serialVersionUID = 1L;
 
-	private final Map<K, C> map;
-	private int initialCapacityOfCollection = 2;
-	private float growthFactorOfCollection = 0.75f;
+	protected int initialCapacityOfCollection = 2;
+	protected float growthFactorOfCollection = 0.75f;
 
 	public MapWithCollections()
 	{
-		map = new HashMap<K, C>();
+		super();
 	}
 
 	public MapWithCollections(final int initialCapacity)
 	{
-		map = new HashMap<K, C>(initialCapacity);
+		super(initialCapacity);
 	}
 
-	public MapWithCollections(final int initialCapacity, final float growthFactor)
+	public MapWithCollections(final int initialCapacity, final int initialCapacityOfCollection, final float growthFactorOfCollection)
 	{
-		map = new HashMap<K, C>(initialCapacity, growthFactor);
-	}
+		super(initialCapacity);
 
-	public MapWithCollections(final int initialCapacity, final float growthFactor, final int initialCapacityOfCollection,
-			final float growthFactorOfCollection)
-	{
-		map = new HashMap<K, C>(initialCapacity, growthFactor);
 		this.initialCapacityOfCollection = initialCapacityOfCollection;
 		this.growthFactorOfCollection = growthFactorOfCollection;
 	}
 
 	public MapWithCollections(final int initialCapacity, final int initialCapacityOfCollection)
 	{
-		map = new HashMap<K, C>(initialCapacity);
+		super(initialCapacity);
 		this.initialCapacityOfCollection = initialCapacityOfCollection;
 	}
 
 	public void add(final K key, final V value)
 	{
-		C values = map.get(key);
-		if (values == null)
-		{
-			values = createCollection(initialCapacityOfCollection, growthFactorOfCollection);
-			map.put(key, values);
-		}
-		values.add(value);
+		getOrCreate(key).add(value);
 	}
 
 	public void addAll(final K key, final Collection<V> values)
 	{
 		if (values == null) return;
 
-		C values2 = map.get(key);
-		if (values2 == null)
-		{
-			values2 = createCollection(Math.max(initialCapacityOfCollection, values.size()), growthFactorOfCollection);
-			map.put(key, values2);
-		}
-		values2.addAll(values);
+		getOrCreate(key).addAll(values);
 	}
 
 	public void addAll(final K key, final V... values)
 	{
 		if (values == null) return;
 
-		C values2 = map.get(key);
-		if (values2 == null)
-		{
-			values2 = createCollection(Math.max(initialCapacityOfCollection, values.length), growthFactorOfCollection);
-			map.put(key, values2);
-		}
-		CollectionUtils.addAll(values2, values);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void clear()
-	{
-		map.clear();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean containsKey(final Object key)
-	{
-		return map.containsKey(key);
+		CollectionUtils.addAll(getOrCreate(key), values);
 	}
 
 	/**
@@ -120,66 +76,25 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> implemen
 	 * @param value the value to search for
 	 * @return true if any of the lists referenced by the map contains the value
 	 */
+	@Override
 	public boolean containsValue(final Object value)
 	{
-		for (final Entry<K, C> entry : map.entrySet())
+		for (final Entry<K, C> entry : entrySet())
 			if (entry.getValue() != null && entry.getValue().contains(value)) return true;
 		return false;
 	}
 
-	public boolean containsValue(final Object key, final Object value)
+	public boolean containsValue(final K key, final V value)
 	{
-		final C values = map.get(key);
+		final C values = get(key);
 		return values != null && values.contains(value);
 	}
 
-	protected abstract C createCollection(final int initialCapacity, final float growthFactor);
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Set<Map.Entry<K, C>> entrySet()
-	{
-		return map.entrySet();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public C get(final Object key)
-	{
-		return map.get(key);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isEmpty()
-	{
-		return map.isEmpty();
-	}
-
 	@SuppressWarnings("unchecked")
-	public Iterator<V> iterator(final Object key)
+	public Iterator<V> iterator(final K key)
 	{
-		final C values = map.get(key);
+		final C values = get(key);
 		return values == null ? (Iterator<V>) EmptyIterator.INSTANCE : values.iterator();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Set<K> keySet()
-	{
-		return map.keySet();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public C put(final K key, final C values)
-	{
-		return map.put(key, values);
 	}
 
 	/**
@@ -193,52 +108,20 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> implemen
 	 */
 	public C put(final K key, final V... values)
 	{
-		final C coll = createCollection(Math.max(initialCapacityOfCollection, values.length), growthFactorOfCollection);
+		final C coll = create(key);
 		CollectionUtils.addAll(coll, values);
 		return put(key, coll);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void putAll(final Map< ? extends K, ? extends C> t)
-	{
-		map.putAll(t);
-	}
-
 	public boolean remove(final K key, final V value)
 	{
-		final C values = map.get(key);
+		final C values = get(key);
 		return values == null ? false : values.remove(value);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public C remove(final Object key)
-	{
-		return map.remove(key);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int size()
-	{
-		return map.size();
 	}
 
 	public int size(final K key)
 	{
-		final C values = map.get(key);
+		final C values = get(key);
 		return values == null ? 0 : values.size();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Collection<C> values()
-	{
-		return map.values();
 	}
 }

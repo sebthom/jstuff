@@ -12,51 +12,42 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
+
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MapWithSets<K, V> extends MapWithCollections<K, V, Set<V>>
+public class MapWithMaps<K, K2, V> extends MapWith<K, Map<K2, V>>
 {
 	private static final long serialVersionUID = 1L;
 
-	public static <K, V> MapWithSets<K, V> create()
+	public static <K, K2, V> MapWithMaps<K, K2, V> create()
 	{
-		return new MapWithSets<K, V>();
+		return new MapWithMaps<K, K2, V>();
 	}
 
-	public static <K, V> MapWithSets<K, V> create(final int initialCapacity, final int initialSetCapacity)
-	{
-		return new MapWithSets<K, V>(initialCapacity, initialSetCapacity);
-	}
-
-	public MapWithSets()
+	public MapWithMaps()
 	{
 		super();
 	}
 
-	public MapWithSets(final int initialCapacity)
+	public MapWithMaps(final int initialCapacity)
 	{
 		super(initialCapacity);
 	}
 
-	public MapWithSets(final int initialCapacity, final int initialCapacityOfSet)
+	@Override
+	protected Map<K2, V> create(final K key)
 	{
-		super(initialCapacity, initialCapacityOfSet);
+		return newHashMap();
 	}
 
 	@Override
-	protected Set<V> create(final K key)
+	protected Map<K2, V> createNullSafe(final K key)
 	{
-		return new HashSet<V>(initialCapacityOfCollection, growthFactorOfCollection);
-	}
-
-	@Override
-	protected Set<V> createNullSafe(final K key)
-	{
-		return Collections.emptySet();
+		return Collections.emptyMap();
 	}
 }

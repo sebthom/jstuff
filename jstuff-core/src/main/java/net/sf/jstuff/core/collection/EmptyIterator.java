@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -32,7 +33,9 @@ public class EmptyIterator<T> implements Iterator<T>, Serializable
 	}
 
 	private EmptyIterator()
-	{}
+	{
+		super();
+	}
 
 	public boolean hasNext()
 	{
@@ -47,5 +50,11 @@ public class EmptyIterator<T> implements Iterator<T>, Serializable
 	public void remove()
 	{
 		throw new NoSuchElementException();
+	}
+
+	@SuppressWarnings({"static-method", "unused"})
+	private Object readResolve() throws ObjectStreamException
+	{
+		return INSTANCE;
 	}
 }

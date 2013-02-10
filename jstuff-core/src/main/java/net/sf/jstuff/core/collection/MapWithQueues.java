@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -32,12 +32,15 @@ public class MapWithQueues<K, V> extends MapWithCollections<K, V, Queue<V>>
 		super();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	protected Queue<V> createCollection(final int initialCapacity, final float growthFactor)
+	protected Queue<V> create(final K key)
 	{
 		return new ConcurrentLinkedQueue<V>();
+	}
+
+	@Override
+	protected Queue<V> createNullSafe(final K key)
+	{
+		return EmptyQueue.get();
 	}
 }
