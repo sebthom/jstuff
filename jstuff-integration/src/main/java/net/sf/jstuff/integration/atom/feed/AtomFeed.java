@@ -1,22 +1,24 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.jstuff.integration.atom.feed;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import net.sf.jstuff.core.Identifiable;
 import net.sf.jstuff.core.date.DateUtils;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -25,7 +27,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * http://www.ietf.org/rfc/rfc4287.txt
- * 
+ *
  * The following child elements are defined by this specification (note
  that the presence of some of these elements is required):
  * <ul>
@@ -54,8 +56,10 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @XStreamAlias("feed")
-public class AtomFeed
+public class AtomFeed implements Identifiable<String>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	@XStreamAsAttribute
 	private String xmlns = "http://www.w3.org/2005/Atom";
 
@@ -142,7 +146,7 @@ public class AtomFeed
 
 	/**
 	 * @return the updated
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	public Date getUpdated() throws ParseException
 	{

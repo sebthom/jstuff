@@ -12,9 +12,9 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.example.guestbook.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
+import net.sf.jstuff.core.Identifiable;
 import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -22,7 +22,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class AbstractEntity implements Serializable
+public abstract class AbstractEntity extends Identifiable.Default<Integer>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,6 @@ public abstract class AbstractEntity implements Serializable
 	private Date lastModifiedOn;
 	private final String createdBy;
 	private String lastModifiedBy;
-	private Integer id;
 
 	public String getCreatedBy()
 	{
@@ -44,16 +43,6 @@ public abstract class AbstractEntity implements Serializable
 		lastModifiedBy = createdBy;
 		createdOn = new Date();
 		lastModifiedOn = createdOn;
-	}
-
-	public Integer getId()
-	{
-		return id;
-	}
-
-	public void setId(final Integer id)
-	{
-		this.id = id;
 	}
 
 	public String getLastModifiedBy()

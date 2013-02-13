@@ -1,23 +1,23 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.jstuff.integration.atom.blog;
 
-import java.io.Serializable;
+import net.sf.jstuff.core.Identifiable;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AtomBlogEntry implements Serializable
+public class AtomBlogEntry extends Identifiable.Default<String>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -25,7 +25,6 @@ public class AtomBlogEntry implements Serializable
 	private String body;
 	private boolean bodyIsHTML = true;
 	private String[] tags;
-	private String id;
 	private String displayURL;
 	private String editURL;
 
@@ -51,14 +50,6 @@ public class AtomBlogEntry implements Serializable
 	public String getEditURL()
 	{
 		return editURL;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public String getId()
-	{
-		return id;
 	}
 
 	/**
@@ -115,14 +106,6 @@ public class AtomBlogEntry implements Serializable
 	public void setEditURL(final String editURL)
 	{
 		this.editURL = editURL;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(final String id)
-	{
-		this.id = id;
 	}
 
 	/**

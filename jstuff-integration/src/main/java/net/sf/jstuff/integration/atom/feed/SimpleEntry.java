@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -14,15 +14,18 @@ package net.sf.jstuff.integration.atom.feed;
 
 import java.util.Date;
 
-public class SimpleEntry<T>
+import net.sf.jstuff.core.Identifiable;
+
+public class SimpleEntry<T> extends Identifiable.Default<T>
 {
+	private static final long serialVersionUID = 1L;
+
 	private String authorDisplayName;
 	private String authorEMailAddress;
 	private String authorURL;
 	private String content;
 	private Date dateCreated;
 	private Date dateLastModified;
-	private T id;
 	private String subject;
 
 	private String tags;
@@ -73,14 +76,6 @@ public class SimpleEntry<T>
 	public Date getDateLastModified()
 	{
 		return dateLastModified;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public T getId()
-	{
-		return id;
 	}
 
 	/**
@@ -145,14 +140,6 @@ public class SimpleEntry<T>
 	public void setDateLastModified(final Date dateLastModified)
 	{
 		this.dateLastModified = dateLastModified;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(final T id)
-	{
-		this.id = id;
 	}
 
 	/**
