@@ -20,7 +20,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
 import java.util.HashSet;
@@ -598,25 +597,6 @@ public abstract class ReflectionUtils
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T createProxyInstance(final Class<T> interfaceType, final InvocationHandler handler)
-	{
-		Args.notNull("interfaceType", interfaceType);
-		Args.notNull("handler", handler);
-
-		return (T) Proxy.newProxyInstance(interfaceType.getClassLoader(), new Class[]{interfaceType}, handler);
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> T createProxyInstance(final Class<T> interfaceType, final InvocationHandler handler, final ClassLoader loader)
-	{
-		Args.notNull("interfaceType", interfaceType);
-		Args.notNull("handler", handler);
-		Args.notNull("loader", loader);
-
-		return (T) Proxy.newProxyInstance(loader, new Class[]{interfaceType}, handler);
-	}
-
 	public static <T> T createSynchronized(final Class<T> objectInterface, final T object)
 	{
 		Args.notNull("objectInterface", objectInterface);
@@ -630,7 +610,7 @@ public abstract class ReflectionUtils
 		Args.notNull("objectInterface", objectInterface);
 		Args.notNull("object", object);
 
-		return createProxyInstance(objectInterface, new InvocationHandler()
+		return Proxies.create(objectInterface, new InvocationHandler()
 			{
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{
