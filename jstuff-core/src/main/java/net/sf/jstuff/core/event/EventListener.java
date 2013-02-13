@@ -15,7 +15,7 @@ package net.sf.jstuff.core.event;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface EventListener<EventType, EventData>
+public interface EventListener<Event>
 {
-	void onEvent(final EventType type, final EventData data);
+	void onEvent(final Event event);
 }

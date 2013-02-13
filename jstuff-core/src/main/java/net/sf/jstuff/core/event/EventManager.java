@@ -26,12 +26,12 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EventManager<EventType, EventData> implements EventListenable<EventType, EventData>
+public class EventManager<Event> implements EventListenable<Event>
 {
 	private static final Logger LOG = Logger.create();
 
-	private final Set<EventListener<EventType, EventData>> eventListeners = new CopyOnWriteArraySet<EventListener<EventType, EventData>>();
-	private final Set<EventListener<EventType, EventData>> eventListenersUnmodifiable = Collections.unmodifiableSet(eventListeners);
+	private final Set<EventListener<Event>> eventListeners = new CopyOnWriteArraySet<EventListener<Event>>();
+	private final Set<EventListener<Event>> eventListenersUnmodifiable = Collections.unmodifiableSet(eventListeners);
 
 	private ExecutorService executorService;
 
@@ -45,21 +45,21 @@ public class EventManager<EventType, EventData> implements EventListenable<Event
 		return Executors.newFixedThreadPool(5);
 	}
 
-	public int fire(final EventType type, final EventData data)
+	public int fire(final Event type)
 	{
-		return Events.fire(type, data, eventListeners);
+		return Events.fire(type, eventListeners);
 	}
 
-	public Future<Integer> fireAsync(final EventType type, final EventData data)
+	public Future<Integer> fireAsync(final Event type)
 	{
 		@SuppressWarnings("unchecked")
-		final EventListener<EventType, EventData>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
+		final EventListener<Event>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
 
 		return getExecutorService().submit(new Callable<Integer>()
 			{
 				public Integer call() throws Exception
 				{
-					return Events.fire(type, data, copy);
+					return Events.fire(type, copy);
 				}
 			});
 	}
@@ -68,7 +68,7 @@ public class EventManager<EventType, EventData> implements EventListenable<Event
 	 *
 	 * @return an unmodifiable set of the registered event listeners
 	 */
-	public Set<EventListener<EventType, EventData>> getEventListeners()
+	public Set<EventListener<Event>> getEventListeners()
 	{
 		return eventListenersUnmodifiable;
 	}
@@ -82,7 +82,7 @@ public class EventManager<EventType, EventData> implements EventListenable<Event
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean subscribe(final EventListener<EventType, EventData> listener)
+	public boolean subscribe(final EventListener<Event> listener)
 	{
 		Args.notNull("listener", listener);
 		return eventListeners.add(listener);
@@ -91,7 +91,7 @@ public class EventManager<EventType, EventData> implements EventListenable<Event
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean unsubscribe(final EventListener<EventType, EventData> listener)
+	public boolean unsubscribe(final EventListener<Event> listener)
 	{
 		Args.notNull("listener", listener);
 		return eventListeners.remove(listener);

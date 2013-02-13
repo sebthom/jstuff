@@ -17,17 +17,16 @@ import java.util.LinkedList;
 import java.util.concurrent.Future;
 
 import net.sf.jstuff.core.Logger;
-import net.sf.jstuff.core.collection.Tuple2;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EventManagerWithHistory<EventType, EventData> extends EventManager<EventType, EventData>
+public class EventManagerWithHistory<Event> extends EventManager<Event>
 {
 	private static final Logger LOG = Logger.create();
 
-	private LinkedList<Tuple2<EventType, EventData>> eventHistory;
+	private LinkedList<Event> eventHistory;
 
 	public EventManagerWithHistory()
 	{
@@ -35,9 +34,9 @@ public class EventManagerWithHistory<EventType, EventData> extends EventManager<
 		initEventHistory();
 	}
 
-	protected void addEventToHistory(final EventType type, final EventData data)
+	protected void addEventToHistory(final Event event)
 	{
-		eventHistory.add(Tuple2.create(type, data));
+		eventHistory.add(event);
 	}
 
 	public void clearHistory()
@@ -46,44 +45,44 @@ public class EventManagerWithHistory<EventType, EventData> extends EventManager<
 	}
 
 	@Override
-	public int fire(final EventType type, final EventData data)
+	public int fire(final Event event)
 	{
-		addEventToHistory(type, data);
+		addEventToHistory(event);
 
-		return super.fire(type, data);
+		return super.fire(event);
 	}
 
 	@Override
-	public Future<Integer> fireAsync(final EventType type, final EventData data)
+	public Future<Integer> fireAsync(final Event event)
 	{
-		addEventToHistory(type, data);
+		addEventToHistory(event);
 
-		return super.fireAsync(type, data);
+		return super.fireAsync(event);
 	}
 
-	protected Iterator<Tuple2<EventType, EventData>> getEventHistory()
+	protected Iterator<Event> getEventHistory()
 	{
 		return eventHistory.iterator();
 	}
 
 	protected void initEventHistory()
 	{
-		eventHistory = new LinkedList<Tuple2<EventType, EventData>>();
+		eventHistory = new LinkedList<Event>();
 	}
 
 	/**
 	 * Sends all recorded events to the given listeners in case it was not added already.
 	 */
-	public boolean subscribeAndReplayHistory(final EventListener<EventType, EventData> listener)
+	public boolean subscribeAndReplayHistory(final EventListener<Event> listener)
 	{
 		Args.notNull("listener", listener);
 
 		if (super.subscribe(listener))
 		{
-			for (final Iterator<Tuple2<EventType, EventData>> it = getEventHistory(); it.hasNext();)
+			for (final Iterator<Event> it = getEventHistory(); it.hasNext();)
 			{
-				final Tuple2<EventType, EventData> event = it.next();
-				listener.onEvent(event.get1(), event.get2());
+				final Event event = it.next();
+				listener.onEvent(event);
 			}
 			return true;
 		}

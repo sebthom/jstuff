@@ -22,20 +22,14 @@ import junit.framework.TestCase;
  */
 public class EventTest extends TestCase
 {
-	public enum EventType
-	{
-		FOO,
-		BAR
-	}
-
 	public void testEvents() throws InterruptedException, ExecutionException
 	{
-		final EventManager<EventType, String> em = new EventManager<EventType, String>();
+		final EventManager<String> em = new EventManager<String>();
 
 		final AtomicLong listener1Count = new AtomicLong();
-		final EventListener<EventType, String> listener1 = new EventListener<EventType, String>()
+		final EventListener<String> listener1 = new EventListener<String>()
 			{
-				public void onEvent(final EventType type, final String data)
+				public void onEvent(final String event)
 				{
 					listener1Count.incrementAndGet();
 				}
@@ -45,14 +39,14 @@ public class EventTest extends TestCase
 		assertFalse(em.subscribe(listener1));
 
 		final AtomicLong listener2Count = new AtomicLong();
-		final EventListener<EventType, String> listener2 = new FilteringEventListener<EventType, String>()
+		final EventListener<String> listener2 = new FilteringEventListener<String>()
 			{
-				public boolean accept(final EventType type, final String event)
+				public boolean accept(final String event)
 				{
 					return event != null && event.length() < 5;
 				}
 
-				public void onEvent(final EventType type, final String event)
+				public void onEvent(final String event)
 				{
 					listener2Count.incrementAndGet();
 				}
@@ -61,16 +55,16 @@ public class EventTest extends TestCase
 		assertTrue(em.subscribe(listener2));
 		assertFalse(em.subscribe(listener2));
 
-		assertEquals(2, em.fire(EventType.FOO, "123"));
+		assertEquals(2, em.fire("123"));
 		assertEquals(1, listener1Count.get());
 		assertEquals(1, listener2Count.get());
 
-		assertEquals(1, em.fire(EventType.FOO, "1234567890"));
+		assertEquals(1, em.fire("1234567890"));
 		assertEquals(2, listener1Count.get());
 		assertEquals(1, listener2Count.get());
 
-		assertEquals(2, em.fireAsync(EventType.BAR, "123").get().intValue());
-		assertEquals(1, em.fireAsync(EventType.BAR, "1234567890").get().intValue());
+		assertEquals(2, em.fireAsync("123").get().intValue());
+		assertEquals(1, em.fireAsync("1234567890").get().intValue());
 		assertEquals(4, listener1Count.get());
 		assertEquals(2, listener2Count.get());
 	}

@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import net.sf.jstuff.core.collection.ObservableCollection.ItemAction;
-import net.sf.jstuff.core.collection.ObservableCollection.ItemActionData;
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.event.EventManager;
@@ -25,7 +24,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObservableCollection<E> implements Collection<E>, EventListenable<ItemAction, ItemActionData<E>>
+public class ObservableCollection<E> implements Collection<E>, EventListenable<ItemAction<E>>
 {
 	public static enum BulkAction
 	{
@@ -35,22 +34,24 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 		RETAIN_ALL
 	}
 
-	public static enum ItemAction
+	public static enum ItemActionType
 	{
 		ADD,
 		REMOVE
 	}
 
-	public static class ItemActionData<E>
+	public static class ItemAction<E>
 	{
 		/**
 		 * -1 means the index is not specified
 		 */
 		public final int index;
 		public final E item;
+		public final ItemActionType type;
 
-		public ItemActionData(final E item, final int index)
+		public ItemAction(final ItemActionType type, final E item, final int index)
 		{
+			this.type = type;
 			this.item = item;
 			this.index = index;
 		}
@@ -63,7 +64,7 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 
 	protected BulkAction currentBulkAction;
 
-	private final EventManager<ItemAction, ItemActionData<E>> events = new EventManager<ItemAction, ItemActionData<E>>();
+	private final EventManager<ItemAction<E>> events = new EventManager<ItemAction<E>>();
 
 	private final Collection<E> wrapped;
 
@@ -174,7 +175,7 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 	 */
 	protected void onAdded(final E item, final int index)
 	{
-		events.fire(ItemAction.ADD, new ItemActionData<E>(item, index));
+		events.fire(new ItemAction<E>(ItemActionType.ADD, item, index));
 	}
 
 	/**
@@ -182,7 +183,7 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 	 */
 	protected void onRemoved(final E item, final int index)
 	{
-		events.fire(ItemAction.REMOVE, new ItemActionData<E>(item, index));
+		events.fire(new ItemAction<E>(ItemActionType.REMOVE, item, index));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -239,7 +240,7 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 		return wrapped.size();
 	}
 
-	public boolean subscribe(final EventListener<ItemAction, ItemActionData<E>> listener)
+	public boolean subscribe(final EventListener<ItemAction<E>> listener)
 	{
 		return events.subscribe(listener);
 	}
@@ -254,7 +255,7 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 		return wrapped.toArray(a);
 	}
 
-	public boolean unsubscribe(final EventListener<ItemAction, ItemActionData<E>> listener)
+	public boolean unsubscribe(final EventListener<ItemAction<E>> listener)
 	{
 		return events.unsubscribe(listener);
 	}

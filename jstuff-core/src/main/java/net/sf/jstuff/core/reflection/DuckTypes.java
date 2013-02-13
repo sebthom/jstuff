@@ -12,8 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.reflection;
 
-import static net.sf.jstuff.core.reflection.ReflectionUtils.*;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
@@ -44,7 +42,7 @@ public abstract class DuckTypes
 
 		LOG.debug("Ducktyping %s to type %s", duckLikeObject, duckInterface);
 
-		return createProxyInstance(duckInterface, new InvocationHandler()
+		return Proxies.create(duckInterface, new InvocationHandler()
 			{
 				public Object invoke(final Object duckProxy, final Method duckMethod, final Object[] args) throws Throwable
 				{

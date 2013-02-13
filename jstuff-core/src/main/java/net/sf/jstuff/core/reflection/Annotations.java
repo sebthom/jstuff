@@ -73,7 +73,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 		 */
 		try
 		{
-			return createProxyInstance(annotationType, new InvocationHandler()
+			return Proxies.create(annotationType, new InvocationHandler()
 				{
 					public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 					{

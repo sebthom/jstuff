@@ -26,33 +26,31 @@ public abstract class Events
 	/**
 	 * @return the number of listeners notified successfully
 	 */
-	public static <EventType, EventData> int fire(final EventType type, final EventData data,
-			final Collection<EventListener<EventType, EventData>> listeners)
+	public static <Event> int fire(final Event type, final Collection<EventListener<Event>> listeners)
 	{
 		int count = 0;
-		if (listeners != null) for (final EventListener<EventType, EventData> listener : listeners)
-			if (fire(type, data, listener)) count++;
+		if (listeners != null) for (final EventListener<Event> listener : listeners)
+			if (fire(type, listener)) count++;
 		return count;
 	}
 
 	/**
 	 * @return true if the listener was notified successfully
 	 */
-	public static <EventType, EventData> boolean fire(final EventType event, final EventData data,
-			final EventListener<EventType, EventData> listener)
+	public static <Event> boolean fire(final Event event, final EventListener<Event> listener)
 	{
 		if (listener != null) try
 		{
 			if (listener instanceof FilteringEventListener)
 			{
-				final FilteringEventListener<EventType, EventData> flistener = (FilteringEventListener<EventType, EventData>) listener;
-				if (flistener.accept(event, data))
-					flistener.onEvent(event, data);
+				final FilteringEventListener<Event> flistener = (FilteringEventListener<Event>) listener;
+				if (flistener.accept(event))
+					flistener.onEvent(event);
 				else
 					return false;
 			}
 			else
-				listener.onEvent(event, data);
+				listener.onEvent(event);
 			return true;
 		}
 		catch (final RuntimeException ex)
@@ -65,12 +63,11 @@ public abstract class Events
 	/**
 	 * @return the number of listeners notified successfully
 	 */
-	public static <EventType, EventData> int fire(final EventType type, final EventData data,
-			final EventListener<EventType, EventData>... listeners)
+	public static <Event> int fire(final Event type, final EventListener<Event>... listeners)
 	{
 		int count = 0;
-		if (listeners != null) for (final EventListener<EventType, EventData> listener : listeners)
-			if (fire(type, data, listener)) count++;
+		if (listeners != null) for (final EventListener<Event> listener : listeners)
+			if (fire(type, listener)) count++;
 		return count;
 	}
 
