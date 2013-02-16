@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -518,6 +519,21 @@ public abstract class ReflectionUtils
 		Args.notNull("member", member);
 
 		return (member.getModifiers() & Modifier.PUBLIC) != 0;
+	}
+
+	public static boolean isScalar(final Class< ? > type)
+	{
+		return type == boolean.class || type == Boolean.class || //
+				type == char.class || type == Character.class || //
+				type == int.class || //
+				type == long.class || //
+				type == byte.class || //
+				type == short.class || //
+				type == float.class || //
+				Enum.class.isAssignableFrom(type) || //
+				Number.class.isAssignableFrom(type) || //
+				CharSequence.class.isAssignableFrom(type) || //
+				Date.class.isAssignableFrom(type);
 	}
 
 	/**

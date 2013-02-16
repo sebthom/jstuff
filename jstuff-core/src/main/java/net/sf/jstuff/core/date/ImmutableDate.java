@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -26,7 +26,7 @@ public class ImmutableDate extends Date
 		super(System.currentTimeMillis());
 	}
 
-	public ImmutableDate(final Date date)
+	public ImmutableDate(final java.util.Date date)
 	{
 		super(date.getTime());
 	}
@@ -37,65 +37,44 @@ public class ImmutableDate extends Date
 		return new ImmutableDate(this);
 	}
 
-	/**
-	 * Unsupported
-	 */
 	@Override
-	public void setDate(final int date)
+	public void setDate(final int date) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Unsupported
-	 */
 	@Override
-	public void setHours(final int i)
+	public void setHours(final int i) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Unsupported
-	 */
 	@Override
-	public void setMinutes(final int i)
+	public void setMinutes(final int i) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Unsupported
-	 */
 	@Override
-	public void setMonth(final int month)
+	public void setMonth(final int month) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Unsupported
-	 */
 	@Override
-	public void setSeconds(final int i)
+	public void setSeconds(final int i) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Unsupported
-	 */
 	@Override
-	public void setTime(final long date)
+	public void setTime(final long date) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * Unsupported
-	 */
 	@Override
-	public void setYear(final int year)
+	public void setYear(final int year) throws UnsupportedOperationException
 	{
 		throw new UnsupportedOperationException();
 	}

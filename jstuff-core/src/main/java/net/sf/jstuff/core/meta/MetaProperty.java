@@ -14,9 +14,9 @@ package net.sf.jstuff.core.meta;
 
 import static java.util.Collections.*;
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
+import static net.sf.jstuff.core.reflection.ReflectionUtils.*;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -126,17 +126,7 @@ public final class MetaProperty<P> implements Serializable
 
 	public boolean isScalarType()
 	{
-		return type == boolean.class || type == Boolean.class || //
-				type == char.class || type == Character.class || //
-				type == int.class || //
-				type == long.class || //
-				type == byte.class || //
-				type == short.class || //
-				type == float.class || //
-				Enum.class.isAssignableFrom(type) || //
-				Number.class.isAssignableFrom(type) || //
-				CharSequence.class.isAssignableFrom(type) || //
-				Date.class.isAssignableFrom(type);
+		return isScalar(type);
 	}
 
 	public boolean isUnique()
