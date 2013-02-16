@@ -10,22 +10,19 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.ldap;
+package net.sf.jstuff.integration.persistence.spring;
+
+import org.springframework.dao.DataAccessException;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class LdapException extends RuntimeException
+public class NestedDataAccessException extends DataAccessException
 {
 	private static final long serialVersionUID = 1L;
 
-	public LdapException(final Throwable cause)
+	public NestedDataAccessException(final String msg, final Throwable cause)
 	{
-		super(cause);
-	}
-
-	public LdapException(final String message, final Throwable cause)
-	{
-		super(message, cause);
+		super(msg, cause);
 	}
 }

@@ -185,7 +185,6 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/cache/EhcacheSupport.
 jstuff-integration/src/main/java/net/sf/jstuff/integration/config/INIFileConfiguration.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/jmx/JMXUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/json/ExtJSUtils.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/json/JsonUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/json/SMDServiceExporter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/ldap/LdapException.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/ldap/LdapTemplate.java -text
@@ -195,11 +194,14 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/JdbcResou
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/SQLUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/h2/H2ServerSpringBean.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/hibernate/FixedLengthStringOIDGenerator.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/hibernate/HibernateUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/hibernate/IntegerOIDGenerator.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/jpa/AbstractJPAEntity.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/jpa/JPAUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/jpa/JpqlOrderByBuilder.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/spring/BeanResultSetExtractor.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/spring/BeanRowMapper.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/spring/NestedDataAccessException.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/AbstractRestServiceExporter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/HttpRequestMethod.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/JsonRestServiceExporter.java -text

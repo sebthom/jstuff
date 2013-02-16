@@ -301,5 +301,5 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		// may be subclassed
 	}
 
-	protected abstract String serializeResponse(final Object resultObject);
+	protected abstract String serializeResponse(final Object resultObject) throws IOException;
 }

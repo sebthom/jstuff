@@ -14,34 +14,36 @@ package net.sf.jstuff.integration.json;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONFunction;
-import net.sf.json.JSONObject;
-import net.sf.json.util.JSONUtils;
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.reflection.ReflectionUtils;
 import net.sf.jstuff.integration.spring.SpringBeanParanamer;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.support.RemoteExporter;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.util.NestedServletException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
 
 /**
  * JSON-RPC Standard Method Definition
  *
- * http://www.dojotoolkit.org/reference-guide/dojox/rpc/SMDLibrary.html
+ * http://dojotoolkit.org/reference-guide/dojox/rpc/SMDLibrary.html
+ * http://dojotoolkit.org/reference-guide/1.8/dojox/rpc/smd.html#dojox-rpc-smd
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -49,66 +51,25 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 {
 	private static final Logger LOG = Logger.create();
 
-	/**
-	 * Returns an array containing Java objects converted from the given jsonArray.
-	 *
-	 * @param jsonArray the JSON array to convert
-	 * @param elementTypes the types of each array element
-	 * @return an array containing Java objects converted from the given jsonArray.
-	 */
-	private static Object[] toArray(final JSONArray jsonArray, final Class< ? >[] elementTypes)
-	{
-		final Object[] array = (Object[]) Array.newInstance(Object.class, JSONArray.getDimensions(jsonArray));
-		final int arrayLen = jsonArray.size();
-
-		for (int i = 0; i < arrayLen; i++)
-		{
-			final Object value = jsonArray.get(i);
-			if (JSONUtils.isNull(value))
-				array[i] = null;
-			else if (value instanceof JSONArray)
-				array[i] = JSONArray.toArray((JSONArray) value, elementTypes[i]);
-			else if (value instanceof String || value instanceof Boolean || value instanceof Number || value instanceof Character
-					|| value instanceof JSONFunction)
-				array[i] = value;
-			else
-				array[i] = JSONObject.toBean((JSONObject) value, elementTypes[i]);
-		}
-		return array;
-	}
-
-	/**
-	 * The exported methods by name.
-	 */
-	private Map<String, Method> exportedMethodsByName;
-
-	/**
-	 * Simple Method Description
-	 */
-	private String smdTemplate;
-
-	public void afterPropertiesSet() throws Exception
-	{
-		exportedMethodsByName = buildExportedMethodsByName();
-		smdTemplate = buildSMDTemplate();
-	}
+	private static final ObjectMapper JSON = new ObjectMapper();
+	private static final ObjectWriter JSON_PRETTY_WRITER = JSON.writerWithDefaultPrettyPrinter();
 
 	/**
 	 * Map<String, Method>
 	 *
 	 * @return a map
 	 */
-	private Map<String, Method> buildExportedMethodsByName()
+	public static Map<String, Method> buildExportedMethodsByName(final Class< ? > serviceInterface)
 	{
 		final Map<String, Method> methodsByMethodName = newTreeMap();
 		final Map<String, Class< ? >[]> parameterTypesByMethodName = newHashMap();
 
 		// loop through the service interface and all super interfaces to collect the public methods
-		Class< ? > clazz = getServiceInterface();
+		Class< ? > clazz = serviceInterface;
 		while (clazz != null)
 		{
 			// retrieve the public methods
-			final Method[] publicMethods = getServiceInterface().getMethods();
+			final Method[] publicMethods = serviceInterface.getMethods();
 			for (final Method method : publicMethods)
 			{
 				final String name = method.getName();
@@ -134,48 +95,69 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 	/**
 	 * see http://dojo.jot.com/SMD
 	 * see http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9
-	 * @return
 	 */
-	private String buildSMDTemplate()
+	public static String buildSMDTemplate(final Class< ? > serviceInterface, final Object service,
+			final Map<String, Method> exportedMethodsByName, final boolean pretty) throws JsonProcessingException
 	{
 		// build the method descriptors
-		final JSONArray methodDescriptions = new JSONArray();
-		for (final Object element : exportedMethodsByName.values())
+		final Map<String, Object> methodDescriptions = newLinkedHashMap();
+		for (final Method method : exportedMethodsByName.values())
 		{
-			final Method method = (Method) element;
-
-			final JSONObject methodDescriptor = new JSONObject();
-			methodDescriptor.put("name", method.getName());
+			final Map<String, Object> methodDescriptor = newLinkedHashMap();
 			if (method.getParameterTypes().length > 0)
 			{
 				// for some reason parameter names are not preserved in interfaces, therefore we look them up in the service implementing class instead
-				final String[] names = SpringBeanParanamer.getParameterNames(method, getService());
+				final String[] names = SpringBeanParanamer.getParameterNames(method, service);
 
-				final JSONArray parameterArray = new JSONArray();
+				final List<Object> parameters = newArrayList();
 				for (int j = 0; j < method.getParameterTypes().length; j++)
 				{
-					final Class< ? > clazz = method.getParameterTypes()[j];
-					final JSONObject parameterDescriptor = new JSONObject();
-
-					parameterDescriptor.put("name", names[0]);
-					parameterDescriptor.put("type", clazz.getName());
-					parameterArray.add(parameterDescriptor);
+					final JsonSchema parameterDescriptor = JSON.generateJsonSchema(method.getParameterTypes()[j]);
+					parameterDescriptor.getSchemaNode().put("name", names[0]);
+					parameterDescriptor.getSchemaNode().put("java-type", method.getParameterTypes()[j].getName());
+					parameters.add(parameterDescriptor);
 				}
-				methodDescriptor.put("parameters", parameterArray);
+				methodDescriptor.put("parameters", parameters);
 			}
-			methodDescriptions.add(methodDescriptor);
+			if (!ReflectionUtils.isVoidMethod(method))
+			{
+				final JsonSchema returnTypeDescriptor = JSON.generateJsonSchema(method.getReturnType());
+				returnTypeDescriptor.getSchemaNode().put("java-type", method.getReturnType().getName());
+				methodDescriptor.put("returns", returnTypeDescriptor);
+			}
+			methodDescriptions.put(method.getName(), methodDescriptor);
 		}
 
 		// build the final SMD definition object
-		final JSONObject result = new JSONObject();
-		result.put("SMDVersion", ".1");
-		result.put("objectName", ClassUtils.getShortName(getServiceInterface()));
-		result.put("serviceType", "JSON-RPC");
-		result.put("serviceURL", "THE_SERVICE_URL");
-		result.put("methods", methodDescriptions);
+		final Map<String, Object> result = newLinkedHashMap(2);
+		result.put("SMDVersion", "2.0");
+		result.put("id", serviceInterface.getClass().getName());
+		result.put("description", "");
+		result.put("transport", "POST");
+		result.put("envelope", "JSON-RPC-1.0");
+		result.put("additionalParameters", false);
+		result.put("target", "THE_SERVICE_URL");
+		result.put("services", methodDescriptions);
 
 		LOG.traceMethodExit(result);
-		return result.toString();
+		if (pretty) return JSON_PRETTY_WRITER.writeValueAsString(result);
+		return JSON.writeValueAsString(result);
+	}
+
+	/**
+	 * The exported methods by name.
+	 */
+	private Map<String, Method> exportedMethodsByName;
+
+	/**
+	 * Simple Method Description
+	 */
+	private String smdTemplate;
+
+	public void afterPropertiesSet() throws Exception
+	{
+		exportedMethodsByName = buildExportedMethodsByName(getServiceInterface());
+		smdTemplate = buildSMDTemplate(getServiceInterface(), getService(), exportedMethodsByName, false);
 	}
 
 	/**
@@ -196,45 +178,40 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 		}
 	}
 
-	@SuppressWarnings("resource")
 	private void invokeMethod(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException
 	{
-		// read the request body
-		final BufferedReader requestReader = request.getReader();
-		final StringBuffer requestBody = new StringBuffer();
-		final char[] buffer = new char[1024];
-		while (true)
-		{
-			final int bytesRead = requestReader.read(buffer);
-			if (bytesRead == -1) break;
-			requestBody.append(buffer, 0, bytesRead);
-		}
-
 		// deserializing the object
-		final JSONObject requestObject = JSONObject.fromObject(new String(buffer));
+		final JsonNode requestObject = JSON.readTree(request.getReader());
 
 		// looking up the method
-		final String methodName = requestObject.getString("method");
+		final String methodName = requestObject.get("method").asText();
 		final Method method = exportedMethodsByName.get(methodName);
 
 		// throw an exception if the method could not be found
 		if (method == null) throw new ServletException("Method " + methodName + " not found");
 
-		final Object[] methodArguments = toArray(requestObject.getJSONArray("params"), method.getParameterTypes());
-
 		try
 		{
+			// converting method arguments
+			final JsonNode paramsNode = requestObject.get("params");
+			final Object[] methodArguments = new Object[paramsNode.size()];
+			final Class< ? >[] methodParameterTypes = method.getParameterTypes();
+			for (int i = 0, l = paramsNode.size(); i < l; i++)
+			{
+				final JsonNode paramNode = paramsNode.get(i);
+				if (paramNode != null) methodArguments[i] = JSON.treeToValue(paramNode, methodParameterTypes[i]);
+			}
+
 			// invoking the method
 			final Object methodReturnValue = method.invoke(getProxyForService(), methodArguments);
 
 			// creating a JSON object containing the method return value
-			final JSONObject jsonObj = new JSONObject();
-			jsonObj.put("id", requestObject.getString("id"));
-			jsonObj.put("result", methodReturnValue);
+			final Map<String, Object> result = newLinkedHashMap(2);
+			result.put("id", requestObject.get("id").asText());
+			result.put("result", methodReturnValue);
+			JSON.writeValue(response.getWriter(), result);
 
-			jsonObj.write(response.getWriter());
-
-			LOG.traceMethodExit(jsonObj);
+			LOG.traceMethodExit(result);
 		}
 		catch (final Exception ex)
 		{
