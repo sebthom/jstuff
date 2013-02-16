@@ -15,14 +15,12 @@ package net.sf.jstuff.core.reflection;
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -422,17 +420,6 @@ public abstract class ReflectionUtils
 		}
 	}
 
-	/**
-	 * @return true if objects of type <code>from</code> can be casted to type <code>to</code>
-	 */
-	public static boolean isCastable(final Class< ? > fromType, final Class< ? > toType)
-	{
-		Args.notNull("fromType", fromType);
-		Args.notNull("toType", toType);
-
-		return toType.isAssignableFrom(fromType);
-	}
-
 	public static boolean isClassPresent(final String className)
 	{
 		Args.notNull("className", className);
@@ -521,21 +508,6 @@ public abstract class ReflectionUtils
 		return (member.getModifiers() & Modifier.PUBLIC) != 0;
 	}
 
-	public static boolean isScalar(final Class< ? > type)
-	{
-		return type == boolean.class || type == Boolean.class || //
-				type == char.class || type == Character.class || //
-				type == int.class || //
-				type == long.class || //
-				type == byte.class || //
-				type == short.class || //
-				type == float.class || //
-				Enum.class.isAssignableFrom(type) || //
-				Number.class.isAssignableFrom(type) || //
-				CharSequence.class.isAssignableFrom(type) || //
-				Date.class.isAssignableFrom(type);
-	}
-
 	/**
 	 * determines if a method is a JavaBean style setter method
 	 */
@@ -611,31 +583,6 @@ public abstract class ReflectionUtils
 		{
 			throw new ReflectionException(ex);
 		}
-	}
-
-	public static <T> T createSynchronized(final Class<T> objectInterface, final T object)
-	{
-		Args.notNull("objectInterface", objectInterface);
-		Args.notNull("object", object);
-
-		return createSynchronized(objectInterface, object, object);
-	}
-
-	public static <T> T createSynchronized(final Class<T> objectInterface, final T object, final Object lock)
-	{
-		Args.notNull("objectInterface", objectInterface);
-		Args.notNull("object", object);
-
-		return Proxies.create(objectInterface, new InvocationHandler()
-			{
-				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
-				{
-					synchronized (lock)
-					{
-						return method.invoke(object, args);
-					}
-				}
-			});
 	}
 
 	public static void setFieldValue(final Field field, final Object obj, final Object value) throws SettingFieldValueFailedException

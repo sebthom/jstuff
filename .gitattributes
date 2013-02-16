@@ -119,6 +119,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableField.java -
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableMethod.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SetAccessibleAction.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SettingFieldValueFailedException.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Types.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/validation/Args.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/validation/Assert.java -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Day.properties -text
@@ -147,7 +148,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/meta/MetaSerializationTest.java -te
 jstuff-core/src/test/java/net/sf/jstuff/core/net/NetUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/AnnotationsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/DuckTypesTest.java -text
-jstuff-core/src/test/java/net/sf/jstuff/core/reflection/ReflectionUtilsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesTest.java -text
 jstuff-integration/pom.xml -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/AtomBlog.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/AtomBlogEntry.java -text
@@ -197,6 +198,7 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/hibernate
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/hibernate/HibernateUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/hibernate/IntegerOIDGenerator.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/jpa/AbstractJPAEntity.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/jpa/AbstractJPAEntity_.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/jpa/JPAUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/jpa/JpqlOrderByBuilder.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/spring/BeanResultSetExtractor.java -text

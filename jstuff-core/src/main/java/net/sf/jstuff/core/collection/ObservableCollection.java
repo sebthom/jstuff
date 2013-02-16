@@ -142,6 +142,11 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 		return wrapped.isEmpty();
 	}
 
+	public boolean isObserving(final Collection<E> collection)
+	{
+		return wrapped == collection;
+	}
+
 	public Iterator<E> iterator()
 	{
 		final Iterator<E> it = wrapped.iterator();

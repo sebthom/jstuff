@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -48,6 +48,14 @@ public abstract class Assert
 	}
 
 	/**
+	 * @throws IllegalStateException if <code>value</value> is <code>true</code>
+	 */
+	public static void isFalse(final boolean value, final String errorMessage, final Object... errorMessageArgs)
+	{
+		if (value) throw removeFirstStackTraceElement(new IllegalStateException(String.format(errorMessage, errorMessageArgs)));
+	}
+
+	/**
 	 * @throws IllegalStateException if <code>value</value> is not readable
 	 */
 	public static void isFileReadable(final File file)
@@ -55,14 +63,11 @@ public abstract class Assert
 		Args.notNull("file", file);
 
 		if (!file.exists())
-			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath()
-					+ "] does not exist."));
+			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] does not exist."));
 		if (!file.isFile())
-			throw removeFirstStackTraceElement(new IllegalStateException("System resource [" + file.getAbsolutePath()
-					+ "] is not a file."));
+			throw removeFirstStackTraceElement(new IllegalStateException("System resource [" + file.getAbsolutePath() + "] is not a file."));
 		if (!file.canRead())
-			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath()
-					+ "] is not readable."));
+			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] is not readable."));
 	}
 
 	/**
@@ -79,6 +84,14 @@ public abstract class Assert
 	public static void isTrue(final boolean value, final String errorMessage)
 	{
 		if (!value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+	}
+
+	/**
+	 * @throws IllegalStateException if <code>value</value> is <code>false</code>
+	 */
+	public static void isTrue(final boolean value, final String errorMessage, final Object... errorMessageArgs)
+	{
+		if (!value) throw removeFirstStackTraceElement(new IllegalStateException(String.format(errorMessage, errorMessageArgs)));
 	}
 
 	public static void minSize(final byte value, final byte min, final String errorMessage)
@@ -103,8 +116,7 @@ public abstract class Assert
 
 	public static <T> void notEmpty(final CharSequence value, final String errorMessage)
 	{
-		if (value == null || value.length() == 0)
-			throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		if (value == null || value.length() == 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 	}
 
 	/**
@@ -112,8 +124,7 @@ public abstract class Assert
 	 */
 	public static <T> void notEmpty(final Collection<T> value, final String errorMessage)
 	{
-		if (value == null || value.isEmpty())
-			throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		if (value == null || value.isEmpty()) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 	}
 
 	/**
@@ -121,22 +132,12 @@ public abstract class Assert
 	 */
 	public static <K, V> void notEmpty(final Map<K, V> value, final String errorMessage)
 	{
-		if (value == null || value.isEmpty())
-			throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		if (value == null || value.isEmpty()) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 	}
 
 	public static <T> void notEmpty(final T[] value, final String errorMessage)
 	{
-		if (value == null || value.length == 0)
-			throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-	}
-
-	/**
-	 * @throws IllegalStateException if <code>value</value> is <code>false</code>
-	 */
-	public static void notFalse(final boolean value, final String errorMessage)
-	{
-		if (!value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		if (value == null || value.length == 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 	}
 
 	public static <T> void notNegative(final byte value, final String errorMessage)
@@ -165,14 +166,6 @@ public abstract class Assert
 	public static void notNull(final Object value, final String errorMessage)
 	{
 		if (value == null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-	}
-
-	/**
-	 * @throws IllegalStateException if <code>value</value> is <code>true</code>
-	 */
-	public static void notTrue(final boolean value, final String errorMessage)
-	{
-		if (value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 	}
 
 	protected Assert()

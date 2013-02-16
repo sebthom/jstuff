@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sf.jstuff.core.Composite;
+import net.sf.jstuff.core.reflection.Types;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -71,12 +72,14 @@ public class CompositeMap<K, V> extends Composite.Default<Map< ? extends K, ? ex
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	public CompositeSet<Entry<K, V>> entrySet()
 	{
 		final CompositeSet<Entry<K, V>> entries = new CompositeSet<Entry<K, V>>();
 		for (final Map< ? extends K, ? extends V> m : components)
-			entries.addComponent((Collection< ? extends Entry<K, V>>) m.entrySet());
+		{
+			final Collection< ? extends Entry<K, V>> set = Types.cast(m.entrySet());
+			entries.addComponent(set);
+		}
 		return entries;
 	}
 

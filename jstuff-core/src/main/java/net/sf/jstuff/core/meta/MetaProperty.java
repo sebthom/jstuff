@@ -14,10 +14,11 @@ package net.sf.jstuff.core.meta;
 
 import static java.util.Collections.*;
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
-import static net.sf.jstuff.core.reflection.ReflectionUtils.*;
 
 import java.io.Serializable;
 import java.util.Map;
+
+import net.sf.jstuff.core.reflection.Types;
 
 /**
  *
@@ -126,7 +127,7 @@ public final class MetaProperty<P> implements Serializable
 
 	public boolean isScalarType()
 	{
-		return isScalar(type);
+		return Types.isScalar(type);
 	}
 
 	public boolean isUnique()
