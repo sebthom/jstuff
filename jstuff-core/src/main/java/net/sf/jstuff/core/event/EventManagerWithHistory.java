@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Future;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -24,13 +23,10 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class EventManagerWithHistory<Event> extends EventManager<Event>
 {
-	private static final Logger LOG = Logger.create();
-
 	private LinkedList<Event> eventHistory;
 
 	public EventManagerWithHistory()
 	{
-		LOG.info("Instantiated.");
 		initEventHistory();
 	}
 

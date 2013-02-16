@@ -18,6 +18,8 @@ import java.io.Serializable;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.io.SerializationUtils;
+import net.sf.jstuff.core.jbean.meta.ClassDescriptor;
+import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -29,10 +31,10 @@ public class MetaSerializationTest extends TestCase
 	{
 		private String comment;
 
-		public static final MetaClass<EntityMeta> META_CLASS = EntityMeta.META_CLASS;
+		public static final ClassDescriptor<EntityMeta> META_CLASS = EntityMeta.META_CLASS;
 
 		@SuppressWarnings("unchecked")
-		public <T> T _get(final MetaProperty<T> property)
+		public <T> T _get(final PropertyDescriptor<T> property)
 		{
 			Args.notNull("property", property);
 
@@ -40,12 +42,12 @@ public class MetaSerializationTest extends TestCase
 			throw new UnsupportedOperationException();
 		}
 
-		public MetaClass<EntityMeta> _getMetaClass()
+		public ClassDescriptor<EntityMeta> _getMetaClass()
 		{
 			return EntityMeta.META_CLASS;
 		}
 
-		public <T> SELF_TYPE _set(final MetaProperty<T> property, final T value)
+		public <T> SELF_TYPE _set(final PropertyDescriptor<T> property, final T value)
 		{
 			Args.notNull("property", property);
 
@@ -66,9 +68,9 @@ public class MetaSerializationTest extends TestCase
 
 	public static class EntityMeta
 	{
-		public static final MetaClass<EntityMeta> META_CLASS = MetaClass.of(EntityMeta.class, "Entity", null, null);
+		public static final ClassDescriptor<EntityMeta> META_CLASS = ClassDescriptor.of(EntityMeta.class, "Entity", null, null);
 
-		public static final MetaProperty<String> PROP_comment = MetaProperty.create(META_CLASS, //
+		public static final PropertyDescriptor<String> PROP_comment = PropertyDescriptor.create(META_CLASS, //
 				"comment", String.class, 0, 1, false, false, true, //
 				"", newHashMap( //
 						"descr", (Serializable) "this entity's comment" //

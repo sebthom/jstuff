@@ -10,14 +10,34 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.event;
+package net.sf.jstuff.core.jbean.changelog;
+
+import java.util.Collection;
+
+import net.sf.jstuff.core.jbean.JBean;
+import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface EventListenable<Event>
+public class RemoveItemEvent extends PropertyChangeEvent
 {
-	<EventType extends Event> boolean subscribe(final EventListener<EventType> listener);
+	private static final long serialVersionUID = 1L;
 
-	<EventType extends Event> boolean unsubscribe(final EventListener<EventType> listener);
+	public final Object item;
+	public final int index;
+
+	public RemoveItemEvent(final JBean< ? > bean, final PropertyDescriptor< ? > property, final Object item, final int index)
+	{
+		super(bean, property);
+		this.item = item;
+		this.index = index;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	void undo()
+	{
+		((Collection<Object>) bean._get(property)).add(item);
+	}
 }

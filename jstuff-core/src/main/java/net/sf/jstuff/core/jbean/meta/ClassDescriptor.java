@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.meta;
+package net.sf.jstuff.core.jbean.meta;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
@@ -28,40 +28,40 @@ import net.sf.jstuff.core.validation.Assert;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class MetaClass<T> implements Serializable
+public final class ClassDescriptor<T> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	private static final Map<Class< ? >, MetaClass< ? >> REGISTRY = new WeakHashMap<Class< ? >, MetaClass< ? >>();
+	private static final Map<Class< ? >, ClassDescriptor< ? >> REGISTRY = new WeakHashMap<Class< ? >, ClassDescriptor< ? >>();
 
 	@SuppressWarnings("unchecked")
-	public static <T> MetaClass<T> of(final Class<T> type, final String name, final String description, final MetaClass< ? > parent)
+	public static <T> ClassDescriptor<T> of(final Class<T> type, final String name, final String description, final ClassDescriptor< ? > parent)
 	{
 		Args.notNull("type", type);
 		Args.notNull("name", name);
 		Assert.isFalse(REGISTRY.containsKey(type), "A meta class for [" + type.getName() + "] exists already.");
 		synchronized (type)
 		{
-			final MetaClass< ? > metaClass = REGISTRY.get(type);
-			if (metaClass != null) return (MetaClass<T>) metaClass;
+			final ClassDescriptor< ? > metaClass = REGISTRY.get(type);
+			if (metaClass != null) return (ClassDescriptor<T>) metaClass;
 
-			final MetaClass<T> newMetaClass = new MetaClass<T>(type, name, description, parent);
+			final ClassDescriptor<T> newMetaClass = new ClassDescriptor<T>(type, name, description, parent);
 			REGISTRY.put(type, newMetaClass);
 			return newMetaClass;
 		}
 	}
 
 	private final Class<T> type;
-	private final transient MetaClass< ? > parent;
+	private final transient ClassDescriptor< ? > parent;
 	private final transient String name;
 	private final transient String description;
 
-	private transient final Map<String, MetaProperty< ? >> properties = newLinkedHashMap();
-	private transient final Map<String, MetaProperty< ? >> propertiesReadOnly = Collections.unmodifiableMap(properties);
-	private transient final Map<String, MetaProperty< ? >> propertiesRecursivelyReadOnly;
+	private transient final Map<String, PropertyDescriptor< ? >> properties = newLinkedHashMap();
+	private transient final Map<String, PropertyDescriptor< ? >> propertiesReadOnly = Collections.unmodifiableMap(properties);
+	private transient final Map<String, PropertyDescriptor< ? >> propertiesRecursivelyReadOnly;
 
 	@SuppressWarnings("unchecked")
-	private MetaClass(final Class<T> type, final String name, final String description, final MetaClass< ? > parent)
+	private ClassDescriptor(final Class<T> type, final String name, final String description, final ClassDescriptor< ? > parent)
 	{
 		this.type = type;
 		this.name = name;
@@ -70,7 +70,7 @@ public final class MetaClass<T> implements Serializable
 		propertiesRecursivelyReadOnly = parent == null ? propertiesReadOnly : CompositeMap.of(propertiesReadOnly, parent.getProperties());
 	}
 
-	void addProperty(final MetaProperty< ? > prop)
+	void addProperty(final PropertyDescriptor< ? > prop)
 	{
 		Assert.isFalse(properties.containsKey(prop.getName()), "A meta property with name [" + prop.getName()
 				+ "] exists already for class [" + type.getName() + "]");
@@ -87,17 +87,17 @@ public final class MetaClass<T> implements Serializable
 		return name;
 	}
 
-	public MetaClass< ? > getParent()
+	public ClassDescriptor< ? > getParent()
 	{
 		return parent;
 	}
 
-	public Map<String, MetaProperty< ? >> getProperties()
+	public Map<String, PropertyDescriptor< ? >> getProperties()
 	{
 		return propertiesReadOnly;
 	}
 
-	public Map<String, MetaProperty< ? >> getPropertiesRecursively()
+	public Map<String, PropertyDescriptor< ? >> getPropertiesRecursively()
 	{
 		return propertiesRecursivelyReadOnly;
 	}
@@ -111,7 +111,7 @@ public final class MetaClass<T> implements Serializable
 	{
 		synchronized (type)
 		{
-			final MetaClass< ? > metaClass = REGISTRY.get(this.type);
+			final ClassDescriptor< ? > metaClass = REGISTRY.get(this.type);
 			if (metaClass != null) return metaClass;
 			throw new InvalidObjectException("MetaClass instance for type [" + this.type.getName() + "] not found in registry!");
 		}

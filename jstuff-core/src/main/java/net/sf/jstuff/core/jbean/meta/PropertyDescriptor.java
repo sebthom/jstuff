@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.meta;
+package net.sf.jstuff.core.jbean.meta;
 
 import static java.util.Collections.*;
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
@@ -21,20 +21,19 @@ import java.util.Map;
 import net.sf.jstuff.core.reflection.Types;
 
 /**
- *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class MetaProperty<P> implements Serializable
+public final class PropertyDescriptor<P> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static <P> MetaProperty<P> create(final MetaClass< ? > metaClass, final String name, final Class<P> type, final int lowerBound,
-			final int upperBound, final boolean ordered, final boolean unique, final boolean container, final String description,
-			final Map<String, ? extends Serializable> properties)
+	public static <P> PropertyDescriptor<P> create(final ClassDescriptor< ? > metaClass, final String name, final Class<P> type,
+			final int lowerBound, final int upperBound, final boolean ordered, final boolean unique, final boolean container,
+			final String description, final Map<String, ? extends Serializable> properties)
 	{
 		synchronized (metaClass)
 		{
-			final MetaProperty<P> p = new MetaProperty<P>();
+			final PropertyDescriptor<P> p = new PropertyDescriptor<P>();
 			p.metaClass = metaClass;
 			p.name = name;
 			p.lowerBound = lowerBound;
@@ -50,7 +49,7 @@ public final class MetaProperty<P> implements Serializable
 		}
 	}
 
-	private MetaClass< ? > metaClass;
+	private ClassDescriptor< ? > metaClass;
 
 	private String name;
 	private transient String description;
@@ -64,7 +63,7 @@ public final class MetaProperty<P> implements Serializable
 	private transient Map<String, ? extends Serializable> properties;
 	private transient Map<String, ? extends Serializable> propertiesReadOnly;
 
-	private MetaProperty()
+	private PropertyDescriptor()
 	{
 		super();
 	}
@@ -80,9 +79,9 @@ public final class MetaProperty<P> implements Serializable
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> MetaClass<T> getMetaClass()
+	public <T> ClassDescriptor<T> getMetaClass()
 	{
-		return (MetaClass<T>) metaClass;
+		return (ClassDescriptor<T>) metaClass;
 	}
 
 	public String getName()

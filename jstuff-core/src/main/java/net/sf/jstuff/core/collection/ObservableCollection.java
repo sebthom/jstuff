@@ -245,11 +245,6 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 		return wrapped.size();
 	}
 
-	public boolean subscribe(final EventListener<ItemAction<E>> listener)
-	{
-		return events.subscribe(listener);
-	}
-
 	public Object[] toArray()
 	{
 		return wrapped.toArray();
@@ -260,7 +255,12 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 		return wrapped.toArray(a);
 	}
 
-	public boolean unsubscribe(final EventListener<ItemAction<E>> listener)
+	public <EventType extends ItemAction<E>> boolean subscribe(final EventListener<EventType> listener)
+	{
+		return events.subscribe(listener);
+	}
+
+	public <EventType extends ItemAction<E>> boolean unsubscribe(final EventListener<EventType> listener)
 	{
 		return events.unsubscribe(listener);
 	}

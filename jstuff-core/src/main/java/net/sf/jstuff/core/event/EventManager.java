@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.event;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -20,7 +19,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -28,17 +26,9 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class EventManager<Event> implements EventListenable<Event>
 {
-	private static final Logger LOG = Logger.create();
-
 	private final Set<EventListener<Event>> eventListeners = new CopyOnWriteArraySet<EventListener<Event>>();
-	private final Set<EventListener<Event>> eventListenersUnmodifiable = Collections.unmodifiableSet(eventListeners);
 
 	private ExecutorService executorService;
-
-	public EventManager()
-	{
-		LOG.info("Instantiated.");
-	}
 
 	protected ExecutorService createExecutorService()
 	{
@@ -64,41 +54,28 @@ public class EventManager<Event> implements EventListenable<Event>
 			});
 	}
 
-	/**
-	 *
-	 * @return an unmodifiable set of the registered event listeners
-	 */
-	public Set<EventListener<Event>> getEventListeners()
-	{
-		return eventListenersUnmodifiable;
-	}
-
 	protected final synchronized ExecutorService getExecutorService()
 	{
 		if (executorService == null) executorService = createExecutorService();
 		return executorService;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean subscribe(final EventListener<Event> listener)
+	public void unsubscribeAll()
 	{
-		Args.notNull("listener", listener);
-		return eventListeners.add(listener);
+		eventListeners.clear();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean unsubscribe(final EventListener<Event> listener)
+	@SuppressWarnings("unchecked")
+	public <EventType extends Event> boolean subscribe(final EventListener<EventType> listener)
+	{
+		Args.notNull("listener", listener);
+		return eventListeners.add((EventListener<Event>) listener);
+	}
+
+	public <EventType extends Event> boolean unsubscribe(final EventListener<EventType> listener)
 	{
 		Args.notNull("listener", listener);
 		return eventListeners.remove(listener);
 	}
 
-	public void unsubscribeAll()
-	{
-		eventListeners.clear();
-	}
 }

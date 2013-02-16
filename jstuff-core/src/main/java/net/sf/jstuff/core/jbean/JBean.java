@@ -10,14 +10,22 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.event;
+package net.sf.jstuff.core.jbean;
+
+import net.sf.jstuff.core.event.EventListener;
+import net.sf.jstuff.core.jbean.changelog.PropertyChangeEvent;
+import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface EventListenable<Event>
+public interface JBean<Type>
 {
-	<EventType extends Event> boolean subscribe(final EventListener<EventType> listener);
+	void _subscribe(final EventListener<PropertyChangeEvent> listener);
 
-	<EventType extends Event> boolean unsubscribe(final EventListener<EventType> listener);
+	void _unsubscribe(final EventListener<PropertyChangeEvent> listener);
+
+	<PType> PType _get(final PropertyDescriptor<PType> property);
+
+	<PType> Type _set(final PropertyDescriptor<PType> property, final PType value);
 }
