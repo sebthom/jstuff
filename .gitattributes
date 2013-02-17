@@ -13,6 +13,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/StackTrace.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/URLClassLoaderExt.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/ArrayIterator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ArrayUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CollectionUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeCollection.java -text
@@ -20,6 +21,9 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeIterator.java -
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeList.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeSet.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/DelegatingCollection.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/DelegatingList.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/DelegatingSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/EmptyIterator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/EmptyQueue.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/FIFOMap.java -text
@@ -43,6 +47,8 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple1.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple2.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple3.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple4.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/UnmodifiableIterator.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/UnmodifiableListIterator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentityHashMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentitySet.java -text

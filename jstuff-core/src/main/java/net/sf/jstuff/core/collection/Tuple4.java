@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -19,8 +19,7 @@ public class Tuple4<T1, T2, T3, T4> extends Tuple
 {
 	private static final long serialVersionUID = 1L;
 
-	public static <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> create(final T1 value1, final T2 value2, final T3 value3,
-			final T4 value4)
+	public static <T1, T2, T3, T4> Tuple4<T1, T2, T3, T4> create(final T1 value1, final T2 value2, final T3 value3, final T4 value4)
 	{
 		return new Tuple4<T1, T2, T3, T4>(value1, value2, value3, value4);
 	}
@@ -37,7 +36,7 @@ public class Tuple4<T1, T2, T3, T4> extends Tuple
 	@SuppressWarnings("unchecked")
 	public T1 get1()
 	{
-		return (T1) super.getTyped(0);
+		return (T1) getTyped(0);
 	}
 
 	/*
@@ -47,7 +46,7 @@ public class Tuple4<T1, T2, T3, T4> extends Tuple
 	@SuppressWarnings("unchecked")
 	public T2 get2()
 	{
-		return (T2) super.getTyped(1);
+		return (T2) getTyped(1);
 	}
 
 	/*
@@ -57,7 +56,7 @@ public class Tuple4<T1, T2, T3, T4> extends Tuple
 	@SuppressWarnings("unchecked")
 	public T3 get3()
 	{
-		return (T3) super.getTyped(2);
+		return (T3) getTyped(2);
 	}
 
 	/*
@@ -67,6 +66,6 @@ public class Tuple4<T1, T2, T3, T4> extends Tuple
 	@SuppressWarnings("unchecked")
 	public T4 get4()
 	{
-		return (T4) super.getTyped(3);
+		return (T4) getTyped(3);
 	}
 }

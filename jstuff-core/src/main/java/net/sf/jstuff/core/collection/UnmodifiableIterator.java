@@ -12,28 +12,41 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-
-import java.util.Collections;
+import java.io.Serializable;
+import java.util.Iterator;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Tuple extends DelegatingList<Object>
+public class UnmodifiableIterator<T> implements Iterator<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	protected Tuple(final Object... items)
+	public static <T> UnmodifiableIterator<T> of(final Iterator<T> delegate)
 	{
-		super(Collections.unmodifiableList(newArrayList(items)));
+		return new UnmodifiableIterator<T>(delegate);
 	}
 
-	/**
-	 * @param index 0 = first element
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getTyped(final int index)
+	private final Iterator<T> delegate;
+
+	public UnmodifiableIterator(final Iterator<T> delegate)
 	{
-		return (T) get(index);
+		this.delegate = delegate;
 	}
+
+	public boolean hasNext()
+	{
+		return delegate.hasNext();
+	}
+
+	public T next()
+	{
+		return delegate.next();
+	}
+
+	public void remove()
+	{
+		throw new UnsupportedOperationException();
+	}
+
 }

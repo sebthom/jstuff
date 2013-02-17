@@ -12,28 +12,17 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-
-import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Tuple extends DelegatingList<Object>
+public class DelegatingSet<V> extends DelegatingCollection<V> implements Set<V>
 {
 	private static final long serialVersionUID = 1L;
 
-	protected Tuple(final Object... items)
+	public DelegatingSet(final Set<V> delegate)
 	{
-		super(Collections.unmodifiableList(newArrayList(items)));
-	}
-
-	/**
-	 * @param index 0 = first element
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getTyped(final int index)
-	{
-		return (T) get(index);
+		super(delegate);
 	}
 }

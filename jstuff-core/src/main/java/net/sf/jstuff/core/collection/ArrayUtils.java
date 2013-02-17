@@ -54,7 +54,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		return values.toArray((T[]) Array.newInstance(itemType, values.size()));
 	}
 
-	public static List<Boolean> toList(final boolean[] array)
+	public static List<Boolean> toList(final boolean... array)
 	{
 		if (array == null) return null;
 
@@ -64,7 +64,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		return result;
 	}
 
-	public static List<Byte> toList(final byte[] array)
+	public static List<Byte> toList(final byte... array)
 	{
 		if (array == null) return null;
 
@@ -74,7 +74,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		return result;
 	}
 
-	public static List<Character> toList(final char[] array)
+	public static List<Character> toList(final char... array)
 	{
 		if (array == null) return null;
 
@@ -84,7 +84,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		return result;
 	}
 
-	public static List<Double> toList(final double[] array)
+	public static List<Double> toList(final double... array)
 	{
 		if (array == null) return null;
 
@@ -94,7 +94,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		return result;
 	}
 
-	public static List<Float> toList(final float[] array)
+	public static List<Float> toList(final float... array)
 	{
 		if (array == null) return null;
 
@@ -104,7 +104,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		return result;
 	}
 
-	public static List<Integer> toList(final int[] array)
+	public static List<Integer> toList(final int... array)
 	{
 		if (array == null) return null;
 
@@ -114,37 +114,36 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		return result;
 	}
 
-	public static List<Long> toList(final long[] array)
+	public static List<Long> toList(final long... array)
 	{
 		if (array == null) return null;
 
 		final ArrayList<Long> result = new ArrayList<Long>(array.length);
 		for (final long i : array)
 			result.add(i);
+
 		return result;
 	}
 
-	/**
-	 * <b>Hint:</b> If you are looking for a toList(T...) method use {@link CollectionUtils#newArrayList(Object...)}
-	 */
-	public static List< ? > toList(final Object array)
+	public static <T> List<T> toList(final T... array)
 	{
-		if (array == null) return null;
-
-		if (array instanceof Object[]) return CollectionUtils.newArrayList((Object[]) array);
-		if (array instanceof byte[]) return toList((byte[]) array);
-		if (array instanceof char[]) return toList((char[]) array);
-		if (array instanceof short[]) return toList((short[]) array);
-		if (array instanceof int[]) return toList((int[]) array);
-		if (array instanceof long[]) return toList((long[]) array);
-		if (array instanceof double[]) return toList((double[]) array);
-		if (array instanceof float[]) return toList((float[]) array);
-		if (array instanceof boolean[]) return toList((boolean[]) array);
-
-		throw new IllegalArgumentException("Argument [array] must be an array");
+		return CollectionUtils.newArrayList(array);
 	}
 
-	public static List<Short> toList(final short[] array)
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> toList(final Object array, final Class<T> itemType)
+	{
+		if (array == null) return null;
+		if (!array.getClass().isArray()) throw new IllegalArgumentException("[array] is not an array but of type: " + array.getClass());
+
+		final int l = Array.getLength(array);
+		final List<Object> result = CollectionUtils.newArrayList(l);
+		for (int i = 0; i < l; i++)
+			result.add(Array.get(array, i));
+		return (List<T>) result;
+	}
+
+	public static List<Short> toList(final short... array)
 	{
 		if (array == null) return null;
 

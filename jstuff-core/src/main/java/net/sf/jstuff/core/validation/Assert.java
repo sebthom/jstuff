@@ -23,42 +23,46 @@ import java.util.Map;
  */
 public abstract class Assert
 {
-	public static <T> void containsNoNulls(final Collection<T> entries, final String errorMessage)
+	public static <C extends Collection< ? >> C containsNoNulls(final C entries, final String errorMessage)
 	{
-		if (entries == null) return;
+		if (entries == null) return null;
 
-		for (final T entry : entries)
+		for (final Object entry : entries)
 			if (entry == null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return entries;
 	}
 
-	public static <T> void containsNoNulls(final T[] entries, final String errorMessage)
+	public static <T> T[] containsNoNulls(final T[] entries, final String errorMessage)
 	{
-		if (entries == null) return;
+		if (entries == null) return null;
 
 		for (final T entry : entries)
 			if (entry == null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return entries;
 	}
 
 	/**
 	 * @throws IllegalStateException if <code>value</value> is <code>true</code>
 	 */
-	public static void isFalse(final boolean value, final String errorMessage)
+	public static boolean isFalse(final boolean value, final String errorMessage)
 	{
 		if (value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
 	/**
 	 * @throws IllegalStateException if <code>value</value> is <code>true</code>
 	 */
-	public static void isFalse(final boolean value, final String errorMessage, final Object... errorMessageArgs)
+	public static boolean isFalse(final boolean value, final String errorMessage, final Object... errorMessageArgs)
 	{
 		if (value) throw removeFirstStackTraceElement(new IllegalStateException(String.format(errorMessage, errorMessageArgs)));
+		return value;
 	}
 
 	/**
 	 * @throws IllegalStateException if <code>value</value> is not readable
 	 */
-	public static void isFileReadable(final File file)
+	public static File isFileReadable(final File file)
 	{
 		Args.notNull("file", file);
 
@@ -68,104 +72,121 @@ public abstract class Assert
 			throw removeFirstStackTraceElement(new IllegalStateException("System resource [" + file.getAbsolutePath() + "] is not a file."));
 		if (!file.canRead())
 			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] is not readable."));
+		return file;
 	}
 
 	/**
 	 * @throws IllegalStateException if <code>value</value> is not <code>null</code>
 	 */
-	public static void isNull(final Object value, final String errorMessage)
+	public static <T> T isNull(final T value, final String errorMessage)
 	{
 		if (value != null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
 	/**
 	 * @throws IllegalStateException if <code>value</value> is <code>false</code>
 	 */
-	public static void isTrue(final boolean value, final String errorMessage)
+	public static boolean isTrue(final boolean value, final String errorMessage)
 	{
 		if (!value) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
 	/**
 	 * @throws IllegalStateException if <code>value</value> is <code>false</code>
 	 */
-	public static void isTrue(final boolean value, final String errorMessage, final Object... errorMessageArgs)
+	public static boolean isTrue(final boolean value, final String errorMessage, final Object... errorMessageArgs)
 	{
 		if (!value) throw removeFirstStackTraceElement(new IllegalStateException(String.format(errorMessage, errorMessageArgs)));
+		return value;
 	}
 
-	public static void minSize(final byte value, final byte min, final String errorMessage)
+	public static byte minSize(final byte value, final byte min, final String errorMessage)
 	{
 		if (value < min) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
-	public static void minSize(final int value, final int min, final String errorMessage)
+	public static int minSize(final int value, final int min, final String errorMessage)
 	{
 		if (value < min) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
-	public static void minSize(final long value, final long min, final String errorMessage)
+	public static long minSize(final long value, final long min, final String errorMessage)
 	{
 		if (value < min) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
-	public static void minSize(final short value, final short min, final String errorMessage)
+	public static short minSize(final short value, final short min, final String errorMessage)
 	{
 		if (value < min) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
-	public static <T> void notEmpty(final CharSequence value, final String errorMessage)
+	public static <T extends CharSequence> T notEmpty(final T value, final String errorMessage)
 	{
 		if (value == null || value.length() == 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
 	/**
 	 * @throws IllegalStateException if <code>value</code> collection is null or empty
 	 */
-	public static <T> void notEmpty(final Collection<T> value, final String errorMessage)
+	public static <C extends Collection< ? >> C notEmpty(final C value, final String errorMessage)
 	{
 		if (value == null || value.isEmpty()) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
 	/**
 	 * @throws IllegalStateException if <code>value</code> map is null or empty
 	 */
-	public static <K, V> void notEmpty(final Map<K, V> value, final String errorMessage)
+	public static <M extends Map< ? , ? >> M notEmpty(final M value, final String errorMessage)
 	{
 		if (value == null || value.isEmpty()) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
-	public static <T> void notEmpty(final T[] value, final String errorMessage)
+	public static <T> T[] notEmpty(final T[] value, final String errorMessage)
 	{
 		if (value == null || value.length == 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
-	public static <T> void notNegative(final byte value, final String errorMessage)
+	public static byte notNegative(final byte value, final String errorMessage)
 	{
 		if (value < 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
-	public static <T> void notNegative(final int value, final String errorMessage)
+	public static int notNegative(final int value, final String errorMessage)
 	{
 		if (value < 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
-	public static <T> void notNegative(final long value, final String errorMessage)
+	public static long notNegative(final long value, final String errorMessage)
 	{
 		if (value < 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
-	public static <T> void notNegative(final short value, final String errorMessage)
+	public static short notNegative(final short value, final String errorMessage)
 	{
 		if (value < 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
 	/**
 	 * @throws IllegalStateException if <code>value</value> is <code>null</code>
 	 */
-	public static void notNull(final Object value, final String errorMessage)
+	public static <T> T notNull(final T value, final String errorMessage)
 	{
 		if (value == null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
 	}
 
 	protected Assert()
