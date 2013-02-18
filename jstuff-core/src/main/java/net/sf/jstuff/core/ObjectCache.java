@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core;
 
-import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -21,58 +20,61 @@ import java.util.LinkedList;
 import java.util.Map;
 
 /**
+ * Thread-safe in-memory object cache.
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public final class ObjectCache<K, V>
 {
-	private static final class SoftValueReference<K, V> extends SoftReference<V>
+	private static final class SoftValueReference<K, V> extends SoftReference<V> implements ValueReference<K, V>
 	{
-		protected final K key;
+		private final K key;
 
-		protected SoftValueReference(final K key, final V value, final ReferenceQueue<V> queue)
+		private SoftValueReference(final K key, final V value, final ReferenceQueue<V> queue)
 		{
 			super(value, queue);
 			this.key = key;
 		}
+
+		public K getKey()
+		{
+			return key;
+		}
 	}
 
-	private static final class WeakValueReference<K, V> extends WeakReference<V>
+	private static interface ValueReference<K, V>
 	{
-		protected final K key;
+		K getKey();
 
-		protected WeakValueReference(final K key, final V value, final ReferenceQueue<V> queue)
+		V get();
+	}
+
+	private static final class WeakValueReference<K, V> extends WeakReference<V> implements ValueReference<K, V>
+	{
+		private final K key;
+
+		private WeakValueReference(final K key, final V value, final ReferenceQueue<V> queue)
 		{
 			super(value, queue);
 			this.key = key;
 		}
+
+		public K getKey()
+		{
+			return key;
+		}
 	}
 
-	public static <K, V> ThreadLocal<ObjectCache<K, V>> newThreadLocalObjectCache()
-	{
-		return newThreadLocalObjectCache(-1);
-	}
-
-	public static <K, V> ThreadLocal<ObjectCache<K, V>> newThreadLocalObjectCache(final int maxObjectsToKeep)
-	{
-		return new ThreadLocal<ObjectCache<K, V>>()
-			{
-				@Override
-				public ObjectCache<K, V> initialValue()
-				{
-					return new ObjectCache<K, V>(maxObjectsToKeep);
-				}
-			};
-	}
-
-	private final ReferenceQueue<V> refsWithGarbageCollectedValues = new ReferenceQueue<V>();
+	private final Map<K, ValueReference<K, V>> cache = new HashMap<K, ValueReference<K, V>>();
+	private final ReferenceQueue<V> garbageCollectedRefs = new ReferenceQueue<V>();
 	private final int maxObjectsToKeep;
 
-	private final Map<K, Reference<V>> objectsByKey = new HashMap<K, Reference<V>>();
 	/**
+	 * most recently used list.
 	 * hard referencing the last n-th items to avoid their garbage collection.
 	 * the first item is the latest accessed item.
 	 */
-	private final LinkedList<V> objectsLastAccessed;
+	private final LinkedList<V> mru;
 	private final boolean useWeakReferences;
 
 	/**
@@ -81,15 +83,13 @@ public final class ObjectCache<K, V>
 	public ObjectCache()
 	{
 		maxObjectsToKeep = -1;
-		objectsLastAccessed = null;
+		mru = null;
 		useWeakReferences = false;
 	}
 
 	public ObjectCache(final boolean useWeakValueReferences)
 	{
-		maxObjectsToKeep = -1;
-		objectsLastAccessed = new LinkedList<V>();
-		this.useWeakReferences = useWeakValueReferences;
+		this(-1, useWeakValueReferences);
 	}
 
 	/**
@@ -97,9 +97,7 @@ public final class ObjectCache<K, V>
 	 */
 	public ObjectCache(final int maxObjectsToKeep)
 	{
-		this.maxObjectsToKeep = maxObjectsToKeep;
-		objectsLastAccessed = new LinkedList<V>();
-		useWeakReferences = false;
+		this(maxObjectsToKeep, false);
 	}
 
 	/**
@@ -108,57 +106,56 @@ public final class ObjectCache<K, V>
 	public ObjectCache(final int maxObjectsToKeep, final boolean useWeakValueReferences)
 	{
 		this.maxObjectsToKeep = maxObjectsToKeep;
-		objectsLastAccessed = new LinkedList<V>();
+		mru = new LinkedList<V>();
 		this.useWeakReferences = useWeakValueReferences;
-	}
-
-	@SuppressWarnings("unchecked")
-	private void cleanup()
-	{
-		Reference< ? extends V> ref;
-		while ((ref = refsWithGarbageCollectedValues.poll()) != null)
-		{
-			final K key;
-			if (useWeakReferences)
-				key = ((WeakValueReference<K, V>) ref).key;
-			else
-				key = ((SoftValueReference<K, V>) ref).key;
-			final Reference< ? > currentRefObject = objectsByKey.get(key);
-			if (currentRefObject != null && currentRefObject.get() == null) objectsByKey.remove(key);
-		}
 	}
 
 	public boolean contains(final K key)
 	{
-		cleanup();
-		final Reference<V> ref = objectsByKey.get(key);
-		if (ref == null) return false;
-		return ref.get() != null;
+		synchronized (cache)
+		{
+			expungeStaleEntries();
+			final ValueReference<K, V> ref = cache.get(key);
+			if (ref == null) return false;
+			return ref.get() != null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void expungeStaleEntries()
+	{
+		ValueReference<K, V> ref;
+		while ((ref = (ValueReference<K, V>) garbageCollectedRefs.poll()) != null)
+		{
+			final ValueReference<K, V> currentRefObject = cache.get(ref.getKey());
+			if (currentRefObject != null && currentRefObject.get() == null) cache.remove(ref.getKey());
+		}
 	}
 
 	public V get(final K key)
 	{
-		cleanup();
-		final Reference<V> ref = objectsByKey.get(key);
-		if (ref != null)
+		synchronized (cache)
 		{
-			final V value = ref.get();
-
-			if (value == null)
-				objectsByKey.remove(key);
-			else //
-			if (maxObjectsToKeep > 0) synchronized (objectsLastAccessed)
+			expungeStaleEntries();
+			final ValueReference<K, V> ref = cache.get(key);
+			if (ref != null)
 			{
-				if (objectsLastAccessed.size() == 0 || value != objectsLastAccessed.getFirst())
+				final V value = ref.get();
+
+				if (value == null)
+					cache.remove(key);
+				else
+				// udate mru list
+				if (maxObjectsToKeep > 0) if (mru.size() == 0 || value != mru.getFirst())
 				{
-					objectsLastAccessed.remove(value);
-					objectsLastAccessed.addFirst(value);
-					if (objectsLastAccessed.size() > maxObjectsToKeep) objectsLastAccessed.removeLast();
+					mru.remove(value);
+					mru.addFirst(value);
+					if (mru.size() > maxObjectsToKeep) mru.removeLast();
 				}
+				return ref.get();
 			}
-			return ref.get();
+			return null;
 		}
-		return null;
 	}
 
 	public int getMaxObjectsToKeep()
@@ -168,13 +165,20 @@ public final class ObjectCache<K, V>
 
 	public void put(final K key, final V value)
 	{
-		objectsByKey.remove(key);
-		objectsByKey.put(key, useWeakReferences ? new WeakValueReference<K, V>(key, value, refsWithGarbageCollectedValues)
-				: new SoftValueReference<K, V>(key, value, refsWithGarbageCollectedValues));
+		final ValueReference<K, V> ref = useWeakReferences ? new WeakValueReference<K, V>(key, value, garbageCollectedRefs)
+				: new SoftValueReference<K, V>(key, value, garbageCollectedRefs);
+
+		synchronized (cache)
+		{
+			cache.put(key, ref);
+		}
 	}
 
 	public void remove(final K key)
 	{
-		objectsByKey.remove(key);
+		synchronized (cache)
+		{
+			cache.remove(key);
+		}
 	}
 }

@@ -4,6 +4,7 @@
 jstuff-core/pom.xml -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Composite.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Crypto.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/GCTracker.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Identifiable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ImageUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Logger.java -text
@@ -141,6 +142,7 @@ jstuff-core/src/main/resources/net/sf/jstuff/core/date/Day_de.properties -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month.properties -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month_de.properties -text
 jstuff-core/src/test/java/net/sf/jstuff/core/AssertTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/GCTrackerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/LoggerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/ObjectCacheTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/StringUtilsTest.java -text

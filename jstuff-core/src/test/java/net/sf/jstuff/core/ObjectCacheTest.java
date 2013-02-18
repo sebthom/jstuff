@@ -19,7 +19,6 @@ import junit.framework.TestCase;
  */
 public class ObjectCacheTest extends TestCase
 {
-
 	public void testObjectCache_SoftRef_NoValuesToKeep() throws InterruptedException
 	{
 		final ObjectCache<String, Object> cache = new ObjectCache<String, Object>();
@@ -30,7 +29,7 @@ public class ObjectCacheTest extends TestCase
 		cache.get("2");
 		cache.get("3");
 		System.gc();
-		Thread.sleep(1000);
+		Thread.sleep(500);
 		assertTrue(cache.contains("1"));
 		assertTrue(cache.contains("2"));
 		assertTrue(cache.contains("3"));
@@ -46,7 +45,7 @@ public class ObjectCacheTest extends TestCase
 		cache.get("2");
 		cache.get("3");
 		System.gc();
-		Thread.sleep(1000);
+		Thread.sleep(500);
 		assertFalse(cache.contains("1"));
 		assertFalse(cache.contains("2"));
 		assertFalse(cache.contains("3"));
@@ -62,7 +61,7 @@ public class ObjectCacheTest extends TestCase
 		cache.get("2");
 		cache.get("3");
 		System.gc();
-		Thread.sleep(1000);
+		Thread.sleep(500);
 		assertFalse(cache.contains("1"));
 		assertTrue(cache.contains("2"));
 		assertTrue(cache.contains("3"));
