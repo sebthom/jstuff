@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2012 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -23,10 +23,7 @@ import java.util.WeakHashMap;
 import org.apache.commons.lang3.ObjectUtils;
 
 /**
- * WeakIdentityHashMap backed by a WeakHashMap using ob
- * 
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
- *
  */
 public class WeakIdentityHashMap<K, V> implements Map<K, V>
 {
@@ -43,16 +40,26 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 		}
 
 		@Override
-		public boolean equals(final Object obj)
+		public int hashCode()
 		{
-			return key == obj;
+			return System.identityHashCode(key);
 		}
 
 		@Override
-		public int hashCode()
+		public boolean equals(final Object obj)
 		{
-			return key.hashCode();
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			final KeyIdentity< ? > other = (KeyIdentity< ? >) obj;
+			if (key == null)
+			{
+				if (other.key != null) return false;
+			}
+			else if (!key.equals(other.key)) return false;
+			return true;
 		}
+
 	}
 
 	private static final class WeakEntryDelegator<K, V> implements Entry<K, V>
@@ -128,15 +135,13 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 		return new WeakIdentityHashMap<K, V>(initialCapacity, growthFactor);
 	}
 
-	private final WeakHashMap<KeyIdentity<K>, V> weakMap;
-
+	private final WeakHashMap<KeyIdentity<K>, V> map;
 	private transient Set<K> keySet = null;
-
 	private transient Set<Entry<K, V>> entrySet = null;
 
 	public WeakIdentityHashMap()
 	{
-		weakMap = new WeakHashMap<KeyIdentity<K>, V>();
+		map = new WeakHashMap<KeyIdentity<K>, V>();
 	}
 
 	/**
@@ -144,7 +149,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 	 */
 	public WeakIdentityHashMap(final int initialCapacity)
 	{
-		weakMap = new WeakHashMap<KeyIdentity<K>, V>(initialCapacity);
+		map = new WeakHashMap<KeyIdentity<K>, V>(initialCapacity);
 	}
 
 	/**
@@ -153,36 +158,24 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 	 */
 	public WeakIdentityHashMap(final int initialCapacity, final float growthFactor)
 	{
-		weakMap = new WeakHashMap<KeyIdentity<K>, V>(initialCapacity, growthFactor);
+		map = new WeakHashMap<KeyIdentity<K>, V>(initialCapacity, growthFactor);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void clear()
 	{
-		weakMap.clear();
+		map.clear();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean containsKey(final Object key)
 	{
-		return weakMap.containsKey(new KeyIdentity<Object>(key));
+		return map.containsKey(new KeyIdentity<Object>(key));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean containsValue(final Object value)
 	{
-		return weakMap.containsValue(value);
+		return map.containsValue(value);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Set<Entry<K, V>> entrySet()
 	{
 		final Set<Entry<K, V>> es = entrySet;
@@ -205,10 +198,10 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 					final KeyIdentity<Object> id = new KeyIdentity<Object>(entry.getKey());
 
 					// check if the key exists at all
-					if (!weakMap.containsKey(id)) return false;
+					if (!map.containsKey(id)) return false;
 
 					// check if the entry's value and the current value in the map equal
-					return ObjectUtils.equals(entry.getValue(), weakMap.get(id));
+					return ObjectUtils.equals(entry.getValue(), map.get(id));
 				}
 
 				@Override
@@ -217,7 +210,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 					// create an iterator instance that delegates to an iterator of the underlying weakMap's entry set
 					return new Iterator<Entry<K, V>>()
 						{
-							Iterator<Entry<KeyIdentity<K>, V>> it = weakMap.entrySet().iterator();
+							Iterator<Entry<KeyIdentity<K>, V>> it = map.entrySet().iterator();
 
 							public boolean hasNext()
 							{
@@ -250,13 +243,13 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 					final KeyIdentity<Object> id = new KeyIdentity<Object>(entry.getKey());
 
 					// check the key exists at all
-					if (!weakMap.containsKey(id)) return false;
+					if (!map.containsKey(id)) return false;
 
 					// check the entry's value and the current value in the map equal
-					if (!ObjectUtils.equals(entry.getValue(), weakMap.get(id))) return false;
+					if (!ObjectUtils.equals(entry.getValue(), map.get(id))) return false;
 
 					// remove the entry based on it's key
-					return weakMap.remove(id) != null;
+					return map.remove(id) != null;
 				}
 
 				@Override
@@ -305,37 +298,28 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public V get(final Object key)
 	{
-		return weakMap.get(new KeyIdentity<Object>(key));
+		return map.get(new KeyIdentity<Object>(key));
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return weakMap.hashCode();
+		return map.hashCode();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public boolean isEmpty()
 	{
-		return weakMap.isEmpty();
+		return map.isEmpty();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Set<K> keySet()
 	{
 		final Set<K> ks = keySet;
 		return ks != null ? ks : (keySet = new AbstractSet<K>()
 			{
-				private final Set<KeyIdentity<K>> weakKeySet = weakMap.keySet();
+				private final Set<KeyIdentity<K>> weakKeySet = map.keySet();
 
 				@Override
 				public void clear()
@@ -378,9 +362,9 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 				public boolean remove(final Object key)
 				{
 					final KeyIdentity<Object> id = new KeyIdentity<Object>(key);
-					if (weakMap.containsKey(id))
+					if (map.containsKey(id))
 					{
-						weakMap.remove(id);
+						map.remove(id);
 						return true;
 					}
 					return false;
@@ -412,45 +396,30 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 			});
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public V put(final K key, final V value)
 	{
-		weakMap.put(new KeyIdentity<K>(key), value);
+		map.put(new KeyIdentity<K>(key), value);
 		return value;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void putAll(final Map< ? extends K, ? extends V> m)
 	{
 		for (final Entry< ? extends K, ? extends V> e : m.entrySet())
 			put(e.getKey(), e.getValue());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public V remove(final Object key)
 	{
-		return weakMap.remove(new KeyIdentity<Object>(key));
+		return map.remove(new KeyIdentity<Object>(key));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public int size()
 	{
-		return weakMap.size();
+		return map.size();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public Collection<V> values()
 	{
-		return weakMap.values();
+		return map.values();
 	}
 }

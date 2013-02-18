@@ -51,6 +51,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/UnmodifiableIterator.jav
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/UnmodifiableListIterator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentityHashMap.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentityHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentitySet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/comparator/BooleanComparator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/comparator/CompositeComparator.java -text

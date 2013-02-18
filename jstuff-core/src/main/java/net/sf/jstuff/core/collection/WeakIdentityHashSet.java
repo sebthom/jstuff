@@ -17,43 +17,32 @@ import static java.lang.Boolean.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class WeakHashSet<E> implements Set<E>, Cloneable
+public class WeakIdentityHashSet<E> implements Set<E>, Cloneable
 {
-	public static <E> WeakHashSet<E> create()
+	public static <E> WeakIdentityHashSet<E> create()
 	{
-		return new WeakHashSet<E>();
+		return new WeakIdentityHashSet<E>();
 	}
 
-	public static <E> WeakHashSet<E> create(final int initialCapacity)
+	public static <E> WeakIdentityHashSet<E> create(final int initialCapacity)
 	{
-		return new WeakHashSet<E>(initialCapacity);
+		return new WeakIdentityHashSet<E>(initialCapacity);
 	}
 
-	public static <E> WeakHashSet<E> create(final int initialCapacity, final float growthFactor)
-	{
-		return new WeakHashSet<E>(initialCapacity, growthFactor);
-	}
+	private final WeakIdentityHashMap<E, Boolean> map;
 
-	private WeakHashMap<E, Boolean> map;
-
-	public WeakHashSet()
+	public WeakIdentityHashSet()
 	{
 		this(16);
 	}
 
-	public WeakHashSet(final int initialCapacity)
+	public WeakIdentityHashSet(final int initialCapacity)
 	{
-		this(16, 0.75f);
-	}
-
-	public WeakHashSet(final int initialCapacity, final float growthFactor)
-	{
-		map = new WeakHashMap<E, Boolean>(initialCapacity, growthFactor);
+		map = new WeakIdentityHashMap<E, Boolean>(initialCapacity);
 	}
 
 	public boolean add(final E o)
@@ -75,9 +64,9 @@ public class WeakHashSet<E> implements Set<E>, Cloneable
 	}
 
 	@Override
-	protected WeakHashSet<E> clone() throws CloneNotSupportedException
+	public WeakIdentityHashSet<E> clone() throws CloneNotSupportedException
 	{
-		final WeakHashSet<E> copy = new WeakHashSet<E>(this.size());
+		final WeakIdentityHashSet<E> copy = new WeakIdentityHashSet<E>(this.size());
 		copy.addAll(this);
 		return copy;
 	}
@@ -111,7 +100,7 @@ public class WeakHashSet<E> implements Set<E>, Cloneable
 	{
 		int hash = 0;
 		for (final E e : map.keySet())
-			if (e != null) hash += e.hashCode();
+			if (e != null) hash += System.identityHashCode(e);
 		return hash;
 	}
 
