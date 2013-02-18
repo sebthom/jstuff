@@ -65,7 +65,7 @@ public abstract class AbstractAtomFeedExporter extends RemotingSupport implement
 			entry.setId("tag:" + request.getServerName() + "," + DF.format(se.getDateCreated()) + ":" + feedId + "/" + se.getId());
 			entry.setTitle(se.getSubject());
 			//entry.setLink(new AtomLink("TODO", AtomLink.REL_RELATED, null));
-			entry.setSummary(new AtomText(StringUtils.htmlToPlainText(StringUtils.emptyIfNull(se.getContent())).toString()));
+			entry.setSummary(new AtomText(StringUtils.htmlToPlainText(StringUtils.nullToEmpty(se.getContent())).toString()));
 			entry.setContent(new AtomText(se.getContent(), se.getContent().indexOf('<') > -1 ? AtomText.TYPE_HTML : AtomText.TYPE_TEXT));
 			entry.setPublished(se.getDateCreated());
 			entry.setUpdated(se.getDateLastModified() == null ? se.getDateCreated() : se.getDateLastModified());
