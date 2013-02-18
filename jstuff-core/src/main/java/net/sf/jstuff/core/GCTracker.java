@@ -28,20 +28,20 @@ public class GCTracker
 {
 	private static final class GCReference extends WeakReference<Object>
 	{
-		private final Runnable runOnGc;
+		private final Runnable runWhenGCed;
 		private final GCTracker tracker;
 
-		protected GCReference(final Object trackedObject, final Runnable runOnGc, final GCTracker tracker)
+		protected GCReference(final Object trackedObject, final Runnable runWhenGCed, final GCTracker tracker)
 		{
 			super(trackedObject, garbageCollectedRefs);
-			this.runOnGc = runOnGc;
+			this.runWhenGCed = runWhenGCed;
 			this.tracker = tracker;
 		}
 	}
 
 	private static Thread CLEANUP_THREAD = new Thread()
 		{
-			final Logger LOG = Logger.create();
+			private final Logger LOG = Logger.create();
 			{
 				setPriority(Thread.MAX_PRIORITY);
 				setName("GarbageCollectingConcurrentMap-cleanupthread");
@@ -64,7 +64,7 @@ public class GCTracker
 							}
 							try
 							{
-								ref.runOnGc.run();
+								ref.runWhenGCed.run();
 							}
 							catch (final Exception ex)
 							{
