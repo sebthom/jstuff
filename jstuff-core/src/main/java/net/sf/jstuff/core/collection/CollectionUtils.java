@@ -396,14 +396,14 @@ public abstract class CollectionUtils
 			};
 	}
 
-	public static <T> ThreadLocal<IdentitySet<T>> newThreadLocalIdentitySet()
+	public static <T> ThreadLocal<IdentityHashSet<T>> newThreadLocalIdentitySet()
 	{
-		return new ThreadLocal<IdentitySet<T>>()
+		return new ThreadLocal<IdentityHashSet<T>>()
 			{
 				@Override
-				public IdentitySet<T> initialValue()
+				public IdentityHashSet<T> initialValue()
 				{
-					return new IdentitySet<T>();
+					return new IdentityHashSet<T>();
 				}
 			};
 	}
