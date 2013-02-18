@@ -36,11 +36,11 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 {
 	public static final class ANSIState
 	{
-		public String fgcolor;
 		public String bgcolor;
-		public boolean bold;
-		public boolean underline;
 		public boolean blink;
+		public boolean bold;
+		public String fgcolor;
+		public boolean underline;
 
 		public ANSIState()
 		{
@@ -144,11 +144,11 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		}
 	}
 
-	public static final String NEW_LINE = System.getProperty("line.separator");
-	public static final char LF = 10;
 	public static final char CR = 13;
-
+	public static final char LF = 10;
 	public static final String CR_LF = "" + CR + LF;
+
+	public static final String NEW_LINE = System.getProperty("line.separator");
 
 	public static CharSequence ansiColorsToHTML(final CharSequence txt)
 	{
@@ -316,9 +316,9 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		return count;
 	}
 
-	public static String emptyIfNull(final Object txt)
+	public static <T extends CharSequence> T emptyToNull(final T txt)
 	{
-		return txt == null ? "" : txt instanceof String ? (String) txt : txt.toString();
+		return txt == null ? null : txt.length() == 0 ? null : txt;
 	}
 
 	public static boolean endsWith(final CharSequence str, final char ch)
@@ -397,6 +397,11 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	{
 		if (iterable == null) return null;
 		return join(iterable.iterator(), null);
+	}
+
+	public static String nullToEmpty(final Object txt)
+	{
+		return txt == null ? "" : txt instanceof String ? (String) txt : txt.toString();
 	}
 
 	/**
