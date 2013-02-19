@@ -110,6 +110,9 @@ jstuff-core/src/main/java/net/sf/jstuff/core/jbean/changelog/SetValueEvent.java 
 jstuff-core/src/main/java/net/sf/jstuff/core/jbean/changelog/UndoMarker.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/ClassDescriptor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/PropertyDescriptor.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/ReadOnly.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/ReadWrite.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/WriteOnly.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateFormatStyle.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateTimeHelper.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/NumberHelper.java -text
