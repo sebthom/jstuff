@@ -13,6 +13,7 @@
 package net.sf.jstuff.core;
 
 import junit.framework.TestCase;
+import net.sf.jstuff.core.event.EventListener;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -23,15 +24,16 @@ public class GCTrackerTest extends TestCase
 
 	public void testGCTracker() throws InterruptedException
 	{
-		final GCTracker tracker = new GCTracker();
-
-		final Runnable countGC = new Runnable()
+		final EventListener<Void> countGC = new EventListener<Void>()
 			{
-				public void run()
+				public void onEvent(final Void event)
 				{
 					garbageCollected++;
 				}
 			};
+
+		final GCTracker<Void> tracker = new GCTracker<Void>();
+		tracker.subscribe(countGC);
 
 		final int objects = 10000;
 		final Thread t1 = new Thread()
@@ -41,8 +43,8 @@ public class GCTrackerTest extends TestCase
 				{
 					for (int i = 0; i < objects; i++)
 					{
-						System.out.println("T1 " + i);
-						tracker.track(new Object(), countGC);
+						System.out.println("[T1] new " + i);
+						tracker.track(new Object(), null);
 					}
 				};
 			};
@@ -53,8 +55,8 @@ public class GCTrackerTest extends TestCase
 				{
 					for (int i = 0; i < objects; i++)
 					{
-						System.err.println("T2 " + i);
-						tracker.track(new Object(), countGC);
+						System.err.println("[T2] new " + i);
+						tracker.track(new Object(), null);
 					}
 				};
 			};

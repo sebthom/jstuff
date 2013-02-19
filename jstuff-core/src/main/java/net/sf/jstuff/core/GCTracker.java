@@ -17,6 +17,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.jstuff.core.event.EventListenable;
+import net.sf.jstuff.core.event.EventListener;
+import net.sf.jstuff.core.event.EventManager;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -24,17 +27,17 @@ import net.sf.jstuff.core.validation.Args;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class GCTracker
+public class GCTracker<Event> implements EventListenable<Event>
 {
-	private static final class GCReference extends WeakReference<Object>
+	private static final class GCReference<Event> extends WeakReference<Object>
 	{
-		private final Runnable runWhenGCed;
-		private final GCTracker tracker;
+		private final Object eventToFireOnGC;
+		private final GCTracker<Event> tracker;
 
-		protected GCReference(final Object trackedObject, final Runnable runWhenGCed, final GCTracker tracker)
+		protected GCReference(final Object trackedObject, final Event eventToFireOnGC, final GCTracker<Event> tracker)
 		{
 			super(trackedObject, garbageCollectedRefs);
-			this.runWhenGCed = runWhenGCed;
+			this.eventToFireOnGC = eventToFireOnGC;
 			this.tracker = tracker;
 		}
 	}
@@ -48,6 +51,7 @@ public class GCTracker
 				setDaemon(true);
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void run()
 			{
@@ -55,8 +59,8 @@ public class GCTracker
 				while (true)
 					try
 					{
-						GCReference ref;
-						while ((ref = (GCReference) garbageCollectedRefs.remove()) != null)
+						GCReference<Object> ref;
+						while ((ref = (GCReference<Object>) garbageCollectedRefs.remove()) != null)
 						{
 							synchronized (ref.tracker.monitoredReferences)
 							{
@@ -64,7 +68,7 @@ public class GCTracker
 							}
 							try
 							{
-								ref.runWhenGCed.run();
+								ref.tracker.events.fire(ref.eventToFireOnGC);
 							}
 							catch (final Exception ex)
 							{
@@ -81,10 +85,12 @@ public class GCTracker
 
 	private static final ReferenceQueue<Object> garbageCollectedRefs = new ReferenceQueue<Object>();
 
+	private final EventManager<Event> events = new EventManager<Event>();
+
 	/**
 	 * list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage collected
 	 */
-	private final List<GCReference> monitoredReferences = new ArrayList<GCReference>(128);
+	private final List<GCReference<Event>> monitoredReferences = new ArrayList<GCReference<Event>>(128);
 
 	public GCTracker()
 	{
@@ -94,22 +100,31 @@ public class GCTracker
 		}
 	}
 
+	public <EventType extends Event> boolean subscribe(final EventListener<EventType> listener)
+	{
+		return events.subscribe(listener);
+	}
+
 	/**
-	 * <b>Important:</b> <code>runWhenGCed</code> must not have a direct or indirect hard reference to <code>target</code>, otherwise you are producing a memory leak by preventing garbage collection of <code>target</code>.
+	 * <b>Important:</b> <code>eventToFireOnGC</code> must not have a direct or indirect hard reference to <code>target</code>, otherwise you are producing a memory leak by preventing garbage collection of <code>target</code>.
 	 * @param target the object whose garbage collection should be tracked
-	 * @param runWhenGCed a runnable that is invoked on garbage collection of <code>target</code>
+	 * @param eventToFireOnGC an event that is fired on garbage collection of <code>target</code>
 	 */
-	public void track(final Object target, final Runnable runWhenGCed)
+	public void track(final Object target, final Event eventToFireOnGC)
 	{
 		Args.notNull("target", target);
-		Args.notNull("runWhenGCed", runWhenGCed);
-		if (target == runWhenGCed)
+		if (target == eventToFireOnGC)
 			throw new IllegalArgumentException(
-					"runOnGC callback cannot be the same as the trackedObject, this avoids garbage collection of target.");
-		final GCReference ref = new GCReference(target, runWhenGCed, this);
+					"eventToFireOnGC callback cannot be the same as the target, this avoids garbage collection of target.");
+		final GCReference<Event> ref = new GCReference<Event>(target, eventToFireOnGC, this);
 		synchronized (monitoredReferences)
 		{
 			monitoredReferences.add(ref);
 		}
+	}
+
+	public <EventType extends Event> boolean unsubscribe(final EventListener<EventType> listener)
+	{
+		return events.unsubscribe(listener);
 	}
 }
