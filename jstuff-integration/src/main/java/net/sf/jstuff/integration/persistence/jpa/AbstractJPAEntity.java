@@ -21,6 +21,7 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
@@ -31,6 +32,8 @@ import net.sf.jstuff.core.Identifiable;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.date.ImmutableDate;
 import net.sf.jstuff.core.reflection.ReflectionUtils;
+import net.sf.jstuff.integration.persistence.Entity;
+import net.sf.jstuff.integration.persistence.IdentifiableHashCodeManager;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -41,6 +44,44 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOG = Logger.create();
+
+	/* ******************************************************************************
+	 * Consistent HashCode Management
+	 * ******************************************************************************/
+	@javax.persistence.Transient
+	private final String _hashCodeTrackingId;
+
+	protected AbstractJPAEntity()
+	{
+		_hashCodeTrackingId = IdentifiableHashCodeManager.onEntityInstantiated(this);
+	}
+
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final Entity other = (Entity) obj;
+		if (getId() == null)
+		{
+			if (other.getId() != null) return false;
+		}
+		else if (!getId().equals(other.getId())) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return IdentifiableHashCodeManager.getHashCode(this, _hashCodeTrackingId);
+	}
+
+	@PostPersist
+	private void onAfterSet()
+	{
+		IdentifiableHashCodeManager.onIdSet(this, _hashCodeTrackingId);
+	}
 
 	/* ******************************************************************************
 	 * Generic Entity Properties
@@ -70,6 +111,11 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 	public void _setMarkedAsDeleted(final boolean isMarkedAsDeleted)
 	{
 		_isMarkedAsDeleted = isMarkedAsDeleted;
+	}
+
+	public Object getIdRealm()
+	{
+		return this.getClass();
 	}
 
 	/**

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.atom.feed;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,7 +55,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @XStreamAlias("feed")
-public class AtomFeed implements Identifiable<String>, Serializable
+public class AtomFeed extends Identifiable.Default<String>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -65,7 +64,6 @@ public class AtomFeed implements Identifiable<String>, Serializable
 
 	private String title;
 	private String logo;
-	private String id;
 
 	@XStreamImplicit(itemFieldName = "author")
 	private Collection<AtomPerson> authors;
@@ -81,11 +79,13 @@ public class AtomFeed implements Identifiable<String>, Serializable
 	private Collection<AtomEntry> entries;
 
 	public AtomFeed()
-	{}
+	{
+		super();
+	}
 
 	public AtomFeed(final String id)
 	{
-		this.id = id;
+		setId(id);
 	}
 
 	/**
@@ -102,14 +102,6 @@ public class AtomFeed implements Identifiable<String>, Serializable
 	public Collection<AtomEntry> getEntries()
 	{
 		return entries;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public String getId()
-	{
-		return id;
 	}
 
 	/**
@@ -191,14 +183,6 @@ public class AtomFeed implements Identifiable<String>, Serializable
 	public void setEntries(final Collection<AtomEntry> entries)
 	{
 		this.entries = entries;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(final String id)
-	{
-		this.id = id;
 	}
 
 	/**

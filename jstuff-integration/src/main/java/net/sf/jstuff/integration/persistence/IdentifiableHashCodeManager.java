@@ -1,0 +1,182 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Thomschke.
+ *
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
+package net.sf.jstuff.integration.persistence;
+
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+import net.sf.jstuff.core.GCTracker;
+import net.sf.jstuff.core.Identifiable;
+import net.sf.jstuff.core.collection.WeakIdentityHashSet;
+import net.sf.jstuff.core.validation.Args;
+
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
+public final class IdentifiableHashCodeManager
+{
+	private static final class FQId
+	{
+		private final Object id;
+		private final Object realm;
+
+		public FQId(final Object realm, final Object id)
+		{
+			this.realm = realm;
+			this.id = id;
+		}
+
+		@Override
+		public boolean equals(final Object obj)
+		{
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			final FQId other = (FQId) obj;
+			if (id == null)
+			{
+				if (other.id != null) return false;
+			}
+			else if (!id.equals(other.id)) return false;
+			if (realm == null)
+			{
+				if (other.realm != null) return false;
+			}
+			else if (!realm.equals(other.realm)) return false;
+			return true;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (id == null ? 0 : id.hashCode());
+			result = prime * result + (realm == null ? 0 : realm.hashCode());
+			return result;
+		}
+	}
+
+	private static final class HashCodeAssignment
+	{
+		protected final int hashCode;
+		protected FQId id;
+		protected final WeakIdentityHashSet<Identifiable< ? >> identifiables = WeakIdentityHashSet.create();
+
+		protected HashCodeAssignment(final int hashCode)
+		{
+			this.hashCode = hashCode;
+		}
+	}
+
+	private static final GCTracker<String> GC_TRACKER = new GCTracker<String>()
+		{
+			@Override
+			protected void onGCEvent(final String trackingId)
+			{
+				try
+				{
+					final HashCodeAssignment ida = HASHCODE_ASSIGNMENT_BY_TRACKING_ID.get(trackingId);
+					synchronized (ida.identifiables)
+					{
+						if (ida.identifiables.size() == 0) HASHCODE_ASSIGNMENT_BY_TRACKING_ID.remove(trackingId, ida);
+					}
+
+					if (ida.id == null) return;
+
+					final HashCodeAssignment ida2 = HASHCODE_ASSIGNMENT_BY_ID.get(ida.id);
+					if (ida2 != null) synchronized (ida2.identifiables)
+					{
+						if (ida2.identifiables.size() == 0) HASHCODE_ASSIGNMENT_BY_ID.remove(ida2.id, ida2);
+					}
+				}
+				catch (final Exception ex)
+				{
+					ex.printStackTrace();
+				}
+			}
+		};
+	private static ConcurrentMap<FQId, HashCodeAssignment> HASHCODE_ASSIGNMENT_BY_ID = new ConcurrentHashMap<FQId, HashCodeAssignment>();
+
+	private static ConcurrentMap<String, HashCodeAssignment> HASHCODE_ASSIGNMENT_BY_TRACKING_ID = new ConcurrentHashMap<String, HashCodeAssignment>();
+
+	private static final AtomicLong LOCAL_ID_GENERATOR = new AtomicLong(0);
+
+	private static final String LOCAL_JVM_ID = UUID.randomUUID().toString();
+
+	public static int getHashCode(final Identifiable< ? > entity, final String trackingId)
+	{
+		final Object id = entity.getId();
+		if (id != null)
+		{
+			final HashCodeAssignment ida = HASHCODE_ASSIGNMENT_BY_ID.get(new FQId(entity.getIdRealm(), id));
+			return ida == null ? id.hashCode() : ida.hashCode;
+		}
+		return getOrCreateHashCodeAssignmentByTrackingId(entity, trackingId).hashCode;
+	}
+
+	public static int getManagedIdsCount()
+	{
+		return HASHCODE_ASSIGNMENT_BY_ID.size();
+	}
+
+	public static int getManagedTrackingIdsCount()
+	{
+		return HASHCODE_ASSIGNMENT_BY_TRACKING_ID.size();
+	}
+
+	private static HashCodeAssignment getOrCreateHashCodeAssignmentByTrackingId(final Identifiable< ? > entity, final String trackingId)
+	{
+		final HashCodeAssignment newHca = new HashCodeAssignment(trackingId.hashCode());
+		HashCodeAssignment hca = HASHCODE_ASSIGNMENT_BY_TRACKING_ID.putIfAbsent(trackingId, newHca);
+		if (hca == null) hca = newHca;
+		synchronized (hca.identifiables)
+		{
+			hca.identifiables.add(entity);
+		}
+		return hca;
+	}
+
+	/**
+	 * @return a new cross-JVM unique hash code tracking id
+	 */
+	public static <T> String onEntityInstantiated(final Identifiable<T> entity)
+	{
+		final String trackingId = LOCAL_JVM_ID + "#" + LOCAL_ID_GENERATOR.getAndIncrement();
+		GC_TRACKER.track(entity, trackingId);
+		return trackingId;
+	}
+
+	public static <T> void onIdSet(final Identifiable<T> entity, final String trackingId)
+	{
+		Args.notNull("entity", entity);
+		Args.notNull("trackingId", trackingId);
+
+		/*
+		 * register trackingId hashCode with the entity ID
+		 */
+		final HashCodeAssignment newHca = new HashCodeAssignment(trackingId.hashCode());
+		final FQId id = new FQId(entity.getIdRealm(), entity.getId());
+		HashCodeAssignment hca = HASHCODE_ASSIGNMENT_BY_ID.putIfAbsent(id, newHca);
+		if (hca == null) hca = newHca;
+		synchronized (hca.identifiables)
+		{
+			hca.id = id;
+			hca.identifiables.add(entity);
+		}
+
+		getOrCreateHashCodeAssignmentByTrackingId(entity, trackingId).id = id;
+	}
+}

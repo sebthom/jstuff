@@ -34,7 +34,17 @@ public interface Identifiable<IdType>
 		{
 			this.id = id;
 		}
+
+		public Object getIdRealm()
+		{
+			return this.getClass();
+		}
 	}
 
 	IdType getId();
+
+	/**
+	 * @return an identifier for the realm in which the id is unique, e.g. the concrete class name.
+	 */
+	Object getIdRealm();
 }

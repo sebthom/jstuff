@@ -110,9 +110,6 @@ jstuff-core/src/main/java/net/sf/jstuff/core/jbean/changelog/SetValueEvent.java 
 jstuff-core/src/main/java/net/sf/jstuff/core/jbean/changelog/UndoMarker.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/ClassDescriptor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/PropertyDescriptor.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/ReadOnly.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/ReadWrite.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/WriteOnly.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateFormatStyle.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateTimeHelper.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/NumberHelper.java -text
@@ -214,6 +211,7 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/ldap/LdapException.ja
 jstuff-integration/src/main/java/net/sf/jstuff/integration/ldap/LdapTemplate.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/ldap/LdapUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/mail/MailUtils.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/IdentifiableHashCodeManager.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/JdbcResourcesCloser.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/SQLUtils.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/h2/H2ServerSpringBean.java -text
@@ -277,6 +275,8 @@ jstuff-integration/src/test/java/net/sf/jstuff/integration/example/guestbook/ser
 jstuff-integration/src/test/java/net/sf/jstuff/integration/example/guestbook/service/UnknownEntityException.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/example/guestbook/service/command/AddGuestBookEntryCommand.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/example/guestbook/service/command/UpdateGuestBookEntryCommand.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/persistence/Entity.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/persistence/IdentifiableHashCodeManagerTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanInjectorTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanLocatorTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanRefTest.java -text

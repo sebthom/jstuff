@@ -68,7 +68,7 @@ public class GCTracker<Event> implements EventListenable<Event>
 							}
 							try
 							{
-								ref.tracker.events.fire(ref.eventToFireOnGC);
+								ref.tracker.onGCEvent(ref.eventToFireOnGC);
 							}
 							catch (final Exception ex)
 							{
@@ -103,6 +103,11 @@ public class GCTracker<Event> implements EventListenable<Event>
 	public <EventType extends Event> boolean subscribe(final EventListener<EventType> listener)
 	{
 		return events.subscribe(listener);
+	}
+
+	protected void onGCEvent(final Event event)
+	{
+		events.fire(event);
 	}
 
 	/**

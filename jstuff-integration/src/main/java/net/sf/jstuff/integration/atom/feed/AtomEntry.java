@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.atom.feed;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,7 +58,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AtomEntry implements Identifiable<String>, Serializable
+public class AtomEntry extends Identifiable.Default<String>
 {
 	private static final long serialVersionUID = 1L;
 
@@ -71,7 +70,6 @@ public class AtomEntry implements Identifiable<String>, Serializable
 	private Collection<AtomCategory> categories;
 
 	private AtomLink link;
-	private String id;
 	private String published;
 	private String updated;
 	private AtomPerson author;
@@ -98,14 +96,6 @@ public class AtomEntry implements Identifiable<String>, Serializable
 	public AtomText getContent()
 	{
 		return content;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public String getId()
-	{
-		return id;
 	}
 
 	/**
@@ -180,14 +170,6 @@ public class AtomEntry implements Identifiable<String>, Serializable
 	public void setContent(final AtomText content)
 	{
 		this.content = content;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(final String id)
-	{
-		this.id = id;
 	}
 
 	/**
