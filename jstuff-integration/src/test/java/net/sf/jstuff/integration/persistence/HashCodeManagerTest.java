@@ -15,7 +15,7 @@ package net.sf.jstuff.integration.persistence;
 import junit.framework.TestCase;
 import net.sf.jstuff.core.io.SerializationUtils;
 
-public class IdentifiableHashCodeManagerTest extends TestCase
+public class HashCodeManagerTest extends TestCase
 {
 	public static void testManagedHashCode() throws InterruptedException
 	{
@@ -25,8 +25,8 @@ public class IdentifiableHashCodeManagerTest extends TestCase
 		Entity client_e = new Entity().setLabel("client_e");
 		final int client_HC = client_e.hashCode();
 
-		assertEquals(0, IdentifiableHashCodeManager.getManagedIdsCount());
-		assertEquals(1, IdentifiableHashCodeManager.getManagedTrackingIdsCount());
+		assertEquals(0, HashCodeManager.getManagedIdsCount());
+		assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());
 
 		/*
 		 * #2 server: deserialize()
@@ -35,8 +35,8 @@ public class IdentifiableHashCodeManagerTest extends TestCase
 		server_e.setLabel("server_e");
 		final int server_HC = server_e.hashCode();
 
-		assertEquals(0, IdentifiableHashCodeManager.getManagedIdsCount());
-		assertEquals(1, IdentifiableHashCodeManager.getManagedTrackingIdsCount());
+		assertEquals(0, HashCodeManager.getManagedIdsCount());
+		assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());
 
 		/*
 		 * #3 server: persist()
@@ -44,8 +44,8 @@ public class IdentifiableHashCodeManagerTest extends TestCase
 		server_e.setId(22);
 		assertEquals(server_e.hashCode(), server_HC);
 
-		assertEquals(1, IdentifiableHashCodeManager.getManagedIdsCount());
-		assertEquals(1, IdentifiableHashCodeManager.getManagedTrackingIdsCount());
+		assertEquals(1, HashCodeManager.getManagedIdsCount());
+		assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());
 
 		/*
 		 * #4 client: applyId()
@@ -53,8 +53,8 @@ public class IdentifiableHashCodeManagerTest extends TestCase
 		client_e.setId(22);
 		assertEquals(server_e.hashCode(), client_HC);
 
-		assertEquals(1, IdentifiableHashCodeManager.getManagedIdsCount());
-		assertEquals(1, IdentifiableHashCodeManager.getManagedTrackingIdsCount());
+		assertEquals(1, HashCodeManager.getManagedIdsCount());
+		assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());
 
 		/*
 		 * #5 server: loadFromDB()
@@ -63,8 +63,8 @@ public class IdentifiableHashCodeManagerTest extends TestCase
 		server_e2.setId(22);
 		assertEquals(server_e.hashCode(), server_e2.hashCode());
 
-		assertEquals(1, IdentifiableHashCodeManager.getManagedIdsCount());
-		assertEquals(2, IdentifiableHashCodeManager.getManagedTrackingIdsCount());
+		assertEquals(1, HashCodeManager.getManagedIdsCount());
+		assertEquals(2, HashCodeManager.getManagedTrackingIdsCount());
 
 		/*
 		 * #6 client: receive()
@@ -73,8 +73,8 @@ public class IdentifiableHashCodeManagerTest extends TestCase
 		client_e2.setLabel("client_e2");
 		assertEquals(client_e.hashCode(), client_e2.hashCode());
 
-		assertEquals(1, IdentifiableHashCodeManager.getManagedIdsCount());
-		assertEquals(2, IdentifiableHashCodeManager.getManagedTrackingIdsCount());
+		assertEquals(1, HashCodeManager.getManagedIdsCount());
+		assertEquals(2, HashCodeManager.getManagedTrackingIdsCount());
 
 		client_e = null;
 		client_e2 = null;
@@ -85,8 +85,8 @@ public class IdentifiableHashCodeManagerTest extends TestCase
 		System.gc();
 		Thread.sleep(500);
 
-		assertEquals(0, IdentifiableHashCodeManager.getManagedIdsCount());
-		assertEquals(0, IdentifiableHashCodeManager.getManagedTrackingIdsCount());
+		assertEquals(0, HashCodeManager.getManagedIdsCount());
+		assertEquals(0, HashCodeManager.getManagedTrackingIdsCount());
 
 		// #5 server: loadFromDB()
 		final Entity server_e3 = new Entity().setLabel("server_e3");
@@ -97,7 +97,7 @@ public class IdentifiableHashCodeManagerTest extends TestCase
 		final Entity client_e3 = SerializationUtils.clone(server_e3);
 		assertFalse(client_e3.hashCode() == client_HC);
 
-		assertEquals(1, IdentifiableHashCodeManager.getManagedIdsCount());
-		assertEquals(1, IdentifiableHashCodeManager.getManagedTrackingIdsCount());
+		assertEquals(1, HashCodeManager.getManagedIdsCount());
+		assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());
 	}
 }

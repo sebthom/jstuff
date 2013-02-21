@@ -23,16 +23,23 @@ import net.sf.jstuff.core.collection.WeakIdentityHashSet;
 import net.sf.jstuff.core.validation.Args;
 
 /**
+ * Alternative solution to solve:
+ *
+ * http://stackoverflow.com/questions/5031614/the-jpa-hashcode-equals-dilemma
+ * http://stackoverflow.com/questions/4323245/what-is-the-best-practice-when-implementing-equals-for-entities-with-generated
+ * http://onjava.com/pub/a/onjava/2006/09/13/dont-let-hibernate-steal-your-identity.html?page=3
+ * https://community.jboss.org/wiki/EqualsandHashCode
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class IdentifiableHashCodeManager
+public final class HashCodeManager
 {
 	private static final class FQId
 	{
 		private final Object id;
 		private final Object realm;
 
-		public FQId(final Object realm, final Object id)
+		protected FQId(final Object realm, final Object id)
 		{
 			this.realm = realm;
 			this.id = id;
@@ -108,23 +115,25 @@ public final class IdentifiableHashCodeManager
 				}
 			}
 		};
-	private static ConcurrentMap<FQId, HashCodeAssignment> HASHCODE_ASSIGNMENT_BY_ID = new ConcurrentHashMap<FQId, HashCodeAssignment>();
 
+	private static ConcurrentMap<FQId, HashCodeAssignment> HASHCODE_ASSIGNMENT_BY_ID = new ConcurrentHashMap<FQId, HashCodeAssignment>();
 	private static ConcurrentMap<String, HashCodeAssignment> HASHCODE_ASSIGNMENT_BY_TRACKING_ID = new ConcurrentHashMap<String, HashCodeAssignment>();
 
 	private static final AtomicLong LOCAL_ID_GENERATOR = new AtomicLong(0);
-
 	private static final String LOCAL_JVM_ID = UUID.randomUUID().toString();
 
-	public static int getHashCode(final Identifiable< ? > entity, final String trackingId)
+	public static int hashCodeFor(final Identifiable< ? > entity, final String trackingId)
 	{
+		Args.notNull("entity", entity);
+		Args.notNull("trackingId", trackingId);
+
 		final Object id = entity.getId();
 		if (id != null)
 		{
 			final HashCodeAssignment ida = HASHCODE_ASSIGNMENT_BY_ID.get(new FQId(entity.getIdRealm(), id));
 			return ida == null ? id.hashCode() : ida.hashCode;
 		}
-		return getOrCreateHashCodeAssignmentByTrackingId(entity, trackingId).hashCode;
+		return getOrRegisterHashCodeAssignmentByTrackingId(entity, trackingId).hashCode;
 	}
 
 	public static int getManagedIdsCount()
@@ -137,7 +146,7 @@ public final class IdentifiableHashCodeManager
 		return HASHCODE_ASSIGNMENT_BY_TRACKING_ID.size();
 	}
 
-	private static HashCodeAssignment getOrCreateHashCodeAssignmentByTrackingId(final Identifiable< ? > entity, final String trackingId)
+	private static HashCodeAssignment getOrRegisterHashCodeAssignmentByTrackingId(final Identifiable< ? > entity, final String trackingId)
 	{
 		final HashCodeAssignment newHca = new HashCodeAssignment(trackingId.hashCode());
 		HashCodeAssignment hca = HASHCODE_ASSIGNMENT_BY_TRACKING_ID.putIfAbsent(trackingId, newHca);
@@ -154,6 +163,8 @@ public final class IdentifiableHashCodeManager
 	 */
 	public static <T> String onEntityInstantiated(final Identifiable<T> entity)
 	{
+		Args.notNull("entity", entity);
+
 		final String trackingId = LOCAL_JVM_ID + "#" + LOCAL_ID_GENERATOR.getAndIncrement();
 		GC_TRACKER.track(entity, trackingId);
 		return trackingId;
@@ -177,6 +188,6 @@ public final class IdentifiableHashCodeManager
 			hca.identifiables.add(entity);
 		}
 
-		getOrCreateHashCodeAssignmentByTrackingId(entity, trackingId).id = id;
+		getOrRegisterHashCodeAssignmentByTrackingId(entity, trackingId).id = id;
 	}
 }

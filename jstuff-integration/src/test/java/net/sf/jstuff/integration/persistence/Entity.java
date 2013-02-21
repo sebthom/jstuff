@@ -26,7 +26,7 @@ public class Entity extends Identifiable.Default<Integer>
 
 	public Entity()
 	{
-		_hashCodeTrackingId = IdentifiableHashCodeManager.onEntityInstantiated(this);
+		_hashCodeTrackingId = HashCodeManager.onEntityInstantiated(this);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class Entity extends Identifiable.Default<Integer>
 	@Override
 	public int hashCode()
 	{
-		return IdentifiableHashCodeManager.getHashCode(this, _hashCodeTrackingId);
+		return HashCodeManager.hashCodeFor(this, _hashCodeTrackingId);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class Entity extends Identifiable.Default<Integer>
 		if (this.id != null) throw new IllegalStateException("Id reassignment not allowed");
 		this.id = id;
 
-		IdentifiableHashCodeManager.onIdSet(this, _hashCodeTrackingId);
+		HashCodeManager.onIdSet(this, _hashCodeTrackingId);
 	}
 
 	public Entity setLabel(final String label)

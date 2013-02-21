@@ -33,7 +33,7 @@ import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.date.ImmutableDate;
 import net.sf.jstuff.core.reflection.ReflectionUtils;
 import net.sf.jstuff.integration.persistence.Entity;
-import net.sf.jstuff.integration.persistence.IdentifiableHashCodeManager;
+import net.sf.jstuff.integration.persistence.HashCodeManager;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -53,7 +53,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 
 	protected AbstractJPAEntity()
 	{
-		_hashCodeTrackingId = IdentifiableHashCodeManager.onEntityInstantiated(this);
+		_hashCodeTrackingId = HashCodeManager.onEntityInstantiated(this);
 	}
 
 	@Override
@@ -74,13 +74,13 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 	@Override
 	public int hashCode()
 	{
-		return IdentifiableHashCodeManager.getHashCode(this, _hashCodeTrackingId);
+		return HashCodeManager.hashCodeFor(this, _hashCodeTrackingId);
 	}
 
 	@PostPersist
 	private void onAfterSet()
 	{
-		IdentifiableHashCodeManager.onIdSet(this, _hashCodeTrackingId);
+		HashCodeManager.onIdSet(this, _hashCodeTrackingId);
 	}
 
 	/* ******************************************************************************
