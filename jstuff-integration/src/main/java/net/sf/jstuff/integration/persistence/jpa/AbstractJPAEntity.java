@@ -32,7 +32,6 @@ import net.sf.jstuff.core.Identifiable;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.date.ImmutableDate;
 import net.sf.jstuff.core.reflection.ReflectionUtils;
-import net.sf.jstuff.integration.persistence.Entity;
 import net.sf.jstuff.integration.persistence.HashCodeManager;
 
 /**
@@ -62,7 +61,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
-		final Entity other = (Entity) obj;
+		final AbstractJPAEntity< ? > other = (AbstractJPAEntity< ? >) obj;
 		if (getId() == null)
 		{
 			if (other.getId() != null) return false;

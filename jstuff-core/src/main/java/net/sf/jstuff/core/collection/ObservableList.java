@@ -102,7 +102,7 @@ public class ObservableList<E> extends ObservableCollection<E> implements List<E
 
 				public E next()
 				{
-					current = next();
+					current = it.next();
 					return current;
 				}
 

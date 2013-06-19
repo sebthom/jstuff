@@ -39,7 +39,7 @@ public final class HashCodeManager
 		private final Object id;
 		private final Object realm;
 
-		protected FQId(final Object realm, final Object id)
+		private FQId(final Object realm, final Object id)
 		{
 			this.realm = realm;
 			this.id = id;
@@ -48,9 +48,11 @@ public final class HashCodeManager
 		@Override
 		public boolean equals(final Object obj)
 		{
-			if (this == obj) return true;
-			if (obj == null) return false;
-			if (getClass() != obj.getClass()) return false;
+			/* not needed as we have full control over the usage of this class's objects:
+			 * if (this == obj) return true;
+			 * if (obj == null) return false;
+			 * if (getClass() != obj.getClass()) return false;
+			 */
 			final FQId other = (FQId) obj;
 			if (id == null)
 			{

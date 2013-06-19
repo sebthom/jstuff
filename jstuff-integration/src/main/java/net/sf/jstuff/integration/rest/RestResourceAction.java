@@ -15,6 +15,7 @@ package net.sf.jstuff.integration.rest;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
+import net.sf.jstuff.core.reflection.SerializableMethod;
 import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -30,7 +31,7 @@ public class RestResourceAction implements Serializable
 	private final RestResourceAction fallbackFor;
 	private final HttpRequestMethod httpRequestMethod;
 	private final Class< ? > httpRequestBodyType;
-	private final Method serviceMethod;
+	private final SerializableMethod serviceMethod;
 	private final String[] parameterNames;
 	private final String resourceName;
 	private final int requiredURLParameterCount;
@@ -55,7 +56,7 @@ public class RestResourceAction implements Serializable
 		Args.notNull("method", serviceMethod);
 		Args.notNull("parameterNames", parameterNames);
 
-		this.serviceMethod = serviceMethod;
+		this.serviceMethod = SerializableMethod.get(serviceMethod);
 		this.resourceName = resourceName;
 		this.httpRequestMethod = httpRequestMethod;
 		this.fallbackFor = fallbackFor;
@@ -115,7 +116,7 @@ public class RestResourceAction implements Serializable
 
 	public Class< ? > getHttpResponseBodyType()
 	{
-		return serviceMethod.getReturnType();
+		return serviceMethod.getMethod().getReturnType();
 	}
 
 	/**
@@ -131,7 +132,7 @@ public class RestResourceAction implements Serializable
 	 */
 	public Method getServiceMethod()
 	{
-		return serviceMethod;
+		return serviceMethod.getMethod();
 	}
 
 	public String getServiceMethodSignature()

@@ -13,7 +13,7 @@
 	</parent>
 
 	<artifactId>jstuff-core</artifactId>
-	<name>${project.artifactId}</name>
+	<name>${groupId}.${project.artifactId}</name>
 
 	<build>
 		<plugins>

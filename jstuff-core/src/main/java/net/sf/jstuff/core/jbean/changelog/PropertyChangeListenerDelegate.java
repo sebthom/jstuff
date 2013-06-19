@@ -36,12 +36,12 @@ public class PropertyChangeListenerDelegate implements EventListener<PropertyCha
 			final SetValueEvent ev = (SetValueEvent) event;
 			listener.propertyChange(new java.beans.PropertyChangeEvent(ev.bean, ev.property.getName(), ev.oldValue, ev.newValue));
 		}
-		if (event instanceof AddItemEvent)
+		else if (event instanceof AddItemEvent)
 		{
 			final AddItemEvent ev = (AddItemEvent) event;
 			listener.propertyChange(new IndexedPropertyChangeEvent(ev.bean, ev.property.getName(), null, ev.item, ev.index));
 		}
-		if (event instanceof SetValueEvent)
+		else if (event instanceof RemoveItemEvent)
 		{
 			final RemoveItemEvent ev = (RemoveItemEvent) event;
 			listener.propertyChange(new IndexedPropertyChangeEvent(ev.bean, ev.property.getName(), ev.item, null, ev.index));
