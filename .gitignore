@@ -12,3 +12,4 @@ jstuff-xml/.classpath
 jstuff-xml/.project
 jstuff-xml/.settings
 jstuff-xml/target
+/target
