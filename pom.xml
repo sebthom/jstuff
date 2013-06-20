@@ -41,6 +41,10 @@
 		</developer>
 	</developers>
 
+	<prerequisites>
+		<maven>3.0.5</maven>
+	</prerequisites>
+
 	<scm>
 		<url>http://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</url>
 		<connection>scm:svn://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</connection>
@@ -144,7 +148,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>3.1</version>
 				<configuration>
 					<compilerVersion>${version.java}</compilerVersion>
 					<source>${java.version}</source>
