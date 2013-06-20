@@ -13,7 +13,7 @@
 	</parent>
 
 	<artifactId>jstuff-integration</artifactId>
-	<name>${groupId}.${project.artifactId}</name>
+	<name>${project.groupId}.${project.artifactId}</name>
 
 	<properties>
 		<jetty.version>7.6.11.v20130520</jetty.version>

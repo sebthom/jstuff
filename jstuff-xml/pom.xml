@@ -13,7 +13,7 @@
 	</parent>
 
 	<artifactId>jstuff-xml</artifactId>
-	<name>${groupId}.${project.artifactId}</name>
+	<name>${project.groupId}.${project.artifactId}</name>
 
 	<build>
 		<plugins>
