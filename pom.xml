@@ -85,10 +85,13 @@
 			<id>jstuff-snapshot</id>
 			<url>sftp://web.sourceforge.net/home/groups/j/js/jstuff/htdocs/mvn-repo/snapshot</url>
 		</snapshotRepository>
+		<!--
+		Temporarily disabled because of MSITE-681
 		<site>
 			<id>jstuff-site</id>
 			<url>sftp://web.sourceforge.net/home/groups/j/js/jstuff/htdocs/site</url>
 		</site>
+		 -->
 	</distributionManagement>
 
 	<inceptionYear>2010</inceptionYear>
@@ -257,6 +260,12 @@
 						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-${java.version}</classpathContainer>
 					</classpathContainers>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.1</version>
 			</plugin>
 		</plugins>
 
