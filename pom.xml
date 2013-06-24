@@ -86,12 +86,12 @@
 			<url>sftp://web.sourceforge.net/home/groups/j/js/jstuff/htdocs/mvn-repo/snapshot</url>
 		</snapshotRepository>
 		<!--
-		Temporarily disabled because of MSITE-681
-		<site>
+			Temporarily disabled because of MSITE-681
+			<site>
 			<id>jstuff-site</id>
 			<url>sftp://web.sourceforge.net/home/groups/j/js/jstuff/htdocs/site</url>
-		</site>
-		 -->
+			</site>
+		-->
 	</distributionManagement>
 
 	<inceptionYear>2010</inceptionYear>
@@ -145,6 +145,27 @@
 	<build>
 
 		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<id>enforce-java</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireJavaVersion>
+									<version>1.5.0</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 			<!--*********************************************************************
 				phase: compile
@@ -290,7 +311,20 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-enforcer-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>enforce</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
