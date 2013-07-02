@@ -65,7 +65,6 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 		return deserialize(bin);
 	}
 
-	@SuppressWarnings("resource")
 	public static Serializable deserialize(final InputStream is) throws SerializationException
 	{
 		Args.notNull("is", is);
