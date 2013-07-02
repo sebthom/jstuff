@@ -454,6 +454,14 @@ public abstract class CollectionUtils
 		return new TreeMap<K, V>(keyComparator);
 	}
 
+	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue,
+			final Object... moreInitialKeysAndValues)
+	{
+		final TreeMap<K, V> m = new TreeMap<K, V>();
+		m.put(firstKey, firstValue);
+		return putAll(m, moreInitialKeysAndValues);
+	}
+
 	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator,
 			final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues)
 	{
