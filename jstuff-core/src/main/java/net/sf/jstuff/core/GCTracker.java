@@ -23,7 +23,7 @@ import net.sf.jstuff.core.event.EventManager;
 import net.sf.jstuff.core.validation.Args;
 
 /**
- * Tracks garbage collection of registered objects and executes callbacks on the event of garbage collection.
+ * Tracks garbage collection of registered objects and executes callbacks in the event of garbage collection.
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
