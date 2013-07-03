@@ -19,6 +19,9 @@ import java.io.Serializable;
  */
 public interface Identifiable<IdType>
 {
+	/**
+	 * Default implementation that uses the object's class as id realm 
+	 */
 	class Default<IdType> implements Identifiable<IdType>, Serializable
 	{
 		private static final long serialVersionUID = 1L;
@@ -44,7 +47,7 @@ public interface Identifiable<IdType>
 	IdType getId();
 
 	/**
-	 * @return an identifier for the realm in which the id is unique, e.g. the concrete class name.
+	 * @return an identifier for the realm/namespace in which the id is unique, e.g. the concrete class name.
 	 */
 	Object getIdRealm();
 }
