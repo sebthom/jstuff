@@ -19,7 +19,7 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface JBean<Type>
+public interface JBean<Type extends JBean<Type>>
 {
 	void _subscribe(final EventListener<PropertyChangeEvent> listener);
 

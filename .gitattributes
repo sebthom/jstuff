@@ -100,6 +100,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/io/SerializationUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/TeePrintStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/ZippedBlockInputStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/ZippedBlockOutputStream.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/jbean/AbstractJBean.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/jbean/JBean.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/jbean/changelog/AddItemEvent.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/jbean/changelog/PropertyChangeEvent.java -text
@@ -162,6 +163,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/functional/FunctionsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/CharSequenceReaderTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/IOUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/ZippedBlockStreamTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/jbean/TestJBean.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/DateTimeHelperTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/NumberHelperTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/meta/MetaSerializationTest.java -text

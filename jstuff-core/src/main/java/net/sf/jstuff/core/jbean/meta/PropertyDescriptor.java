@@ -151,4 +151,12 @@ public final class PropertyDescriptor<P> implements Serializable
 	{
 		this.container = container;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "PropertyDescriptor [name=" + name + ", description=" + description + ", lowerBound=" + lowerBound + ", upperBound="
+				+ upperBound + ", type=" + type + ", container=" + container + ", ordered=" + ordered + ", unique=" + unique
+				+ ", writable=" + writable + "]";
+	}
 }
