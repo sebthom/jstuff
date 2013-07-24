@@ -454,14 +454,6 @@ public abstract class CollectionUtils
 		return new TreeMap<K, V>(keyComparator);
 	}
 
-	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue,
-			final Object... moreInitialKeysAndValues)
-	{
-		final TreeMap<K, V> m = new TreeMap<K, V>();
-		m.put(firstKey, firstValue);
-		return putAll(m, moreInitialKeysAndValues);
-	}
-
 	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator,
 			final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues)
 	{
@@ -475,6 +467,14 @@ public abstract class CollectionUtils
 	{
 		Args.notNull("initialKeysAndValues", initialKeysAndValues);
 		return putAll(new TreeMap<K, V>(keyComparator), initialKeysAndValues);
+	}
+
+	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue,
+			final Object... moreInitialKeysAndValues)
+	{
+		final TreeMap<K, V> m = new TreeMap<K, V>();
+		m.put(firstKey, firstValue);
+		return putAll(m, moreInitialKeysAndValues);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -526,19 +526,41 @@ public abstract class CollectionUtils
 	 *
 	 * E.g. asMap("name1=value1,name2=value2", "\"", "=")
 	 */
-	public static Map<String, String> toMap(final String values, final String valueSeparator, final String assignmentOperator)
+	public static Map<String, String> toMap(final String valuePairs, final String valueSeparator, final String assignmentOperator)
 	{
-		Args.notNull("values", values);
+		if (valuePairs == null) return null;
+
 		Args.notNull("valueSeparator", valueSeparator);
 		Args.notNull("assignmentOperator", assignmentOperator);
 
-		final HashMap<String, String> map = newHashMap();
-		for (final String element : StringUtils.split(values, valueSeparator))
+		final Map<String, String> result = newHashMap();
+		for (final String element : StringUtils.split(valuePairs, valueSeparator))
 		{
 			final String[] valuePairSplitted = StringUtils.split(element, assignmentOperator);
-			map.put(valuePairSplitted[0], valuePairSplitted[1]);
+			result.put(valuePairSplitted[0], valuePairSplitted[1]);
 		}
-		return map;
+		return result;
+	}
+
+	public static <T> Map<T, T> toMap(final T[] keysAndValues)
+	{
+		if (keysAndValues == null) return null;
+
+		final Map<T, T> result = newHashMap();
+		boolean isKey = true;
+		T key = null;
+		for (T item : keysAndValues)
+			if (isKey)
+			{
+				key = item;
+				isKey = false;
+			}
+			else
+			{
+				result.put(key, item);
+				isKey = true;
+			}
+		return result;
 	}
 
 	public static <S, T> List<T> transform(final List<S> source, final Function< ? super S, ? extends T> op)
