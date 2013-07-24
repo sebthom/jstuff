@@ -66,6 +66,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/comparator/SortDirection.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/comparator/StringComparator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/comparator/ToStringComparator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/comparator/UnmodifiableComparator.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/BoundedThreadPoolExecutor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/HashLockManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/RuntimeInterruptedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/ThreadUtils.java -text
