@@ -13,9 +13,6 @@
 package net.sf.jstuff.core.jbean;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
-
-import java.io.Serializable;
-
 import junit.framework.TestCase;
 import net.sf.jstuff.core.jbean.changelog.PropertyChangelog;
 import net.sf.jstuff.core.jbean.changelog.UndoMarker;
@@ -39,8 +36,8 @@ public class TestJBean extends TestCase
 		public static final PropertyDescriptor<String> PROP_comment = PropertyDescriptor.create(META, //
 				"comment", String.class, 0, 1, false, false, true, //
 				"the entity's comment", newHashMap( //
-						"length", (Serializable) 64, //
-						"min-length", (Serializable) 0 //
+						"length", 64, //
+						"min-length", 0 //
 				));
 
 		private String comment;
