@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -58,8 +58,7 @@ public class DOMFile
 	/**
 	 * @param rootNamespace optional, may be null
 	 */
-	public DOMFile(final File xmlFile, final String rootNamespace, final File... xmlSchemaFiles) throws IOException,
-			XMLException
+	public DOMFile(final File xmlFile, final String rootNamespace, final File... xmlSchemaFiles) throws IOException, XMLException
 	{
 		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
@@ -74,8 +73,7 @@ public class DOMFile
 		{
 			// debug code to analyze "Content is not allowed in prolog."
 			if (ex.getCause() instanceof SAXParseException)
-				LOG.debug("Failed to parse file %s with content:\n%s", ex, xmlFile.getAbsolutePath(),
-						FileUtils.readFileToString(xmlFile));
+				LOG.debug("Failed to parse file %s with content:\n%s", ex, xmlFile.getAbsolutePath(), FileUtils.readFileToString(xmlFile));
 			throw ex;
 		}
 		domRoot = domDocument.getDocumentElement();
@@ -103,8 +101,7 @@ public class DOMFile
 	/**
 	 * Creates a new XML element as child of the given parentNode with the given attributes
 	 */
-	public Element createElement(final String xmlTagName, final Node parentNode,
-			final Map<String, String> elementAttributes)
+	public Element createElement(final String xmlTagName, final Node parentNode, final Map<String, String> elementAttributes)
 	{
 		Args.notEmpty("xmlTagName", xmlTagName);
 		Args.notNull("parentNode", parentNode);
@@ -123,14 +120,13 @@ public class DOMFile
 		return createElementBefore(xmlTagName, childToCreateBefore, null);
 	}
 
-	public Element createElementBefore(final String xmlTagName, final Node childToCreateBefore,
-			final Map<String, String> elementAttributes)
+	public Element createElementBefore(final String xmlTagName, final Node childToCreateBefore, final Map<String, String> elementAttributes)
 	{
 		Args.notEmpty("tagName", xmlTagName);
 		Args.notNull("childToCreateBefore", childToCreateBefore);
 
-		final Element elem = (Element) childToCreateBefore.getParentNode().insertBefore(
-				domDocument.createElement(xmlTagName), childToCreateBefore);
+		final Element elem = (Element) childToCreateBefore.getParentNode().insertBefore(domDocument.createElement(xmlTagName),
+				childToCreateBefore);
 		if (elementAttributes != null) for (final Entry<String, String> attr : elementAttributes.entrySet())
 			elem.setAttribute(attr.getKey(), attr.getValue());
 		return elem;
@@ -259,6 +255,11 @@ public class DOMFile
 
 	public String toXML()
 	{
-		return DOMUtils.toXML(domDocument);
+		return DOMUtils.toXML(domDocument, true, true);
+	}
+
+	public String toXML(final boolean outputXMLDeclaration, final boolean formatPretty)
+	{
+		return DOMUtils.toXML(domDocument, outputXMLDeclaration, formatPretty);
 	}
 }

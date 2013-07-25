@@ -768,25 +768,47 @@ public abstract class DOMUtils
 	/**
 	 * @throws XMLException
 	 */
-	public static String toXML(final Document domDocument) throws XMLException
+	public static String toXML(final Node domNode) throws XMLException
 	{
-		Args.notNull("domDocument", domDocument);
+		Args.notNull("domNode", domNode);
+
+		return toXML(domNode, true, true);
+	}
+
+	/**
+	 * @throws XMLException
+	 */
+	public static String toXML(final Node domNode, final boolean outputXMLDeclaration, final boolean formatPretty) throws XMLException
+	{
+		Args.notNull("domNode", domNode);
 
 		try
 		{
 			final Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
+			final StringWriter sw = new StringWriter();
 
 			// http://xerces.apache.org/xerces2-j/javadocs/api/javax/xml/transform/OutputKeys.html
 			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-			transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
-			// because of a bug in Xalan omitting new line characters after the <?xml...> declaration header, we output the header own our own
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-			final StringWriter sw = new StringWriter();
-			sw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + StringUtils.NEW_LINE);
-			transformer.transform(new DOMSource(domDocument), new StreamResult(sw));
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			if (outputXMLDeclaration)
+			{
+				// transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+				// transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+
+				// because of a bug in Xalan omitting new line characters after the <?xml...> declaration header, we output the header own our own
+				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+				sw.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + StringUtils.NEW_LINE);
+			}
+			else
+				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			if (formatPretty)
+			{
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+				transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			}
+			else
+				transformer.setOutputProperty(OutputKeys.INDENT, "no");
+			transformer.transform(new DOMSource(domNode), new StreamResult(sw));
 			return sw.toString();
 		}
 		catch (final TransformerException ex)
