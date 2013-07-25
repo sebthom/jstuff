@@ -15,6 +15,7 @@ package net.sf.jstuff.core;
 import java.util.Formatter;
 
 import org.slf4j.LoggerFactory;
+import org.slf4j.spi.LocationAwareLogger;
 
 /**
  * Logger based on SLF4J supporting Java5 varargs and the {@link Formatter} syntax.
@@ -50,16 +51,24 @@ public final class Logger
 		return new Logger(LoggerFactory.getLogger(name));
 	}
 
+	private final String FQCN = Logger.class.getName();
+
 	private final org.slf4j.Logger delegate;
+	private final LocationAwareLogger delegateExt;
 
 	private Logger(final org.slf4j.Logger delegate)
 	{
 		this.delegate = delegate;
+		delegateExt = delegate instanceof LocationAwareLogger ? (LocationAwareLogger) delegate : null;
 	}
 
 	public void debug(final String msg)
 	{
-		delegate.debug(msg);
+		if (!delegate.isDebugEnabled()) return;
+		if (delegateExt == null)
+			delegate.debug(msg);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.DEBUG_INT, msg, null, null);
 	}
 
 	/**
@@ -68,12 +77,20 @@ public final class Logger
 	 */
 	public void debug(final String format, final Object... args)
 	{
-		if (delegate.isDebugEnabled()) delegate.debug(String.format(format, args));
+		if (!delegate.isDebugEnabled()) return;
+		if (delegateExt == null)
+			delegate.debug(format, args);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.DEBUG_INT, format, args, null);
 	}
 
 	public void debug(final String msg, final Throwable t)
 	{
-		delegate.debug(msg, t);
+		if (!delegate.isDebugEnabled()) return;
+		if (delegateExt == null)
+			delegate.debug(msg, t);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.DEBUG_INT, msg, null, t);
 	}
 
 	/**
@@ -82,12 +99,20 @@ public final class Logger
 	 */
 	public void debug(final String format, final Throwable t, final Object... args)
 	{
-		if (delegate.isDebugEnabled()) delegate.debug(String.format(format, args), t);
+		if (!delegate.isDebugEnabled()) return;
+		if (delegateExt == null)
+			delegate.debug(format, args, t);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.DEBUG_INT, format, args, t);
 	}
 
 	public void error(final String msg)
 	{
-		delegate.error(msg);
+		if (!delegate.isErrorEnabled()) return;
+		if (delegateExt == null)
+			delegate.error(msg);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.ERROR_INT, msg, null, null);
 	}
 
 	/**
@@ -96,12 +121,20 @@ public final class Logger
 	 */
 	public void error(final String format, final Object... args)
 	{
-		if (delegate.isErrorEnabled()) delegate.error(String.format(format, args));
+		if (!delegate.isErrorEnabled()) return;
+		if (delegateExt == null)
+			delegate.error(format, args);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.ERROR_INT, format, args, null);
 	}
 
 	public void error(final String msg, final Throwable t)
 	{
-		delegate.error(msg, t);
+		if (!delegate.isErrorEnabled()) return;
+		if (delegateExt == null)
+			delegate.error(msg, t);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.ERROR_INT, msg, null, t);
 	}
 
 	/**
@@ -110,7 +143,12 @@ public final class Logger
 	 */
 	public void error(final String format, final Throwable t, final Object... args)
 	{
-		if (delegate.isErrorEnabled()) delegate.error(String.format(format, args), t);
+		if (!delegate.isErrorEnabled()) return;
+		if (delegateExt == null)
+			delegate.error(format, args, t);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.ERROR_INT, format, args, t);
+
 	}
 
 	public String getName()
@@ -120,7 +158,11 @@ public final class Logger
 
 	public void info(final String msg)
 	{
-		delegate.info(msg);
+		if (!delegate.isInfoEnabled()) return;
+		if (delegateExt == null)
+			delegate.info(msg);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, msg, null, null);
 	}
 
 	/**
@@ -129,12 +171,20 @@ public final class Logger
 	 */
 	public void info(final String format, final Object... args)
 	{
-		if (delegate.isInfoEnabled()) delegate.info(String.format(format, args));
+		if (!delegate.isInfoEnabled()) return;
+		if (delegateExt == null)
+			delegate.info(format, args);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, format, args, null);
 	}
 
-	public void info(final String s, final Throwable t)
+	public void info(final String msg, final Throwable t)
 	{
-		delegate.info(s, t);
+		if (!delegate.isInfoEnabled()) return;
+		if (delegateExt == null)
+			delegate.info(msg);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, msg, null, null);
 	}
 
 	/**
@@ -143,7 +193,11 @@ public final class Logger
 	 */
 	public void info(final String format, final Throwable t, final Object... args)
 	{
-		if (delegate.isInfoEnabled()) delegate.info(String.format(format, args), t);
+		if (!delegate.isInfoEnabled()) return;
+		if (delegateExt == null)
+			delegate.info(format, args, t);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, format, args, t);
 	}
 
 	public boolean isDebugEnabled()
@@ -173,7 +227,11 @@ public final class Logger
 
 	public void trace(final Object msg)
 	{
-		if (delegate.isTraceEnabled()) delegate.trace(StackTrace.getCallingMethodName() + ": " + msg);
+		if (!delegate.isTraceEnabled()) return;
+		if (delegateExt == null)
+			delegate.trace(StackTrace.getCallingMethodName() + ": " + msg);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, StackTrace.getCallingMethodName() + ": " + msg, null, null);
 	}
 
 	/**
@@ -182,12 +240,20 @@ public final class Logger
 	 */
 	public void trace(final String format, final Object... args)
 	{
-		if (delegate.isTraceEnabled()) delegate.trace(StackTrace.getCallingMethodName() + ": " + String.format(format, args));
+		if (!delegate.isTraceEnabled()) return;
+		if (delegateExt == null)
+			delegate.trace(StackTrace.getCallingMethodName() + ": " + format, args);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, StackTrace.getCallingMethodName() + ": " + format, args, null);
 	}
 
 	public void trace(final String msg, final Throwable t)
 	{
-		if (delegate.isTraceEnabled()) delegate.trace(StackTrace.getCallingMethodName() + ": " + msg, t);
+		if (!delegate.isTraceEnabled()) return;
+		if (delegateExt == null)
+			delegate.trace(StackTrace.getCallingMethodName() + ": " + msg, t);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, StackTrace.getCallingMethodName() + ": " + msg, null, t);
 	}
 
 	/**
@@ -196,7 +262,11 @@ public final class Logger
 	 */
 	public void trace(final String format, final Throwable t, final Object... args)
 	{
-		if (delegate.isTraceEnabled()) delegate.trace(StackTrace.getCallingMethodName() + ": " + String.format(format, args), t);
+		if (!delegate.isTraceEnabled()) return;
+		if (delegateExt == null)
+			delegate.trace(StackTrace.getCallingMethodName() + ": " + format, args, t);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, StackTrace.getCallingMethodName() + ": " + format, args, t);
 	}
 
 	public void traceMethodEntry(final Object... args)
@@ -230,7 +300,11 @@ public final class Logger
 
 	public void warn(final String msg)
 	{
-		delegate.warn(msg);
+		if (!delegate.isWarnEnabled()) return;
+		if (delegateExt == null)
+			delegate.warn(msg);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.WARN_INT, msg, null, null);
 	}
 
 	/**
@@ -239,12 +313,20 @@ public final class Logger
 	 */
 	public void warn(final String format, final Object... args)
 	{
-		if (delegate.isWarnEnabled()) delegate.warn(String.format(format, args));
+		if (!delegate.isWarnEnabled()) return;
+		if (delegateExt == null)
+			delegate.warn(format, args);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.WARN_INT, format, args, null);
 	}
 
 	public void warn(final String msg, final Throwable t)
 	{
-		delegate.warn(msg, t);
+		if (!delegate.isWarnEnabled()) return;
+		if (delegateExt == null)
+			delegate.warn(msg, t);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.WARN_INT, msg, null, t);
 	}
 
 	/**
@@ -253,6 +335,10 @@ public final class Logger
 	 */
 	public void warn(final String format, final Throwable t, final Object... args)
 	{
-		if (delegate.isWarnEnabled()) delegate.warn(String.format(format, args), t);
+		if (!delegate.isWarnEnabled()) return;
+		if (delegateExt == null)
+			delegate.warn(format, args, t);
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.WARN_INT, format, args, t);
 	}
 }
