@@ -79,9 +79,9 @@ public final class Logger
 	{
 		if (!delegate.isDebugEnabled()) return;
 		if (delegateExt == null)
-			delegate.debug(format, args);
+			delegate.debug(String.format(format, args));
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.DEBUG_INT, format, args, null);
+			delegateExt.log(null, FQCN, LocationAwareLogger.DEBUG_INT, String.format(format, args), null, null);
 	}
 
 	public void debug(final String msg, final Throwable t)
@@ -101,9 +101,9 @@ public final class Logger
 	{
 		if (!delegate.isDebugEnabled()) return;
 		if (delegateExt == null)
-			delegate.debug(format, args, t);
+			delegate.debug(String.format(format, args), t);
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.DEBUG_INT, format, args, t);
+			delegateExt.log(null, FQCN, LocationAwareLogger.DEBUG_INT, String.format(format, args), null, t);
 	}
 
 	public void error(final String msg)
@@ -123,9 +123,9 @@ public final class Logger
 	{
 		if (!delegate.isErrorEnabled()) return;
 		if (delegateExt == null)
-			delegate.error(format, args);
+			delegate.error(String.format(format, args));
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.ERROR_INT, format, args, null);
+			delegateExt.log(null, FQCN, LocationAwareLogger.ERROR_INT, String.format(format, args), null, null);
 	}
 
 	public void error(final String msg, final Throwable t)
@@ -145,9 +145,9 @@ public final class Logger
 	{
 		if (!delegate.isErrorEnabled()) return;
 		if (delegateExt == null)
-			delegate.error(format, args, t);
+			delegate.error(String.format(format, args), t);
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.ERROR_INT, format, args, t);
+			delegateExt.log(null, FQCN, LocationAwareLogger.ERROR_INT, String.format(format, args), null, t);
 
 	}
 
@@ -173,9 +173,9 @@ public final class Logger
 	{
 		if (!delegate.isInfoEnabled()) return;
 		if (delegateExt == null)
-			delegate.info(format, args);
+			delegate.info(String.format(format, args));
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, format, args, null);
+			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, String.format(format, args), null, null);
 	}
 
 	public void info(final String msg, final Throwable t)
@@ -195,9 +195,9 @@ public final class Logger
 	{
 		if (!delegate.isInfoEnabled()) return;
 		if (delegateExt == null)
-			delegate.info(format, args, t);
+			delegate.info(String.format(format, args), t);
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, format, args, t);
+			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, String.format(format, args), null, t);
 	}
 
 	public boolean isDebugEnabled()
@@ -242,9 +242,10 @@ public final class Logger
 	{
 		if (!delegate.isTraceEnabled()) return;
 		if (delegateExt == null)
-			delegate.trace(StackTrace.getCallingMethodName() + ": " + format, args);
+			delegate.trace(StackTrace.getCallingMethodName() + ": " + String.format(format, args));
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, StackTrace.getCallingMethodName() + ": " + format, args, null);
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT,
+					StackTrace.getCallingMethodName() + ": " + String.format(format, args), null, null);
 	}
 
 	public void trace(final String msg, final Throwable t)
@@ -264,9 +265,10 @@ public final class Logger
 	{
 		if (!delegate.isTraceEnabled()) return;
 		if (delegateExt == null)
-			delegate.trace(StackTrace.getCallingMethodName() + ": " + format, args, t);
+			delegate.trace(StackTrace.getCallingMethodName() + ": " + String.format(format, args), null, t);
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, StackTrace.getCallingMethodName() + ": " + format, args, t);
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT,
+					StackTrace.getCallingMethodName() + ": " + String.format(format, args), null, t);
 	}
 
 	public void traceMethodEntry(final Object... args)
@@ -315,9 +317,9 @@ public final class Logger
 	{
 		if (!delegate.isWarnEnabled()) return;
 		if (delegateExt == null)
-			delegate.warn(format, args);
+			delegate.warn(String.format(format, args));
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.WARN_INT, format, args, null);
+			delegateExt.log(null, FQCN, LocationAwareLogger.WARN_INT, String.format(format, args), null, null);
 	}
 
 	public void warn(final String msg, final Throwable t)
@@ -337,8 +339,8 @@ public final class Logger
 	{
 		if (!delegate.isWarnEnabled()) return;
 		if (delegateExt == null)
-			delegate.warn(format, args, t);
+			delegate.warn(String.format(format, args), t);
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.WARN_INT, format, args, t);
+			delegateExt.log(null, FQCN, LocationAwareLogger.WARN_INT, String.format(format, args), null, t);
 	}
 }
