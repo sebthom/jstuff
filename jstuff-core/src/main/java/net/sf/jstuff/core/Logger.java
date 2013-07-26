@@ -12,13 +12,11 @@
  *******************************************************************************/
 package net.sf.jstuff.core;
 
-import java.util.Formatter;
-
 import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
- * Logger based on SLF4J supporting Java5 varargs and the {@link Formatter} syntax.
+ * Logger based on SLF4J supporting the {@link java.util.Formatter} syntax.
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -72,7 +70,7 @@ public final class Logger
 	}
 
 	/**
-	 * @param format A format string understandable by {@link Formatter}.
+	 * @param format A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void debug(final String format, final Object... args)
@@ -94,7 +92,7 @@ public final class Logger
 	}
 
 	/**
-	 * @param format A format string understandable by {@link Formatter}.
+	 * @param format A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void debug(final String format, final Throwable t, final Object... args)
@@ -116,7 +114,7 @@ public final class Logger
 	}
 
 	/**
-	 * @param format A format string understandable by {@link Formatter}.
+	 * @param format A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void error(final String format, final Object... args)
@@ -138,7 +136,7 @@ public final class Logger
 	}
 
 	/**
-	 * @param format A format string understandable by {@link Formatter}.
+	 * @param format A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void error(final String format, final Throwable t, final Object... args)
@@ -166,7 +164,7 @@ public final class Logger
 	}
 
 	/**
-	 * @param format A format string understandable by {@link Formatter}.
+	 * @param format A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void info(final String format, final Object... args)
@@ -188,7 +186,7 @@ public final class Logger
 	}
 
 	/**
-	 * @param format A format string understandable by {@link Formatter}.
+	 * @param format A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void info(final String format, final Throwable t, final Object... args)
@@ -235,7 +233,7 @@ public final class Logger
 	}
 
 	/**
-	 * @param format A format string understandable by {@link Formatter}.
+	 * @param format A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void trace(final String format, final Object... args)
@@ -258,7 +256,7 @@ public final class Logger
 	}
 
 	/**
-	 * @param format A format string understandable by {@link Formatter}.
+	 * @param format A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void trace(final String format, final Throwable t, final Object... args)
@@ -310,7 +308,7 @@ public final class Logger
 	}
 
 	/**
-	 * @param format A format string understandable by {@link Formatter}.
+	 * @param format A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void warn(final String format, final Object... args)
@@ -332,7 +330,7 @@ public final class Logger
 	}
 
 	/**
-	 * @param format A format string understandable by {@link Formatter}.
+	 * @param format A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the format string. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public void warn(final String format, final Throwable t, final Object... args)
