@@ -542,14 +542,14 @@ public abstract class CollectionUtils
 		return result;
 	}
 
-	public static <T> Map<T, T> toMap(final T[] keysAndValues)
+	public static <T> Map<T, T> toMap(final T... keysAndValues)
 	{
 		if (keysAndValues == null) return null;
 
 		final Map<T, T> result = newHashMap();
 		boolean isKey = true;
 		T key = null;
-		for (T item : keysAndValues)
+		for (final T item : keysAndValues)
 			if (isKey)
 			{
 				key = item;

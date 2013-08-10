@@ -35,7 +35,13 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
  */
 public class AtomBlogUtils
 {
-	private static final XMLOutputFactory STAX_OUTPUT_FACTORY = XMLOutputFactory.newInstance();
+	private static final ThreadLocal<XMLOutputFactory> XML_OUTPUT_FACTORY = new ThreadLocal<XMLOutputFactory>()
+		{
+			protected XMLOutputFactory initialValue()
+			{
+				return XMLOutputFactory.newInstance();
+			};
+		};
 
 	/**
 	 * @param blogEntryEditURL e.g. http://myserver/weblogs/services/atom/me@acme.com/entries/24CG0902859327955BED3587DC5B5A0003E8
@@ -151,7 +157,7 @@ public class AtomBlogUtils
 		try
 		{
 			final StringWriter entryAsXML = new StringWriter();
-			final XMLStreamWriter staxWriter = STAX_OUTPUT_FACTORY.createXMLStreamWriter(entryAsXML);
+			final XMLStreamWriter staxWriter = XML_OUTPUT_FACTORY.get().createXMLStreamWriter(entryAsXML);
 			staxWriter.writeStartDocument();
 			{
 				staxWriter.writeStartElement("entry");

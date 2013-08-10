@@ -12,25 +12,50 @@
  *******************************************************************************/
 package net.sf.jstuff.xml;
 
-import javax.xml.stream.XMLStreamReader;
+import junit.framework.TestCase;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class StAXUtils
+public class JAXBUtilsTest extends TestCase
 {
-	public static String getAttributeValue(final XMLStreamReader xmlr, final String attrLocalName)
+	public static class MyEntity
 	{
-		for (int i = 0; i < xmlr.getAttributeCount(); i++)
+		private MyEntity child;
+		private String name;
+
+		public MyEntity getChild()
 		{
-			final String localName = xmlr.getAttributeLocalName(i);
-			if (localName.equals(attrLocalName)) return xmlr.getAttributeValue(i);
+			return child;
 		}
-		return null;
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public void setChild(final MyEntity child)
+		{
+			this.child = child;
+		}
+
+		public void setName(final String name)
+		{
+			this.name = name;
+		}
 	}
 
-	protected StAXUtils()
+	public void testToXML()
 	{
-		super();
+		final MyEntity e = new MyEntity();
+		e.name = "a";
+		e.child = new MyEntity();
+		e.child.name = "b";
+		System.out.println(JAXBUtils.toXML(e));
+	}
+
+	public void testToXSD()
+	{
+		System.out.println(JAXBUtils.toXSD(MyEntity.class));
 	}
 }

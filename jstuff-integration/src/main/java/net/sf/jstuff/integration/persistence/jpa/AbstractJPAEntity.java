@@ -50,38 +50,6 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 	@javax.persistence.Transient
 	private final String _hashCodeTrackingId;
 
-	protected AbstractJPAEntity()
-	{
-		_hashCodeTrackingId = HashCodeManager.onEntityInstantiated(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj)
-	{
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (getClass() != obj.getClass()) return false;
-		final AbstractJPAEntity< ? > other = (AbstractJPAEntity< ? >) obj;
-		if (getId() == null)
-		{
-			if (other.getId() != null) return false;
-		}
-		else if (!getId().equals(other.getId())) return false;
-		return true;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return HashCodeManager.hashCodeFor(this, _hashCodeTrackingId);
-	}
-
-	@PostPersist
-	private void onAfterSet()
-	{
-		HashCodeManager.onIdSet(this, _hashCodeTrackingId);
-	}
-
 	/* ******************************************************************************
 	 * Generic Entity Properties
 	 * ******************************************************************************/
@@ -102,31 +70,14 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 	@Column(nullable = false)
 	private final int _version = 0;
 
-	public final boolean _isMarkedAsDeleted()
+	protected AbstractJPAEntity()
 	{
-		return _isMarkedAsDeleted;
-	}
-
-	public void _setMarkedAsDeleted(final boolean isMarkedAsDeleted)
-	{
-		_isMarkedAsDeleted = isMarkedAsDeleted;
-	}
-
-	public Object getIdRealm()
-	{
-		return this.getClass();
-	}
-
-	/**
-	 * @return true if this is a new entity that has not been persisted yet
-	 */
-	public final boolean _isNew()
-	{
-		return getId() != null;
+		_hashCodeTrackingId = HashCodeManager.onEntityInstantiated(this);
 	}
 
 	public final ImmutableDate _getFirstPersistedOn()
 	{
+		if (_isNew()) return null;
 		return new ImmutableDate(_firstPersistedOn);
 	}
 
@@ -140,6 +91,56 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 		return _version;
 	}
 
+	public final boolean _isMarkedAsDeleted()
+	{
+		return _isMarkedAsDeleted;
+	}
+
+	/**
+	 * @return true if this is a new entity that has not been persisted yet
+	 */
+	public final boolean _isNew()
+	{
+		return getId() != null;
+	}
+
+	public void _setMarkedAsDeleted(final boolean isMarkedAsDeleted)
+	{
+		_isMarkedAsDeleted = isMarkedAsDeleted;
+	}
+
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final AbstractJPAEntity< ? > other = (AbstractJPAEntity< ? >) obj;
+		if (getId() == null)
+		{
+			if (other.getId() != null) return false;
+		}
+		else if (!getId().equals(other.getId())) return false;
+		return true;
+	}
+
+	public Object getIdRealm()
+	{
+		return this.getClass();
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return HashCodeManager.hashCodeFor(this, _hashCodeTrackingId);
+	}
+
+	@PostPersist
+	private void onAfterIdSet()
+	{
+		HashCodeManager.onIdSet(this, _hashCodeTrackingId);
+	}
+
 	@PrePersist
 	private void onPrePersist()
 	{
@@ -150,12 +151,6 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 	private void onPreUpdate()
 	{
 		_lastPersistedOn = new Date();
-	}
-
-	@Override
-	public final String toString()
-	{
-		return getClass().getName() + "[id=" + getId() + ", version=, " + _getVersion() + "hashCode=" + hashCode() + "]";
 	}
 
 	public CharSequence toDebugString()
@@ -200,5 +195,11 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 			LOG.warn("toDebugString() failed on " + this, ex);
 			return toString();
 		}
+	}
+
+	@Override
+	public final String toString()
+	{
+		return getClass().getName() + "[id=" + getId() + ", version=, " + _getVersion() + "hashCode=" + hashCode() + "]";
 	}
 }

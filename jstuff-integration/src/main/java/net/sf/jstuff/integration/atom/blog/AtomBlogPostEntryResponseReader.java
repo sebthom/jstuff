@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -23,10 +23,17 @@ import net.sf.jstuff.xml.StAXUtils;
 
 public class AtomBlogPostEntryResponseReader
 {
+	private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = new ThreadLocal<XMLInputFactory>()
+		{
+			protected XMLInputFactory initialValue()
+			{
+				return XMLInputFactory.newInstance();
+			};
+		};
+
 	private static AtomBlogEntry processEntry(final XMLStreamReader xmlr) throws XMLStreamException
 	{
-		if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("entry")))
-			return null;
+		if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("entry"))) return null;
 
 		final AtomBlogEntry atomBlockEntry = new AtomBlogEntry();
 
@@ -39,8 +46,7 @@ public class AtomBlogPostEntryResponseReader
 		return atomBlockEntry;
 	}
 
-	private static void processId(final XMLStreamReader xmlr, final AtomBlogEntry atomBlogEntry)
-			throws XMLStreamException
+	private static void processId(final XMLStreamReader xmlr, final AtomBlogEntry atomBlogEntry) throws XMLStreamException
 	{
 		if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("id"))) return;
 
@@ -58,11 +64,7 @@ public class AtomBlogPostEntryResponseReader
 
 	public static AtomBlogEntry processStream(final InputStream is, final String encoding) throws XMLStreamException
 	{
-		// Create an input factory
-		final XMLInputFactory xmlif = XMLInputFactory.newInstance();
-		// Create an XML stream reader
-
-		final XMLStreamReader xmlr = xmlif.createXMLStreamReader(is, encoding);
+		final XMLStreamReader xmlr = XML_INPUT_FACTORY.get().createXMLStreamReader(is, encoding);
 
 		// Loop over XML input stream and process events
 		while (xmlr.hasNext())

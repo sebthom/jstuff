@@ -14,12 +14,13 @@ package net.sf.jstuff.xml;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -221,9 +222,21 @@ public abstract class DOMUtils
 
 	private static final Logger LOG = Logger.create();
 
-	private static final NamespaceContextImpl NAMESPACE_CONTEXT = new NamespaceContextImpl();
-	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
-	private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
+	protected static final NamespaceContextImpl NAMESPACE_CONTEXT = new NamespaceContextImpl();
+	protected static final ThreadLocal<TransformerFactory> TRANSFORMER_FACTORY = new ThreadLocal<TransformerFactory>()
+		{
+			protected TransformerFactory initialValue()
+			{
+				return TransformerFactory.newInstance();
+			}
+		};
+	protected static final ThreadLocal<XPathFactory> XPATH_FACTORY = new ThreadLocal<XPathFactory>()
+		{
+			protected XPathFactory initialValue()
+			{
+				return XPathFactory.newInstance();
+			}
+		};
 
 	private static List<Attr> _getIdAttributes(final Element element, final XPathNodeConfiguration config)
 	{
@@ -324,7 +337,7 @@ public abstract class DOMUtils
 
 		try
 		{
-			final XPath xPath = XPATH_FACTORY.newXPath();
+			final XPath xPath = XPATH_FACTORY.get().newXPath();
 			xPath.setNamespaceContext(NAMESPACE_CONTEXT);
 
 			return (Node) xPath.evaluate(xPathExpression, searchScope, XPathConstants.NODE);
@@ -345,7 +358,7 @@ public abstract class DOMUtils
 
 		try
 		{
-			final XPath xPath = XPATH_FACTORY.newXPath();
+			final XPath xPath = XPATH_FACTORY.get().newXPath();
 			xPath.setNamespaceContext(NAMESPACE_CONTEXT);
 
 			return DOMUtils.nodeListToList((NodeList) xPath.evaluate(xPathExpression, searchScope, XPathConstants.NODESET));
@@ -730,7 +743,7 @@ public abstract class DOMUtils
 
 		try
 		{
-			final Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
+			final Transformer transformer = TRANSFORMER_FACTORY.get().newTransformer();
 
 			// http://xerces.apache.org/xerces2-j/javadocs/api/javax/xml/transform/OutputKeys.html
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -765,9 +778,6 @@ public abstract class DOMUtils
 		saveToFile(domDocument, targetFile);
 	}
 
-	/**
-	 * @throws XMLException
-	 */
 	public static String toXML(final Node domNode) throws XMLException
 	{
 		Args.notNull("domNode", domNode);
@@ -775,20 +785,43 @@ public abstract class DOMUtils
 		return toXML(domNode, true, true);
 	}
 
-	/**
-	 * @throws XMLException
-	 */
 	public static String toXML(final Node domNode, final boolean outputXMLDeclaration, final boolean formatPretty) throws XMLException
 	{
 		Args.notNull("domNode", domNode);
 
+		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try
 		{
-			final Transformer transformer = TRANSFORMER_FACTORY.newTransformer();
-			final StringWriter sw = new StringWriter();
+			toXML(domNode, bos, outputXMLDeclaration, formatPretty);
+		}
+		catch (final IOException e)
+		{
+			// ignore, never happens
+		}
+		return bos.toString();
+	}
+
+	public static void toXML(final Node domNode, final OutputStream out) throws XMLException, IOException
+	{
+		Args.notNull("domNode", domNode);
+		Args.notNull("out", out);
+
+		toXML(domNode, out, true, true);
+	}
+
+	public static void toXML(final Node domNode, final OutputStream out, final boolean outputXMLDeclaration, final boolean formatPretty)
+			throws XMLException, IOException
+	{
+		Args.notNull("domNode", domNode);
+		Args.notNull("out", out);
+
+		try
+		{
+			final Transformer transformer = TRANSFORMER_FACTORY.get().newTransformer();
 
 			// http://xerces.apache.org/xerces2-j/javadocs/api/javax/xml/transform/OutputKeys.html
 			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+			transformer.setOutputProperty(OutputKeys.MEDIA_TYPE, "text/xml");
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			if (outputXMLDeclaration)
 			{
@@ -797,7 +830,8 @@ public abstract class DOMUtils
 
 				// because of a bug in Xalan omitting new line characters after the <?xml...> declaration header, we output the header own our own
 				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-				sw.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + StringUtils.NEW_LINE);
+				out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".getBytes());
+				out.write(StringUtils.NEW_LINE.getBytes());
 			}
 			else
 				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
@@ -808,8 +842,7 @@ public abstract class DOMUtils
 			}
 			else
 				transformer.setOutputProperty(OutputKeys.INDENT, "no");
-			transformer.transform(new DOMSource(domNode), new StreamResult(sw));
-			return sw.toString();
+			transformer.transform(new DOMSource(domNode), new StreamResult(out));
 		}
 		catch (final TransformerException ex)
 		{

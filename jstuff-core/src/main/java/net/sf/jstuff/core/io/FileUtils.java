@@ -142,6 +142,27 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		return System.getProperty("java.io.tmpdir");
 	}
 
+	public static void writeStringToFile(final String file, final CharSequence data) throws IOException
+	{
+		write(new File(file), data, null, false);
+	}
+
+	public static void writeStringToFile(final String file, final CharSequence data, final boolean append) throws IOException
+	{
+		write(new File(file), data, null, append);
+	}
+
+	public static void writeStringToFile(final String file, final CharSequence data, final String encoding) throws IOException
+	{
+		write(new File(file), data, encoding, false);
+	}
+
+	public static void writeStringToFile(final String file, final CharSequence data, final String encoding, final boolean append)
+			throws IOException
+	{
+		write(new File(file), data, encoding, append);
+	}
+
 	protected FileUtils()
 	{
 		super();

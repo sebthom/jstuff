@@ -241,18 +241,6 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		return sb;
 	}
 
-	public static CharSequence capitalize(final CharSequence seq)
-	{
-		if (seq == null) return null;
-
-		final int len = seq.length();
-		if (len == 0) return "";
-
-		final StringBuilder sb = new StringBuilder(Character.toUpperCase(seq.charAt(0)));
-		if (len > 1) sb.append(seq.toString().substring(1));
-		return sb;
-	}
-
 	/**
 	 * @return true if searchIn contains ANY of the substrings in searchFor
 	 */
@@ -294,6 +282,15 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	{
 		for (final CharSequence s : searchIn)
 			if (containsAny(s, searchFor)) return true;
+		return false;
+	}
+
+	public static boolean containsDigit(final String searchIn)
+	{
+		if (searchIn == null || searchIn.length() == 0) return false;
+
+		for (int i = 0, l = searchIn.length(); i < l; i++)
+			if (Character.isDigit((int) searchIn.charAt(i))) return true;
 		return false;
 	}
 
@@ -397,6 +394,21 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	{
 		if (iterable == null) return null;
 		return join(iterable.iterator(), null);
+	}
+
+	/**
+	 * Capitalize the first character of the given character sequence.
+	 * If you need to capitalize all words in a string use {@link WordUtils#uncapitalize(String)}
+	 */
+	public static String lowerCaseFirstChar(final CharSequence txt)
+	{
+		if (txt == null) return null;
+
+		final int len = txt.length();
+		if (len == 0) return "";
+		final String firstChar = String.valueOf(Character.toLowerCase(txt.charAt(0)));
+		if (len == 1) return firstChar;
+		return firstChar + txt.subSequence(1, len);
 	}
 
 	public static String nullToEmpty(final Object txt)
@@ -646,14 +658,19 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		return text.substring(0, maxLength - 1);
 	}
 
-	public static CharSequence uncapitalize(final CharSequence text)
+	/**
+	 * Capitalize the first character of the given character sequence.
+	 * If you need to capitalize all words in a string use {@link WordUtils#capitalize(String)}
+	 */
+	public static String upperCaseFirstChar(final CharSequence txt)
 	{
-		if (text == null) return null;
-		final int len = text.length();
-		if (len == 0) return text;
-		if (len == 1) return text.toString().toLowerCase();
+		if (txt == null) return null;
 
-		return new StringBuilder(Character.toLowerCase(text.charAt(0))).append(text.toString().substring(1));
+		final int len = txt.length();
+		if (len == 0) return "";
+		final String firstChar = String.valueOf(Character.toUpperCase(txt.charAt(0)));
+		if (len == 1) return firstChar;
+		return firstChar + txt.subSequence(1, len);
 	}
 
 	public static String urlDecode(final String text)

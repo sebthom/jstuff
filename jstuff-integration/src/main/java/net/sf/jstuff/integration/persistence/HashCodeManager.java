@@ -98,13 +98,14 @@ public final class HashCodeManager
 				try
 				{
 					final HashCodeAssignment ida = HASHCODE_ASSIGNMENT_BY_TRACKING_ID.get(trackingId);
+					if (ida == null) return;
+
 					synchronized (ida.identifiables)
 					{
 						if (ida.identifiables.size() == 0) HASHCODE_ASSIGNMENT_BY_TRACKING_ID.remove(trackingId, ida);
 					}
 
 					if (ida.id == null) return;
-
 					final HashCodeAssignment ida2 = HASHCODE_ASSIGNMENT_BY_ID.get(ida.id);
 					if (ida2 != null) synchronized (ida2.identifiables)
 					{
@@ -123,20 +124,6 @@ public final class HashCodeManager
 
 	private static final AtomicLong LOCAL_ID_GENERATOR = new AtomicLong(0);
 	private static final String LOCAL_JVM_ID = UUID.randomUUID().toString();
-
-	public static int hashCodeFor(final Identifiable< ? > entity, final String trackingId)
-	{
-		Args.notNull("entity", entity);
-		Args.notNull("trackingId", trackingId);
-
-		final Object id = entity.getId();
-		if (id != null)
-		{
-			final HashCodeAssignment ida = HASHCODE_ASSIGNMENT_BY_ID.get(new FQId(entity.getIdRealm(), id));
-			return ida == null ? id.hashCode() : ida.hashCode;
-		}
-		return getOrRegisterHashCodeAssignmentByTrackingId(entity, trackingId).hashCode;
-	}
 
 	public static int getManagedIdsCount()
 	{
@@ -158,6 +145,20 @@ public final class HashCodeManager
 			hca.identifiables.add(entity);
 		}
 		return hca;
+	}
+
+	public static int hashCodeFor(final Identifiable< ? > entity, final String trackingId)
+	{
+		Args.notNull("entity", entity);
+		Args.notNull("trackingId", trackingId);
+
+		final Object id = entity.getId();
+		if (id != null)
+		{
+			final HashCodeAssignment ida = HASHCODE_ASSIGNMENT_BY_ID.get(new FQId(entity.getIdRealm(), id));
+			return ida == null ? id.hashCode() : ida.hashCode;
+		}
+		return getOrRegisterHashCodeAssignmentByTrackingId(entity, trackingId).hashCode;
 	}
 
 	/**
