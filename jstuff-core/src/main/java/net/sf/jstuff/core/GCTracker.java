@@ -29,6 +29,8 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class GCTracker<Event> implements EventListenable<Event>
 {
+	private static final Logger LOG = Logger.create();
+
 	private static final class GCReference<Event> extends WeakReference<Object>
 	{
 		private final Object eventToFireOnGC;
@@ -44,7 +46,6 @@ public class GCTracker<Event> implements EventListenable<Event>
 
 	private static Thread CLEANUP_THREAD = new Thread()
 		{
-			private final Logger LOG = Logger.create();
 			{
 				setPriority(Thread.MAX_PRIORITY);
 				setName("GarbageCollectingConcurrentMap-cleanupthread");
