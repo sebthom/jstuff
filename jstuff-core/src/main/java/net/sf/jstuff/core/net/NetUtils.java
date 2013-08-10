@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -17,15 +17,19 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
@@ -37,6 +41,8 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class NetUtils
 {
 	private static final Logger LOG = Logger.create();
+
+	private static final Pattern TOPLEVEL_DOMAIN = Pattern.compile("([^.^/]+\\.[^.^/]+)/");
 
 	public static void closeQuietly(final DatagramSocket socket)
 	{
@@ -89,30 +95,17 @@ public abstract class NetUtils
 		}
 	}
 
-	/**
-	 * TODO should return all the bound IP addresses, but returns currently all local ip addresses
-	 */
-	public static List<String> getIpAddresses()
+	public static String getHostName(final String url)
 	{
-		final ArrayList<String> ipAddresses = new ArrayList<String>();
 		try
 		{
-			for (final Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();)
-			{
-				final NetworkInterface nic = en.nextElement();
-
-				for (final Enumeration<InetAddress> en2 = nic.getInetAddresses(); en2.hasMoreElements();)
-				{
-					final InetAddress ia = en2.nextElement();
-					if (!ia.isLoopbackAddress()) ipAddresses.add(ia.getHostAddress());
-				}
-			}
+			final URL u = new URL(url);
+			return u.getHost();
 		}
-		catch (final Exception ex)
+		catch (final MalformedURLException ex)
 		{
-			LOG.warn("Unexpected exception", ex);
+			throw new IllegalArgumentException("[url] is not a valid URL.", ex);
 		}
-		return ipAddresses;
 	}
 
 	/**
@@ -132,7 +125,7 @@ public abstract class NetUtils
 		/*
 		 * Because of a bug in Suns VM regarding FileURLConnection, which for some reason causes 0 to be
 		 * returned if we try to open a connection and get the last modified date. So instead we use File
-		 * to open the file with the name given to us by the url.getFile(), and then use the File's 
+		 * to open the file with the name given to us by the url.getFile(), and then use the File's
 		 * getLastmodified() method.
 		 * http://www.orionserver.com/docs/tutorials/taglibs/8.html
 		 */
@@ -154,6 +147,28 @@ public abstract class NetUtils
 		}
 	}
 
+	/**
+	 * TODO should return all the bound IP addresses, but returns currently all local IP addresses
+	 */
+	public static List<String> getLocalIPAddresses()
+	{
+		try
+		{
+			final ArrayList<String> ipAddresses = new ArrayList<String>();
+			for (final Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces(); nics.hasMoreElements();)
+				for (final Enumeration<InetAddress> ias = nics.nextElement().getInetAddresses(); ias.hasMoreElements();)
+				{
+					final InetAddress ia = ias.nextElement();
+					if (!ia.isLoopbackAddress()) ipAddresses.add(ia.getHostAddress());
+				}
+			return ipAddresses;
+		}
+		catch (final SocketException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+	}
+
 	public static String getLocalShortHostName()
 	{
 		try
@@ -166,6 +181,15 @@ public abstract class NetUtils
 			LOG.warn("Cannot determine short hostname of local host, returning 'localhost' instead.", ex);
 			return "localhost";
 		}
+	}
+
+	public static String getTopLevelDomain(final String url)
+	{
+		CharSequence target = url;
+		if (!url.endsWith("/")) target = new StringBuilder(url).append('/');
+		final Matcher m = TOPLEVEL_DOMAIN.matcher(target);
+		m.find();
+		return m.group(1);
 	}
 
 	public static boolean isHostReachable(final String hostname, final int timeoutInMS)
@@ -199,33 +223,35 @@ public abstract class NetUtils
 
 	public static boolean isLocalPortAvailable(final int port)
 	{
+		ServerSocket socket = null;
 		try
 		{
-			final ServerSocket socket = new ServerSocket(port);
+			socket = new ServerSocket(port);
 			socket.setReuseAddress(true);
-			socket.close();
 			return true;
 		}
 		catch (final IOException ex)
 		{
 			return false;
 		}
+		finally
+		{
+			closeQuietly(socket);
+		}
 	}
 
 	public static boolean isRemotePortOpen(final String hostname, final int port)
 	{
 		Args.notNull("hostname", hostname);
-		Socket socket = null;
 		try
 		{
-			socket = new Socket(hostname, port);
+			closeQuietly(new Socket(hostname, port));
+			return true;
 		}
 		catch (final IOException ex)
 		{
 			return false;
 		}
-		closeQuietly(socket);
-		return true;
 	}
 
 	protected NetUtils()
