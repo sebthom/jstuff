@@ -29,7 +29,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
  */
 public abstract class FileUtils extends org.apache.commons.io.FileUtils
 {
-	private static Logger LOG = Logger.create();
+	private static final Logger LOG = Logger.create();
 
 	public static File[] asFileArray(final String... filePaths)
 	{
