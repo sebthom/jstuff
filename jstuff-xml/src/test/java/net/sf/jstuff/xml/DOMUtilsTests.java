@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  */
 public class DOMUtilsTests extends TestCase
 {
-	public void testGetAttributesXPathAndValue() throws XMLException, IOException
+	public void testGetXPathNodes() throws XMLException, IOException
 	{
 		final Element elem = DOMUtils.parseString("<foo id='1'><bar name='name'>blabla</bar></foo>", null).getDocumentElement();
 

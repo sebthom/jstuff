@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -20,41 +19,39 @@ import java.util.NoSuchElementException;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EmptyIterator<T> implements Iterator<T>, Serializable
+public class SingleObjectIterator<T> implements Iterator<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static final EmptyIterator< ? > INSTANCE = new EmptyIterator<Object>();
+	private T item;
+	private boolean hasNext = true;
 
-	@SuppressWarnings("unchecked")
-	public static final <T> EmptyIterator<T> get()
+	public SingleObjectIterator(final T item)
 	{
-		return (EmptyIterator<T>) INSTANCE;
-	}
-
-	private EmptyIterator()
-	{
-		super();
+		this.item = item;
 	}
 
 	public boolean hasNext()
 	{
-		return false;
+		return hasNext;
 	}
 
 	public T next()
 	{
+		if (hasNext)
+		{
+			hasNext = false;
+			final T tmp = item;
+			// help the gc
+			item = null;
+			return tmp;
+		}
 		throw new NoSuchElementException();
-	}
-
-	@SuppressWarnings({"static-method", "unused"})
-	private Object readResolve() throws ObjectStreamException
-	{
-		return INSTANCE;
 	}
 
 	public void remove()
 	{
 		throw new UnsupportedOperationException();
 	}
+
 }

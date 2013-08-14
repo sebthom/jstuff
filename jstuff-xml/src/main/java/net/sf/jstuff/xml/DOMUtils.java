@@ -12,8 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.xml;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
@@ -23,15 +21,12 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -43,6 +38,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -51,6 +47,7 @@ import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.MapWithLists;
 import net.sf.jstuff.core.io.FileUtils;
+import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
@@ -72,40 +69,9 @@ import org.xml.sax.SAXParseException;
  */
 public abstract class DOMUtils
 {
-	private static final class NamespaceContextImpl implements NamespaceContext
-	{
-		private final Map<String, LinkedHashSet<String>> namespaceURIsByPrefix = newHashMap(2);
-		private final Map<String, LinkedHashSet<String>> prefixesByNamespaceURI = newHashMap(2);
-
-		public String getNamespaceURI(final String prefix)
-		{
-			if (namespaceURIsByPrefix.containsKey(prefix)) return namespaceURIsByPrefix.get(prefix).iterator().next();
-			return XMLConstants.NULL_NS_URI;
-		}
-
-		public String getPrefix(final String namespaceURI)
-		{
-			return prefixesByNamespaceURI.containsKey(namespaceURI) ? prefixesByNamespaceURI.get(namespaceURI).iterator().next() : null;
-		}
-
-		public Iterator<String> getPrefixes(final String namespaceURI)
-		{
-			return prefixesByNamespaceURI.containsKey(namespaceURI) ? prefixesByNamespaceURI.get(namespaceURI).iterator() : null;
-		}
-
-		public void registerNamespace(final String namespaceURI, final String prefix)
-		{
-			if (!namespaceURIsByPrefix.containsKey(prefix)) namespaceURIsByPrefix.put(prefix, new LinkedHashSet<String>(2));
-			namespaceURIsByPrefix.get(prefix).add(namespaceURI);
-
-			if (!prefixesByNamespaceURI.containsKey(namespaceURI)) prefixesByNamespaceURI.put(namespaceURI, new LinkedHashSet<String>(2));
-			prefixesByNamespaceURI.get(namespaceURI).add(prefix);
-		}
-	}
-
 	private static final class SAXParseExceptionHandler extends org.xml.sax.helpers.DefaultHandler
 	{
-		public final List<SAXParseException> violations = new ArrayList<SAXParseException>();
+		private final List<SAXParseException> violations = new ArrayList<SAXParseException>();
 
 		@Override
 		public void error(final SAXParseException ex) throws SAXException
@@ -135,9 +101,6 @@ public abstract class DOMUtils
 			this.xPath = xPath;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public boolean equals(final Object obj)
 		{
@@ -152,9 +115,6 @@ public abstract class DOMUtils
 			return true;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public int hashCode()
 		{
@@ -166,9 +126,6 @@ public abstract class DOMUtils
 			return result;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		public String toString()
 		{
@@ -185,9 +142,6 @@ public abstract class DOMUtils
 		public boolean useSchemaIdAttributes = true;
 		public final MapWithLists<String, String> idAttributesByXMLTagName = new MapWithLists<String, String>();
 
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
 		protected XPathNodeConfiguration clone() throws CloneNotSupportedException
 		{
@@ -222,19 +176,24 @@ public abstract class DOMUtils
 
 	private static final Logger LOG = Logger.create();
 
-	protected static final NamespaceContextImpl NAMESPACE_CONTEXT = new NamespaceContextImpl();
+	protected static final MapBasedNamespaceContext NAMESPACE_CONTEXT = new MapBasedNamespaceContext();
 	protected static final ThreadLocal<TransformerFactory> TRANSFORMER_FACTORY = new ThreadLocal<TransformerFactory>()
 		{
+			@Override
 			protected TransformerFactory initialValue()
 			{
 				return TransformerFactory.newInstance();
 			}
 		};
-	protected static final ThreadLocal<XPathFactory> XPATH_FACTORY = new ThreadLocal<XPathFactory>()
+
+	protected static final ThreadLocal<XPath> XPATH = new ThreadLocal<XPath>()
 		{
-			protected XPathFactory initialValue()
+			@Override
+			protected XPath initialValue()
 			{
-				return XPathFactory.newInstance();
+				final XPath xpath = XPathFactory.newInstance().newXPath();
+				xpath.setNamespaceContext(NAMESPACE_CONTEXT);
+				return xpath;
 			}
 		};
 
@@ -329,6 +288,28 @@ public abstract class DOMUtils
 	}
 
 	/**
+	 * @return a thread-safe xpath expression object
+	 */
+	public static XPathExpression compileXPath(final String xPathExpression)
+	{
+		return Types.createThreadLocalized(XPathExpression.class, new ThreadLocal<XPathExpression>()
+			{
+				@Override
+				protected XPathExpression initialValue()
+				{
+					try
+					{
+						return XPATH.get().compile(xPathExpression);
+					}
+					catch (final XPathExpressionException ex)
+					{
+						throw new XMLException(ex);
+					}
+				}
+			});
+	}
+
+	/**
 	 * @throws XMLException
 	 */
 	public static Node findNode(final String xPathExpression, final Node searchScope) throws XMLException
@@ -337,10 +318,7 @@ public abstract class DOMUtils
 
 		try
 		{
-			final XPath xPath = XPATH_FACTORY.get().newXPath();
-			xPath.setNamespaceContext(NAMESPACE_CONTEXT);
-
-			return (Node) xPath.evaluate(xPathExpression, searchScope, XPathConstants.NODE);
+			return (Node) XPATH.get().evaluate(xPathExpression, searchScope, XPathConstants.NODE);
 		}
 		catch (final XPathExpressionException ex)
 		{
@@ -358,10 +336,7 @@ public abstract class DOMUtils
 
 		try
 		{
-			final XPath xPath = XPATH_FACTORY.get().newXPath();
-			xPath.setNamespaceContext(NAMESPACE_CONTEXT);
-
-			return DOMUtils.nodeListToList((NodeList) xPath.evaluate(xPathExpression, searchScope, XPathConstants.NODESET));
+			return DOMUtils.nodeListToList((NodeList) XPATH.get().evaluate(xPathExpression, searchScope, XPathConstants.NODESET));
 		}
 		catch (final XPathExpressionException ex)
 		{
@@ -393,9 +368,6 @@ public abstract class DOMUtils
 		return nodeListToList(element.getElementsByTagName(tagName));
 	}
 
-	/**
-	 * @throws XMLException
-	 */
 	public static Node getFirstChild(final Node node) throws XMLException
 	{
 		Args.notNull("node", node);
@@ -551,30 +523,31 @@ public abstract class DOMUtils
 
 	/**
 	 * Parses the given file and returns a org.w3c.dom.Document.
-	 * @param rootNamespace optional, may be null
+	 * @param defaultNamespace optional, may be null
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static Document parseFile(final File xmlFile, final String rootNamespace, final File... xmlSchemaFiles) throws IOException,
+	public static Document parseFile(final File xmlFile, final String defaultNamespace, final File... xmlSchemaFiles) throws IOException,
 			XMLException
 	{
 		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
 
-		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), rootNamespace, xmlSchemaFiles);
+		return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), defaultNamespace,
+				xmlSchemaFiles);
 	}
 
 	/**
 	 * Parses the content of given input source and returns a org.w3c.dom.Document.
 	 * @param input the input to parse
 	 * @param inputId an identifier / label for the input source, e.g. a file name
-	 * @param rootNamespace optional, may be null
+	 * @param defaultNamespace optional, may be null
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static Document parseInputSource(final InputSource input, final String inputId, final String rootNamespace,
+	public static Document parseInputSource(final InputSource input, final String inputId, final String defaultNamespace,
 			final File... xmlSchemaFiles) throws IOException, XMLException
 	{
 		Args.notNull("input", input);
@@ -623,13 +596,13 @@ public abstract class DOMUtils
 			// remove any schema location declarations
 			domRoot.removeAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation");
 
-			// if a rootNamespace is provided and no namespace is declared or does not match, then add/change the namespace and re-parse the file
+			// if a defaultNamespace is provided and no namespace is declared or does not match, then add/change the namespace and re-parse the file
 			final String ns = domRoot.getNamespaceURI();
-			if (rootNamespace != null && !rootNamespace.equals(ns))
+			if (defaultNamespace != null && !defaultNamespace.equals(ns))
 			{
 				LOG.debug("Fixing root namespace...");
 
-				domRoot.setAttribute("jstuffNS", rootNamespace);
+				domRoot.setAttribute("jstuffNS", defaultNamespace);
 				final String newXML = toXML(domDocument) //
 						.replaceFirst("xmlns\\s*=\\s*(['][^']*[']|[\"][^\"]*[\"])", "") //
 						.replaceFirst("jstuffNS", "xmlns");
@@ -645,7 +618,7 @@ public abstract class DOMUtils
 					{
 						final String nns = node.getNamespaceURI();
 						if (nns == null || nns.equals(ns))
-							node = domDocument.renameNode(node, rootNamespace, node.getNodeName());
+							node = domDocument.renameNode(node, defaultNamespace, node.getNodeName());
 					}
 					final NamedNodeMap attributes = node.getAttributes();
 					if (attributes != null) for (int i = 0, l = attributes.getLength(); i < l; i++)
@@ -693,17 +666,17 @@ public abstract class DOMUtils
 	 * Parses the given string and returns a org.w3c.dom.Document.
 	 * @param input the input to parse
 	 * @param inputId an identifier / label for the input source, e.g. a file name
-	 * @param rootNamespace optional, may be null
+	 * @param defaultNamespace optional, may be null
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
 	 * @throws IOException
 	 * @throws XMLException
 	 */
-	public static Document parseString(final String input, final String inputId, final String rootNamespace, final File... xmlSchemaFiles)
-			throws IOException, XMLException
+	public static Document parseString(final String input, final String inputId, final String defaultNamespace,
+			final File... xmlSchemaFiles) throws IOException, XMLException
 	{
 		Args.notNull("input", input);
 
-		return parseInputSource(new InputSource(new StringReader(input)), inputId, rootNamespace, xmlSchemaFiles);
+		return parseInputSource(new InputSource(new StringReader(input)), inputId, defaultNamespace, xmlSchemaFiles);
 	}
 
 	/**
@@ -714,7 +687,7 @@ public abstract class DOMUtils
 		Args.notNull("namespaceURI", namespaceURI);
 		Args.notNull("prefix", prefix);
 
-		NAMESPACE_CONTEXT.registerNamespace(namespaceURI, prefix);
+		NAMESPACE_CONTEXT.bindNamespace(namespaceURI, prefix);
 	}
 
 	/**
@@ -732,13 +705,9 @@ public abstract class DOMUtils
 		return true;
 	}
 
-	/**
-	 * @throws IOException
-	 * @throws XMLException
-	 */
-	public static void saveToFile(final Document domDocument, final File targetFile) throws IOException, XMLException
+	public static void saveToFile(final Node root, final File targetFile) throws IOException, XMLException
 	{
-		Args.notNull("domDocument", domDocument);
+		Args.notNull("root", root);
 		Args.notNull("targetFile", targetFile);
 
 		try
@@ -752,7 +721,7 @@ public abstract class DOMUtils
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 
 			final FileWriter fw = new FileWriter(targetFile);
-			transformer.transform(new DOMSource(domDocument), new StreamResult(fw));
+			transformer.transform(new DOMSource(root), new StreamResult(fw));
 			fw.flush();
 			fw.close();
 		}
@@ -764,35 +733,32 @@ public abstract class DOMUtils
 
 	/**
 	 * First creates a backup of the targetFile and then saves the document to the targetFile.
-	 *
-	 * @throws IOException
-	 * @throws XMLException
 	 */
-	public static void saveToFileAfterBackup(final Document domDocument, final File targetFile) throws IOException, XMLException
+	public static void saveToFileAfterBackup(final Node root, final File targetFile) throws IOException, XMLException
 	{
-		Args.notNull("domDocument", domDocument);
+		Args.notNull("root", root);
 		Args.notNull("targetFile", targetFile);
 
 		FileUtils.backupFile(targetFile);
 
-		saveToFile(domDocument, targetFile);
+		saveToFile(root, targetFile);
 	}
 
-	public static String toXML(final Node domNode) throws XMLException
+	public static String toXML(final Node root) throws XMLException
 	{
-		Args.notNull("domNode", domNode);
+		Args.notNull("root", root);
 
-		return toXML(domNode, true, true);
+		return toXML(root, true, true);
 	}
 
-	public static String toXML(final Node domNode, final boolean outputXMLDeclaration, final boolean formatPretty) throws XMLException
+	public static String toXML(final Node root, final boolean outputXMLDeclaration, final boolean formatPretty) throws XMLException
 	{
-		Args.notNull("domNode", domNode);
+		Args.notNull("root", root);
 
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try
 		{
-			toXML(domNode, bos, outputXMLDeclaration, formatPretty);
+			toXML(root, bos, outputXMLDeclaration, formatPretty);
 		}
 		catch (final IOException e)
 		{
@@ -801,18 +767,18 @@ public abstract class DOMUtils
 		return bos.toString();
 	}
 
-	public static void toXML(final Node domNode, final OutputStream out) throws XMLException, IOException
+	public static void toXML(final Node root, final OutputStream out) throws XMLException, IOException
 	{
-		Args.notNull("domNode", domNode);
+		Args.notNull("root", root);
 		Args.notNull("out", out);
 
-		toXML(domNode, out, true, true);
+		toXML(root, out, true, true);
 	}
 
-	public static void toXML(final Node domNode, final OutputStream out, final boolean outputXMLDeclaration, final boolean formatPretty)
+	public static void toXML(final Node root, final OutputStream out, final boolean outputXMLDeclaration, final boolean formatPretty)
 			throws XMLException, IOException
 	{
-		Args.notNull("domNode", domNode);
+		Args.notNull("root", root);
 		Args.notNull("out", out);
 
 		try
@@ -842,7 +808,7 @@ public abstract class DOMUtils
 			}
 			else
 				transformer.setOutputProperty(OutputKeys.INDENT, "no");
-			transformer.transform(new DOMSource(domNode), new StreamResult(out));
+			transformer.transform(new DOMSource(root), new StreamResult(out));
 		}
 		catch (final TransformerException ex)
 		{

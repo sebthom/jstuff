@@ -42,6 +42,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableList.java -tex
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/PagedList.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/PagedListWithSortBy.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/SingleObjectIterator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/SoftHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/Tuple1.java -text
@@ -291,6 +292,7 @@ jstuff-xml/pom.xml -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/DOMFile.java -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/DOMUtils.java -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/JAXBUtils.java -text
+jstuff-xml/src/main/java/net/sf/jstuff/xml/MapBasedNamespaceContext.java -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/StAXUtils.java -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/XMLException.java -text
 jstuff-xml/src/test/java/net/sf/jstuff/xml/DOMUtilsTests.java -text

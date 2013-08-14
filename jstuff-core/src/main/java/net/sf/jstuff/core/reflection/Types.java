@@ -23,6 +23,12 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class Types
 {
+	@SuppressWarnings("unchecked")
+	public static <T> T cast(final Object obj)
+	{
+		return (T) obj;
+	}
+
 	public static <T> T createSynchronized(final Class<T> objectInterface, final T object)
 	{
 		Args.notNull("objectInterface", objectInterface);
@@ -48,10 +54,18 @@ public class Types
 			});
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T cast(final Object obj)
+	public static <T> T createThreadLocalized(final Class<T> objectInterface, final ThreadLocal<T> threadLocal)
 	{
-		return (T) obj;
+		Args.notNull("objectInterface", objectInterface);
+		Args.notNull("threadLocal", threadLocal);
+		
+		return Proxies.create(objectInterface, new InvocationHandler()
+			{
+				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+				{
+					return method.invoke(threadLocal.get(), args);
+				}
+			});
 	}
 
 	/**
@@ -67,6 +81,8 @@ public class Types
 
 	public static boolean isScalar(final Class< ? > type)
 	{
+		Args.notNull("type", type);
+		
 		return type == boolean.class || type == Boolean.class || //
 				type == char.class || type == Character.class || //
 				type == int.class || //
