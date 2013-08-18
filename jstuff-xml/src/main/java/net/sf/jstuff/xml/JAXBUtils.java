@@ -34,7 +34,7 @@ import net.sf.jstuff.core.validation.Args;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class JAXBUtils
+public abstract class JAXBUtils
 {
 	public static String toXML(final Object obj) throws XMLException
 	{
