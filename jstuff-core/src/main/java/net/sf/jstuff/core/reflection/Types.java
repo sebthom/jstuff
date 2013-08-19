@@ -29,6 +29,26 @@ public class Types
 		return (T) obj;
 	}
 
+	public static <T> T createMixin(final Class<T> objectInterface, final Object... mixins)
+	{
+		Args.notNull("objectInterface", objectInterface);
+		Args.notEmpty("mixins", mixins);
+
+		return Proxies.create(objectInterface, new InvocationHandler()
+			{
+				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+				{
+					for (final Object mixin : mixins)
+					{
+						final Method methodImpl = ReflectionUtils.getMethodRecursive(mixin.getClass(), method.getName(),
+								method.getParameterTypes());
+						if (methodImpl != null) return ReflectionUtils.invokeMethod(methodImpl, mixin, args);
+					}
+					throw new UnsupportedOperationException("Method is not implemented.");
+				}
+			});
+	}
+
 	public static <T> T createSynchronized(final Class<T> objectInterface, final T object)
 	{
 		Args.notNull("objectInterface", objectInterface);
@@ -58,7 +78,7 @@ public class Types
 	{
 		Args.notNull("objectInterface", objectInterface);
 		Args.notNull("threadLocal", threadLocal);
-		
+
 		return Proxies.create(objectInterface, new InvocationHandler()
 			{
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
@@ -82,7 +102,7 @@ public class Types
 	public static boolean isScalar(final Class< ? > type)
 	{
 		Args.notNull("type", type);
-		
+
 		return type == boolean.class || type == Boolean.class || //
 				type == char.class || type == Character.class || //
 				type == int.class || //
