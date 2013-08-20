@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import net.sf.jstuff.core.functional.Accept;
 import net.sf.jstuff.core.functional.Function;
 import net.sf.jstuff.core.validation.Args;
 
@@ -44,6 +45,23 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		for (final T t : theArray)
 			if (t == theItem) return true;
 		return false;
+	}
+
+	/**
+	 * Returns a new list with all items accepted by the filter
+	 * @throws IllegalArgumentException if <code>accept == null</code>
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] filter(final Accept< ? super T> accept, final T... array) throws IllegalArgumentException
+	{
+		if (array == null) return null;
+
+		Args.notNull("accept", accept);
+
+		final ArrayList<T> result = CollectionUtils.newArrayList();
+		for (final T item : array)
+			if (accept.accept(item)) result.add(item);
+		return (T[]) result.toArray();
 	}
 
 	@SuppressWarnings("unchecked")

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -28,25 +28,52 @@ import javax.servlet.ServletResponse;
 import net.sf.jstuff.core.Logger;
 
 /**
+ * <b>Example:</b>
+<pre>{@code
+<filter>
+    <filter-name>RequestAttributeSettingFilter</filter-name>
+    <filter-class>net.sf.jstuff.integration.servlet.RequestAttributeSettingFilter</filter-class>
+    <init-param>
+        <param-name>attribute1</param-name>
+        <param-value>value1</param-value>
+    </init-param>
+    <init-param>
+        <param-name>attribute1</param-name>
+        <param-value>value1</param-value>
+    </init-param>
+</filter>
+<filter-mapping>
+	<filter-name>RequestAttributeSettingFilter</filter-name>
+	<url-pattern>/services/*</url-pattern>
+</filter-mapping>
+}</pre>
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class RequestAttributeSettingFilter implements Filter
 {
 	private static final Logger LOG = Logger.create();
-	private final Map<String, String> parameter = new LinkedHashMap<String, String>();
+	private final Map<String, String> attributes = new LinkedHashMap<String, String>();
 
 	public void destroy()
 	{}
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
-			throws IOException, ServletException
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
+			ServletException
 	{
-		LOG.trace("For request %s setting request attributes: %s", request, parameter);
+		if (!attributes.isEmpty())
+		{
+			LOG.debug("For request [%s] setting request attributes: %s", request, attributes);
 
-		for (final Entry<String, String> entry : parameter.entrySet())
-			request.setAttribute(entry.getKey(), entry.getValue());
+			for (final Entry<String, String> entry : attributes.entrySet())
+				request.setAttribute(entry.getKey(), entry.getValue());
+		}
 
 		chain.doFilter(request, response);
+	}
+
+	public Map<String, String> getAttributes()
+	{
+		return attributes;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -56,7 +83,7 @@ public class RequestAttributeSettingFilter implements Filter
 		while (paramNames.hasMoreElements())
 		{
 			final String key = paramNames.nextElement();
-			parameter.put(key, filterConfig.getInitParameter(key));
+			attributes.put(key, filterConfig.getInitParameter(key));
 		}
 	}
 }

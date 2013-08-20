@@ -192,6 +192,23 @@ public abstract class Accepts
 		}
 	}
 
+	public static class InstanceOf<V> extends AbstractAccept<V>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public final Class< ? > type;
+
+		public InstanceOf(final Class< ? > type)
+		{
+			this.type = type;
+		}
+
+		public boolean accept(final V obj)
+		{
+			return type.isInstance(obj);
+		}
+	}
+
 	public static class LessThan<V extends Comparable<V>> extends AbstractAccept<V>
 	{
 		private static final long serialVersionUID = 1L;
@@ -217,36 +234,6 @@ public abstract class Accepts
 		public boolean accept(final V obj)
 		{
 			return obj != null;
-		}
-	}
-
-	public static class Property<V, PropertyType> extends AbstractAccept<V>
-	{
-		private static final long serialVersionUID = 1L;
-
-		public final Accept<PropertyType> accept;
-		public final String propertyPath;
-
-		public Property(final String propertyPath, final Accept<PropertyType> accept)
-		{
-			Args.notNull("propertyPath", propertyPath);
-			Args.notNull("accept", accept);
-
-			this.propertyPath = propertyPath;
-			this.accept = accept;
-		}
-
-		@SuppressWarnings("unchecked")
-		public boolean accept(final V obj)
-		{
-			try
-			{
-				return accept.accept((PropertyType) ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(obj, propertyPath));
-			}
-			catch (final ClassCastException ex)
-			{
-				return false;
-			}
 		}
 	}
 
@@ -313,6 +300,36 @@ public abstract class Accepts
 		}
 	}
 
+	public static class Property<V, PropertyType> extends AbstractAccept<V>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public final Accept<PropertyType> accept;
+		public final String propertyPath;
+
+		public Property(final String propertyPath, final Accept<PropertyType> accept)
+		{
+			Args.notNull("propertyPath", propertyPath);
+			Args.notNull("accept", accept);
+
+			this.propertyPath = propertyPath;
+			this.accept = accept;
+		}
+
+		@SuppressWarnings("unchecked")
+		public boolean accept(final V obj)
+		{
+			try
+			{
+				return accept.accept((PropertyType) ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(obj, propertyPath));
+			}
+			catch (final ClassCastException ex)
+			{
+				return false;
+			}
+		}
+	}
+
 	public static class StartingWith<V> extends AbstractCaseSensitiveAccept<V>
 	{
 		private static final long serialVersionUID = 1L;
@@ -367,6 +384,11 @@ public abstract class Accepts
 		return new GreaterThan<V>(compareTo);
 	}
 
+	public static <V> InstanceOf<V> instanceOf(final Class< ? > type)
+	{
+		return new InstanceOf<V>(type);
+	}
+
 	public static <V> Null<V> isNull()
 	{
 		return new Null<V>();
@@ -392,13 +414,13 @@ public abstract class Accepts
 		return new Or<V>(first, second);
 	}
 
-	public static <V, PropertyType> Property<V, PropertyType> property(final String propertyPath, final Accept<PropertyType> accept)
+	public static <V, PropertyType> Property<V, PropertyType> property(final Class<V> castingHelper, final String propertyPath,
+			final Accept<PropertyType> accept)
 	{
 		return new Property<V, PropertyType>(propertyPath, accept);
 	}
 
-	public static <V, PropertyType> Property<V, PropertyType> property(final Class<V> castingHelper, final String propertyPath,
-			final Accept<PropertyType> accept)
+	public static <V, PropertyType> Property<V, PropertyType> property(final String propertyPath, final Accept<PropertyType> accept)
 	{
 		return new Property<V, PropertyType>(propertyPath, accept);
 	}
