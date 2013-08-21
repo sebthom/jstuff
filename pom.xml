@@ -100,7 +100,6 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.5</java.version>
 		<slf4j.version>1.7.5</slf4j.version>
-
 	</properties>
 
 	<modules>
@@ -179,7 +178,7 @@
 					<target>${java.version}</target>
 					<optimize>true</optimize>
 					<compilerId>eclipse</compilerId>
-					<!-- using eclipse compiler since javac is buggy when compiling complex generic expressions --> 
+					<!-- using eclipse compiler since javac is buggy when compiling complex generic expressions -->
 				</configuration>
 				<dependencies>
 					<dependency>

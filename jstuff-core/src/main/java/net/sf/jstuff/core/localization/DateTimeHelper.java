@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -32,18 +32,11 @@ public class DateTimeHelper implements Serializable
 
 	private final Locale locale;
 
-	/**
-	 * Constructor for DateTimeHelper.
-	 */
 	public DateTimeHelper()
 	{
 		this(Locale.getDefault());
 	}
 
-	/**
-	 * Constructor for DateTimeHelper.
-	 * @param locale
-	 */
 	public DateTimeHelper(final Locale locale)
 	{
 		Args.notNull("locale", locale);
@@ -52,7 +45,7 @@ public class DateTimeHelper implements Serializable
 	}
 
 	/**
-	 * 
+	 *
 	 * @param date String containing the date to convert
 	 * @return Date
 	 */
@@ -264,10 +257,8 @@ public class DateTimeHelper implements Serializable
 	public boolean isValidDateTime(final String dateTime)
 	{
 		return dateTime != null
-				&& (isValidDateTime(DateFormatStyle.SHORT, dateTime)
-						|| isValidDateTime(DateFormatStyle.MEDIUM, dateTime)
-						|| isValidDateTime(DateFormatStyle.LONG, dateTime) || isValidDateTime(DateFormatStyle.FULL,
-							dateTime));
+				&& (isValidDateTime(DateFormatStyle.SHORT, dateTime) || isValidDateTime(DateFormatStyle.MEDIUM, dateTime)
+						|| isValidDateTime(DateFormatStyle.LONG, dateTime) || isValidDateTime(DateFormatStyle.FULL, dateTime));
 	}
 
 	protected boolean isValidTime(final DateFormatStyle style, final String time)

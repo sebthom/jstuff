@@ -31,7 +31,7 @@ import javax.persistence.Version;
 import net.sf.jstuff.core.Identifiable;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.date.ImmutableDate;
-import net.sf.jstuff.core.reflection.ReflectionUtils;
+import net.sf.jstuff.core.reflection.Fields;
 import net.sf.jstuff.integration.persistence.HashCodeManager;
 
 /**
@@ -166,9 +166,9 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 				sb.append(intend).append(currClazz).append(" *** START ***").append(NEW_LINE);
 				intend += "  ";
 				for (final Field field : currClazz.getDeclaredFields())
-					if (!ReflectionUtils.isStatic(field) && !field.getName().startsWith("class$"))
+					if (!Fields.isStatic(field) && !field.getName().startsWith("class$"))
 					{
-						final Object fieldValue = ReflectionUtils.getFieldValue(field, this);
+						final Object fieldValue = Fields.read(this, field);
 						if (field.getType().isAssignableFrom(AbstractJPAEntity.class))
 						{
 							if (fieldValue == null)

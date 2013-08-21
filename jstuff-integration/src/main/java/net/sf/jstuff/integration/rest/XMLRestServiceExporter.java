@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.PagedListWithSortBy;
 import net.sf.jstuff.core.comparator.SortBy;
-import net.sf.jstuff.core.reflection.ReflectionUtils;
+import net.sf.jstuff.core.reflection.Types;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
@@ -44,32 +44,6 @@ public class XMLRestServiceExporter extends AbstractRestServiceExporter
 		xStream = new XStream(xmlDriver);
 
 		configureXStream(xStream);
-	}
-
-	protected HierarchicalStreamDriver getXStreamDriver()
-	{
-		if (ReflectionUtils.isClassPresent("javax.xml.stream.XMLStreamReader")) try
-		{
-
-			final StaxDriver xmlDriver = new StaxDriver();
-			xmlDriver.getInputFactory();
-			xmlDriver.getOutputFactory();
-			return xmlDriver;
-		}
-		catch (final Exception ex)
-		{
-			LOG.warn("Failed to use StaxDriver.", ex);
-		}
-		catch (final Error er)
-		{
-			if ("javax.xml.stream.FactoryConfigurationError".equals(er.getClass().getName()))
-				LOG.warn("Failed to use StaxDriver.", er);
-			else
-				throw er;
-		}
-
-		return ReflectionUtils.isClassPresent("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
-				new DomDriver();
 	}
 
 	protected void configureXStream(final XStream xStream)
@@ -103,6 +77,32 @@ public class XMLRestServiceExporter extends AbstractRestServiceExporter
 	protected <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException
 	{
 		return (T) xStream.fromXML(request.getInputStream());
+	}
+
+	protected HierarchicalStreamDriver getXStreamDriver()
+	{
+		if (Types.isClassAvailable("javax.xml.stream.XMLStreamReader")) try
+		{
+
+			final StaxDriver xmlDriver = new StaxDriver();
+			xmlDriver.getInputFactory();
+			xmlDriver.getOutputFactory();
+			return xmlDriver;
+		}
+		catch (final Exception ex)
+		{
+			LOG.warn("Failed to use StaxDriver.", ex);
+		}
+		catch (final Error er)
+		{
+			if ("javax.xml.stream.FactoryConfigurationError".equals(er.getClass().getName()))
+				LOG.warn("Failed to use StaxDriver.", er);
+			else
+				throw er;
+		}
+
+		return Types.isClassAvailable("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
+				new DomDriver();
 	}
 
 	@Override

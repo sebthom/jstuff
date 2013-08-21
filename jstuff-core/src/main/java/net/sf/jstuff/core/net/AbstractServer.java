@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -32,14 +32,10 @@ public abstract class AbstractServer
 	protected final int portNumber;
 	protected ServerSocket socketListener;
 
-	/**
-	 * public constructor
-	 * @param portNumber
-	 */
 	public AbstractServer(final int portNumber, final int numberOfThreads)
 	{
 		this.portNumber = portNumber;
-		this.executor = Executors.newFixedThreadPool(numberOfThreads);
+		executor = Executors.newFixedThreadPool(numberOfThreads);
 	}
 
 	/**
@@ -50,10 +46,10 @@ public abstract class AbstractServer
 		return portNumber;
 	}
 
-	protected abstract void handleConnection(Socket clientConnection) throws IOException;
+	protected abstract void handleConnection(final Socket clientConnection) throws IOException;
 
 	/**
-	 * 
+	 *
 	 * @return if the server is currently listening to a socket
 	 */
 	public boolean isRunning()

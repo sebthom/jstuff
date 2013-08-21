@@ -12,11 +12,13 @@
  *******************************************************************************/
 package net.sf.jstuff.core.ogn;
 
+import static net.sf.jstuff.core.reflection.Methods.*;
+
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import net.sf.jstuff.core.reflection.ReflectionUtils;
+import net.sf.jstuff.core.reflection.Fields;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -52,10 +54,10 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator
 			parent = target;
 			if (parent == null) return null;
 
-			final Method getter = ReflectionUtils.getGetterRecursive(parent.getClass(), chunk);
+			final Method getter = findGetterRecursive(parent.getClass(), chunk);
 			if (getter == null)
 			{
-				final Field field = ReflectionUtils.getFieldRecursive(parent.getClass(), chunk);
+				final Field field = Fields.findRecursive(parent.getClass(), chunk);
 				if (field == null)
 				{
 					if (strict)
@@ -63,12 +65,17 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator
 								+ root.getClass().getName() + "] path: " + path);
 					return null;
 				}
-				target = ReflectionUtils.getFieldValue(field, parent);
+				target = Fields.read(parent, field);
 			}
 			else
-				target = ReflectionUtils.invokeMethod(getter, parent);
+				target = invoke(parent, getter);
 		}
 		return (T) target;
+	}
+
+	public boolean isStrict()
+	{
+		return strict;
 	}
 
 	public ObjectGraphNavigationResult navigateTo(final Object root, final String path)
@@ -84,10 +91,10 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator
 			parent = target;
 			if (parent == null) return null;
 
-			final Method getter = ReflectionUtils.getGetterRecursive(parent.getClass(), chunk);
+			final Method getter = findGetterRecursive(parent.getClass(), chunk);
 			if (getter == null)
 			{
-				final Field field = ReflectionUtils.getFieldRecursive(parent.getClass(), chunk);
+				final Field field = Fields.findRecursive(parent.getClass(), chunk);
 				if (field == null)
 				{
 					if (strict)
@@ -95,20 +102,15 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator
 								+ root.getClass().getName() + "] path: " + path);
 					return null;
 				}
-				target = ReflectionUtils.getFieldValue(field, parent);
+				target = Fields.read(parent, field);
 				targetAccessor = field;
 			}
 			else
 			{
-				target = ReflectionUtils.invokeMethod(getter, parent);
+				target = invoke(parent, getter);
 				targetAccessor = getter;
 			}
 		}
 		return new ObjectGraphNavigationResult(root, path, parent, targetAccessor, target);
-	}
-
-	public boolean isStrict()
-	{
-		return strict;
 	}
 }

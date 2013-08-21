@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jstuff.core.Logger;
-import net.sf.jstuff.core.reflection.ReflectionUtils;
+import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.integration.spring.SpringBeanParanamer;
 
 import org.springframework.beans.factory.InitializingBean;
@@ -119,7 +119,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 				}
 				methodDescriptor.put("parameters", parameters);
 			}
-			if (!ReflectionUtils.isVoidMethod(method))
+			if (!Methods.isReturningVoid(method))
 			{
 				final JsonSchema returnTypeDescriptor = JSON.generateJsonSchema(method.getReturnType());
 				returnTypeDescriptor.getSchemaNode().put("java-type", method.getReturnType().getName());

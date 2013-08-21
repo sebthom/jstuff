@@ -12,7 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core.reflection;
 
-import static net.sf.jstuff.core.reflection.ReflectionUtils.*;
+import static net.sf.jstuff.core.reflection.Members.*;
+import static net.sf.jstuff.core.reflection.Types.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -93,6 +94,38 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 		{
 			throw new ReflectionException("Failed to create an instance of annotation " + annotationType, ex);
 		}
+	}
+
+	/**
+	 * Returns true if an annotation for the specified type is present on this method, else false.
+	 *
+	 * @param method the method to inspect
+	 * @param annotationClass the Class object corresponding to the annotation type
+	 * @param inspectInterfaces whether to also check annotations declared on interface method declaration
+	 * @return true if an annotation for the specified annotation type is present on this method, else false
+	 */
+	public static boolean exists(final Method method, final Class< ? extends Annotation> annotationClass, final boolean inspectInterfaces)
+	{
+		Args.notNull("method", method);
+		Args.notNull("annotationClass", annotationClass);
+
+		if (method.isAnnotationPresent(annotationClass)) return true;
+
+		if (!inspectInterfaces || !isPublic(method)) return false;
+
+		final String methodName = method.getName();
+		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
+
+		for (final Class< ? > next : getInterfacesRecursive(method.getDeclaringClass()))
+			try
+			{
+				if (next.getDeclaredMethod(methodName, methodParameterTypes).isAnnotationPresent(annotationClass)) return true;
+			}
+			catch (final NoSuchMethodException e)
+			{
+				// ignore
+			}
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -182,39 +215,6 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 				throw new InvokingMethodFailedException(m, annotation, ex);
 			}
 		return parameters;
-	}
-
-	/**
-	 * Returns true if an annotation for the specified type is present on this method, else false.
-	 *
-	 * @param method the method to inspect
-	 * @param annotationClass the Class object corresponding to the annotation type
-	 * @param inspectInterfaces whether to also check annotations declared on interface method declaration
-	 * @return true if an annotation for the specified annotation type is present on this method, else false
-	 */
-	public static boolean hasAnnotation(final Method method, final Class< ? extends Annotation> annotationClass,
-			final boolean inspectInterfaces)
-	{
-		Args.notNull("method", method);
-		Args.notNull("annotationClass", annotationClass);
-
-		if (method.isAnnotationPresent(annotationClass)) return true;
-
-		if (!inspectInterfaces || !isPublic(method)) return false;
-
-		final String methodName = method.getName();
-		final Class< ? >[] methodParameterTypes = method.getParameterTypes();
-
-		for (final Class< ? > next : getInterfacesRecursive(method.getDeclaringClass()))
-			try
-			{
-				if (next.getDeclaredMethod(methodName, methodParameterTypes).isAnnotationPresent(annotationClass)) return true;
-			}
-			catch (final NoSuchMethodException e)
-			{
-				// ignore
-			}
-		return false;
 	}
 
 	/**

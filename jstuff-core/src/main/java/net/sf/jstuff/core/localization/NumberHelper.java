@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -33,8 +33,6 @@ public class NumberHelper implements Serializable
 	private transient String currencySymbol;
 
 	/**
-	 * public constructor
-	 * 
 	 * locale will be set to Locale.getDefault();
 	 */
 	public NumberHelper()
@@ -42,11 +40,6 @@ public class NumberHelper implements Serializable
 		this(Locale.getDefault());
 	}
 
-	/**
-	 * public constructor
-	 * 
-	 * @param locale Locale to be used for all conversations
-	 */
 	public NumberHelper(final Locale locale)
 	{
 		Args.notNull("locale", locale);
@@ -56,8 +49,7 @@ public class NumberHelper implements Serializable
 
 	public String getCurrencyCode()
 	{
-		if (currencyCode == null)
-			currencyCode = NumberFormat.getCurrencyInstance(locale).getCurrency().getCurrencyCode();
+		if (currencyCode == null) currencyCode = NumberFormat.getCurrencyInstance(locale).getCurrency().getCurrencyCode();
 		return currencyCode;
 	}
 
@@ -78,8 +70,7 @@ public class NumberHelper implements Serializable
 
 	public String getCurrencySymbol()
 	{
-		if (currencySymbol == null)
-			currencySymbol = NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol();
+		if (currencySymbol == null) currencySymbol = NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol();
 		return currencySymbol;
 	}
 

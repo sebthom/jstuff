@@ -51,17 +51,17 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 	 * Returns a new list with all items accepted by the filter
 	 * @throws IllegalArgumentException if <code>accept == null</code>
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "cast"})
 	public static <T> T[] filter(final Accept< ? super T> accept, final T... array) throws IllegalArgumentException
 	{
 		if (array == null) return null;
-
+		if (array.length == 0) return array;
 		Args.notNull("accept", accept);
-
 		final ArrayList<T> result = CollectionUtils.newArrayList();
 		for (final T item : array)
 			if (accept.accept(item)) result.add(item);
-		return (T[]) result.toArray();
+
+		return (T[]) result.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), result.size()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -143,11 +143,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		return result;
 	}
 
-	public static <T> List<T> toList(final T... array)
-	{
-		return CollectionUtils.newArrayList(array);
-	}
-
 	@SuppressWarnings("unchecked")
 	public static <T> List<T> toList(final Object array, final Class<T> itemType)
 	{
@@ -169,6 +164,11 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		for (final short i : array)
 			result.add(i);
 		return result;
+	}
+
+	public static <T> List<T> toList(final T... array)
+	{
+		return CollectionUtils.newArrayList(array);
 	}
 
 	public static <S, T> T[] transform(final S[] source, final Class<T> targetType, final Function< ? super S, ? extends T> op)

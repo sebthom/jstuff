@@ -14,6 +14,8 @@ jstuff-core/src/main/java/net/sf/jstuff/core/StackTrace.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/URLClassLoaderExt.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/builder/Builder.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/builder/BuilderFactory.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ArrayIterator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ArrayUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CollectionUtils.java -text
@@ -127,11 +129,15 @@ jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigatorDefaultImpl
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/AccessingFieldValueFailedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Annotations.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Beans.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Constructors.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/DuckTypes.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Fields.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/InvokingConstructorFailedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/InvokingMethodFailedException.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Members.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Methods.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Proxies.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/ReflectionException.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/reflection/ReflectionUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableConstructor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableField.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableMethod.java -text

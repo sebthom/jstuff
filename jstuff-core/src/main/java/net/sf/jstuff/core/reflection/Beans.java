@@ -98,7 +98,7 @@ public abstract class Beans extends java.beans.Beans
 
 	public static final Object valueOf(final String stringValue, final Class< ? > targetType)
 	{
-		Assert.notNull(targetType, "Argument targetType must not be null");
+		Args.notNull("targetType", targetType);
 
 		if (int.class.isAssignableFrom(targetType) || Integer.class.isAssignableFrom(targetType)) return Integer.valueOf(stringValue);
 		if (float.class.isAssignableFrom(targetType) || Float.class.isAssignableFrom(targetType)) return Float.valueOf(stringValue);
@@ -111,9 +111,10 @@ public abstract class Beans extends java.beans.Beans
 
 	public static final Object[] valuesOf(final String[] stringValues, final Class< ? >[] targetTypes)
 	{
-		Assert.notNull(stringValues, "Argument stringValues must not be null");
-		Assert.notNull(targetTypes, "Argument targetTypes must not be null");
-		Assert.isTrue(stringValues.length == targetTypes.length, "Argments stringValues and targetTypes must have the same length");
+		Args.notNull("stringValues", stringValues);
+		Args.notNull("targetTypes", targetTypes);
+
+		Assert.isTrue(stringValues.length == targetTypes.length, "Arguments [stringValues} and [targetTypes] must have the same length");
 
 		final Object[] result = new Object[targetTypes.length];
 
