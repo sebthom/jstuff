@@ -79,10 +79,12 @@ public abstract class Constructors extends Members
 			if (argsLen == 0) return ctor;
 
 			for (int i = 0; i < argsLen; i++)
-			{
-				if (args[i] == null) continue;
-				if (!Types.isCastable(args[i].getClass(), ctorParamTypes[i])) continue ctor_loop;
-			}
+				if (args[i] == null)
+				{
+					// if arg is null and ctor param is a primitive we have no match since primitives cannot be assigned null
+					if (ctorParamTypes[i].getClass().isPrimitive()) continue ctor_loop;
+				}
+				else if (!Types.isCastable(args[i].getClass(), ctorParamTypes[i])) continue ctor_loop;
 			return ctor;
 		}
 		return null;

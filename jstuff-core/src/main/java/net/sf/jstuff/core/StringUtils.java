@@ -722,9 +722,4 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	{
 		return WordUtils.wrap(str, wrapLength, newLineStr, false);
 	}
-
-	protected StringUtils()
-	{
-		super();
-	}
 }

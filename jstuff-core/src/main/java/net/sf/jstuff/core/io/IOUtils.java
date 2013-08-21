@@ -180,9 +180,4 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 		os.write(value >>> 8 & 0xFF);
 		os.write(value >>> 0 & 0xFF);
 	}
-
-	protected IOUtils()
-	{
-		super();
-	}
 }

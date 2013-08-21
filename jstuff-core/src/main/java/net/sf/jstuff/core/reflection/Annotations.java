@@ -265,9 +265,4 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 			}
 		return annotations.toArray(new Annotation[annotations.size()]);
 	}
-
-	protected Annotations()
-	{
-		super();
-	}
 }

@@ -201,9 +201,4 @@ public abstract class SQLUtils
 			if (stmt != null) stmt.close();
 		}
 	}
-
-	protected SQLUtils()
-	{
-		super();
-	}
 }

@@ -10,33 +10,48 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.collection;
+package net.sf.jstuff.core.collection.iterator;
 
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class Tuple1<T1> extends Tuple
+public class SingleObjectIterator<T> implements Iterator<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static <T1> Tuple1<T1> create(final T1 value1)
+	private T item;
+	private boolean hasNext = true;
+
+	public SingleObjectIterator(final T item)
 	{
-		return new Tuple1<T1>(value1);
+		this.item = item;
 	}
 
-	public Tuple1(final T1 value1)
+	public boolean hasNext()
 	{
-		super(value1);
+		return hasNext;
 	}
 
-	/*
-	 * using explicit cast as workaround for Java 5 compiler bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6302954
-	 * "type parameters of <T>T cannot be determined; no unique maximal instance exists for type variable T with upper bounds T1,java.lang.Object"
-	 */
-	@SuppressWarnings("unchecked")
-	public T1 get1()
+	public T next()
 	{
-		return (T1) getTyped(0);
+		if (hasNext)
+		{
+			hasNext = false;
+			final T tmp = item;
+			// help the gc
+			item = null;
+			return tmp;
+		}
+		throw new NoSuchElementException();
 	}
+
+	public void remove()
+	{
+		throw new UnsupportedOperationException();
+	}
+
 }

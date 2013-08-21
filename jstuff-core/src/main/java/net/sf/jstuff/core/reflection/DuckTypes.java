@@ -83,9 +83,4 @@ public abstract class DuckTypes
 			}
 		return true;
 	}
-
-	protected DuckTypes()
-	{
-		super();
-	}
 }

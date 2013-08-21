@@ -10,57 +10,41 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.collection;
+package net.sf.jstuff.core.collection.iterator;
 
-import java.util.ListIterator;
+import java.io.Serializable;
+import java.util.Iterator;
+
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class UnmodifiableListIterator<T> extends UnmodifiableIterator<T> implements ListIterator<T>
+public class UnmodifiableIterator<T> implements Iterator<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static <T> UnmodifiableListIterator<T> of(final ListIterator<T> delegate)
-	{
-		return new UnmodifiableListIterator<T>(delegate);
-	}
+	private final Iterator<T> delegate;
 
-	private final ListIterator<T> delegate;
-
-	public UnmodifiableListIterator(final ListIterator<T> delegate)
+	public UnmodifiableIterator(final Iterator<T> delegate)
 	{
-		super(delegate);
+		Args.notNull("delegate", delegate);
 		this.delegate = delegate;
 	}
 
-	public void add(final T o)
+	public boolean hasNext()
+	{
+		return delegate.hasNext();
+	}
+
+	public T next()
+	{
+		return delegate.next();
+	}
+
+	public void remove()
 	{
 		throw new UnsupportedOperationException();
 	}
 
-	public boolean hasPrevious()
-	{
-		return delegate.hasPrevious();
-	}
-
-	public int nextIndex()
-	{
-		return delegate.nextIndex();
-	}
-
-	public T previous()
-	{
-		return delegate.previous();
-	}
-
-	public int previousIndex()
-	{
-		return delegate.previousIndex();
-	}
-
-	public void set(final T o)
-	{
-		throw new UnsupportedOperationException();
-	}
 }

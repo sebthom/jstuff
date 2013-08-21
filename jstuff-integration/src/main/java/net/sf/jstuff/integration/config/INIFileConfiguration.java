@@ -34,7 +34,7 @@ import java.util.TreeSet;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.collection.LinkedSet;
-import net.sf.jstuff.core.collection.Tuple2;
+import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.functional.Function;
 import net.sf.jstuff.core.functional.Functions;
 

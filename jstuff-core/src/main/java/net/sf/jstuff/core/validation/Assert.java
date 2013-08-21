@@ -126,12 +126,6 @@ public abstract class Assert
 		return value;
 	}
 
-	public static <T extends CharSequence> T notEmpty(final T value, final String errorMessage)
-	{
-		if (value == null || value.length() == 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-		return value;
-	}
-
 	/**
 	 * @throws IllegalStateException if <code>value</code> collection is null or empty
 	 */
@@ -147,6 +141,12 @@ public abstract class Assert
 	public static <M extends Map< ? , ? >> M notEmpty(final M value, final String errorMessage)
 	{
 		if (value == null || value.isEmpty()) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
+	}
+
+	public static <T extends CharSequence> T notEmpty(final T value, final String errorMessage)
+	{
+		if (value == null || value.length() == 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 		return value;
 	}
 
@@ -187,10 +187,5 @@ public abstract class Assert
 	{
 		if (value == null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 		return value;
-	}
-
-	protected Assert()
-	{
-		super();
 	}
 }

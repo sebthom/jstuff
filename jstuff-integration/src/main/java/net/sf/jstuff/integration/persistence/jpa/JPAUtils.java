@@ -45,9 +45,4 @@ public abstract class JPAUtils
 		if (parameters != null) for (int i = 0; i < parameters.length; i++)
 			query.setParameter(i + 1, parameters[i]);
 	}
-
-	protected JPAUtils()
-	{
-		super();
-	}
 }

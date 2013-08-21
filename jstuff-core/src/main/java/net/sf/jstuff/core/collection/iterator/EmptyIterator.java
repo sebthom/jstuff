@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.collection;
+package net.sf.jstuff.core.collection.iterator;
 
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -25,12 +25,6 @@ public class EmptyIterator<T> implements Iterator<T>, Serializable
 	private static final long serialVersionUID = 1L;
 
 	public static final EmptyIterator< ? > INSTANCE = new EmptyIterator<Object>();
-
-	@SuppressWarnings("unchecked")
-	public static final <T> EmptyIterator<T> get()
-	{
-		return (EmptyIterator<T>) INSTANCE;
-	}
 
 	private EmptyIterator()
 	{

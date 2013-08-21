@@ -815,9 +815,4 @@ public abstract class DOMUtils
 			throw new XMLException(ex);
 		}
 	}
-
-	protected DOMUtils()
-	{
-		super();
-	}
 }

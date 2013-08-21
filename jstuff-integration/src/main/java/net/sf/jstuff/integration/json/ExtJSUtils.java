@@ -61,9 +61,4 @@ public abstract class ExtJSUtils
 		if (java.util.Date.class.isAssignableFrom(fieldType)) return "date";
 		return "auto";
 	}
-
-	protected ExtJSUtils()
-	{
-		super();
-	}
 }

@@ -28,9 +28,4 @@ public abstract class StAXUtils
 		}
 		return null;
 	}
-
-	protected StAXUtils()
-	{
-		super();
-	}
 }

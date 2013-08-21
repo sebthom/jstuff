@@ -198,13 +198,8 @@ public class Types
 	{
 		Args.notNull("type", type);
 
-		return type == boolean.class || type == Boolean.class || //
-				type == char.class || type == Character.class || //
-				type == int.class || //
-				type == long.class || //
-				type == byte.class || //
-				type == short.class || //
-				type == float.class || //
+		return type.isPrimitive() || type == Boolean.class || //
+				type == Character.class || //
 				Enum.class.isAssignableFrom(type) || //
 				Number.class.isAssignableFrom(type) || //
 				CharSequence.class.isAssignableFrom(type) || //

@@ -572,9 +572,4 @@ public abstract class CollectionUtils
 			target.add(op.apply(sourceItem));
 		return target;
 	}
-
-	protected CollectionUtils()
-	{
-		super();
-	}
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
@@ -38,11 +39,13 @@ public interface Composite<Component>
 
 		public Default(final Collection< ? extends Component> components)
 		{
+			Args.notNull("components", components);
 			this.components.addAll(components);
 		}
 
 		public Default(final Component... components)
 		{
+			Args.notNull("components", components);
 			CollectionUtils.addAll(this.components, components);
 		}
 

@@ -253,9 +253,4 @@ public abstract class NetUtils
 			return false;
 		}
 	}
-
-	protected NetUtils()
-	{
-		super();
-	}
 }

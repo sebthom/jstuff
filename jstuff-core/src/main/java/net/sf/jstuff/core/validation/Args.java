@@ -108,19 +108,6 @@ public abstract class Args
 	}
 
 	/**
-	 * @throws IllegalArgumentException if string <code>value</code> is null or has a length of 0
-	 */
-	public static <T extends CharSequence> T notEmpty(final String argumentName, final T value)
-	{
-		notNull("argumentName", argumentName);
-
-		if (value == null) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
-		if (value.length() == 0)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
-		return value;
-	}
-
-	/**
 	 * @throws IllegalArgumentException if <code>value</code> collection is null or empty
 	 */
 	public static <C extends Collection< ? >> C notEmpty(final String argumentName, final C value)
@@ -141,6 +128,19 @@ public abstract class Args
 
 		if (value == null) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
 		if (value.isEmpty()) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
+		return value;
+	}
+
+	/**
+	 * @throws IllegalArgumentException if string <code>value</code> is null or has a length of 0
+	 */
+	public static <T extends CharSequence> T notEmpty(final String argumentName, final T value)
+	{
+		notNull("argumentName", argumentName);
+
+		if (value == null) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
+		if (value.length() == 0)
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
 		return value;
 	}
 
@@ -191,10 +191,5 @@ public abstract class Args
 		if (value == null) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
 
 		return value;
-	}
-
-	protected Args()
-	{
-		super();
 	}
 }

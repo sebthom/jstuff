@@ -10,48 +10,52 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.collection;
+package net.sf.jstuff.core.collection.iterator;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.ListIterator;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SingleObjectIterator<T> implements Iterator<T>, Serializable
+public class UnmodifiableListIterator<T> extends UnmodifiableIterator<T> implements ListIterator<T>
 {
 	private static final long serialVersionUID = 1L;
 
-	private T item;
-	private boolean hasNext = true;
+	private final ListIterator<T> delegate;
 
-	public SingleObjectIterator(final T item)
+	public UnmodifiableListIterator(final ListIterator<T> delegate)
 	{
-		this.item = item;
+		super(delegate);
+		this.delegate = delegate;
 	}
 
-	public boolean hasNext()
-	{
-		return hasNext;
-	}
-
-	public T next()
-	{
-		if (hasNext)
-		{
-			hasNext = false;
-			final T tmp = item;
-			// help the gc
-			item = null;
-			return tmp;
-		}
-		throw new NoSuchElementException();
-	}
-
-	public void remove()
+	public void add(final T o)
 	{
 		throw new UnsupportedOperationException();
 	}
 
+	public boolean hasPrevious()
+	{
+		return delegate.hasPrevious();
+	}
+
+	public int nextIndex()
+	{
+		return delegate.nextIndex();
+	}
+
+	public T previous()
+	{
+		return delegate.previous();
+	}
+
+	public int previousIndex()
+	{
+		return delegate.previousIndex();
+	}
+
+	public void set(final T o)
+	{
+		throw new UnsupportedOperationException();
+	}
 }

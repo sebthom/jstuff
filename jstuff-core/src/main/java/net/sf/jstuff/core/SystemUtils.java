@@ -69,9 +69,4 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils
 		}
 		return true;
 	}
-
-	protected SystemUtils()
-	{
-		super();
-	}
 }

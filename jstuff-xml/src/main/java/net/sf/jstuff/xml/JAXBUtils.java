@@ -108,9 +108,4 @@ public abstract class JAXBUtils
 			throw new XMLException(ex);
 		}
 	}
-
-	protected JAXBUtils()
-	{
-		super();
-	}
 }

@@ -18,7 +18,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ThreadUtils
+public abstract class ThreadUtils
 {
 	private static final Logger LOG = Logger.create();
 
@@ -54,10 +54,5 @@ public class ThreadUtils
 		{
 			throw new RuntimeInterruptedException(ex);
 		}
-	}
-
-	protected ThreadUtils()
-	{
-		super();
 	}
 }

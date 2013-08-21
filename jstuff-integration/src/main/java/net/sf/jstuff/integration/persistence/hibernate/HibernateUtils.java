@@ -19,9 +19,9 @@ import org.hibernate.proxy.HibernateProxy;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class HibernateUtils
+public abstract class HibernateUtils
 {
-	public boolean isInitializable(final Object object)
+	public static boolean isInitializable(final Object object)
 	{
 		if (Hibernate.isInitialized(object)) return true;
 

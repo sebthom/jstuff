@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.collection;
+package net.sf.jstuff.core.collection.iterator;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -18,35 +18,35 @@ import java.util.Iterator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class UnmodifiableIterator<T> implements Iterator<T>, Serializable
+public class ArrayIterator<T> implements Iterator<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static <T> UnmodifiableIterator<T> of(final Iterator<T> delegate)
+	public static <T> ArrayIterator<T> of(final T... array)
 	{
-		return new UnmodifiableIterator<T>(delegate);
+		return new ArrayIterator<T>(array);
 	}
 
-	private final Iterator<T> delegate;
+	private final T[] array;
+	private int currentIndex = 0;
 
-	public UnmodifiableIterator(final Iterator<T> delegate)
+	public ArrayIterator(final T... array)
 	{
-		this.delegate = delegate;
+		this.array = array;
 	}
 
 	public boolean hasNext()
 	{
-		return delegate.hasNext();
+		return currentIndex < array.length;
 	}
 
 	public T next()
 	{
-		return delegate.next();
+		return array[currentIndex++];
 	}
 
 	public void remove()
 	{
 		throw new UnsupportedOperationException();
 	}
-
 }

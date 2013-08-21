@@ -47,28 +47,6 @@ public abstract class ImageUtils
 		return gc;
 	}
 
-	@SuppressWarnings("resource")
-	public static byte[] toJPEG(final BufferedImage image) throws IOException
-	{
-		Args.notNull("image", image);
-
-		final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
-		ImageIO.write(image, "jpg", bos);
-		return bos.toByteArray();
-	}
-
-	public static BufferedImage toScaledImage(final Image image, final int width, final int height)
-	{
-		Args.notNull("image", image);
-
-		final Image scaled = image.getScaledInstance(200, 150, Image.SCALE_SMOOTH);
-		final BufferedImage scaledBuffered = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		final Graphics2D g = scaledBuffered.createGraphics();
-		g.drawImage(scaled, 0, 0, null);
-		g.dispose();
-		return scaledBuffered;
-	}
-
 	public static BufferedImage toBufferedImage(final Image image)
 	{
 		Args.notNull("image", image);
@@ -116,8 +94,25 @@ public abstract class ImageUtils
 		return ret;
 	}
 
-	protected ImageUtils()
+	@SuppressWarnings("resource")
+	public static byte[] toJPEG(final BufferedImage image) throws IOException
 	{
-		super();
+		Args.notNull("image", image);
+
+		final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
+		ImageIO.write(image, "jpg", bos);
+		return bos.toByteArray();
+	}
+
+	public static BufferedImage toScaledImage(final Image image, final int width, final int height)
+	{
+		Args.notNull("image", image);
+
+		final Image scaled = image.getScaledInstance(200, 150, Image.SCALE_SMOOTH);
+		final BufferedImage scaledBuffered = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		final Graphics2D g = scaledBuffered.createGraphics();
+		g.drawImage(scaled, 0, 0, null);
+		g.dispose();
+		return scaledBuffered;
 	}
 }

@@ -10,11 +10,13 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.collection;
+package net.sf.jstuff.core.collection.tuple;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
 import java.util.Collections;
+
+import net.sf.jstuff.core.collection.DelegatingList;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

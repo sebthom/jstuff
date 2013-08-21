@@ -122,9 +122,4 @@ public abstract class Beans extends java.beans.Beans
 			result[i] = valueOf(stringValues[i], targetTypes[i]);
 		return result;
 	}
-
-	protected Beans()
-	{
-		super();
-	}
 }

@@ -15,6 +15,8 @@ package net.sf.jstuff.core.collection;
 import java.util.Collection;
 import java.util.Iterator;
 
+import net.sf.jstuff.core.collection.iterator.EmptyIterator;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */

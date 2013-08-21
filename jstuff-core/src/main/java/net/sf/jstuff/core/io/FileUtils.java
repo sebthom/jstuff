@@ -162,9 +162,4 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	{
 		write(new File(file), data, encoding, append);
 	}
-
-	protected FileUtils()
-	{
-		super();
-	}
 }

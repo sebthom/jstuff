@@ -60,9 +60,4 @@ public abstract class FilenameUtils extends org.apache.commons.io.FilenameUtils
 	{
 		return getExtension(file.getName());
 	}
-
-	protected FilenameUtils()
-	{
-		super();
-	}
 }

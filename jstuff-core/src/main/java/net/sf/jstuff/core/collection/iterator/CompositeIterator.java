@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.collection;
+package net.sf.jstuff.core.collection.iterator;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -24,19 +24,9 @@ public class CompositeIterator<V> extends Composite.Default<Iterator< ? extends 
 {
 	private static final long serialVersionUID = 1L;
 
-	public static <V> CompositeIterator<V> of(final Collection< ? extends Iterator<V>> components)
-	{
-		return new CompositeIterator<V>(components);
-	}
+	private Iterator< ? extends V> lastItemIterator = Iterators.empty();
 
-	public static <V> CompositeIterator<V> of(final Iterator<V>... components)
-	{
-		return new CompositeIterator<V>(components);
-	}
-
-	private Iterator< ? extends V> lastItemIterator = EmptyIterator.get();
-
-	private Iterator< ? extends V> nextItemIterator = EmptyIterator.get();
+	private Iterator< ? extends V> nextItemIterator = Iterators.empty();
 
 	public CompositeIterator()
 	{

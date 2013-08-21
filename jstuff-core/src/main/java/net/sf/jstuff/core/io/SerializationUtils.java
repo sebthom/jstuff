@@ -123,9 +123,4 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 		if (exList.size() > 0) throw new SerializationException("An error occured during XML deserialization", exList.get(0));
 		return javaBean;
 	}
-
-	protected SerializationUtils()
-	{
-		super();
-	}
 }

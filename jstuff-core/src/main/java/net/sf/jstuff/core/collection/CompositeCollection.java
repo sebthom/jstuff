@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import net.sf.jstuff.core.Composite;
+import net.sf.jstuff.core.collection.iterator.CompositeIterator;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
