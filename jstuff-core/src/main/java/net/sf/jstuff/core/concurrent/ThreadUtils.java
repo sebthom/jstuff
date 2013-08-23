@@ -36,7 +36,8 @@ public abstract class ThreadUtils
 		}
 		catch (final InterruptedException ex)
 		{
-			throw new RuntimeInterruptedException(ex);
+			LOG.error("InterruptedException caught", ex);
+			Thread.currentThread().interrupt();
 		}
 	}
 
@@ -52,7 +53,28 @@ public abstract class ThreadUtils
 		}
 		catch (final InterruptedException ex)
 		{
-			throw new RuntimeInterruptedException(ex);
+			LOG.error("InterruptedException caught", ex);
+			Thread.currentThread().interrupt();
+		}
+	}
+
+	/**
+	 * Handles InterruptedException correctly.
+	 */
+	public static void wait(final Object obj, final long millis) throws RuntimeInterruptedException
+	{
+		try
+		{
+			LOG.trace("Waiting for %s ms...", millis);
+			synchronized (obj)
+			{
+				obj.wait(millis);
+			}
+		}
+		catch (final InterruptedException ex)
+		{
+			LOG.error("InterruptedException caught", ex);
+			Thread.currentThread().interrupt();
 		}
 	}
 }
