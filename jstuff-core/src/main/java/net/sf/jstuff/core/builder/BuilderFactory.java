@@ -15,25 +15,38 @@ package net.sf.jstuff.core.builder;
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.sf.jstuff.core.reflection.Annotations;
+import net.sf.jstuff.core.reflection.InvokingMethodFailedException;
+import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.Proxies;
 import net.sf.jstuff.core.reflection.Types;
+import net.sf.jstuff.core.reflection.visitor.DefaultClassVisitor;
 import net.sf.jstuff.core.validation.Args;
 
-import org.apache.commons.lang3.reflect.TypeUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class BuilderFactory<TARGET_TYPE, BUILDER extends Builder<TARGET_TYPE>>
+public class BuilderFactory<TARGET_TYPE, BUILDER extends Builder< ? extends TARGET_TYPE>>
 {
-	public static <TARGET_TYPE, BUILDER extends Builder<TARGET_TYPE>> BuilderFactory<TARGET_TYPE, BUILDER> create(
-			final Class<BUILDER> builderInterface, final Object... constructorArgs)
+	/**
+	 * @param builderInterface
+	 * @param targetClass if null builder factory tries to extract the generic argument type information from the builderInterface class
+	 * @param constructorArgs
+	 */
+	public static//
+	<TARGET_TYPE, BUILDER extends Builder< ? extends TARGET_TYPE>> //
+	BuilderFactory<TARGET_TYPE, BUILDER> of(final Class<BUILDER> builderInterface, final Class<TARGET_TYPE> targetClass,
+			final Object... constructorArgs)
 	{
-		return new BuilderFactory<TARGET_TYPE, BUILDER>(builderInterface, constructorArgs);
+		return new BuilderFactory<TARGET_TYPE, BUILDER>(builderInterface, targetClass, constructorArgs);
 	}
 
 	private final Class<BUILDER> builderInterface;
@@ -41,18 +54,24 @@ public class BuilderFactory<TARGET_TYPE, BUILDER extends Builder<TARGET_TYPE>>
 	private final Object[] constructorArgs;
 
 	@SuppressWarnings("unchecked")
-	protected BuilderFactory(final Class<BUILDER> builderInterface, final Object... constructorArgs)
+	protected BuilderFactory(final Class<BUILDER> builderInterface, final Class<TARGET_TYPE> targetClass, final Object... constructorArgs)
 	{
 		Args.notNull("builderInterface", builderInterface);
 		if (!builderInterface.isInterface()) throw new IllegalArgumentException("[builderInterface] must be an interface!");
 
 		this.builderInterface = builderInterface;
-		targetClass = (Class<TARGET_TYPE>) TypeUtils.getTypeArguments(builderInterface, Builder.class).values().iterator().next();
+
+		this.targetClass = targetClass == null ? (Class<TARGET_TYPE>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0]
+				: targetClass;
+
+		if (targetClass == null) throw new IllegalArgumentException("Target class is not specified.");
+		if (targetClass.isInterface()) throw new IllegalArgumentException("Target class [" + targetClass.getName() + "] is an interface.");
+		if (Types.isAbstract(targetClass)) throw new IllegalArgumentException("Target class [" + targetClass.getName() + "] is abstract.");
 
 		this.constructorArgs = constructorArgs;
 	}
 
-	public BUILDER build()
+	public BUILDER create()
 	{
 		return Proxies.create(builderInterface, new InvocationHandler()
 			{
@@ -66,6 +85,49 @@ public class BuilderFactory<TARGET_TYPE, BUILDER extends Builder<TARGET_TYPE>>
 						final TARGET_TYPE target = Types.newInstance(targetClass, constructorArgs);
 						for (final Entry<String, Object> property : properties.entrySet())
 							Types.writeProperty(target, property.getKey(), property.getValue());
+
+						// collecting @OnPostBuild methods
+						final List<Method> onPostBuilds = newArrayList(2);
+						Types.visit(targetClass, new DefaultClassVisitor()
+							{
+								@Override
+								public boolean isVisitingFields(final Class< ? > clazz)
+								{
+									return false;
+								}
+
+								@Override
+								public boolean isVisitingInterfaces(final Class< ? > clazz)
+								{
+									return false;
+								}
+
+								@Override
+								public boolean isVisitingMethod(final Method method)
+								{
+									return !Methods.isAbstract(method) && !Methods.isStatic(method)
+											&& Annotations.exists(method, OnPostBuild.class, false);
+								}
+
+								@Override
+								public boolean visit(final Method method)
+								{
+									onPostBuilds.add(method);
+									return true;
+								}
+							});
+
+						// invoking @OnPostBuild methods
+						for (int i = onPostBuilds.size() - 1; i >= 0; i--)
+							try
+							{
+								Methods.invoke(target, onPostBuilds.get(i), ArrayUtils.EMPTY_OBJECT_ARRAY);
+							}
+							catch (final InvokingMethodFailedException ex)
+							{
+								if (ex.getCause() instanceof InvocationTargetException) throw (RuntimeException) ex.getCause().getCause();
+								throw ex;
+							}
 						return target;
 					}
 
@@ -74,8 +136,6 @@ public class BuilderFactory<TARGET_TYPE, BUILDER extends Builder<TARGET_TYPE>>
 
 					if (method.getParameterTypes().length == 1 && method.getReturnType().isAssignableFrom(builderInterface))
 					{
-						if (args[0] == null)
-							throw new IllegalArgumentException("Value for builder property [" + method.getName() + "] must not be null!");
 						properties.put(method.getName(), args[0]);
 						return proxy;
 					}

@@ -10,21 +10,32 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.reflection;
+package net.sf.jstuff.core.reflection.visitor;
 
-import junit.framework.TestCase;
+import java.lang.reflect.ParameterizedType;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TypesTest extends TestCase
+public class DefaultVisitorWithTypeArguments implements ClassVisitorWithTypeArguments
 {
-
-	public void testIsAssignableTo()
+	public boolean isVisiting(final Class< ? > clazz, final ParameterizedType type)
 	{
-		assertTrue(Types.isAssignableTo(Integer.class, Number.class));
-		assertFalse(Types.isAssignableTo(Number.class, Integer.class));
-		assertTrue(Types.isAssignableTo(String.class, Object.class));
+		return true;
 	}
 
+	public boolean isVisitingInterfaces(final Class< ? > clazz, final ParameterizedType type)
+	{
+		return true;
+	}
+
+	public boolean isVisitingSuperclass(final Class< ? > clazz, final ParameterizedType type)
+	{
+		return true;
+	}
+
+	public boolean visit(final Class< ? > clazz, final ParameterizedType type)
+	{
+		return true;
+	}
 }

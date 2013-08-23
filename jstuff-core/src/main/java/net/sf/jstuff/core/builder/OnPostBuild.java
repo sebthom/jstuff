@@ -10,21 +10,16 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.reflection;
+package net.sf.jstuff.core.builder;
 
-import junit.framework.TestCase;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TypesTest extends TestCase
+@Retention(RetentionPolicy.RUNTIME)
+public @interface OnPostBuild
 {
-
-	public void testIsAssignableTo()
-	{
-		assertTrue(Types.isAssignableTo(Integer.class, Number.class));
-		assertFalse(Types.isAssignableTo(Number.class, Integer.class));
-		assertTrue(Types.isAssignableTo(String.class, Object.class));
-	}
 
 }

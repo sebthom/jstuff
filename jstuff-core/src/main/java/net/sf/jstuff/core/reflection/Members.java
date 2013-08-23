@@ -50,6 +50,13 @@ public abstract class Members
 		if (!ao.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(ao));
 	}
 
+	public static boolean isAbstract(final Member member)
+	{
+		Args.notNull("member", member);
+
+		return (member.getModifiers() & Modifier.ABSTRACT) != 0;
+	}
+
 	public static boolean isFinal(final Member member)
 	{
 		Args.notNull("member", member);

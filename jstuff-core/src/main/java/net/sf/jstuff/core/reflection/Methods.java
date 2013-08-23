@@ -66,7 +66,7 @@ public class Methods extends Members
 		if (compatibleTo == Boolean.class || compatibleTo == boolean.class) try
 		{
 			final Method getter = clazz.getDeclaredMethod("is" + appendix);
-			if (Types.isCastable(getter.getReturnType(), compatibleTo)) return getter;
+			if (Types.isAssignableTo(getter.getReturnType(), compatibleTo)) return getter;
 		}
 		catch (final NoSuchMethodException ex)
 		{}
@@ -77,7 +77,7 @@ public class Methods extends Members
 			if (getter != null)
 			{
 				if (compatibleTo == null) return getter;
-				if (Types.isCastable(getter.getReturnType(), compatibleTo)) return getter;
+				if (Types.isAssignableTo(getter.getReturnType(), compatibleTo)) return getter;
 			}
 		}
 		catch (final NoSuchMethodException ex)
@@ -143,7 +143,7 @@ public class Methods extends Members
 			if (!isStatic(method) && methodName.equals(method.getName()) && method.getParameterTypes().length == 1)
 			{
 				if (compatibleTo == null) return method;
-				if (Types.isCastable(compatibleTo, method.getParameterTypes()[0])) return method;
+				if (Types.isAssignableTo(compatibleTo, method.getParameterTypes()[0])) return method;
 			}
 		LOG.trace("No setter for [%s] found in class [%s] comaptible to [%s].", propertyName, clazz, compatibleTo);
 		return null;
@@ -284,7 +284,7 @@ public class Methods extends Members
 
 		if (methodParameterTypes.length != 1) return false;
 
-		if (!isReturningVoid(method) && !Types.isCastable(method.getReturnType(), method.getDeclaringClass())) return false;
+		if (!isReturningVoid(method) && !Types.isAssignableTo(method.getReturnType(), method.getDeclaringClass())) return false;
 
 		final String methodName = method.getName();
 
@@ -296,4 +296,5 @@ public class Methods extends Members
 
 		return true;
 	}
+
 }

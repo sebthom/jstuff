@@ -40,7 +40,7 @@ public abstract class Fields extends Members
 	}
 
 	/**
-	 * @param compatibleTo the field type must be a super class or interface of <code>compatibleTo</code>
+	 * @param compatibleTo the field type must assignable from this type, i.e. objects of type <code>compatibleTo</code> must be assignable to the field
 	 * @return the field or null if the field does not exist
 	 */
 	public static Field find(final Class< ? > clazz, final String fieldName, final Class< ? > compatibleTo)
@@ -52,7 +52,7 @@ public abstract class Fields extends Members
 		{
 			final Field field = clazz.getDeclaredField(fieldName);
 			if (compatibleTo == null) return field;
-			if (Types.isCastable(compatibleTo, field.getType())) return field;
+			if (Types.isAssignableTo(compatibleTo, field.getType())) return field;
 		}
 		catch (final NoSuchFieldException ex)
 		{}

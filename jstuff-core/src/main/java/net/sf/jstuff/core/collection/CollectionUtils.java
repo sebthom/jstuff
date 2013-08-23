@@ -134,6 +134,18 @@ public abstract class CollectionUtils
 		return count;
 	}
 
+	/**
+	 * Returns true if the given item is contained in the collection based on identity comparison
+	 */
+	public static <T> boolean containsSame(final Collection<T> coll, final T theItem)
+	{
+		Args.notNull("coll", coll);
+
+		for (final T t : coll)
+			if (t == theItem) return true;
+		return false;
+	}
+
 	public static <K, V> MapDiff<K, V> diff(final Map<K, V> leftMap, final Map<K, V> rightMap)
 	{
 		return diff(leftMap, rightMap, IsEqual.DEFAULT);
@@ -293,8 +305,7 @@ public abstract class CollectionUtils
 			final Object... moreInitialKeysAndValues)
 	{
 		final HashMap<K, V> m = new HashMap<K, V>(1 + moreInitialKeysAndValues.length / 2);
-		m.put(firstKey, firstValue);
-		return putAll(m, moreInitialKeysAndValues);
+		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
 	}
 
 	public static <K, V> HashMap<K, V> newHashMap(final Map< ? extends K, ? extends V> initialValues)
@@ -304,8 +315,8 @@ public abstract class CollectionUtils
 
 	public static <K, V> HashMap<K, V> newHashMap(final Object[] initialKeysAndValues)
 	{
-		return initialKeysAndValues == null ? new HashMap<K, V>() : putAll(new HashMap<K, V>(1 + initialKeysAndValues.length / 2),
-				initialKeysAndValues);
+		if (initialKeysAndValues == null) return new HashMap<K, V>();
+		return putAll(new HashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
 	}
 
 	public static <K> HashSet<K> newHashSet()
@@ -345,8 +356,7 @@ public abstract class CollectionUtils
 			final Object... moreInitialKeysAndValues)
 	{
 		final LinkedHashMap<K, V> m = new LinkedHashMap<K, V>(1 + moreInitialKeysAndValues.length / 2);
-		m.put(firstKey, firstValue);
-		return putAll(m, moreInitialKeysAndValues);
+		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
 	}
 
 	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final Object[] initialKeysAndValues)
@@ -458,8 +468,7 @@ public abstract class CollectionUtils
 			final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues)
 	{
 		final TreeMap<K, V> m = new TreeMap<K, V>(keyComparator);
-		m.put(firstKey, firstValue);
-		return putAll(m, moreInitialKeysAndValues);
+		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
 	}
 
 	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator,
@@ -473,14 +482,52 @@ public abstract class CollectionUtils
 			final Object... moreInitialKeysAndValues)
 	{
 		final TreeMap<K, V> m = new TreeMap<K, V>();
-		m.put(firstKey, firstValue);
-		return putAll(m, moreInitialKeysAndValues);
+		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
+	}
+
+	public static <K, V, M extends Map<K, V>> M putAll(final M map, final K[] keys, final V[] values)
+	{
+		Args.notNull("map", map);
+		Args.notNull("keys", keys);
+		Args.notNull("values", values);
+
+		if (keys.length != values.length)
+			throw new IllegalArgumentException("Arguments [keys] and [values] must have the same array size.");
+
+		for (int i = 0; i < keys.length; i++)
+			map.put(keys[i], values[i]);
+		return map;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <K, V, T extends Map<K, V>> T putAll(final T map, final Object... keysAndValues)
+	public static <K, V, KK extends K, VV extends V, M extends Map<K, V>> M putAll(final M map, final KK firstKey, final VV firstValue,
+			final Object... moreInitialKeysAndValues)
 	{
 		Args.notNull("map", map);
+
+		map.put(firstKey, firstValue);
+
+		boolean nextIsValue = false;
+		K key = null;
+		for (final Object obj : moreInitialKeysAndValues)
+			if (nextIsValue)
+			{
+				map.put(key, (V) obj);
+				nextIsValue = false;
+			}
+			else
+			{
+				key = (K) obj;
+				nextIsValue = true;
+			}
+		return map;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <K, V, M extends Map<K, V>> M putAll(final M map, final Object[] keysAndValues)
+	{
+		Args.notNull("map", map);
+		Args.notNull("keysAndValues", keysAndValues);
 
 		boolean nextIsValue = false;
 		K key = null;
