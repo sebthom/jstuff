@@ -26,7 +26,7 @@ import java.util.List;
 
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
-import net.sf.jstuff.core.concurrent.ThreadUtils;
+import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -165,7 +165,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 				LOG.trace("One of %s was found in stream %s", searchFor, is);
 				break;
 			}
-			ThreadUtils.sleep(100);
+			Threads.sleep(100);
 		}
 		return result;
 	}

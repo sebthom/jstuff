@@ -74,7 +74,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/comparator/UnmodifiableComparator.j
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/BoundedThreadPoolExecutor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/HashLockManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/RuntimeInterruptedException.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/ThreadUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/Threads.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/DateUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/Day.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/ImmutableDate.java -text

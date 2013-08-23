@@ -46,7 +46,7 @@ public class HashLockManagerTest extends TestCase
 									public void run()
 									{
 										count++;
-										ThreadUtils.sleep(1);
+										Threads.sleep(1);
 									}
 								});
 					}
@@ -70,7 +70,7 @@ public class HashLockManagerTest extends TestCase
 						for (int i = 0; i < INCREASE_BY; i++)
 						{
 							count++;
-							ThreadUtils.sleep(1);
+							Threads.sleep(1);
 						}
 					}
 				});

@@ -18,7 +18,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class ThreadUtils
+public abstract class Threads
 {
 	private static final Logger LOG = Logger.create();
 
