@@ -30,9 +30,11 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.reflection.visitor.ClassVisitor;
 import net.sf.jstuff.core.reflection.visitor.ClassVisitorWithTypeArguments;
 import net.sf.jstuff.core.validation.Args;
@@ -59,14 +61,23 @@ public class Types
 
 		return Proxies.create(objectInterface, new InvocationHandler()
 			{
+				final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<Method, Tuple2<Object, Method>>();
+
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{
-					for (final Object mixin : mixins)
+					Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
+					if (mixedInMethod == null) for (final Object mixin : mixins)
 					{
 						final Method methodImpl = Methods.findRecursive(mixin.getClass(), method.getName(), method.getParameterTypes());
-						if (methodImpl != null) return Methods.invoke(mixin, methodImpl, args);
+						if (methodImpl != null)
+						{
+							mixedInMethod = Tuple2.create(mixin, methodImpl);
+							mappedMethodsCache.put(method, mixedInMethod);
+							break;
+						}
 					}
-					throw new UnsupportedOperationException("Method is not implemented.");
+					if (mixedInMethod == null) throw new UnsupportedOperationException("Method is not implemented.");
+					return Methods.invoke(mixedInMethod.get1(), mixedInMethod.get2(), args);
 				}
 			});
 	}
