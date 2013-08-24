@@ -17,65 +17,87 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
+import net.sf.jstuff.core.Logger;
+
+import org.apache.commons.lang3.time.StopWatch;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class HashLockManagerTest extends TestCase
 {
-	private int count;
+	private static Logger LOG = Logger.create();
 
 	private static final int THREADS = 20;
-	private static final int INCREASE_BY = 500;
+	private static final int ITERATIONS_PER_THREAD = 2500;
 
 	private final ExecutorService es = Executors.newFixedThreadPool(THREADS);
+	private int sum = -1;
 
-	private final HashLockManager lockManager = new HashLockManager();
+	final Runnable calculation = new Runnable()
+		{
+			public void run()
+			{
+				sum++;
+				sum = sum * 2;
+				sum = sum / 2;
+			}
+		};
 
 	public void testWithHashLockManager() throws InterruptedException
 	{
-		count = 0;
+		final HashLockManager<String> lockManager = new HashLockManager<String>(100, TimeUnit.MILLISECONDS);
+
+		final StopWatch sw = new StopWatch();
+		sw.start();
+		sum = 0;
 		for (int i = 0; i < THREADS; i++)
 			es.execute(new Runnable()
 				{
+					// intentionally generated new object to proof synchronization is not based on lock identity but hashcode identity
+					final String NAMED_LOCK = new String("MY_LOCK");
+
 					public void run()
 					{
-						for (int i = 0; i < INCREASE_BY; i++)
-							lockManager.doWriteLocked(new String("MY_LOCK"), new Runnable()
-								{
-									public void run()
-									{
-										count++;
-										Threads.sleep(1);
-									}
-								});
+						for (int i = 0; i < ITERATIONS_PER_THREAD; i++)
+							lockManager.doWriteLocked(NAMED_LOCK, calculation);
 					}
 				});
-		Thread.sleep(10);
+		Thread.sleep(100);
 		assertEquals(1, lockManager.getLockCount());
 		es.shutdown();
-		es.awaitTermination(30, TimeUnit.SECONDS);
-		assertEquals(THREADS * INCREASE_BY, count);
+		es.awaitTermination(60, TimeUnit.SECONDS);
+		sw.stop();
+		LOG.info(THREADS * ITERATIONS_PER_THREAD + " thread-safe iterations took " + sw + " sum=" + sum);
+		assertEquals(THREADS * ITERATIONS_PER_THREAD, sum);
+		Threads.sleep(200); // wait for cleanup thread
 		assertEquals(0, lockManager.getLockCount());
 	}
 
 	public void testWithoutHashLockManager() throws InterruptedException
 	{
-		count = 0;
+		final StopWatch sw = new StopWatch();
+		sw.start();
+		sum = 0;
 		for (int i = 0; i < THREADS; i++)
 			es.execute(new Runnable()
 				{
+					final String NAMED_LOCK = new String("MY_LOCK");
+
 					public void run()
 					{
-						for (int i = 0; i < INCREASE_BY; i++)
-						{
-							count++;
-							Threads.sleep(1);
-						}
+						for (int i = 0; i < ITERATIONS_PER_THREAD; i++)
+							// this synchronization of course has no effect since the lock object is a different string instance for each thread
+							synchronized (NAMED_LOCK)
+							{
+								calculation.run();
+							}
 					}
 				});
 		es.shutdown();
-		es.awaitTermination(30, TimeUnit.SECONDS);
-		assertFalse(count == THREADS * INCREASE_BY);
+		es.awaitTermination(60, TimeUnit.SECONDS);
+		sw.stop();
+		LOG.info(THREADS * ITERATIONS_PER_THREAD + " thread-unsafe iterations took " + sw + " sum=" + sum);
+		assertFalse(sum == THREADS * ITERATIONS_PER_THREAD);
 	}
 }

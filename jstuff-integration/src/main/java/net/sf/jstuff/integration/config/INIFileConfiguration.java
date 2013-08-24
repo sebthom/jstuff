@@ -12,10 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.config;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.newArrayList;
-import static net.sf.jstuff.core.collection.CollectionUtils.toIterable;
-import static net.sf.jstuff.core.collection.CollectionUtils.toList;
-import static net.sf.jstuff.core.collection.CollectionUtils.transform;
+import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,6 +23,7 @@ import java.io.Writer;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +31,6 @@ import java.util.TreeSet;
 
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.ArrayUtils;
-import net.sf.jstuff.core.collection.LinkedSet;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.functional.Function;
 import net.sf.jstuff.core.functional.Functions;
@@ -53,7 +50,7 @@ import org.apache.commons.configuration.ConfigurationException;
  */
 public class INIFileConfiguration extends AbstractFileConfiguration
 {
-	private final Set<String> loadedSections = new LinkedSet<String>();
+	private final Set<String> loadedSections = new LinkedHashSet<String>();
 	private final Map<String, List<String>> comments = new HashMap<String, List<String>>();
 	private final Map<String, String> inlineComments = new HashMap<String, String>();
 
@@ -139,7 +136,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration
 
 	public Set<String> getSections()
 	{
-		final Set<String> sections = isAutoSort ? new TreeSet<String>() : new LinkedSet<String>();
+		final Set<String> sections = isAutoSort ? new TreeSet<String>() : new LinkedHashSet<String>();
 		sections.addAll(loadedSections);
 
 		// this will result in new sections being added to the end of the file

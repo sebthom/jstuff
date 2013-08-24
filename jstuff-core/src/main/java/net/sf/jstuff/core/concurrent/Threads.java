@@ -61,6 +61,23 @@ public abstract class Threads
 	/**
 	 * Handles InterruptedException correctly.
 	 */
+	public static void sleep(final long millis, final int nanos) throws RuntimeInterruptedException
+	{
+		try
+		{
+			LOG.trace("Sending current thread to sleep for %s ms %s nanos...", millis, nanos);
+			Thread.sleep(millis, nanos);
+		}
+		catch (final InterruptedException ex)
+		{
+			LOG.error("InterruptedException caught", ex);
+			Thread.currentThread().interrupt();
+		}
+	}
+
+	/**
+	 * Handles InterruptedException correctly.
+	 */
 	public static void wait(final Object obj, final long millis) throws RuntimeInterruptedException
 	{
 		try

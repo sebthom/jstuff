@@ -14,8 +14,8 @@ package net.sf.jstuff.core;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
@@ -29,8 +29,6 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class GCTracker<Event> implements EventListenable<Event>
 {
-	private static final Logger LOG = Logger.create();
-
 	private static final class GCReference<Event> extends WeakReference<Object>
 	{
 		private final Object eventToFireOnGC;
@@ -43,6 +41,8 @@ public class GCTracker<Event> implements EventListenable<Event>
 			this.tracker = tracker;
 		}
 	}
+
+	private static final Logger LOG = Logger.create();
 
 	private static Thread CLEANUP_THREAD = new Thread()
 		{
@@ -63,10 +63,7 @@ public class GCTracker<Event> implements EventListenable<Event>
 						GCReference<Object> ref;
 						while ((ref = (GCReference<Object>) garbageCollectedRefs.remove()) != null)
 						{
-							synchronized (ref.tracker.monitoredReferences)
-							{
-								ref.tracker.monitoredReferences.remove(ref);
-							}
+							ref.tracker.monitoredReferences.remove(ref);
 							try
 							{
 								ref.tracker.onGCEvent(ref.eventToFireOnGC);
@@ -89,9 +86,9 @@ public class GCTracker<Event> implements EventListenable<Event>
 	private final EventManager<Event> events = new EventManager<Event>();
 
 	/**
-	 * list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage collected
+	 * synchronized list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage collected
 	 */
-	private final List<GCReference<Event>> monitoredReferences = new ArrayList<GCReference<Event>>(128);
+	private final List<GCReference<Event>> monitoredReferences = new Vector<GCReference<Event>>(128);
 
 	public GCTracker()
 	{
@@ -101,14 +98,14 @@ public class GCTracker<Event> implements EventListenable<Event>
 		}
 	}
 
-	public <EventType extends Event> boolean subscribe(final EventListener<EventType> listener)
-	{
-		return events.subscribe(listener);
-	}
-
 	protected void onGCEvent(final Event event)
 	{
 		events.fire(event);
+	}
+
+	public <EventType extends Event> boolean subscribe(final EventListener<EventType> listener)
+	{
+		return events.subscribe(listener);
 	}
 
 	/**
@@ -122,11 +119,7 @@ public class GCTracker<Event> implements EventListenable<Event>
 		if (target == eventToFireOnGC)
 			throw new IllegalArgumentException(
 					"eventToFireOnGC callback cannot be the same as the target, this avoids garbage collection of target.");
-		final GCReference<Event> ref = new GCReference<Event>(target, eventToFireOnGC, this);
-		synchronized (monitoredReferences)
-		{
-			monitoredReferences.add(ref);
-		}
+		monitoredReferences.add(new GCReference<Event>(target, eventToFireOnGC, this));
 	}
 
 	public <EventType extends Event> boolean unsubscribe(final EventListener<EventType> listener)

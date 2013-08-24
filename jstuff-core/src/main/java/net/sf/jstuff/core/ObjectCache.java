@@ -15,9 +15,9 @@ package net.sf.jstuff.core;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Thread-safe in-memory object cache.
@@ -65,7 +65,7 @@ public final class ObjectCache<K, V>
 		}
 	}
 
-	private final Map<K, ValueReference<K, V>> cache = new HashMap<K, ValueReference<K, V>>();
+	private final ConcurrentMap<K, ValueReference<K, V>> cache = new ConcurrentHashMap<K, ValueReference<K, V>>();
 	private final ReferenceQueue<V> garbageCollectedRefs = new ReferenceQueue<V>();
 	private final int maxObjectsToKeep;
 
@@ -78,13 +78,11 @@ public final class ObjectCache<K, V>
 	private final boolean useWeakReferences;
 
 	/**
-	 * Creates a new cache keeping all objects.
+	 * Creates a new cache where all cached objects are soft-referenced (i.e. only garbage collected if JVM needs to free memory)
 	 */
 	public ObjectCache()
 	{
-		maxObjectsToKeep = -1;
-		mru = null;
-		useWeakReferences = false;
+		this(-1, false);
 	}
 
 	public ObjectCache(final boolean useWeakValueReferences)
@@ -106,19 +104,16 @@ public final class ObjectCache<K, V>
 	public ObjectCache(final int maxObjectsToKeep, final boolean useWeakValueReferences)
 	{
 		this.maxObjectsToKeep = maxObjectsToKeep;
-		mru = new LinkedList<V>();
+		mru = maxObjectsToKeep > -1 ? new LinkedList<V>() : null;
 		this.useWeakReferences = useWeakValueReferences;
 	}
 
 	public boolean contains(final K key)
 	{
-		synchronized (cache)
-		{
-			expungeStaleEntries();
-			final ValueReference<K, V> ref = cache.get(key);
-			if (ref == null) return false;
-			return ref.get() != null;
-		}
+		expungeStaleEntries();
+		final ValueReference<K, V> ref = cache.get(key);
+		if (ref == null) return false;
+		return ref.get() != null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -126,36 +121,31 @@ public final class ObjectCache<K, V>
 	{
 		ValueReference<K, V> ref;
 		while ((ref = (ValueReference<K, V>) garbageCollectedRefs.poll()) != null)
-		{
-			final ValueReference<K, V> currentRefObject = cache.get(ref.getKey());
-			if (currentRefObject != null && currentRefObject.get() == null) cache.remove(ref.getKey());
-		}
+			cache.remove(ref.getKey(), ref);
 	}
 
 	public V get(final K key)
 	{
-		synchronized (cache)
-		{
-			expungeStaleEntries();
-			final ValueReference<K, V> ref = cache.get(key);
-			if (ref != null)
-			{
-				final V value = ref.get();
+		expungeStaleEntries();
+		final ValueReference<K, V> ref = cache.get(key);
+		if (ref == null) return null;
 
-				if (value == null)
-					cache.remove(key);
-				else
-				// udate mru list
-				if (maxObjectsToKeep > 0) if (mru.size() == 0 || value != mru.getFirst())
-				{
-					mru.remove(value);
-					mru.addFirst(value);
-					if (mru.size() > maxObjectsToKeep) mru.removeLast();
-				}
-				return ref.get();
-			}
+		final V value = ref.get();
+
+		if (value == null)
+		{
+			cache.remove(key, ref);
 			return null;
 		}
+
+		// update MRU list
+		if (maxObjectsToKeep > 0) if (mru.size() == 0 || value != mru.getFirst())
+		{
+			mru.remove(value);
+			mru.addFirst(value);
+			if (mru.size() > maxObjectsToKeep) mru.removeLast();
+		}
+		return value;
 	}
 
 	public int getMaxObjectsToKeep()
@@ -165,20 +155,14 @@ public final class ObjectCache<K, V>
 
 	public void put(final K key, final V value)
 	{
-		final ValueReference<K, V> ref = useWeakReferences ? new WeakValueReference<K, V>(key, value, garbageCollectedRefs)
-				: new SoftValueReference<K, V>(key, value, garbageCollectedRefs);
-
-		synchronized (cache)
-		{
-			cache.put(key, ref);
-		}
+		cache.put(key, useWeakReferences ? //
+				new WeakValueReference<K, V>(key, value, garbageCollectedRefs) : //
+				new SoftValueReference<K, V>(key, value, garbageCollectedRefs) //
+		);
 	}
 
 	public void remove(final K key)
 	{
-		synchronized (cache)
-		{
-			cache.remove(key);
-		}
+		cache.remove(key);
 	}
 }

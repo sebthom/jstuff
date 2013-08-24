@@ -14,6 +14,7 @@ package net.sf.jstuff.core.collection;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -49,18 +50,29 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V>
 	}
 
 	@Override
-	public boolean equals(final Object obj)
+	public boolean equals(final Object obi)
 	{
-		if (obj == null) return false;
-		if (obj.getClass() != this.getClass()) return false;
-		@SuppressWarnings("unchecked")
-		final CompositeSet<V> other = (CompositeSet<V>) obj;
-		return getSnapshot().equals(other.getSnapshot());
+		if (obi == this) return true;
+		if (!(obi instanceof Set)) return false;
+		final Collection< ? > c = (Collection< ? >) obi;
+		if (c.size() != size()) return false;
+		try
+		{
+			return containsAll(c);
+		}
+		catch (final ClassCastException ignore)
+		{
+			return false;
+		}
+		catch (final NullPointerException ignore)
+		{
+			return false;
+		}
 	}
 
 	private Set<V> getSnapshot()
 	{
-		final LinkedSet<V> values = new LinkedSet<V>();
+		final LinkedHashSet<V> values = new LinkedHashSet<V>();
 		for (final Collection< ? extends V> coll : components)
 			values.addAll(coll);
 		return values;
@@ -69,7 +81,11 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V>
 	@Override
 	public int hashCode()
 	{
-		return getSnapshot().hashCode();
+		int h = 0;
+
+		for (final V obj : this)
+			if (obj != null) h += obj.hashCode();
+		return h;
 	}
 
 	@Override

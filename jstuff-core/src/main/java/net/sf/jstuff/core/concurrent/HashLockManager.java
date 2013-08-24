@@ -12,10 +12,18 @@
  *******************************************************************************/
 package net.sf.jstuff.core.concurrent;
 
+import java.lang.ref.WeakReference;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.validation.Args;
 
@@ -27,23 +35,62 @@ import net.sf.jstuff.core.validation.Args;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class HashLockManager
+public class HashLockManager<T>
 {
-
-	/**
-	 * @return true if any thread uses this lock
-	 */
-	private static boolean isLockInUse(final ReentrantReadWriteLock lock)
+	private static class CleanUpTask<T> implements Runnable
 	{
-		return lock.isWriteLocked() || lock.getReadLockCount() > 0 || lock.hasQueuedThreads();
+		private static final Logger LOG = Logger.create();
+
+		private final WeakReference<HashLockManager<T>> ref;
+		private ScheduledFuture< ? > future;
+
+		public CleanUpTask(final HashLockManager<T> mgr)
+		{
+			ref = new WeakReference<HashLockManager<T>>(mgr);
+		}
+
+		public void run()
+		{
+			final HashLockManager<T> mgr = ref.get();
+			if (mgr == null)
+			{
+				future.cancel(true);
+				return;
+			}
+
+			try
+			{
+				for (final Iterator<Entry<T, ReentrantReadWriteLock>> it = mgr.locksByKey.entrySet().iterator(); it.hasNext();)
+				{
+					final ReentrantReadWriteLock lock = it.next().getValue();
+					synchronized (lock)
+					{
+						final boolean isLockInUse = lock.isWriteLocked() || lock.getReadLockCount() > 0 || lock.hasQueuedThreads();
+						if (!isLockInUse) it.remove();
+					}
+				}
+			}
+			catch (final Exception ex)
+			{
+				LOG.error("Unexpected exception occured while cleaning lock objects.", ex);
+			}
+		}
 	}
 
-	private final ConcurrentHashMap<Object, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<Object, ReentrantReadWriteLock>();
+	private static final ScheduledExecutorService CLEANUP_THREAD = Executors.newSingleThreadScheduledExecutor();
+
+	private final ConcurrentHashMap<T, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<T, ReentrantReadWriteLock>();
+
+	public HashLockManager(final long lockCleanupInterval, final TimeUnit unit)
+	{
+		final CleanUpTask<T> cleanup = new CleanUpTask<T>(this);
+		cleanup.future = CLEANUP_THREAD.scheduleAtFixedRate(cleanup, lockCleanupInterval, lockCleanupInterval, unit);
+	}
 
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public <V> V doReadLocked(final Object key, final Callable<V> callable) throws Exception
+	public <V> V doReadLocked(final T key, final Callable<V> callable) throws Exception
 	{
 		Args.notNull("key", key);
 		Args.notNull("callable", callable);
@@ -62,7 +109,7 @@ public class HashLockManager
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public <R, A> R doReadLocked(final Object key, final Invocable<R, A> invocable, final A arguments) throws Exception
+	public <R, A> R doReadLocked(final T key, final Invocable<R, A> invocable, final A arguments) throws Exception
 	{
 		Args.notNull("key", key);
 		Args.notNull("invocable", invocable);
@@ -81,7 +128,7 @@ public class HashLockManager
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public void doReadLocked(final Object key, final Runnable runnable)
+	public void doReadLocked(final T key, final Runnable runnable)
 	{
 		Args.notNull("key", key);
 		Args.notNull("runnable", runnable);
@@ -100,7 +147,7 @@ public class HashLockManager
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public <V> V doWriteLocked(final Object key, final Callable<V> callable) throws Exception
+	public <V> V doWriteLocked(final T key, final Callable<V> callable) throws Exception
 	{
 		Args.notNull("key", key);
 		Args.notNull("callable", callable);
@@ -119,7 +166,7 @@ public class HashLockManager
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public <R, A> R doWriteLocked(final Object key, final Invocable<R, A> invocable, final A arguments) throws Exception
+	public <R, A> R doWriteLocked(final T key, final Invocable<R, A> invocable, final A arguments) throws Exception
 	{
 		Args.notNull("key", key);
 		Args.notNull("invocable", invocable);
@@ -138,7 +185,7 @@ public class HashLockManager
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public void doWriteLocked(final Object key, final Runnable runnable)
+	public void doWriteLocked(final T key, final Runnable runnable)
 	{
 		Args.notNull("key", key);
 		Args.notNull("runnable", runnable);
@@ -160,36 +207,34 @@ public class HashLockManager
 	}
 
 	/**
-	 * Get's the existing lock object or creates a new one if none exists.
-	 * @param key the lock name/identifier
-	 */
-	private ReentrantReadWriteLock getOrCreateLock(final Object key)
-	{
-		ReentrantReadWriteLock lock = locksByKey.get(key);
-		if (lock == null)
-		{
-			final ReentrantReadWriteLock newLock = new ReentrantReadWriteLock(true);
-			lock = locksByKey.putIfAbsent(key, newLock);
-			if (lock == null) lock = newLock;
-		}
-		return lock;
-	}
-
-	/**
 	 * Acquires a non-exclusive read lock with a key equal to <code>key</code> for the current thread
 	 * @param key the lock name/identifier
 	 */
-	public void lockRead(final Object key)
+	public void lockRead(final T key)
 	{
 		Args.notNull("key", key);
 
-		final ReentrantReadWriteLock lock = getOrCreateLock(key);
+		ReentrantReadWriteLock newLock = null;
+		ReentrantReadWriteLock ourLock = null;
 
-		lock.readLock().lock();
-		// the synchronized block required for proper removal of unused locks
-		synchronized (lock)
+		while (true)
 		{
-			locksByKey.put(key, lock);
+			ReentrantReadWriteLock lockInMap = locksByKey.get(key);
+			if (lockInMap == null)
+			{
+				if (newLock == null) newLock = new ReentrantReadWriteLock(true);
+				ourLock = newLock;
+			}
+			else
+				ourLock = lockInMap;
+
+			synchronized (ourLock)
+			{
+				ourLock.readLock().lock();
+				lockInMap = locksByKey.putIfAbsent(key, ourLock);
+				if (lockInMap == ourLock) return;
+			}
+			ourLock.readLock().unlock();
 		}
 	}
 
@@ -197,17 +242,31 @@ public class HashLockManager
 	 * Acquires an exclusive read-write lock with a key equal to <code>key</code> for the current thread
 	 * @param key the lock name/identifier
 	 */
-	public void lockWrite(final Object key)
+	public void lockWrite(final T key)
 	{
 		Args.notNull("key", key);
 
-		final ReentrantReadWriteLock lock = getOrCreateLock(key);
+		ReentrantReadWriteLock newLock = null;
+		ReentrantReadWriteLock ourLock = null;
 
-		lock.writeLock().lock();
-		// the synchronized block required for proper removal of unused locks
-		synchronized (lock)
+		while (true)
 		{
-			locksByKey.put(key, lock);
+			ReentrantReadWriteLock lockInMap = locksByKey.get(key);
+			if (lockInMap == null)
+			{
+				if (newLock == null) newLock = new ReentrantReadWriteLock(true);
+				ourLock = newLock;
+			}
+			else
+				ourLock = lockInMap;
+
+			synchronized (ourLock)
+			{
+				ourLock.writeLock().lock();
+				lockInMap = locksByKey.putIfAbsent(key, ourLock);
+				if (lockInMap == ourLock) return;
+			}
+			ourLock.writeLock().unlock();
 		}
 	}
 
@@ -215,35 +274,21 @@ public class HashLockManager
 	 * Releases a non-exclusive read lock with a key equal <code>key</code> for the current thread
 	 * @param key the lock name/identifier
 	 */
-	public void unlockRead(final Object key)
+	public void unlockRead(final T key)
 	{
 		Args.notNull("key", key);
 
-		final ReentrantReadWriteLock lock = getOrCreateLock(key);
-
-		lock.readLock().unlock();
-		// the synchronized block required for proper removal of unused locks
-		synchronized (lock)
-		{
-			if (!isLockInUse(lock)) locksByKey.remove(key);
-		}
+		locksByKey.get(key).readLock().unlock();
 	}
 
 	/**
 	 * Releases an exclusive read-write lock with a key equal to <code>key</code> for the current thread
 	 * @param key the lock name/identifier
 	 */
-	public void unlockWrite(final Object key)
+	public void unlockWrite(final T key)
 	{
 		Args.notNull("key", key);
 
-		final ReentrantReadWriteLock lock = getOrCreateLock(key);
-
-		lock.writeLock().unlock();
-		// the synchronized block required for proper removal of unused locks
-		synchronized (lock)
-		{
-			if (!isLockInUse(lock)) locksByKey.remove(key);
-		}
+		locksByKey.get(key).writeLock().unlock();
 	}
 }

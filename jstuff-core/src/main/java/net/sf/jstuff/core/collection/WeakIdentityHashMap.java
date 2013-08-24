@@ -40,12 +40,6 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 		}
 
 		@Override
-		public int hashCode()
-		{
-			return System.identityHashCode(key);
-		}
-
-		@Override
 		public boolean equals(final Object obj)
 		{
 			if (this == obj) return true;
@@ -60,6 +54,11 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 			return true;
 		}
 
+		@Override
+		public int hashCode()
+		{
+			return System.identityHashCode(key);
+		}
 	}
 
 	private static final class WeakEntryDelegator<K, V> implements Entry<K, V>

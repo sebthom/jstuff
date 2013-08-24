@@ -30,7 +30,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/EmptyQueue.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/FIFOMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/IdentityHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/LRUMap.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/collection/LinkedSet.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapBackedSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWith.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithCollections.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithLists.java -text
@@ -42,7 +42,6 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableList.java -tex
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/PagedList.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/PagedListWithSortBy.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/collection/SoftHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentityHashMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/WeakIdentityHashSet.java -text
