@@ -1,2 +1,2 @@
 #!/bin/sh
-mvn release:prepare -Darguments="-DskipTests" && mvn release:perform -Darguments="-DskipTests"
+mvn -e release:prepare -Darguments="-DskipTests" && mvn -e release:perform -Darguments="-DskipTests"
