@@ -34,7 +34,7 @@ import org.apache.commons.lang3.ArrayUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class BuilderFactory<TARGET_TYPE, BUILDER extends Builder< ? extends TARGET_TYPE>>
+public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? extends TARGET_CLASS>>
 {
 	/**
 	 * @param builderInterface
@@ -42,26 +42,27 @@ public class BuilderFactory<TARGET_TYPE, BUILDER extends Builder< ? extends TARG
 	 * @param constructorArgs
 	 */
 	public static//
-	<TARGET_TYPE, BUILDER extends Builder< ? extends TARGET_TYPE>> //
-	BuilderFactory<TARGET_TYPE, BUILDER> of(final Class<BUILDER> builderInterface, final Class<TARGET_TYPE> targetClass,
-			final Object... constructorArgs)
+	<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? extends TARGET_CLASS>> //
+	BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE> of(final Class<BUILDER_INTERFACE> builderInterface,
+			final Class<TARGET_CLASS> targetClass, final Object... constructorArgs)
 	{
-		return new BuilderFactory<TARGET_TYPE, BUILDER>(builderInterface, targetClass, constructorArgs);
+		return new BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE>(builderInterface, targetClass, constructorArgs);
 	}
 
-	private final Class<BUILDER> builderInterface;
-	private final Class<TARGET_TYPE> targetClass;
+	private final Class<BUILDER_INTERFACE> builderInterface;
+	private final Class<TARGET_CLASS> targetClass;
 	private final Object[] constructorArgs;
 
 	@SuppressWarnings("unchecked")
-	protected BuilderFactory(final Class<BUILDER> builderInterface, final Class<TARGET_TYPE> targetClass, final Object... constructorArgs)
+	protected BuilderFactory(final Class<BUILDER_INTERFACE> builderInterface, final Class<TARGET_CLASS> targetClass,
+			final Object... constructorArgs)
 	{
 		Args.notNull("builderInterface", builderInterface);
 		if (!builderInterface.isInterface()) throw new IllegalArgumentException("[builderInterface] must be an interface!");
 
 		this.builderInterface = builderInterface;
 
-		this.targetClass = targetClass == null ? (Class<TARGET_TYPE>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0]
+		this.targetClass = targetClass == null ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0]
 				: targetClass;
 
 		if (targetClass == null) throw new IllegalArgumentException("Target class is not specified.");
@@ -71,7 +72,7 @@ public class BuilderFactory<TARGET_TYPE, BUILDER extends Builder< ? extends TARG
 		this.constructorArgs = constructorArgs;
 	}
 
-	public BUILDER create()
+	public BUILDER_INTERFACE create()
 	{
 		return Proxies.create(builderInterface, new InvocationHandler()
 			{
@@ -82,7 +83,7 @@ public class BuilderFactory<TARGET_TYPE, BUILDER extends Builder< ? extends TARG
 					if ("build".equals(method.getName()) && method.getParameterTypes().length == 0
 							&& method.getReturnType().isAssignableFrom(targetClass))
 					{
-						final TARGET_TYPE target = Types.newInstance(targetClass, constructorArgs);
+						final TARGET_CLASS target = Types.newInstance(targetClass, constructorArgs);
 						for (final Entry<String, Object> property : properties.entrySet())
 							Types.writeProperty(target, property.getKey(), property.getValue());
 
