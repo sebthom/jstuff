@@ -26,6 +26,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.collection.Enumerations;
 
 /**
  * <b>Example:</b>
@@ -79,11 +80,7 @@ public class RequestAttributeSettingFilter implements Filter
 	@SuppressWarnings("unchecked")
 	public void init(final FilterConfig filterConfig) throws ServletException
 	{
-		final Enumeration<String> paramNames = filterConfig.getInitParameterNames();
-		while (paramNames.hasMoreElements())
-		{
-			final String key = paramNames.nextElement();
-			attributes.put(key, filterConfig.getInitParameter(key));
-		}
+		for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames()))
+			attributes.put(param, filterConfig.getInitParameter(param));
 	}
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -27,6 +27,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.collection.Enumerations;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -40,8 +41,8 @@ public class ResponseHeaderSettingFilter implements Filter
 	public void destroy()
 	{}
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
-			throws IOException, ServletException
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
+			ServletException
 	{
 		LOG.trace("For request %s setting HTTP response headers: %s", request, parameter);
 
@@ -55,11 +56,7 @@ public class ResponseHeaderSettingFilter implements Filter
 	@SuppressWarnings("unchecked")
 	public void init(final FilterConfig filterConfig) throws ServletException
 	{
-		final Enumeration<String> paramNames = filterConfig.getInitParameterNames();
-		while (paramNames.hasMoreElements())
-		{
-			final String key = paramNames.nextElement();
-			parameter.put(key, filterConfig.getInitParameter(key));
-		}
+		for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames()))
+			parameter.put(param, filterConfig.getInitParameter(param));
 	}
 }

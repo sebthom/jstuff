@@ -26,7 +26,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 {
-	public static <T> boolean containsEqual(final T[] theArray, final T theItem)
+	public static <T> boolean contains(final T[] theArray, final T theItem)
 	{
 		Args.notNull("theArray", theArray);
 
@@ -38,7 +38,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		return false;
 	}
 
-	public static <T> boolean containsSame(final T[] theArray, final T theItem)
+	public static <T> boolean containsIdentical(final T[] theArray, final T theItem)
 	{
 		Args.notNull("theArray", theArray);
 
@@ -51,7 +51,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 	 * Returns a new list with all items accepted by the filter
 	 * @throws IllegalArgumentException if <code>accept == null</code>
 	 */
-	@SuppressWarnings({"unchecked", "cast"})
+	@SuppressWarnings({"unchecked"})
 	public static <T> T[] filter(final Accept< ? super T> accept, final T... array) throws IllegalArgumentException
 	{
 		if (array == null) return null;
@@ -61,7 +61,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 		for (final T item : array)
 			if (accept.accept(item)) result.add(item);
 
-		return (T[]) result.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), result.size()));
+		return result.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), result.size()));
 	}
 
 	@SuppressWarnings("unchecked")

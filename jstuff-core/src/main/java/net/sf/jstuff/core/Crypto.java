@@ -1,27 +1,26 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.jstuff.core;
 
 import java.io.Serializable;
-import java.security.InvalidKeyException;
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SealedObject;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -52,7 +51,7 @@ public abstract class Crypto
 		{
 			return getDESCipher(passphrase, Cipher.DECRYPT_MODE).doFinal(data);
 		}
-		catch (final Exception ex)
+		catch (final GeneralSecurityException ex)
 		{
 			throw new CryptoException(ex);
 		}
@@ -64,14 +63,13 @@ public abstract class Crypto
 		{
 			return getDESCipher(passphrase, Cipher.ENCRYPT_MODE).doFinal(data);
 		}
-		catch (final Exception ex)
+		catch (final GeneralSecurityException ex)
 		{
 			throw new CryptoException(ex);
 		}
 	}
 
-	private static Cipher getDESCipher(final String passphrase, final int mode) throws NoSuchAlgorithmException,
-			NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException
+	private static Cipher getDESCipher(final String passphrase, final int mode) throws GeneralSecurityException
 	{
 		SecretKey key = CACHED_KEYS.get(passphrase);
 		if (key == null)
@@ -85,6 +83,21 @@ public abstract class Crypto
 		return cipher;
 	}
 
+	public static String getMD5(final String txt)
+	{
+		try
+		{
+			final MessageDigest md = MessageDigest.getInstance("MD5");
+			final BigInteger number = new BigInteger(1, md.digest(txt.getBytes()));
+			return StringUtils.leftPad(number.toString(16), 32, '0');
+		}
+		catch (final NoSuchAlgorithmException ex)
+		{
+			// should never happen
+			throw new CryptoException(ex);
+		}
+	}
+
 	private static byte[] passphraseToKey(final String passphrase) throws CryptoException
 	{
 		try
@@ -92,7 +105,7 @@ public abstract class Crypto
 			// we only need 192 bit for TripleDES but it does not matter if we have 256 bit here
 			return MessageDigest.getInstance("SHA-256").digest(passphrase.getBytes());
 		}
-		catch (final Exception ex)
+		catch (final NoSuchAlgorithmException ex)
 		{
 			throw new CryptoException(ex);
 		}

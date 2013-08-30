@@ -137,7 +137,7 @@ public abstract class CollectionUtils
 	/**
 	 * Returns true if the given item is contained in the collection based on identity comparison
 	 */
-	public static <T> boolean containsSame(final Collection<T> coll, final T theItem)
+	public static <T> boolean containsIdentical(final Collection<T> coll, final T theItem)
 	{
 		Args.notNull("coll", coll);
 

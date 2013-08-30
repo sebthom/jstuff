@@ -1,23 +1,21 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.jstuff.integration.userregistry.ldap;
 
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
@@ -26,6 +24,7 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LdapTemplate;
@@ -60,8 +59,8 @@ public class LdapGroupDetailsService implements GroupDetailsService
 			{
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{
-					final Attributes attr = ctx.getAttributes(groupDN, new String[]{groupAttributeDisplayName,
-							groupAttributeGroupId, groupAttributeMember});
+					final Attributes attr = ctx.getAttributes(groupDN, new String[]{groupAttributeDisplayName, groupAttributeGroupId,
+							groupAttributeMember});
 
 					final DefaultGroupDetails groupDetails = new DefaultGroupDetails();
 					groupDetails.setDisplayName((String) attr.get(groupAttributeDisplayName).get());
@@ -69,8 +68,8 @@ public class LdapGroupDetailsService implements GroupDetailsService
 					groupDetails.setGroupId((String) attr.get(groupAttributeGroupId).get());
 
 					final Set<String> memberDNs = new HashSet<String>();
-					for (final Enumeration< ? > en = attr.get(groupAttributeMember).getAll(); en.hasMoreElements();)
-						memberDNs.add((String) en.nextElement());
+					for (final Object dn : Enumerations.toIterable(attr.get(groupAttributeMember).getAll()))
+						memberDNs.add((String) dn);
 					groupDetails.setMemberDNs(memberDNs.toArray(new String[memberDNs.size()]));
 					return groupDetails;
 				}
@@ -92,30 +91,23 @@ public class LdapGroupDetailsService implements GroupDetailsService
 					final Set<String> groupIds = new HashSet<String>();
 
 					LOG.trace("Performing LDAP Group Search for %s=%s", groupAttributeMember, userDN);
-					for (final NamingEnumeration<SearchResult> results = searchGroup(ctx, groupAttributeMember + "="
-							+ userDN, new String[]{groupAttributeGroupId}); results.hasMoreElements();)
-					{
-						final SearchResult sr = results.next();
-						final Attributes attr = sr.getAttributes();
-
-						groupIds.add((String) attr.get(groupAttributeGroupId).get());
-					}
+					for (final SearchResult sr : searchGroup(ctx, groupAttributeMember + "=" + userDN, new String[]{groupAttributeGroupId}))
+						groupIds.add((String) sr.getAttributes().get(groupAttributeGroupId).get());
 					LOG.trace("Found %s group(s) for user %s", groupIds.size(), userDN);
 					return groupIds;
 				}
 			});
 	}
 
-	protected NamingEnumeration<SearchResult> searchGroup(final DirContext ctx, final String filter,
-			final String[] attrs) throws NamingException
+	protected Iterable<SearchResult> searchGroup(final DirContext ctx, final String filter, final String[] attrs) throws NamingException
 	{
 		final SearchControls options = new SearchControls();
 		options.setSearchScope(groupSearchSubtree ? SearchControls.SUBTREE_SCOPE : SearchControls.ONELEVEL_SCOPE);
 		options.setReturningAttributes(attrs);
 
-		return ctx.search(groupSearchBase, //
+		return Enumerations.toIterable(ctx.search(groupSearchBase, //
 				"(&(" + filter + ")(" + groupSearchFilter + "))", //
-				options);
+				options));
 	}
 
 	/**

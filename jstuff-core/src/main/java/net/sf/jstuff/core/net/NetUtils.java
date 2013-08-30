@@ -26,13 +26,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -155,12 +155,9 @@ public abstract class NetUtils
 		try
 		{
 			final ArrayList<String> ipAddresses = new ArrayList<String>();
-			for (final Enumeration<NetworkInterface> nics = NetworkInterface.getNetworkInterfaces(); nics.hasMoreElements();)
-				for (final Enumeration<InetAddress> ias = nics.nextElement().getInetAddresses(); ias.hasMoreElements();)
-				{
-					final InetAddress ia = ias.nextElement();
+			for (final NetworkInterface nic : Enumerations.toIterable(NetworkInterface.getNetworkInterfaces()))
+				for (final InetAddress ia : Enumerations.toIterable(nic.getInetAddresses()))
 					if (!ia.isLoopbackAddress()) ipAddresses.add(ia.getHostAddress());
-				}
 			return ipAddresses;
 		}
 		catch (final SocketException ex)

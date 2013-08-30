@@ -40,7 +40,7 @@ public abstract class Iterators
 		return new CompositeIterator<V>(components);
 	}
 
-	public static boolean containsEqual(final Iterator< ? > iterator, final Object searchFor)
+	public static boolean contains(final Iterator< ? > iterator, final Object searchFor)
 	{
 		Args.notNull("iterator", iterator);
 		while (iterator.hasNext())
@@ -51,7 +51,7 @@ public abstract class Iterators
 		return false;
 	}
 
-	public static boolean containsSame(final Iterator< ? > iterator, final Object searchFor)
+	public static boolean containsIdentical(final Iterator< ? > iterator, final Object searchFor)
 	{
 		Args.notNull("iterator", iterator);
 		while (iterator.hasNext())
@@ -80,6 +80,17 @@ public abstract class Iterators
 			iterator.next();
 		}
 		return size;
+	}
+
+	public static <T> Iterable<T> toIterable(final Iterator<T> it)
+	{
+		return new Iterable<T>()
+			{
+				public Iterator<T> iterator()
+				{
+					return it;
+				}
+			};
 	}
 
 	public static <T> UnmodifiableIterator<T> unmodifiable(final Iterator<T> delegate)

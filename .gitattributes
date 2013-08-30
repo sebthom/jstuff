@@ -27,6 +27,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/DelegatingCollection.jav
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/DelegatingList.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/DelegatingSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/EmptyQueue.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/Enumerations.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/FIFOMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/IdentityHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/LRUMap.java -text

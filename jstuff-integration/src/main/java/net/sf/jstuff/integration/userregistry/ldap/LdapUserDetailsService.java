@@ -1,22 +1,23 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.jstuff.integration.userregistry.ldap;
 
+import java.util.Iterator;
+
 import javax.inject.Inject;
 import javax.naming.CompositeName;
 import javax.naming.Name;
 import javax.naming.NameParser;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
@@ -24,6 +25,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 
+import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LdapTemplate;
@@ -56,10 +58,10 @@ public class LdapUserDetailsService implements UserDetailsService
 			{
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{
-					final NamingEnumeration<SearchResult> results = searchUser(ctx, filter, new String[]{
-							userAttributeDisplayName, userAttributeEMailAdress, userAttributeLogonName,
-							userAttributeUserId});
-					if (!results.hasMore()) return null;
+					final Iterator<SearchResult> results = searchUser(ctx, filter,
+							new String[]{userAttributeDisplayName, userAttributeEMailAdress, userAttributeLogonName, userAttributeUserId})
+							.iterator();
+					if (!results.hasNext()) return null;
 
 					final SearchResult sr = results.next();
 
@@ -103,16 +105,15 @@ public class LdapUserDetailsService implements UserDetailsService
 		return getUserDetailsByFilter(userAttributeUserId + "=" + LdapUtils.ldapEscape(userId));
 	}
 
-	protected NamingEnumeration<SearchResult> searchUser(final DirContext ctx, final String filter, final String[] attrs)
-			throws NamingException
+	protected Iterable<SearchResult> searchUser(final DirContext ctx, final String filter, final String[] attrs) throws NamingException
 	{
 		final SearchControls options = new SearchControls();
 		options.setSearchScope(userSearchSubtree ? SearchControls.SUBTREE_SCOPE : SearchControls.ONELEVEL_SCOPE);
 		options.setReturningAttributes(attrs);
 
-		return ctx.search(userSearchBase, //
+		return Enumerations.toIterable(ctx.search(userSearchBase, //
 				"(&(" + filter + ")(" + userSearchFilter + "))", //
-				options);
+				options));
 	}
 
 	/**
