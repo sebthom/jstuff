@@ -26,18 +26,6 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 {
-	public static <T> boolean contains(final T[] theArray, final T theItem)
-	{
-		Args.notNull("theArray", theArray);
-
-		for (final T t : theArray)
-		{
-			if (t == theItem) return true;
-			if (t != null && t.equals(theItem)) return true;
-		}
-		return false;
-	}
-
 	public static <T> boolean containsIdentical(final T[] theArray, final T theItem)
 	{
 		Args.notNull("theArray", theArray);
