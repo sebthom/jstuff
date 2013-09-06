@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Thomschke.
+ *
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.jstuff.core.jbean;
 
 import java.io.Serializable;
@@ -11,6 +23,9 @@ import net.sf.jstuff.core.jbean.changelog.SetValueEvent;
 import net.sf.jstuff.core.jbean.meta.ClassDescriptor;
 import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -20,19 +35,16 @@ public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializabl
 	 * ******************************************************************************/
 	private volatile EventManager<PropertyChangeEvent> events;
 
-	protected void onItemAdded(final PropertyDescriptor< ? > property, final Object item, final int index)
+	public <T> T _get(final PropertyDescriptor<T> property)
 	{
-		if (events != null) events.fire(new AddItemEvent(this, property, item, index));
+		throw new UnsupportedOperationException("Unknown property [" + property + "]");
 	}
 
-	protected void onItemRemoved(final PropertyDescriptor< ? > property, final Object item, final int index)
-	{
-		if (events != null) events.fire(new RemoveItemEvent(this, property, item, index));
-	}
+	public abstract ClassDescriptor< ? > _getMeta();
 
-	protected void onValueSet(final PropertyDescriptor< ? > property, final Object oldValue, final Object newValue)
+	public <T> AbstractJBean _set(final PropertyDescriptor<T> property, final T value)
 	{
-		if (events != null) events.fire(new SetValueEvent(this, property, oldValue, newValue));
+		throw new UnsupportedOperationException("Unknown property [" + property + "]");
 	}
 
 	public void _subscribe(final EventListener<PropertyChangeEvent> listener)
@@ -60,15 +72,18 @@ public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializabl
 	/* ******************************************************************************
 	 * Meta API Support
 	 * ******************************************************************************/
-	public abstract ClassDescriptor< ? > _getMeta();
-
-	public <T> T _get(final PropertyDescriptor<T> property)
+	protected void onItemAdded(final PropertyDescriptor< ? > property, final Object item, final int index)
 	{
-		throw new UnsupportedOperationException("Unknown property [" + property + "]");
+		if (events != null) events.fire(new AddItemEvent(this, property, item, index));
 	}
 
-	public <T> AbstractJBean _set(final PropertyDescriptor<T> property, final T value)
+	protected void onItemRemoved(final PropertyDescriptor< ? > property, final Object item, final int index)
 	{
-		throw new UnsupportedOperationException("Unknown property [" + property + "]");
+		if (events != null) events.fire(new RemoveItemEvent(this, property, item, index));
+	}
+
+	protected void onValueSet(final PropertyDescriptor< ? > property, final Object oldValue, final Object newValue)
+	{
+		if (events != null) events.fire(new SetValueEvent(this, property, oldValue, newValue));
 	}
 }
