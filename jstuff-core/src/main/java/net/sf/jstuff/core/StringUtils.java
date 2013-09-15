@@ -349,6 +349,8 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 				sb.append("&lt;");
 			else if (ch == '>')
 				sb.append("&gt;");
+			else if (ch == '\'')
+				sb.append("&apos;");
 			else if (ch == '"')
 				sb.append("&quot;");
 			else if (ch == '&')
@@ -385,7 +387,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		}
 		catch (final IOException ex)
 		{
-			// ignore
+			throw new RuntimeException(ex);
 		}
 		return sb;
 	}

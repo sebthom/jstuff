@@ -326,9 +326,6 @@ public abstract class DOMUtils
 		}
 	}
 
-	/**
-	 * @throws XMLException
-	 */
 	public static List<Node> findNodes(final String xPathExpression, final Node searchScope) throws XMLException
 	{
 		Args.notNull("xPathExpression", xPathExpression);
@@ -496,10 +493,8 @@ public abstract class DOMUtils
 
 	/**
 	 * Parses the given file and returns a org.w3c.dom.Document.
-	 * @throws IOException
-	 * @throws XMLException
 	 */
-	public static Document parseFile(final File xmlFile) throws IOException, XMLException
+	public static Document parseFile(final File xmlFile) throws XMLException
 	{
 		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
@@ -510,10 +505,8 @@ public abstract class DOMUtils
 	/**
 	 * Parses the given file and returns a org.w3c.dom.Document.
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
-	 * @throws IOException
-	 * @throws XMLException
 	 */
-	public static Document parseFile(final File xmlFile, final File... xmlSchemaFiles) throws IOException, XMLException
+	public static Document parseFile(final File xmlFile, final File... xmlSchemaFiles) throws XMLException
 	{
 		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
@@ -525,11 +518,8 @@ public abstract class DOMUtils
 	 * Parses the given file and returns a org.w3c.dom.Document.
 	 * @param defaultNamespace optional, may be null
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
-	 * @throws IOException
-	 * @throws XMLException
 	 */
-	public static Document parseFile(final File xmlFile, final String defaultNamespace, final File... xmlSchemaFiles) throws IOException,
-			XMLException
+	public static Document parseFile(final File xmlFile, final String defaultNamespace, final File... xmlSchemaFiles) throws XMLException
 	{
 		Args.notNull("xmlFile", xmlFile);
 		Assert.isFileReadable(xmlFile);
@@ -544,11 +534,9 @@ public abstract class DOMUtils
 	 * @param inputId an identifier / label for the input source, e.g. a file name
 	 * @param defaultNamespace optional, may be null
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
-	 * @throws IOException
-	 * @throws XMLException
 	 */
 	public static Document parseInputSource(final InputSource input, final String inputId, final String defaultNamespace,
-			final File... xmlSchemaFiles) throws IOException, XMLException
+			final File... xmlSchemaFiles) throws XMLException
 	{
 		Args.notNull("input", input);
 
@@ -646,16 +634,18 @@ public abstract class DOMUtils
 		{
 			throw new XMLException(ex);
 		}
+		catch (final IOException ex)
+		{
+			throw new XMLException(ex);
+		}
 	}
 
 	/**
 	 * Parses the given string and returns a org.w3c.dom.Document.
 	 * @param input the input to parse
 	 * @param inputId an identifier / label for the input source, e.g. a file name
-	 * @throws IOException
-	 * @throws XMLException
 	 */
-	public static Document parseString(final String input, final String inputId) throws IOException, XMLException
+	public static Document parseString(final String input, final String inputId) throws XMLException
 	{
 		Args.notNull("input", input);
 
@@ -668,11 +658,9 @@ public abstract class DOMUtils
 	 * @param inputId an identifier / label for the input source, e.g. a file name
 	 * @param defaultNamespace optional, may be null
 	 * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
-	 * @throws IOException
-	 * @throws XMLException
 	 */
 	public static Document parseString(final String input, final String inputId, final String defaultNamespace,
-			final File... xmlSchemaFiles) throws IOException, XMLException
+			final File... xmlSchemaFiles) throws XMLException
 	{
 		Args.notNull("input", input);
 
