@@ -157,6 +157,7 @@ jstuff-core/src/main/resources/net/sf/jstuff/core/date/Day_de.properties -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month.properties -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month_de.properties -text
 jstuff-core/src/test/java/net/sf/jstuff/core/AssertTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/CryptoTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/GCTrackerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/LoggerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/ObjectCacheTest.java -text

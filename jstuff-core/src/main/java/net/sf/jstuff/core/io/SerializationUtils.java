@@ -86,19 +86,19 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 	}
 
 	/**
-	 * Deserializes an object from the given DES encrypted byte array
+	 * Deserializes an object from the given AES encrypted byte array
 	 */
-	public static Serializable deserializeDES(final byte[] data, final String passphrase)
+	public static Serializable deserializeAES(final byte[] data, final String passphrase)
 	{
-		return deserialize(Crypto.decryptWithDES(data, passphrase));
+		return deserialize(Crypto.decryptWithAES(data, passphrase));
 	}
 
 	/**
-	 * Serializes the given object and encrypts it via DES using the given passphrase
+	 * Serializes the given object and encrypts it via AES using the given passphrase
 	 */
-	public static byte[] serializeDES(final Serializable obj, final String passphrase)
+	public static byte[] serializeAES(final Serializable obj, final String passphrase)
 	{
-		return Crypto.encryptWithDES(serialize(obj), passphrase);
+		return Crypto.encryptWithAES(serialize(obj), passphrase);
 	}
 
 	/**

@@ -13,7 +13,6 @@
 package net.sf.jstuff.xml;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -30,7 +29,7 @@ import org.xml.sax.InputSource;
  */
 public class DOMUtilsTests extends TestCase
 {
-	public void testGetXPathNodes() throws XMLException, IOException
+	public void testGetXPathNodes() throws XMLException
 	{
 		final Element elem = DOMUtils.parseString("<foo id='1'><bar name='name'>blabla</bar></foo>", null).getDocumentElement();
 
@@ -60,13 +59,13 @@ public class DOMUtilsTests extends TestCase
 				CollectionUtils.diff(attrs1, attrs2).toString());
 	}
 
-	public void testParseFile() throws XMLException, IOException
+	public void testParseFile() throws XMLException
 	{
 		DOMUtils.parseInputSource(new InputSource(DOMUtils.class.getResourceAsStream("wrong-dtd-location.xml")), "wrong-dtd-location.xml",
 				null, (File[]) null);
 	}
 
-	public void testToXML() throws XMLException, IOException
+	public void testToXML() throws XMLException
 	{
 		final Document doc = DOMUtils.parseString("<foo id='1'><bar name='name'>blabla</bar></foo>", null);
 		assertEquals("<bar name=\"name\">blabla</bar>", DOMUtils.toXML(doc.getFirstChild().getFirstChild(), false, false));

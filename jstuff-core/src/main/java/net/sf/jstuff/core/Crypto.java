@@ -13,10 +13,12 @@
 package net.sf.jstuff.core;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.KeySpec;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -24,7 +26,9 @@ import javax.crypto.Cipher;
 import javax.crypto.SealedObject;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESedeKeySpec;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import net.sf.jstuff.core.validation.Args;
 
@@ -43,13 +47,19 @@ public abstract class Crypto
 		}
 	}
 
-	private static final Map<String, SecretKey> CACHED_KEYS = new WeakHashMap<String, SecretKey>();
+	private static final byte[] AES_IV = {(byte) 0x23, (byte) 0x22, (byte) 0xf8, (byte) 0x98, (byte) 0x3a, (byte) 0xbc, (byte) 0xf8,
+			(byte) 0x22, (byte) 0x99, (byte) 0xff, (byte) 0x34, (byte) 0xc2, (byte) 0xc7, (byte) 0xd2, (byte) 0x24, (byte) 0xc5};
 
-	public static byte[] decryptWithDES(final byte[] data, final String passphrase) throws CryptoException
+	private static final byte[] AES_SALT = {(byte) 0xf3, (byte) 0x31, (byte) 0x43, (byte) 0x13, (byte) 0x7d, (byte) 0x22, (byte) 0xad,
+			(byte) 0x04};;
+
+	private static final Map<String, SecretKey> CACHED_AES_KEYS = new WeakHashMap<String, SecretKey>();
+
+	public static byte[] decryptWithAES(final byte[] data, final String passphrase) throws CryptoException
 	{
 		try
 		{
-			return getDESCipher(passphrase, Cipher.DECRYPT_MODE).doFinal(data);
+			return getAESCipher(passphrase, Cipher.DECRYPT_MODE).doFinal(data);
 		}
 		catch (final GeneralSecurityException ex)
 		{
@@ -57,11 +67,11 @@ public abstract class Crypto
 		}
 	}
 
-	public static byte[] encryptWithDES(final byte[] data, final String passphrase) throws CryptoException
+	public static byte[] encryptWithAES(final byte[] data, final String passphrase) throws CryptoException
 	{
 		try
 		{
-			return getDESCipher(passphrase, Cipher.ENCRYPT_MODE).doFinal(data);
+			return getAESCipher(passphrase, Cipher.ENCRYPT_MODE).doFinal(data);
 		}
 		catch (final GeneralSecurityException ex)
 		{
@@ -69,55 +79,83 @@ public abstract class Crypto
 		}
 	}
 
-	private static Cipher getDESCipher(final String passphrase, final int mode) throws GeneralSecurityException
+	private static Cipher getAESCipher(final String passphrase, final int mode) throws GeneralSecurityException
 	{
-		SecretKey key = CACHED_KEYS.get(passphrase);
+		SecretKey key = CACHED_AES_KEYS.get(passphrase);
 		if (key == null)
 		{
-			final SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DESede");
-			key = keyFactory.generateSecret(new DESedeKeySpec(passphraseToKey(passphrase)));
-			CACHED_KEYS.put(passphrase, key);
+			final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+			final KeySpec spec = new PBEKeySpec(passphrase.toCharArray(), AES_SALT, 1024, 128);
+			key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+
+			CACHED_AES_KEYS.put(passphrase, key);
 		}
-		final Cipher cipher = Cipher.getInstance("DESede/ECB/PKCS5Padding");
-		cipher.init(mode, key);
+		final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		cipher.init(mode, key, new IvParameterSpec(AES_IV));
 		return cipher;
 	}
 
-	public static String getMD5(final String txt)
+	public static String getMD5(final String txt) throws CryptoException
 	{
 		try
 		{
 			final MessageDigest md = MessageDigest.getInstance("MD5");
-			final BigInteger number = new BigInteger(1, md.digest(txt.getBytes()));
+			final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
 			return StringUtils.leftPad(number.toString(16), 32, '0');
 		}
 		catch (final NoSuchAlgorithmException ex)
 		{
-			// should never happen
+			throw new CryptoException(ex);
+		}
+		catch (final UnsupportedEncodingException ex)
+		{
 			throw new CryptoException(ex);
 		}
 	}
 
-	private static byte[] passphraseToKey(final String passphrase) throws CryptoException
+	public static String getSHA1(final String txt) throws CryptoException
 	{
 		try
 		{
-			// we only need 192 bit for TripleDES but it does not matter if we have 256 bit here
-			return MessageDigest.getInstance("SHA-256").digest(passphrase.getBytes());
+			final MessageDigest md = MessageDigest.getInstance("SHA-1");
+			final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
+			return StringUtils.leftPad(number.toString(16), 48, '0');
 		}
 		catch (final NoSuchAlgorithmException ex)
 		{
 			throw new CryptoException(ex);
 		}
+		catch (final UnsupportedEncodingException ex)
+		{
+			throw new CryptoException(ex);
+		}
 	}
 
-	public static SealedObject sealWithDES(final Serializable object, final String passphrase) throws CryptoException
+	public static String getSHA256(final String txt) throws CryptoException
+	{
+		try
+		{
+			final MessageDigest md = MessageDigest.getInstance("SHA-256");
+			final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
+			return StringUtils.leftPad(number.toString(16), 64, '0');
+		}
+		catch (final NoSuchAlgorithmException ex)
+		{
+			throw new CryptoException(ex);
+		}
+		catch (final UnsupportedEncodingException ex)
+		{
+			throw new CryptoException(ex);
+		}
+	}
+
+	public static SealedObject sealWithAES(final Serializable object, final String passphrase) throws CryptoException
 	{
 		Args.notNull("object", object);
 
 		try
 		{
-			return new SealedObject(object, getDESCipher(passphrase, Cipher.ENCRYPT_MODE));
+			return new SealedObject(object, getAESCipher(passphrase, Cipher.ENCRYPT_MODE));
 		}
 		catch (final Exception ex)
 		{
@@ -125,13 +163,13 @@ public abstract class Crypto
 		}
 	}
 
-	public static Serializable unsealWithDES(final SealedObject object, final String passphrase) throws CryptoException
+	public static Serializable unsealWithAES(final SealedObject object, final String passphrase) throws CryptoException
 	{
 		Args.notNull("object", object);
 
 		try
 		{
-			return (Serializable) object.getObject(getDESCipher(passphrase, Cipher.DECRYPT_MODE));
+			return (Serializable) object.getObject(getAESCipher(passphrase, Cipher.DECRYPT_MODE));
 		}
 		catch (final Exception ex)
 		{

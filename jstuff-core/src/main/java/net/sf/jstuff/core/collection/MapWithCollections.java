@@ -15,7 +15,7 @@ package net.sf.jstuff.core.collection;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.sf.jstuff.core.collection.iterator.EmptyIterator;
+import net.sf.jstuff.core.collection.iterator.Iterators;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -37,18 +37,18 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
 		super(initialCapacity);
 	}
 
+	public MapWithCollections(final int initialCapacity, final int initialCapacityOfCollection)
+	{
+		super(initialCapacity);
+		this.initialCapacityOfCollection = initialCapacityOfCollection;
+	}
+
 	public MapWithCollections(final int initialCapacity, final int initialCapacityOfCollection, final float growthFactorOfCollection)
 	{
 		super(initialCapacity);
 
 		this.initialCapacityOfCollection = initialCapacityOfCollection;
 		this.growthFactorOfCollection = growthFactorOfCollection;
-	}
-
-	public MapWithCollections(final int initialCapacity, final int initialCapacityOfCollection)
-	{
-		super(initialCapacity);
-		this.initialCapacityOfCollection = initialCapacityOfCollection;
 	}
 
 	public void add(final K key, final V value)
@@ -70,6 +70,12 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
 		CollectionUtils.addAll(getOrCreate(key), values);
 	}
 
+	public boolean containsValue(final K key, final V value)
+	{
+		final C values = get(key);
+		return values != null && values.contains(value);
+	}
+
 	/**
 	 * Checks whether the map contains the value specified.
 	 * <p>
@@ -86,17 +92,11 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
 		return false;
 	}
 
-	public boolean containsValue(final K key, final V value)
-	{
-		final C values = get(key);
-		return values != null && values.contains(value);
-	}
-
 	@SuppressWarnings("unchecked")
 	public Iterator<V> iterator(final K key)
 	{
 		final C values = get(key);
-		return values == null ? (Iterator<V>) EmptyIterator.INSTANCE : values.iterator();
+		return values == null ? (Iterator<V>) Iterators.empty() : values.iterator();
 	}
 
 	/**

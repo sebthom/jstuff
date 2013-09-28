@@ -24,7 +24,7 @@ public class EmptyIterator<T> implements Iterator<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static final EmptyIterator< ? > INSTANCE = new EmptyIterator<Object>();
+	static final EmptyIterator< ? > INSTANCE = new EmptyIterator<Object>();
 
 	private EmptyIterator()
 	{
