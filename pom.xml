@@ -51,6 +51,11 @@
 		<developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</developerConnection>
 	</scm>
 
+	<ciManagement>
+		<system>jenkins</system>
+		<url>https://ci.vegardit.com/job/net.sf.jstuff</url>
+	</ciManagement>
+
 	<mailingLists>
 		<mailingList>
 			<name>Discussion</name>
