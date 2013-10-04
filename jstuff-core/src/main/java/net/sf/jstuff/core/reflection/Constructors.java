@@ -46,7 +46,7 @@ public abstract class Constructors extends Members
 		Args.notNull("clazz", clazz);
 		final int parameterTypesLen = parameterTypes == null ? 0 : parameterTypes.length;
 
-		ctor_loop : for (final Constructor<T> ctor : clazz.getDeclaredConstructors())
+		ctor_loop : for (final Constructor<T> ctor : (Constructor<T>[]) clazz.getDeclaredConstructors())
 		{
 
 			final Class< ? >[] ctorParamTypes = ctor.getParameterTypes();
@@ -70,7 +70,7 @@ public abstract class Constructors extends Members
 		Args.notNull("clazz", clazz);
 		final int argsLen = args == null ? 0 : args.length;
 
-		ctor_loop : for (final Constructor<T> ctor : clazz.getDeclaredConstructors())
+		ctor_loop : for (final Constructor<T> ctor : (Constructor<T>[]) clazz.getDeclaredConstructors())
 		{
 
 			final Class< ? >[] ctorParamTypes = ctor.getParameterTypes();
