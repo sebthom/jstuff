@@ -63,7 +63,7 @@ public class HashLockManagerTest extends TestCase
 							lockManager.doWriteLocked(NAMED_LOCK, calculation);
 					}
 				});
-		Thread.sleep(500);
+		Thread.sleep(1000);
 		assertEquals(1, lockManager.getLockCount());
 		es.shutdown();
 		es.awaitTermination(60, TimeUnit.SECONDS);
