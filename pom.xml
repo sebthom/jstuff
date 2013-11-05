@@ -145,6 +145,31 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<profiles>
+		<!-- m2eclipse has problems when the compilerId is not "javac", thus we set it to "javac" when in Eclipse but set it to "eclipse" for command
+			line builds -->
+		<profile>
+			<id>outside-eclipse</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<compilerId>eclipse</compilerId>
+			</properties>
+		</profile>
+		<profile>
+			<id>inside-eclipse</id>
+			<activation>
+				<property>
+					<name>eclipse.application</name>
+				</property>
+			</activation>
+			<properties>
+				<compilerId>javac</compilerId>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 
 		<plugins>
@@ -182,14 +207,14 @@
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<optimize>true</optimize>
-					<compilerId>eclipse</compilerId>
+					<compilerId>${compilerId}</compilerId>
 					<!-- using eclipse compiler since javac is buggy when compiling complex generic expressions -->
 				</configuration>
 				<dependencies>
 					<dependency>
 						<groupId>org.codehaus.plexus</groupId>
-						<artifactId>plexus-compiler-eclipse</artifactId>
-						<version>2.2</version>
+						<artifactId>plexus-compiler-${compilerId}</artifactId>
+						<version>2.3</version>
 					</dependency>
 				</dependencies>
 			</plugin>
