@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jstuff-parent</artifactId>
 		<groupId>net.sf.jstuff</groupId>
-		<version>0.7.3-SNAPSHOT</version>
+		<version>0.7.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>jstuff-core</artifactId>
