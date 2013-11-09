@@ -9,7 +9,7 @@
 	<artifactId>jstuff-parent</artifactId>
 	<name>${project.groupId}.${project.artifactId}</name>
 	<packaging>pom</packaging>
-	<version>0.7.4-SNAPSHOT</version>
+	<version>0.7.3-SNAPSHOT</version>
 
 	<url>http://jstuff.sf.net</url>
 
