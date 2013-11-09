@@ -10,9 +10,10 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.servlet;
+package net.sf.jstuff.integration.servlet.session;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
@@ -35,19 +36,18 @@ public class CountingHttpSessionListener implements HttpSessionListener
 
 		public void valueUnbound(final HttpSessionBindingEvent ev)
 		{
-			if (sessionCount > 0) sessionCount--;
+			SESSION_COUNT.decrementAndGet();
 		}
 	}
 
 	private static final Logger LOG = Logger.create();
 
 	private static final HttpSessionBindingListenerImpl LISTENER = new HttpSessionBindingListenerImpl();
-
-	protected static int sessionCount = 0;
+	private static final AtomicInteger SESSION_COUNT = new AtomicInteger();
 
 	public static int getSessionCount()
 	{
-		return sessionCount;
+		return SESSION_COUNT.intValue();
 	}
 
 	public CountingHttpSessionListener()
@@ -57,15 +57,18 @@ public class CountingHttpSessionListener implements HttpSessionListener
 
 	public void sessionCreated(final HttpSessionEvent se)
 	{
-		sessionCount++;
-		se.getSession().setAttribute("SessionCounterHttpSessionBindingListener", LISTENER);
+		SESSION_COUNT.incrementAndGet();
+		se.getSession().setAttribute(CountingHttpSessionListener.class.getName(), LISTENER);
 	}
 
+	/**
+	 * We are not using this method since it is not correctly implemented by all servlet containers.
+	 * Some only call it when a session is explicitly invalidated but not when it expires,
+	 * others invoke it multiple times.
+	 * Instead we use {@link HttpSessionBindingListener#valueUnbound} which seems to work reliable
+	 */
 	public void sessionDestroyed(final HttpSessionEvent se)
 	{
-		// we are not using this method as it is not correctly implemented in all servlet containers
-		// some only call it when a session is explicitely invalidated but not when it expires,
-		// others invoke it multiple times
-		// => instead we use  HttpSessionBindingListener.valueUnbound which seems to be ok
+		//do nothing
 	}
 }

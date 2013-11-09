@@ -260,7 +260,6 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/RestServiceError
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/XMLRestServiceExporter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ClassPathResourcesFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ClassPathResourcesServletContext.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/CountingHttpSessionListener.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/DummyPrincipalInjectingFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/HttpServletResponseStringWrapper.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/HttpServletResponseWrapperWithStatus.java -text
@@ -269,6 +268,9 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/RequestRespon
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ResponseHeaderSettingFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ServletContextWrapper.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ServletUtils.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/session/CountingHttpSessionListener.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/session/HttpSessionMap.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/session/SessionMap.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/AffixesRemovingBeanNameGenerator.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanInjector.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/spring/SpringBeanLocator.java -text

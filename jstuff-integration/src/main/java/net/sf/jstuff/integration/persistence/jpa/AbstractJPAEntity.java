@@ -78,12 +78,12 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 	public final ImmutableDate _getFirstPersistedOn()
 	{
 		if (_isNew()) return null;
-		return new ImmutableDate(_firstPersistedOn);
+		return ImmutableDate.of(_firstPersistedOn);
 	}
 
 	public final ImmutableDate _getLastPersistedOn()
 	{
-		return new ImmutableDate(_lastPersistedOn);
+		return ImmutableDate.of(_lastPersistedOn);
 	}
 
 	public final int _getVersion()
