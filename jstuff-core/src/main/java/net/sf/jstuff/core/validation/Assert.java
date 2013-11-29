@@ -23,24 +23,6 @@ import java.util.Map;
  */
 public abstract class Assert
 {
-	public static <C extends Collection< ? >> C containsNoNulls(final C entries, final String errorMessage)
-	{
-		if (entries == null) return null;
-
-		for (final Object entry : entries)
-			if (entry == null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-		return entries;
-	}
-
-	public static <T> T[] containsNoNulls(final T[] entries, final String errorMessage)
-	{
-		if (entries == null) return null;
-
-		for (final T entry : entries)
-			if (entry == null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-		return entries;
-	}
-
 	/**
 	 * @throws IllegalStateException if <code>value</value> is <code>true</code>
 	 */
@@ -124,6 +106,24 @@ public abstract class Assert
 	{
 		if (value < min) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 		return value;
+	}
+
+	public static <C extends Collection< ? >> C notContainsNulls(final C entries, final String errorMessage)
+	{
+		if (entries == null) return null;
+
+		for (final Object entry : entries)
+			if (entry == null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return entries;
+	}
+
+	public static <T> T[] notContainsNulls(final T[] entries, final String errorMessage)
+	{
+		if (entries == null) return null;
+
+		for (final T entry : entries)
+			if (entry == null) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return entries;
 	}
 
 	/**
