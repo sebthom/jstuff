@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipFile;
 
 import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
@@ -37,6 +38,18 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 	private static final Logger LOG = Logger.create();
 
 	public static final int EOF = -1;
+
+	public static void closeQuietly(ZipFile file)
+	{
+		if (file != null) try
+		{
+			file.close();
+		}
+		catch (final IOException e)
+		{
+			// ignore
+		}
+	}
 
 	public static int copyAndClose(final InputStream is, final OutputStream os) throws IOException
 	{
