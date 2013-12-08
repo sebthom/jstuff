@@ -278,6 +278,22 @@ public class Types
 		return null;
 	}
 
+	/**
+	 * initializes the given class
+	 */
+	public static void initialize(Class< ? > type)
+	{
+		Args.notNull("type", type);
+		try
+		{
+			Class.forName(type.getName(), true, type.getClassLoader());
+		}
+		catch (final ClassNotFoundException e)
+		{
+			// ignore
+		}
+	}
+
 	public static boolean isAbstract(final Class< ? > type)
 	{
 		Args.notNull("type", type);

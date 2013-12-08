@@ -13,6 +13,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/ObjectCache.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StackTrace.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/TypeSafeEnum.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/URLClassLoaderExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/builder/Builder.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/builder/BuilderFactory.java -text
@@ -162,6 +163,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/GCTrackerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/LoggerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/ObjectCacheTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/StringUtilsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/TypeSafeEnumTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/builder/BuilderTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/CompositeCollectionTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/CompositeListTest.java -text
