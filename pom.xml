@@ -2,7 +2,8 @@
 <!--
 	@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.sf.jstuff</groupId>
@@ -149,7 +150,6 @@
 		<!-- m2eclipse has problems when the compilerId is not "javac", thus we set it to "javac" when in Eclipse but set it to "eclipse" for command
 			line builds -->
 		<profile>
-			<id>outside-eclipse</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
@@ -158,7 +158,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>inside-eclipse</id>
+			<id>m2eclipse</id>
 			<activation>
 				<property>
 					<name>eclipse.application</name>
@@ -171,29 +171,29 @@
 	</profiles>
 
 	<build>
-
 		<plugins>
-
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.2</version>
+				<!-- http://maven.apache.org/guides/mini/guide-using-toolchains.html -->
+				<artifactId>maven-toolchains-plugin</artifactId>
+				<version>1.0</version>
 				<executions>
 					<execution>
-						<id>enforce-java</id>
+						<phase>validate</phase>
 						<goals>
-							<goal>enforce</goal>
+							<goal>toolchain</goal>
 						</goals>
-						<configuration>
-							<rules>
-								<requireJavaVersion>
-									<version>1.5.0</version>
-								</requireJavaVersion>
-							</rules>
-						</configuration>
 					</execution>
 				</executions>
+				<configuration>
+					<toolchains>
+						<jdk>
+							<version>${java.version}</version>
+							<vendor>sun</vendor>
+						</jdk>
+					</toolchains>
+				</configuration>
 			</plugin>
+
 
 			<!--*********************************************************************
 				phase: compile
@@ -203,7 +203,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<compilerVersion>${version.java}</compilerVersion>
+					<compilerVersion>${java.version}</compilerVersion>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<optimize>true</optimize>
