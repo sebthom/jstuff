@@ -151,7 +151,9 @@
 			line builds -->
 		<profile>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>!eclipse.application</name>
+				</property>
 			</activation>
 			<properties>
 				<compilerId>eclipse</compilerId>
