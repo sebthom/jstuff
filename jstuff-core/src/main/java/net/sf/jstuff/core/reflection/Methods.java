@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -169,6 +170,30 @@ public class Methods extends Members
 		if (superclazz == null) return null;
 
 		return findSetterRecursive(superclazz, propertyName, compatibleTo);
+	}
+
+	public static List<Method> getGetters(final Class< ? > clazz)
+	{
+		final List<Method> result = CollectionUtils.newArrayList();
+
+		for (final Method m : clazz.getMethods())
+			if (isGetter(m)) result.add(m);
+		return result;
+	}
+
+	public static List<Method> getGettersRecursive(final Class< ? > clazz)
+	{
+		final List<Method> result = CollectionUtils.newArrayList();
+		Class< ? > currentClass = clazz;
+
+		while (currentClass != null && currentClass != Object.class)
+		{
+			currentClass = currentClass.getSuperclass();
+
+			for (final Method m : clazz.getMethods())
+				if (isGetter(m)) result.add(m);
+		}
+		return result;
 	}
 
 	/**
