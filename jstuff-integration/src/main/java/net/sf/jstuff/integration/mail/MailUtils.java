@@ -13,6 +13,7 @@
 package net.sf.jstuff.integration.mail;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Properties;
 
@@ -40,8 +41,10 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class MailUtils
 {
-	public static class Mail
+	public static class Mail implements Serializable
 	{
+		private static final long serialVersionUID = 1L;
+
 		public File[] attachments;
 		public String[] emailBCC;
 		public String[] emailCC;
@@ -53,8 +56,10 @@ public abstract class MailUtils
 		public String subject;
 	}
 
-	public static class MailServer
+	public static class MailServer implements Serializable
 	{
+		private static final long serialVersionUID = 1L;
+
 		public String smtpHostname;
 		public String smtpPassword;
 		public int smtpPort = 25;
@@ -81,8 +86,10 @@ public abstract class MailUtils
 					@Override
 					protected PasswordAuthentication getPasswordAuthentication()
 					{
-						return new PasswordAuthentication(mailServer.smtpUsername, mailServer.smtpPassword == null ? ""
-								: mailServer.smtpPassword);
+						return new PasswordAuthentication(//
+								mailServer.smtpUsername, //
+								mailServer.smtpPassword == null ? "" : mailServer.smtpPassword//
+						);
 					}
 				};
 			session = Session.getInstance(props, auth);
@@ -90,12 +97,12 @@ public abstract class MailUtils
 		final MimeMessage msg = new MimeMessage(session);
 		msg.setFrom(new InternetAddress(mail.emailFrom));
 		msg.setSubject(mail.subject);
-		if (mail.emailTo != null) for (final String element : mail.emailTo)
-			msg.addRecipient(RecipientType.TO, new InternetAddress(element));
-		if (mail.emailCC != null) for (final String element : mail.emailCC)
-			msg.addRecipient(RecipientType.CC, new InternetAddress(element));
-		if (mail.emailBCC != null) for (int i = 0; i < mail.emailBCC.length; i++)
-			msg.addRecipient(RecipientType.BCC, new InternetAddress(mail.emailCC[i]));
+		if (mail.emailTo != null) for (final String item : mail.emailTo)
+			msg.addRecipient(RecipientType.TO, new InternetAddress(item));
+		if (mail.emailCC != null) for (final String item : mail.emailCC)
+			msg.addRecipient(RecipientType.CC, new InternetAddress(item));
+		if (mail.emailBCC != null) for (final String item : mail.emailBCC)
+			msg.addRecipient(RecipientType.BCC, new InternetAddress(item));
 		if (mail.emailReturnReceiptTo != null) msg.setHeader("Return-Receipt-To", mail.emailReturnReceiptTo);
 		final MimeMultipart mp = new MimeMultipart();
 		final MimeBodyPart text = new MimeBodyPart();
