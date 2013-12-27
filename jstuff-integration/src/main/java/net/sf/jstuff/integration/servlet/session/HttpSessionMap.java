@@ -21,6 +21,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.validation.Args;
@@ -32,6 +33,15 @@ import org.apache.commons.lang3.ObjectUtils;
  */
 public class HttpSessionMap implements SessionMap
 {
+	@SuppressWarnings("deprecation")
+	private static String[] getValueNames(HttpSession sess)
+	{
+		if (sess == null) return ArrayUtils.EMPTY_STRING_ARRAY;
+
+		final String[] valueNames = sess.getValueNames();
+		return valueNames == null ? ArrayUtils.EMPTY_STRING_ARRAY : valueNames;
+	}
+
 	private final HttpServletRequest request;
 
 	public HttpSessionMap(final HttpServletRequest request)
@@ -62,14 +72,13 @@ public class HttpSessionMap implements SessionMap
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
 	public Set<java.util.Map.Entry<String, Object>> entrySet()
 	{
 		final HttpSession sess = request.getSession(false);
 		if (sess == null) return Collections.emptySet();
 
 		final Map<String, Object> result = CollectionUtils.newHashMap();
-		for (final String key : sess.getValueNames())
+		for (final String key : getValueNames(sess))
 			result.put(key, sess.getAttribute(key));
 		return result.entrySet();
 	}
@@ -106,13 +115,12 @@ public class HttpSessionMap implements SessionMap
 		return !sess.getAttributeNames().hasMoreElements();
 	}
 
-	@SuppressWarnings("deprecation")
 	public Set<String> keySet()
 	{
 		final HttpSession sess = request.getSession(false);
 		if (sess == null) return Collections.emptySet();
 		final Set<String> result = CollectionUtils.newHashSet();
-		CollectionUtils.addAll(result, sess.getValueNames());
+		CollectionUtils.addAll(result, getValueNames(sess));
 		return result;
 	}
 
@@ -141,23 +149,21 @@ public class HttpSessionMap implements SessionMap
 		return oldValue;
 	}
 
-	@SuppressWarnings("deprecation")
 	public int size()
 	{
 		final HttpSession sess = request.getSession(false);
 		if (sess == null) return 0;
 
-		return sess.getValueNames().length;
+		return getValueNames(sess).length;
 	}
 
-	@SuppressWarnings("deprecation")
 	public Collection<Object> values()
 	{
 		final HttpSession sess = request.getSession(false);
 		if (sess == null) return Collections.emptyList();
 
 		final Collection<Object> result = CollectionUtils.newArrayList();
-		for (final String key : sess.getValueNames())
+		for (final String key : getValueNames(sess))
 			result.add(sess.getAttribute(key));
 		return result;
 	}
