@@ -260,7 +260,6 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.2.1</version>
 				<executions>
@@ -278,9 +277,8 @@
 				phase: release
 				********************************************************************* -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.4.1</version>
+				<version>2.4.2</version>
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<providerImplementations>
@@ -291,7 +289,7 @@
 					<dependency>
 						<groupId>com.google.code.maven-scm-provider-svnjava</groupId>
 						<artifactId>maven-scm-provider-svnjava</artifactId>
-						<version>2.0.5</version>
+						<version>2.0.6</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -301,7 +299,6 @@
 				phase: manual execution
 				********************************************************************* -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.9</version>
 				<configuration>
@@ -313,9 +310,8 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.3</version>
 			</plugin>
 		</plugins>
 
@@ -393,7 +389,7 @@
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh</artifactId>
-				<version>2.4</version>
+				<version>2.6</version>
 			</extension>
 		</extensions>
 	</build>
