@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -27,6 +27,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
 import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.io.FastByteArrayOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -36,11 +37,12 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class JAXBUtils
 {
+	@SuppressWarnings("resource")
 	public static String toXML(final Object obj) throws XMLException
 	{
 		Args.notNull("obj", obj);
 
-		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		final FastByteArrayOutputStream baos = new FastByteArrayOutputStream();
 		toXML(obj, baos);
 		return baos.toString();
 	}

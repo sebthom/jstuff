@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -15,7 +15,6 @@ package net.sf.jstuff.core.io;
 import java.beans.ExceptionListener;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -105,12 +104,13 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 	 * @see XMLDecoder
 	 * @throws SerializationException
 	 */
+	@SuppressWarnings("resource")
 	public static Object xml2bean(final String xmlData) throws SerializationException
 	{
 		Args.notNull("xmlData", xmlData);
 
 		final ArrayList<Exception> exList = new ArrayList<Exception>(2);
-		final ByteArrayInputStream bis = new ByteArrayInputStream(xmlData.getBytes());
+		final FastByteArrayInputStream bis = new FastByteArrayInputStream(xmlData.getBytes());
 		final XMLDecoder d = new XMLDecoder(bis);
 		d.setExceptionListener(new ExceptionListener()
 			{

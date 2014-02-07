@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.xml;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,6 +45,7 @@ import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.MapWithLists;
+import net.sf.jstuff.core.io.FastByteArrayOutputStream;
 import net.sf.jstuff.core.io.FileUtils;
 import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
@@ -739,11 +739,12 @@ public abstract class DOMUtils
 		return toXML(root, true, true);
 	}
 
+	@SuppressWarnings("resource")
 	public static String toXML(final Node root, final boolean outputXMLDeclaration, final boolean formatPretty) throws XMLException
 	{
 		Args.notNull("root", root);
 
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
 		try
 		{
 			toXML(root, bos, outputXMLDeclaration, formatPretty);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -29,7 +29,7 @@ public class HashLockManagerTest extends TestCase
 	private static Logger LOG = Logger.create();
 
 	private static final int THREADS = 20;
-	private static final int ITERATIONS_PER_THREAD = 2500;
+	private static final int ITERATIONS_PER_THREAD = 4000;
 
 	private final ExecutorService es = Executors.newFixedThreadPool(THREADS);
 	private int sum = -1;
