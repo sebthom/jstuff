@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -315,10 +315,14 @@ public final class Logger
 	public void trace(final Object msg)
 	{
 		if (!delegate.isTraceEnabled()) return;
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
 		if (delegateExt == null)
-			delegate.trace(StackTrace.getCallingMethodName() + ": " + msg);
+			delegate.trace(methodName + ": " + msg);
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, StackTrace.getCallingMethodName() + ": " + msg, null, null);
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, methodName + ": " + msg, null, null);
 	}
 
 	/**
@@ -341,11 +345,14 @@ public final class Logger
 	public void trace(final String format, final Object... args)
 	{
 		if (!delegate.isTraceEnabled()) return;
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
 		if (delegateExt == null)
-			delegate.trace(StackTrace.getCallingMethodName() + ": " + String.format(format, args));
+			delegate.trace(methodName + ": " + String.format(format, args));
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT,
-					StackTrace.getCallingMethodName() + ": " + String.format(format, args), null, null);
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, methodName + ": " + String.format(format, args), null, null);
 	}
 
 	/**
@@ -365,10 +372,14 @@ public final class Logger
 	public void trace(final String msg, final Throwable t)
 	{
 		if (!delegate.isTraceEnabled()) return;
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
 		if (delegateExt == null)
-			delegate.trace(StackTrace.getCallingMethodName() + ": " + msg, t);
+			delegate.trace(methodName + ": " + msg, t);
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, StackTrace.getCallingMethodName() + ": " + msg, null, t);
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, methodName + ": " + msg, null, t);
 	}
 
 	/**
@@ -378,21 +389,24 @@ public final class Logger
 	public void trace(final String format, final Throwable t, final Object... args)
 	{
 		if (!delegate.isTraceEnabled()) return;
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
 		if (delegateExt == null)
-			delegate.trace(StackTrace.getCallingMethodName() + ": " + String.format(format, args), null, t);
+			delegate.trace(methodName + ": " + String.format(format, args), null, t);
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT,
-					StackTrace.getCallingMethodName() + ": " + String.format(format, args), null, t);
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, methodName + ": " + String.format(format, args), null, t);
 	}
 
 	public void traceMethodEntry(final Object... args)
 	{
 		if (!delegate.isTraceEnabled()) return;
 
-		final StringBuilder sb = new StringBuilder() //
-				.append("METHOD ENTRY: ")//
-				.append(StackTrace.getCallingMethodName())//
-				.append('(');
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
+		final StringBuilder sb = new StringBuilder().append("METHOD ENTRY: ").append(methodName).append('(');
 		for (int i = 0, l = args.length; i < l; i++)
 		{
 			sb.append(args[i]);
@@ -405,13 +419,21 @@ public final class Logger
 	public void traceMethodExit()
 	{
 		if (!delegate.isTraceEnabled()) return;
-		delegate.trace("METHOD EXIT: " + StackTrace.getCallingMethodName());
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
+		delegate.trace("METHOD EXIT: " + methodName);
 	}
 
 	public void traceMethodExit(final Object returnValue)
 	{
 		if (!delegate.isTraceEnabled()) return;
-		delegate.trace("METHOD EXIT: " + StackTrace.getCallingMethodName() + " returns with " + returnValue);
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
+		delegate.trace("METHOD EXIT: " + methodName + " returns with " + returnValue);
 	}
 
 	public void warn(final String msg)
