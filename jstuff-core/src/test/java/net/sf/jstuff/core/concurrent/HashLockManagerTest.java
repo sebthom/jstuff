@@ -29,7 +29,7 @@ public class HashLockManagerTest extends TestCase
 	private static Logger LOG = Logger.create();
 
 	private static final int THREADS = 20;
-	private static final int ITERATIONS_PER_THREAD = 2500;
+	private static final int ITERATIONS_PER_THREAD = 25000;
 
 	private final ExecutorService es = Executors.newFixedThreadPool(THREADS);
 	private int sum = -1;
