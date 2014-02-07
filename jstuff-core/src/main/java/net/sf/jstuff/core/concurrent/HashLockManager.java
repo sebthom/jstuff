@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -35,14 +36,14 @@ import net.sf.jstuff.core.validation.Args;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class HashLockManager<T>
+public class HashLockManager<KeyType>
 {
 	private static class CleanUpTask<T> implements Runnable
 	{
 		private static final Logger LOG = Logger.create();
 
 		private final WeakReference<HashLockManager<T>> ref;
-		private ScheduledFuture< ? > future;
+		public ScheduledFuture< ? > future;
 
 		public CleanUpTask(final HashLockManager<T> mgr)
 		{
@@ -54,6 +55,7 @@ public class HashLockManager<T>
 			final HashLockManager<T> mgr = ref.get();
 			if (mgr == null)
 			{
+				// if the corresponding HashLockManager was garbage collected we can cancel the scheduled execution of cleanup task
 				future.cancel(true);
 				return;
 			}
@@ -79,18 +81,18 @@ public class HashLockManager<T>
 
 	private static final ScheduledExecutorService CLEANUP_THREAD = Executors.newSingleThreadScheduledExecutor();
 
-	private final ConcurrentHashMap<T, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<T, ReentrantReadWriteLock>();
+	private final ConcurrentMap<KeyType, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<KeyType, ReentrantReadWriteLock>();
 
 	public HashLockManager(final long lockCleanupInterval, final TimeUnit unit)
 	{
-		final CleanUpTask<T> cleanup = new CleanUpTask<T>(this);
+		final CleanUpTask<KeyType> cleanup = new CleanUpTask<KeyType>(this);
 		cleanup.future = CLEANUP_THREAD.scheduleAtFixedRate(cleanup, lockCleanupInterval, lockCleanupInterval, unit);
 	}
 
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public <V> V doReadLocked(final T key, final Callable<V> callable) throws Exception
+	public <V> V doReadLocked(final KeyType key, final Callable<V> callable) throws Exception
 	{
 		Args.notNull("key", key);
 		Args.notNull("callable", callable);
@@ -109,7 +111,7 @@ public class HashLockManager<T>
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public <R, A> R doReadLocked(final T key, final Invocable<R, A> invocable, final A arguments) throws Exception
+	public <R, A> R doReadLocked(final KeyType key, final Invocable<R, A> invocable, final A arguments) throws Exception
 	{
 		Args.notNull("key", key);
 		Args.notNull("invocable", invocable);
@@ -128,7 +130,7 @@ public class HashLockManager<T>
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public void doReadLocked(final T key, final Runnable runnable)
+	public void doReadLocked(final KeyType key, final Runnable runnable)
 	{
 		Args.notNull("key", key);
 		Args.notNull("runnable", runnable);
@@ -147,7 +149,7 @@ public class HashLockManager<T>
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public <V> V doWriteLocked(final T key, final Callable<V> callable) throws Exception
+	public <V> V doWriteLocked(final KeyType key, final Callable<V> callable) throws Exception
 	{
 		Args.notNull("key", key);
 		Args.notNull("callable", callable);
@@ -166,7 +168,7 @@ public class HashLockManager<T>
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public <R, A> R doWriteLocked(final T key, final Invocable<R, A> invocable, final A arguments) throws Exception
+	public <R, A> R doWriteLocked(final KeyType key, final Invocable<R, A> invocable, final A arguments) throws Exception
 	{
 		Args.notNull("key", key);
 		Args.notNull("invocable", invocable);
@@ -185,7 +187,7 @@ public class HashLockManager<T>
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public void doWriteLocked(final T key, final Runnable runnable)
+	public void doWriteLocked(final KeyType key, final Runnable runnable)
 	{
 		Args.notNull("key", key);
 		Args.notNull("runnable", runnable);
@@ -210,31 +212,28 @@ public class HashLockManager<T>
 	 * Acquires a non-exclusive read lock with a key equal to <code>key</code> for the current thread
 	 * @param key the lock name/identifier
 	 */
-	public void lockRead(final T key)
+	public void lockRead(final KeyType key)
 	{
 		Args.notNull("key", key);
 
 		ReentrantReadWriteLock newLock = null;
-		ReentrantReadWriteLock ourLock = null;
 
 		while (true)
 		{
-			ReentrantReadWriteLock lockInMap = locksByKey.get(key);
-			if (lockInMap == null)
+			ReentrantReadWriteLock lockCandidate = locksByKey.get(key);
+			if (lockCandidate == null)
 			{
 				if (newLock == null) newLock = new ReentrantReadWriteLock(true);
-				ourLock = newLock;
+				lockCandidate = newLock;
 			}
-			else
-				ourLock = lockInMap;
 
-			synchronized (ourLock)
+			synchronized (lockCandidate)
 			{
-				ourLock.readLock().lock();
-				lockInMap = locksByKey.putIfAbsent(key, ourLock);
-				if (lockInMap == ourLock) return;
+				lockCandidate.readLock().lock();
+				final ReentrantReadWriteLock lockInMap = locksByKey.putIfAbsent(key, lockCandidate);
+				if (lockInMap == lockCandidate) return;
 			}
-			ourLock.readLock().unlock();
+			lockCandidate.readLock().unlock();
 		}
 	}
 
@@ -242,31 +241,28 @@ public class HashLockManager<T>
 	 * Acquires an exclusive read-write lock with a key equal to <code>key</code> for the current thread
 	 * @param key the lock name/identifier
 	 */
-	public void lockWrite(final T key)
+	public void lockWrite(final KeyType key)
 	{
 		Args.notNull("key", key);
 
 		ReentrantReadWriteLock newLock = null;
-		ReentrantReadWriteLock ourLock = null;
 
 		while (true)
 		{
-			ReentrantReadWriteLock lockInMap = locksByKey.get(key);
-			if (lockInMap == null)
+			ReentrantReadWriteLock lockCandidate = locksByKey.get(key);
+			if (lockCandidate == null)
 			{
 				if (newLock == null) newLock = new ReentrantReadWriteLock(true);
-				ourLock = newLock;
+				lockCandidate = newLock;
 			}
-			else
-				ourLock = lockInMap;
 
-			synchronized (ourLock)
+			synchronized (lockCandidate)
 			{
-				ourLock.writeLock().lock();
-				lockInMap = locksByKey.putIfAbsent(key, ourLock);
-				if (lockInMap == ourLock) return;
+				lockCandidate.writeLock().lock();
+				final ReentrantReadWriteLock lockInMap = locksByKey.putIfAbsent(key, lockCandidate);
+				if (lockInMap == lockCandidate) return;
 			}
-			ourLock.writeLock().unlock();
+			lockCandidate.writeLock().unlock();
 		}
 	}
 
@@ -274,7 +270,7 @@ public class HashLockManager<T>
 	 * Releases a non-exclusive read lock with a key equal <code>key</code> for the current thread
 	 * @param key the lock name/identifier
 	 */
-	public void unlockRead(final T key)
+	public void unlockRead(final KeyType key)
 	{
 		Args.notNull("key", key);
 
@@ -285,7 +281,7 @@ public class HashLockManager<T>
 	 * Releases an exclusive read-write lock with a key equal to <code>key</code> for the current thread
 	 * @param key the lock name/identifier
 	 */
-	public void unlockWrite(final T key)
+	public void unlockWrite(final KeyType key)
 	{
 		Args.notNull("key", key);
 
