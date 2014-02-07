@@ -18,22 +18,6 @@
 		<jetty.version>7.6.11.v20130520</jetty.version>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>jboss</id>
-			<url>http://repository.jboss.org/maven2/</url>
-		</repository>
-	</repositories>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -48,6 +32,7 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
+			<!-- 2.5 is JEE5 -->
 			<version>2.5</version>
 			<optional>true</optional>
 		</dependency>
@@ -93,7 +78,8 @@
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>javax.mail-api</artifactId>
-			<version>1.5.1</version>
+			<!-- 1.5 is part of JEE6 -->
+			<version>1.4.6</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -140,6 +126,7 @@
 			<!-- only for net.sf.jstuff.integration.persistence.hibernate.* -->
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
+			<!-- newer versions require Java 6 -->
 			<version>3.6.10.Final</version>
 			<optional>true</optional>
 		</dependency>
