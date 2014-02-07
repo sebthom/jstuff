@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -37,7 +37,7 @@ import org.springframework.jdbc.core.RowMapper;
 /**
  * Class represent a mapper that map column values of rows to bean properties
  * This implementation use schema: columnname(lowercase) -->  bean property name
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class BeanRowMapper<T> implements RowMapper<T>
@@ -51,7 +51,7 @@ public class BeanRowMapper<T> implements RowMapper<T>
 	static
 	{
 		/**
-		 * to avoid 
+		 * to avoid
 		 * org.apache.commons.beanutils.ConversionException: No value specified for 'Date'
 		 * at org.apache.commons.beanutils.converters.AbstractConverter.handleMissing(AbstractConverter.java:325)
 		 * at org.apache.commons.beanutils.converters.AbstractConverter.convert(AbstractConverter.java:151)
@@ -131,11 +131,11 @@ public class BeanRowMapper<T> implements RowMapper<T>
 	/**
 	 * Method set beanClass and read information from the bean and to create internal mapping table
 	 * for properties ( propertyNameLowerCase => propertyName )
-	 * 
+	 *
 	 * @param beanClass the beanClass to set
-	 * @throws IntrospectionException 
+	 * @throws IntrospectionException
 	 */
-	protected synchronized void setBeanClass(final Class<T> beanClass) throws IntrospectionException
+	protected void setBeanClass(final Class<T> beanClass) throws IntrospectionException
 	{
 		// get beanInformation from bean e.g. property names
 		final BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);

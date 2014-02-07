@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -75,9 +75,8 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>>
 			}
 			catch (final Exception ex)
 			{
-				LOG.error(
-						"Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s",
-						beanClass, StringUtils.toString(bean), StringUtils.toString(dynaBean), ex);
+				LOG.error("Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass,
+						StringUtils.toString(bean), StringUtils.toString(dynaBean), ex);
 			}
 		}
 		return extractedBeans;
@@ -93,9 +92,9 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>>
 
 	/**
 	 * @param beanClass the beanClass to set
-	 * @throws IntrospectionException 
+	 * @throws IntrospectionException
 	 */
-	public synchronized void setBeanClass(final Class<T> beanClass) throws IntrospectionException
+	public void setBeanClass(final Class<T> beanClass) throws IntrospectionException
 	{
 		final BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
 
