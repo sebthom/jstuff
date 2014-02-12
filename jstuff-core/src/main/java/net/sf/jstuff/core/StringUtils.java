@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -145,9 +145,9 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	}
 
 	public static final char CR = 13;
+
 	public static final char LF = 10;
 	public static final String CR_LF = "" + CR + LF;
-
 	public static final String NEW_LINE = System.getProperty("line.separator");
 
 	public static CharSequence ansiColorsToHTML(final CharSequence txt)
@@ -562,6 +562,12 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	public static boolean startsWith(final CharSequence str, final char ch)
 	{
 		return isEmpty(str) ? false : str.charAt(0) == ch;
+	}
+
+	public static String stripAnsiEscapeSequences(final String in)
+	{
+		if (in == null) return null;
+		return in.replaceAll("\u001B\\[[;\\d]*m", "");
 	}
 
 	/**

@@ -166,6 +166,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/ObjectCacheTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/StringUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/TypeSafeEnumTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/builder/BuilderTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/collection/CollectionUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/CompositeCollectionTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/CompositeListTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/CompositeMapTest.java -text

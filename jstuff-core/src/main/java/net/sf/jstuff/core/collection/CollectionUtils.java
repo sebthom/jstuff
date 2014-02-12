@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -15,6 +15,7 @@ package net.sf.jstuff.core.collection;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -101,6 +102,7 @@ public abstract class CollectionUtils
 
 	/**
 	 * adds all items to the collection accepted by the filter
+	 *
 	 * @return number of items added
 	 * @throws IllegalArgumentException if <code>collection == null</code>
 	 */
@@ -119,6 +121,7 @@ public abstract class CollectionUtils
 
 	/**
 	 * Adds all items to the collection
+	 *
 	 * @return number of items added
 	 * @throws IllegalArgumentException if <code>collection == null</code>
 	 */
@@ -195,6 +198,7 @@ public abstract class CollectionUtils
 
 	/**
 	 * Returns a new list with all items accepted by the filter
+	 *
 	 * @throws IllegalArgumentException if <code>accept == null</code>
 	 */
 	public static <T> List<T> filter(final Collection<T> collection, final Accept<T> accept) throws IllegalArgumentException
@@ -211,6 +215,7 @@ public abstract class CollectionUtils
 
 	/**
 	 * removes all items not accepted by the filter
+	 *
 	 * @param collection
 	 * @param accept
 	 * @return number of items removed
@@ -234,6 +239,28 @@ public abstract class CollectionUtils
 
 		if (map.containsKey(key)) return map.get(key);
 		return defaultValue;
+	}
+
+	/**
+	 * @param n first n elements to return
+	 * @return a new list with the first n elements of the input list
+	 */
+	public static <T> List<T> head(final List<T> list, final int n)
+	{
+		Args.notNull("list", list);
+
+		if (n < 1) return Collections.emptyList();
+
+		final List<T> result = new ArrayList<T>(n > list.size() ? list.size() : n);
+
+		int counter = 1;
+		for (final T item : list)
+		{
+			result.add(item);
+			if (counter == n) break;
+			counter++;
+		}
+		return result;
 	}
 
 	public static <K, V> ArrayList<K> keysAsArrayList(final Map<K, V> map)
@@ -545,6 +572,26 @@ public abstract class CollectionUtils
 		return map;
 	}
 
+	/**
+	 * @param n last n elements to return
+	 * @return a new list with the last n elements of the input list
+	 */
+	public static <T> List<T> tail(final List<T> list, final int n)
+	{
+		Args.notNull("list", list);
+
+		if (n < 1) return Collections.emptyList();
+
+		final int listSize = list.size();
+		final List<T> result = new ArrayList<T>(n > listSize ? listSize : n);
+		final int fromIndex = n > listSize ? 0 : listSize - n;
+		final int toIndex = listSize - 1;
+
+		for (int i = fromIndex; i <= toIndex; i++)
+			result.add(list.get(i));
+		return result;
+	}
+
 	public static <T> Iterable<T> toIterable(final Iterator<T> it)
 	{
 		Args.notNull("it", it);
@@ -571,7 +618,7 @@ public abstract class CollectionUtils
 	/**
 	 * Converts key/value pairs defined in a string into a map.
 	 *
-	 * E.g. asMap("name1=value1,name2=value2", "\"", "=")
+	 * E.g. toMap("name1=value1,name2=value2", "\"", "=")
 	 */
 	public static Map<String, String> toMap(final String valuePairs, final String valueSeparator, final String assignmentOperator)
 	{

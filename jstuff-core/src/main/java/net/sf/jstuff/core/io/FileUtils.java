@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -30,16 +30,6 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 public abstract class FileUtils extends org.apache.commons.io.FileUtils
 {
 	private static final Logger LOG = Logger.create();
-
-	public static File[] asFileArray(final String... filePaths)
-	{
-		Args.notNull("filePaths", filePaths);
-
-		final File[] result = new File[filePaths.length];
-		for (int i = 0, l = filePaths.length; i < l; i++)
-			result[i] = new File(filePaths[i]);
-		return result;
-	}
 
 	/**
 	 * Creates a backup of the given file if it exists, otherwise returns with null.
@@ -140,6 +130,16 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	public static String getTempDirectoryPath()
 	{
 		return System.getProperty("java.io.tmpdir");
+	}
+
+	public static File[] toFiles(final String... filePaths)
+	{
+		Args.notNull("filePaths", filePaths);
+
+		final File[] result = new File[filePaths.length];
+		for (int i = 0, l = filePaths.length; i < l; i++)
+			result[i] = new File(filePaths[i]);
+		return result;
 	}
 
 	public static void writeStringToFile(final String file, final CharSequence data) throws IOException
