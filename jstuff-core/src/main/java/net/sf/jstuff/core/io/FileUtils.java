@@ -12,9 +12,13 @@
  *******************************************************************************/
 package net.sf.jstuff.core.io;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -140,6 +144,18 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		for (int i = 0, l = filePaths.length; i < l; i++)
 			result[i] = new File(filePaths[i]);
 		return result;
+	}
+
+	@SuppressWarnings("resource")
+	public static void writeAndClose(final File file, InputStream is) throws IOException
+	{
+		if (!(is instanceof BufferedInputStream)) is = new BufferedInputStream(is);
+		IOUtils.copyAndClose(is, new BufferedOutputStream(new FileOutputStream(file)));
+	}
+
+	public static void writeAndClose(final String file, final InputStream is) throws IOException
+	{
+		writeAndClose(new File(file), is);
 	}
 
 	public static void writeStringToFile(final String file, final CharSequence data) throws IOException

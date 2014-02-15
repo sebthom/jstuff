@@ -39,7 +39,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 
 	public static final int EOF = -1;
 
-	public static void closeQuietly(ZipFile file)
+	public static void closeQuietly(final ZipFile file)
 	{
 		if (file != null) try
 		{
@@ -51,12 +51,20 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 		}
 	}
 
+	/**
+	 * @return Bytes copied
+	 */
 	public static int copyAndClose(final InputStream is, final OutputStream os) throws IOException
 	{
-		final int bytesCopied = copy(is, os);
-		closeQuietly(is);
-		closeQuietly(os);
-		return bytesCopied;
+		try
+		{
+			return copy(is, os);
+		}
+		finally
+		{
+			closeQuietly(is);
+			closeQuietly(os);
+		}
 	}
 
 	@SuppressWarnings("resource")

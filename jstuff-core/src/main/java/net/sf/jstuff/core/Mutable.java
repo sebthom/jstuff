@@ -21,6 +21,11 @@ public class Mutable<T> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
+	public static <T> Mutable<T> create(final T initialValue)
+	{
+		return new Mutable<T>(initialValue);
+	}
+
 	private T value;
 
 	public Mutable(final T initialValue)
