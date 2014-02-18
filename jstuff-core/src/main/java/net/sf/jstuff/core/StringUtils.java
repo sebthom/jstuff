@@ -147,6 +147,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	public static final char CR = 13;
 
 	public static final char LF = 10;
+
 	public static final String CR_LF = "" + CR + LF;
 	public static final String NEW_LINE = System.getProperty("line.separator");
 
@@ -433,46 +434,39 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	}
 
 	/**
-	 * Replaces a copy of string delimited by the start parameters with the string given in replacement. The result is returned.
+	 * Replaces the substring starting at <code>startAt</code> with the string <code>replaceWith</code>.<br/>
+	 * <br/>
+	 * <b>startAt:</b><br/>
+	 * If startAt is positive, the replacing will begin at the startAt'th offset into searchIn.<br/>
+	 * If startAt is negative, the replacing will begin at the startAt'th character from the end of searchIn.<br/>
+	 * <br/>
+	 * Behavior is based on PHP's substr_replace function http://www.php.net/manual/en/function.substr-replace.php<br/>
 	 *
-	 * startAt:
-	 * If startAt is positive, the replacing will begin at the startAt'th offset into searchIn.
-	 * If startAt is negative, the replacing will begin at the startAt'th character from the end of searchIn.
-	 * If length is not given, then it will default to searchIn.length, i.e. end the replacing at the end of string.
-	 *
-	 * behavior is based on PHP's substr_replace function http://www.php.net/manual/en/function.substr-replace.php
-	 *
-	 * @param searchIn
-	 * @param replaceWith
-	 * @param start position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
-	 * @return String
+	 * @param startAt position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
 	 */
-	public static String replace(final String searchIn, final CharSequence replaceWith, final int start)
+	public static String replace(final String searchIn, final int startAt, final CharSequence replaceWith)
 	{
-		return replace(searchIn, replaceWith, start, searchIn.length());
+		return replace(searchIn, startAt, searchIn.length(), replaceWith);
 	}
 
 	/**
-	 * Replaces a copy of string delimited by the start and length parameters with the string given in replacement. The result is returned.
+	 * Replaces the substring starting at <code>startAt</code> having a length of <code>length</code> with the string <code>replaceWith</code>.<br/>
+	 * <br/>
+	 * <b>startAt:</b><br/>
+	 * If startAt is positive, the replacing will begin at the startAt'th offset into searchIn.<br/>
+	 * If startAt is negative, the replacing will begin at the startAt'th character from the end of searchIn.<br/>
+	 * <br/>
+	 * <b>length:</b><br/>
+	 * If length is positive, it represents the length of the portion of searchIn which is to be replaced.<br/>
+	 * If length is negative, it represents the number of characters from the end of searchIn at which to stop replacing.<br/>
+	 * If length is 0 the text will be inserted at the given position.<br/>
+	 * <br/>
+	 * Behavior is based on PHP's substr_replace function http://www.php.net/manual/en/function.substr-replace.php<br/>
 	 *
-	 * startAt:
-	 * If startAt is positive, the replacing will begin at the startAt'th offset into searchIn.
-	 * If startAt is negative, the replacing will begin at the startAt'th character from the end of searchIn.
-	 *
-	 * length:
-	 * If length is given and is positive, it represents the length of the portion of searchIn which is to be replaced.
-	 * If length is negative, it represents the number of characters from the end of searchIn at which to stop replacing.
-	 * If length is 0 the text will be inserted at the given position.
-	 *
-	 * behaviour is based on PHP's substr_replace function http://www.php.net/manual/en/function.substr-replace.php
-	 *
-	 * @param searchIn
-	 * @param replaceWith
 	 * @param startAt position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
-	 * @param length number of characters to overwrite
-	 * @return String
+	 * @param length number of characters to replace
 	 */
-	public static String replace(final String searchIn, final CharSequence replaceWith, int startAt, int length)
+	public static String replace(final String searchIn, int startAt, int length, final CharSequence replaceWith)
 	{
 		if (searchIn == null || replaceWith == null) return searchIn;
 
@@ -497,6 +491,21 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		final int end = startAt + length > stringLength ? stringLength : startAt + length;
 
 		return searchIn.substring(0, startAt) + replaceWith + searchIn.substring(end);
+	}
+
+	/**
+	 * Replace all occurrences of searchFor in searchIn with replaceWith.
+	 */
+	public static void replace(final StringBuilder searchIn, final String searchFor, final String replaceWith)
+	{
+		final int searchForLen = searchFor.length();
+		final int replaceWithLen = replaceWith.length();
+		int index = searchIn.indexOf(searchFor);
+		while (index != -1)
+		{
+			searchIn.replace(index, index + searchForLen, replaceWith);
+			index = searchIn.indexOf(searchFor, index + replaceWithLen);
+		}
 	}
 
 	/**
