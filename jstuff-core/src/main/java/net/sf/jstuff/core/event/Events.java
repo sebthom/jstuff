@@ -70,9 +70,4 @@ public abstract class Events
 			if (fire(type, listener)) count++;
 		return count;
 	}
-
-	protected Events()
-	{
-		super();
-	}
 }

@@ -26,7 +26,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class Methods extends Members
+public abstract class Methods extends Members
 {
 	private static final Logger LOG = Logger.create();
 
@@ -325,5 +325,4 @@ public class Methods extends Members
 
 		return true;
 	}
-
 }

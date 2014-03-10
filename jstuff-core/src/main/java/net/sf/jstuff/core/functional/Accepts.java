@@ -429,9 +429,4 @@ public abstract class Accepts
 	{
 		return new StartingWith<V>(prefix);
 	}
-
-	protected Accepts()
-	{
-		super();
-	}
 }

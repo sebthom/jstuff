@@ -44,7 +44,7 @@ import org.apache.commons.lang3.ArrayUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class Types
+public abstract class Types
 {
 	private static Logger LOG = Logger.create();
 

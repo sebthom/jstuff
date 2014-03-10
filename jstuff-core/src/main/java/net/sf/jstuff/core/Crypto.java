@@ -176,9 +176,4 @@ public abstract class Crypto
 			throw new CryptoException(ex);
 		}
 	}
-
-	protected Crypto()
-	{
-		super();
-	}
 }

@@ -133,9 +133,4 @@ public abstract class DateUtils extends org.apache.commons.lang3.time.DateUtils
 		c.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return RFC3399_FORMAT.format(c);
 	}
-
-	protected DateUtils()
-	{
-		super();
-	}
 }

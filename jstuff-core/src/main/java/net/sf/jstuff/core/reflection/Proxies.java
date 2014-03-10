@@ -20,7 +20,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class Proxies
+public abstract class Proxies
 {
 	@SuppressWarnings("unchecked")
 	public static <T> T create(final Class<T> interfaceType, final InvocationHandler handler)

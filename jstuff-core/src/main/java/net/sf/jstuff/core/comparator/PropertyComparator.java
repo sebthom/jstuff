@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -40,12 +40,17 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable
 		if (o1 == null) return 1;
 		if (o2 == null) return -1;
 
-		final Object v1 = ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(o1, propertyPath);
-		final Object v2 = ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(o2, propertyPath);
+		final Object v1 = getValueAt(o1, propertyPath);
+		final Object v2 = getValueAt(o2, propertyPath);
 
 		if (v1 == v2) return 0;
 		if (v1 == null) return 1;
 		if (v2 == null) return -1;
 		return ((Comparable) v1).compareTo(v2);
+	}
+
+	protected Object getValueAt(final Object obj, final String propertyPath)
+	{
+		return ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(obj, propertyPath);
 	}
 }

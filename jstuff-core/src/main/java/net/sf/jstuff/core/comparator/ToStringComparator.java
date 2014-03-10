@@ -26,15 +26,15 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable
 
 	private static final ToStringComparator< ? > INSTANCE = new ToStringComparator<Object>();
 
+	public static <T> ToStringComparator<T> create(final Locale locale)
+	{
+		return new ToStringComparator<T>(locale);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <T> ToStringComparator<T> get()
 	{
 		return (ToStringComparator<T>) INSTANCE;
-	}
-
-	public static <T> ToStringComparator<T> create(final Locale locale)
-	{
-		return new ToStringComparator<T>(locale);
 	}
 
 	// collator is only serializable starting Java 6
@@ -60,7 +60,7 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable
 	public int compare(final T o1, final T o2)
 	{
 		if (o1 == o2) return 0;
-		return _getCollator().compare(o1.toString(), o2.toString());
+		return _getCollator().compare(o1 == null ? null : o1.toString(), o2 == null ? null : o2.toString());
 	}
 
 	public Locale getLocale()
