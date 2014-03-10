@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Thomschke.
+ *
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
 import java.io.ObjectStreamException;
@@ -7,6 +19,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Queue;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public class EmptyQueue<E> extends AbstractQueue<E> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -26,18 +41,14 @@ public class EmptyQueue<E> extends AbstractQueue<E> implements Serializable
 
 	@Override
 	public void clear()
-	{}
+	{
+		// nothing to do
+	}
 
 	@Override
 	public boolean isEmpty()
 	{
 		return true;
-	}
-
-	@Override
-	public int size()
-	{
-		return 0;
 	}
 
 	@Override
@@ -51,12 +62,12 @@ public class EmptyQueue<E> extends AbstractQueue<E> implements Serializable
 		return false;
 	}
 
-	public E poll()
+	public E peek()
 	{
 		return null;
 	}
 
-	public E peek()
+	public E poll()
 	{
 		return null;
 	}
@@ -65,5 +76,11 @@ public class EmptyQueue<E> extends AbstractQueue<E> implements Serializable
 	private Object readResolve() throws ObjectStreamException
 	{
 		return INSTANCE;
+	}
+
+	@Override
+	public int size()
+	{
+		return 0;
 	}
 }

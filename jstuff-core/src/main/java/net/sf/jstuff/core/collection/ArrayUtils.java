@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -132,7 +132,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> List<T> toList(final Object array, final Class<T> itemType)
+	public static <T> List<T> toList(final Object array, @SuppressWarnings("unused") final Class<T> itemType)
 	{
 		if (array == null) return null;
 		if (!array.getClass().isArray()) throw new IllegalArgumentException("[array] is not an array but of type: " + array.getClass());

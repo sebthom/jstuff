@@ -19,12 +19,12 @@ import javax.xml.stream.XMLStreamReader;
  */
 public abstract class StAXUtils
 {
-	public static String getAttributeValue(final XMLStreamReader xmlr, final String attrLocalName)
+	public static String getAttributeValue(final XMLStreamReader reader, final String attrLocalName)
 	{
-		for (int i = 0; i < xmlr.getAttributeCount(); i++)
+		for (int i = 0; i < reader.getAttributeCount(); i++)
 		{
-			final String localName = xmlr.getAttributeLocalName(i);
-			if (localName.equals(attrLocalName)) return xmlr.getAttributeValue(i);
+			final String localName = reader.getAttributeLocalName(i);
+			if (localName.equals(attrLocalName)) return reader.getAttributeValue(i);
 		}
 		return null;
 	}

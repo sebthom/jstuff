@@ -48,11 +48,12 @@ public abstract class CollectionUtils
 		{
 			private static final long serialVersionUID = 1L;
 
-			public final Map<K, V> leftMap;
-			public final Map<K, V> rightMap;
-
 			public final K key;
+			
+			public final Map<K, V> leftMap;
 			public final V leftValue;
+			
+			public final Map<K, V> rightMap;
 			public final V rightValue;
 
 			public EntryValueDiff(final Map<K, V> leftMap, final Map<K, V> rightMap, final K key, final V leftValue, final V rightValue)
@@ -67,18 +68,17 @@ public abstract class CollectionUtils
 			@Override
 			public String toString()
 			{
-				return EntryValueDiff.class.getSimpleName() + " [key=" + key + ", leftValue=" + leftValue + ", rightValue=" + rightValue
-						+ "]";
+				return EntryValueDiff.class.getSimpleName() + " [key=" + key + ", leftValue=" + leftValue + ", rightValue=" + rightValue + "]";
 			}
 		}
 
 		private static final long serialVersionUID = 1L;
 
-		public final Map<K, V> leftMap;
-
-		public final Map<K, V> rightMap;
 		public final List<EntryValueDiff<K, V>> entryValueDiffs = newArrayList();
+
+		public final Map<K, V> leftMap;
 		public final Map<K, V> leftOnlyEntries = newHashMap();
+		public final Map<K, V> rightMap;
 		public final Map<K, V> rightOnlyEntries = newHashMap();
 
 		public MapDiff(final Map<K, V> leftMap, final Map<K, V> rightMap)
@@ -95,8 +95,8 @@ public abstract class CollectionUtils
 		@Override
 		public String toString()
 		{
-			return MapDiff.class.getSimpleName() + " [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries=" + leftOnlyEntries
-					+ ", rightOnlyEntries=" + rightOnlyEntries + "]";
+			return MapDiff.class.getSimpleName() + " [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries=" + leftOnlyEntries + ", rightOnlyEntries="
+					+ rightOnlyEntries + "]";
 		}
 	}
 
@@ -263,6 +263,11 @@ public abstract class CollectionUtils
 		return result;
 	}
 
+	public static boolean isEmpty(final Collection< ? > coll)
+	{
+		return coll == null || coll.isEmpty();
+	}
+
 	public static <K, V> ArrayList<K> keysAsArrayList(final Map<K, V> map)
 	{
 		Args.notNull("map", map);
@@ -301,7 +306,7 @@ public abstract class CollectionUtils
 
 	public static <K> ArrayList<K> newArrayList(final Collection<K> coll)
 	{
-		return new ArrayList<K>(coll);
+		return coll == null ? new ArrayList<K>() : new ArrayList<K>(coll);
 	}
 
 	public static <K> ArrayList<K> newArrayList(final int initialSize)
@@ -311,6 +316,8 @@ public abstract class CollectionUtils
 
 	public static <K> ArrayList<K> newArrayList(final K... values)
 	{
+		if (values == null || values.length == 0) return new ArrayList<K>();
+
 		final ArrayList<K> l = new ArrayList<K>(values.length);
 		// faster than Collections.addAll(result, array);
 		for (final K v : values)
@@ -328,8 +335,7 @@ public abstract class CollectionUtils
 		return new HashMap<K, V>(initialSize);
 	}
 
-	public static <K, V, KK extends K, VV extends V> HashMap<K, V> newHashMap(final KK firstKey, final VV firstValue,
-			final Object... moreInitialKeysAndValues)
+	public static <K, V, KK extends K, VV extends V> HashMap<K, V> newHashMap(final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues)
 	{
 		final HashMap<K, V> m = new HashMap<K, V>(1 + moreInitialKeysAndValues.length / 2);
 		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
@@ -343,6 +349,7 @@ public abstract class CollectionUtils
 	public static <K, V> HashMap<K, V> newHashMap(final Object[] initialKeysAndValues)
 	{
 		if (initialKeysAndValues == null) return new HashMap<K, V>();
+
 		return putAll(new HashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
 	}
 
@@ -363,6 +370,8 @@ public abstract class CollectionUtils
 
 	public static <K> HashSet<K> newHashSet(final K... values)
 	{
+		if (values == null || values.length == 0) return new HashSet<K>();
+
 		final HashSet<K> s = new HashSet<K>(values.length);
 		for (final K v : values)
 			s.add(v);
@@ -388,7 +397,8 @@ public abstract class CollectionUtils
 
 	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final Object[] initialKeysAndValues)
 	{
-		Args.notNull("initialKeysAndValues", initialKeysAndValues);
+		if (initialKeysAndValues == null) return new LinkedHashMap<K, V>();
+
 		return putAll(new LinkedHashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
 	}
 
@@ -491,22 +501,21 @@ public abstract class CollectionUtils
 		return new TreeMap<K, V>(keyComparator);
 	}
 
-	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator,
-			final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues)
+	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator, final KK firstKey,
+			final VV firstValue, final Object... moreInitialKeysAndValues)
 	{
 		final TreeMap<K, V> m = new TreeMap<K, V>(keyComparator);
 		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
 	}
 
-	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator,
-			final Object[] initialKeysAndValues)
+	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator, final Object[] initialKeysAndValues)
 	{
-		Args.notNull("initialKeysAndValues", initialKeysAndValues);
+		if (initialKeysAndValues == null) return new TreeMap<K, V>(keyComparator);
+
 		return putAll(new TreeMap<K, V>(keyComparator), initialKeysAndValues);
 	}
 
-	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue,
-			final Object... moreInitialKeysAndValues)
+	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues)
 	{
 		final TreeMap<K, V> m = new TreeMap<K, V>();
 		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
@@ -518,8 +527,7 @@ public abstract class CollectionUtils
 		Args.notNull("keys", keys);
 		Args.notNull("values", values);
 
-		if (keys.length != values.length)
-			throw new IllegalArgumentException("Arguments [keys] and [values] must have the same array size.");
+		if (keys.length != values.length) throw new IllegalArgumentException("Arguments [keys] and [values] must have the same array size.");
 
 		for (int i = 0; i < keys.length; i++)
 			map.put(keys[i], values[i]);
@@ -554,7 +562,7 @@ public abstract class CollectionUtils
 	public static <K, V, M extends Map<K, V>> M putAll(final M map, final Object[] keysAndValues)
 	{
 		Args.notNull("map", map);
-		Args.notNull("keysAndValues", keysAndValues);
+		if (keysAndValues == null || keysAndValues.length == 0) return map;
 
 		boolean nextIsValue = false;
 		K key = null;

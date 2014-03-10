@@ -28,8 +28,7 @@ public abstract class Args
 
 		for (final Object entry : entries)
 			if (entry == null)
-				throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
-						+ "] must not contain elements with value <null>"));
+				throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not contain elements with value <null>"));
 		return entries;
 	}
 
@@ -39,32 +38,46 @@ public abstract class Args
 
 		for (final T entry : entries)
 			if (entry == null)
-				throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName
-						+ "] must not contain elements with value <null>"));
+				throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not contain elements with value <null>"));
 		return entries;
+	}
+
+	public static byte greaterThan(final String argumentName, final byte value, final byte min)
+	{
+		if (value <= min) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be greater than " + min));
+		return value;
+	}
+
+	public static int greaterThan(final String argumentName, final int value, final int min)
+	{
+		if (value <= min) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be greater than " + min));
+		return value;
+	}
+
+	public static long greaterThan(final String argumentName, final long value, final long min)
+	{
+		if (value <= min) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be greater than " + min));
+		return value;
 	}
 
 	public static byte inRange(final String argumentName, final byte value, final byte min, final byte max)
 	{
 		if (value < min || value > max)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be in range of " + min + " to "
-					+ max));
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be in range of " + min + " to " + max));
 		return value;
 	}
 
 	public static int inRange(final String argumentName, final int value, final int min, final int max)
 	{
 		if (value < min || value > max)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be in range of " + min + " to "
-					+ max));
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be in range of " + min + " to " + max));
 		return value;
 	}
 
 	public static long inRange(final String argumentName, final long value, final long min, final long max)
 	{
 		if (value < min || value > max)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be in range of " + min + " to "
-					+ max));
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be in range of " + min + " to " + max));
 		return value;
 	}
 
@@ -74,36 +87,31 @@ public abstract class Args
 
 		final long lValue = value.longValue();
 		if (lValue < min || lValue > max)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be in range of " + min + " to "
-					+ max));
+			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be in range of " + min + " to " + max));
 		return value;
 	}
 
 	public static byte minSize(final String argumentName, final byte value, final byte min)
 	{
-		if (value < min)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min + " or greater"));
+		if (value < min) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min + " or greater"));
 		return value;
 	}
 
 	public static int minSize(final String argumentName, final int value, final int min)
 	{
-		if (value < min)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min + " or greater"));
+		if (value < min) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min + " or greater"));
 		return value;
 	}
 
 	public static long minSize(final String argumentName, final long value, final long min)
 	{
-		if (value < min)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min + " or greater"));
+		if (value < min) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min + " or greater"));
 		return value;
 	}
 
 	public static short minSize(final String argumentName, final short value, final short min)
 	{
-		if (value < min)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min + " or greater"));
+		if (value < min) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must be " + min + " or greater"));
 		return value;
 	}
 
@@ -139,8 +147,7 @@ public abstract class Args
 		notNull("argumentName", argumentName);
 
 		if (value == null) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
-		if (value.length() == 0)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
+		if (value.length() == 0) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
 		return value;
 	}
 
@@ -152,8 +159,7 @@ public abstract class Args
 		notNull("argumentName", argumentName);
 
 		if (value == null) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be null"));
-		if (value.length == 0)
-			throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
+		if (value.length == 0) throw removeFirstStackTraceElement(new IllegalArgumentException("[" + argumentName + "] must not be empty"));
 		return value;
 	}
 

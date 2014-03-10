@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -37,6 +37,7 @@ public class AtomBlogUtils
 {
 	private static final ThreadLocal<XMLOutputFactory> XML_OUTPUT_FACTORY = new ThreadLocal<XMLOutputFactory>()
 		{
+			@Override
 			protected XMLOutputFactory initialValue()
 			{
 				return XMLOutputFactory.newInstance();
@@ -175,7 +176,6 @@ public class AtomBlogUtils
 					staxWriter.writeEndElement();
 				}
 				{
-
 					staxWriter.writeStartElement("app", "control", "http://purl.org/atom/app#");
 					{
 						staxWriter.writeStartElement("app", "draft", "http://purl.org/atom/app#");
@@ -209,7 +209,6 @@ public class AtomBlogUtils
 			final PostMethod postEntry = new PostMethod(blogAtomServiceEntriesURL);
 			postEntry.setDoAuthentication(true);
 			postEntry.addRequestHeader("Content-Type", "application/atom+xml;type=entry");
-
 			postEntry.setRequestEntity(new StringRequestEntity(entryAsXML.toString(), null, null));
 			try
 			{

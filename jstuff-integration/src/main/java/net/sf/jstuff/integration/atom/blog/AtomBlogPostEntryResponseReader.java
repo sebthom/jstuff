@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -25,6 +25,7 @@ public class AtomBlogPostEntryResponseReader
 {
 	private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = new ThreadLocal<XMLInputFactory>()
 		{
+			@Override
 			protected XMLInputFactory initialValue()
 			{
 				return XMLInputFactory.newInstance();
@@ -58,8 +59,9 @@ public class AtomBlogPostEntryResponseReader
 		if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("link"))) return;
 
 		final String rel = StAXUtils.getAttributeValue(xmlr, "rel");
-		if (rel.equals("edit")) atomBlogEntry.setEditURL(StAXUtils.getAttributeValue(xmlr, "href"));
-		if (rel.equals("alternate")) atomBlogEntry.setDisplayURL(StAXUtils.getAttributeValue(xmlr, "href"));
+		if (rel.equals("edit"))
+			atomBlogEntry.setEditURL(StAXUtils.getAttributeValue(xmlr, "href"));
+		else if (rel.equals("alternate")) atomBlogEntry.setDisplayURL(StAXUtils.getAttributeValue(xmlr, "href"));
 	}
 
 	public static AtomBlogEntry processStream(final InputStream is, final String encoding) throws XMLStreamException
@@ -72,8 +74,6 @@ public class AtomBlogPostEntryResponseReader
 			xmlr.next();
 			return processEntry(xmlr);
 		}
-
 		return null;
 	}
-
 }

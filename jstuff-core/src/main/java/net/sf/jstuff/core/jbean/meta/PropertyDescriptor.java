@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -41,6 +41,7 @@ public final class PropertyDescriptor<P> implements Serializable
 			p.type = type;
 			p.ordered = ordered;
 			p.unique = unique;
+			p.container = container;
 			p.description = description == null ? "" : description;
 			p.properties = newHashMap(properties);
 			p.propertiesReadOnly = unmodifiableMap(p.properties);

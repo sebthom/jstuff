@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -20,7 +20,7 @@ import net.sf.jstuff.core.validation.Args;
 
 /**
  * An unsynchronized implementation of {@link ByteArrayInputStream}.
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class FastByteArrayInputStream extends InputStream
@@ -47,9 +47,6 @@ public class FastByteArrayInputStream extends InputStream
 		mark = offset;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int available() throws IOException
 	{
@@ -63,38 +60,28 @@ public class FastByteArrayInputStream extends InputStream
 	 */
 	@Override
 	public void close()
-	{}
+	{
+		// nothing to do
+	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void mark(final int readLimit)
 	{
 		mark = pos;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean markSupported()
 	{
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int read() throws IOException
 	{
 		return pos < count ? data[pos++] & 0xff : IOUtils.EOF;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int read(final byte buf[], final int offset, int length) throws IOException
 	{
@@ -114,18 +101,12 @@ public class FastByteArrayInputStream extends InputStream
 		return length;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void reset() throws IOException
 	{
 		pos = mark;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public long skip(long n) throws IOException
 	{

@@ -52,7 +52,7 @@ public class WeakIdentityHashSet<E> extends MapBackedSet<E> implements Cloneable
 	}
 
 	@SuppressWarnings("static-method")
-	private void writeObject(final ObjectOutputStream oos) throws IOException
+	private void writeObject(@SuppressWarnings("unused") final ObjectOutputStream oos) throws IOException
 	{
 		throw new NotSerializableException();
 	}

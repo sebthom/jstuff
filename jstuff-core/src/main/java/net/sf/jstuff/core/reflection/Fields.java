@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -55,7 +55,9 @@ public abstract class Fields extends Members
 			if (Types.isAssignableTo(compatibleTo, field.getType())) return field;
 		}
 		catch (final NoSuchFieldException ex)
-		{}
+		{
+			// ignore
+		}
 		return null;
 	}
 

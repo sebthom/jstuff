@@ -24,6 +24,8 @@ public class Entity extends Identifiable.Default<Integer>
 
 	private Integer id;
 
+	private String label;
+
 	public Entity()
 	{
 		_hashCodeTrackingId = HashCodeManager.onEntityInstantiated(this);
@@ -50,6 +52,11 @@ public class Entity extends Identifiable.Default<Integer>
 		return id;
 	}
 
+	public String getLabel()
+	{
+		return label;
+	}
+
 	@Override
 	public int hashCode()
 	{
@@ -68,6 +75,7 @@ public class Entity extends Identifiable.Default<Integer>
 
 	public Entity setLabel(final String label)
 	{
+		this.label = label;
 		return this;
 	}
 }

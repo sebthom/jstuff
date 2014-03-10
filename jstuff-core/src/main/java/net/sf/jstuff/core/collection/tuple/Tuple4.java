@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -26,7 +26,7 @@ public class Tuple4<T1, T2, T3, T4> extends Tuple
 
 	public Tuple4(final T1 value1, final T2 value2, final T3 value3, final T4 value4)
 	{
-		super(value1, value2, value3);
+		super(value1, value2, value3, value4);
 	}
 
 	/*

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -149,7 +149,7 @@ public final class JULogger
 	public void info(final String msg, final Throwable t)
 	{
 		if (!delegate.isLoggable(Level.INFO)) return;
-		delegate.info(msg);
+		delegate.log(Level.INFO, msg, t);
 	}
 
 	/**

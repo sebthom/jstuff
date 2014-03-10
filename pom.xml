@@ -135,6 +135,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
+				<!-- 3.2 requires Java 6 -->
 				<version>3.1</version>
 			</dependency>
 			<dependency>
@@ -241,6 +242,7 @@
 						if only the toolchain plug-in is configured, therefore we explicitly configure the Java version again -->
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<optimize>true</optimize>
 					<compilerId>${compilerId}</compilerId>
 					<!-- using eclipse compiler since javac is buggy when compiling complex generic expressions -->
 				</configuration>
@@ -358,20 +360,6 @@
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-compiler-plugin</artifactId>
-										<versionRange>[3.1,)</versionRange>
-										<goals>
-											<goal>compile</goal>
-											<goal>testCompile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>org.apache.maven.plugins</groupId>

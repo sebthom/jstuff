@@ -135,14 +135,18 @@ public class Types
 			return (Class< ? extends T>) Types.class.getClassLoader().loadClass(className);
 		}
 		catch (final ClassNotFoundException ex)
-		{}
+		{
+			// ignore
+		}
 
 		try
 		{
 			return (Class< ? extends T>) Thread.currentThread().getContextClassLoader().loadClass(className);
 		}
 		catch (final ClassNotFoundException ex)
-		{}
+		{
+			// ignore
+		}
 		return null;
 	}
 
@@ -281,7 +285,7 @@ public class Types
 	/**
 	 * initializes the given class
 	 */
-	public static void initialize(Class< ? > type)
+	public static void initialize(final Class< ? > type)
 	{
 		Args.notNull("type", type);
 		try

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -70,7 +70,9 @@ public class Methods extends Members
 			if (Types.isAssignableTo(getter.getReturnType(), compatibleTo)) return getter;
 		}
 		catch (final NoSuchMethodException ex)
-		{}
+		{
+			// ignore
+		}
 
 		try
 		{
@@ -82,7 +84,9 @@ public class Methods extends Members
 			}
 		}
 		catch (final NoSuchMethodException ex)
-		{}
+		{
+			// ignore
+		}
 
 		LOG.trace("No getter for [%s] found in class [%s] compatible to [%s].", propertyName, clazz, compatibleTo);
 		return null;

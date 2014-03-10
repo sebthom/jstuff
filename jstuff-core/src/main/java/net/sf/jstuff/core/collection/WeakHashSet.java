@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -63,7 +63,7 @@ public class WeakHashSet<E> extends MapBackedSet<E> implements Cloneable
 	}
 
 	@SuppressWarnings("static-method")
-	private void writeObject(final ObjectOutputStream oos) throws IOException
+	private void writeObject(@SuppressWarnings("unused") final ObjectOutputStream oos) throws IOException
 	{
 		throw new NotSerializableException();
 	}

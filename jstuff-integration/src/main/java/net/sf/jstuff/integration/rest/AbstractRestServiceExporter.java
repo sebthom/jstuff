@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -98,7 +98,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		}
 	}
 
-	private RestServiceDescriptor buildRESTServiceDescriptor(final HttpServletRequest req)
+	private RestServiceDescriptor buildRESTServiceDescriptor()
 	{
 		final List<RestResourceAction> actions = actionRegistry.getAllResourceActions();
 		final RestServiceDescriptor serviceDescr = new RestServiceDescriptor();
@@ -113,13 +113,13 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		return serviceDescr;
 	}
 
-	private void describe(final HttpServletRequest req, final HttpServletResponse resp) throws IOException
+	private void describe(final HttpServletResponse resp) throws IOException
 	{
-		resp.getWriter().println(serializeResponse(buildRESTServiceDescriptor(req)));
+		resp.getWriter().println(serializeResponse(buildRESTServiceDescriptor()));
 		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 
-	private void describeAsHTML(final HttpServletRequest req, final HttpServletResponse resp) throws IOException
+	private void describeAsHTML(final String requestURL, final HttpServletResponse resp) throws IOException
 	{
 		resp.setContentType("text/html;charset=" + characterEncoding);
 		@SuppressWarnings("resource")
@@ -135,8 +135,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		pw.println("</p>");
 
 		pw.println("<h3>RESTful resource actions</h3>");
-		final RestServiceDescriptor serviceDef = buildRESTServiceDescriptor(req);
-		final String requestURL = req.getRequestURL().toString();
+		final RestServiceDescriptor serviceDef = buildRESTServiceDescriptor();
 		doExplainAsHTML(pw, false, serviceDef, requestURL);
 
 		pw.println("<h3>Fallback resource actions for HTTP clients without support for PUT, DELETE, HEAD</h3>");
@@ -225,13 +224,13 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 
 		if (isGET && req.getParameter("explain") != null)
 		{
-			describe(req, resp);
+			describe(resp);
 			return;
 		}
 
 		if (isGET && req.getParameter("explainAsHTML") != null)
 		{
-			describeAsHTML(req, resp);
+			describeAsHTML(req.getRequestURL().toString(), resp);
 			return;
 		}
 
@@ -296,6 +295,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		}
 	}
 
+	@SuppressWarnings("unused")
 	protected void onServiceMethodInvoked(final Method m, final Object[] args, final Object rc)
 	{
 		// may be subclassed

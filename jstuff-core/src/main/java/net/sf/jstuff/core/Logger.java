@@ -71,6 +71,7 @@ public final class Logger
 	public void debug(final String msg)
 	{
 		if (!delegate.isDebugEnabled()) return;
+
 		if (delegateExt == null)
 			delegate.debug(msg);
 		else
@@ -115,6 +116,21 @@ public final class Logger
 			delegate.debug(String.format(format, arg1, arg2));
 		else
 			delegateExt.log(null, FQCN, LocationAwareLogger.DEBUG_INT, String.format(format, arg1, arg2), null, null);
+	}
+
+	/**
+	 * @param format A format string understandable by {@link java.util.Formatter}.
+	 * @param arg1 Argument referenced by the format specifiers in the format string.
+	 * @param arg2 Argument referenced by the format specifiers in the format string.
+	 * @param arg3 Argument referenced by the format specifiers in the format string.
+	 */
+	public void debug(final String format, final Object arg1, final Object arg2, final Object arg3)
+	{
+		if (!delegate.isDebugEnabled()) return;
+		if (delegateExt == null)
+			delegate.debug(String.format(format, arg1, arg2, arg3));
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.DEBUG_INT, String.format(format, arg1, arg2, arg3), null, null);
 	}
 
 	public void debug(final String msg, final Throwable t)
@@ -186,6 +202,21 @@ public final class Logger
 			delegate.error(String.format(format, arg1, arg2));
 		else
 			delegateExt.log(null, FQCN, LocationAwareLogger.ERROR_INT, String.format(format, arg1, arg2), null, null);
+	}
+
+	/**
+	 * @param format A format string understandable by {@link java.util.Formatter}.
+	 * @param arg1 Argument referenced by the format specifiers in the format string.
+	 * @param arg2 Argument referenced by the format specifiers in the format string.
+	 * @param arg3 Argument referenced by the format specifiers in the format string.
+	 */
+	public void error(final String format, final Object arg1, final Object arg2, final Object arg3)
+	{
+		if (!delegate.isErrorEnabled()) return;
+		if (delegateExt == null)
+			delegate.error(String.format(format, arg1, arg2, arg3));
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.ERROR_INT, String.format(format, arg1, arg2, arg3), null, null);
 	}
 
 	public void error(final String msg, final Throwable t)
@@ -265,13 +296,28 @@ public final class Logger
 			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, String.format(format, arg1, arg2), null, null);
 	}
 
+	/**
+	 * @param format A format string understandable by {@link java.util.Formatter}.
+	 * @param arg1 Argument referenced by the format specifiers in the format string.
+	 * @param arg2 Argument referenced by the format specifiers in the format string.
+	 * @param arg3 Argument referenced by the format specifiers in the format string.
+	 */
+	public void info(final String format, final Object arg1, final Object arg2, final Object arg3)
+	{
+		if (!delegate.isInfoEnabled()) return;
+		if (delegateExt == null)
+			delegate.info(String.format(format, arg1, arg2, arg3));
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, String.format(format, arg1, arg2, arg3), null, null);
+	}
+
 	public void info(final String msg, final Throwable t)
 	{
 		if (!delegate.isInfoEnabled()) return;
 		if (delegateExt == null)
 			delegate.info(msg);
 		else
-			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, msg, null, null);
+			delegateExt.log(null, FQCN, LocationAwareLogger.INFO_INT, msg, null, t);
 	}
 
 	/**
@@ -369,6 +415,21 @@ public final class Logger
 			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, String.format(format, arg1, arg2), null, null);
 	}
 
+	/**
+	 * @param format A format string understandable by {@link java.util.Formatter}.
+	 * @param arg1 Argument referenced by the format specifiers in the format string.
+	 * @param arg2 Argument referenced by the format specifiers in the format string.
+	 * @param arg3 Argument referenced by the format specifiers in the format string.
+	 */
+	public void trace(final String format, final Object arg1, final Object arg2, final Object arg3)
+	{
+		if (!delegate.isTraceEnabled()) return;
+		if (delegateExt == null)
+			delegate.trace(String.format(format, arg1, arg2, arg3));
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, String.format(format, arg1, arg2, arg3), null, null);
+	}
+
 	public void trace(final String msg, final Throwable t)
 	{
 		if (!delegate.isTraceEnabled()) return;
@@ -399,6 +460,16 @@ public final class Logger
 			delegateExt.log(null, FQCN, LocationAwareLogger.TRACE_INT, methodName + ": " + String.format(format, args), null, t);
 	}
 
+	public void traceMethodEntry(final Object arg1)
+	{
+		if (!delegate.isTraceEnabled()) return;
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
+		traceMethodEntry(methodName, arg1);
+	}
+
 	public void traceMethodEntry(final Object... args)
 	{
 		if (!delegate.isTraceEnabled()) return;
@@ -406,8 +477,54 @@ public final class Logger
 		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
 		final String methodName = StackTrace.getCallingMethodName();
 
-		final StringBuilder sb = new StringBuilder().append("METHOD ENTRY: ").append(methodName).append('(');
-		for (int i = 0, l = args.length; i < l; i++)
+		traceMethodEntry(methodName, args);
+	}
+
+	public void traceMethodEntry(final Object arg1, final Object arg2)
+	{
+		if (!delegate.isTraceEnabled()) return;
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
+		traceMethodEntry(methodName, arg1, arg2);
+	}
+
+	public void traceMethodEntry(final Object arg1, final Object arg2, final Object arg3)
+	{
+		if (!delegate.isTraceEnabled()) return;
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
+		traceMethodEntry(methodName, arg1, arg2, arg3);
+	}
+
+	public void traceMethodEntry(final Object arg1, final Object arg2, final Object arg3, final Object arg4)
+	{
+		if (!delegate.isTraceEnabled()) return;
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
+		traceMethodEntry(methodName, arg1, arg2, arg3, arg4);
+	}
+
+	public void traceMethodEntry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	{
+		if (!delegate.isTraceEnabled()) return;
+
+		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
+		final String methodName = StackTrace.getCallingMethodName();
+
+		traceMethodEntry(methodName, arg1, arg2, arg3, arg4, arg5);
+	}
+
+	private void traceMethodEntry(final String methodName, final Object... args)
+	{
+		final StringBuilder sb = new StringBuilder("METHOD ENTRY: ").append(methodName).append('(');
+		final int l = args.length;
+		for (int i = 0; i < l; i++)
 		{
 			sb.append(args[i]);
 			if (i != l - 1) sb.append(',');
@@ -426,14 +543,15 @@ public final class Logger
 		delegate.trace("METHOD EXIT: " + methodName);
 	}
 
-	public void traceMethodExit(final Object returnValue)
+	public <T> T traceMethodExit(final T returnValue)
 	{
-		if (!delegate.isTraceEnabled()) return;
+		if (!delegate.isTraceEnabled()) return returnValue;
 
 		// getCallingMethodName() must be in a separate line otherwise it will return a wrong name
 		final String methodName = StackTrace.getCallingMethodName();
 
-		delegate.trace("METHOD EXIT: " + methodName + " returns with " + returnValue);
+		delegate.trace("METHOD EXIT: " + methodName + " returns with: " + returnValue);
+		return returnValue;
 	}
 
 	public void warn(final String msg)
@@ -483,6 +601,21 @@ public final class Logger
 			delegate.warn(String.format(format, arg1, arg2));
 		else
 			delegateExt.log(null, FQCN, LocationAwareLogger.WARN_INT, String.format(format, arg1, arg2), null, null);
+	}
+
+	/**
+	 * @param format A format string understandable by {@link java.util.Formatter}.
+	 * @param arg1 Argument referenced by the format specifiers in the format string.
+	 * @param arg2 Argument referenced by the format specifiers in the format string.
+	 * @param arg3 Argument referenced by the format specifiers in the format string.
+	 */
+	public void warn(final String format, final Object arg1, final Object arg2, final Object arg3)
+	{
+		if (!delegate.isWarnEnabled()) return;
+		if (delegateExt == null)
+			delegate.warn(String.format(format, arg1, arg2, arg3));
+		else
+			delegateExt.log(null, FQCN, LocationAwareLogger.WARN_INT, String.format(format, arg1, arg2, arg3), null, null);
 	}
 
 	public void warn(final String msg, final Throwable t)

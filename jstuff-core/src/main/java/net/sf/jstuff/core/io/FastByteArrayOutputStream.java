@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -20,7 +20,7 @@ import net.sf.jstuff.core.validation.Args;
 
 /**
  * An unsynchronized implementation of {@link ByteArrayOutputStream}.
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class FastByteArrayOutputStream extends OutputStream
@@ -47,7 +47,9 @@ public class FastByteArrayOutputStream extends OutputStream
 	 */
 	@Override
 	public void close() throws IOException
-	{}
+	{
+		// nothing to do
+	}
 
 	public void reset()
 	{
@@ -61,18 +63,12 @@ public class FastByteArrayOutputStream extends OutputStream
 		return copy;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString()
 	{
 		return new String(data, 0, count);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void write(final byte[] buf, final int offset, final int length) throws IOException
 	{
@@ -95,9 +91,6 @@ public class FastByteArrayOutputStream extends OutputStream
 		count = newcount;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void write(final int b) throws IOException
 	{

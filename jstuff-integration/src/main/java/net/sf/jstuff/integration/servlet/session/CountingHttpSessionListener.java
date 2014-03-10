@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -32,7 +32,9 @@ public class CountingHttpSessionListener implements HttpSessionListener
 		private static final long serialVersionUID = 1L;
 
 		public void valueBound(final HttpSessionBindingEvent ev)
-		{}
+		{
+			// nothing to do
+		}
 
 		public void valueUnbound(final HttpSessionBindingEvent ev)
 		{
