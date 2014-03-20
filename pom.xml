@@ -2,15 +2,14 @@
 <!--
 	@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.sf.jstuff</groupId>
 	<artifactId>jstuff-parent</artifactId>
 	<name>${project.groupId}.${project.artifactId}</name>
 	<packaging>pom</packaging>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.2</version>
 
 	<url>http://jstuff.sf.net</url>
 
@@ -47,9 +46,9 @@
 
 	<scm>
 		<!-- http://maven.apache.org/scm/subversion.html -->
-		<url>http://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</url>
-		<connection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</connection>
-		<developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</developerConnection>
+		<url>http://svn.code.sf.net/p/jstuff/svn/tags/jstuff-parent-1.0.2</url>
+		<connection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/tags/jstuff-parent-1.0.2</connection>
+		<developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/tags/jstuff-parent-1.0.2</developerConnection>
 	</scm>
 
 	<ciManagement>
