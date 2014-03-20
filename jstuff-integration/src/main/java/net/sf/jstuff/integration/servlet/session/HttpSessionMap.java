@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -33,8 +33,9 @@ import org.apache.commons.lang3.ObjectUtils;
  */
 public class HttpSessionMap implements SessionMap
 {
+
 	@SuppressWarnings("deprecation")
-	private static String[] getValueNames(HttpSession sess)
+	private static String[] getValueNames(final HttpSession sess)
 	{
 		if (sess == null) return ArrayUtils.EMPTY_STRING_ARRAY;
 
@@ -93,6 +94,13 @@ public class HttpSessionMap implements SessionMap
 		final HttpSession sess = request.getSession(false);
 		if (sess == null) return null;
 		return sess.getAttribute(key == null ? null : key.toString());
+	}
+
+	public Object get(final String key, final Object defaultValueIfNull)
+	{
+		final Object val = get(key);
+		if (val == null) return defaultValueIfNull;
+		return val;
 	}
 
 	public Object getId()

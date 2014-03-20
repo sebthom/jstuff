@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -19,6 +19,8 @@ import java.util.Map;
  */
 public interface SessionMap extends Map<String, Object>
 {
+	Object get(final String key, final Object defaultValueIfNull);
+
 	/**
 	 * @return true if an underlying HTTP session exists already
 	 */
