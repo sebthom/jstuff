@@ -9,7 +9,7 @@
 	<artifactId>jstuff-parent</artifactId>
 	<name>${project.groupId}.${project.artifactId}</name>
 	<packaging>pom</packaging>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.3</version>
 
 	<url>http://jstuff.sf.net</url>
 
@@ -46,9 +46,9 @@
 
 	<scm>
 		<!-- http://maven.apache.org/scm/subversion.html -->
-		<url>http://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</url>
-		<connection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</connection>
-		<developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</developerConnection>
+		<url>http://svn.code.sf.net/p/jstuff/svn/tags/jstuff-parent-1.0.3</url>
+		<connection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/tags/jstuff-parent-1.0.3</connection>
+		<developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/tags/jstuff-parent-1.0.3</developerConnection>
 	</scm>
 
 	<ciManagement>
