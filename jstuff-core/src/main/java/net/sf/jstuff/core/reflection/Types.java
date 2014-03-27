@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -122,26 +122,39 @@ public abstract class Types
 	}
 
 	/**
+	 * <b>Important:</b> Does not initialize the class.
+	 *
 	 * @return null if class not found
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Class< ? extends T> find(final String className)
+	public static <T> Class<T> find(final String className)
 	{
 		Args.notNull("className", className);
 
 		LOG.trace("Trying to load class [%s]...", className);
 		try
 		{
-			return (Class< ? extends T>) Types.class.getClassLoader().loadClass(className);
+			return (Class<T>) Class.forName(className, false, null);
 		}
 		catch (final ClassNotFoundException ex)
 		{
 			// ignore
 		}
 
-		try
+		final ClassLoader cl1 = Types.class.getClassLoader();
+		if (cl1 != null) try
 		{
-			return (Class< ? extends T>) Thread.currentThread().getContextClassLoader().loadClass(className);
+			return (Class<T>) Class.forName(className, false, Types.class.getClassLoader());
+		}
+		catch (final ClassNotFoundException ex)
+		{
+			// ignore
+		}
+
+		final ClassLoader cl2 = Thread.currentThread().getContextClassLoader();
+		if (cl1 != cl2 && cl2 != null) try
+		{
+			return (Class<T>) Class.forName(className, false, Thread.currentThread().getContextClassLoader());
 		}
 		catch (final ClassNotFoundException ex)
 		{
@@ -159,8 +172,7 @@ public abstract class Types
 		if (searchFor.getTypeParameters().length == 0) return ArrayUtils.EMPTY_CLASS_ARRAY;
 
 		if (!searchFor.isAssignableFrom(searchIn))
-			throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is assignable to [searchFor="
-					+ searchFor.getName() + "]");
+			throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is assignable to [searchFor=" + searchFor.getName() + "]");
 
 		final boolean isSearchForInterface = searchFor.isInterface();
 
@@ -285,7 +297,7 @@ public abstract class Types
 	/**
 	 * initializes the given class
 	 */
-	public static void initialize(final Class< ? > type)
+	public static <T> Class<T> initialize(final Class<T> type)
 	{
 		Args.notNull("type", type);
 		try
@@ -294,8 +306,9 @@ public abstract class Types
 		}
 		catch (final ClassNotFoundException e)
 		{
-			// ignore
+			// should never happen
 		}
+		return type;
 	}
 
 	public static boolean isAbstract(final Class< ? > type)
@@ -348,16 +361,14 @@ public abstract class Types
 	public static <T> T newInstance(final Class<T> type, final Object... constructorArgs)
 	{
 		final Constructor<T> ctor = Constructors.findCompatible(type, constructorArgs);
-		if (ctor == null)
-			throw new IllegalArgumentException("No constructor found in class [" + type.getName() + "] compatible with give arguments!");
+		if (ctor == null) throw new IllegalArgumentException("No constructor found in class [" + type.getName() + "] compatible with give arguments!");
 		return Constructors.invoke(ctor, constructorArgs);
 	}
 
 	/**
 	 * Tries to read the given value using a getter method or direct field access
 	 */
-	public static <T> T readPropety(final Object obj, final String propertyName, final Class< ? extends T> compatibleTo)
-			throws ReflectionException
+	public static <T> T readPropety(final Object obj, final String propertyName, final Class< ? extends T> compatibleTo) throws ReflectionException
 	{
 		Args.notNull("obj", obj);
 		Args.notNull("propertyName", propertyName);
@@ -370,8 +381,7 @@ public abstract class Types
 		final Field field = Fields.findRecursive(clazz, propertyName, compatibleTo);
 		if (field != null) return Fields.read(obj, field);
 
-		throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class ["
-				+ clazz + "]");
+		throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
 	}
 
 	public static void visit(final Class< ? > clazz, final ClassVisitor visitor)
@@ -472,7 +482,6 @@ public abstract class Types
 			Fields.write(obj, field, value);
 			return;
 		}
-		throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class ["
-				+ clazz + "]");
+		throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
 	}
 }
