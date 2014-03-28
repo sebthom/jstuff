@@ -261,7 +261,7 @@ public class HashLockManager<KeyType>
 				lockCandidate.writeLock().lock();
 				// check if the lock instance in the map for the given key is the one we we locked
 				if (lockCandidate == locksByKey.putIfAbsent(key, lockCandidate)) return;
-				lockCandidate.readLock().unlock();
+				lockCandidate.writeLock().unlock();
 			}
 		}
 	}
