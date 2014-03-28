@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -65,7 +65,7 @@ public class HashLockManager<KeyType>
 				for (final Iterator<Entry<T, ReentrantReadWriteLock>> it = mgr.locksByKey.entrySet().iterator(); it.hasNext();)
 				{
 					final ReentrantReadWriteLock lock = it.next().getValue();
-					synchronized (lock)
+					synchronized (lock) // exclusive access to the lock object
 					{
 						final boolean isLockInUse = lock.isWriteLocked() || lock.getReadLockCount() > 0 || lock.hasQueuedThreads();
 						if (!isLockInUse) it.remove();
@@ -223,17 +223,17 @@ public class HashLockManager<KeyType>
 			ReentrantReadWriteLock lockCandidate = locksByKey.get(key);
 			if (lockCandidate == null)
 			{
-				if (newLock == null) newLock = new ReentrantReadWriteLock(true);
+				if (newLock == null) newLock = new ReentrantReadWriteLock(true); // lazy instantiation of a new lock object
 				lockCandidate = newLock;
 			}
 
-			synchronized (lockCandidate)
+			synchronized (lockCandidate) // exclusive access to the lock object (required because of CleanUpTask)
 			{
 				lockCandidate.readLock().lock();
-				final ReentrantReadWriteLock lockInMap = locksByKey.putIfAbsent(key, lockCandidate);
-				if (lockInMap == lockCandidate) return;
+				// check if the lock instance in the map for the given key is the one we locked
+				if (lockCandidate == locksByKey.putIfAbsent(key, lockCandidate)) return;
+				lockCandidate.readLock().unlock();
 			}
-			lockCandidate.readLock().unlock();
 		}
 	}
 
@@ -252,17 +252,17 @@ public class HashLockManager<KeyType>
 			ReentrantReadWriteLock lockCandidate = locksByKey.get(key);
 			if (lockCandidate == null)
 			{
-				if (newLock == null) newLock = new ReentrantReadWriteLock(true);
+				if (newLock == null) newLock = new ReentrantReadWriteLock(true); // lazy instantiation of a new lock object
 				lockCandidate = newLock;
 			}
 
-			synchronized (lockCandidate)
+			synchronized (lockCandidate) // exclusive access to the lock object (required because of CleanUpTask)
 			{
 				lockCandidate.writeLock().lock();
-				final ReentrantReadWriteLock lockInMap = locksByKey.putIfAbsent(key, lockCandidate);
-				if (lockInMap == lockCandidate) return;
+				// check if the lock instance in the map for the given key is the one we we locked
+				if (lockCandidate == locksByKey.putIfAbsent(key, lockCandidate)) return;
+				lockCandidate.readLock().unlock();
 			}
-			lockCandidate.writeLock().unlock();
 		}
 	}
 

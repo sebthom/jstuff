@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -12,10 +13,10 @@
  *******************************************************************************/
 package net.sf.jstuff.core;
 
+import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.Vector;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
@@ -29,14 +30,18 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class GCTracker<Event> implements EventListenable<Event>
 {
-	private static final class GCReference<Event> extends WeakReference<Object>
+	/**
+	 * http://mindprod.com/jgloss/phantom.html
+	 * http://blog.yohanliyanage.com/2010/10/ktjs-3-soft-weak-phantom-references/
+	 */
+	private static final class GCReference<Event> extends PhantomReference<Object>
 	{
 		private final Object eventToFireOnGC;
 		private final GCTracker<Event> tracker;
 
 		protected GCReference(final Object trackedObject, final Event eventToFireOnGC, final GCTracker<Event> tracker)
 		{
-			super(trackedObject, garbageCollectedRefs);
+			super(trackedObject, GARBAGE_COLLECTED_REFS);
 			this.eventToFireOnGC = eventToFireOnGC;
 			this.tracker = tracker;
 		}
@@ -44,7 +49,9 @@ public class GCTracker<Event> implements EventListenable<Event>
 
 	private static final Logger LOG = Logger.create();
 
-	private static Thread CLEANUP_THREAD = new Thread()
+	private static final ReferenceQueue<Object> GARBAGE_COLLECTED_REFS = new ReferenceQueue<Object>();
+
+	private static final Thread CLEANUP_THREAD = new Thread()
 		{
 			{
 				setPriority(Thread.MAX_PRIORITY);
@@ -61,7 +68,7 @@ public class GCTracker<Event> implements EventListenable<Event>
 					try
 					{
 						GCReference<Object> ref;
-						while ((ref = (GCReference<Object>) garbageCollectedRefs.remove()) != null)
+						while ((ref = (GCReference<Object>) GARBAGE_COLLECTED_REFS.remove()) != null)
 						{
 							ref.tracker.monitoredReferences.remove(ref);
 							try
@@ -81,14 +88,12 @@ public class GCTracker<Event> implements EventListenable<Event>
 			}
 		};
 
-	private static final ReferenceQueue<Object> garbageCollectedRefs = new ReferenceQueue<Object>();
-
 	private final EventManager<Event> events = new EventManager<Event>();
 
 	/**
 	 * synchronized list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage collected
 	 */
-	private final List<GCReference<Event>> monitoredReferences = new Vector<GCReference<Event>>(128);
+	private final Queue<GCReference<Event>> monitoredReferences = new ConcurrentLinkedQueue<GCReference<Event>>();
 
 	public GCTracker()
 	{
