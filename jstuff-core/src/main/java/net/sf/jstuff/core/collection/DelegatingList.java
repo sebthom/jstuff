@@ -81,4 +81,9 @@ public class DelegatingList<V> extends DelegatingCollection<V> implements List<V
 		return delegate.subList(fromIndex, toIndex);
 	}
 
+	@Override
+	public String toString()
+	{
+		return super.toString() + delegate;
+	}
 }
