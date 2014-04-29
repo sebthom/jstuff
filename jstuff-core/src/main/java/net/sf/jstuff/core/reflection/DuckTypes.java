@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -15,7 +15,7 @@ package net.sf.jstuff.core.reflection;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -55,8 +55,7 @@ public abstract class DuckTypes
 					}
 					catch (final NoSuchMethodException ex)
 					{
-						throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method "
-								+ duckInterface + ".");
+						throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method " + duckInterface + ".");
 					}
 				}
 			});

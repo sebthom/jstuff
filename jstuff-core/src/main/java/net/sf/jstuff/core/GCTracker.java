@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.event.EventManager;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -122,8 +123,7 @@ public class GCTracker<Event> implements EventListenable<Event>
 	{
 		Args.notNull("target", target);
 		if (target == eventToFireOnGC)
-			throw new IllegalArgumentException(
-					"eventToFireOnGC callback cannot be the same as the target, this avoids garbage collection of target.");
+			throw new IllegalArgumentException("eventToFireOnGC callback cannot be the same as the target, this avoids garbage collection of target.");
 		monitoredReferences.add(new GCReference<Event>(target, eventToFireOnGC, this));
 	}
 

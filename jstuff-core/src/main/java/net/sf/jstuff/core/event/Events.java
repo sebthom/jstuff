@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -14,7 +14,7 @@ package net.sf.jstuff.core.event;
 
 import java.util.Collection;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

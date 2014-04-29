@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipFile;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.concurrent.Threads;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**

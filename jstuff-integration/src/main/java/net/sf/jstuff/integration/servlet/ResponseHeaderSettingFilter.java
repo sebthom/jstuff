@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -26,8 +26,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.Enumerations;
+import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -41,8 +41,7 @@ public class ResponseHeaderSettingFilter implements Filter
 	public void destroy()
 	{}
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-			ServletException
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException
 	{
 		LOG.trace("For request %s setting HTTP response headers: %s", request, parameter);
 

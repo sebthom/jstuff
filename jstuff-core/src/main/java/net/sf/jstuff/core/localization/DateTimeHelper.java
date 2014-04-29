@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -18,7 +18,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -230,8 +230,8 @@ public class DateTimeHelper implements Serializable
 	public boolean isValidDate(final String date)
 	{
 		return date != null
-				&& (isValidDate(DateFormatStyle.SHORT, date) || isValidDate(DateFormatStyle.MEDIUM, date)
-						|| isValidDate(DateFormatStyle.LONG, date) || isValidDate(DateFormatStyle.FULL, date));
+				&& (isValidDate(DateFormatStyle.SHORT, date) || isValidDate(DateFormatStyle.MEDIUM, date) || isValidDate(DateFormatStyle.LONG, date) || isValidDate(
+						DateFormatStyle.FULL, date));
 	}
 
 	protected boolean isValidDateTime(final DateFormatStyle style, final String dateTime)
@@ -282,7 +282,7 @@ public class DateTimeHelper implements Serializable
 	public boolean isValidTime(final String time)
 	{
 		return time != null
-				&& (isValidTime(DateFormatStyle.SHORT, time) || isValidTime(DateFormatStyle.MEDIUM, time)
-						|| isValidTime(DateFormatStyle.LONG, time) || isValidTime(DateFormatStyle.FULL, time));
+				&& (isValidTime(DateFormatStyle.SHORT, time) || isValidTime(DateFormatStyle.MEDIUM, time) || isValidTime(DateFormatStyle.LONG, time) || isValidTime(
+						DateFormatStyle.FULL, time));
 	}
 }

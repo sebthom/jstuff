@@ -7,7 +7,6 @@ jstuff-core/src/main/java/net/sf/jstuff/core/Crypto.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/GCTracker.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Identifiable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ImageUtils.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/Logger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Mutable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ObjectCache.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StackTrace.java -text
@@ -121,6 +120,9 @@ jstuff-core/src/main/java/net/sf/jstuff/core/jbean/meta/PropertyDescriptor.java 
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateFormatStyle.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/DateTimeHelper.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/localization/NumberHelper.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/logging/Logger.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/logging/LoggerJUL.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/logging/LoggerSLF4J.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/AbstractServer.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/NetUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/SSLUtils.java -text
@@ -160,7 +162,6 @@ jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month_de.properties -text
 jstuff-core/src/test/java/net/sf/jstuff/core/AssertTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/CryptoTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/GCTrackerTest.java -text
-jstuff-core/src/test/java/net/sf/jstuff/core/LoggerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/ObjectCacheTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/StringUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/TypeSafeEnumTest.java -text
@@ -185,6 +186,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/io/ZippedBlockStreamTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/jbean/TestJBean.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/DateTimeHelperTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/localization/NumberHelperTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/logging/LoggingTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/meta/MetaSerializationTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/net/NetUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/AnnotationsTest.java -text

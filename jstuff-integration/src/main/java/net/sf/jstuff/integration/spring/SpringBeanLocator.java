@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -14,7 +14,7 @@ package net.sf.jstuff.integration.spring;
 
 import java.util.Map;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * <bean name="beanLocator" class="net.sf.jstuff.integration.spring.BeanLocator" factory-method="init" destroy-method="destroy" />
- *  
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @Component
@@ -54,7 +54,7 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 	{
 		Assert.isNull(DEFAULT_INSTANCE, "A instance of " + this.getClass().getName() + " already exists.");
 
-		LOG.info("Instantiated.");
+		LOG.infoNew(this);
 
 		DEFAULT_INSTANCE = this;
 	}
@@ -73,12 +73,10 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 
 		final Map< ? , ? > beans = factory.getBeansOfType(beanType, true, true);
 
-		if (beans == null || beans.isEmpty())
-			throw new IllegalArgumentException("No Spring managed bean for type '" + beanType.getName() //
-					+ "' was found.");
-		if (beans.size() > 1)
-			throw new IllegalStateException("More than one Spring managed bean for type '" + beanType.getName() //
-					+ "' was found.");
+		if (beans == null || beans.isEmpty()) throw new IllegalArgumentException("No Spring managed bean for type '" + beanType.getName() //
+				+ "' was found.");
+		if (beans.size() > 1) throw new IllegalStateException("More than one Spring managed bean for type '" + beanType.getName() //
+				+ "' was found.");
 		return (T) beans.values().iterator().next();
 	}
 
@@ -125,8 +123,7 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 		Args.notNull("beanFactory", beanFactory);
 
 		if (!(beanFactory instanceof ListableBeanFactory))
-			throw new IllegalStateException("Argument [beanFactory] must be of type "
-					+ beanFactory.getClass().getName());
+			throw new IllegalStateException("Argument [beanFactory] must be of type " + beanFactory.getClass().getName());
 
 		factory = (ListableBeanFactory) beanFactory;
 	}

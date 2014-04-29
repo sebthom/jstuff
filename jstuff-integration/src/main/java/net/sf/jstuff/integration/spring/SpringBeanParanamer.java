@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -14,8 +14,8 @@ package net.sf.jstuff.integration.spring;
 
 import java.lang.reflect.Method;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.logging.Logger;
 
 import org.springframework.aop.support.AopUtils;
 

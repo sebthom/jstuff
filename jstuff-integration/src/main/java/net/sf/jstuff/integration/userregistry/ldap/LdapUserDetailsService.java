@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -27,6 +27,7 @@ import javax.naming.ldap.LdapContext;
 
 import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.functional.Invocable;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LdapTemplate;
 import net.sf.jstuff.integration.ldap.LdapUtils;
@@ -39,16 +40,26 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
  */
 public class LdapUserDetailsService implements UserDetailsService
 {
-	protected LdapTemplate ldapTemplate;
+	private static final Logger LOG = Logger.create();
 
+	protected LdapTemplate ldapTemplate;
 	protected String userAttributeDisplayName;
 	protected String userAttributeEMailAdress;
 	protected String userAttributeLogonName;
 	protected String userAttributeUserId;
-
 	protected String userSearchBase;
 	protected String userSearchFilter;
 	protected boolean userSearchSubtree = true;
+
+	public LdapUserDetailsService()
+	{
+		LOG.infoNew(this);
+	}
+
+	public String getUserAttributeLogonName()
+	{
+		return userAttributeLogonName;
+	}
 
 	protected UserDetails getUserDetailsByFilter(final String filter)
 	{
@@ -59,8 +70,7 @@ public class LdapUserDetailsService implements UserDetailsService
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{
 					final Iterator<SearchResult> results = searchUser(ctx, filter,
-							new String[]{userAttributeDisplayName, userAttributeEMailAdress, userAttributeLogonName, userAttributeUserId})
-							.iterator();
+							new String[]{userAttributeDisplayName, userAttributeEMailAdress, userAttributeLogonName, userAttributeUserId}).iterator();
 					if (!results.hasNext()) return null;
 
 					final SearchResult sr = results.next();

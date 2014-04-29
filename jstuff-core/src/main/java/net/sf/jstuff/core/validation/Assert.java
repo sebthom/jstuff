@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -48,12 +48,9 @@ public abstract class Assert
 	{
 		Args.notNull("file", file);
 
-		if (!file.exists())
-			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] does not exist."));
-		if (!file.isFile())
-			throw removeFirstStackTraceElement(new IllegalStateException("System resource [" + file.getAbsolutePath() + "] is not a file."));
-		if (!file.canRead())
-			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] is not readable."));
+		if (!file.exists()) throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] does not exist."));
+		if (!file.isFile()) throw removeFirstStackTraceElement(new IllegalStateException("System resource [" + file.getAbsolutePath() + "] is not a file."));
+		if (!file.canRead()) throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] is not readable."));
 		return file;
 	}
 
@@ -126,6 +123,12 @@ public abstract class Assert
 		return entries;
 	}
 
+	public static <A> A[] notEmpty(final A[] value, final String errorMessage)
+	{
+		if (value == null || value.length == 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+		return value;
+	}
+
 	/**
 	 * @throws IllegalStateException if <code>value</code> collection is null or empty
 	 */
@@ -144,15 +147,9 @@ public abstract class Assert
 		return value;
 	}
 
-	public static <T extends CharSequence> T notEmpty(final T value, final String errorMessage)
+	public static <S extends CharSequence> S notEmpty(final S value, final String errorMessage)
 	{
 		if (value == null || value.length() == 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
-		return value;
-	}
-
-	public static <T> T[] notEmpty(final T[] value, final String errorMessage)
-	{
-		if (value == null || value.length == 0) throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
 		return value;
 	}
 

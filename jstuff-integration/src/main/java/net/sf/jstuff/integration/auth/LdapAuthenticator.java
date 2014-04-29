@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -17,8 +17,8 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.LdapContext;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.functional.Invocable;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.integration.ldap.LdapException;
 import net.sf.jstuff.integration.ldap.LdapTemplate;
 import net.sf.jstuff.integration.userregistry.UserDetails;
@@ -34,6 +34,11 @@ public class LdapAuthenticator implements Authenticator
 	protected LdapTemplate ldapTemplate;
 
 	protected UserDetailsService userDetailsService;
+
+	public LdapAuthenticator()
+	{
+		LOG.infoNew(this);
+	}
 
 	public boolean authenticate(final String logonName, final String password)
 	{

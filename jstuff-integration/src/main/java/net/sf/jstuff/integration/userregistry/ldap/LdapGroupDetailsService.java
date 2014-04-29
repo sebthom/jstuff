@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -23,9 +23,9 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.functional.Invocable;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LdapTemplate;
 import net.sf.jstuff.integration.userregistry.DefaultGroupDetails;
@@ -48,9 +48,11 @@ public class LdapGroupDetailsService implements GroupDetailsService
 
 	private LdapTemplate ldapTemplate;
 
-	/**
-	 * {@inheritDoc}
-	 */
+	public LdapGroupDetailsService()
+	{
+		LOG.infoNew(this);
+	}
+
 	public GroupDetails getGroupDetailsByGroupDN(final String groupDN)
 	{
 		Args.notNull("groupDN", groupDN);
@@ -59,8 +61,7 @@ public class LdapGroupDetailsService implements GroupDetailsService
 			{
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{
-					final Attributes attr = ctx.getAttributes(groupDN, new String[]{groupAttributeDisplayName, groupAttributeGroupId,
-							groupAttributeMember});
+					final Attributes attr = ctx.getAttributes(groupDN, new String[]{groupAttributeDisplayName, groupAttributeGroupId, groupAttributeMember});
 
 					final DefaultGroupDetails groupDetails = new DefaultGroupDetails();
 					groupDetails.setDisplayName((String) attr.get(groupAttributeDisplayName).get());

@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.Enumerations;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**

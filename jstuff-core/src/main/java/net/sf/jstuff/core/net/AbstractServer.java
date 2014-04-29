@@ -18,7 +18,7 @@ import java.net.Socket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

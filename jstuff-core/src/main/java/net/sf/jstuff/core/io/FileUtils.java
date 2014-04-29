@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
@@ -64,8 +64,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 			Assert.isFileReadable(fileToBackup); // ensure it is actually a file
 
 			final File backupFile = new File(backupFolder, FilenameUtils.getBaseName(fileToBackup) + "_"
-					+ DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd_hhmmss") + "."
-					+ FilenameUtils.getExtension(fileToBackup));
+					+ DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd_hhmmss") + "." + FilenameUtils.getExtension(fileToBackup));
 			LOG.debug("Backing up [%s] to [%s]", fileToBackup, backupFile);
 			copyFile(fileToBackup, backupFile, true);
 			return backupFile;
@@ -80,8 +79,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		cleanDirectory(directory, deleteFilesOlderThan, recursive, null);
 	}
 
-	public static void cleanDirectory(final File directory, final Date deleteFilesOlderThan, final boolean recursive,
-			final FilenameFilter filenameFilter)
+	public static void cleanDirectory(final File directory, final Date deleteFilesOlderThan, final boolean recursive, final FilenameFilter filenameFilter)
 	{
 		Args.notNull("directory", directory);
 		Args.notNull("deleteFilesOlderThan", deleteFilesOlderThan);
@@ -103,8 +101,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		cleanDirectory(directory, deleteFilesOlderThanXDays, recursive, null);
 	}
 
-	public static void cleanDirectory(final File directory, final int deleteFilesOlderThanXDays, final boolean recursive,
-			final FilenameFilter filenameFilter)
+	public static void cleanDirectory(final File directory, final int deleteFilesOlderThanXDays, final boolean recursive, final FilenameFilter filenameFilter)
 	{
 		Args.notNull("directory", directory);
 
@@ -173,8 +170,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		write(new File(file), data, encoding, false);
 	}
 
-	public static void writeStringToFile(final String file, final CharSequence data, final String encoding, final boolean append)
-			throws IOException
+	public static void writeStringToFile(final String file, final CharSequence data, final String encoding, final boolean append) throws IOException
 	{
 		write(new File(file), data, encoding, append);
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -16,9 +16,9 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.PagedListWithSortBy;
 import net.sf.jstuff.core.comparator.SortBy;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Types;
 
 import com.thoughtworks.xstream.XStream;
@@ -44,6 +44,8 @@ public class XMLRestServiceExporter extends AbstractRestServiceExporter
 		xStream = new XStream(xmlDriver);
 
 		configureXStream(xStream);
+
+		LOG.infoNew(this);
 	}
 
 	protected void configureXStream(final XStream xStream)

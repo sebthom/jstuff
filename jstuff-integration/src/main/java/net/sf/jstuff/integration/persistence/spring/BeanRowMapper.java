@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
@@ -145,8 +145,8 @@ public class BeanRowMapper<T> implements RowMapper<T>
 		{
 			final String propName = prop.getName();
 			if (propsLowerCase.put(propName.toLowerCase(), propName) != null)
-				throw new IllegalStateException("Bean Class " + beanClass.getName()
-						+ " contains multiple properties with same lowercase representation: " + propName);
+				throw new IllegalStateException("Bean Class " + beanClass.getName() + " contains multiple properties with same lowercase representation: "
+						+ propName);
 		}
 
 		this.beanClass = beanClass;

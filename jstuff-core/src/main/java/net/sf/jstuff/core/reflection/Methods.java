@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**

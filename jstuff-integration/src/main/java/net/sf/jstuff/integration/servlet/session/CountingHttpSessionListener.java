@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -54,7 +54,7 @@ public class CountingHttpSessionListener implements HttpSessionListener
 
 	public CountingHttpSessionListener()
 	{
-		LOG.info("instantiated");
+		LOG.infoNew(this);
 	}
 
 	public void sessionCreated(final HttpSessionEvent se)

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -16,7 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 
 import org.h2.tools.Server;
 
@@ -36,6 +36,11 @@ public class H2ServerSpringBean
 	private boolean webEnabled = false;
 	private int webPort = 8040;
 	private Server webServer;
+
+	public H2ServerSpringBean()
+	{
+		LOG.infoNew(this);
+	}
 
 	@PreDestroy
 	public void destroy() throws Exception
@@ -77,8 +82,7 @@ public class H2ServerSpringBean
 					"-tcpPort", Integer.toString(tcpPort), //
 							"-baseDir", dataDir});
 			tcpServer.start();
-			LOG.info("Embedded H2 Databases are now available via: jdbc:h2:tcp://localhost:" + tcpPort
-					+ "/<DATABASE_NAME>");
+			LOG.info("Embedded H2 Databases are now available via: jdbc:h2:tcp://localhost:" + tcpPort + "/<DATABASE_NAME>");
 
 			if (webEnabled)
 			{

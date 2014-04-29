@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -75,6 +75,29 @@ public abstract class StackTrace
 	{
 		final StackTraceElement ste = _getCallingStackTraceElement();
 		return ste;
+	}
+
+	public static StackTraceElement getCallingStackTraceElement(final Class< ? > calledClass)
+	{
+		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
+		final String calledClassName = calledClass.getName();
+		boolean foundCalledClassInStackTrace = false;
+		for (final StackTraceElement curr : stes)
+			if (calledClassName.equals(curr.getClassName()))
+				foundCalledClassInStackTrace = true;
+			else if (foundCalledClassInStackTrace) return curr;
+		return null;
+	}
+
+	public static StackTraceElement getCallingStackTraceElement(final String calledClassName)
+	{
+		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
+		boolean foundCalledClassInStackTrace = false;
+		for (final StackTraceElement curr : stes)
+			if (calledClassName.equals(curr.getClassName()))
+				foundCalledClassInStackTrace = true;
+			else if (foundCalledClassInStackTrace) return curr;
+		return null;
 	}
 
 	public static String getThisClassName()

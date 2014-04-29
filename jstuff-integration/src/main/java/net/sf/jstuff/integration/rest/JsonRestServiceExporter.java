@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -16,6 +16,8 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.jstuff.core.logging.Logger;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,11 +26,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JsonRestServiceExporter extends AbstractRestServiceExporter
 {
+	private static final Logger LOG = Logger.create();
+
 	private final static ObjectMapper JSON = new ObjectMapper();
 
 	public JsonRestServiceExporter()
 	{
 		super("UTF-8", "application/json;charset=UTF-8");
+		LOG.infoNew(this);
 	}
 
 	@Override

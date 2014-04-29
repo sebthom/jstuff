@@ -23,9 +23,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Beans;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -74,26 +74,20 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 			if (m.isAnnotationPresent(REST_PUT.class))
 			{
 				final REST_PUT annotation = m.getAnnotation(REST_PUT.class);
-				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.PUT, m,
-						getService());
-				if (annotation.fallback().length() > 0)
-					actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.PUT, m, getService());
+				if (annotation.fallback().length() > 0) actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
 			}
 			if (m.isAnnotationPresent(REST_DELETE.class))
 			{
 				final REST_DELETE annotation = m.getAnnotation(REST_DELETE.class);
-				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.DELETE, m,
-						getService());
-				if (annotation.fallback().length() > 0)
-					actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.DELETE, m, getService());
+				if (annotation.fallback().length() > 0) actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
 			}
 			if (m.isAnnotationPresent(REST_HEAD.class))
 			{
 				final REST_HEAD annotation = m.getAnnotation(REST_HEAD.class);
-				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.HEAD, m,
-						getService());
-				if (annotation.fallback().length() > 0)
-					actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.HEAD, m, getService());
+				if (annotation.fallback().length() > 0) actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
 			}
 		}
 	}
@@ -147,8 +141,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 
 	protected abstract <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException;
 
-	public void doExplainAsHTML(final PrintWriter pw, final boolean fallbackMethods, final RestServiceDescriptor serviceDef,
-			final String baseRequestURL)
+	public void doExplainAsHTML(final PrintWriter pw, final boolean fallbackMethods, final RestServiceDescriptor serviceDef, final String baseRequestURL)
 	{
 		for (final RestResourceAction action : serviceDef.getActions())
 		{
@@ -158,8 +151,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 			pw.println("<p style='font-size:8pt'>");
 			if (action.isFallBackMethod()) pw.println("<span style='color:red'>*isFallback*</span> ");
 			pw.println("<b>" + action.getHttpRequestMethod() + "</b>");
-			pw.println(StringUtils.replace(
-					StringUtils.replace(StringUtils.replace(requestURL, "${", "<span style='color:blue'>${"), "}", "}</span>"),
+			pw.println(StringUtils.replace(StringUtils.replace(StringUtils.replace(requestURL, "${", "<span style='color:blue'>${"), "}", "}</span>"),
 					baseRequestURL, baseRequestURL + "<b>") + "</b>");
 			pw.println("</p><table style='border: 1px solid black;width:90%;margin-bottom:0.5em'>");
 
@@ -193,16 +185,15 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 			pw.println("<span style='font-weight:bold;color:darkgreen'>" + action.getHttpResponseBodyType().getSimpleName() + "</span>");
 
 			if (action.getHttpRequestBodyType() == null)
-				pw.println(StringUtils.replace(action.getServiceMethodSignature(), StringUtils.join(requestParams, ","),
-						"<span style='color:blue'>" + StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"));
+				pw.println(StringUtils.replace(action.getServiceMethodSignature(), StringUtils.join(requestParams, ","), "<span style='color:blue'>"
+						+ StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"));
 			else
 			{
-				final String param = StringUtils.substringAfterLast(
-						"," + StringUtils.substringBetween(action.getServiceMethodSignature(), "(", ")"), ",");
-				pw.println(StringUtils.replace(StringUtils.replace(action.getServiceMethodSignature(),
-						StringUtils.join(requestParams, ","),
-						"<span style='color:blue'>" + StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"),
-						param + ")", "<span style='color:darkred'>" + param + "</span>)"));
+				final String param = StringUtils.substringAfterLast("," + StringUtils.substringBetween(action.getServiceMethodSignature(), "(", ")"), ",");
+				pw.println(StringUtils.replace(
+						StringUtils.replace(action.getServiceMethodSignature(), StringUtils.join(requestParams, ","),
+								"<span style='color:blue'>" + StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"), param + ")",
+						"<span style='color:darkred'>" + param + "</span>)"));
 			}
 			pw.println("</td></tr>");
 			pw.println("</table>");
@@ -243,8 +234,8 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		{
 			resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 			resp.getWriter().println(
-					serializeResponse(new RestServiceError("UnsupportedOperationException", "Unsupported HTTP request method " + reqMethod
-							+ " for resource " + requestParameters)));
+					serializeResponse(new RestServiceError("UnsupportedOperationException", "Unsupported HTTP request method " + reqMethod + " for resource "
+							+ requestParameters)));
 			return;
 		}
 
@@ -256,21 +247,18 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		{
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			resp.getWriter().println(
-					serializeResponse(new RestServiceError("MissingArgumentException", "Missing parameter "
-							+ action.getParameterNames()[args.length])));
+					serializeResponse(new RestServiceError("MissingArgumentException", "Missing parameter " + action.getParameterNames()[args.length])));
 			return;
 		}
 
 		// if the service method has var args and the var args are not provided add a null element to the args list
-		if (args.length < action.getServiceMethod().getParameterTypes().length && action.getServiceMethod().isVarArgs())
-			args = ArrayUtils.add(args, null);
+		if (args.length < action.getServiceMethod().getParameterTypes().length && action.getServiceMethod().isVarArgs()) args = ArrayUtils.add(args, null);
 
 		// converting URL parameters to the required object values
 		Object[] methodArguments = Beans.valuesOf(args, action.getServiceMethod().getParameterTypes());
 
 		// for POST/PUT requests add the request body as additional argument for the method arguments
-		if (isPOST || isPUT)
-			methodArguments = ArrayUtils.add(methodArguments, deserializeRequestBody(action.getHttpRequestBodyType(), req));
+		if (isPOST || isPUT) methodArguments = ArrayUtils.add(methodArguments, deserializeRequestBody(action.getHttpRequestBodyType(), req));
 
 		try
 		{

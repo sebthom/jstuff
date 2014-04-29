@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -17,12 +17,12 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Method objects since they do not implement Serializable
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public final class SerializableMethod implements Serializable

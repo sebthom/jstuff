@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
 package net.sf.jstuff.integration.spring;
+
+import net.sf.jstuff.core.logging.Logger;
 
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -21,6 +23,8 @@ import org.springframework.remoting.rmi.RmiServiceExporter;
  */
 public class ZippedBlockRMIServiceExporter implements InitializingBean, DisposableBean
 {
+	private static final Logger LOG = Logger.create();
+
 	private final RmiServiceExporter normalExporter = new RmiServiceExporter();
 	private final RmiServiceExporter compressedExporter = new RmiServiceExporter();
 	private boolean serviceNameSet = false;
@@ -28,11 +32,10 @@ public class ZippedBlockRMIServiceExporter implements InitializingBean, Disposab
 	public ZippedBlockRMIServiceExporter()
 	{
 		compressedExporter.setRegistryPort(1100);
+
+		LOG.infoNew(this);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void afterPropertiesSet() throws Exception
 	{
 		if (!serviceNameSet) setServiceName(normalExporter.getServiceInterface().getSimpleName());
@@ -42,9 +45,6 @@ public class ZippedBlockRMIServiceExporter implements InitializingBean, Disposab
 		normalExporter.afterPropertiesSet();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public void destroy() throws Exception
 	{
 		compressedExporter.destroy();

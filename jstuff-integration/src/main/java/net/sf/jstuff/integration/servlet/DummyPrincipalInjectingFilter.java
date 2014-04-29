@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -27,8 +27,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Types;
 
 /**
@@ -111,11 +111,15 @@ public class DummyPrincipalInjectingFilter implements Filter
 	private String username;
 	private final Set<String> userRoles = new HashSet<String>();
 
+	public DummyPrincipalInjectingFilter()
+	{
+		LOG.infoNew(this);
+	}
+
 	public void destroy()
 	{}
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-			ServletException
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException
 	{
 		if (username != null && request instanceof HttpServletRequest)
 		{

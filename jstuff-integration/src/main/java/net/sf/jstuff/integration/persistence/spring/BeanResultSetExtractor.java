@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Assert;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -75,8 +75,8 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>>
 			}
 			catch (final Exception ex)
 			{
-				LOG.error("Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass,
-						StringUtils.toString(bean), StringUtils.toString(dynaBean), ex);
+				LOG.error("Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass, StringUtils.toString(bean),
+						StringUtils.toString(dynaBean), ex);
 			}
 		}
 		return extractedBeans;
@@ -103,8 +103,8 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>>
 		{
 			final String propName = prop.getName();
 			if (propsLowerCase.put(propName.toLowerCase(), propName) != null)
-				throw new IllegalStateException("Bean Class " + beanClass.getName()
-						+ " contains multiple properties with same lowercase representation: " + propName);
+				throw new IllegalStateException("Bean Class " + beanClass.getName() + " contains multiple properties with same lowercase representation: "
+						+ propName);
 		}
 
 		this.beanClass = beanClass;

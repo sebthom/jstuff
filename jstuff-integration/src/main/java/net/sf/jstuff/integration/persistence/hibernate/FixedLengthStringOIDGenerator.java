@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -14,6 +14,8 @@ package net.sf.jstuff.integration.persistence.hibernate;
 
 import java.io.Serializable;
 import java.util.Properties;
+
+import net.sf.jstuff.core.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
@@ -29,7 +31,7 @@ import org.hibernate.util.PropertiesHelper;
  * @javax.persistence.Id
  * @javax.persistence.GeneratedValueValue(generator = "oid")
  * @org.hibernate.annotations.GenericGenerator(
- *    name = "oid", strategy = net.sf.jstuff.integration.persistence.hibernate.FixedLengthOIDGenerator.class.getName(), 
+ *    name = "oid", strategy = net.sf.jstuff.integration.persistence.hibernate.FixedLengthOIDGenerator.class.getName(),
  *    parameters = {
  *	     @Parameter(name = net.sf.jstuff.integration.persistence.hibernate.FixedLengthOIDGenerator.PARAM_SUFFIX, value = "001"),
  *       @Parameter(name = net.sf.jstuff.integration.persistence.hibernate.FixedLengthOIDGenerator.PARAM_PREFIX, value = "AAA"),
@@ -38,11 +40,13 @@ import org.hibernate.util.PropertiesHelper;
  * )
  * private Integer oid;
  * </code>
- *  
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class FixedLengthStringOIDGenerator extends TableHiLoGenerator
 {
+	private static final Logger LOG = Logger.create();
+
 	public static final String PARAM_LENGTH = "length";
 	public static final String PARAM_PREFIX = "prefix";
 	public static final String PARAM_SUFFIX = "suffix";
@@ -52,6 +56,11 @@ public class FixedLengthStringOIDGenerator extends TableHiLoGenerator
 	private String prefix;
 	private String suffix;
 	private String fill;
+
+	public FixedLengthStringOIDGenerator()
+	{
+		LOG.infoNew(this);
+	}
 
 	@Override
 	public void configure(final Type type, final Properties params, final Dialect d)
@@ -67,8 +76,7 @@ public class FixedLengthStringOIDGenerator extends TableHiLoGenerator
 	}
 
 	@Override
-	public synchronized Serializable generate(final SessionImplementor session, final Object obj)
-			throws HibernateException
+	public synchronized Serializable generate(final SessionImplementor session, final Object obj) throws HibernateException
 	{
 		final int id = ((Integer) super.generate(session, obj)).intValue();
 		final String idAsHexString = Integer.toHexString(id);

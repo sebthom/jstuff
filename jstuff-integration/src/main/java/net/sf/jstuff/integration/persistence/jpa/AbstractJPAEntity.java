@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -29,8 +29,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import net.sf.jstuff.core.Identifiable;
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.date.ImmutableDate;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Fields;
 import net.sf.jstuff.integration.persistence.HashCodeManager;
 
@@ -177,8 +177,8 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 							else
 							{
 								final AbstractJPAEntity< ? > referencedEntity = (AbstractJPAEntity< ? >) fieldValue;
-								sb.append(intend).append("[").append(field.getName()).append("] id=").append(referencedEntity.getId())
-										.append(" | ").append(referencedEntity.getClass().getName()).append(NEW_LINE);
+								sb.append(intend).append("[").append(field.getName()).append("] id=").append(referencedEntity.getId()).append(" | ")
+										.append(referencedEntity.getClass().getName()).append(NEW_LINE);
 							}
 						}
 						else

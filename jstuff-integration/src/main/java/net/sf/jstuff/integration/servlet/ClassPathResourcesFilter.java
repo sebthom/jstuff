@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jstuff.core.io.IOUtils;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.net.NetUtils;
 
 /**
@@ -50,6 +51,8 @@ import net.sf.jstuff.core.net.NetUtils;
  */
 public class ClassPathResourcesFilter implements Filter
 {
+	private static final Logger LOG = Logger.create();
+
 	public static final int DEFAULT_CACHE_TIME_IN_SEC = 60 * 60 * 24; // one day
 
 	public static URL findResourceInClassPath(final String path)
@@ -64,11 +67,15 @@ public class ClassPathResourcesFilter implements Filter
 
 	protected int maxAgeInSeconds;
 
+	public ClassPathResourcesFilter()
+	{
+		LOG.infoNew(this);
+	}
+
 	public void destroy()
 	{}
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-			ServletException
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException
 	{
 		if (!(request instanceof HttpServletRequest && response instanceof HttpServletResponse))
 		{

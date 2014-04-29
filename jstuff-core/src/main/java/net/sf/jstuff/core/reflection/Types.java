@@ -17,6 +17,7 @@ import static net.sf.jstuff.core.collection.CollectionUtils.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -28,6 +29,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.security.CodeSource;
 import java.util.Date;
 import java.util.Enumeration;
@@ -41,11 +44,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.io.IOUtils;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.visitor.ClassVisitor;
 import net.sf.jstuff.core.reflection.visitor.ClassVisitorWithTypeArguments;
 import net.sf.jstuff.core.validation.Args;
@@ -260,8 +263,16 @@ public abstract class Types
 		final URL location = clazz.getResource(classPath);
 		if (location == null) return null;
 
-		// extract the jar path from: jar:file:/F:/allianz/apps/dev/java/sun_jdk1.5.0_22/jre/lib/rt.jar!/java/lang/String.class
-		return new File(StringUtils.substringBetween(location.getPath(), "file:", "!"));
+		try
+		{
+			// extract the jar path from: jar:file:/F:/allianz/apps/dev/java/sun_jdk1.5.0_22/jre/lib/rt.jar!/java/lang/String.class
+			return new File(URLDecoder.decode(StringUtils.substringBetween(location.getPath(), "file:", "!"), Charset.defaultCharset().name()));
+		}
+		catch (final UnsupportedEncodingException ex)
+		{
+			throw new RuntimeException(ex);
+		}
+
 	}
 
 	/**

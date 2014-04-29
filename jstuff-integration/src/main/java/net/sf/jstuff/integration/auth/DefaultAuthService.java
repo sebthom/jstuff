@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -20,8 +20,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.MapWithSets;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.userregistry.GroupDetailsService;
 import net.sf.jstuff.integration.userregistry.UserDetails;
@@ -44,16 +44,19 @@ public class DefaultAuthService implements AuthService
 	protected MapWithSets<String, String> uriPatternsToApplicationRoleMappings;
 	protected UserDetailsService userDetailsService;
 
+	public DefaultAuthService()
+	{
+		LOG.infoNew(this);
+	}
+
 	public void assertAuthenticated() throws PermissionDeniedException
 	{
-		if (!isAuthenticated())
-			throw new PermissionDeniedException("You are not authorized to perform that operation. You need to authenticate first.");
+		if (!isAuthenticated()) throw new PermissionDeniedException("You are not authorized to perform that operation. You need to authenticate first.");
 	}
 
 	public void assertIdentity(final String userId) throws PermissionDeniedException
 	{
-		if (!isIdentity(userId))
-			throw new PermissionDeniedException("You are not authorized to perform that operation. Identity mismatch.");
+		if (!isIdentity(userId)) throw new PermissionDeniedException("You are not authorized to perform that operation. Identity mismatch.");
 	}
 
 	public void assertRole(final String applicationRole) throws PermissionDeniedException
@@ -220,8 +223,7 @@ public class DefaultAuthService implements AuthService
 				{
 					LOG.trace("Registering groupId -> application role mapping: %s => %s", group, role);
 
-					if (!applicationRoles.contains(role))
-						throw new UnknownApplicationRoleException("Application role is unknown: " + role);
+					if (!applicationRoles.contains(role)) throw new UnknownApplicationRoleException("Application role is unknown: " + role);
 
 					groupIdToApplicationRoleMappings.add(group, role);
 				}
@@ -232,8 +234,7 @@ public class DefaultAuthService implements AuthService
 	/**
 	 * @param mappings format = "groupIdXXX=roleXXX"
 	 */
-	public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final String[] mappings)
-			throws UnknownApplicationRoleException
+	public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final String[] mappings) throws UnknownApplicationRoleException
 	{
 		groupIdToApplicationRoleMappings = new MapWithSets<String, String>();
 		for (final String element : mappings)

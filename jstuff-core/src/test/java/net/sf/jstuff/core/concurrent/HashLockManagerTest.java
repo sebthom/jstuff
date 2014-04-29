@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 
 import org.apache.commons.lang3.time.StopWatch;
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -19,13 +19,14 @@ import java.net.URLClassLoader;
 import java.net.URLStreamHandlerFactory;
 import java.util.regex.Pattern;
 
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
- * Extended {@link URLClassLoader} that supports parent last classloading strategy and 
+ * Extended {@link URLClassLoader} that supports parent last classloading strategy and
  * the recursive loading of JARs from directories.
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class URLClassLoaderExt extends URLClassLoader
@@ -86,8 +87,7 @@ public class URLClassLoaderExt extends URLClassLoader
 		return jarsAdded;
 	}
 
-	public boolean addJARs(final File jarDirectory, final boolean recursive, final Pattern jarNamePattern)
-			throws IOException
+	public boolean addJARs(final File jarDirectory, final boolean recursive, final Pattern jarNamePattern) throws IOException
 	{
 		Args.notNull("jarDirectory", jarDirectory);
 		Args.notNull("jarNamePattern", jarNamePattern);
@@ -106,8 +106,7 @@ public class URLClassLoaderExt extends URLClassLoader
 		return jarsAdded;
 	}
 
-	public boolean addJARs(final File jarDirectory, final boolean recursive, final String jarNamePattern)
-			throws IOException
+	public boolean addJARs(final File jarDirectory, final boolean recursive, final String jarNamePattern) throws IOException
 	{
 		Args.notNull("jarDirectory", jarDirectory);
 		Args.notNull("jarNamePattern", jarNamePattern);

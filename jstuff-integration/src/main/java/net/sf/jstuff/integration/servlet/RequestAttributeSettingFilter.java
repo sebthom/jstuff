@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -25,8 +25,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import net.sf.jstuff.core.Logger;
 import net.sf.jstuff.core.collection.Enumerations;
+import net.sf.jstuff.core.logging.Logger;
 
 /**
  * <b>Example:</b>
@@ -58,8 +58,7 @@ public class RequestAttributeSettingFilter implements Filter
 	public void destroy()
 	{}
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-			ServletException
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException
 	{
 		if (!attributes.isEmpty())
 		{

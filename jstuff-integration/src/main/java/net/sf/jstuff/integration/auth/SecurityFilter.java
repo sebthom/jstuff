@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.sf.jstuff.core.Logger;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.integration.userregistry.UserDetailsService;
 
 /**
@@ -45,7 +45,7 @@ public class SecurityFilter implements Filter
 
 	public SecurityFilter()
 	{
-		LOG.info("instantiated");
+		LOG.infoNew(this);
 	}
 
 	public void destroy()
@@ -53,8 +53,7 @@ public class SecurityFilter implements Filter
 		// do nothing
 	}
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-			ServletException
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException
 	{
 		final HttpServletRequest req = (HttpServletRequest) request;
 		HTTP_SERVLET_REQUEST_HOLDER.set(req);
@@ -68,17 +67,15 @@ public class SecurityFilter implements Filter
 		Authentication auth = (Authentication) sess.getAttribute(SESSION_AUTHENTICATION_ATTRIBUTE);
 		try
 		{
-			if (auth == null)
-				if (req.getRemoteUser() != null)
-				{
-					// build a auth object based on form-based login
-					auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(req.getRemoteUser()),
-							(String) sess.getAttribute("j_password"));
-					sess.removeAttribute("j_password");
-					sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, auth);
-				}
-				else
-					auth = DefaultAuthentication.UNBOUND;
+			if (auth == null) if (req.getRemoteUser() != null)
+			{
+				// build a auth object based on form-based login
+				auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(req.getRemoteUser()), (String) sess.getAttribute("j_password"));
+				sess.removeAttribute("j_password");
+				sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, auth);
+			}
+			else
+				auth = DefaultAuthentication.UNBOUND;
 			AuthenticationHolder.setAuthentication(auth);
 
 			wasLoggedInBeforeChain = auth.isAuthenticated();
