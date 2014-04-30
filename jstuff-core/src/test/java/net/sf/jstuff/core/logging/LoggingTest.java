@@ -123,7 +123,7 @@ public class LoggingTest extends TestCase
 	{
 		LoggerConfig.setPreferSLF4J(false);
 		LoggerConfig.setCompactExceptionLogging(true);
-		LoggerConfig.setLoggingMethodPrefixEnabled(true);
+		LoggerConfig.setDebugMessagePrefixEnabled(true);
 
 		assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof JULLogger);
 
@@ -134,7 +134,7 @@ public class LoggingTest extends TestCase
 	{
 		LoggerConfig.setPreferSLF4J(true);
 		LoggerConfig.setCompactExceptionLogging(false);
-		LoggerConfig.setLoggingMethodPrefixEnabled(false);
+		LoggerConfig.setDebugMessagePrefixEnabled(false);
 
 		assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof SLF4JLogger);
 
