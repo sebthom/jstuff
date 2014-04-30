@@ -25,7 +25,7 @@ public class LoggingTest extends TestCase
 {
 	private static final java.util.logging.Logger ROOT_LOGGER = java.util.logging.Logger.getLogger("");
 
-	private Logger LOG;
+	private static final Logger LOG = Logger.create();
 
 	@Override
 	protected void setUp() throws Exception
@@ -38,6 +38,7 @@ public class LoggingTest extends TestCase
 			handler.setLevel(java.util.logging.Level.INFO);
 
 		java.util.logging.Logger.getLogger(LoggingTest.class.getName()).setLevel(null);
+		Threads.sleep(50);
 	}
 
 	private void coolMethod()
@@ -46,6 +47,8 @@ public class LoggingTest extends TestCase
 		LOG.traceEntry("foo", 23);
 		LOG.traceEntry("foo", 23, true, Void.class, Integer.valueOf(43));
 		LOG.error("ERROR");
+		LOG.error(new RuntimeException("Cannot process request."));
+		LOG.fatal(new RuntimeException("Cannot initialize service."));
 		LOG.warn("WARN");
 		LOG.info("INFO");
 		LOG.debug("DEBUG");
@@ -85,7 +88,7 @@ public class LoggingTest extends TestCase
 		assertEquals(false, LOG.isDebugEnabled());
 		count[0] = 0;
 		coolMethod();
-		assertEquals(3, count[0]);
+		assertEquals(5, count[0]);
 
 		Threads.sleep(50);
 		System.out.println("LOGGER LEVEL = INFO **************************");
@@ -94,7 +97,7 @@ public class LoggingTest extends TestCase
 		assertEquals(false, LOG.isDebugEnabled());
 		count[0] = 0;
 		coolMethod();
-		assertEquals(3, count[0]);
+		assertEquals(5, count[0]);
 
 		Threads.sleep(50);
 		System.out.println("LOGGER LEVEL = ALL **************************");
@@ -102,7 +105,7 @@ public class LoggingTest extends TestCase
 		assertEquals(true, LOG.isTraceEnabled());
 		count[0] = 0;
 		coolMethod();
-		assertEquals(10, count[0]);
+		assertEquals(12, count[0]);
 
 		Threads.sleep(50);
 		System.out.println("LOGGER LEVEL = SEVERE (INHERTIED) ************");
@@ -113,25 +116,27 @@ public class LoggingTest extends TestCase
 		assertEquals(true, LOG.isErrorEnabled());
 		count[0] = 0;
 		coolMethod();
-		assertEquals(1, count[0]);
+		assertEquals(3, count[0]);
 	}
 
 	public void test1LoggingJUL()
 	{
-		Logger.isUseSLF4J = false;
-		LOG = Logger.create();
+		LoggerConfig.setPreferSLF4J(false);
+		LoggerConfig.setCompactExceptionLogging(true);
+		LoggerConfig.setLoggingMethodPrefixEnabled(true);
 
-		assertTrue(LOG instanceof LoggerJUL);
+		assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof JULLogger);
 
 		genericLoggerTest();
 	}
 
 	public void test2LoggingSLF4J()
 	{
-		Logger.isUseSLF4J = true;
-		LOG = Logger.create();
+		LoggerConfig.setPreferSLF4J(true);
+		LoggerConfig.setCompactExceptionLogging(false);
+		LoggerConfig.setLoggingMethodPrefixEnabled(false);
 
-		assertTrue(LOG instanceof LoggerSLF4J);
+		assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof SLF4JLogger);
 
 		genericLoggerTest();
 	}

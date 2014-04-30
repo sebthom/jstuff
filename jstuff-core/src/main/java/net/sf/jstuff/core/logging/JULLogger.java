@@ -1,3 +1,17 @@
+/**************************************import java.util.Arrays;
+import java.util.logging.Level;
+
+import net.sf.jstuff.core.StackTrace;
+import net.sf.jstuff.core.reflection.Types;
+import net.sf.jstuff.core.validation.Args;
+accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.jstuff.core.logging;
 
 import java.util.Arrays;
@@ -7,12 +21,13 @@ import net.sf.jstuff.core.StackTrace;
 import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
 
-public class LoggerJUL extends Logger
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
+class JULLogger extends Logger
 {
 	private final java.util.logging.Logger logger;
 	private final String loggerName;
-
-	private static final String TIP = " (tip: set log level FINE to log the complete stacktrace)";
 
 	private static final int L_TRACE = java.util.logging.Level.FINEST.intValue();
 	private static final int L_DEBUG = java.util.logging.Level.FINE.intValue();
@@ -20,7 +35,7 @@ public class LoggerJUL extends Logger
 	private static final int L_WARN = java.util.logging.Level.WARNING.intValue();
 	private static final int L_ERROR = java.util.logging.Level.SEVERE.intValue();
 
-	protected LoggerJUL(final String name)
+	JULLogger(final String name)
 	{
 		logger = java.util.logging.Logger.getLogger(name);
 		loggerName = name;
@@ -32,27 +47,45 @@ public class LoggerJUL extends Logger
 	 */
 	private void _log(final Level level, final String message, final Throwable ex, final boolean isLogExactSourceLocation)
 	{
+		final String sourceClassName;
+		final String methodName;
+		String effectiveMessage;
+		final Throwable effectiveException;
 		if (isLogExactSourceLocation)
 		{
+			effectiveMessage = message;
+			if (effectiveMessage == null && ex != null) effectiveMessage = "Unexpected exception";
+
 			/*
 			 * if the current logger's level is DEBUG or TRACE we create full-blown log records for all levels
 			 */
-			final StackTraceElement caller = StackTrace.getCallingStackTraceElement(LoggerJUL.class);
+			final StackTraceElement caller = StackTrace.getCallingStackTraceElement(DelegatingLogger.FQCN);
 
 			if (caller == null) // should never happen
 				throw new IllegalStateException("Unexpected stacktrace " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
-			final String methodName = caller.getMethodName();
-			final String logMsg;
-			if (addSourceLocationToLogMessageIfDebugging)
-				logMsg = methodName + "():" + caller.getLineNumber() + " " + message;
-			else
-				logMsg = message;
+			methodName = caller.getMethodName();
 
-			logger.logp(level, caller.getClassName(), methodName, logMsg, ex);
+			if (LoggerConfig.addLoggingMethodToLogMessageIfDebugging) effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
+
+			sourceClassName = caller.getClassName();
+			effectiveException = ex;
 		}
 		else
-			logger.logp(level, loggerName, null, message, ex);
+		{
+			if (ex == null)
+				effectiveMessage = message;
+			else
+			{
+				final StackTraceElement[] st = ex.getStackTrace();
+				effectiveMessage = (message == null ? "" : message + " reason: ") + ex.getClass().getSimpleName() + ": " + ex.getMessage()
+						+ (st != null && st.length > 0 ? "\n\tat " + st[0] + "\n\t[StackTrace truncated - set log level to FINE for full details]" : "");
+			}
+			sourceClassName = loggerName;
+			methodName = null;
+			effectiveException = null;
+		}
+		logger.logp(level, sourceClassName, methodName, effectiveMessage, effectiveException);
 	}
 
 	@Override
@@ -142,7 +175,7 @@ public class LoggerJUL extends Logger
 		if (effectiveLevel > L_DEBUG) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINE, "Unexpected exception occured: " + ex.getMessage(), ex, isLogExactSourceLocation);
+		_log(Level.FINE, null, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -211,11 +244,8 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_ERROR) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-		if (isLogExactSourceLocation)
-			_log(Level.SEVERE, msg, ex, true);
-		else
-			_log(Level.SEVERE, msg + " reason: " + ex.getClass().getSimpleName() + ": " + ex.getMessage() + TIP, null, false);
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.SEVERE, msg, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -224,11 +254,8 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_ERROR) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-		if (isLogExactSourceLocation)
-			_log(Level.SEVERE, String.format(messageTemplate, args), ex, true);
-		else
-			_log(Level.SEVERE, String.format(messageTemplate, args) + " reason: " + ex.getClass().getSimpleName() + ": " + ex.getMessage() + TIP, null, false);
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.SEVERE, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -237,11 +264,8 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_ERROR) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-		if (isLogExactSourceLocation)
-			_log(Level.SEVERE, "Unexpected exception occured: " + ex.getMessage(), ex, true);
-		else
-			_log(Level.SEVERE, ex.getClass().getSimpleName() + ": " + ex.getMessage() + TIP, null, false);
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.SEVERE, null, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -250,7 +274,7 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_ERROR) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
+		final boolean isLogExactSourceLocation = true;
 		_log(Level.SEVERE, msg, ex, isLogExactSourceLocation);
 	}
 
@@ -260,7 +284,7 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_ERROR) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
+		final boolean isLogExactSourceLocation = true;
 		_log(Level.SEVERE, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
 	}
 
@@ -270,14 +294,14 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_ERROR) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-		_log(Level.SEVERE, "Unexpected exception occured: " + ex.getMessage(), ex, isLogExactSourceLocation);
+		final boolean isLogExactSourceLocation = true;
+		_log(Level.SEVERE, null, ex, isLogExactSourceLocation);
 	}
 
 	/**
 	 * @return the effective log level of the underlying java.util.Logger
 	 */
-	public int getLevelInt()
+	int getLevelInt()
 	{
 		for (java.util.logging.Logger current = logger; current != null;)
 		{
@@ -291,7 +315,7 @@ public class LoggerJUL extends Logger
 	/**
 	 * @return the underlying java.util.Logger
 	 */
-	public java.util.logging.Logger getLogger()
+	java.util.logging.Logger getLogger()
 	{
 		return logger;
 	}
@@ -368,11 +392,8 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_INFO) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-		if (isLogExactSourceLocation)
-			_log(Level.INFO, msg, ex, true);
-		else
-			_log(Level.INFO, msg + " reason: " + ex.getClass().getSimpleName() + ": " + ex.getMessage() + TIP, null, false);
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.INFO, msg, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -381,11 +402,8 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_INFO) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-		if (isLogExactSourceLocation)
-			_log(Level.INFO, String.format(messageTemplate, args), ex, true);
-		else
-			_log(Level.INFO, String.format(messageTemplate, args) + " reason: " + ex.getClass().getSimpleName() + ": " + ex.getMessage() + TIP, null, false);
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.INFO, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -394,11 +412,8 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_INFO) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-		if (isLogExactSourceLocation)
-			_log(Level.INFO, "Unexpected exception occured: " + ex.getMessage(), ex, true);
-		else
-			_log(Level.INFO, ex.getClass().getSimpleName() + ": " + ex.getMessage() + TIP, null, false);
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.INFO, null, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -535,7 +550,7 @@ public class LoggerJUL extends Logger
 		if (effectiveLevel > L_TRACE) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINEST, "Unexpected exception occured: " + ex.getMessage(), ex, isLogExactSourceLocation);
+		_log(Level.FINEST, null, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -685,11 +700,8 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_WARN) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-		if (isLogExactSourceLocation)
-			_log(Level.WARNING, msg, ex, true);
-		else
-			_log(Level.WARNING, msg + " reason: " + ex.getClass().getSimpleName() + ": " + ex.getMessage() + TIP, null, false);
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.WARNING, msg, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -698,11 +710,8 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_WARN) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-		if (isLogExactSourceLocation)
-			_log(Level.WARNING, String.format(messageTemplate, args), ex, true);
-		else
-			_log(Level.WARNING, String.format(messageTemplate, args) + " reason: " + ex.getClass().getSimpleName() + ": " + ex.getMessage() + TIP, null, false);
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.WARNING, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -711,10 +720,7 @@ public class LoggerJUL extends Logger
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_WARN) return;
 
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-		if (isLogExactSourceLocation)
-			_log(Level.WARNING, "Unexpected exception occured: " + ex.getMessage(), ex, true);
-		else
-			_log(Level.WARNING, ex.getClass().getSimpleName() + ": " + ex.getMessage() + TIP, null, false);
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.WARNING, null, ex, isLogExactSourceLocation);
 	}
 }

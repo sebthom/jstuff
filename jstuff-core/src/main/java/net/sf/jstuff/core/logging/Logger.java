@@ -16,67 +16,30 @@ import net.sf.jstuff.core.StackTrace;
 import net.sf.jstuff.core.validation.Args;
 
 /**
+ * Logger implementation supporting the {@link java.util.Formatter} syntax.
+ *
+ * Defaults to SLF4J as logging infrastructure and falls back to java.util.logging if SLF4J is not available.
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-@SuppressWarnings("null")
 public abstract class Logger
 {
-	private static final boolean isSLF4JPresent;
-	public static boolean isUseSLF4J;
-
-	/**
-	 * If set to true, method name and line number are added to the log message.
-	 * This is esp. helpful in environments where you have no control over the used logger pattern by the underlying logger infrastructure (e.g. in an JEE container).
-	 */
-	public static boolean addSourceLocationToLogMessageIfDebugging = true;
-
-	private static final Logger LOG;
-
-	static
-	{
-		Class< ? > slf4jClass = null;
-		try
-		{
-			slf4jClass = org.slf4j.Logger.class;
-		}
-		catch (final LinkageError err)
-		{}
-		isSLF4JPresent = slf4jClass != null;
-
-		if ("true".equals(System.getProperty(Logger.class.getName() + ".preferJUL")))
-			isUseSLF4J = false;
-		else
-			isUseSLF4J = isSLF4JPresent;
-
-		LOG = Logger.create(Logger.class);
-		if (isUseSLF4J)
-			LOG.info("Using SLF4J as logging infrastructure.");
-		else
-			LOG.info("Using java.util.logging as logging infrastructure.");
-	}
-
 	public static Logger create()
 	{
 		final String name = StackTrace.getCallingStackTraceElement(Logger.class).getClassName();
-
-		if (isUseSLF4J) return new LoggerSLF4J(name);
-		return new LoggerJUL(name);
+		return LoggerConfig.create(name);
 	}
 
 	public static Logger create(final Class< ? > clazz)
 	{
 		Args.notNull("clazz", clazz);
-
-		if (isUseSLF4J) return new LoggerSLF4J(clazz.getName());
-		return new LoggerJUL(clazz.getName());
+		return LoggerConfig.create(clazz.getName());
 	}
 
 	public static Logger create(final String name)
 	{
 		Args.notNull("name", name);
-
-		if (isUseSLF4J) return new LoggerSLF4J(name);
-		return new LoggerJUL(name);
+		return LoggerConfig.create(name);
 	}
 
 	/**
