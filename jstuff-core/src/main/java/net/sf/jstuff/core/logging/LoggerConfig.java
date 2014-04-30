@@ -14,7 +14,7 @@ package net.sf.jstuff.core.logging;
 
 import java.util.Set;
 
-import net.sf.jstuff.core.collection.WeakHashSet;
+import net.sf.jstuff.core.collection.WeakIdentityHashSet;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -29,7 +29,7 @@ public final class LoggerConfig
 	private static boolean isPreferSLF4J;
 	private static boolean isUseSFL4J;
 
-	private static final Set<DelegatingLogger> LOGGERS = new WeakHashSet<DelegatingLogger>(64);
+	private static final Set<DelegatingLogger> LOGGERS = new WeakIdentityHashSet<DelegatingLogger>(64);
 
 	/**
 	 * If set to true, method name and line number are added to the log message.

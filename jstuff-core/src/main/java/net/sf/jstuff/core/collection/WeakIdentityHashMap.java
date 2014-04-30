@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -46,12 +46,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 			if (obj == null) return false;
 			if (getClass() != obj.getClass()) return false;
 			final KeyIdentity< ? > other = (KeyIdentity< ? >) obj;
-			if (key == null)
-			{
-				if (other.key != null) return false;
-			}
-			else if (!key.equals(other.key)) return false;
-			return true;
+			return key == other.key;
 		}
 
 		@Override
@@ -102,8 +97,8 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 		@Override
 		public int hashCode()
 		{
-			final Object k = getKey();
-			final Object v = getValue();
+			final Object k = weakEntry.getKey().key;
+			final Object v = weakEntry.getValue();
 			return (k == null ? 0 : k.hashCode()) ^ (v == null ? 0 : v.hashCode());
 		}
 
