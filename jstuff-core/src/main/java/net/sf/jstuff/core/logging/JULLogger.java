@@ -1,10 +1,8 @@
-/**************************************import java.util.Arrays;
-import java.util.logging.Level;
-
-import net.sf.jstuff.core.StackTrace;
-import net.sf.jstuff.core.reflection.Types;
-import net.sf.jstuff.core.validation.Args;
-accompanying materials
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Thomschke.
+ *
+ * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -66,7 +64,7 @@ class JULLogger extends Logger
 
 			methodName = caller.getMethodName();
 
-			if (LoggerConfig.addLoggingMethodToLogMessageIfDebugging) effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
+			if (LoggerConfig.isDebugMessagePrefixEnabled) effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
 
 			sourceClassName = caller.getClassName();
 			effectiveException = ex;
@@ -309,6 +307,7 @@ class JULLogger extends Logger
 			if (level != null) return level.intValue();
 			current = current.getParent();
 		}
+		// should never be reached
 		throw new IllegalStateException("Cannot determine logger level!");
 	}
 

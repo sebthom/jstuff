@@ -1,14 +1,10 @@
-/****************************************import static org.slf4j.spi.LocationAwareLogger.*;
-
-import java.util.Arrays;
-
-import net.sf.jstuff.core.StackTrace;
-import net.sf.jstuff.core.reflection.Types;
-import net.sf.jstuff.core.validation.Args;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.spi.LocationAwareLogger;
-which accompanies this distribution, and is available at
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Thomschke.
+ *
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -69,7 +65,7 @@ class SLF4JLogger extends Logger
 			/*
 			 * if the current logger's level is DEBUG or TRACE we add the logging method name + source location to all log messages
 			 */
-			if (LoggerConfig.addLoggingMethodToLogMessageIfDebugging)
+			if (LoggerConfig.isDebugMessagePrefixEnabled)
 			{
 				final StackTraceElement caller = StackTrace.getCallingStackTraceElement(DelegatingLogger.FQCN);
 

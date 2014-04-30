@@ -29,13 +29,13 @@ public abstract class LoggerConfig
 	private static boolean isPreferSLF4J;
 	private static boolean isUseSFL4J;
 
-	static final Set<DelegatingLogger> LOGGERS = new WeakHashSet<DelegatingLogger>(64);
+	private static final Set<DelegatingLogger> LOGGERS = new WeakHashSet<DelegatingLogger>(64);
 
 	/**
 	 * If set to true, method name and line number are added to the log message.
 	 * This is esp. helpful in environments where you have no control over the used logger pattern by the underlying logger infrastructure (e.g. in an JEE container).
 	 */
-	static boolean addLoggingMethodToLogMessageIfDebugging = true;
+	static boolean isDebugMessagePrefixEnabled = true;
 	static boolean isCompactExceptionLoggingDisabled = false;
 
 	static
@@ -66,14 +66,14 @@ public abstract class LoggerConfig
 		return logger;
 	}
 
-	public static boolean isCompactExceptionLogging()
+	public static boolean isCompactExceptionLoggingEnabled()
 	{
 		return !isCompactExceptionLoggingDisabled;
 	}
 
-	public static boolean isLoggingMethodPrefixEnabled()
+	public static boolean isDebugMessagePrefixEnabled()
 	{
-		return addLoggingMethodToLogMessageIfDebugging;
+		return isDebugMessagePrefixEnabled;
 	}
 
 	public static boolean isPreferSLF4J()
@@ -86,9 +86,9 @@ public abstract class LoggerConfig
 		isCompactExceptionLoggingDisabled = !enabled;
 	}
 
-	public static void setLoggingMethodPrefixEnabled(final boolean enabled)
+	public static void setDebugMessagePrefixEnabled(final boolean enabled)
 	{
-		LoggerConfig.addLoggingMethodToLogMessageIfDebugging = enabled;
+		LoggerConfig.isDebugMessagePrefixEnabled = enabled;
 	}
 
 	public synchronized static void setPreferSLF4J(final boolean value)
