@@ -22,7 +22,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-class JULLogger extends Logger
+final class JULLogger extends Logger
 {
 	private final java.util.logging.Logger logger;
 	private final String loggerName;

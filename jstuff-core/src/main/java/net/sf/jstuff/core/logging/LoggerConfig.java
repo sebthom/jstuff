@@ -21,7 +21,7 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @SuppressWarnings("null")
-public abstract class LoggerConfig
+public final class LoggerConfig
 {
 	private static final Logger LOG;
 
@@ -115,4 +115,8 @@ public abstract class LoggerConfig
 		}
 	}
 
+	private LoggerConfig()
+	{
+		super();
+	}
 }

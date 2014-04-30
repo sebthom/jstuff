@@ -26,7 +26,7 @@ import org.slf4j.spi.LocationAwareLogger;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-class SLF4JLogger extends Logger
+final class SLF4JLogger extends Logger
 {
 	private final org.slf4j.Logger logger;
 	private final LocationAwareLogger loggerEx;

@@ -17,7 +17,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-class DelegatingLogger extends Logger
+final class DelegatingLogger extends Logger
 {
 	private Logger delegate;
 
