@@ -16,6 +16,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
+ * Marker for non-static, argument-less methods that shall be invoked after the object has been built.
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
