@@ -32,7 +32,6 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 {
 	/**
 	 * @see XMLEncoder
-	 * @throws SerializationException
 	 */
 	@SuppressWarnings("resource")
 	public static String bean2xml(final Object javaBean) throws SerializationException
@@ -102,7 +101,6 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 
 	/**
 	 * @see XMLDecoder
-	 * @throws SerializationException
 	 */
 	@SuppressWarnings("resource")
 	public static Object xml2bean(final String xmlData) throws SerializationException

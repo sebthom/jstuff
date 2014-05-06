@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -68,18 +68,12 @@ public class TeePrintStream extends PrintStream
 		original = out;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean checkError()
 	{
 		return super.checkError() | original.checkError();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void close()
 	{
@@ -87,9 +81,6 @@ public class TeePrintStream extends PrintStream
 		super.close();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void flush()
 	{
@@ -97,9 +88,6 @@ public class TeePrintStream extends PrintStream
 		super.flush();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void write(final byte buf[], final int off, final int len)
 	{
@@ -107,9 +95,6 @@ public class TeePrintStream extends PrintStream
 		super.write(buf, off, len);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void write(final int b)
 	{
