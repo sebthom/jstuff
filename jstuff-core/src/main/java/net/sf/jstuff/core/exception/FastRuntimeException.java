@@ -10,12 +10,40 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.functional;
+package net.sf.jstuff.core.exception;
 
 /**
+ * Lightweight unchecked exception without stack trace information that can be used for flow control.
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Invocable<ReturnType, ArgumentType, ExceptionType extends Exception>
+public class FastRuntimeException extends RuntimeException
 {
-	ReturnType invoke(final ArgumentType arg) throws ExceptionType;
+	private static final long serialVersionUID = 1L;
+
+	public FastRuntimeException()
+	{
+		super();
+	}
+
+	public FastRuntimeException(final String message, final Throwable cause)
+	{
+		super(message, cause);
+	}
+
+	public FastRuntimeException(final String message)
+	{
+		super(message);
+	}
+
+	public FastRuntimeException(final Throwable cause)
+	{
+		super(cause);
+	}
+
+	@Override
+	public Throwable fillInStackTrace()
+	{
+		return null;
+	}
 }

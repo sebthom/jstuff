@@ -10,10 +10,11 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.reflection;
 
 import java.util.Arrays;
 
+import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.validation.Args;
 
 /**

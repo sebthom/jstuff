@@ -127,9 +127,6 @@ public class URLClassLoaderExt extends URLClassLoader
 		return jarsAdded;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public URL getResource(final String name)
 	{
@@ -145,9 +142,6 @@ public class URLClassLoaderExt extends URLClassLoader
 		return parentLast;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected synchronized Class< ? > loadClass(final String name, final boolean resolve) throws ClassNotFoundException
 	{

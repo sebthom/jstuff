@@ -32,7 +32,6 @@ public class LdapAuthenticator implements Authenticator
 	private static final Logger LOG = Logger.create();
 
 	protected LdapTemplate ldapTemplate;
-
 	protected UserDetailsService userDetailsService;
 
 	public LdapAuthenticator()
@@ -45,7 +44,7 @@ public class LdapAuthenticator implements Authenticator
 		LOG.trace("Trying to authenticate user %s", logonName);
 		try
 		{
-			ldapTemplate.execute(new Invocable<Object, LdapContext>()
+			ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>()
 				{
 					public Object invoke(final LdapContext ctx) throws NamingException
 					{
@@ -65,9 +64,6 @@ public class LdapAuthenticator implements Authenticator
 		}
 	}
 
-	/**
-	 * @param ldapTemplate the ldapTemplate to set
-	 */
 	@Inject
 	public void setLdapTemplate(final LdapTemplate ldapTemplate)
 	{

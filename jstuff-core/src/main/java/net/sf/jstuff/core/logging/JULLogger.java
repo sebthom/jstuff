@@ -15,7 +15,7 @@ package net.sf.jstuff.core.logging;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-import net.sf.jstuff.core.StackTrace;
+import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
 

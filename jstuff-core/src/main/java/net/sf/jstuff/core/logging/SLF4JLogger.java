@@ -16,7 +16,7 @@ import static org.slf4j.spi.LocationAwareLogger.*;
 
 import java.util.Arrays;
 
-import net.sf.jstuff.core.StackTrace;
+import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
 

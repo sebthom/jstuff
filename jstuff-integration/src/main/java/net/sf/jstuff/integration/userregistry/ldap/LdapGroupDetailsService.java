@@ -57,7 +57,7 @@ public class LdapGroupDetailsService implements GroupDetailsService
 	{
 		Args.notNull("groupDN", groupDN);
 
-		return (GroupDetails) ldapTemplate.execute(new Invocable<Object, LdapContext>()
+		return (GroupDetails) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>()
 			{
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{
@@ -77,15 +77,12 @@ public class LdapGroupDetailsService implements GroupDetailsService
 			});
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@SuppressWarnings("unchecked")
 	public Set<String> getGroupIdsByUserDN(final String userDN)
 	{
 		Args.notNull("userDN", userDN);
 
-		return (Set<String>) ldapTemplate.execute(new Invocable<Object, LdapContext>()
+		return (Set<String>) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>()
 			{
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{
@@ -111,9 +108,6 @@ public class LdapGroupDetailsService implements GroupDetailsService
 				options));
 	}
 
-	/**
-	 * @param groupAttributeDisplayName the groupAttributeDisplayName to set
-	 */
 	@Inject
 	public void setGroupAttributeDisplayName(final String groupAttributeDisplayName)
 	{
@@ -122,9 +116,6 @@ public class LdapGroupDetailsService implements GroupDetailsService
 		this.groupAttributeDisplayName = groupAttributeDisplayName;
 	}
 
-	/**
-	 * @param groupAttributeGroupId the groupAttributeGroupId to set
-	 */
 	@Inject
 	public void setGroupAttributeGroupId(final String groupAttributeGroupId)
 	{
@@ -133,9 +124,6 @@ public class LdapGroupDetailsService implements GroupDetailsService
 		this.groupAttributeGroupId = groupAttributeGroupId;
 	}
 
-	/**
-	 * @param groupAttributeMember the groupAttributeMember to set
-	 */
 	@Inject
 	public void setGroupAttributeMember(final String groupAttributeMember)
 	{
@@ -144,9 +132,6 @@ public class LdapGroupDetailsService implements GroupDetailsService
 		this.groupAttributeMember = groupAttributeMember;
 	}
 
-	/**
-	 * @param groupSearchBase the groupSearchBase to set
-	 */
 	@Inject
 	public void setGroupSearchBase(final String groupSearchBase)
 	{
@@ -155,9 +140,6 @@ public class LdapGroupDetailsService implements GroupDetailsService
 		this.groupSearchBase = groupSearchBase;
 	}
 
-	/**
-	 * @param groupSearchFilter the groupSearchFilter to set
-	 */
 	@Inject
 	public void setGroupSearchFilter(final String groupSearchFilter)
 	{
@@ -166,17 +148,11 @@ public class LdapGroupDetailsService implements GroupDetailsService
 		this.groupSearchFilter = groupSearchFilter;
 	}
 
-	/**
-	 * @param groupSearchSubtree the groupSearchSubtree to set
-	 */
 	public void setGroupSearchSubtree(final boolean groupSearchSubtree)
 	{
 		this.groupSearchSubtree = groupSearchSubtree;
 	}
 
-	/**
-	 * @param ldapTemplate the ldapTemplate to set
-	 */
 	@Inject
 	public void setLdapTemplate(final LdapTemplate ldapTemplate)
 	{

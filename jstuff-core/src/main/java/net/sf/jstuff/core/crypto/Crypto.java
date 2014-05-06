@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.crypto;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -30,6 +30,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -47,11 +48,10 @@ public abstract class Crypto
 		}
 	}
 
-	private static final byte[] AES_IV = {(byte) 0x23, (byte) 0x22, (byte) 0xf8, (byte) 0x98, (byte) 0x3a, (byte) 0xbc, (byte) 0xf8,
-			(byte) 0x22, (byte) 0x99, (byte) 0xff, (byte) 0x34, (byte) 0xc2, (byte) 0xc7, (byte) 0xd2, (byte) 0x24, (byte) 0xc5};
+	private static final byte[] AES_IV = {(byte) 0x23, (byte) 0x22, (byte) 0xf8, (byte) 0x98, (byte) 0x3a, (byte) 0xbc, (byte) 0xf8, (byte) 0x22, (byte) 0x99,
+			(byte) 0xff, (byte) 0x34, (byte) 0xc2, (byte) 0xc7, (byte) 0xd2, (byte) 0x24, (byte) 0xc5};
 
-	private static final byte[] AES_SALT = {(byte) 0xf3, (byte) 0x31, (byte) 0x43, (byte) 0x13, (byte) 0x7d, (byte) 0x22, (byte) 0xad,
-			(byte) 0x04};;
+	private static final byte[] AES_SALT = {(byte) 0xf3, (byte) 0x31, (byte) 0x43, (byte) 0x13, (byte) 0x7d, (byte) 0x22, (byte) 0xad, (byte) 0x04};;
 
 	private static final Map<String, SecretKey> CACHED_AES_KEYS = new WeakHashMap<String, SecretKey>();
 

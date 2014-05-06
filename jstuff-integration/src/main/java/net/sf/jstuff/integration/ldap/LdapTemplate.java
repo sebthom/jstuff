@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -35,7 +35,7 @@ public class LdapTemplate
 	private boolean pooled = true;
 	private boolean useStartTSL = false;
 
-	public Object execute(final Invocable<Object, LdapContext> callback)
+	public Object execute(final Invocable<Object, LdapContext, ? extends Exception> callback)
 	{
 		LdapContext ctx = null;
 
@@ -55,17 +55,11 @@ public class LdapTemplate
 		}
 	}
 
-	/**
-	 * @return the initialContextFactory
-	 */
 	public String getInitialContextFactory()
 	{
 		return initialContextFactory;
 	}
 
-	/**
-	 * @return the ldapURL
-	 */
 	public String getLdapURL()
 	{
 		return ldapURL;
@@ -81,9 +75,6 @@ public class LdapTemplate
 		if (pooled) ldapSettings.put("com.sun.jndi.ldap.connect.pool", "true");
 	}
 
-	/**
-	 * @return the pooled
-	 */
 	public boolean isPooled()
 	{
 		return pooled;
@@ -94,26 +85,17 @@ public class LdapTemplate
 		return useStartTSL;
 	}
 
-	/**
-	 * @param initialContextFactory the initialContextFactory to set
-	 */
 	public void setInitialContextFactory(final String initialContextFactory)
 	{
 		this.initialContextFactory = initialContextFactory;
 	}
 
-	/**
-	 * @param ldapURL the ldapURL to set
-	 */
 	@Inject
 	public void setLdapURL(final String ldapURL)
 	{
 		this.ldapURL = ldapURL;
 	}
 
-	/**
-	 * @param pooled the pooled to set
-	 */
 	public void setPooled(final boolean pooled)
 	{
 		this.pooled = pooled;

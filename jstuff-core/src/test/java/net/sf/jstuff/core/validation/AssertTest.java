@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -10,14 +10,12 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.validation;
 
 import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.validation.Args;
-import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -25,6 +25,12 @@ public class EmptyIterator<T> implements Iterator<T>, Serializable
 	private static final long serialVersionUID = 1L;
 
 	static final EmptyIterator< ? > INSTANCE = new EmptyIterator<Object>();
+
+	@SuppressWarnings("unchecked")
+	public static <T> EmptyIterator<T> get()
+	{
+		return (EmptyIterator<T>) INSTANCE;
+	}
 
 	private EmptyIterator()
 	{

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -10,12 +10,13 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.graphic;
 
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -34,20 +35,24 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class ImageUtils
 {
-	private static GraphicsConfiguration gc;
+	private static volatile GraphicsConfiguration gc;
 
-	private static synchronized GraphicsConfiguration getDefaultConfiguration()
+	private static GraphicsConfiguration getDefaultConfiguration() throws HeadlessException
 	{
-		if (gc == null)
-		{
-			final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-			final GraphicsDevice gd = ge.getDefaultScreenDevice(); // not supported in headless mode
-			gc = gd.getDefaultConfiguration();
-		}
+		if (gc == null) //
+			synchronized (ImageUtils.class)
+			{
+				if (gc == null)
+				{
+					final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+					final GraphicsDevice gd = ge.getDefaultScreenDevice(); // not supported in headless mode
+					gc = gd.getDefaultConfiguration();
+				}
+			}
 		return gc;
 	}
 
-	public static BufferedImage toBufferedImage(final Image image)
+	public static BufferedImage toBufferedImage(final Image image) throws HeadlessException
 	{
 		Args.notNull("image", image);
 
@@ -78,18 +83,20 @@ public abstract class ImageUtils
 
 		if (image instanceof BufferedImage) return (BufferedImage) image;
 
-		final ColorModel cm = image.getColorModel();
-		final int w = image.getWidth();
-		final int h = image.getHeight();
-
-		final WritableRaster raster = cm.createCompatibleWritableRaster(w, h);
-		final boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-		final Hashtable<String, Object> props = new Hashtable<String, Object>();
 		final String[] keys = image.getPropertyNames();
+		final Hashtable<String, Object> props;
+		if (keys == null)
+			props = null;
+		else
+		{
+			props = new Hashtable<String, Object>();
+			for (final String key : keys)
+				props.put(key, image.getProperty(key));
+		}
 
-		if (keys != null) for (final String key : keys)
-			props.put(key, image.getProperty(key));
-		final BufferedImage ret = new BufferedImage(cm, raster, isAlphaPremultiplied, props);
+		final ColorModel cm = image.getColorModel();
+		final WritableRaster raster = cm.createCompatibleWritableRaster(image.getWidth(), image.getHeight());
+		final BufferedImage ret = new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), props);
 		image.copyData(raster);
 		return ret;
 	}

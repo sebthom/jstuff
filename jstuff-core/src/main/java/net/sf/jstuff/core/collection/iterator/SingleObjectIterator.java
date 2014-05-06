@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -53,5 +53,4 @@ public class SingleObjectIterator<T> implements Iterator<T>, Serializable
 	{
 		throw new UnsupportedOperationException();
 	}
-
 }

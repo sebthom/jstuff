@@ -40,9 +40,6 @@ public class ZippedBlockRMIProxyFactoryBean extends RmiProxyFactoryBean
 		return useCompressedRMISocketFactory;
 	}
 
-	/**
-	 * @param useCompressedRMISocketFactory the useCompressedRMISocketFactory to set
-	 */
 	public void setUseCompressedRMISocketFactory(final boolean useCompressedRMISocketFactory)
 	{
 		this.useCompressedRMISocketFactory = useCompressedRMISocketFactory;

@@ -52,8 +52,7 @@ public class ZippedBlockRMIServiceExporter implements InitializingBean, Disposab
 	}
 
 	/**
-	 * detault is 1100
-	 * @param registryPort
+	 * @param registryPort default is 1100
 	 */
 	public void setRegistryCompressedPort(final int registryPort)
 	{
@@ -67,8 +66,7 @@ public class ZippedBlockRMIServiceExporter implements InitializingBean, Disposab
 	}
 
 	/**
-	 * detault is 1099
-	 * @param registryPort
+	 * @param registryPort default is 1099
 	 */
 	public void setRegistryPort(final int registryPort)
 	{
@@ -89,7 +87,6 @@ public class ZippedBlockRMIServiceExporter implements InitializingBean, Disposab
 
 	/**
 	 * Defaults to the simple class name of the service interface class
-	 * @param serviceName
 	 */
 	public void setServiceName(final String serviceName)
 	{

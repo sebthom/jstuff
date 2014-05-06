@@ -10,12 +10,40 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.functional;
+package net.sf.jstuff.core.exception;
 
 /**
+ * Lightweight checked exception without stack trace information that can be used for flow control.
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Invocable<ReturnType, ArgumentType, ExceptionType extends Exception>
+public class FastException extends Exception
 {
-	ReturnType invoke(final ArgumentType arg) throws ExceptionType;
+	private static final long serialVersionUID = 1L;
+
+	public FastException()
+	{
+		super();
+	}
+
+	public FastException(final String message, final Throwable cause)
+	{
+		super(message, cause);
+	}
+
+	public FastException(final String message)
+	{
+		super(message);
+	}
+
+	public FastException(final Throwable cause)
+	{
+		super(cause);
+	}
+
+	@Override
+	public Throwable fillInStackTrace()
+	{
+		return null;
+	}
 }

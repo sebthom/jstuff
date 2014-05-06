@@ -115,9 +115,6 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 		return factory;
 	}
 
-	/**
-	 * {@inheritDoc}.
-	 */
 	public void setBeanFactory(final BeanFactory beanFactory)
 	{
 		Args.notNull("beanFactory", beanFactory);

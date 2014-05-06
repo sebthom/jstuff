@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.validation;
 
-import static net.sf.jstuff.core.StackTrace.*;
+import static net.sf.jstuff.core.reflection.StackTrace.*;
 
 import java.util.Collection;
 import java.util.Map;

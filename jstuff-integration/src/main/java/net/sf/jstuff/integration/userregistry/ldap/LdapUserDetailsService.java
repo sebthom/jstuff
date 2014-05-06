@@ -65,7 +65,7 @@ public class LdapUserDetailsService implements UserDetailsService
 	{
 		Args.notNull("filter", filter);
 
-		return (UserDetails) ldapTemplate.execute(new Invocable<Object, LdapContext>()
+		return (UserDetails) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>()
 			{
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{
@@ -95,9 +95,6 @@ public class LdapUserDetailsService implements UserDetailsService
 			});
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public UserDetails getUserDetailsByLogonName(final String logonName)
 	{
 		Args.notNull("logonName", logonName);
@@ -105,9 +102,6 @@ public class LdapUserDetailsService implements UserDetailsService
 		return getUserDetailsByFilter(userAttributeLogonName + "=" + LdapUtils.ldapEscape(logonName));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public UserDetails getUserDetailsByUserId(final String userId)
 	{
 		Args.notNull("userId", userId);
@@ -126,9 +120,6 @@ public class LdapUserDetailsService implements UserDetailsService
 				options));
 	}
 
-	/**
-	 * @param ldapTemplate the ldapTemplate to set
-	 */
 	@Inject
 	public void setLdapTemplate(final LdapTemplate ldapTemplate)
 	{
@@ -137,9 +128,6 @@ public class LdapUserDetailsService implements UserDetailsService
 		this.ldapTemplate = ldapTemplate;
 	}
 
-	/**
-	 * @param userAttributeDisplayName the userAttributeDisplayName to set
-	 */
 	@Inject
 	public void setUserAttributeDisplayName(final String userAttributeDisplayName)
 	{
@@ -148,9 +136,6 @@ public class LdapUserDetailsService implements UserDetailsService
 		this.userAttributeDisplayName = userAttributeDisplayName;
 	}
 
-	/**
-	 * @param userAttributeEMailAdress the userAttributeEMailAdress to set
-	 */
 	@Inject
 	public void setUserAttributeEMailAdress(final String userAttributeEMailAdress)
 	{
@@ -159,9 +144,6 @@ public class LdapUserDetailsService implements UserDetailsService
 		this.userAttributeEMailAdress = userAttributeEMailAdress;
 	}
 
-	/**
-	 * @param userAttributeLogonName the userAttributeLogonName to set
-	 */
 	@Inject
 	public void setUserAttributeLogonName(final String userAttributeLogonName)
 	{
@@ -170,9 +152,6 @@ public class LdapUserDetailsService implements UserDetailsService
 		this.userAttributeLogonName = userAttributeLogonName;
 	}
 
-	/**
-	 * @param userAttributeUserId the userAttributeUserId to set
-	 */
 	@Inject
 	public void setUserAttributeUserId(final String userAttributeUserId)
 	{
@@ -181,9 +160,6 @@ public class LdapUserDetailsService implements UserDetailsService
 		this.userAttributeUserId = userAttributeUserId;
 	}
 
-	/**
-	 * @param userSearchBase the userSearchBase to set
-	 */
 	@Inject
 	public void setUserSearchBase(final String userSearchBase)
 	{
@@ -192,9 +168,6 @@ public class LdapUserDetailsService implements UserDetailsService
 		this.userSearchBase = userSearchBase;
 	}
 
-	/**
-	 * @param userSearchFilter the userSearchFilter to set
-	 */
 	@Inject
 	public void setUserSearchFilter(final String userSearchFilter)
 	{
@@ -203,9 +176,6 @@ public class LdapUserDetailsService implements UserDetailsService
 		this.userSearchFilter = userSearchFilter;
 	}
 
-	/**
-	 * @param userSearchSubtree the userSearchSubtree to set
-	 */
 	public void setUserSearchSubtree(final boolean userSearchSubtree)
 	{
 		this.userSearchSubtree = userSearchSubtree;

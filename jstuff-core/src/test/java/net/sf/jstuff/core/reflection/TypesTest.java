@@ -15,7 +15,7 @@ package net.sf.jstuff.core.reflection;
 import java.io.File;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.ObjectCache;
+import net.sf.jstuff.core.collection.ObjectCache;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.helpers.NOPLogger;

@@ -111,7 +111,7 @@ public class HashLockManager<KeyType>
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public <R, A> R doReadLocked(final KeyType key, final Invocable<R, A> invocable, final A arguments) throws Exception
+	public <R, A, E extends Exception> R doReadLocked(final KeyType key, final Invocable<R, A, E> invocable, final A arguments) throws E
 	{
 		Args.notNull("key", key);
 		Args.notNull("invocable", invocable);
@@ -168,7 +168,7 @@ public class HashLockManager<KeyType>
 	/**
 	 * @param key the lock name/identifier
 	 */
-	public <R, A> R doWriteLocked(final KeyType key, final Invocable<R, A> invocable, final A arguments) throws Exception
+	public <R, A, E extends Exception> R doWriteLocked(final KeyType key, final Invocable<R, A, E> invocable, final A arguments) throws E
 	{
 		Args.notNull("key", key);
 		Args.notNull("invocable", invocable);

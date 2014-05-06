@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -19,8 +19,7 @@ public interface FilteringEventListener<Event> extends EventListener<Event>
 {
 	/**
 	 * Determines if this event listener accepts the given event.
-	 * The {@link #onEvent(T)} method is only called when <code>true</code> is returned.
+	 * The {@link #onEvent(Object)} method is only called when <code>true</code> is returned.
 	 */
-	@SuppressWarnings("javadoc")
 	boolean accept(final Event type);
 }

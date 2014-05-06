@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.logging;
 
-import net.sf.jstuff.core.StackTrace;
+import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.validation.Args;
 
 /**

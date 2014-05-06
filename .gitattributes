@@ -3,13 +3,9 @@
 /coding-conventions.txt -text
 jstuff-core/pom.xml -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Composite.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/Crypto.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/GCTracker.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Identifiable.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/ImageUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Mutable.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/ObjectCache.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/StackTrace.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/TypeSafeEnum.java -text
@@ -38,6 +34,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithLists.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithMaps.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithQueues.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/MapWithSets.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObjectCache.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableCollection.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableList.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ObservableSet.java -text
@@ -75,6 +72,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/HashLockManager.java -te
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/RuntimeInterruptedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/ScalingThreadPoolExecutor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/Threads.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/crypto/Crypto.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/DateUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/Day.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/ImmutableDate.java -text
@@ -85,6 +83,8 @@ jstuff-core/src/main/java/net/sf/jstuff/core/event/EventManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/EventManagerWithHistory.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/Events.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/FilteringEventListener.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/exception/FastException.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/exception/FastRuntimeException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Accept.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Accepts.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/ChainableAccept.java -text
@@ -93,6 +93,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/functional/Function.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Functions.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Invocable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/IsEqual.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/graphic/ImageUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedInputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedOutputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/CharSequenceReader.java -text
@@ -150,6 +151,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableField.java -
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableMethod.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SetAccessibleAction.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SettingFieldValueFailedException.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/StackTrace.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Types.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/visitor/ClassVisitor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/visitor/ClassVisitorWithTypeArguments.java -text
@@ -161,10 +163,7 @@ jstuff-core/src/main/resources/net/sf/jstuff/core/date/Day.properties -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Day_de.properties -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month.properties -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Month_de.properties -text
-jstuff-core/src/test/java/net/sf/jstuff/core/AssertTest.java -text
-jstuff-core/src/test/java/net/sf/jstuff/core/CryptoTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/GCTrackerTest.java -text
-jstuff-core/src/test/java/net/sf/jstuff/core/ObjectCacheTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/StringUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/TypeSafeEnumTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/builder/BuilderTest.java -text
@@ -175,10 +174,12 @@ jstuff-core/src/test/java/net/sf/jstuff/core/collection/CompositeMapTest.java -t
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/FIFOMapTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/IdentityHashSetTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/LRUMapTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/collection/ObjectCacheTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/WeakIdentityHashMapTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/WeakIdentityHashSetTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/comparator/PropertyComparatorTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/concurrent/HashLockManagerTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/crypto/CryptoTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/event/EventTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/AcceptsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/FunctionsTest.java -text
@@ -196,6 +197,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/reflection/DuckTypesTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesGenericsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesMixinTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/validation/AssertTest.java -text
 jstuff-integration/pom.xml -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/AtomBlog.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/AtomBlogEntry.java -text

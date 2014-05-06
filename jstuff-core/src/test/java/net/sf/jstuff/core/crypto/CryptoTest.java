@@ -1,11 +1,5 @@
-package net.sf.jstuff.core;
-
-import java.util.Arrays;
-
-import junit.framework.TestCase;
-
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -16,6 +10,15 @@ import junit.framework.TestCase;
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
+package net.sf.jstuff.core.crypto;
+
+import java.util.Arrays;
+
+import junit.framework.TestCase;
+
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public class CryptoTest extends TestCase
 {
 	public void testAES()

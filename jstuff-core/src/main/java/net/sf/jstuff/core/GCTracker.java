@@ -1,5 +1,4 @@
 /*******************************************************************************
-
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
