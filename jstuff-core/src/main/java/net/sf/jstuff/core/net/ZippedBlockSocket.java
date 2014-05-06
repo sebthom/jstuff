@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -39,9 +39,6 @@ public class ZippedBlockSocket extends Socket
 		super(host, port);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public synchronized void close() throws IOException
 	{
@@ -49,9 +46,6 @@ public class ZippedBlockSocket extends Socket
 		super.close();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public InputStream getInputStream() throws IOException
 	{
@@ -59,9 +53,6 @@ public class ZippedBlockSocket extends Socket
 		return in;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public OutputStream getOutputStream() throws IOException
 	{
