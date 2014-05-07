@@ -62,11 +62,17 @@ final class JULLogger extends Logger
 			if (caller == null) // should never happen
 				throw new IllegalStateException("Unexpected stacktrace " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
-			methodName = caller.getMethodName();
-
-			if (LoggerConfig.isDebugMessagePrefixEnabled) effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
-
-			sourceClassName = caller.getClassName();
+			if (!caller.getClassName().startsWith(INTERNAL_PACKAGE_NAME))
+			{
+				methodName = caller.getMethodName();
+				if (LoggerConfig.isDebugMessagePrefixEnabled) effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
+				sourceClassName = caller.getClassName();
+			}
+			else
+			{
+				sourceClassName = loggerName;
+				methodName = null;
+			}
 			effectiveException = ex;
 		}
 		else
@@ -559,7 +565,7 @@ final class JULLogger extends Logger
 		if (effectiveLevel > L_TRACE) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINEST, "METHOD ENTRY >> ()", null, isLogExactSourceLocation);
+		_log(Level.FINEST, METHOD_ENTRY_MARKER + " ()", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -569,7 +575,7 @@ final class JULLogger extends Logger
 		if (effectiveLevel > L_TRACE) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINEST, "METHOD ENTRY >> ([" + arg1 + "])", null, isLogExactSourceLocation);
+		_log(Level.FINEST, METHOD_ENTRY_MARKER + " (" + argToString(arg1) + ")", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -579,7 +585,7 @@ final class JULLogger extends Logger
 		if (effectiveLevel > L_TRACE) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINEST, "METHOD ENTRY >> ([" + arg1 + "],[" + arg2 + "])", null, isLogExactSourceLocation);
+		_log(Level.FINEST, METHOD_ENTRY_MARKER + " (" + argToString(arg1) + ", " + argToString(arg2) + ")", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -589,7 +595,8 @@ final class JULLogger extends Logger
 		if (effectiveLevel > L_TRACE) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINEST, "METHOD ENTRY >> ([" + arg1 + "],[" + arg2 + "],[" + arg3 + "])", null, isLogExactSourceLocation);
+		_log(Level.FINEST, METHOD_ENTRY_MARKER + " (" + argToString(arg1) + ", " + argToString(arg2) + ", " + argToString(arg3) + ")", null,
+				isLogExactSourceLocation);
 	}
 
 	@Override
@@ -599,7 +606,8 @@ final class JULLogger extends Logger
 		if (effectiveLevel > L_TRACE) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINEST, "METHOD ENTRY >> ([" + arg1 + "],[" + arg2 + "],[" + arg3 + "],[" + arg4 + "])", null, isLogExactSourceLocation);
+		_log(Level.FINEST, METHOD_ENTRY_MARKER + " (" + argToString(arg1) + ", " + argToString(arg2) + ", " + argToString(arg3) + ", " + argToString(arg4)
+				+ ")", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -609,7 +617,8 @@ final class JULLogger extends Logger
 		if (effectiveLevel > L_TRACE) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINEST, "METHOD ENTRY >> ([" + arg1 + "],[" + arg2 + "],[" + arg3 + "],[" + arg4 + "],[" + arg5 + "])", null, isLogExactSourceLocation);
+		_log(Level.FINEST, METHOD_ENTRY_MARKER + " (" + argToString(arg1) + ", " + argToString(arg2) + ", " + argToString(arg3) + ", " + argToString(arg4)
+				+ ", " + argToString(arg5) + ")", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -619,7 +628,7 @@ final class JULLogger extends Logger
 		if (effectiveLevel > L_TRACE) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINEST, "METHOD EXIT << *void*", null, isLogExactSourceLocation);
+		_log(Level.FINEST, METHOD_EXIT_MARKER + " *void*", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -629,7 +638,7 @@ final class JULLogger extends Logger
 		if (effectiveLevel > L_TRACE) return returnValue;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINEST, "METHOD EXIT << [" + returnValue + "]", null, isLogExactSourceLocation);
+		_log(Level.FINEST, METHOD_EXIT_MARKER + " " + argToString(returnValue), null, isLogExactSourceLocation);
 		return returnValue;
 	}
 

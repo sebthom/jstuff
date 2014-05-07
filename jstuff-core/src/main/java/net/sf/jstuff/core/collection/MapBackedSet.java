@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -75,7 +75,16 @@ public class MapBackedSet<E> extends AbstractSet<E> implements Serializable
 	@Override
 	public boolean equals(final Object o)
 	{
-		return o == this || keys.equals(o);
+		if (o == null) return false;
+		if (o == this) return true;
+		if (!(o instanceof Set)) return false;
+
+		final Set< ? > otherSet = (Set< ? >) o;
+		if (otherSet.size() != size()) return false;
+
+		for (final E key : keys)
+			if (!otherSet.contains(key)) return false;
+		return true;
 	}
 
 	@Override

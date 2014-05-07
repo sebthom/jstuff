@@ -12,6 +12,12 @@
  *******************************************************************************/
 package net.sf.jstuff.core.logging;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+
+import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.validation.Args;
 
@@ -24,6 +30,18 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Logger
 {
+	protected static final String METHOD_ENTRY_MARKER = "ENTRY >>";
+	protected static final String METHOD_EXIT_MARKER = "EXIT  <<";
+	protected static final String INTERNAL_PACKAGE_NAME = Logger.class.getPackage().getName();
+
+	protected static String argToString(final Object object)
+	{
+		if (object == null) return "null";
+		if (object.getClass().isArray()) return Arrays.deepToString((Object[]) object);
+		if (object instanceof String) return "\"" + object + "\"";
+		return object.toString();
+	}
+
 	public static Logger create()
 	{
 		final String name = StackTrace.getCallingStackTraceElement(Logger.class).getClassName();
@@ -40,6 +58,48 @@ public abstract class Logger
 	{
 		Args.notNull("name", name);
 		return LoggerConfig.create(name);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <I> I createLogged(final I object, final Class<I> primaryInterface, final Class< ? >... secondaryInterfaces)
+	{
+		Args.notNull("object", object);
+		Args.notNull("primaryInterface", primaryInterface);
+
+		final Class< ? >[] interfaces;
+		if (secondaryInterfaces == null || secondaryInterfaces.length == 0)
+			interfaces = new Class< ? >[]{primaryInterface};
+		else
+		{
+			interfaces = new Class< ? >[secondaryInterfaces.length + 1];
+			interfaces[0] = primaryInterface;
+			System.arraycopy(secondaryInterfaces, 0, interfaces, 1, secondaryInterfaces.length);
+		}
+
+		return (I) Proxy.newProxyInstance(object.getClass().getClassLoader(), interfaces, new InvocationHandler()
+			{
+				final Logger log = Logger.create(object.getClass());
+
+				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+				{
+					if (log.isTraceEnabled())
+					{
+						final long start = System.currentTimeMillis();
+						if (args == null)
+							log.trace(method.getName() + " " + METHOD_ENTRY_MARKER + " ()");
+						else
+							log.trace(method.getName() + " " + METHOD_ENTRY_MARKER + " (" + Arrays.deepToString(args) + ")");
+						final Object returnValue = method.invoke(object, args);
+						final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
+						if (Methods.isReturningVoid(method))
+							log.trace(method.getName() + " " + METHOD_EXIT_MARKER + " *void* " + elapsed + "ms");
+						else
+							log.trace(method.getName() + " " + METHOD_EXIT_MARKER + " " + argToString(returnValue) + " " + elapsed + "ms");
+						return returnValue;
+					}
+					return method.invoke(object, args);
+				}
+			});
 	}
 
 	/**

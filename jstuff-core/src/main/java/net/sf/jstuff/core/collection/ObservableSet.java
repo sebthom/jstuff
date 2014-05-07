@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObservableSet<E> extends ObservableCollection<E> implements Set<E>
+public class ObservableSet<E> extends ObservableCollection<E, Set<E>> implements Set<E>
 {
 	public static <E> ObservableSet<E> of(final Set<E> set)
 	{

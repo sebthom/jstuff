@@ -58,36 +58,61 @@ public class WeakIdentityHashMapTest extends TestCase
 
 	public void testWeakIdentityHashMap() throws InterruptedException
 	{
-		final Map<Entity, Object> ihm = WeakIdentityHashMap.create();
-		final Map<Entity, Object> hm = CollectionUtils.newHashMap();
+		final Map<Entity, Object> identityMap = WeakIdentityHashMap.create();
 
-		final Entity e1 = new Entity().setName("aa");
-		final Entity e2 = new Entity().setName("aa");
+		Entity e1 = new Entity().setName("aa");
+		Entity e2 = new Entity().setName("aa");
 
 		assertEquals(e1, e2);
 		assertNotSame(e1, e2);
 
-		ihm.put(e1, Boolean.TRUE);
-		ihm.put(e2, Boolean.TRUE);
-		assertTrue(ihm.containsKey(e1));
-		assertTrue(ihm.containsKey(e2));
+		identityMap.put(e1, Boolean.TRUE);
+		identityMap.put(e2, Boolean.TRUE);
+		identityMap.put(null, Boolean.TRUE);
 
-		hm.put(e1, Boolean.TRUE);
-		hm.put(e2, Boolean.TRUE);
-
-		assertEquals(2, ihm.size());
-		assertEquals(1, hm.size());
-
-		final Map<Entity, Object> ihm2 = WeakIdentityHashMap.create();
-		ihm2.put(e1, Boolean.TRUE);
-		ihm2.put(e2, Boolean.TRUE);
-		assertEquals(ihm, ihm2);
-		ihm2.remove(e2);
-		assertFalse(ihm.equals(ihm2));
+		assertEquals(3, identityMap.size());
+		assertTrue(identityMap.containsKey(e1));
+		assertTrue(identityMap.containsKey(e2));
+		assertTrue(identityMap.containsKey(null));
+		assertEquals(3, identityMap.entrySet().size());
+		assertEquals(3, identityMap.keySet().size());
+		assertEquals(3, identityMap.values().size());
 
 		System.gc();
 		Thread.sleep(1000);
-		assertEquals(1, hm.size());
-		assertEquals(0, ihm.size());
+
+		assertEquals(3, identityMap.size());
+		assertTrue(identityMap.containsKey(e1));
+		assertTrue(identityMap.containsKey(e2));
+		assertTrue(identityMap.containsKey(null));
+		assertEquals(3, identityMap.entrySet().size());
+		assertEquals(3, identityMap.keySet().size());
+		assertEquals(3, identityMap.values().size());
+
+		final Map<Entity, Object> identityMap2 = WeakIdentityHashMap.create();
+
+		identityMap2.put(e1, Boolean.TRUE);
+		identityMap2.put(e2, Boolean.TRUE);
+		identityMap2.put(null, Boolean.TRUE);
+
+		assertEquals(identityMap, identityMap2);
+
+		identityMap2.remove(e2);
+		assertTrue(identityMap2.containsKey(e1));
+		assertFalse(identityMap2.containsKey(e2));
+		assertFalse(identityMap.equals(identityMap2));
+
+		e1 = null;
+		e2 = null;
+
+		System.gc();
+		Thread.sleep(1000);
+
+		assertEquals(1, identityMap.size());
+		assertEquals(1, identityMap2.size());
+
+		identityMap.remove(null);
+
+		assertEquals(0, identityMap.size());
 	}
 }

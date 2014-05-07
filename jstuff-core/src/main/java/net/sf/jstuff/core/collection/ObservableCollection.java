@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -24,7 +24,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObservableCollection<E> implements Collection<E>, EventListenable<ItemAction<E>>
+public class ObservableCollection<E, C extends Collection<E>> implements Collection<E>, EventListenable<ItemAction<E>>
 {
 	public static enum BulkAction
 	{
@@ -57,18 +57,18 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 		}
 	}
 
-	public static <E> ObservableCollection<E> of(final Collection<E> set)
+	public static <E> ObservableCollection<E, Collection<E>> of(final Collection<E> set)
 	{
-		return new ObservableCollection<E>(set);
+		return new ObservableCollection<E, Collection<E>>(set);
 	}
 
 	protected BulkAction currentBulkAction;
 
 	private final EventManager<ItemAction<E>> events = new EventManager<ItemAction<E>>();
 
-	private final Collection<E> wrapped;
+	protected final C wrapped;
 
-	public ObservableCollection(final Collection<E> coll)
+	public ObservableCollection(final C coll)
 	{
 		Args.notNull("coll", coll);
 		this.wrapped = coll;
@@ -130,11 +130,6 @@ public class ObservableCollection<E> implements Collection<E>, EventListenable<I
 	public BulkAction getCurrentBulkAction()
 	{
 		return currentBulkAction;
-	}
-
-	protected Collection<E> getWrapped()
-	{
-		return wrapped;
 	}
 
 	public boolean isEmpty()

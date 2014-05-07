@@ -95,8 +95,7 @@ public final class LoggerConfig
 	{
 		isPreferSLF4J = value;
 		final boolean old = isUseSFL4J;
-		isUseSFL4J = isSLF4JAvailable ? value : false;
-
+		isUseSFL4J = isSLF4JAvailable ? isPreferSLF4J : false;
 		if (old == isUseSFL4J) return;
 
 		synchronized (LOGGERS)

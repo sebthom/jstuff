@@ -72,8 +72,11 @@ final class SLF4JLogger extends Logger
 				if (caller == null) // should never happen
 					throw new IllegalStateException("Unexpected stacktrace " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
-				final String methodName = caller.getMethodName();
-				effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
+				if (!caller.getClassName().startsWith(INTERNAL_PACKAGE_NAME))
+				{
+					final String methodName = caller.getMethodName();
+					effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
+				}
 			}
 			effectiveException = ex;
 		}
@@ -525,7 +528,7 @@ final class SLF4JLogger extends Logger
 		if (!logger.isTraceEnabled()) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(TRACE_INT, "METHOD ENTRY >> ()", null, isLogExactSourceLocation);
+		_log(TRACE_INT, "ENTRY >> ()", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -534,7 +537,7 @@ final class SLF4JLogger extends Logger
 		if (!logger.isTraceEnabled()) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(TRACE_INT, "METHOD ENTRY >> ([" + arg1 + "])", null, isLogExactSourceLocation);
+		_log(TRACE_INT, "ENTRY >> (" + argToString(arg1) + ")", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -543,7 +546,7 @@ final class SLF4JLogger extends Logger
 		if (!logger.isTraceEnabled()) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(TRACE_INT, "METHOD ENTRY >> ([" + arg1 + "],[" + arg2 + "])", null, isLogExactSourceLocation);
+		_log(TRACE_INT, "ENTRY >> (" + argToString(arg1) + ", " + argToString(arg2) + ")", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -552,7 +555,7 @@ final class SLF4JLogger extends Logger
 		if (!logger.isTraceEnabled()) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(TRACE_INT, "METHOD ENTRY >> ([" + arg1 + "],[" + arg2 + "],[" + arg3 + "])", null, isLogExactSourceLocation);
+		_log(TRACE_INT, "ENTRY >> (" + argToString(arg1) + ", " + argToString(arg2) + ", " + argToString(arg3) + ")", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -561,7 +564,8 @@ final class SLF4JLogger extends Logger
 		if (!logger.isTraceEnabled()) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(TRACE_INT, "METHOD ENTRY >> ([" + arg1 + "],[" + arg2 + "],[" + arg3 + "],[" + arg4 + "])", null, isLogExactSourceLocation);
+		_log(TRACE_INT, "ENTRY >> (" + argToString(arg1) + ", " + argToString(arg2) + ", " + argToString(arg3) + ", " + argToString(arg4) + ")", null,
+				isLogExactSourceLocation);
 	}
 
 	@Override
@@ -570,7 +574,8 @@ final class SLF4JLogger extends Logger
 		if (!logger.isTraceEnabled()) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(TRACE_INT, "METHOD ENTRY >> ([" + arg1 + "],[" + arg2 + "],[" + arg3 + "],[" + arg4 + "],[" + arg5 + "])", null, isLogExactSourceLocation);
+		_log(TRACE_INT, "ENTRY >> (" + argToString(arg1) + ", " + argToString(arg2) + ", " + argToString(arg3) + ", " + argToString(arg4) + ", "
+				+ argToString(arg5) + ")", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -579,7 +584,7 @@ final class SLF4JLogger extends Logger
 		if (!logger.isTraceEnabled()) return;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(TRACE_INT, "METHOD EXIT << *void*", null, isLogExactSourceLocation);
+		_log(TRACE_INT, "EXIT << *void*", null, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -588,7 +593,7 @@ final class SLF4JLogger extends Logger
 		if (!logger.isTraceEnabled()) return returnValue;
 
 		final boolean isLogExactSourceLocation = true;
-		_log(TRACE_INT, "METHOD EXIT << [" + returnValue + "]", null, isLogExactSourceLocation);
+		_log(TRACE_INT, "EXIT << " + argToString(returnValue), null, isLogExactSourceLocation);
 		return returnValue;
 	}
 

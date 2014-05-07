@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -58,36 +58,47 @@ public class WeakIdentityHashSetTest extends TestCase
 
 	public void testWeakIdentityHashSet() throws InterruptedException
 	{
-		final Set<Entity> ihs = WeakIdentityHashSet.create();
-		final Set<Entity> hs = CollectionUtils.newHashSet();
+		final WeakIdentityHashSet<Entity> identitySet = WeakIdentityHashSet.create();
 
-		final Entity e1 = new Entity().setName("aa");
-		final Entity e2 = new Entity().setName("aa");
+		Entity e1 = new Entity().setName("aa");
+		Entity e2 = new Entity().setName("aa");
 
 		assertEquals(e1, e2);
 		assertNotSame(e1, e2);
 
-		ihs.add(e1);
-		ihs.add(e2);
-		assertTrue(ihs.contains(e1));
-		assertTrue(ihs.contains(e2));
+		identitySet.add(e1);
+		identitySet.add(e2);
 
-		hs.add(e1);
-		hs.add(e2);
-
-		assertEquals(2, ihs.size());
-		assertEquals(1, hs.size());
-
-		final Set<Entity> ihs2 = WeakIdentityHashSet.create();
-		ihs2.add(e1);
-		ihs2.add(e2);
-		assertEquals(ihs, ihs2);
-		ihs2.remove(e2);
-		assertFalse(ihs.equals(ihs2));
+		assertEquals(2, identitySet.size());
+		assertTrue(identitySet.contains(e1));
+		assertTrue(identitySet.contains(e2));
+		assertEquals(2, identitySet.toArray().length);
 
 		System.gc();
 		Thread.sleep(1000);
-		assertEquals(1, hs.size());
-		assertEquals(0, ihs.size());
+
+		assertEquals(2, identitySet.size());
+		assertTrue(identitySet.contains(e1));
+		assertTrue(identitySet.contains(e2));
+
+		final Set<Entity> identitySet2 = WeakIdentityHashSet.create();
+		identitySet2.add(e1);
+		identitySet2.add(e2);
+
+		assertEquals(identitySet, identitySet2);
+
+		identitySet2.remove(e2);
+		assertTrue(identitySet2.contains(e1));
+		assertFalse(identitySet2.contains(e2));
+		assertFalse(identitySet.equals(identitySet2));
+
+		e1 = null;
+		e2 = null;
+
+		System.gc();
+		Thread.sleep(1000);
+
+		assertEquals(0, identitySet.size());
+		assertEquals(0, identitySet2.size());
 	}
 }

@@ -28,7 +28,7 @@ public class LoggingTest extends TestCase
 	private static final Logger LOG = Logger.create();
 
 	@Override
-	protected void setUp() throws Exception
+	protected void tearDown() throws Exception
 	{
 		System.out.println("############################################");
 		System.out.println("Resetting loggers...");
@@ -39,6 +39,30 @@ public class LoggingTest extends TestCase
 
 		java.util.logging.Logger.getLogger(LoggingTest.class.getName()).setLevel(null);
 		Threads.sleep(50);
+	}
+
+	private static interface InterfaceA
+	{
+		Object[] methodA(final int a, final String b, final String... c);
+	}
+
+	private static interface InterfaceB
+	{
+		void methodB();
+	}
+
+	private static class Entity implements InterfaceA, InterfaceB
+	{
+		public Object[] methodA(final int a, final String b, final String... c)
+		{
+			Threads.sleep(1000);
+			return new Object[]{b, c};
+		}
+
+		public void methodB()
+		{
+			Threads.sleep(1000);
+		}
 	}
 
 	private void coolMethod()
@@ -66,7 +90,7 @@ public class LoggingTest extends TestCase
 			handler.setLevel(java.util.logging.Level.ALL);
 
 		final int[] count = {0};
-		ROOT_LOGGER.addHandler(new Handler()
+		final Handler h = new Handler()
 			{
 				@Override
 				public void publish(final LogRecord record)
@@ -81,42 +105,49 @@ public class LoggingTest extends TestCase
 				@Override
 				public void close() throws SecurityException
 				{}
-			});
+			};
+		ROOT_LOGGER.addHandler(h);
+		try
+		{
+			System.out.println("LOGGER LEVEL = DEFAULT (INFO) ****************");
+			assertEquals(true, LOG.isInfoEnabled());
+			assertEquals(false, LOG.isDebugEnabled());
+			count[0] = 0;
+			coolMethod();
+			assertEquals(5, count[0]);
 
-		System.out.println("LOGGER LEVEL = DEFAULT (INFO) ****************");
-		assertEquals(true, LOG.isInfoEnabled());
-		assertEquals(false, LOG.isDebugEnabled());
-		count[0] = 0;
-		coolMethod();
-		assertEquals(5, count[0]);
+			Threads.sleep(50);
+			System.out.println("LOGGER LEVEL = INFO **************************");
+			java.util.logging.Logger.getLogger(LOG.getName()).setLevel(java.util.logging.Level.INFO);
+			assertEquals(true, LOG.isInfoEnabled());
+			assertEquals(false, LOG.isDebugEnabled());
+			count[0] = 0;
+			coolMethod();
+			assertEquals(5, count[0]);
 
-		Threads.sleep(50);
-		System.out.println("LOGGER LEVEL = INFO **************************");
-		java.util.logging.Logger.getLogger(LOG.getName()).setLevel(java.util.logging.Level.INFO);
-		assertEquals(true, LOG.isInfoEnabled());
-		assertEquals(false, LOG.isDebugEnabled());
-		count[0] = 0;
-		coolMethod();
-		assertEquals(5, count[0]);
+			Threads.sleep(50);
+			System.out.println("LOGGER LEVEL = ALL **************************");
+			java.util.logging.Logger.getLogger(LOG.getName()).setLevel(java.util.logging.Level.ALL);
+			assertEquals(true, LOG.isTraceEnabled());
+			count[0] = 0;
+			coolMethod();
+			assertEquals(12, count[0]);
 
-		Threads.sleep(50);
-		System.out.println("LOGGER LEVEL = ALL **************************");
-		java.util.logging.Logger.getLogger(LOG.getName()).setLevel(java.util.logging.Level.ALL);
-		assertEquals(true, LOG.isTraceEnabled());
-		count[0] = 0;
-		coolMethod();
-		assertEquals(12, count[0]);
-
-		Threads.sleep(50);
-		System.out.println("LOGGER LEVEL = SEVERE (INHERTIED) ************");
-		ROOT_LOGGER.setLevel(java.util.logging.Level.SEVERE);
-		assertEquals(true, LOG.isTraceEnabled());
-		java.util.logging.Logger.getLogger(LOG.getName()).setLevel(null);
-		assertEquals(false, LOG.isWarnEnabled());
-		assertEquals(true, LOG.isErrorEnabled());
-		count[0] = 0;
-		coolMethod();
-		assertEquals(3, count[0]);
+			Threads.sleep(50);
+			System.out.println("LOGGER LEVEL = SEVERE (INHERTIED) ************");
+			ROOT_LOGGER.setLevel(java.util.logging.Level.SEVERE);
+			assertEquals(true, LOG.isTraceEnabled());
+			java.util.logging.Logger.getLogger(LOG.getName()).setLevel(null);
+			assertEquals(false, LOG.isWarnEnabled());
+			assertEquals(true, LOG.isErrorEnabled());
+			count[0] = 0;
+			coolMethod();
+			assertEquals(3, count[0]);
+		}
+		finally
+		{
+			ROOT_LOGGER.removeHandler(h);
+		}
 	}
 
 	public void test1LoggingJUL()
@@ -139,5 +170,59 @@ public class LoggingTest extends TestCase
 		assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof SLF4JLogger);
 
 		genericLoggerTest();
+	}
+
+	public void testCreateLogged()
+	{
+		LoggerConfig.setPreferSLF4J(false);
+
+		for (final Handler handler : ROOT_LOGGER.getHandlers())
+			handler.setLevel(java.util.logging.Level.ALL);
+		java.util.logging.Logger.getLogger(Entity.class.getName()).setLevel(java.util.logging.Level.FINEST);
+		final int[] count = new int[1];
+		final Handler h = new Handler()
+			{
+				@Override
+				public void publish(final LogRecord record)
+				{
+					count[0]++;
+					switch (count[0])
+					{
+						case 1 :
+							assertEquals("methodA ENTRY >> ([1, foo, [bar]])", record.getMessage());
+							break;
+						case 2 :
+							assertTrue(record.getMessage().startsWith("methodA EXIT  << [foo, [bar]] "));
+							break;
+						case 3 :
+							assertEquals("methodB ENTRY >> ()", record.getMessage());
+							break;
+						case 4 :
+							assertTrue(record.getMessage().startsWith("methodB EXIT  << *void* "));
+							break;
+					}
+				}
+
+				@Override
+				public void flush()
+				{}
+
+				@Override
+				public void close() throws SecurityException
+				{}
+			};
+		ROOT_LOGGER.addHandler(h);
+		try
+		{
+			final Entity entity = new Entity();
+			final InterfaceA wrapped = Logger.createLogged(entity, InterfaceA.class, InterfaceB.class);
+			wrapped.methodA(1, "foo", "bar");
+
+			((InterfaceB) wrapped).methodB();
+		}
+		finally
+		{
+			ROOT_LOGGER.removeHandler(h);
+		}
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -19,7 +19,7 @@ import java.util.ListIterator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObservableList<E> extends ObservableCollection<E> implements List<E>
+public class ObservableList<E> extends ObservableCollection<E, List<E>> implements List<E>
 {
 	public static <E> ObservableList<E> of(final List<E> list)
 	{
@@ -34,14 +34,14 @@ public class ObservableList<E> extends ObservableCollection<E> implements List<E
 	@Override
 	public boolean add(final E item)
 	{
-		getWrapped().add(item);
+		wrapped.add(item);
 		onAdded(item, size() - 1);
 		return true;
 	}
 
 	public void add(final int index, final E item)
 	{
-		getWrapped().add(index, item);
+		wrapped.add(index, item);
 		onAdded(item, index);
 	}
 
@@ -64,23 +64,17 @@ public class ObservableList<E> extends ObservableCollection<E> implements List<E
 
 	public E get(final int index)
 	{
-		return getWrapped().get(index);
-	}
-
-	@Override
-	protected List<E> getWrapped()
-	{
-		return (List<E>) super.getWrapped();
+		return wrapped.get(index);
 	}
 
 	public int indexOf(final Object item)
 	{
-		return getWrapped().indexOf(item);
+		return wrapped.indexOf(item);
 	}
 
 	public int lastIndexOf(final Object item)
 	{
-		return getWrapped().lastIndexOf(item);
+		return wrapped.lastIndexOf(item);
 	}
 
 	public ListIterator<E> listIterator()
@@ -90,7 +84,7 @@ public class ObservableList<E> extends ObservableCollection<E> implements List<E
 
 	public ListIterator<E> listIterator(final int index)
 	{
-		final ListIterator<E> it = getWrapped().listIterator(index);
+		final ListIterator<E> it = wrapped.listIterator(index);
 		return new ListIterator<E>()
 			{
 				private E current;
@@ -157,7 +151,7 @@ public class ObservableList<E> extends ObservableCollection<E> implements List<E
 
 	public E remove(final int index)
 	{
-		final E item = getWrapped().remove(index);
+		final E item = wrapped.remove(index);
 		onRemoved(item, index);
 		return item;
 	}
@@ -173,7 +167,7 @@ public class ObservableList<E> extends ObservableCollection<E> implements List<E
 
 	public E set(final int index, final E item)
 	{
-		final E old = getWrapped().set(index, item);
+		final E old = wrapped.set(index, item);
 		if (old != item)
 		{
 			if (old != null) onRemoved(old, index);

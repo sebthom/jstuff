@@ -417,4 +417,10 @@ final class DelegatingLogger extends Logger
 	{
 		delegate.fatal(messageTemplate, ex, args);
 	}
+
+	@Override
+	public String toString()
+	{
+		return super.toString() + "[name=" + getName() + ",delegate=" + delegate + "]";
+	}
 }
