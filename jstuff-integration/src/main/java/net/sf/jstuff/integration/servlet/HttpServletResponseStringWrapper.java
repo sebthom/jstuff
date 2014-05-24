@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.servlet;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,6 +19,8 @@ import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+
+import net.sf.jstuff.core.io.FastByteArrayOutputStream;
 
 /**
  * Use {{@link #toString()} to get the response as string.
@@ -58,7 +59,7 @@ public class HttpServletResponseStringWrapper extends HttpServletResponseWrapper
 
 	private FilterServletOutputStream exposedOutputStream;
 	private PrintWriter exposedPrintWriter;
-	private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	private final FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
 
 	public HttpServletResponseStringWrapper(final HttpServletResponse response)
 	{
