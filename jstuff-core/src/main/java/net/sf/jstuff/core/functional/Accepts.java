@@ -14,6 +14,7 @@ package net.sf.jstuff.core.functional;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import net.sf.jstuff.core.ogn.ObjectGraphNavigatorDefaultImpl;
 import net.sf.jstuff.core.validation.Args;
@@ -97,6 +98,18 @@ public abstract class Accepts
 		public String toString()
 		{
 			return "(" + first.toString() + " && " + second.toString() + ")";
+		}
+	}
+
+	public static class Anything<V> extends AbstractAccept<V>
+	{
+		private static final long serialVersionUID = 1L;
+
+		private static final Anything< ? > INSTANCE = new Anything<Object>();
+
+		public boolean accept(final V obj)
+		{
+			return true;
 		}
 	}
 
@@ -227,13 +240,22 @@ public abstract class Accepts
 		}
 	}
 
-	public static class NonNull<V> extends AbstractAccept<V>
+	public static class Matches<V> extends AbstractAccept<V>
 	{
 		private static final long serialVersionUID = 1L;
 
+		public final Pattern pattern;
+
+		public Matches(final String pattern)
+		{
+			Args.notNull("pattern", pattern);
+			this.pattern = Pattern.compile(pattern);
+		}
+
 		public boolean accept(final V obj)
 		{
-			return obj != null;
+			if (obj == null) return false;
+			return pattern.matcher(obj.toString()).matches();
 		}
 	}
 
@@ -259,6 +281,28 @@ public abstract class Accepts
 		public String toString()
 		{
 			return "!" + accept.toString();
+		}
+	}
+
+	public static class Nothing<V> extends AbstractAccept<V>
+	{
+		private static final long serialVersionUID = 1L;
+
+		private static final Nothing< ? > INSTANCE = new Nothing<Object>();
+
+		public boolean accept(final V obj)
+		{
+			return false;
+		}
+	}
+
+	public static class NotNull<V> extends AbstractAccept<V>
+	{
+		private static final long serialVersionUID = 1L;
+
+		public boolean accept(final V obj)
+		{
+			return obj != null;
 		}
 	}
 
@@ -364,6 +408,12 @@ public abstract class Accepts
 		return new And<V>(first, second);
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <V> Anything<V> anything()
+	{
+		return (Anything<V>) Anything.INSTANCE;
+	}
+
 	public static <V> Contains<V> contains(final String searchFor)
 	{
 		return new Contains<V>(searchFor);
@@ -399,9 +449,9 @@ public abstract class Accepts
 		return new LessThan<V>(compareTo);
 	}
 
-	public static <V> NonNull<V> nonNull()
+	public static <V> Matches<V> matches(final String pattern)
 	{
-		return new NonNull<V>();
+		return new Matches<V>(pattern);
 	}
 
 	public static <V> Not<V> not(final Accept< ? super V> accept)
@@ -409,13 +459,24 @@ public abstract class Accepts
 		return new Not<V>(accept);
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <V> Nothing<V> nothing()
+	{
+		return (Nothing<V>) Nothing.INSTANCE;
+	}
+
+	public static <V> NotNull<V> notNull()
+	{
+		return new NotNull<V>();
+	}
+
 	public static <V> Or<V> or(final Accept< ? super V> first, final Accept< ? super V> second)
 	{
 		return new Or<V>(first, second);
 	}
 
-	public static <V, PropertyType> Property<V, PropertyType> property(@SuppressWarnings("unused") final Class<V> castingHelper,
-			final String propertyPath, final Accept<PropertyType> accept)
+	public static <V, PropertyType> Property<V, PropertyType> property(@SuppressWarnings("unused") final Class<V> castingHelper, final String propertyPath,
+			final Accept<PropertyType> accept)
 	{
 		return new Property<V, PropertyType>(propertyPath, accept);
 	}
