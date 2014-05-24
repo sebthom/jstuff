@@ -43,7 +43,7 @@ public class AcceptsTest extends TestCase
 		}
 
 		{
-			final Accept<Integer> a = nonNull().and(greaterThan(10)).and(lessThan(20));
+			final Accept<Integer> a = notNull().and(greaterThan(10)).and(lessThan(20));
 			assertFalse(a.accept(null));
 			assertFalse(a.accept(2));
 			assertTrue(a.accept(19));
@@ -51,7 +51,7 @@ public class AcceptsTest extends TestCase
 		}
 
 		{
-			final Accept<Long> a = nonNull(). //
+			final Accept<Long> a = notNull(). //
 					and( //
 					greaterThan(20L).or(lessThan(10L)).or(equalTo(12L)) //
 					);
@@ -148,7 +148,7 @@ public class AcceptsTest extends TestCase
 
 	public void testNonNull()
 	{
-		final Accept<Object> a = nonNull();
+		final Accept<Object> a = notNull();
 		assertFalse(a.accept(null));
 		assertTrue(a.accept(""));
 
