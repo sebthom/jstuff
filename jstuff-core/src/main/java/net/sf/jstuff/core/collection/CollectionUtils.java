@@ -49,10 +49,10 @@ public abstract class CollectionUtils
 			private static final long serialVersionUID = 1L;
 
 			public final K key;
-			
+
 			public final Map<K, V> leftMap;
 			public final V leftValue;
-			
+
 			public final Map<K, V> rightMap;
 			public final V rightValue;
 
@@ -228,8 +228,15 @@ public abstract class CollectionUtils
 		Args.notNull("accept", accept);
 
 		int count = 0;
-		for (final T item : collection)
-			if (!accept.accept(item) && collection.remove(item)) count++;
+		for (final Iterator<T> it = collection.iterator(); it.hasNext();)
+		{
+			final T item = it.next();
+			if (!accept.accept(item))
+			{
+				it.remove();
+				count++;
+			}
+		}
 		return count;
 	}
 
