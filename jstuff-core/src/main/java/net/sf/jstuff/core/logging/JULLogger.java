@@ -153,7 +153,17 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void debug(final String msg, final Throwable ex)
+	public void debug(final Throwable ex)
+	{
+		final int effectiveLevel = getLevelInt();
+		if (effectiveLevel > L_DEBUG) return;
+
+		final boolean isLogExactSourceLocation = true;
+		_log(Level.FINE, null, ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void debug(final Throwable ex, final String msg)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_DEBUG) return;
@@ -163,23 +173,13 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void debug(final String messageTemplate, final Throwable ex, final Object... args)
+	public void debug(final Throwable ex, final String messageTemplate, final Object... args)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_DEBUG) return;
 
 		final boolean isLogExactSourceLocation = true;
 		_log(Level.FINE, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
-	}
-
-	@Override
-	public void debug(final Throwable ex)
-	{
-		final int effectiveLevel = getLevelInt();
-		if (effectiveLevel > L_DEBUG) return;
-
-		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINE, null, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -243,26 +243,6 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void error(final String msg, final Throwable ex)
-	{
-		final int effectiveLevel = getLevelInt();
-		if (effectiveLevel > L_ERROR) return;
-
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-		_log(Level.SEVERE, msg, ex, isLogExactSourceLocation);
-	}
-
-	@Override
-	public void error(final String messageTemplate, final Throwable ex, final Object... args)
-	{
-		final int effectiveLevel = getLevelInt();
-		if (effectiveLevel > L_ERROR) return;
-
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-		_log(Level.SEVERE, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
-	}
-
-	@Override
 	public void error(final Throwable ex)
 	{
 		final int effectiveLevel = getLevelInt();
@@ -273,22 +253,22 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void fatal(final String msg, final Throwable ex)
+	public void error(final Throwable ex, final String msg)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_ERROR) return;
 
-		final boolean isLogExactSourceLocation = true;
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
 		_log(Level.SEVERE, msg, ex, isLogExactSourceLocation);
 	}
 
 	@Override
-	public void fatal(final String messageTemplate, final Throwable ex, final Object... args)
+	public void error(final Throwable ex, final String messageTemplate, final Object... args)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_ERROR) return;
 
-		final boolean isLogExactSourceLocation = true;
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
 		_log(Level.SEVERE, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
 	}
 
@@ -300,6 +280,26 @@ final class JULLogger extends Logger
 
 		final boolean isLogExactSourceLocation = true;
 		_log(Level.SEVERE, null, ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void fatal(final Throwable ex, final String msg)
+	{
+		final int effectiveLevel = getLevelInt();
+		if (effectiveLevel > L_ERROR) return;
+
+		final boolean isLogExactSourceLocation = true;
+		_log(Level.SEVERE, msg, ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void fatal(final Throwable ex, final String messageTemplate, final Object... args)
+	{
+		final int effectiveLevel = getLevelInt();
+		if (effectiveLevel > L_ERROR) return;
+
+		final boolean isLogExactSourceLocation = true;
+		_log(Level.SEVERE, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
 	}
 
 	/**
@@ -392,7 +392,17 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void info(final String msg, final Throwable ex)
+	public void info(final Throwable ex)
+	{
+		final int effectiveLevel = getLevelInt();
+		if (effectiveLevel > L_INFO) return;
+
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.INFO, null, ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void info(final Throwable ex, final String msg)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_INFO) return;
@@ -402,23 +412,13 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void info(final String messageTemplate, final Throwable ex, final Object... args)
+	public void info(final Throwable ex, final String messageTemplate, final Object... args)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_INFO) return;
 
 		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
 		_log(Level.INFO, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
-	}
-
-	@Override
-	public void info(final Throwable ex)
-	{
-		final int effectiveLevel = getLevelInt();
-		if (effectiveLevel > L_INFO) return;
-
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-		_log(Level.INFO, null, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -529,7 +529,17 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void trace(final String msg, final Throwable ex)
+	public void trace(final Throwable ex)
+	{
+		final int effectiveLevel = getLevelInt();
+		if (effectiveLevel > L_TRACE) return;
+
+		final boolean isLogExactSourceLocation = true;
+		_log(Level.FINEST, null, ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void trace(final Throwable ex, final String msg)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return;
@@ -539,23 +549,13 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void trace(final String messageTemplate, final Throwable ex, final Object... args)
+	public void trace(final Throwable ex, final String messageTemplate, final Object... args)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return;
 
 		final boolean isLogExactSourceLocation = true;
 		_log(Level.FINEST, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
-	}
-
-	@Override
-	public void trace(final Throwable ex)
-	{
-		final int effectiveLevel = getLevelInt();
-		if (effectiveLevel > L_TRACE) return;
-
-		final boolean isLogExactSourceLocation = true;
-		_log(Level.FINEST, null, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -703,7 +703,17 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void warn(final String msg, final Throwable ex)
+	public void warn(final Throwable ex)
+	{
+		final int effectiveLevel = getLevelInt();
+		if (effectiveLevel > L_WARN) return;
+
+		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(Level.WARNING, null, ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void warn(final Throwable ex, final String msg)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_WARN) return;
@@ -713,22 +723,12 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void warn(final String messageTemplate, final Throwable ex, final Object... args)
+	public void warn(final Throwable ex, final String messageTemplate, final Object... args)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_WARN) return;
 
 		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
 		_log(Level.WARNING, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
-	}
-
-	@Override
-	public void warn(final Throwable ex)
-	{
-		final int effectiveLevel = getLevelInt();
-		if (effectiveLevel > L_WARN) return;
-
-		final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-		_log(Level.WARNING, null, ex, isLogExactSourceLocation);
 	}
 }

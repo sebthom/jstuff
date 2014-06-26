@@ -77,7 +77,7 @@ public class GCTracker<Event> implements EventListenable<Event>
 							}
 							catch (final Exception ex)
 							{
-								LOG.error("Failed to execute callback.", ex);
+								LOG.error(ex, "Failed to execute callback.");
 							}
 						}
 						LOG.info("Cleanup Thread stopping...");

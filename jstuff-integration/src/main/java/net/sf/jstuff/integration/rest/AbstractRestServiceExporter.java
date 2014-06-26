@@ -66,28 +66,41 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		for (final Method m : getServiceInterface().getMethods())
 		{
 			if (m.isAnnotationPresent(REST_GET.class))
+			{
 				actionRegistry.registerResourceAction(m.getAnnotation(REST_GET.class).value(), HttpRequestMethod.GET, m, getService());
+			}
 
 			if (m.isAnnotationPresent(REST_POST.class))
+			{
 				actionRegistry.registerResourceAction(m.getAnnotation(REST_POST.class).value(), HttpRequestMethod.POST, m, getService());
+			}
 
 			if (m.isAnnotationPresent(REST_PUT.class))
 			{
 				final REST_PUT annotation = m.getAnnotation(REST_PUT.class);
 				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.PUT, m, getService());
-				if (annotation.fallback().length() > 0) actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+				if (annotation.fallback().length() > 0)
+				{
+					actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+				}
 			}
 			if (m.isAnnotationPresent(REST_DELETE.class))
 			{
 				final REST_DELETE annotation = m.getAnnotation(REST_DELETE.class);
 				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.DELETE, m, getService());
-				if (annotation.fallback().length() > 0) actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+				if (annotation.fallback().length() > 0)
+				{
+					actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+				}
 			}
 			if (m.isAnnotationPresent(REST_HEAD.class))
 			{
 				final REST_HEAD annotation = m.getAnnotation(REST_HEAD.class);
 				final RestResourceAction action = actionRegistry.registerResourceAction(annotation.value(), HttpRequestMethod.HEAD, m, getService());
-				if (annotation.fallback().length() > 0) actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+				if (annotation.fallback().length() > 0)
+				{
+					actionRegistry.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+				}
 			}
 		}
 	}
@@ -146,10 +159,16 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		for (final RestResourceAction action : serviceDef.getActions())
 		{
 			final String requestURL = baseRequestURL + "/" + action.getRequestURITemplate();
-			if (action.isFallBackMethod() != fallbackMethods) continue;
+			if (action.isFallBackMethod() != fallbackMethods)
+			{
+				continue;
+			}
 
 			pw.println("<p style='font-size:8pt'>");
-			if (action.isFallBackMethod()) pw.println("<span style='color:red'>*isFallback*</span> ");
+			if (action.isFallBackMethod())
+			{
+				pw.println("<span style='color:red'>*isFallback*</span> ");
+			}
 			pw.println("<b>" + action.getHttpRequestMethod() + "</b>");
 			pw.println(StringUtils.replace(StringUtils.replace(StringUtils.replace(requestURL, "${", "<span style='color:blue'>${"), "}", "}</span>"),
 					baseRequestURL, baseRequestURL + "<b>") + "</b>");
@@ -159,7 +178,9 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 			 * request body type
 			 */
 			if (action.getHttpRequestBodyType() == null)
+			{
 				pw.println("<tr><td width='200px'>HTTP Request Body Type</td><td><i>ignored</i></td></tr>");
+			}
 			else
 			{
 				pw.println("<tr><td width='200px'>HTTP Request Body Type</td><td style='font-weight:bold;color:darkred'>");
@@ -185,8 +206,10 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 			pw.println("<span style='font-weight:bold;color:darkgreen'>" + action.getHttpResponseBodyType().getSimpleName() + "</span>");
 
 			if (action.getHttpRequestBodyType() == null)
+			{
 				pw.println(StringUtils.replace(action.getServiceMethodSignature(), StringUtils.join(requestParams, ","), "<span style='color:blue'>"
 						+ StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"));
+			}
 			else
 			{
 				final String param = StringUtils.substringAfterLast("," + StringUtils.substringBetween(action.getServiceMethodSignature(), "(", ")"), ",");
@@ -252,13 +275,19 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		}
 
 		// if the service method has var args and the var args are not provided add a null element to the args list
-		if (args.length < action.getServiceMethod().getParameterTypes().length && action.getServiceMethod().isVarArgs()) args = ArrayUtils.add(args, null);
+		if (args.length < action.getServiceMethod().getParameterTypes().length && action.getServiceMethod().isVarArgs())
+		{
+			args = ArrayUtils.add(args, null);
+		}
 
 		// converting URL parameters to the required object values
 		Object[] methodArguments = Beans.valuesOf(args, action.getServiceMethod().getParameterTypes());
 
 		// for POST/PUT requests add the request body as additional argument for the method arguments
-		if (isPOST || isPUT) methodArguments = ArrayUtils.add(methodArguments, deserializeRequestBody(action.getHttpRequestBodyType(), req));
+		if (isPOST || isPUT)
+		{
+			methodArguments = ArrayUtils.add(methodArguments, deserializeRequestBody(action.getHttpRequestBodyType(), req));
+		}
 
 		try
 		{
@@ -266,16 +295,23 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 			onServiceMethodInvoked(action.getServiceMethod(), methodArguments, methodReturnValue);
 
 			if (isGET || isHEAD)
+			{
 				resp.setStatus(HttpServletResponse.SC_OK);
+			}
 			else if (isPOST)
+			{
 				resp.setStatus(HttpServletResponse.SC_CREATED);
-			else if (isPUT || isDELETE) resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+			}
+			else if (isPUT || isDELETE)
+			{
+				resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+			}
 
 			resp.getWriter().println(serializeResponse(methodReturnValue));
 		}
 		catch (final Exception ex)
 		{
-			LOG.error("Invoking method %s failed.", ex, action.getServiceMethod());
+			LOG.error(ex, "Invoking method %s failed.", action.getServiceMethod());
 
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			resp.getWriter().println(serializeResponse(new RestServiceError(ex.getClass().getSimpleName(), ex.getMessage())));

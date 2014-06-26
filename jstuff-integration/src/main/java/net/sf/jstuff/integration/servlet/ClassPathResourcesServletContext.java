@@ -46,7 +46,10 @@ public class ClassPathResourcesServletContext extends ServletContextWrapper
 	public URL getResource(final String path) throws MalformedURLException
 	{
 		URL resource = delegate.getResource(path);
-		if (resource == null) resource = ClassPathResourcesFilter.findResourceInClassPath(path);
+		if (resource == null)
+		{
+			resource = ClassPathResourcesFilter.findResourceInClassPath(path);
+		}
 		return resource;
 	}
 
@@ -58,13 +61,16 @@ public class ClassPathResourcesServletContext extends ServletContextWrapper
 		if (stream == null)
 		{
 			final URL resource = ClassPathResourcesFilter.findResourceInClassPath(path);
-			if (resource != null) try
+			if (resource != null)
 			{
-				stream = resource.openStream();
-			}
-			catch (final IOException ex)
-			{
-				LOG.error("Failed to open stream of resource [%s]", ex, path);
+				try
+				{
+					stream = resource.openStream();
+				}
+				catch (final IOException ex)
+				{
+					LOG.error(ex, "Failed to open stream of resource [%s]", path);
+				}
 			}
 		}
 		return stream;

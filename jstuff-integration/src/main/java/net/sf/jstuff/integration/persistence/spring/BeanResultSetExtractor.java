@@ -75,8 +75,8 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>>
 			}
 			catch (final Exception ex)
 			{
-				LOG.error("Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass, StringUtils.toString(bean),
-						StringUtils.toString(dynaBean), ex);
+				LOG.error(ex, "Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass,
+						StringUtils.toString(bean), StringUtils.toString(dynaBean));
 			}
 		}
 		return extractedBeans;

@@ -66,7 +66,7 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils
 		}
 		catch (final Exception ex)
 		{
-			LOG.error("Failed to launch browser", ex);
+			LOG.error(ex, "Failed to launch browser");
 			return false;
 		}
 		return true;

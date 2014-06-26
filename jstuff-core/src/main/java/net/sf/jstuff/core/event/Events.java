@@ -55,7 +55,7 @@ public abstract class Events
 		}
 		catch (final RuntimeException ex)
 		{
-			LOG.error("Failed to notify event listener %s", ex, listener);
+			LOG.error(ex, "Failed to notify event listener %s", listener);
 		}
 		return false;
 	}

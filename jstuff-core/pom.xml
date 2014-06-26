@@ -13,13 +13,15 @@
 	</parent>
 
 	<artifactId>jstuff-core</artifactId>
-	<name>${project.groupId}.${project.artifactId}</name>
+
+	<name>${project.groupId}:${project.artifactId}</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

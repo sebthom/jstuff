@@ -104,7 +104,7 @@ public abstract class AbstractServer
 						catch (final IOException ex)
 						{
 							isRunning = false;
-							LOG.error(ex.getMessage(), ex);
+							LOG.error(ex);
 						}
 					}
 				}.start();

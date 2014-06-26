@@ -29,6 +29,9 @@ public final class LoggerConfig
 	private static boolean isPreferSLF4J;
 	private static boolean isUseSFL4J;
 
+	/**
+	 * weak set holding all instantiated loggers. required to switch the backing logger implementation during runtime if required.
+	 */
 	private static final Set<DelegatingLogger> LOGGERS = new WeakIdentityHashSet<DelegatingLogger>(64);
 
 	/**

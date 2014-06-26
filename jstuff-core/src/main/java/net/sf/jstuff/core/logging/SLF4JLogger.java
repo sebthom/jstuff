@@ -171,7 +171,16 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void debug(final String msg, final Throwable ex)
+	public void debug(final Throwable ex)
+	{
+		if (!logger.isDebugEnabled()) return;
+
+		final boolean isLogExactSourceLocation = true;
+		_log(DEBUG_INT, "Unexpected exception occured: " + ex.getMessage(), ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void debug(final Throwable ex, final String msg)
 	{
 		if (!logger.isDebugEnabled()) return;
 
@@ -180,21 +189,12 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void debug(final String messageTemplate, final Throwable ex, final Object... args)
+	public void debug(final Throwable ex, final String messageTemplate, final Object... args)
 	{
 		if (!logger.isDebugEnabled()) return;
 
 		final boolean isLogExactSourceLocation = true;
 		_log(DEBUG_INT, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
-	}
-
-	@Override
-	public void debug(final Throwable ex)
-	{
-		if (!logger.isDebugEnabled()) return;
-
-		final boolean isLogExactSourceLocation = true;
-		_log(DEBUG_INT, "Unexpected exception occured: " + ex.getMessage(), ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -252,24 +252,6 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void error(final String msg, final Throwable ex)
-	{
-		if (!logger.isErrorEnabled()) return;
-
-		final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-		_log(ERROR_INT, msg, ex, isLogExactSourceLocation);
-	}
-
-	@Override
-	public void error(final String messageTemplate, final Throwable ex, final Object... args)
-	{
-		if (!logger.isErrorEnabled()) return;
-
-		final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-		_log(ERROR_INT, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
-	}
-
-	@Override
 	public void error(final Throwable ex)
 	{
 		if (!logger.isErrorEnabled()) return;
@@ -279,20 +261,20 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void fatal(final String msg, final Throwable ex)
+	public void error(final Throwable ex, final String msg)
 	{
 		if (!logger.isErrorEnabled()) return;
 
-		final boolean isLogExactSourceLocation = true;
+		final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
 		_log(ERROR_INT, msg, ex, isLogExactSourceLocation);
 	}
 
 	@Override
-	public void fatal(final String messageTemplate, final Throwable ex, final Object... args)
+	public void error(final Throwable ex, final String messageTemplate, final Object... args)
 	{
 		if (!logger.isErrorEnabled()) return;
 
-		final boolean isLogExactSourceLocation = true;
+		final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
 		_log(ERROR_INT, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
 	}
 
@@ -303,6 +285,24 @@ final class SLF4JLogger extends Logger
 
 		final boolean isLogExactSourceLocation = true;
 		_log(ERROR_INT, null, ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void fatal(final Throwable ex, final String msg)
+	{
+		if (!logger.isErrorEnabled()) return;
+
+		final boolean isLogExactSourceLocation = true;
+		_log(ERROR_INT, msg, ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void fatal(final Throwable ex, final String messageTemplate, final Object... args)
+	{
+		if (!logger.isErrorEnabled()) return;
+
+		final boolean isLogExactSourceLocation = true;
+		_log(ERROR_INT, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
 	}
 
 	/**
@@ -374,7 +374,16 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void info(final String msg, final Throwable ex)
+	public void info(final Throwable ex)
+	{
+		if (!logger.isInfoEnabled()) return;
+
+		final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(INFO_INT, null, ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void info(final Throwable ex, final String msg)
 	{
 		if (!logger.isInfoEnabled()) return;
 
@@ -383,21 +392,12 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void info(final String messageTemplate, final Throwable ex, final Object... args)
+	public void info(final Throwable ex, final String messageTemplate, final Object... args)
 	{
 		if (!logger.isInfoEnabled()) return;
 
 		final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
 		_log(INFO_INT, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
-	}
-
-	@Override
-	public void info(final Throwable ex)
-	{
-		if (!logger.isInfoEnabled()) return;
-
-		final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-		_log(INFO_INT, null, ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -496,7 +496,16 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void trace(final String msg, final Throwable ex)
+	public void trace(final Throwable ex)
+	{
+		if (!logger.isTraceEnabled()) return;
+
+		final boolean isLogExactSourceLocation = true;
+		_log(TRACE_INT, "Unexpected exception occured: " + ex.getMessage(), ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void trace(final Throwable ex, final String msg)
 	{
 		if (!logger.isTraceEnabled()) return;
 
@@ -505,21 +514,12 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void trace(final String messageTemplate, final Throwable ex, final Object... args)
+	public void trace(final Throwable ex, final String messageTemplate, final Object... args)
 	{
 		if (!logger.isTraceEnabled()) return;
 
 		final boolean isLogExactSourceLocation = true;
 		_log(TRACE_INT, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
-	}
-
-	@Override
-	public void trace(final Throwable ex)
-	{
-		if (!logger.isTraceEnabled()) return;
-
-		final boolean isLogExactSourceLocation = true;
-		_log(TRACE_INT, "Unexpected exception occured: " + ex.getMessage(), ex, isLogExactSourceLocation);
 	}
 
 	@Override
@@ -652,7 +652,16 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void warn(final String msg, final Throwable ex)
+	public void warn(final Throwable ex)
+	{
+		if (!logger.isWarnEnabled()) return;
+
+		final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
+		_log(WARN_INT, null, ex, isLogExactSourceLocation);
+	}
+
+	@Override
+	public void warn(final Throwable ex, final String msg)
 	{
 		if (!logger.isWarnEnabled()) return;
 
@@ -661,20 +670,11 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void warn(final String messageTemplate, final Throwable ex, final Object... args)
+	public void warn(final Throwable ex, final String messageTemplate, final Object... args)
 	{
 		if (!logger.isWarnEnabled()) return;
 
 		final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
 		_log(WARN_INT, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
-	}
-
-	@Override
-	public void warn(final Throwable ex)
-	{
-		if (!logger.isWarnEnabled()) return;
-
-		final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-		_log(WARN_INT, null, ex, isLogExactSourceLocation);
 	}
 }

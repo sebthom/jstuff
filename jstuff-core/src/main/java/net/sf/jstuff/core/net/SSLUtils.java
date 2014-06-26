@@ -64,7 +64,7 @@ public abstract class SSLUtils
 		}
 		catch (final Exception ex)
 		{
-			LOG.error("Failed to install all-trusting trust manager", ex);
+			LOG.error(ex, "Failed to install all-trusting trust manager");
 		}
 	}
 }

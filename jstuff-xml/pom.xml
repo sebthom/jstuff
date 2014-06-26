@@ -12,7 +12,8 @@
 	</parent>
 
 	<artifactId>jstuff-xml</artifactId>
-	<name>${project.groupId}.${project.artifactId}</name>
+
+	<name>${project.groupId}:${project.artifactId}</name>
 
 	<dependencies>
 		<dependency>

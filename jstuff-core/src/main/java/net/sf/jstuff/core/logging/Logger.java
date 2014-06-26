@@ -161,13 +161,13 @@ public abstract class Logger
 
 	public abstract void debug(final Throwable ex);
 
-	public abstract void debug(final String msg, final Throwable ex);
+	public abstract void debug(final Throwable ex, final String msg);
 
 	/**
 	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
-	public abstract void debug(final String messageTemplate, final Throwable ex, final Object... args);
+	public abstract void debug(final Throwable ex, final String messageTemplate, final Object... args);
 
 	public abstract void info(final String msg);
 
@@ -213,7 +213,7 @@ public abstract class Logger
 
 	public abstract void info(final Throwable ex);
 
-	public abstract void info(final String msg, final Throwable ex);
+	public abstract void info(final Throwable ex, final String msg);
 
 	/**
 	 * Logs the instantiation of the given object at INFO level including the corresponding class's implementation version.
@@ -224,7 +224,7 @@ public abstract class Logger
 	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
-	public abstract void info(final String messageTemplate, final Throwable ex, final Object... args);
+	public abstract void info(final Throwable ex, final String messageTemplate, final Object... args);
 
 	public abstract void trace(final String msg);
 
@@ -268,13 +268,13 @@ public abstract class Logger
 	 */
 	public abstract void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
 
-	public abstract void trace(final String msg, final Throwable ex);
+	public abstract void trace(final Throwable ex, final String msg);
 
 	/**
 	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
-	public abstract void trace(final String messageTemplate, final Throwable ex, final Object... args);
+	public abstract void trace(final Throwable ex, final String messageTemplate, final Object... args);
 
 	public abstract void trace(final Throwable ex);
 
@@ -364,13 +364,13 @@ public abstract class Logger
 
 	public abstract void warn(final Throwable ex);
 
-	public abstract void warn(final String msg, final Throwable ex);
+	public abstract void warn(final Throwable ex, final String msg);
 
 	/**
 	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
-	public abstract void warn(final String messageTemplate, final Throwable ex, final Object... args);
+	public abstract void warn(final Throwable ex, final String messageTemplate, final Object... args);
 
 	public abstract void error(final String msg);
 
@@ -416,21 +416,21 @@ public abstract class Logger
 
 	public abstract void error(final Throwable ex);
 
-	public abstract void error(final String msg, final Throwable ex);
+	public abstract void error(final Throwable ex, final String msg);
 
 	/**
 	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
-	public abstract void error(final String messageTemplate, final Throwable ex, final Object... args);
+	public abstract void error(final Throwable ex, final String messageTemplate, final Object... args);
 
 	public abstract void fatal(final Throwable ex);
 
-	public abstract void fatal(final String msg, final Throwable ex);
+	public abstract void fatal(final Throwable ex, final String msg);
 
 	/**
 	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
-	public abstract void fatal(final String messageTemplate, final Throwable ex, final Object... args);
+	public abstract void fatal(final Throwable ex, final String messageTemplate, final Object... args);
 }

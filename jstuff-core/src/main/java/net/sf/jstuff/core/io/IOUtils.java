@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -45,14 +45,14 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 		{
 			file.close();
 		}
-		catch (final IOException e)
+		catch (final IOException ex)
 		{
 			// ignore
 		}
 	}
 
 	/**
-	 * @return Bytes copied
+	 * @return number of bytes copied
 	 */
 	public static int copyAndClose(final InputStream is, final OutputStream os) throws IOException
 	{

@@ -29,53 +29,6 @@ final class DelegatingLogger extends Logger
 		this.delegate = delegate;
 	}
 
-	void setDelegate(final Logger delegate)
-	{
-		Args.notNull("delegate", delegate);
-		this.delegate = delegate;
-	}
-
-	Logger getDelegate()
-	{
-		return delegate;
-	}
-
-	@Override
-	public String getName()
-	{
-		return delegate.getName();
-	}
-
-	@Override
-	public boolean isDebugEnabled()
-	{
-		return delegate.isDebugEnabled();
-	}
-
-	@Override
-	public boolean isErrorEnabled()
-	{
-		return delegate.isErrorEnabled();
-	}
-
-	@Override
-	public boolean isInfoEnabled()
-	{
-		return delegate.isInfoEnabled();
-	}
-
-	@Override
-	public boolean isTraceEnabled()
-	{
-		return delegate.isTraceEnabled();
-	}
-
-	@Override
-	public boolean isWarnEnabled()
-	{
-		return delegate.isWarnEnabled();
-	}
-
 	@Override
 	public void debug(final String msg)
 	{
@@ -119,15 +72,98 @@ final class DelegatingLogger extends Logger
 	}
 
 	@Override
-	public void debug(final String msg, final Throwable ex)
+	public void debug(final Throwable ex, final String msg)
 	{
-		delegate.debug(msg, ex);
+		delegate.debug(ex, msg);
 	}
 
 	@Override
-	public void debug(final String messageTemplate, final Throwable ex, final Object... args)
+	public void debug(final Throwable ex, final String messageTemplate, final Object... args)
 	{
-		delegate.debug(messageTemplate, ex, args);
+		delegate.debug(ex, messageTemplate, args);
+	}
+
+	@Override
+	public void error(final String msg)
+	{
+		delegate.error(msg);
+	}
+
+	@Override
+	public void error(final String messageTemplate, final Object arg)
+	{
+		delegate.error(messageTemplate, arg);
+	}
+
+	@Override
+	public void error(final String messageTemplate, final Object arg1, final Object arg2)
+	{
+		delegate.error(messageTemplate, arg1, arg2);
+	}
+
+	@Override
+	public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3)
+	{
+		delegate.error(messageTemplate, arg1, arg2, arg3);
+	}
+
+	@Override
+	public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4)
+	{
+		delegate.error(messageTemplate, arg1, arg2, arg3, arg4);
+	}
+
+	@Override
+	public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	{
+		delegate.error(messageTemplate, arg1, arg2, arg3, arg4, arg5);
+	}
+
+	@Override
+	public void error(final Throwable ex)
+	{
+		delegate.error(ex);
+	}
+
+	@Override
+	public void error(final Throwable ex, final String msg)
+	{
+		delegate.error(ex, msg);
+	}
+
+	@Override
+	public void error(final Throwable ex, final String messageTemplate, final Object... args)
+	{
+		delegate.error(ex, messageTemplate, args);
+	}
+
+	@Override
+	public void fatal(final Throwable ex)
+	{
+		delegate.fatal(ex);
+	}
+
+	@Override
+	public void fatal(final Throwable ex, final String msg)
+	{
+		delegate.fatal(ex, msg);
+	}
+
+	@Override
+	public void fatal(final Throwable ex, final String messageTemplate, final Object... args)
+	{
+		delegate.fatal(ex, messageTemplate, args);
+	}
+
+	Logger getDelegate()
+	{
+		return delegate;
+	}
+
+	@Override
+	public String getName()
+	{
+		return delegate.getName();
 	}
 
 	@Override
@@ -173,9 +209,15 @@ final class DelegatingLogger extends Logger
 	}
 
 	@Override
-	public void info(final String msg, final Throwable ex)
+	public void info(final Throwable ex, final String msg)
 	{
-		delegate.info(msg, ex);
+		delegate.info(ex, msg);
+	}
+
+	@Override
+	public void info(final Throwable ex, final String messageTemplate, final Object... args)
+	{
+		delegate.info(ex, messageTemplate, args);
 	}
 
 	@Override
@@ -185,9 +227,45 @@ final class DelegatingLogger extends Logger
 	}
 
 	@Override
-	public void info(final String messageTemplate, final Throwable ex, final Object... args)
+	public boolean isDebugEnabled()
 	{
-		delegate.info(messageTemplate, ex, args);
+		return delegate.isDebugEnabled();
+	}
+
+	@Override
+	public boolean isErrorEnabled()
+	{
+		return delegate.isErrorEnabled();
+	}
+
+	@Override
+	public boolean isInfoEnabled()
+	{
+		return delegate.isInfoEnabled();
+	}
+
+	@Override
+	public boolean isTraceEnabled()
+	{
+		return delegate.isTraceEnabled();
+	}
+
+	@Override
+	public boolean isWarnEnabled()
+	{
+		return delegate.isWarnEnabled();
+	}
+
+	void setDelegate(final Logger delegate)
+	{
+		Args.notNull("delegate", delegate);
+		this.delegate = delegate;
+	}
+
+	@Override
+	public String toString()
+	{
+		return super.toString() + "[name=" + getName() + ",delegate=" + delegate + "]";
 	}
 
 	@Override
@@ -227,21 +305,21 @@ final class DelegatingLogger extends Logger
 	}
 
 	@Override
-	public void trace(final String msg, final Throwable ex)
-	{
-		delegate.trace(msg, ex);
-	}
-
-	@Override
-	public void trace(final String messageTemplate, final Throwable ex, final Object... args)
-	{
-		delegate.trace(messageTemplate, ex, args);
-	}
-
-	@Override
 	public void trace(final Throwable ex)
 	{
 		delegate.trace(ex);
+	}
+
+	@Override
+	public void trace(final Throwable ex, final String msg)
+	{
+		delegate.trace(ex, msg);
+	}
+
+	@Override
+	public void trace(final Throwable ex, final String messageTemplate, final Object... args)
+	{
+		delegate.trace(ex, messageTemplate, args);
 	}
 
 	@Override
@@ -335,92 +413,14 @@ final class DelegatingLogger extends Logger
 	}
 
 	@Override
-	public void warn(final String msg, final Throwable ex)
+	public void warn(final Throwable ex, final String msg)
 	{
-		delegate.warn(msg, ex);
+		delegate.warn(ex, msg);
 	}
 
 	@Override
-	public void warn(final String messageTemplate, final Throwable ex, final Object... args)
+	public void warn(final Throwable ex, final String messageTemplate, final Object... args)
 	{
-		delegate.warn(messageTemplate, ex, args);
-	}
-
-	@Override
-	public void error(final String msg)
-	{
-		delegate.error(msg);
-	}
-
-	@Override
-	public void error(final String messageTemplate, final Object arg)
-	{
-		delegate.error(messageTemplate, arg);
-	}
-
-	@Override
-	public void error(final String messageTemplate, final Object arg1, final Object arg2)
-	{
-		delegate.error(messageTemplate, arg1, arg2);
-	}
-
-	@Override
-	public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3)
-	{
-		delegate.error(messageTemplate, arg1, arg2, arg3);
-	}
-
-	@Override
-	public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4)
-	{
-		delegate.error(messageTemplate, arg1, arg2, arg3, arg4);
-	}
-
-	@Override
-	public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
-	{
-		delegate.error(messageTemplate, arg1, arg2, arg3, arg4, arg5);
-	}
-
-	@Override
-	public void error(final Throwable ex)
-	{
-		delegate.error(ex);
-	}
-
-	@Override
-	public void error(final String msg, final Throwable ex)
-	{
-		delegate.error(msg, ex);
-	}
-
-	@Override
-	public void error(final String messageTemplate, final Throwable ex, final Object... args)
-	{
-		delegate.error(messageTemplate, ex, args);
-	}
-
-	@Override
-	public void fatal(final Throwable ex)
-	{
-		delegate.fatal(ex);
-	}
-
-	@Override
-	public void fatal(final String msg, final Throwable ex)
-	{
-		delegate.fatal(msg, ex);
-	}
-
-	@Override
-	public void fatal(final String messageTemplate, final Throwable ex, final Object... args)
-	{
-		delegate.fatal(messageTemplate, ex, args);
-	}
-
-	@Override
-	public String toString()
-	{
-		return super.toString() + "[name=" + getName() + ",delegate=" + delegate + "]";
+		delegate.warn(ex, messageTemplate, args);
 	}
 }

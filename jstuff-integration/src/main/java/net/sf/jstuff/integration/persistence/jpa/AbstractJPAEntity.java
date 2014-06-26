@@ -192,7 +192,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 		}
 		catch (final Exception ex)
 		{
-			LOG.warn("toDebugString() failed on " + this, ex);
+			LOG.warn(ex,"toDebugString() failed on %s",this);
 			return toString();
 		}
 	}

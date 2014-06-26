@@ -74,7 +74,7 @@ public class HashLockManager<KeyType>
 			}
 			catch (final Exception ex)
 			{
-				LOG.error("Unexpected exception occured while cleaning lock objects.", ex);
+				LOG.error(ex, "Unexpected exception occured while cleaning lock objects.");
 			}
 		}
 	}

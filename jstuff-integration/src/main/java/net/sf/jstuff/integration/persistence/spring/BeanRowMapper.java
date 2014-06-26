@@ -113,17 +113,17 @@ public class BeanRowMapper<T> implements RowMapper<T>
 		}
 		catch (final IllegalAccessException ex)
 		{
-			LOG.error(ex.getMessage(), ex);
+			LOG.error(ex);
 			throw new SQLException(ex.getMessage());
 		}
 		catch (final InstantiationException ex)
 		{
-			LOG.error(ex.getMessage(), ex);
+			LOG.error(ex);
 			throw new SQLException(ex.getMessage());
 		}
 		catch (final InvocationTargetException ex)
 		{
-			LOG.error(ex.getMessage(), ex);
+			LOG.error(ex);
 			throw new SQLException(ex.getMessage());
 		}
 	}

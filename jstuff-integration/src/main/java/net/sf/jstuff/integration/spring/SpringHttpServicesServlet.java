@@ -86,7 +86,10 @@ public class SpringHttpServicesServlet extends HttpServlet
 				pw.write("<html><body><ul>");
 				for (final Entry<String, HttpRequestHandler> entry : beans.entrySet())
 				{
-					if (!entry.getKey().startsWith("/")) continue;
+					if (!entry.getKey().startsWith("/"))
+					{
+						continue;
+					}
 
 					final String parameter = entry.getValue() instanceof AbstractRestServiceExporter ? "?explainAsHTML" : "";
 
@@ -99,7 +102,9 @@ public class SpringHttpServicesServlet extends HttpServlet
 				pw.close();
 			}
 			else
+			{
 				response.sendError(HttpServletResponse.SC_FORBIDDEN);
+			}
 			return;
 		}
 
@@ -120,7 +125,7 @@ public class SpringHttpServicesServlet extends HttpServlet
 		}
 		catch (final BeansException ex)
 		{
-			LOG.error("Unexpected exception occured while retrieving bean [%s].", ex, relativePath);
+			LOG.error(ex, "Unexpected exception occured while retrieving bean [%s].", relativePath);
 		}
 		response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		return;

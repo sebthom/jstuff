@@ -335,6 +335,9 @@ public abstract class Types
 		return null;
 	}
 
+	/**
+	 * @return the implementation version of the archive containing the class
+	 */
 	public static String getVersion(final Class< ? > clazz)
 	{
 		/*

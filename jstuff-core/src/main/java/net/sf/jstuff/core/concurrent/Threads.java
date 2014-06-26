@@ -36,7 +36,7 @@ public abstract class Threads
 		}
 		catch (final InterruptedException ex)
 		{
-			LOG.error("InterruptedException caught", ex);
+			LOG.error(ex, "InterruptedException caught");
 			Thread.currentThread().interrupt();
 		}
 	}
@@ -53,7 +53,7 @@ public abstract class Threads
 		}
 		catch (final InterruptedException ex)
 		{
-			LOG.error("InterruptedException caught", ex);
+			LOG.error(ex, "InterruptedException caught");
 			Thread.currentThread().interrupt();
 		}
 	}
@@ -70,7 +70,7 @@ public abstract class Threads
 		}
 		catch (final InterruptedException ex)
 		{
-			LOG.error("InterruptedException caught", ex);
+			LOG.error(ex, "InterruptedException caught");
 			Thread.currentThread().interrupt();
 		}
 	}
@@ -90,7 +90,7 @@ public abstract class Threads
 		}
 		catch (final InterruptedException ex)
 		{
-			LOG.error("InterruptedException caught", ex);
+			LOG.error(ex, "InterruptedException caught");
 			Thread.currentThread().interrupt();
 		}
 	}
