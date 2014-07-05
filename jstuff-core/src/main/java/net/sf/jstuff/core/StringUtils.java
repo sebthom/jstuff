@@ -496,6 +496,21 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	/**
 	 * Replace all occurrences of searchFor in searchIn with replaceWith.
 	 */
+	public static void replace(final StringBuffer searchIn, final String searchFor, final String replaceWith)
+	{
+		final int searchForLen = searchFor.length();
+		final int replaceWithLen = replaceWith.length();
+		int index = searchIn.indexOf(searchFor);
+		while (index != -1)
+		{
+			searchIn.replace(index, index + searchForLen, replaceWith);
+			index = searchIn.indexOf(searchFor, index + replaceWithLen);
+		}
+	}
+
+	/**
+	 * Replace all occurrences of searchFor in searchIn with replaceWith.
+	 */
 	public static void replace(final StringBuilder searchIn, final String searchFor, final String replaceWith)
 	{
 		final int searchForLen = searchFor.length();
@@ -654,7 +669,6 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 
 	/**
 	 * Trims all lines
-	 * @param text
 	 */
 	public static String trimLines(final String text)
 	{
