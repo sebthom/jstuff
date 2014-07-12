@@ -14,6 +14,9 @@ package net.sf.jstuff.core.reflection;
 
 import java.lang.reflect.Field;
 
+import net.sf.jstuff.core.reflection.exception.AccessingFieldValueFailedException;
+import net.sf.jstuff.core.reflection.exception.ReflectionException;
+import net.sf.jstuff.core.reflection.exception.SettingFieldValueFailedException;
 import net.sf.jstuff.core.validation.Args;
 
 /**

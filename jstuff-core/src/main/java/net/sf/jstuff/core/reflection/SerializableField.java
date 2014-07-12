@@ -27,11 +27,11 @@ import net.sf.jstuff.core.validation.Args;
  */
 public final class SerializableField implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger LOG = Logger.create();
 
 	private static final WeakHashMap<Field, SerializableField> CACHE = new WeakHashMap<Field, SerializableField>();
-
-	private static final long serialVersionUID = 1L;
 
 	public static SerializableField get(final Field field)
 	{

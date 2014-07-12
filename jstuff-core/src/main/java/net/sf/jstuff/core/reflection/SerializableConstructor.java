@@ -27,12 +27,11 @@ import net.sf.jstuff.core.validation.Args;
  */
 public final class SerializableConstructor implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger LOG = Logger.create();
 
-	private static final WeakHashMap<Constructor< ? >, SerializableConstructor> CACHE = //
-	new WeakHashMap<Constructor< ? >, SerializableConstructor>();
-
-	private static final long serialVersionUID = 1L;
+	private static final WeakHashMap<Constructor< ? >, SerializableConstructor> CACHE = new WeakHashMap<Constructor< ? >, SerializableConstructor>();
 
 	public static SerializableConstructor get(final Constructor< ? > constructor)
 	{
@@ -51,9 +50,7 @@ public final class SerializableConstructor implements Serializable
 	}
 
 	private transient Constructor< ? > constructor;
-
 	private final Class< ? > declaringClass;
-
 	private final Class< ? >[] parameterTypes;
 
 	private SerializableConstructor(final Constructor< ? > constructor)

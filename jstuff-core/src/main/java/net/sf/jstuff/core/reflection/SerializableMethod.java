@@ -27,11 +27,11 @@ import net.sf.jstuff.core.validation.Args;
  */
 public final class SerializableMethod implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger LOG = Logger.create();
 
 	private static final WeakHashMap<Method, SerializableMethod> CACHE = new WeakHashMap<Method, SerializableMethod>();
-
-	private static final long serialVersionUID = 1L;
 
 	public static SerializableMethod get(final Method method)
 	{
@@ -52,7 +52,6 @@ public final class SerializableMethod implements Serializable
 	private final Class< ? > declaringClass;
 	private transient Method method;
 	private final String name;
-
 	private final Class< ? >[] parameterTypes;
 
 	private SerializableMethod(final Method method)

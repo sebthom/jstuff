@@ -22,10 +22,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.sf.jstuff.core.reflection.Annotations;
-import net.sf.jstuff.core.reflection.InvokingMethodFailedException;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.Proxies;
 import net.sf.jstuff.core.reflection.Types;
+import net.sf.jstuff.core.reflection.exception.InvokingMethodFailedException;
 import net.sf.jstuff.core.reflection.visitor.DefaultClassVisitor;
 import net.sf.jstuff.core.validation.Args;
 

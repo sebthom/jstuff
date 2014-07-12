@@ -10,10 +10,12 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.reflection;
+package net.sf.jstuff.core.reflection.exception;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
+import net.sf.jstuff.core.reflection.SerializableField;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

@@ -12,6 +12,11 @@
  *******************************************************************************/
 package net.sf.jstuff.core.logging;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
@@ -23,34 +28,6 @@ import net.sf.jstuff.core.concurrent.Threads;
  */
 public class LoggingTest extends TestCase
 {
-	private static final java.util.logging.Logger ROOT_LOGGER = java.util.logging.Logger.getLogger("");
-
-	private static final Logger LOG = Logger.create();
-
-	@Override
-	protected void tearDown() throws Exception
-	{
-		System.out.println("############################################");
-		System.out.println("Resetting loggers...");
-		System.out.println("############################################");
-		ROOT_LOGGER.setLevel(java.util.logging.Level.INFO);
-		for (final Handler handler : ROOT_LOGGER.getHandlers())
-			handler.setLevel(java.util.logging.Level.INFO);
-
-		java.util.logging.Logger.getLogger(LoggingTest.class.getName()).setLevel(null);
-		Threads.sleep(50);
-	}
-
-	private static interface InterfaceA
-	{
-		Object[] methodA(final int a, final String b, final String... c);
-	}
-
-	private static interface InterfaceB
-	{
-		void methodB();
-	}
-
 	private static class Entity implements InterfaceA, InterfaceB
 	{
 		public Object[] methodA(final int a, final String b, final String... c)
@@ -64,6 +41,43 @@ public class LoggingTest extends TestCase
 			Threads.sleep(1000);
 		}
 	}
+
+	private static interface InterfaceA
+	{
+		Object[] methodA(final int a, final String b, final String... c);
+	}
+
+	private static interface InterfaceB
+	{
+		void methodB();
+	}
+
+	private static final java.util.logging.Logger ROOT_LOGGER = java.util.logging.Logger.getLogger("");
+	private static final Logger LOG = Logger.create();
+	private static final Formatter ROOT_LOGGER_FORMATTER = new Formatter()
+		{
+			private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+
+			@Override
+			public synchronized String format(final LogRecord record)
+			{
+				final StringBuilder sb = new StringBuilder(1000);
+				sb.append(df.format(new Date(record.getMillis()))).append(" ");
+				sb.append(record.getLevel().getName().charAt(0)).append(" ");
+				{
+					sb.append("[");
+					if (record.getSourceClassName() != null)
+						sb.append(record.getSourceClassName());
+					else
+						sb.append(record.getLoggerName());
+					if (record.getSourceMethodName() != null) sb.append(".").append(record.getSourceMethodName()).append("()");
+					sb.append("] ");
+				}
+				sb.append(formatMessage(record));
+				sb.append("\n");
+				return sb.toString();
+			}
+		};
 
 	private void coolMethod()
 	{
@@ -93,18 +107,18 @@ public class LoggingTest extends TestCase
 		final Handler h = new Handler()
 			{
 				@Override
-				public void publish(final LogRecord record)
-				{
-					count[0]++;
-				}
+				public void close() throws SecurityException
+				{}
 
 				@Override
 				public void flush()
 				{}
 
 				@Override
-				public void close() throws SecurityException
-				{}
+				public void publish(final LogRecord record)
+				{
+					count[0]++;
+				}
 			};
 		ROOT_LOGGER.addHandler(h);
 		try
@@ -150,6 +164,23 @@ public class LoggingTest extends TestCase
 		}
 	}
 
+	@Override
+	protected void setUp() throws Exception
+	{
+		System.out.println("############################################");
+		System.out.println("Resetting loggers...");
+		System.out.println("############################################");
+		ROOT_LOGGER.setLevel(java.util.logging.Level.INFO);
+		for (final Handler handler : ROOT_LOGGER.getHandlers())
+		{
+			handler.setLevel(java.util.logging.Level.INFO);
+			if (handler instanceof ConsoleHandler) ((ConsoleHandler) handler).setFormatter(ROOT_LOGGER_FORMATTER);
+		}
+
+		java.util.logging.Logger.getLogger(LoggingTest.class.getName()).setLevel(null);
+		Threads.sleep(50);
+	}
+
 	public void test1LoggingJUL()
 	{
 		LoggerConfig.setPreferSLF4J(false);
@@ -183,6 +214,14 @@ public class LoggingTest extends TestCase
 		final Handler h = new Handler()
 			{
 				@Override
+				public void close() throws SecurityException
+				{}
+
+				@Override
+				public void flush()
+				{}
+
+				@Override
 				public void publish(final LogRecord record)
 				{
 					count[0]++;
@@ -202,14 +241,6 @@ public class LoggingTest extends TestCase
 							break;
 					}
 				}
-
-				@Override
-				public void flush()
-				{}
-
-				@Override
-				public void close() throws SecurityException
-				{}
 			};
 		ROOT_LOGGER.addHandler(h);
 		try

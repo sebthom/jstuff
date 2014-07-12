@@ -67,7 +67,7 @@ final class SLF4JLogger extends Logger
 			 */
 			if (LoggerConfig.isDebugMessagePrefixEnabled)
 			{
-				final StackTraceElement caller = StackTrace.getCallingStackTraceElement(DelegatingLogger.FQCN);
+				final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
 
 				if (caller == null) // should never happen
 					throw new IllegalStateException("Unexpected stacktrace " + Arrays.toString(Thread.currentThread().getStackTrace()));

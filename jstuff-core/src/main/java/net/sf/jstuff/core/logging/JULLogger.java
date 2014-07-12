@@ -57,7 +57,7 @@ final class JULLogger extends Logger
 			/*
 			 * if the current logger's level is DEBUG or TRACE we create full-blown log records for all levels
 			 */
-			final StackTraceElement caller = StackTrace.getCallingStackTraceElement(DelegatingLogger.FQCN);
+			final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
 
 			if (caller == null) // should never happen
 				throw new IllegalStateException("Unexpected stacktrace " + Arrays.toString(Thread.currentThread().getStackTrace()));

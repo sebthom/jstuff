@@ -49,6 +49,7 @@ import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.reflection.visitor.ClassVisitor;
 import net.sf.jstuff.core.reflection.visitor.ClassVisitorWithTypeArguments;
 import net.sf.jstuff.core.validation.Args;

@@ -14,6 +14,7 @@ package net.sf.jstuff.core.reflection;
 
 import java.lang.reflect.Constructor;
 
+import net.sf.jstuff.core.reflection.exception.InvokingConstructorFailedException;
 import net.sf.jstuff.core.validation.Args;
 
 /**

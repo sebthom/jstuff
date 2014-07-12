@@ -10,33 +10,35 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.reflection;
+package net.sf.jstuff.core.reflection.exception;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
+
+import net.sf.jstuff.core.reflection.SerializableField;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class InvokingMethodFailedException extends ReflectionException
+public class SettingFieldValueFailedException extends ReflectionException
 {
 	private static final long serialVersionUID = 1L;
 
-	private final SerializableMethod method;
+	private final SerializableField field;
 	private final transient Object targetObject;
 	private final Serializable targetSerializableObject;
 
-	public InvokingMethodFailedException(final Method method, final Object targetObject, final Throwable cause)
+	public SettingFieldValueFailedException(final Field field, final Object targetObject, final Throwable cause)
 	{
-		super("Invoking method [" + method.getDeclaringClass().getName() + "." + method.getName() + "] failed.", cause);
-		this.method = SerializableMethod.get(method);
+		super("Setting value of field " + field.getName() + " failed.", cause);
+		this.field = SerializableField.get(field);
 		this.targetObject = targetObject;
 		targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
 	}
 
-	public Method getMethod()
+	public Field getField()
 	{
-		return method.getMethod();
+		return field.getField();
 	}
 
 	public Object getTargetObject()

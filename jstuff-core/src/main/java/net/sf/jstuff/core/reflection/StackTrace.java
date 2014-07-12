@@ -22,63 +22,69 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class StackTrace
 {
-	private static StackTraceElement _getCallingStackTraceElement()
+	private static final class CallerResolver extends SecurityManager
 	{
-		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
-		for (int i = 0; i < stes.length; i++)
-			if ("_getCallingStackTraceElement".equals(stes[i].getMethodName())) return stes[i + 3];
+		private static final CallerResolver INSTANCE = new CallerResolver();
 
-		// should never be reached
-		throw new IllegalStateException("Unexpected stack trace " + Arrays.toString(stes));
+		private Class< ? > getCallerClass()
+		{
+			System.out.println(Arrays.toString(getClassContext()));
+			return getClassContext()[4];
+		}
+	}
+
+	private static StackTraceElement _getCallerStackTraceElement()
+	{
+		return Thread.currentThread().getStackTrace()[4];
 	}
 
 	private static StackTraceElement _getThisStackTraceElement()
 	{
-		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
-		for (int i = 0; i < stes.length; i++)
-			if ("_getThisStackTraceElement".equals(stes[i].getMethodName())) return stes[i + 2];
-
-		// should never be reached
-		throw new IllegalStateException("Unexpected stack trace " + Arrays.toString(stes));
+		return Thread.currentThread().getStackTrace()[3];
 	}
 
-	public static String getCallingClassName()
+	public static Class< ? > getCallerClass()
 	{
-		final StackTraceElement ste = _getCallingStackTraceElement();
+		return CallerResolver.INSTANCE.getCallerClass();
+	}
+
+	public static String getCallerClassName()
+	{
+		final StackTraceElement ste = _getCallerStackTraceElement();
 		return ste.getClassName();
 	}
 
-	public static String getCallingClassSimpleName()
+	public static String getCallerClassSimpleName()
 	{
-		final StackTraceElement ste = _getCallingStackTraceElement();
+		final StackTraceElement ste = _getCallerStackTraceElement();
 		return StringUtils.substringAfterLast(ste.getClassName(), ".");
 	}
 
-	public static String getCallingFileName()
+	public static String getCallerFileName()
 	{
-		final StackTraceElement ste = _getCallingStackTraceElement();
+		final StackTraceElement ste = _getCallerStackTraceElement();
 		return ste.getFileName();
 	}
 
-	public static int getCallingLineNumber()
+	public static int getCallerLineNumber()
 	{
-		final StackTraceElement ste = _getCallingStackTraceElement();
+		final StackTraceElement ste = _getCallerStackTraceElement();
 		return ste.getLineNumber();
 	}
 
-	public static String getCallingMethodName()
+	public static String getCallerMethodName()
 	{
-		final StackTraceElement ste = _getCallingStackTraceElement();
+		final StackTraceElement ste = _getCallerStackTraceElement();
 		return ste.getMethodName();
 	}
 
-	public static StackTraceElement getCallingStackTraceElement()
+	public static StackTraceElement getCallerStackTraceElement()
 	{
-		final StackTraceElement ste = _getCallingStackTraceElement();
+		final StackTraceElement ste = _getCallerStackTraceElement();
 		return ste;
 	}
 
-	public static StackTraceElement getCallingStackTraceElement(final Class< ? > calledClass)
+	public static StackTraceElement getCallerStackTraceElement(final Class< ? > calledClass)
 	{
 		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
 		final String calledClassName = calledClass.getName();
@@ -90,7 +96,7 @@ public abstract class StackTrace
 		return null;
 	}
 
-	public static StackTraceElement getCallingStackTraceElement(final String calledClassName)
+	public static StackTraceElement getCallerStackTraceElement(final String calledClassName)
 	{
 		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
 		boolean foundCalledClassInStackTrace = false;
@@ -99,18 +105,6 @@ public abstract class StackTrace
 				foundCalledClassInStackTrace = true;
 			else if (foundCalledClassInStackTrace) return curr;
 		return null;
-	}
-
-	public static String getThisClassName()
-	{
-		final StackTraceElement ste = _getThisStackTraceElement();
-		return ste.getClassName();
-	}
-
-	public static String getThisClassSimpleName()
-	{
-		final StackTraceElement ste = _getThisStackTraceElement();
-		return StringUtils.substringAfterLast(ste.getClassName(), ".");
 	}
 
 	public static String getThisFileName()

@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.reflection.exception.InvokingMethodFailedException;
+import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -40,8 +43,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 		return create(annotationType, null);
 	}
 
-	public static <T extends Annotation> T create(final Class<T> annotationType, final Map<String, Object> attributes)
-			throws ReflectionException
+	public static <T extends Annotation> T create(final Class<T> annotationType, final Map<String, Object> attributes) throws ReflectionException
 	{
 		Args.notNull("annotationType", annotationType);
 
@@ -61,8 +63,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 			else
 			{
 				final Object defaultValue = m.getDefaultValue();
-				if (defaultValue == null)
-					throw new IllegalArgumentException("Missing value for required annotation parameter [" + attrName + "]");
+				if (defaultValue == null) throw new IllegalArgumentException("Missing value for required annotation parameter [" + attrName + "]");
 				attrValues.put(attrName, defaultValue);
 			}
 		}
@@ -79,12 +80,10 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 					public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 					{
 						final String name = method.getName();
-						if ("hashCode".equals(name) && args == null && method.getReturnType() == int.class)
-							return Annotations.hashCode((Annotation) proxy);
+						if ("hashCode".equals(name) && args == null && method.getReturnType() == int.class) return Annotations.hashCode((Annotation) proxy);
 						if ("equals".equals(name) && args.length == 1 && method.getReturnType() == boolean.class)
 							return Annotations.equals((Annotation) proxy, (Annotation) args[0]);
-						if ("toString".equals(name) && args == null && method.getReturnType() == String.class)
-							return Annotations.toString((Annotation) proxy);
+						if ("toString".equals(name) && args == null && method.getReturnType() == String.class) return Annotations.toString((Annotation) proxy);
 						if ("annotationType".equals(name) && args == null && method.getReturnType() == Class.class) return annotationType;
 						return attrValues.get(method.getName());
 					}
@@ -192,8 +191,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 		for (int i = 0; i < methodParameterTypesCount; i++)
 		{
 			final HashSet<Annotation> paramAnnos = methodParameterAnnotations[i];
-			result[i] = paramAnnos == null ? new Annotation[0] : methodParameterAnnotations[i]
-					.toArray(new Annotation[methodParameterAnnotations[i].size()]);
+			result[i] = paramAnnos == null ? new Annotation[0] : methodParameterAnnotations[i].toArray(new Annotation[methodParameterAnnotations[i].size()]);
 
 		}
 		return result;
@@ -233,7 +231,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 		for (final Class< ? > next : getInterfacesRecursive(clazz))
 		{
 			final Annotation[] declaredAnnotations = next.getDeclaredAnnotations();
-			annotations.addAll(Arrays.asList(declaredAnnotations));
+			CollectionUtils.addAll(annotations, declaredAnnotations);
 		}
 		return annotations.toArray(new Annotation[annotations.size()]);
 	}
@@ -257,7 +255,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 		for (final Class< ? > nextClass : getInterfacesRecursive(method.getDeclaringClass()))
 			try
 			{
-				annotations.addAll(Arrays.asList(nextClass.getDeclaredMethod(methodName, methodParameterTypes).getDeclaredAnnotations()));
+				CollectionUtils.addAll(annotations, nextClass.getDeclaredMethod(methodName, methodParameterTypes).getDeclaredAnnotations());
 			}
 			catch (final NoSuchMethodException e)
 			{

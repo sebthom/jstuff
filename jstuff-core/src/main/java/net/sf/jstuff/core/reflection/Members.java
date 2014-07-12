@@ -17,7 +17,9 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 
+import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -33,21 +35,26 @@ public abstract class Members
 	public static void assertPrivateAccessAllowed()
 	{
 		final SecurityManager mgr = System.getSecurityManager();
-		if (mgr != null)
-			try
-			{
-				mgr.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
-			}
-			catch (final SecurityException ex)
-			{
-				throw new ReflectionException(
-						"Current security manager configuration does not allow access to private fields and methods.", ex);
-			}
+		if (mgr != null) try
+		{
+			mgr.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
+		}
+		catch (final SecurityException ex)
+		{
+			throw new ReflectionException("Current security manager configuration does not allow access to private fields and methods.", ex);
+		}
 	}
 
 	public static void ensureAccessible(final AccessibleObject ao)
 	{
-		if (!ao.isAccessible()) AccessController.doPrivileged(new SetAccessibleAction(ao));
+		if (!ao.isAccessible()) AccessController.doPrivileged(new PrivilegedAction<Object>()
+			{
+				public Object run()
+				{
+					ao.setAccessible(true);
+					return null;
+				}
+			});
 	}
 
 	public static boolean isAbstract(final Member member)

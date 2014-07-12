@@ -44,7 +44,7 @@ public abstract class Logger
 
 	public static Logger create()
 	{
-		final String name = StackTrace.getCallingStackTraceElement(Logger.class).getClassName();
+		final String name = StackTrace.getCallerStackTraceElement(Logger.class).getClassName();
 		return LoggerConfig.create(name);
 	}
 

@@ -10,9 +10,11 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.reflection;
+package net.sf.jstuff.core.reflection.exception;
 
 import java.lang.reflect.Constructor;
+
+import net.sf.jstuff.core.reflection.SerializableConstructor;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

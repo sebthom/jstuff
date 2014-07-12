@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 

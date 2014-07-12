@@ -21,6 +21,7 @@ import java.util.Set;
 
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.reflection.exception.InvokingMethodFailedException;
 import net.sf.jstuff.core.validation.Args;
 
 /**
