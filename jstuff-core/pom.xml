@@ -28,6 +28,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.thoughtworks.paranamer</groupId>
+			<artifactId>paranamer</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
@@ -49,12 +55,5 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<!-- added for test case TypesTest.testGetVersion() -->
-			<groupId>com.thoughtworks.paranamer</groupId>
-			<artifactId>paranamer</artifactId>
-			<version>2.6</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 </project>

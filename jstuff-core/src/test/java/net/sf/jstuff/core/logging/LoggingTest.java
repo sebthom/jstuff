@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core.logging;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -70,20 +72,26 @@ public class LoggingTest extends TestCase
 						sb.append(record.getSourceClassName());
 					else
 						sb.append(record.getLoggerName());
-					if (record.getSourceMethodName() != null) sb.append(".").append(record.getSourceMethodName()).append("()");
+					if (record.getSourceMethodName() != null) sb.append("#").append(record.getSourceMethodName()).append("()");
 					sb.append("] ");
 				}
 				sb.append(formatMessage(record));
+				if (record.getThrown() != null)
+				{
+					final StringWriter errors = new StringWriter();
+					record.getThrown().printStackTrace(new PrintWriter(errors));
+					sb.append(errors.toString());
+				}
 				sb.append("\n");
 				return sb.toString();
 			}
 		};
 
-	private void coolMethod()
+	private void coolMethod(final String label, final int number, final boolean flag, final Class< ? > clazz, final Object obj)
 	{
 		LOG.traceEntry();
-		LOG.traceEntry("foo", 23);
-		LOG.traceEntry("foo", 23, true, Void.class, Integer.valueOf(43));
+		LOG.traceEntry(label, number);
+		LOG.traceEntry(label, number, flag, clazz, obj);
 		LOG.error("ERROR");
 		LOG.error(new RuntimeException("Cannot process request."));
 		LOG.fatal(new RuntimeException("Cannot initialize service."));
@@ -127,7 +135,7 @@ public class LoggingTest extends TestCase
 			assertEquals(true, LOG.isInfoEnabled());
 			assertEquals(false, LOG.isDebugEnabled());
 			count[0] = 0;
-			coolMethod();
+			coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
 			assertEquals(5, count[0]);
 
 			Threads.sleep(50);
@@ -136,15 +144,15 @@ public class LoggingTest extends TestCase
 			assertEquals(true, LOG.isInfoEnabled());
 			assertEquals(false, LOG.isDebugEnabled());
 			count[0] = 0;
-			coolMethod();
+			coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
 			assertEquals(5, count[0]);
 
 			Threads.sleep(50);
-			System.out.println("LOGGER LEVEL = ALL **************************");
-			java.util.logging.Logger.getLogger(LOG.getName()).setLevel(java.util.logging.Level.ALL);
+			System.out.println("LOGGER LEVEL = FINEST **************************");
+			java.util.logging.Logger.getLogger(LOG.getName()).setLevel(java.util.logging.Level.FINEST);
 			assertEquals(true, LOG.isTraceEnabled());
 			count[0] = 0;
-			coolMethod();
+			coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
 			assertEquals(12, count[0]);
 
 			Threads.sleep(50);
@@ -155,7 +163,7 @@ public class LoggingTest extends TestCase
 			assertEquals(false, LOG.isWarnEnabled());
 			assertEquals(true, LOG.isErrorEnabled());
 			count[0] = 0;
-			coolMethod();
+			coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
 			assertEquals(3, count[0]);
 		}
 		finally
@@ -206,6 +214,8 @@ public class LoggingTest extends TestCase
 	public void testCreateLogged()
 	{
 		LoggerConfig.setPreferSLF4J(false);
+		LoggerConfig.setCompactExceptionLogging(false);
+		LoggerConfig.setDebugMessagePrefixEnabled(true);
 
 		for (final Handler handler : ROOT_LOGGER.getHandlers())
 			handler.setLevel(java.util.logging.Level.ALL);
@@ -228,16 +238,16 @@ public class LoggingTest extends TestCase
 					switch (count[0])
 					{
 						case 1 :
-							assertEquals("methodA ENTRY >> ([1, foo, [bar]])", record.getMessage());
+							assertEquals("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])", record.getMessage());
 							break;
 						case 2 :
-							assertTrue(record.getMessage().startsWith("methodA EXIT  << [foo, [bar]] "));
+							assertTrue(record.getMessage().startsWith("methodA():EXIT  << [foo, [bar]] "));
 							break;
 						case 3 :
-							assertEquals("methodB ENTRY >> ()", record.getMessage());
+							assertEquals("methodB():ENTRY >> ()", record.getMessage());
 							break;
 						case 4 :
-							assertTrue(record.getMessage().startsWith("methodB EXIT  << *void* "));
+							assertTrue(record.getMessage().startsWith("methodB():EXIT  << *void* "));
 							break;
 					}
 				}

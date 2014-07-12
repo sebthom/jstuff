@@ -38,7 +38,7 @@ public final class LoggerConfig
 	 * If set to true, method name and line number are added to the log message.
 	 * This is esp. helpful in environments where you have no control over the used logger pattern by the underlying logger infrastructure (e.g. in an JEE container).
 	 */
-	static boolean isDebugMessagePrefixEnabled = true;
+	static boolean isDebugMessagePrefixEnabled = false;
 	static boolean isCompactExceptionLoggingDisabled = false;
 
 	static

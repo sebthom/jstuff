@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core.logging;
 
+import java.lang.reflect.Method;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -266,6 +268,12 @@ final class DelegatingLogger extends Logger
 	public String toString()
 	{
 		return super.toString() + "[name=" + getName() + ",delegate=" + delegate + "]";
+	}
+
+	@Override
+	protected void trace(final Method location, final String msg)
+	{
+		delegate.trace(location, msg);
 	}
 
 	@Override

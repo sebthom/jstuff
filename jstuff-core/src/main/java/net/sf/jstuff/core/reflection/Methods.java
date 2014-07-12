@@ -100,6 +100,9 @@ public abstract class Methods extends Members
 
 	public static Method findGetterRecursive(final Class< ? > clazz, final String propertyName, final Class< ? > compatibleTo)
 	{
+		Args.notNull("clazz", clazz);
+		Args.notNull("methodName", propertyName);
+
 		final Method m = findGetter(clazz, propertyName, compatibleTo);
 		if (m != null) return m;
 
@@ -107,6 +110,80 @@ public abstract class Methods extends Members
 		if (superclazz == null) return null;
 
 		return findGetterRecursive(superclazz, propertyName, compatibleTo);
+	}
+
+	public static Method findMatching(final Class< ? > clazz, final String methodName, final Class< ? >... parameterTypes)
+	{
+		Args.notNull("clazz", clazz);
+		Args.notNull("methodName", methodName);
+
+		// find exact match first
+		final Method m = find(clazz, methodName, parameterTypes);
+		if (m != null) return m;
+
+		// if the exact match search found nothing for zero-argument method, then we can abort the search
+		if (parameterTypes == null || parameterTypes.length == 0) return null;
+
+		final Method[] declaredMethods = clazz.getDeclaredMethods();
+		for (final Method candidate : declaredMethods)
+		{
+			if (isStatic(candidate)) continue;
+			if (!methodName.equals(candidate.getName())) continue;
+
+			final Class< ? >[] candidateParameterTypes = candidate.getParameterTypes();
+
+			if (candidateParameterTypes.length != parameterTypes.length) continue;
+
+			for (int i = 0; i < parameterTypes.length; i++)
+			{
+				if (parameterTypes[i] == null) continue;
+				if (!Types.isAssignableTo(parameterTypes[i], candidateParameterTypes[i])) break;
+			}
+			return candidate;
+		}
+		return null;
+	}
+
+	public static Method findMatching(final Class< ? > clazz, final String methodName, final Object... args)
+	{
+		Args.notNull("clazz", clazz);
+		Args.notNull("methodName", methodName);
+
+		if (args == null || args.length == 0) return find(clazz, methodName);
+
+		final Class< ? >[] parameterTypes = new Class< ? >[args.length];
+		for (int i = 0; i < args.length; i++)
+			parameterTypes[i] = args[i] == null ? null : args[i].getClass();
+
+		return findMatching(clazz, methodName, parameterTypes);
+	}
+
+	public static Method findMatchingRecursive(final Class< ? > clazz, final String methodName, final Class< ? >... parameterTypes)
+	{
+		Args.notNull("clazz", clazz);
+		Args.notNull("methodName", methodName);
+
+		final Method m = findMatching(clazz, methodName, parameterTypes);
+		if (m != null) return m;
+
+		final Class< ? > superclazz = clazz.getSuperclass();
+		if (superclazz == null) return null;
+
+		return findMatchingRecursive(superclazz, methodName, parameterTypes);
+	}
+
+	public static Method findMatchingRecursive(final Class< ? > clazz, final String methodName, final Object... args)
+	{
+		Args.notNull("clazz", clazz);
+		Args.notNull("methodName", methodName);
+
+		if (args == null || args.length == 0) return find(clazz, methodName);
+
+		final Class< ? >[] parameterTypes = new Class< ? >[args.length];
+		for (int i = 0; i < args.length; i++)
+			parameterTypes[i] = args[i] == null ? null : args[i].getClass();
+
+		return findMatchingRecursive(clazz, methodName, parameterTypes);
 	}
 
 	/**
@@ -146,11 +223,14 @@ public abstract class Methods extends Members
 
 		final Method[] declaredMethods = clazz.getDeclaredMethods();
 		for (final Method method : declaredMethods)
-			if (!isStatic(method) && methodName.equals(method.getName()) && method.getParameterTypes().length == 1)
-			{
-				if (compatibleTo == null) return method;
-				if (Types.isAssignableTo(compatibleTo, method.getParameterTypes()[0])) return method;
-			}
+		{
+			if (isStatic(method)) continue;
+			if (!methodName.equals(method.getName())) continue;
+			if (method.getParameterTypes().length != 1) continue;
+
+			if (compatibleTo == null) return method;
+			if (Types.isAssignableTo(compatibleTo, method.getParameterTypes()[0])) return method;
+		}
 		LOG.trace("No setter for [%s] found in class [%s] comaptible to [%s].", propertyName, clazz, compatibleTo);
 		return null;
 	}

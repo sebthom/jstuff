@@ -12,8 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.reflection;
 
-import java.util.Arrays;
-
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.validation.Args;
 
@@ -28,8 +26,13 @@ public abstract class StackTrace
 
 		private Class< ? > getCallerClass()
 		{
-			System.out.println(Arrays.toString(getClassContext()));
 			return getClassContext()[4];
+		}
+
+		@Override
+		protected Class< ? >[] getClassContext()
+		{
+			return super.getClassContext();
 		}
 	}
 
@@ -46,6 +49,26 @@ public abstract class StackTrace
 	public static Class< ? > getCallerClass()
 	{
 		return CallerResolver.INSTANCE.getCallerClass();
+	}
+
+	public static Class< ? > getCallerClass(final Class< ? > calledClass)
+	{
+		Args.notNull("calledClass", calledClass);
+
+		return getCallerClass(calledClass.getName());
+	}
+
+	public static Class< ? > getCallerClass(final String calledClassName)
+	{
+		Args.notNull("calledClassName", calledClassName);
+
+		final Class< ? >[] stack = CallerResolver.INSTANCE.getClassContext();
+		boolean foundInStack = false;
+		for (final Class< ? > curr : stack)
+			if (calledClassName.equals(curr.getName()))
+				foundInStack = true;
+			else if (foundInStack) return curr;
+		return null;
 	}
 
 	public static String getCallerClassName()
@@ -86,24 +109,21 @@ public abstract class StackTrace
 
 	public static StackTraceElement getCallerStackTraceElement(final Class< ? > calledClass)
 	{
-		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
-		final String calledClassName = calledClass.getName();
-		boolean foundCalledClassInStackTrace = false;
-		for (final StackTraceElement curr : stes)
-			if (calledClassName.equals(curr.getClassName()))
-				foundCalledClassInStackTrace = true;
-			else if (foundCalledClassInStackTrace) return curr;
-		return null;
+		Args.notNull("calledClass", calledClass);
+
+		return getCallerStackTraceElement(calledClass.getName());
 	}
 
 	public static StackTraceElement getCallerStackTraceElement(final String calledClassName)
 	{
-		final StackTraceElement[] stes = Thread.currentThread().getStackTrace();
-		boolean foundCalledClassInStackTrace = false;
-		for (final StackTraceElement curr : stes)
+		Args.notNull("calledClassName", calledClassName);
+
+		final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		boolean foundInStack = false;
+		for (final StackTraceElement curr : stack)
 			if (calledClassName.equals(curr.getClassName()))
-				foundCalledClassInStackTrace = true;
-			else if (foundCalledClassInStackTrace) return curr;
+				foundInStack = true;
+			else if (foundInStack) return curr;
 		return null;
 	}
 

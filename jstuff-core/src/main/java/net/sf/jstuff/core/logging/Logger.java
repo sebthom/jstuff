@@ -17,9 +17,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
+import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.validation.Args;
+
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 
 /**
  * Logger implementation supporting the {@link java.util.Formatter} syntax.
@@ -30,16 +35,64 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Logger
 {
-	protected static final String METHOD_ENTRY_MARKER = "ENTRY >>";
-	protected static final String METHOD_EXIT_MARKER = "EXIT  <<";
-	protected static final String INTERNAL_PACKAGE_NAME = Logger.class.getPackage().getName();
+	private static final String METHOD_ENTRY_MARKER = "ENTRY >> (";
+	private static final String METHOD_ENTRY_MARKER_NOARGS = METHOD_ENTRY_MARKER + ")";
+	private static final String METHOD_EXIT_MARKER = "EXIT  << ";
+	private static final String METHOD_EXIT_MARKER_VOID = METHOD_EXIT_MARKER + "*void*";
 
-	protected static String argToString(final Object object)
+	private static final Paranamer PARANAMER = new CachingParanamer(new BytecodeReadingParanamer());
+
+	private static String argToString(final Object object)
 	{
 		if (object == null) return "null";
 		if (object.getClass().isArray()) return Arrays.deepToString((Object[]) object);
 		if (object instanceof String) return "\"" + object + "\"";
 		return object.toString();
+	}
+
+	protected abstract void trace(final Method location, final String msg);
+
+	protected static String formatTraceExit()
+	{
+		return METHOD_EXIT_MARKER_VOID;
+	}
+
+	protected static String formatTraceExit(final Object returnValue)
+	{
+		return METHOD_EXIT_MARKER + argToString(returnValue);
+	}
+
+	protected static String formatTraceEntry(final Object... args)
+	{
+		if (args == null || args.length == 0) return METHOD_ENTRY_MARKER_NOARGS;
+
+		final Class< ? > loggedClass = StackTrace.getCallerClass(DelegatingLogger.FQCN);
+		final StackTraceElement loggedSTE = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
+		final Method method = Methods.findMatchingRecursive(loggedClass, loggedSTE.getMethodName(), args);
+		return formatTraceEntry(method, args);
+	}
+
+	protected static String formatTraceEntry(final Method method, final Object... args)
+	{
+		if (args == null || args.length == 0) return METHOD_ENTRY_MARKER_NOARGS;
+
+		final StringBuilder sb = new StringBuilder(METHOD_ENTRY_MARKER);
+
+		final String[] paramNames = method == null ? ArrayUtils.EMPTY_STRING_ARRAY : PARANAMER.lookupParameterNames(method, false);
+		final int paramNamesLen = paramNames.length;
+		if (paramNamesLen == 0)
+		{
+			sb.append(argToString(args[0]));
+			for (int i = 1; i < paramNamesLen; i++)
+				sb.append(", ").append(argToString(args[i]));
+		}
+		else
+		{
+			sb.append(paramNames[0]).append(": ").append(argToString(args[0]));
+			for (int i = 1; i < paramNamesLen; i++)
+				sb.append(", ").append(paramNames[i]).append(": ").append(argToString(args[i]));
+		}
+		return sb.append(")").toString();
 	}
 
 	public static Logger create()
@@ -80,24 +133,22 @@ public abstract class Logger
 			{
 				final Logger log = Logger.create(object.getClass());
 
-				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+				public Object invoke(final Object proxy, final Method interfaceMethod, final Object[] args) throws Throwable
 				{
 					if (log.isTraceEnabled())
 					{
 						final long start = System.currentTimeMillis();
-						if (args == null)
-							log.trace(method.getName() + " " + METHOD_ENTRY_MARKER + " ()");
-						else
-							log.trace(method.getName() + " " + METHOD_ENTRY_MARKER + " (" + Arrays.deepToString(args) + ")");
-						final Object returnValue = method.invoke(object, args);
+						final Method methodWithParameterNames = Methods.find(object.getClass(), interfaceMethod.getName(), interfaceMethod.getParameterTypes());
+						log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
+						final Object returnValue = interfaceMethod.invoke(object, args);
 						final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
-						if (Methods.isReturningVoid(method))
-							log.trace(method.getName() + " " + METHOD_EXIT_MARKER + " *void* " + elapsed + "ms");
+						if (Methods.isReturningVoid(interfaceMethod))
+							log.trace(methodWithParameterNames, formatTraceExit() + " " + elapsed + "ms");
 						else
-							log.trace(method.getName() + " " + METHOD_EXIT_MARKER + " " + argToString(returnValue) + " " + elapsed + "ms");
+							log.trace(methodWithParameterNames, formatTraceExit(returnValue) + " " + elapsed + "ms");
 						return returnValue;
 					}
-					return method.invoke(object, args);
+					return interfaceMethod.invoke(object, args);
 				}
 			});
 	}
