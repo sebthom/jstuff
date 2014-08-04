@@ -155,7 +155,6 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils
 
 	public static List<String> readLines(final Reader reader) throws IOException
 	{
-		@SuppressWarnings("resource")
 		final BufferedReader bf = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
 		final List<String> lines = new ArrayList<String>();
 		String line = bf.readLine();
