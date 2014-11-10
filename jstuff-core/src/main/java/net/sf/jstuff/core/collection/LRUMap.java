@@ -22,12 +22,12 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class LRUMap<K, V> extends LinkedHashMap<K, V>
 {
-	private static final long serialVersionUID = 1L;
-
 	public static <K, V> LRUMap<K, V> create(final int maxCapacity)
 	{
 		return new LRUMap<K, V>(maxCapacity);
 	}
+
+	private static final long serialVersionUID = 1L;
 
 	private final int maxCapacity;
 
@@ -37,7 +37,7 @@ public class LRUMap<K, V> extends LinkedHashMap<K, V>
 	public LRUMap(final int maxCapacity)
 	{
 		super(maxCapacity, 1.0f, true);
-		Args.minSize("maxCapacity", maxCapacity, 1);
+		Args.min("maxCapacity", maxCapacity, 1);
 		this.maxCapacity = maxCapacity;
 	}
 

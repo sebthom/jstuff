@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -65,7 +65,7 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 		super(os);
 
 		Args.notNull("os", os);
-		Args.minSize("blockSize", blockSize, 1);
+		Args.min("blockSize", blockSize, 1);
 
 		this.compressor = compressor == null ? new Deflater() : compressor;
 		isUseDefaultCompressor = false;
@@ -83,7 +83,7 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 		super(os);
 
 		Args.notNull("os", os);
-		Args.minSize("blockSize", blockSize, 1);
+		Args.min("blockSize", blockSize, 1);
 		Args.inRange("compressionLevel", compressionLevel, 0, 9);
 
 		compressor = new Deflater(compressionLevel);
@@ -97,9 +97,6 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 		if (isClosed) throw new IOException("Stream closed");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void close() throws IOException
 	{
@@ -142,9 +139,6 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void flush() throws IOException
 	{
@@ -163,9 +157,6 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 		return isClosed;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void write(final byte[] b, final int off, final int len) throws IOException
 	{
@@ -201,9 +192,6 @@ public class ZippedBlockOutputStream extends FilterOutputStream
 		if (blockSize == block.length) compressBlockAndWrite();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void write(final int b) throws IOException
 	{

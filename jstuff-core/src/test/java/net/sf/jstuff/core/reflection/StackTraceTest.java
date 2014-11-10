@@ -19,39 +19,39 @@ import junit.framework.TestCase;
  */
 public class StackTraceTest extends TestCase
 {
-	private static class Caller1
+	private static class Outer
 	{
-		private class Caller2
+		private static class Inner
 		{
-			public void call2()
-			{
-				ensureEquals("call2", StackTrace.getThisMethodName());
-				ensureEquals(34, StackTrace.getThisLineNumber());
-				ensureEquals("StackTraceTest.java", StackTrace.getThisFileName());
-
-				ensureEquals("call1", StackTrace.getCallerMethodName());
-				ensureEquals(63, StackTrace.getCallerLineNumber());
-				ensureEquals("StackTraceTest.java", StackTrace.getCallerFileName());
-				ensureEquals(Caller1.class.getName(), StackTrace.getCallerClassName());
-				ensureEquals(Caller1.class, StackTrace.getCallerClass());
-			}
-
 			private void ensureEquals(final Object a, final Object b)
 			{
 				assertEquals(a, b);
 			}
+
+			public void innerMethod()
+			{
+				ensureEquals("innerMethod", StackTrace.getThisMethodName());
+				ensureEquals(34, StackTrace.getThisLineNumber());
+				ensureEquals("StackTraceTest.java", StackTrace.getThisFileName());
+
+				ensureEquals("outerMethod", StackTrace.getCallerMethodName());
+				ensureEquals(49, StackTrace.getCallerLineNumber());
+				ensureEquals("StackTraceTest.java", StackTrace.getCallerFileName());
+				ensureEquals(Outer.class.getName(), StackTrace.getCallerClassName());
+				ensureEquals(Outer.class, StackTrace.getCallerClass());
+			}
 		}
 
-		private final Caller2 caller2 = new Caller2();
+		private final Inner caller2 = new Inner();
 
-		public void call1()
+		public void outerMethod()
 		{
-			caller2.call2();
+			caller2.innerMethod();
 		}
 	}
 
 	public void testStackTrace()
 	{
-		new Caller1().call1();
+		new Outer().outerMethod();
 	}
 }

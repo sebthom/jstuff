@@ -14,7 +14,7 @@
 
 	<artifactId>jstuff-core</artifactId>
 
-	<name>${project.groupId}:${project.artifactId}</name>
+	<name>${project.artifactId}:${project.version}</name>
 
 	<dependencies>
 		<dependency>

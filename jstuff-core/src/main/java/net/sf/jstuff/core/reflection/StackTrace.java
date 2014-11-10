@@ -24,11 +24,6 @@ public abstract class StackTrace
 	{
 		private static final CallerResolver INSTANCE = new CallerResolver();
 
-		private Class< ? > getCallerClass()
-		{
-			return getClassContext()[4];
-		}
-
 		@Override
 		protected Class< ? >[] getClassContext()
 		{
@@ -48,7 +43,7 @@ public abstract class StackTrace
 
 	public static Class< ? > getCallerClass()
 	{
-		return CallerResolver.INSTANCE.getCallerClass();
+		return getCallerClass(getCallerClassName());
 	}
 
 	public static Class< ? > getCallerClass(final Class< ? > calledClass)

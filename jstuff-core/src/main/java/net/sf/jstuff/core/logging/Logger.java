@@ -475,11 +475,19 @@ public abstract class Logger
 	 */
 	public abstract void error(final Throwable ex, final String messageTemplate, final Object... args);
 
+	/**
+	 * Creates a log entry at ERROR level and always logs the full stack trace.
+	 */
 	public abstract void fatal(final Throwable ex);
 
+	/**
+	 * Creates a log entry at ERROR level and always logs the full stack trace.
+	 */
 	public abstract void fatal(final Throwable ex, final String msg);
 
 	/**
+	 * Creates a log entry at ERROR level and always logs the full stack trace.
+	 *
 	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */

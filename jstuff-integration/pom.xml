@@ -14,7 +14,7 @@
 
 	<artifactId>jstuff-integration</artifactId>
 
-	<name>${project.groupId}:${project.artifactId}</name>
+	<name>${project.artifactId}:${project.version}</name>
 
 	<properties>
 		<jetty.version>7.6.11.v20130520</jetty.version>

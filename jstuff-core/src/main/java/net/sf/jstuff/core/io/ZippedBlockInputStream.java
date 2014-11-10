@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.apache.commons.io.IOExceptionWithCause;
 
 /**
  * A non-thread-safe input stream filter that performs on-the fly zip decompression using an {@link Inflater}.
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ZippedBlockInputStream extends FilterInputStream
@@ -77,7 +77,7 @@ public class ZippedBlockInputStream extends FilterInputStream
 	 * Programs should not count on this method to return the actual number
 	 * of bytes that could be read without blocking.
 	 *
-	 * @return  1 before EOF and 0 after EOF. 
+	 * @return  1 before EOF and 0 after EOF.
 	 */
 	@Override
 	public int available() throws IOException
@@ -87,9 +87,6 @@ public class ZippedBlockInputStream extends FilterInputStream
 		return isEOF ? 0 : 1;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void close() throws IOException
 	{
@@ -122,18 +119,12 @@ public class ZippedBlockInputStream extends FilterInputStream
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean markSupported()
 	{
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int read() throws IOException
 	{
@@ -152,9 +143,6 @@ public class ZippedBlockInputStream extends FilterInputStream
 		return block[blockOffset++];
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int read(final byte[] b, final int off, final int len) throws IOException
 	{
@@ -203,8 +191,7 @@ public class ZippedBlockInputStream extends FilterInputStream
 		blockSize = IOUtils.readInt(in);
 
 		// adjust the size of the 'blockCompressed' byte array if necessary
-		if (blockCompressed == null || blockCompressedSize > blockCompressed.length)
-			blockCompressed = new byte[blockCompressedSize];
+		if (blockCompressed == null || blockCompressedSize > blockCompressed.length) blockCompressed = new byte[blockCompressedSize];
 
 		// adjust the size of the 'block' byte array if necessary
 		if (block == null || blockSize > block.length) block = new byte[blockSize];
@@ -236,13 +223,10 @@ public class ZippedBlockInputStream extends FilterInputStream
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public long skip(final long n) throws IOException
 	{
-		Args.minSize("n", n, 0);
+		Args.min("n", n, 0);
 
 		assertIsOpen();
 
@@ -257,7 +241,7 @@ public class ZippedBlockInputStream extends FilterInputStream
 		}
 
 		final int skipMax = (int) n; // maximum number of bytes requested to be skipped
-		final int skipable = blockSize - blockOffset; // maximum number of unread bytes in the current block buffer 
+		final int skipable = blockSize - blockOffset; // maximum number of unread bytes in the current block buffer
 		final int skipped = Math.min(skipable, skipMax);
 		blockOffset += skipped;
 		return skipped;
