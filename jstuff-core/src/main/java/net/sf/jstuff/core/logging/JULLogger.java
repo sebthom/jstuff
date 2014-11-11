@@ -53,7 +53,7 @@ final class JULLogger extends Logger
 		if (isLogExactSourceLocation)
 		{
 			effectiveMessage = message;
-			if (effectiveMessage == null && ex != null) effectiveMessage = "Unexpected exception";
+			if (effectiveMessage == null && ex != null) effectiveMessage = "Catched ";
 
 			/*
 			 * if the current logger's level is DEBUG or TRACE we create full-blown log records for all levels
@@ -75,8 +75,12 @@ final class JULLogger extends Logger
 			else
 			{
 				final StackTraceElement[] st = ex.getStackTrace();
-				effectiveMessage = (message == null ? "" : message + " reason: ") + ex.getClass().getSimpleName() + ": " + ex.getMessage()
-						+ (st != null && st.length > 0 ? "\n\tat " + st[0] + "\n\t[StackTrace truncated - set log level to FINE for full details]" : "");
+				effectiveMessage = (message == null ? "" : message + " reason: ")
+						+ ex.getClass().getName()
+						+ ": "
+						+ ex.getMessage()
+						+ (st != null && st.length > 0 ? "\n\tat " + st[0] + "\n\t[StackTrace truncated - set log level of " + getName()
+								+ " to FINE for full details]" : "");
 			}
 			sourceClassName = loggerName;
 			methodName = null;

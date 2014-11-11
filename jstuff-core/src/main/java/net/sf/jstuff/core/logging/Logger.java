@@ -27,9 +27,12 @@ import com.thoughtworks.paranamer.CachingParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
 /**
- * Logger implementation supporting the {@link java.util.Formatter} syntax.
- *
- * Defaults to SLF4J as logging infrastructure and falls back to java.util.logging if SLF4J is not available.
+ * Features:
+ * <li>Logger implementation using the {@link java.util.Formatter} syntax for message templates.
+ * <li>{@link Logger#traceEntry()} logs parameter name and parameter values.
+ * <li>Stacktraces are logged truncated if logger is not at DEBUG level.
+ * <li>{@link Logger#fatal}() always logs the full stacktrace
+ * <li>Defaults to SLF4J as logging infrastructure and falls back to java.util.logging if SLF4J is not available.
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -83,7 +86,7 @@ public abstract class Logger
 		if (paramNamesLen == 0)
 		{
 			sb.append(argToString(args[0]));
-			for (int i = 1; i < paramNamesLen; i++)
+			for (int i = 1; i < args.length; i++)
 				sb.append(", ").append(argToString(args[i]));
 		}
 		else
@@ -130,27 +133,27 @@ public abstract class Logger
 		}
 
 		return (I) Proxy.newProxyInstance(object.getClass().getClassLoader(), interfaces, new InvocationHandler()
-			{
-				final Logger log = Logger.create(object.getClass());
+		{
+			final Logger log = Logger.create(object.getClass());
 
-				public Object invoke(final Object proxy, final Method interfaceMethod, final Object[] args) throws Throwable
+			public Object invoke(final Object proxy, final Method interfaceMethod, final Object[] args) throws Throwable
+			{
+				if (log.isTraceEnabled())
 				{
-					if (log.isTraceEnabled())
-					{
-						final long start = System.currentTimeMillis();
-						final Method methodWithParameterNames = Methods.find(object.getClass(), interfaceMethod.getName(), interfaceMethod.getParameterTypes());
-						log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
-						final Object returnValue = interfaceMethod.invoke(object, args);
-						final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
-						if (Methods.isReturningVoid(interfaceMethod))
-							log.trace(methodWithParameterNames, formatTraceExit() + " " + elapsed + "ms");
-						else
-							log.trace(methodWithParameterNames, formatTraceExit(returnValue) + " " + elapsed + "ms");
-						return returnValue;
-					}
-					return interfaceMethod.invoke(object, args);
+					final long start = System.currentTimeMillis();
+					final Method methodWithParameterNames = Methods.find(object.getClass(), interfaceMethod.getName(), interfaceMethod.getParameterTypes());
+					log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
+					final Object returnValue = interfaceMethod.invoke(object, args);
+					final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
+					if (Methods.isReturningVoid(interfaceMethod))
+						log.trace(methodWithParameterNames, formatTraceExit() + " " + elapsed + "ms");
+					else
+						log.trace(methodWithParameterNames, formatTraceExit(returnValue) + " " + elapsed + "ms");
+					return returnValue;
 				}
-			});
+				return interfaceMethod.invoke(object, args);
+			}
+		});
 	}
 
 	/**
