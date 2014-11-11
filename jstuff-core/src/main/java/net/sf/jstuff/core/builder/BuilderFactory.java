@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2013 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -43,27 +43,25 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 	 */
 	public static//
 	<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? extends TARGET_CLASS>> //
-	BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE> of(final Class<BUILDER_INTERFACE> builderInterface,
-			final Class<TARGET_CLASS> targetClass, final Object... constructorArgs)
-	{
+	BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE> of(final Class<BUILDER_INTERFACE> builderInterface, final Class<TARGET_CLASS> targetClass,
+			final Object... constructorArgs)
+			{
 		return new BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE>(builderInterface, targetClass, constructorArgs);
-	}
+			}
 
 	private final Class<BUILDER_INTERFACE> builderInterface;
 	private final Class<TARGET_CLASS> targetClass;
 	private final Object[] constructorArgs;
 
 	@SuppressWarnings("unchecked")
-	protected BuilderFactory(final Class<BUILDER_INTERFACE> builderInterface, final Class<TARGET_CLASS> targetClass,
-			final Object... constructorArgs)
+	protected BuilderFactory(final Class<BUILDER_INTERFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs)
 	{
 		Args.notNull("builderInterface", builderInterface);
 		if (!builderInterface.isInterface()) throw new IllegalArgumentException("[builderInterface] must be an interface!");
 
 		this.builderInterface = builderInterface;
 
-		this.targetClass = targetClass == null ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0]
-				: targetClass;
+		this.targetClass = targetClass == null ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0] : targetClass;
 
 		if (targetClass == null) throw new IllegalArgumentException("Target class is not specified.");
 		if (targetClass.isInterface()) throw new IllegalArgumentException("Target class [" + targetClass.getName() + "] is an interface.");
@@ -75,73 +73,70 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 	public BUILDER_INTERFACE create()
 	{
 		return Proxies.create(builderInterface, new InvocationHandler()
+		{
+			final Map<String, Object> properties = newHashMap();
+
+			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
-				final Map<String, Object> properties = newHashMap();
-
-				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+				if ("build".equals(method.getName()) && method.getParameterTypes().length == 0 && method.getReturnType().isAssignableFrom(targetClass))
 				{
-					if ("build".equals(method.getName()) && method.getParameterTypes().length == 0
-							&& method.getReturnType().isAssignableFrom(targetClass))
+					final TARGET_CLASS target = Types.newInstance(targetClass, constructorArgs);
+					for (final Entry<String, Object> property : properties.entrySet())
+						Types.writeProperty(target, property.getKey(), property.getValue());
+
+					// collecting @OnPostBuild methods
+					final List<Method> onPostBuilds = newArrayList(2);
+					Types.visit(targetClass, new DefaultClassVisitor()
 					{
-						final TARGET_CLASS target = Types.newInstance(targetClass, constructorArgs);
-						for (final Entry<String, Object> property : properties.entrySet())
-							Types.writeProperty(target, property.getKey(), property.getValue());
+						@Override
+						public boolean isVisitingFields(final Class< ? > clazz)
+						{
+							return false;
+						}
 
-						// collecting @OnPostBuild methods
-						final List<Method> onPostBuilds = newArrayList(2);
-						Types.visit(targetClass, new DefaultClassVisitor()
-							{
-								@Override
-								public boolean isVisitingFields(final Class< ? > clazz)
-								{
-									return false;
-								}
+						@Override
+						public boolean isVisitingInterfaces(final Class< ? > clazz)
+						{
+							return false;
+						}
 
-								@Override
-								public boolean isVisitingInterfaces(final Class< ? > clazz)
-								{
-									return false;
-								}
+						@Override
+						public boolean isVisitingMethod(final Method method)
+						{
+							return !Methods.isAbstract(method) && !Methods.isStatic(method) && Annotations.exists(method, OnPostBuild.class, false);
+						}
 
-								@Override
-								public boolean isVisitingMethod(final Method method)
-								{
-									return !Methods.isAbstract(method) && !Methods.isStatic(method)
-											&& Annotations.exists(method, OnPostBuild.class, false);
-								}
+						@Override
+						public boolean visit(final Method method)
+						{
+							onPostBuilds.add(method);
+							return true;
+						}
+					});
 
-								@Override
-								public boolean visit(final Method method)
-								{
-									onPostBuilds.add(method);
-									return true;
-								}
-							});
-
-						// invoking @OnPostBuild methods
-						for (int i = onPostBuilds.size() - 1; i >= 0; i--)
-							try
-							{
-								Methods.invoke(target, onPostBuilds.get(i), ArrayUtils.EMPTY_OBJECT_ARRAY);
-							}
-							catch (final InvokingMethodFailedException ex)
-							{
-								if (ex.getCause() instanceof InvocationTargetException) throw (RuntimeException) ex.getCause().getCause();
-								throw ex;
-							}
-						return target;
-					}
-
-					if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0)
-						return builderInterface.getName() + "@" + hashCode();
-
-					if (method.getParameterTypes().length == 1 && method.getReturnType().isAssignableFrom(builderInterface))
+					// invoking @OnPostBuild methods
+					for (int i = onPostBuilds.size() - 1; i >= 0; i--)
+						try
 					{
-						properties.put(method.getName(), args[0]);
-						return proxy;
+							Methods.invoke(target, onPostBuilds.get(i), ArrayUtils.EMPTY_OBJECT_ARRAY);
 					}
-					throw new UnsupportedOperationException();
+					catch (final InvokingMethodFailedException ex)
+					{
+						if (ex.getCause() instanceof InvocationTargetException) throw (RuntimeException) ex.getCause().getCause();
+						throw ex;
+					}
+					return target;
 				}
-			});
+
+				if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0) return builderInterface.getName() + "@" + hashCode();
+
+				if (method.getParameterTypes().length == 1 && method.getReturnType().isAssignableFrom(builderInterface))
+				{
+					properties.put(method.getName(), args[0]);
+					return proxy;
+				}
+				throw new UnsupportedOperationException();
+			}
+		});
 	}
 }
