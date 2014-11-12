@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -66,31 +67,6 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 		}
 	}
 
-	private static final KeyWrapper<Object> NULL_KEY_WRAPPER = new KeyWrapper<Object>()
-		{
-			private final int identityHashCode = System.identityHashCode(null);
-
-			@Override
-			public boolean equals(final Object obj)
-			{
-				if (this == obj) return true;
-				if (obj == null) return false;
-				final KeyWrapper< ? > ref = (KeyWrapper< ? >) obj;
-				return get() == ref.get();
-			}
-
-			public Object get()
-			{
-				return null;
-			}
-
-			@Override
-			public int hashCode()
-			{
-				return identityHashCode;
-			}
-		};
-
 	/**
 	 * Wrapper used as key in the hash map that overrides equals and hashCode to ensure key comparisons by the underlying WeakHashMap is made based on the object's identity.
 	 */
@@ -134,6 +110,31 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 	{
 		return new WeakIdentityHashMap<K, V>(initialCapacity, growthFactor);
 	}
+
+	private static final KeyWrapper<Object> NULL_KEY_WRAPPER = new KeyWrapper<Object>()
+		{
+			private final int identityHashCode = System.identityHashCode(null);
+
+			@Override
+			public boolean equals(final Object obj)
+			{
+				if (this == obj) return true;
+				if (obj == null) return false;
+				final KeyWrapper< ? > ref = (KeyWrapper< ? >) obj;
+				return get() == ref.get();
+			}
+
+			public Object get()
+			{
+				return null;
+			}
+
+			@Override
+			public int hashCode()
+			{
+				return identityHashCode;
+			}
+		};
 
 	private final ReferenceQueue<K> garbageCollectedRefs = new ReferenceQueue<K>();
 	private final Map<KeyWrapper<K>, V> map;
@@ -228,7 +229,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V>
 
 	private void expungeStaleEntries()
 	{
-		Object weakKey;
+		Reference< ? extends K> weakKey;
 		while ((weakKey = garbageCollectedRefs.poll()) != null)
 			map.remove(weakKey);
 	}
