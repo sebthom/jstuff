@@ -47,6 +47,7 @@ import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("deprecation")
 public class SMDServiceExporter extends RemoteExporter implements HttpRequestHandler, InitializingBean
 {
 	private static final Logger LOG = Logger.create();
