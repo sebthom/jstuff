@@ -80,20 +80,25 @@ public class HashCodeManagerTest extends TestCase
 		client_e2 = null;
 		server_e = null;
 		server_e2 = null;
-		System.gc();
-		Thread.sleep(500);
-		System.gc();
-		Thread.sleep(500);
 
+		System.gc();
+		Thread.sleep(500);
+		System.gc();
+		Thread.sleep(500);
+		
 		assertEquals(0, HashCodeManager.getManagedIdsCount());
 		assertEquals(0, HashCodeManager.getManagedTrackingIdsCount());
 
-		// #5 server: loadFromDB()
+		/*
+		 * #7 server: loadFromDB()
+		 */
 		final Entity server_e3 = new Entity().setLabel("server_e3");
 		server_e3.setId(22);
 		assertTrue(server_e3.hashCode() != server_HC);
 
-		// #6 client: receive()
+		/* 
+		 * #8 client: receive()
+		 */
 		final Entity client_e3 = SerializationUtils.clone(server_e3);
 		assertFalse(client_e3.hashCode() == client_HC);
 
