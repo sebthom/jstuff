@@ -14,6 +14,7 @@ package net.sf.jstuff.core.security;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -70,18 +71,28 @@ public class AESEncryptor
 			}
 		};
 
-	private final byte[] _salt;
+	private final byte[] _keySalt;
 
-	public AESEncryptor(final byte[] salt)
+	public AESEncryptor(final byte[] keySalt)
 	{
-		_salt = salt;
+		_keySalt = keySalt;
 	}
 
-	public AESEncryptor(final String salt)
+	public AESEncryptor(final String keySalt)
 	{
-		_salt = salt.getBytes();
+		try
+		{
+			_keySalt = keySalt.getBytes("UTF-8");
+		}
+		catch (final UnsupportedEncodingException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 
+	/**
+	 * @param data first 16 bytes of the array expected to be the initial vector
+	 */
 	public byte[] decrypt(final byte[] data, final String passphrase) throws SecurityException
 	{
 		Args.notNull("data", data);
@@ -108,6 +119,9 @@ public class AESEncryptor
 		return (T) SerializationUtils.deserialize(decrypt(data, passphrase));
 	}
 
+	/**
+	 * @return first 16 bytes of the array are the initial vector
+	 */
 	public byte[] encrypt(final byte[] data, final String passphrase) throws SecurityException
 	{
 		Args.notNull("data", data);
@@ -116,7 +130,7 @@ public class AESEncryptor
 		{
 			final SecretKey key = getKey(passphrase);
 			final Cipher cipher = _ciphers.get();
-			// generate a new initial vector on each invocation
+			// generate a new initial vector for each encryption
 			final byte[] iv = new byte[16];
 			new Random().nextBytes(iv);
 			cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
@@ -136,7 +150,7 @@ public class AESEncryptor
 		if (key == null)
 		{
 			final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-			final KeySpec spec = new PBEKeySpec(passphrase.toCharArray(), _salt, 1024, 128);
+			final KeySpec spec = new PBEKeySpec(passphrase.toCharArray(), _keySalt, 1024, 128);
 			key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
 			_cachedAESKeys.put(passphrase, key);
 		}
