@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.crypto;
+package net.sf.jstuff.core.security;
 
 import java.util.Arrays;
 
@@ -20,7 +20,7 @@ import net.sf.jstuff.core.security.AESEncryptor;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CryptoTest extends TestCase
+public class AESEncryptorTest extends TestCase
 {
 	public void testAES()
 	{

@@ -181,7 +181,6 @@ jstuff-core/src/test/java/net/sf/jstuff/core/collection/WeakIdentityHashMapTest.
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/WeakIdentityHashSetTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/comparator/PropertyComparatorTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/concurrent/HashLockManagerTest.java -text
-jstuff-core/src/test/java/net/sf/jstuff/core/crypto/CryptoTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/event/EventTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/AcceptsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/FunctionsTest.java -text
@@ -200,6 +199,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/reflection/StackTraceTest.java -tex
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesGenericsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesMixinTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/security/AESEncryptorTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/validation/AssertTest.java -text
 jstuff-integration/pom.xml -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/atom/blog/AtomBlog.java -text
