@@ -1,0 +1,190 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Thomschke.
+ *
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
+package net.sf.jstuff.core.security;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.util.Map;
+import java.util.Random;
+import java.util.WeakHashMap;
+
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.SealedObject;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.io.SerializationUtils;
+import net.sf.jstuff.core.validation.Args;
+
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
+public class AESEncryptor
+{
+	public static final class AESSealedObject extends SealedObject
+	{
+		private static final long serialVersionUID = 1L;
+
+		private byte iv[];
+
+		public AESSealedObject(final Serializable obj, final Cipher cipher) throws IOException, IllegalBlockSizeException
+		{
+			super(obj, cipher);
+		}
+	}
+
+	private final Map<String, SecretKey> _cachedAESKeys = new WeakHashMap<String, SecretKey>();
+
+	private final ThreadLocal<Cipher> _ciphers = new ThreadLocal<Cipher>()
+		{
+			@Override
+			protected Cipher initialValue()
+			{
+				try
+				{
+					return Cipher.getInstance("AES/CBC/PKCS5Padding");
+				}
+				catch (final GeneralSecurityException ex)
+				{
+					throw new SecurityException(ex);
+				}
+			}
+		};
+
+	private final byte[] _salt;
+
+	public AESEncryptor(final byte[] salt)
+	{
+		_salt = salt;
+	}
+
+	public AESEncryptor(final String salt)
+	{
+		_salt = salt.getBytes();
+	}
+
+	public byte[] decrypt(final byte[] data, final String passphrase) throws SecurityException
+	{
+		Args.notNull("data", data);
+
+		try
+		{
+			final SecretKey key = getKey(passphrase);
+			final Cipher cipher = _ciphers.get();
+			// the first 16 bytes are the initial vector
+			final byte[] iv = ArrayUtils.subarray(data, 0, 16);
+			final byte[] encrypted = ArrayUtils.subarray(data, 16, data.length);
+			cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+			return cipher.doFinal(encrypted);
+		}
+		catch (final GeneralSecurityException ex)
+		{
+			throw new SecurityException(ex);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Serializable> T deserialize(final byte[] data, final String passphrase)
+	{
+		return (T) SerializationUtils.deserialize(decrypt(data, passphrase));
+	}
+
+	public byte[] encrypt(final byte[] data, final String passphrase) throws SecurityException
+	{
+		Args.notNull("data", data);
+
+		try
+		{
+			final SecretKey key = getKey(passphrase);
+			final Cipher cipher = _ciphers.get();
+			// generate a new initial vector on each invocation
+			final byte[] iv = new byte[16];
+			new Random().nextBytes(iv);
+			cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
+			final byte[] encrypted = cipher.doFinal(data);
+			// the first 16 bytes are the initial vector
+			return ArrayUtils.addAll(iv, encrypted);
+		}
+		catch (final GeneralSecurityException ex)
+		{
+			throw new SecurityException(ex);
+		}
+	}
+
+	private SecretKey getKey(final String passphrase) throws NoSuchAlgorithmException, InvalidKeySpecException
+	{
+		SecretKey key = _cachedAESKeys.get(passphrase);
+		if (key == null)
+		{
+			final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+			final KeySpec spec = new PBEKeySpec(passphrase.toCharArray(), _salt, 1024, 128);
+			key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+			_cachedAESKeys.put(passphrase, key);
+		}
+		return key;
+	}
+
+	public AESSealedObject seal(final Serializable object, final String passphrase) throws SecurityException
+	{
+		Args.notNull("object", object);
+
+		try
+		{
+			final SecretKey key = getKey(passphrase);
+			final Cipher cipher = _ciphers.get();
+			// generate a new initial vector on each invocation
+			final byte[] iv = new byte[16];
+			new Random().nextBytes(iv);
+			cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
+			final AESSealedObject sealedObject = new AESSealedObject(object, cipher);
+			sealedObject.iv = iv;
+			return sealedObject;
+		}
+		catch (final Exception ex)
+		{
+			throw new SecurityException(ex);
+		}
+	}
+
+	public byte[] serialize(final Serializable object, final String passphrase)
+	{
+		return encrypt(SerializationUtils.serialize(object), passphrase);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Serializable> T unseal(final AESSealedObject object, final String passphrase) throws SecurityException
+	{
+		Args.notNull("object", object);
+
+		try
+		{
+			final SecretKey key = getKey(passphrase);
+			final Cipher cipher = _ciphers.get();
+			cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(object.iv));
+			return (T) object.getObject(cipher);
+		}
+		catch (final Exception ex)
+		{
+			throw new SecurityException(ex);
+		}
+	}
+}

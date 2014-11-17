@@ -20,7 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import net.sf.jstuff.core.crypto.Crypto;
 import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang3.SerializationException;
@@ -40,21 +39,21 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 
 		final ArrayList<Exception> exList = new ArrayList<Exception>(2);
 		final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
-		final XMLEncoder e = new XMLEncoder(bos);
-		e.setExceptionListener(new ExceptionListener()
+		final XMLEncoder encoder = new XMLEncoder(bos);
+		encoder.setExceptionListener(new ExceptionListener()
 			{
 				public void exceptionThrown(final Exception ex)
 				{
 					exList.add(ex);
 				}
 			});
-		e.writeObject(javaBean);
-		e.close();
+		encoder.writeObject(javaBean);
+		encoder.close();
 		if (exList.size() > 0) throw new SerializationException("An error occured during XML serialization", exList.get(0));
 		return bos.toString();
 	}
 
-	@SuppressWarnings("resource")
+	@SuppressWarnings({"resource"})
 	public static Serializable deserialize(final byte[] serializedData) throws SerializationException
 	{
 		Args.notNull("serializedData", serializedData);
@@ -73,9 +72,9 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 			ois = new ObjectInputStream(is);
 			return (Serializable) ois.readObject();
 		}
-		catch (final Exception e)
+		catch (final Exception ex)
 		{
-			throw new SerializationException("Deserialization failed", e);
+			throw new SerializationException("Deserialization failed", ex);
 		}
 		finally
 		{
@@ -84,40 +83,25 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
 	}
 
 	/**
-	 * Deserializes an object from the given AES encrypted byte array
-	 */
-	public static Serializable deserializeAES(final byte[] data, final String passphrase)
-	{
-		return deserialize(Crypto.decryptWithAES(data, passphrase));
-	}
-
-	/**
-	 * Serializes the given object and encrypts it via AES using the given passphrase
-	 */
-	public static byte[] serializeAES(final Serializable obj, final String passphrase)
-	{
-		return Crypto.encryptWithAES(serialize(obj), passphrase);
-	}
-
-	/**
 	 * @see XMLDecoder
 	 */
 	@SuppressWarnings("resource")
-	public static Object xml2bean(final String xmlData) throws SerializationException
+	public static <T> T xml2bean(final String xmlData) throws SerializationException
 	{
 		Args.notNull("xmlData", xmlData);
 
 		final ArrayList<Exception> exList = new ArrayList<Exception>(2);
 		final FastByteArrayInputStream bis = new FastByteArrayInputStream(xmlData.getBytes());
-		final XMLDecoder d = new XMLDecoder(bis);
-		d.setExceptionListener(new ExceptionListener()
+		final XMLDecoder decoder = new XMLDecoder(bis);
+		decoder.setExceptionListener(new ExceptionListener()
 			{
 				public void exceptionThrown(final Exception ex)
 				{
 					exList.add(ex);
 				}
 			});
-		final Object javaBean = d.readObject();
+		@SuppressWarnings("unchecked")
+		final T javaBean = (T) decoder.readObject();
 		if (exList.size() > 0) throw new SerializationException("An error occured during XML deserialization", exList.get(0));
 		return javaBean;
 	}

@@ -15,6 +15,7 @@ package net.sf.jstuff.core.crypto;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
+import net.sf.jstuff.core.security.AESEncryptor;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -24,9 +25,13 @@ public class CryptoTest extends TestCase
 	public void testAES()
 	{
 		final byte[] plain = "Hello World!".getBytes();
-		final byte[] encrypted = Crypto.encryptWithAES(plain, "mySecretKey");
+
+		AESEncryptor aes = new AESEncryptor("mySalt");
+		final byte[] encrypted = aes.encrypt(plain, "mySecretKey");
 		assertFalse(Arrays.equals(plain, encrypted));
-		final byte[] decrypted = Crypto.decryptWithAES(encrypted, "mySecretKey");
+
+		aes = new AESEncryptor("mySalt");
+		final byte[] decrypted = aes.decrypt(encrypted, "mySecretKey");
 		assertTrue(Arrays.equals(plain, decrypted));
 	}
 }

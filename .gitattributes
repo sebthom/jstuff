@@ -72,7 +72,6 @@ jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/HashLockManager.java -te
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/RuntimeInterruptedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/ScalingThreadPoolExecutor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/Threads.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/crypto/Crypto.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/DateUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/Day.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/ImmutableDate.java -text
@@ -128,7 +127,6 @@ jstuff-core/src/main/java/net/sf/jstuff/core/logging/LoggerConfig.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/logging/SLF4JLogger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/AbstractServer.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/NetUtils.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/net/SSLUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockServerSocket.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockSocket.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigationResult.java -text
@@ -156,6 +154,11 @@ jstuff-core/src/main/java/net/sf/jstuff/core/reflection/visitor/ClassVisitor.jav
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/visitor/ClassVisitorWithTypeArguments.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/visitor/DefaultClassVisitor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/visitor/DefaultVisitorWithTypeArguments.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/AESEncryptor.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/Checksums.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/CompositeX509KeyManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/CompositeX509TrustManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/SSLUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/validation/Args.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/validation/Assert.java -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Day.properties -text

@@ -47,19 +47,8 @@ import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-@SuppressWarnings("deprecation")
 public class SMDServiceExporter extends RemoteExporter implements HttpRequestHandler, InitializingBean
 {
-	private static final Logger LOG = Logger.create();
-
-	private static final ObjectMapper JSON = new ObjectMapper();
-	private static final ObjectWriter JSON_PRETTY_WRITER = JSON.writerWithDefaultPrettyPrinter();
-
-	public SMDServiceExporter()
-	{
-		LOG.infoNew(this);
-	}
-
 	/**
 	 * Map<String, Method>
 	 *
@@ -102,8 +91,8 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 	 * see http://dojo.jot.com/SMD
 	 * see http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9
 	 */
-	public static String buildSMDTemplate(final Class< ? > serviceInterface, final Object service, final Map<String, Method> exportedMethodsByName,
-			final boolean pretty) throws JsonProcessingException
+	public static String buildSMDTemplate(final Class< ? > serviceInterface, final Object service,
+			final Map<String, Method> exportedMethodsByName, final boolean pretty) throws JsonProcessingException
 	{
 		// build the method descriptors
 		final Map<String, Object> methodDescriptions = newLinkedHashMap();
@@ -150,6 +139,12 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 		return JSON.writeValueAsString(result);
 	}
 
+	private static final Logger LOG = Logger.create();
+
+	private static final ObjectMapper JSON = new ObjectMapper();
+
+	private static final ObjectWriter JSON_PRETTY_WRITER = JSON.writerWithDefaultPrettyPrinter();
+
 	/**
 	 * The exported methods by name.
 	 */
@@ -159,6 +154,11 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 	 * Simple Method Description
 	 */
 	private String smdTemplate;
+
+	public SMDServiceExporter()
+	{
+		LOG.infoNew(this);
+	}
 
 	public void afterPropertiesSet() throws Exception
 	{
@@ -173,8 +173,9 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 	{
 		// on POST requests we invoke a method and return the method value as a JSON string
 		if ("POST".equals(request.getMethod()))
+		{
 			invokeMethod(request, response);
-
+		}
 		else if ("GET".equals(request.getMethod()))
 		{
 			// replace THE_SERVICE_URL place holder with the actual URL from the current request
@@ -205,7 +206,10 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 			for (int i = 0, l = paramsNode.size(); i < l; i++)
 			{
 				final JsonNode paramNode = paramsNode.get(i);
-				if (paramNode != null) methodArguments[i] = JSON.treeToValue(paramNode, methodParameterTypes[i]);
+				if (paramNode != null)
+				{
+					methodArguments[i] = JSON.treeToValue(paramNode, methodParameterTypes[i]);
+				}
 			}
 
 			// invoking the method
