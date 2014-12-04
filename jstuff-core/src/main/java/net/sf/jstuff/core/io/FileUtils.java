@@ -143,12 +143,18 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		cleanDirectory(directory, c.getTime(), recursive, filenameFilter);
 	}
 
+	/**
+	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+	 */
 	public static Collection<File> find(final File searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
 			throws IOException
 			{
 		return find(searchRootPath == null ? null : searchRootPath.getAbsolutePath(), globPattern, includeFiles, includeDirectories);
 			}
 
+	/**
+	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+	 */
 	public static Collection<File> find(final String searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
 			throws IOException
 			{
@@ -164,6 +170,9 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		return result;
 			}
 
+	/**
+	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+	 */
 	@SuppressWarnings("unused")
 	public static void find(String searchRootPath, final String globPattern, final EventListener<File> onMatch) throws IOException
 	{
@@ -203,21 +212,33 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		};
 	}
 
+	/**
+	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+	 */
 	public static Collection<File> findFiles(final File searchRootPath, final String globPattern) throws IOException
 	{
 		return find(searchRootPath, globPattern, true, false);
 	}
 
+	/**
+	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+	 */
 	public static Collection<File> findFiles(final String searchRootPath, final String globPattern) throws IOException
 	{
 		return find(searchRootPath, globPattern, true, false);
 	}
 
+	/**
+	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+	 */
 	public static Collection<File> findFolders(final File searchRootPath, final String globPattern) throws IOException
 	{
 		return find(searchRootPath, globPattern, false, true);
 	}
 
+	/**
+	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+	 */
 	public static Collection<File> findFolders(final String searchRootPath, final String globPattern) throws IOException
 	{
 		return find(searchRootPath, globPattern, false, true);

@@ -335,6 +335,9 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		return isEmpty(str) ? false : str.charAt(str.length() - 1) == ch;
 	}
 
+	/**
+	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+	 */
 	public static CharSequence globToRegex(final String globPattern)
 	{
 		if (StringUtils.isEmpty(globPattern)) return globPattern;
@@ -411,21 +414,21 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 							if (charAt(globPattern, idx + 3, (char) 0) == '*')
 							{
 								sb.append(".*"); // "**/*" => ".*"
-							idx = idx + 3;
-							ch = '*';
+								idx = idx + 3;
+								ch = '*';
+							}
+							else
+							{
+								sb.append("(.*/)?"); // "**/" => "(.*/)?"
+								idx = idx + 2;
+								ch = '/';
+							}
 						}
 						else
 						{
-							sb.append("(.*/)?"); // "**/" => "(.*/)?"
-							idx = idx + 2;
-							ch = '/';
+							sb.append(".*"); // "**" => ".*"
+							idx++;
 						}
-					}
-					else
-					{
-						sb.append(".*"); // "**" => ".*"
-						idx++;
-					}
 					}
 					else
 						sb.append("[^/]*"); // "*" => "[^/]*"
@@ -532,13 +535,13 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		{
 			final ParserDelegator pd = new ParserDelegator();
 			pd.parse(new CharSequenceReader(html), new ParserCallback()
+			{
+				@Override
+				public void handleText(final char[] text, final int pos)
 				{
-					@Override
-					public void handleText(final char[] text, final int pos)
-					{
-						sb.append(text);
-					}
-				}, true);
+					sb.append(text);
+				}
+			}, true);
 		}
 		catch (final IOException ex)
 		{
