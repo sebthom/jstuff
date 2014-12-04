@@ -15,7 +15,6 @@ package net.sf.jstuff.core.io;
 import java.io.IOException;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.StringUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
