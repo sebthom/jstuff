@@ -49,22 +49,22 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	static
 	{
 		Runtime.getRuntime().addShutdownHook(new java.lang.Thread()
-		{
-			@Override
-			public void run()
 			{
-				for (final File file : filesToDeleteOnShutdown)
-					try
+				@Override
+				public void run()
 				{
-						LOG.debug("Deleting %s...", file);
-						forceDelete(file);
+					for (final File file : filesToDeleteOnShutdown)
+						try
+						{
+							LOG.debug("Deleting %s...", file);
+							forceDelete(file);
+						}
+						catch (final IOException ex)
+						{
+							LOG.error(ex);
+						}
 				}
-				catch (final IOException ex)
-				{
-					LOG.error(ex);
-				}
-			}
-		});
+			});
 	}
 
 	/**
@@ -148,27 +148,27 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	 */
 	public static Collection<File> find(final File searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
 			throws IOException
-			{
+	{
 		return find(searchRootPath == null ? null : searchRootPath.getAbsolutePath(), globPattern, includeFiles, includeDirectories);
-			}
+	}
 
 	/**
 	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
 	 */
 	public static Collection<File> find(final String searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
 			throws IOException
-			{
+	{
 		final Collection<File> result = new ArrayList<File>();
 		find(searchRootPath, globPattern, new EventListener<File>()
-				{
-			public void onEvent(final File file)
 			{
-				if (file.isDirectory() && includeDirectories) result.add(file);
-				if (file.isFile() && includeFiles) result.add(file);
-			}
-				});
+				public void onEvent(final File file)
+				{
+					if (file.isDirectory() && includeDirectories) result.add(file);
+					if (file.isFile() && includeFiles) result.add(file);
+				}
+			});
 		return result;
-			}
+	}
 
 	/**
 	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
@@ -188,28 +188,28 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		LOG.debug("\n  glob:  %s\n  regex: %s\n  searchRoot: %s", globPattern, searchRegEx, searchRoot);
 		final Pattern filePattern = Pattern.compile(searchRegEx);
 		new DirectoryWalker<File>()
-		{
 			{
-				walk(new File(searchRoot), null);
-			}
+				{
+					walk(new File(searchRoot), null);
+				}
 
-			@Override
-			protected boolean handleDirectory(final File directory, final int depth, final Collection<File> results) throws IOException
-			{
-				final String filePath = directory.getCanonicalPath().replace('\\', '/');
-				final boolean isMatch = filePattern.matcher(filePath).find();
-				if (isMatch) onMatch.onEvent(directory);
-				return true;
-			}
+				@Override
+				protected boolean handleDirectory(final File directory, final int depth, final Collection<File> results) throws IOException
+				{
+					final String filePath = directory.getCanonicalPath().replace('\\', '/');
+					final boolean isMatch = filePattern.matcher(filePath).find();
+					if (isMatch) onMatch.onEvent(directory);
+					return true;
+				}
 
-			@Override
-			protected void handleFile(final File file, final int depth, final java.util.Collection<File> results) throws IOException
-			{
-				final String filePath = file.getCanonicalPath().replace('\\', '/');
-				final boolean isMatch = filePattern.matcher(filePath).find();
-				if (isMatch) onMatch.onEvent(file);
-			}
-		};
+				@Override
+				protected void handleFile(final File file, final int depth, final java.util.Collection<File> results) throws IOException
+				{
+					final String filePath = file.getCanonicalPath().replace('\\', '/');
+					final boolean isMatch = filePattern.matcher(filePath).find();
+					if (isMatch) onMatch.onEvent(file);
+				}
+			};
 	}
 
 	/**
@@ -249,18 +249,6 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		Args.notNull("file", file);
 		LOG.debug("Registering %s for deletion on JVM shutdown...", file);
 		filesToDeleteOnShutdown.add(file);
-	}
-
-	public static String getCurrentPath()
-	{
-		try
-		{
-			return new File(".").getCanonicalPath();
-		}
-		catch (final IOException ex)
-		{
-			throw new RuntimeException(ex);
-		}
 	}
 
 	public static long getFreeSpaceInKB(final String path) throws IOException
