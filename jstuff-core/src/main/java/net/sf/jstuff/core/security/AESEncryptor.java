@@ -53,6 +53,8 @@ public class AESEncryptor
 		}
 	}
 
+	private static final Random _RANDOM = new Random();
+
 	private final Map<String, SecretKey> _cachedAESKeys = new WeakHashMap<String, SecretKey>();
 
 	private final ThreadLocal<Cipher> _ciphers = new ThreadLocal<Cipher>()
@@ -90,6 +92,19 @@ public class AESEncryptor
 		}
 	}
 
+	private SecretKey _getKey(final String passphrase) throws NoSuchAlgorithmException, InvalidKeySpecException
+	{
+		SecretKey key = _cachedAESKeys.get(passphrase);
+		if (key == null)
+		{
+			final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+			final KeySpec spec = new PBEKeySpec(passphrase.toCharArray(), _keySalt, 1024, 128);
+			key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+			_cachedAESKeys.put(passphrase, key);
+		}
+		return key;
+	}
+
 	/**
 	 * @param data first 16 bytes of the array expected to be the initial vector
 	 */
@@ -99,7 +114,7 @@ public class AESEncryptor
 
 		try
 		{
-			final SecretKey key = getKey(passphrase);
+			final SecretKey key = _getKey(passphrase);
 			final Cipher cipher = _ciphers.get();
 			// the first 16 bytes are the initial vector
 			final byte[] iv = ArrayUtils.subarray(data, 0, 16);
@@ -128,11 +143,11 @@ public class AESEncryptor
 
 		try
 		{
-			final SecretKey key = getKey(passphrase);
+			final SecretKey key = _getKey(passphrase);
 			final Cipher cipher = _ciphers.get();
 			// generate a new initial vector for each encryption
 			final byte[] iv = new byte[16];
-			new Random().nextBytes(iv);
+			_RANDOM.nextBytes(iv);
 			cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
 			final byte[] encrypted = cipher.doFinal(data);
 			// the first 16 bytes are the initial vector
@@ -144,30 +159,17 @@ public class AESEncryptor
 		}
 	}
 
-	private SecretKey getKey(final String passphrase) throws NoSuchAlgorithmException, InvalidKeySpecException
-	{
-		SecretKey key = _cachedAESKeys.get(passphrase);
-		if (key == null)
-		{
-			final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-			final KeySpec spec = new PBEKeySpec(passphrase.toCharArray(), _keySalt, 1024, 128);
-			key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
-			_cachedAESKeys.put(passphrase, key);
-		}
-		return key;
-	}
-
 	public AESSealedObject seal(final Serializable object, final String passphrase) throws SecurityException
 	{
 		Args.notNull("object", object);
 
 		try
 		{
-			final SecretKey key = getKey(passphrase);
+			final SecretKey key = _getKey(passphrase);
 			final Cipher cipher = _ciphers.get();
 			// generate a new initial vector on each invocation
 			final byte[] iv = new byte[16];
-			new Random().nextBytes(iv);
+			_RANDOM.nextBytes(iv);
 			cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
 			final AESSealedObject sealedObject = new AESSealedObject(object, cipher);
 			sealedObject.iv = iv;
@@ -191,7 +193,7 @@ public class AESEncryptor
 
 		try
 		{
-			final SecretKey key = getKey(passphrase);
+			final SecretKey key = _getKey(passphrase);
 			final Cipher cipher = _ciphers.get();
 			cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(object.iv));
 			return (T) object.getObject(cipher);
