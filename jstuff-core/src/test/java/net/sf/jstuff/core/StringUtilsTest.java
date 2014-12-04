@@ -49,13 +49,13 @@ public class StringUtilsTest extends TestCase
 
 	public void testCountMatches()
 	{
-		assertTrue(StringUtils.countMatches("1234512345", "1", 0) == 2);
-		assertTrue(StringUtils.countMatches("1234512345", "1", 1) == 1);
-		assertTrue(StringUtils.countMatches("1234512345", "1", 9) == 0);
-		assertTrue(StringUtils.countMatches("1234512345", "1", 100) == 0);
-		assertTrue(StringUtils.countMatches("1234512345", "1", -100) == 0);
-		assertTrue(StringUtils.countMatches(null, "1", 1) == 0);
-		assertTrue(StringUtils.countMatches("1", null, 1) == 0);
+		assertEquals(2, StringUtils.countMatches("1234512345", "1", 0));
+		assertEquals(1, StringUtils.countMatches("1234512345", "1", 1));
+		assertEquals(0, StringUtils.countMatches("1234512345", "1", 9));
+		assertEquals(0, StringUtils.countMatches("1234512345", "1", 100));
+		assertEquals(0, StringUtils.countMatches("1234512345", "1", -100));
+		assertEquals(0, StringUtils.countMatches(null, "1", 1));
+		assertEquals(0, StringUtils.countMatches("1", null, 1));
 	}
 
 	/**
@@ -590,96 +590,107 @@ public class StringUtilsTest extends TestCase
 		b = "abcdefghijk";
 		c = -1000000;
 
-		assertTrue(StringUtils.replace(a, 0, c, b).equals("abcdefghijk1234"));
-		assertTrue(StringUtils.replace(a, 1, c, b).equals("1abcdefghijk234"));
-		assertTrue(StringUtils.replace(a, 2, c, b).equals("12abcdefghijk34"));
-		assertTrue(StringUtils.replace(a, 3, c, b).equals("123abcdefghijk4"));
-		assertTrue(StringUtils.replace(a, 4, c, b).equals("1234abcdefghijk"));
-		assertTrue(StringUtils.replace(a, 5, c, b).equals("1234abcdefghijk"));
-		assertTrue(StringUtils.replace(a, 1000000, c, b).equals("1234abcdefghijk"));
+		assertEquals("abcdefghijk1234", StringUtils.replace(a, 0, c, b));
+		assertEquals("1abcdefghijk234", StringUtils.replace(a, 1, c, b));
+		assertEquals("12abcdefghijk34", StringUtils.replace(a, 2, c, b));
+		assertEquals("123abcdefghijk4", StringUtils.replace(a, 3, c, b));
+		assertEquals("1234abcdefghijk", StringUtils.replace(a, 4, c, b));
+		assertEquals("1234abcdefghijk", StringUtils.replace(a, 5, c, b));
+		assertEquals("1234abcdefghijk", StringUtils.replace(a, 1000000, c, b));
 
-		assertTrue(StringUtils.replace(a, -1, c, b).equals("123abcdefghijk4"));
-		assertTrue(StringUtils.replace(a, -2, c, b).equals("12abcdefghijk34"));
-		assertTrue(StringUtils.replace(a, -3, c, b).equals("1abcdefghijk234"));
-		assertTrue(StringUtils.replace(a, -4, c, b).equals("abcdefghijk1234"));
-		assertTrue(StringUtils.replace(a, -5, c, b).equals("abcdefghijk1234"));
-		assertTrue(StringUtils.replace(a, -1000000, c, b).equals("abcdefghijk1234"));
+		assertEquals("123abcdefghijk4", StringUtils.replace(a, -1, c, b));
+		assertEquals("12abcdefghijk34", StringUtils.replace(a, -2, c, b));
+		assertEquals("1abcdefghijk234", StringUtils.replace(a, -3, c, b));
+		assertEquals("abcdefghijk1234", StringUtils.replace(a, -4, c, b));
+		assertEquals("abcdefghijk1234", StringUtils.replace(a, -5, c, b));
+		assertEquals("abcdefghijk1234", StringUtils.replace(a, -1000000, c, b));
 
 		a = "1234";
 		b = "a";
 		c = -1000000;
 
-		assertTrue(StringUtils.replace(a, 0, c, b).equals("a1234"));
-		assertTrue(StringUtils.replace(a, 1, c, b).equals("1a234"));
-		assertTrue(StringUtils.replace(a, 2, c, b).equals("12a34"));
-		assertTrue(StringUtils.replace(a, 3, c, b).equals("123a4"));
-		assertTrue(StringUtils.replace(a, 4, c, b).equals("1234a"));
-		assertTrue(StringUtils.replace(a, 5, c, b).equals("1234a"));
-		assertTrue(StringUtils.replace(a, 1000000, c, b).equals("1234a"));
+		assertEquals("a1234", StringUtils.replace(a, 0, c, b));
+		assertEquals("1a234", StringUtils.replace(a, 1, c, b));
+		assertEquals("12a34", StringUtils.replace(a, 2, c, b));
+		assertEquals("123a4", StringUtils.replace(a, 3, c, b));
+		assertEquals("1234a", StringUtils.replace(a, 4, c, b));
+		assertEquals("1234a", StringUtils.replace(a, 5, c, b));
+		assertEquals("1234a", StringUtils.replace(a, 1000000, c, b));
 
-		assertTrue(StringUtils.replace(a, -1, c, b).equals("123a4"));
-		assertTrue(StringUtils.replace(a, -2, c, b).equals("12a34"));
-		assertTrue(StringUtils.replace(a, -3, c, b).equals("1a234"));
-		assertTrue(StringUtils.replace(a, -4, c, b).equals("a1234"));
-		assertTrue(StringUtils.replace(a, -5, c, b).equals("a1234"));
-		assertTrue(StringUtils.replace(a, -1000000, c, b).equals("a1234"));
+		assertEquals("123a4", StringUtils.replace(a, -1, c, b));
+		assertEquals("12a34", StringUtils.replace(a, -2, c, b));
+		assertEquals("1a234", StringUtils.replace(a, -3, c, b));
+		assertEquals("a1234", StringUtils.replace(a, -4, c, b));
+		assertEquals("a1234", StringUtils.replace(a, -5, c, b));
+		assertEquals("a1234", StringUtils.replace(a, -1000000, c, b));
 
 		a = "1234";
 		b = "";
 		c = -1000000;
 
-		assertTrue(StringUtils.replace(a, 0, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, 1, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, 2, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, 3, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, 4, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, 5, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, 1000000, c, b).equals("1234"));
+		assertEquals("1234", StringUtils.replace(a, 0, c, b));
+		assertEquals("1234", StringUtils.replace(a, 1, c, b));
+		assertEquals("1234", StringUtils.replace(a, 2, c, b));
+		assertEquals("1234", StringUtils.replace(a, 3, c, b));
+		assertEquals("1234", StringUtils.replace(a, 4, c, b));
+		assertEquals("1234", StringUtils.replace(a, 5, c, b));
+		assertEquals("1234", StringUtils.replace(a, 1000000, c, b));
 
-		assertTrue(StringUtils.replace(a, -1, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, -2, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, -3, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, -4, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, -5, c, b).equals("1234"));
-		assertTrue(StringUtils.replace(a, -1000000, c, b).equals("1234"));
+		assertEquals("1234", StringUtils.replace(a, -1, c, b));
+		assertEquals("1234", StringUtils.replace(a, -2, c, b));
+		assertEquals("1234", StringUtils.replace(a, -3, c, b));
+		assertEquals("1234", StringUtils.replace(a, -4, c, b));
+		assertEquals("1234", StringUtils.replace(a, -5, c, b));
+		assertEquals("1234", StringUtils.replace(a, -1000000, c, b));
 
 		a = "";
 		b = "";
 		c = -1000000;
 
-		assertTrue(StringUtils.replace(a, 0, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, 1, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, 2, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, 3, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, 4, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, 5, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, 1000000, c, b).equals(""));
+		assertEquals("", StringUtils.replace(a, 0, c, b));
+		assertEquals("", StringUtils.replace(a, 1, c, b));
+		assertEquals("", StringUtils.replace(a, 2, c, b));
+		assertEquals("", StringUtils.replace(a, 3, c, b));
+		assertEquals("", StringUtils.replace(a, 4, c, b));
+		assertEquals("", StringUtils.replace(a, 5, c, b));
+		assertEquals("", StringUtils.replace(a, 1000000, c, b));
 
-		assertTrue(StringUtils.replace(a, -1, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, -2, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, -3, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, -4, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, -5, c, b).equals(""));
-		assertTrue(StringUtils.replace(a, -1000000, c, b).equals(""));
+		assertEquals("", StringUtils.replace(a, -1, c, b));
+		assertEquals("", StringUtils.replace(a, -2, c, b));
+		assertEquals("", StringUtils.replace(a, -3, c, b));
+		assertEquals("", StringUtils.replace(a, -4, c, b));
+		assertEquals("", StringUtils.replace(a, -5, c, b));
+		assertEquals("", StringUtils.replace(a, -1000000, c, b));
 
 		a = "";
 		b = "abcdefghijk";
 		c = -1000000;
 
-		assertTrue(StringUtils.replace(a, 0, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, 1, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, 2, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, 3, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, 4, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, 5, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, 1000000, c, b).equals("abcdefghijk"));
+		assertEquals("abcdefghijk", StringUtils.replace(a, 0, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, 1, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, 2, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, 3, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, 4, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, 5, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, 1000000, c, b));
 
-		assertTrue(StringUtils.replace(a, -1, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, -2, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, -3, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, -4, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, -5, c, b).equals("abcdefghijk"));
-		assertTrue(StringUtils.replace(a, -1000000, c, b).equals("abcdefghijk"));
+		assertEquals("abcdefghijk", StringUtils.replace(a, -1, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, -2, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, -3, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, -4, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, -5, c, b));
+		assertEquals("abcdefghijk", StringUtils.replace(a, -1000000, c, b));
+	}
+
+	public void testRepleaceEach()
+	{
+		assertEquals("There was a woman with three cats.", //
+				StringUtils.replaceEach("There was a man with seven kids.", //
+						"man", "woman", //
+						"seven", "three", //
+						"kids", "cats" //
+				) //
+		);
 	}
 
 	public void testSplitLines()
@@ -694,18 +705,18 @@ public class StringUtilsTest extends TestCase
 		String a;
 
 		a = "abcdef";
-		assertTrue(StringUtils.substringBeforeIgnoreCase(a, "c").equals("ab"));
-		assertTrue(StringUtils.substringBeforeIgnoreCase(a, "C").equals("ab"));
-		assertTrue(StringUtils.substringBeforeIgnoreCase(a, "X").equals(""));
+		assertEquals("ab", StringUtils.substringBeforeIgnoreCase(a, "c"));
+		assertEquals("ab", StringUtils.substringBeforeIgnoreCase(a, "C"));
+		assertEquals("", StringUtils.substringBeforeIgnoreCase(a, "X"));
 
 		a = null;
-		assertTrue(StringUtils.substringBeforeIgnoreCase(a, "c").equals(""));
-		assertTrue(StringUtils.substringBeforeIgnoreCase(a, "C").equals(""));
-		assertTrue(StringUtils.substringBeforeIgnoreCase(a, "X").equals(""));
+		assertEquals("", StringUtils.substringBeforeIgnoreCase(a, "c"));
+		assertEquals("", StringUtils.substringBeforeIgnoreCase(a, "C"));
+		assertEquals("", StringUtils.substringBeforeIgnoreCase(a, "X"));
 
 		a = "";
-		assertTrue(StringUtils.substringBeforeIgnoreCase(a, "c").equals(""));
-		assertTrue(StringUtils.substringBeforeIgnoreCase(a, "C").equals(""));
-		assertTrue(StringUtils.substringBeforeIgnoreCase(a, "X").equals(""));
+		assertEquals("", StringUtils.substringBeforeIgnoreCase(a, "c"));
+		assertEquals("", StringUtils.substringBeforeIgnoreCase(a, "C"));
+		assertEquals("", StringUtils.substringBeforeIgnoreCase(a, "X"));
 	}
 }

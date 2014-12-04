@@ -17,6 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 import javax.swing.text.html.parser.ParserDelegator;
@@ -151,6 +153,8 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	public static final String CR_LF = "" + CR + LF;
 	public static final String NEW_LINE = System.getProperty("line.separator");
 
+	private static final Pattern PATTERN_GLOB_GROUPS = Pattern.compile("[^\\\\](\\{[^{]*[^\\\\]\\})");
+
 	public static CharSequence ansiColorsToHTML(final CharSequence txt)
 	{
 		if (isEmpty(txt)) return txt;
@@ -242,6 +246,13 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		return sb;
 	}
 
+	public static char charAt(final CharSequence text, final int index, final char resultIfOutOfBound)
+	{
+		if (index < 0) return resultIfOutOfBound;
+		if (index >= text.length()) return resultIfOutOfBound;
+		return text.charAt(index);
+	}
+
 	/**
 	 * @return true if searchIn contains ANY of the substrings in searchFor
 	 */
@@ -322,6 +333,149 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 	public static boolean endsWith(final CharSequence str, final char ch)
 	{
 		return isEmpty(str) ? false : str.charAt(str.length() - 1) == ch;
+	}
+
+	public static CharSequence globToRegex(final String globPattern)
+	{
+		if (StringUtils.isEmpty(globPattern)) return globPattern;
+
+		final StringBuilder sb = new StringBuilder();
+		final char[] chars = globPattern.toCharArray();
+		char chNext = 0;
+		char chPrev = 0;
+		final char ESCAPE_CHAR = '\\';
+		int groupDepth = 0;
+		for (int idx = 0, l = chars.length; idx < l; idx++)
+		{
+			char ch = chars[idx];
+			chNext = charAt(globPattern, idx + 1, (char) 0);
+
+			switch (ch)
+			{
+				case ESCAPE_CHAR :
+					if (chPrev == ESCAPE_CHAR)
+						sb.append(ESCAPE_CHAR).append(ESCAPE_CHAR); // "\\" => "\\"
+					else
+					{
+						// do nothing
+					}
+					break;
+				case '$' :
+					sb.append(ESCAPE_CHAR).append("$"); // "$" => "\$"
+					break;
+				case '?' :
+					if (chPrev == ESCAPE_CHAR)
+						sb.append(ESCAPE_CHAR).append("?"); // "\?" => "\?"
+					else
+						sb.append("."); // "?" => "."
+					break;
+				case '.' :
+					sb.append(ESCAPE_CHAR).append("."); // "." => "\."
+					break;
+				case '(' :
+					sb.append(ESCAPE_CHAR).append("("); // "(" => "\("
+					break;
+				case ')' :
+					sb.append(ESCAPE_CHAR).append(")"); // ")" => "\)"
+					break;
+				case '{' :
+					if (chPrev == ESCAPE_CHAR)
+						sb.append(ESCAPE_CHAR).append("{"); // "\{" => "\{"
+					else
+					{
+						groupDepth++;
+						sb.append("(");
+					}
+					break;
+				case '}' :
+					if (chPrev == ESCAPE_CHAR)
+						sb.append(ESCAPE_CHAR).append("}"); // "\}" => "\}"
+					else
+					{
+						groupDepth--;
+						sb.append(")");
+					}
+					break;
+				case ',' :
+					if (chPrev == ESCAPE_CHAR)
+						sb.append(ESCAPE_CHAR).append(",");
+
+					else
+						sb.append(groupDepth > 0 ? '|' : ','); // "," => "|" if in group or => "," if not in group
+					break;
+				case '*' :
+					if (charAt(globPattern, idx + 1, (char) 0) == '*')
+					{ //
+						if (chNext == '*') if (charAt(globPattern, idx + 2, (char) 0) == '/')
+						{
+							if (charAt(globPattern, idx + 3, (char) 0) == '*')
+							{
+								sb.append(".*"); // "**/*" => ".*"
+							idx = idx + 3;
+							ch = '*';
+						}
+						else
+						{
+							sb.append("(.*/)?"); // "**/" => "(.*/)?"
+							idx = idx + 2;
+							ch = '/';
+						}
+					}
+					else
+					{
+						sb.append(".*"); // "**" => ".*"
+						idx++;
+					}
+					}
+					else
+						sb.append("[^/]*"); // "*" => "[^/]*"
+					break;
+
+				default :
+					if (chPrev == ESCAPE_CHAR) sb.append(ESCAPE_CHAR);
+					sb.append(ch);
+			}
+
+			chPrev = ch;
+		}
+		sb.append("$");
+		return sb;
+	}
+
+	/**
+	 * original implementation, about 3 times slower than {@link #globToRegex(String)}
+	 */
+	@SuppressWarnings("unused")
+	private static CharSequence globToRegex2(final String globPattern)
+	{
+		if (StringUtils.isEmpty(globPattern)) return globPattern;
+		CharSequence regex = StringUtils.replaceEach(globPattern, //
+				"?", ".", //
+				".", "\\.", //
+				"|", "\\|", //
+				"(", "\\(", //
+				")", "\\)", //
+				"**/*", ".*", //
+				"**/", "(.*/)?", //
+				"**", ".*", //
+				"*", "[^/]*") + "$";
+		if (globPattern.contains("{"))
+		{
+			// perform group transformation  {foo,bar} => (foo|bar)
+			final Matcher m = PATTERN_GLOB_GROUPS.matcher(regex);
+			final StringBuilder sb = new StringBuilder(regex);
+			while (m.find())
+			{
+				final int groupStart = m.start(1);
+				final int groupEnd = m.end(1);
+				sb.replace(groupStart, groupStart + 1, "(");
+				sb.replace(groupEnd - 1, groupEnd, ")");
+				for (int i = groupStart + 1, l = groupEnd - 1; i < l; i++)
+					if (sb.charAt(i) == ',') sb.setCharAt(i, '|');
+			}
+			regex = sb;
+		}
+		return regex;
 	}
 
 	public static CharSequence htmlEncode(final CharSequence text)
@@ -521,6 +675,46 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 			searchIn.replace(index, index + searchForLen, replaceWith);
 			index = searchIn.indexOf(searchFor, index + replaceWithLen);
 		}
+	}
+
+	/**
+	 * @param tokens e.g. {"searchFor1", "replaceWith1", searchFor2", "replaceWith2", ...}
+	 */
+	public static String replaceEach(final String searchIn, final String... tokens)
+	{
+		if (searchIn == null || tokens == null) return searchIn;
+		final String[] searchFor = new String[tokens.length / 2];
+		final String[] replaceWith = new String[tokens.length / 2];
+
+		boolean isNextTokenSearchKey = true;
+		int idx = 0;
+		for (final String token : tokens)
+			if (isNextTokenSearchKey)
+			{
+				searchFor[idx] = token;
+				isNextTokenSearchKey = false;
+			}
+			else
+			{
+				replaceWith[idx] = token;
+				idx++;
+				isNextTokenSearchKey = true;
+			}
+		return replaceEach(searchIn, searchFor, replaceWith);
+	}
+
+	public static CharSequence replaceEachGroup(final Pattern regex, final CharSequence searchIn, final int groupToReplace, final String replaceWith)
+	{
+		final Matcher m = regex.matcher(searchIn);
+		final StringBuilder sb = new StringBuilder(searchIn);
+		while (m.find())
+			sb.replace(m.start(groupToReplace), m.end(groupToReplace), replaceWith);
+		return sb;
+	}
+
+	public static CharSequence replaceEachGroup(final String regex, final CharSequence searchIn, final int groupToReplace, final String replaceWith)
+	{
+		return replaceEachGroup(Pattern.compile(regex), searchIn, groupToReplace, replaceWith);
 	}
 
 	/**

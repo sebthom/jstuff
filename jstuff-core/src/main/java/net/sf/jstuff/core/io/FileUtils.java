@@ -19,13 +19,22 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.regex.Pattern;
 
+import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
+import org.apache.commons.io.DirectoryWalker;
+import org.apache.commons.io.FileSystemUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
@@ -34,6 +43,29 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 public abstract class FileUtils extends org.apache.commons.io.FileUtils
 {
 	private static final Logger LOG = Logger.create();
+
+	private static final Queue<File> filesToDeleteOnShutdown = new ConcurrentLinkedQueue<File>();
+
+	static
+	{
+		Runtime.getRuntime().addShutdownHook(new java.lang.Thread()
+		{
+			@Override
+			public void run()
+			{
+				for (final File file : filesToDeleteOnShutdown)
+					try
+				{
+						LOG.debug("Deleting %s...", file);
+						forceDelete(file);
+				}
+				catch (final IOException ex)
+				{
+					LOG.error(ex);
+				}
+			}
+		});
+	}
 
 	/**
 	 * Creates a backup of the given file if it exists, otherwise returns with null.
@@ -111,6 +143,93 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		cleanDirectory(directory, c.getTime(), recursive, filenameFilter);
 	}
 
+	public static Collection<File> find(final File searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
+			throws IOException
+			{
+		return find(searchRootPath == null ? null : searchRootPath.getAbsolutePath(), globPattern, includeFiles, includeDirectories);
+			}
+
+	public static Collection<File> find(final String searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
+			throws IOException
+			{
+		final Collection<File> result = new ArrayList<File>();
+		find(searchRootPath, globPattern, new EventListener<File>()
+				{
+			public void onEvent(final File file)
+			{
+				if (file.isDirectory() && includeDirectories) result.add(file);
+				if (file.isFile() && includeFiles) result.add(file);
+			}
+				});
+		return result;
+			}
+
+	@SuppressWarnings("unused")
+	public static void find(String searchRootPath, final String globPattern, final EventListener<File> onMatch) throws IOException
+	{
+		Args.notNull("globPattern", globPattern);
+		Args.notNull("onMatch", onMatch);
+
+		if (StringUtils.isEmpty(searchRootPath)) searchRootPath = ".";
+
+		final String searchRoot = new File(FilenameUtils.concat(searchRootPath,
+				StringUtils.substringBeforeLast(StringUtils.substringBefore(globPattern, "*"), "/"))).getAbsolutePath();
+
+		final String searchRegEx = StringUtils.globToRegex(globPattern).toString();
+		LOG.debug("\n  glob:  %s\n  regex: %s\n  searchRoot: %s", globPattern, searchRegEx, searchRoot);
+		final Pattern filePattern = Pattern.compile(searchRegEx);
+		new DirectoryWalker<File>()
+		{
+			{
+				walk(new File(searchRoot), null);
+			}
+
+			@Override
+			protected boolean handleDirectory(final File directory, final int depth, final Collection<File> results) throws IOException
+			{
+				final String filePath = directory.getCanonicalPath().replace('\\', '/');
+				final boolean isMatch = filePattern.matcher(filePath).find();
+				if (isMatch) onMatch.onEvent(directory);
+				return true;
+			}
+
+			@Override
+			protected void handleFile(final File file, final int depth, final java.util.Collection<File> results) throws IOException
+			{
+				final String filePath = file.getCanonicalPath().replace('\\', '/');
+				final boolean isMatch = filePattern.matcher(filePath).find();
+				if (isMatch) onMatch.onEvent(file);
+			}
+		};
+	}
+
+	public static Collection<File> findFiles(final File searchRootPath, final String globPattern) throws IOException
+	{
+		return find(searchRootPath, globPattern, true, false);
+	}
+
+	public static Collection<File> findFiles(final String searchRootPath, final String globPattern) throws IOException
+	{
+		return find(searchRootPath, globPattern, true, false);
+	}
+
+	public static Collection<File> findFolders(final File searchRootPath, final String globPattern) throws IOException
+	{
+		return find(searchRootPath, globPattern, false, true);
+	}
+
+	public static Collection<File> findFolders(final String searchRootPath, final String globPattern) throws IOException
+	{
+		return find(searchRootPath, globPattern, false, true);
+	}
+
+	public static void forceDeleteOnExit(final File file) throws IOException
+	{
+		Args.notNull("file", file);
+		LOG.debug("Registering %s for deletion on JVM shutdown...", file);
+		filesToDeleteOnShutdown.add(file);
+	}
+
 	public static String getCurrentPath()
 	{
 		try
@@ -123,14 +242,14 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		}
 	}
 
-	public static File getTempDirecory()
+	public static long getFreeSpaceInKB(final String path) throws IOException
 	{
-		return new File(getTempDirectoryPath());
+		return FileSystemUtils.freeSpaceKb(path);
 	}
 
-	public static String getTempDirectoryPath()
+	public static long getFreeTempSpaceInKB() throws IOException
 	{
-		return System.getProperty("java.io.tmpdir");
+		return FileSystemUtils.freeSpaceKb(getTempDirectoryPath());
 	}
 
 	public static File[] toFiles(final String... filePaths)
@@ -174,4 +293,5 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	{
 		write(new File(file), data, encoding, append);
 	}
+
 }
