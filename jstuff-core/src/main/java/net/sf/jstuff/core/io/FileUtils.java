@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
 import net.sf.jstuff.core.StringUtils;
@@ -44,27 +45,41 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 {
 	private static final Logger LOG = Logger.create();
 
-	private static final Queue<File> filesToDeleteOnShutdown = new ConcurrentLinkedQueue<File>();
+	private static final Queue<File> _filesToDeleteOnShutdown = new ConcurrentLinkedQueue<File>();
+	private static final Queue<File> _directoriesToCleanOnShutdown = new ConcurrentLinkedQueue<File>();
+	private static final AtomicLong _FILE_UNIQUE_ID = new AtomicLong();
 
 	static
 	{
 		Runtime.getRuntime().addShutdownHook(new java.lang.Thread()
+		{
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
+				for (final File file : _filesToDeleteOnShutdown)
+					try
 				{
-					for (final File file : filesToDeleteOnShutdown)
-						try
-						{
-							LOG.debug("Deleting %s...", file);
-							forceDelete(file);
-						}
-						catch (final IOException ex)
-						{
-							LOG.error(ex);
-						}
+						LOG.debug("Deleting %s...", file);
+						forceDelete(file);
 				}
-			});
+				catch (final IOException ex)
+				{
+					LOG.error(ex);
+				}
+
+				for (final File directory : _directoriesToCleanOnShutdown)
+					try
+				{
+						LOG.debug("Cleaning %s...", directory);
+						cleanDirectory(directory);
+				}
+				catch (final IOException ex)
+				{
+					LOG.error(ex);
+				}
+
+			}
+		});
 	}
 
 	/**
@@ -143,32 +158,62 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		cleanDirectory(directory, c.getTime(), recursive, filenameFilter);
 	}
 
+	public static void cleanDirectoryOnExit(final File directory)
+	{
+		_directoriesToCleanOnShutdown.add(directory);
+	}
+
+	/**
+	 * Creates a temp directory that will be automatically deleted on JVM exit.
+	 *
+	 * @param parentDirectory if null, then create in system temp directory
+	 */
+	public static File createTempDirectory(final File parentDirectory, final String prefix, final String extension)
+	{
+		final File tmpDir = createUniqueDirectory(parentDirectory == null ? getTempDirectory() : parentDirectory, prefix, extension);
+		forceDeleteOnExit(tmpDir);
+		return tmpDir;
+	}
+
+	/**
+	 * @param parentDirectory if null, then create in current directory
+	 */
+	public static File createUniqueDirectory(final File parentDirectory, final String prefix, final String extension)
+	{
+		while (true)
+		{
+			final String name = (prefix == null ? "" : prefix) + _FILE_UNIQUE_ID.getAndIncrement() + (extension == null ? extension : "");
+			final File dir = new File(parentDirectory, name);
+			if (!dir.exists() && dir.mkdir()) return dir;
+		}
+	}
+
 	/**
 	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
 	 */
 	public static Collection<File> find(final File searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
 			throws IOException
-	{
+			{
 		return find(searchRootPath == null ? null : searchRootPath.getAbsolutePath(), globPattern, includeFiles, includeDirectories);
-	}
+			}
 
 	/**
 	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
 	 */
 	public static Collection<File> find(final String searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
 			throws IOException
-	{
+			{
 		final Collection<File> result = new ArrayList<File>();
 		find(searchRootPath, globPattern, new EventListener<File>()
-			{
-				public void onEvent(final File file)
 				{
-					if (file.isDirectory() && includeDirectories) result.add(file);
-					if (file.isFile() && includeFiles) result.add(file);
-				}
-			});
+			public void onEvent(final File file)
+			{
+				if (file.isDirectory() && includeDirectories) result.add(file);
+				if (file.isFile() && includeFiles) result.add(file);
+			}
+				});
 		return result;
-	}
+			}
 
 	/**
 	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
@@ -188,28 +233,44 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		LOG.debug("\n  glob:  %s\n  regex: %s\n  searchRoot: %s", globPattern, searchRegEx, searchRoot);
 		final Pattern filePattern = Pattern.compile(searchRegEx);
 		new DirectoryWalker<File>()
+		{
 			{
-				{
-					walk(new File(searchRoot), null);
-				}
+				walk(new File(searchRoot), null);
+			}
 
-				@Override
-				protected boolean handleDirectory(final File directory, final int depth, final Collection<File> results) throws IOException
-				{
-					final String filePath = directory.getCanonicalPath().replace('\\', '/');
-					final boolean isMatch = filePattern.matcher(filePath).find();
-					if (isMatch) onMatch.onEvent(directory);
-					return true;
-				}
+			@Override
+			protected boolean handleDirectory(final File directory, final int depth, final Collection<File> results) throws IOException
+			{
+				final String filePath = directory.getCanonicalPath().replace('\\', '/');
+				final boolean isMatch = filePattern.matcher(filePath).find();
+				if (isMatch) onMatch.onEvent(directory);
+				return true;
+			}
 
-				@Override
-				protected void handleFile(final File file, final int depth, final java.util.Collection<File> results) throws IOException
-				{
-					final String filePath = file.getCanonicalPath().replace('\\', '/');
-					final boolean isMatch = filePattern.matcher(filePath).find();
-					if (isMatch) onMatch.onEvent(file);
-				}
-			};
+			@Override
+			protected void handleFile(final File file, final int depth, final java.util.Collection<File> results) throws IOException
+			{
+				final String filePath = file.getCanonicalPath().replace('\\', '/');
+				final boolean isMatch = filePattern.matcher(filePath).find();
+				if (isMatch) onMatch.onEvent(file);
+			}
+		};
+	}
+
+	/**
+	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+	 */
+	public static Collection<File> findDirectories(final File searchRootPath, final String globPattern) throws IOException
+	{
+		return find(searchRootPath, globPattern, false, true);
+	}
+
+	/**
+	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+	 */
+	public static Collection<File> findDirectories(final String searchRootPath, final String globPattern) throws IOException
+	{
+		return find(searchRootPath, globPattern, false, true);
 	}
 
 	/**
@@ -228,27 +289,11 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 		return find(searchRootPath, globPattern, true, false);
 	}
 
-	/**
-	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
-	 */
-	public static Collection<File> findFolders(final File searchRootPath, final String globPattern) throws IOException
-	{
-		return find(searchRootPath, globPattern, false, true);
-	}
-
-	/**
-	 * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
-	 */
-	public static Collection<File> findFolders(final String searchRootPath, final String globPattern) throws IOException
-	{
-		return find(searchRootPath, globPattern, false, true);
-	}
-
-	public static void forceDeleteOnExit(final File file) throws IOException
+	public static void forceDeleteOnExit(final File file)
 	{
 		Args.notNull("file", file);
 		LOG.debug("Registering %s for deletion on JVM shutdown...", file);
-		filesToDeleteOnShutdown.add(file);
+		_filesToDeleteOnShutdown.add(file);
 	}
 
 	public static long getFreeSpaceInKB(final String path) throws IOException
@@ -302,5 +347,4 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils
 	{
 		write(new File(file), data, encoding, append);
 	}
-
 }

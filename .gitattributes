@@ -158,6 +158,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/security/AESEncryptor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/Checksums.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/CompositeX509KeyManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/CompositeX509TrustManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/Crypto.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/SSLUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/validation/Args.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/validation/Assert.java -text

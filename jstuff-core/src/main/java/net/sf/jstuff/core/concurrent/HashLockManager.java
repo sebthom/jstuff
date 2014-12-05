@@ -79,14 +79,17 @@ public class HashLockManager<KeyType>
 		}
 	}
 
-	private static final ScheduledExecutorService CLEANUP_THREAD = Executors.newSingleThreadScheduledExecutor();
+	private static final class LazyInitialized
+	{
+		private static final ScheduledExecutorService CLEANUP_THREAD = Executors.newSingleThreadScheduledExecutor();
+	}
 
 	private final ConcurrentMap<KeyType, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<KeyType, ReentrantReadWriteLock>();
 
 	public HashLockManager(final long lockCleanupInterval, final TimeUnit unit)
 	{
 		final CleanUpTask<KeyType> cleanup = new CleanUpTask<KeyType>(this);
-		cleanup.future = CLEANUP_THREAD.scheduleAtFixedRate(cleanup, lockCleanupInterval, lockCleanupInterval, unit);
+		cleanup.future = LazyInitialized.CLEANUP_THREAD.scheduleAtFixedRate(cleanup, lockCleanupInterval, lockCleanupInterval, unit);
 	}
 
 	/**

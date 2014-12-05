@@ -146,14 +146,16 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		}
 	}
 
+	private static final class LazyInitialized
+	{
+		private static final Pattern PATTERN_GLOB_GROUPS = Pattern.compile("[^\\\\](\\{[^{]*[^\\\\]\\})");
+	}
+
 	public static final char CR = 13;
-
 	public static final char LF = 10;
-
 	public static final String CR_LF = "" + CR + LF;
-	public static final String NEW_LINE = System.getProperty("line.separator");
 
-	private static final Pattern PATTERN_GLOB_GROUPS = Pattern.compile("[^\\\\](\\{[^{]*[^\\\\]\\})");
+	public static final String NEW_LINE = System.getProperty("line.separator");
 
 	public static CharSequence ansiColorsToHTML(final CharSequence txt)
 	{
@@ -465,7 +467,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		if (globPattern.contains("{"))
 		{
 			// perform group transformation  {foo,bar} => (foo|bar)
-			final Matcher m = PATTERN_GLOB_GROUPS.matcher(regex);
+			final Matcher m = LazyInitialized.PATTERN_GLOB_GROUPS.matcher(regex);
 			final StringBuilder sb = new StringBuilder(regex);
 			while (m.find())
 			{

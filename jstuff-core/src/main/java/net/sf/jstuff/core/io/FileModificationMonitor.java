@@ -32,29 +32,29 @@ public class FileModificationMonitor extends Observable
 	}
 
 	private final File file;
-	private long interval = 1000;
+	private long pollingInterval = 1000;
 	private boolean isMonitoring = false;
 
 	private long lastModified;
 	private final Timer timer = new Timer();
 
 	private final TimerTask timerTask = new TimerTask()
+	{
+		@Override
+		public void run()
 		{
-			@Override
-			public void run()
+			if (isMonitoring)
 			{
-				if (isMonitoring)
+				final long currentLastModified = getModificationDate(file);
+				if (lastModified != currentLastModified)
 				{
-					final long currentLastModified = getModificationDate(file);
-					if (lastModified != currentLastModified)
-					{
-						lastModified = currentLastModified;
-						setChanged();
-						notifyObservers();
-					}
+					lastModified = currentLastModified;
+					setChanged();
+					notifyObservers();
 				}
 			}
-		};
+		}
+	};
 
 	public FileModificationMonitor(final File file)
 	{
@@ -63,12 +63,12 @@ public class FileModificationMonitor extends Observable
 		this.file = file;
 	}
 
-	public FileModificationMonitor(final File file, final long interval)
+	public FileModificationMonitor(final File file, final long pollingInterval)
 	{
 		Args.notNull("file", file);
 
 		this.file = file;
-		this.interval = interval;
+		this.pollingInterval = pollingInterval;
 	}
 
 	/**
@@ -82,9 +82,9 @@ public class FileModificationMonitor extends Observable
 	/**
 	 * @return Returns the monitoring interval.
 	 */
-	public long getInterval()
+	public long getPollingInterval()
 	{
-		return interval;
+		return pollingInterval;
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class FileModificationMonitor extends Observable
 		if (!isMonitoring)
 		{
 			lastModified = getModificationDate(file);
-			timer.schedule(timerTask, 0, interval);
+			timer.schedule(timerTask, 0, pollingInterval);
 			isMonitoring = true;
 		}
 	}

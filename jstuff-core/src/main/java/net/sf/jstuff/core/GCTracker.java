@@ -47,47 +47,49 @@ public class GCTracker<Event> implements EventListenable<Event>
 		}
 	}
 
+	private static final class LazyInitialized
+	{
+		private static final Thread CLEANUP_THREAD = new Thread()
+			{
+				{
+					setPriority(Thread.MAX_PRIORITY);
+					setName("GarbageCollectingConcurrentMap-cleanupthread");
+					setDaemon(true);
+				}
+
+				@SuppressWarnings("unchecked")
+				@Override
+				public void run()
+				{
+					LOG.info("Cleanup Thread running...");
+					while (true)
+						try
+						{
+							GCReference<Object> ref;
+							while ((ref = (GCReference<Object>) GARBAGE_COLLECTED_REFS.remove()) != null)
+							{
+								ref.tracker.monitoredReferences.remove(ref);
+								try
+								{
+									ref.tracker.onGCEvent(ref.eventToFireOnGC);
+								}
+								catch (final Exception ex)
+								{
+									LOG.error(ex, "Failed to execute callback.");
+								}
+							}
+							LOG.info("Cleanup Thread stopping...");
+							break;
+						}
+						catch (final InterruptedException ex)
+						{}
+				}
+			};
+	}
+
 	private static final Logger LOG = Logger.create();
 
 	private static final ReferenceQueue<Object> GARBAGE_COLLECTED_REFS = new ReferenceQueue<Object>();
-
-	private static final Thread CLEANUP_THREAD = new Thread()
-		{
-			{
-				setPriority(Thread.MAX_PRIORITY);
-				setName("GarbageCollectingConcurrentMap-cleanupthread");
-				setDaemon(true);
-			}
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public void run()
-			{
-				LOG.info("Cleanup Thread running...");
-				while (true)
-					try
-					{
-						GCReference<Object> ref;
-						while ((ref = (GCReference<Object>) GARBAGE_COLLECTED_REFS.remove()) != null)
-						{
-							ref.tracker.monitoredReferences.remove(ref);
-							try
-							{
-								ref.tracker.onGCEvent(ref.eventToFireOnGC);
-							}
-							catch (final Exception ex)
-							{
-								LOG.error(ex, "Failed to execute callback.");
-							}
-						}
-						LOG.info("Cleanup Thread stopping...");
-						break;
-					}
-					catch (final InterruptedException ex)
-					{}
-			}
-		};
-
 	private final EventManager<Event> events = new EventManager<Event>();
 
 	/**
@@ -97,9 +99,9 @@ public class GCTracker<Event> implements EventListenable<Event>
 
 	public GCTracker()
 	{
-		synchronized (CLEANUP_THREAD)
+		synchronized (LazyInitialized.CLEANUP_THREAD)
 		{
-			if (!CLEANUP_THREAD.isAlive()) CLEANUP_THREAD.start();
+			if (!LazyInitialized.CLEANUP_THREAD.isAlive()) LazyInitialized.CLEANUP_THREAD.start();
 		}
 	}
 
