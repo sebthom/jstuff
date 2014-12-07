@@ -28,18 +28,6 @@ import com.thoughtworks.paranamer.Paranamer;
 public class TypesTest extends TestCase
 {
 
-	public void testGetVersion()
-	{
-		// from META-INF/MANIFEST.MF
-		assertEquals("3.1", Types.getVersion(ObjectUtils.class));
-
-		// from META-INF/maven/.../pom.properties
-		assertEquals("2.6", Types.getVersion(Paranamer.class));
-
-		// from jar name
-		assertEquals("4.11", Types.getVersion(TestCase.class));
-	}
-
 	public void testFindLibrary()
 	{
 		File library;
@@ -76,6 +64,18 @@ public class TypesTest extends TestCase
 		assertTrue(library.isDirectory());
 		assertFalse(library.isFile());
 		assertTrue(library.exists());
+	}
+
+	public void testGetVersion()
+	{
+		// from META-INF/MANIFEST.MF
+		assertEquals("3.1", Types.getVersion(ObjectUtils.class));
+
+		// from META-INF/maven/.../pom.properties
+		assertEquals("2.7", Types.getVersion(Paranamer.class));
+
+		// from jar name
+		assertEquals("4.11", Types.getVersion(TestCase.class));
 	}
 
 	public void testIsAssignableTo()
