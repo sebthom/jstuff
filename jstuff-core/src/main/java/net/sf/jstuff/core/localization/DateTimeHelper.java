@@ -44,46 +44,7 @@ public class DateTimeHelper implements Serializable
 		this.locale = locale;
 	}
 
-	/**
-	 *
-	 * @param date String containing the date to convert
-	 * @return Date
-	 */
-	public Date getDate(final String date)
-	{
-		Args.notNull("date", date);
-
-		final DateFormat df;
-		if (isValidDateTime(date))
-			df = DateFormat.getDateInstance(getDateTimeStyle(date).style, locale);
-		else if (isValidDate(date))
-			df = DateFormat.getDateInstance(getDateStyle(date).style, locale);
-		else if (isValidTime(date))
-			df = DateFormat.getTimeInstance(getTimeStyle(date).style, locale);
-		else
-			df = DateFormat.getDateInstance();
-
-		df.setLenient(false);
-
-		try
-		{
-			return df.parse(date);
-		}
-		catch (final ParseException ex)
-		{
-			LOG.debug("Parsing of date %s failed.", date, ex);
-			return null;
-		}
-	}
-
-	public DateFormat getDateFormat(final DateFormatStyle style)
-	{
-		Args.notNull("style", style);
-
-		return DateFormat.getDateInstance(style.style, locale);
-	}
-
-	public String getDateFormatted(final DateFormatStyle style, final Date date)
+	public String formatDate(final DateFormatStyle style, final Date date)
 	{
 		Args.notNull("style", style);
 		Args.notNull("date", date);
@@ -91,32 +52,110 @@ public class DateTimeHelper implements Serializable
 		return getDateFormat(style).format(date);
 	}
 
-	public String getDateFormattedFull(final Date date)
+	public String formatDateFull(final Date date)
+	{
+		Args.notNull("date", date);
+
+		return getDateFormat(DateFormatStyle.FULL).format(date);
+	}
+
+	public String formatDateLong(final Date date)
+	{
+		Args.notNull("date", date);
+
+		return getDateFormat(DateFormatStyle.LONG).format(date);
+	}
+
+	public String formatDateMedium(final Date date)
 	{
 		Args.notNull("date", date);
 
 		return getDateFormat(DateFormatStyle.MEDIUM).format(date);
 	}
 
-	public String getDateFormattedLong(final Date date)
-	{
-		Args.notNull("date", date);
-
-		return getDateFormat(DateFormatStyle.MEDIUM).format(date);
-	}
-
-	public String getDateFormattedMedium(final Date date)
-	{
-		Args.notNull("date", date);
-
-		return getDateFormat(DateFormatStyle.MEDIUM).format(date);
-	}
-
-	public String getDateFormattedShort(final Date date)
+	public String formatDateShort(final Date date)
 	{
 		Args.notNull("date", date);
 
 		return getDateFormat(DateFormatStyle.SHORT).format(date);
+	}
+
+	public String formatDateTime(final DateFormatStyle style, final Date date)
+	{
+		Args.notNull("style", style);
+
+		return getDateTimeFormat(style).format(date);
+	}
+
+	public String formatDateTimeFull(final Date date)
+	{
+		Args.notNull("date", date);
+
+		return getDateTimeFormat(DateFormatStyle.FULL).format(date);
+	}
+
+	public String formatDateTimeLong(final Date date)
+	{
+		Args.notNull("date", date);
+
+		return getDateTimeFormat(DateFormatStyle.LONG).format(date);
+	}
+
+	public String formatDateTimeMedium(final Date date)
+	{
+		Args.notNull("date", date);
+
+		return getDateTimeFormat(DateFormatStyle.MEDIUM).format(date);
+	}
+
+	public String formatDateTimeShort(final Date date)
+	{
+		Args.notNull("date", date);
+
+		return getDateTimeFormat(DateFormatStyle.SHORT).format(date);
+	}
+
+	public String formatTime(final DateFormatStyle style, final Date date)
+	{
+		Args.notNull("style", style);
+		Args.notNull("date", date);
+
+		return getTimeFormat(style).format(date);
+	}
+
+	public String formatTimeFull(final Date date)
+	{
+		Args.notNull("date", date);
+
+		return getTimeFormat(DateFormatStyle.FULL).format(date);
+	}
+
+	public String formatTimeLong(final Date date)
+	{
+		Args.notNull("date", date);
+
+		return getTimeFormat(DateFormatStyle.LONG).format(date);
+	}
+
+	public String formatTimeMedium(final Date date)
+	{
+		Args.notNull("date", date);
+
+		return getTimeFormat(DateFormatStyle.MEDIUM).format(date);
+	}
+
+	public String formatTimeShort(final Date date)
+	{
+		Args.notNull("date", date);
+
+		return getTimeFormat(DateFormatStyle.SHORT).format(date);
+	}
+
+	public DateFormat getDateFormat(final DateFormatStyle style)
+	{
+		Args.notNull("style", style);
+
+		return DateFormat.getDateInstance(style.style, locale);
 	}
 
 	public DateFormatStyle getDateStyle(final String date)
@@ -148,13 +187,6 @@ public class DateTimeHelper implements Serializable
 		return DateFormat.getDateTimeInstance(dateStyle.style, timeStyle.style, locale);
 	}
 
-	public String getDateTimeFormatted(final DateFormatStyle style, final Date date)
-	{
-		Args.notNull("style", style);
-
-		return getDateTimeFormat(style).format(date);
-	}
-
 	public DateFormatStyle getDateTimeStyle(final String style)
 	{
 		Args.notNull("style", style);
@@ -169,10 +201,6 @@ public class DateTimeHelper implements Serializable
 		return null;
 	}
 
-	/**
-	 * Returns the locale.
-	 * @return Locale
-	 */
 	public Locale getLocale()
 	{
 		return locale;
@@ -183,14 +211,6 @@ public class DateTimeHelper implements Serializable
 		Args.notNull("style", style);
 
 		return DateFormat.getTimeInstance(style.style, locale);
-	}
-
-	public String getTimeFormatted(final DateFormatStyle style, final Date date)
-	{
-		Args.notNull("style", style);
-		Args.notNull("date", date);
-
-		return getTimeFormat(style).format(date);
 	}
 
 	public DateFormatStyle getTimeStyle(final String style)
@@ -284,5 +304,35 @@ public class DateTimeHelper implements Serializable
 		return time != null
 				&& (isValidTime(DateFormatStyle.SHORT, time) || isValidTime(DateFormatStyle.MEDIUM, time) || isValidTime(DateFormatStyle.LONG, time) || isValidTime(
 						DateFormatStyle.FULL, time));
+	}
+
+	/**
+	 * @param date String containing the date to convert
+	 */
+	public Date parseDate(final String date)
+	{
+		Args.notNull("date", date);
+
+		final DateFormat df;
+		if (isValidDateTime(date))
+			df = DateFormat.getDateInstance(getDateTimeStyle(date).style, locale);
+		else if (isValidDate(date))
+			df = DateFormat.getDateInstance(getDateStyle(date).style, locale);
+		else if (isValidTime(date))
+			df = DateFormat.getTimeInstance(getTimeStyle(date).style, locale);
+		else
+			df = DateFormat.getDateInstance();
+
+		df.setLenient(false);
+
+		try
+		{
+			return df.parse(date);
+		}
+		catch (final ParseException ex)
+		{
+			LOG.debug("Parsing of date %s failed.", date, ex);
+			return null;
+		}
 	}
 }

@@ -342,7 +342,7 @@ public abstract class DOMUtils
 		}
 	}
 
-	public static List<Node> findNodes(final String xPathExpression, final Node searchScope) throws XMLException
+	public static <T extends Node> List<T> findNodes(final String xPathExpression, final Node searchScope) throws XMLException
 	{
 		Args.notNull("xPathExpression", xPathExpression);
 		Args.notNull("searchScope", searchScope);
@@ -370,12 +370,12 @@ public abstract class DOMUtils
 		return result;
 	}
 
-	public static List<Node> getChildNodes(final Node node)
+	public static <T extends Node> List<T> getChildNodes(final Node node)
 	{
 		return nodeListToList(node.getChildNodes());
 	}
 
-	public static List<Node> getElementsByTagName(final Element element, final String tagName)
+	public static <T extends Node> List<T> getElementsByTagName(final Element element, final String tagName)
 	{
 		Args.notNull("element", element);
 		Args.notNull("tagName", tagName);
@@ -475,23 +475,25 @@ public abstract class DOMUtils
 		return newNodes;
 	}
 
-	public static List<Node> importNodes(final NodeList nodesToImport, final Node newParentNode)
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> List<T> importNodes(final NodeList nodesToImport, final Node newParentNode)
 	{
 		Args.notNull("nodesToImport", nodesToImport);
 		Args.notNull("newParentNode", newParentNode);
 
-		return importNodes(nodeListToList(nodesToImport), newParentNode, null);
+		return importNodes((List<T>) nodeListToList(nodesToImport), newParentNode, null);
 	}
 
 	/**
 	 * @param insertBeforeNode optional, may be null
 	 */
-	public static List<Node> importNodes(final NodeList nodesToImport, final Node newParentNode, final Node insertBeforeNode)
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> List<T> importNodes(final NodeList nodesToImport, final Node newParentNode, final Node insertBeforeNode)
 	{
 		Args.notNull("nodesToImport", nodesToImport);
 		Args.notNull("newParentNode", newParentNode);
 
-		return importNodes(nodeListToList(nodesToImport), newParentNode, insertBeforeNode);
+		return importNodes((List<T>) nodeListToList(nodesToImport), newParentNode, insertBeforeNode);
 	}
 
 	public static Node[] nodeListToArray(final NodeList nodes)
@@ -506,15 +508,16 @@ public abstract class DOMUtils
 		return result;
 	}
 
-	public static List<Node> nodeListToList(final NodeList nodes)
+	@SuppressWarnings("unchecked")
+	public static <T extends Node> List<T> nodeListToList(final NodeList nodes)
 	{
 		Args.notNull("nodes", nodes);
 
-		final List<Node> result = CollectionUtils.newArrayList(nodes.getLength());
+		final List<T> result = CollectionUtils.newArrayList(nodes.getLength());
 
 		for (int i = 0, l = nodes.getLength(); i < l; i++)
 		{
-			result.add(nodes.item(i));
+			result.add((T) nodes.item(i));
 		}
 		return result;
 	}
