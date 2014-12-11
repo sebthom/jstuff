@@ -62,7 +62,7 @@ public abstract class Functions
 		}
 	}
 
-	public static class Cast<In, Out> extends AbstractFunction<In, Out>
+	public static class CastTo<In, Out> extends AbstractFunction<In, Out>
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -141,6 +141,11 @@ public abstract class Functions
 		}
 	}
 
+	public static <In, Out> CastTo<In, Out> castTo(@SuppressWarnings("unused") final Class<Out> targetType)
+	{
+		return new CastTo<In, Out>();
+	}
+
 	public static <In> ObjectToString<In> objectToString()
 	{
 		return new ObjectToString<In>();
@@ -159,5 +164,10 @@ public abstract class Functions
 	public static <In> Suffix<In> suffix(final String suffix)
 	{
 		return new Suffix<In>(suffix);
+	}
+
+	public static <In> Trim<In> trim()
+	{
+		return new Trim<In>();
 	}
 }
