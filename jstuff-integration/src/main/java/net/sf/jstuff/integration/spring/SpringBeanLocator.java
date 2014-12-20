@@ -36,15 +36,15 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 {
 	private static final Logger LOG = Logger.create();
 
-	private static SpringBeanLocator DEFAULT_INSTANCE;
+	private static SpringBeanLocator _INSTANCE;
 
 	/**
 	 * @return the default instance (the last instantiated one by any spring context)
 	 */
 	public static SpringBeanLocator get()
 	{
-		Assert.notNull(DEFAULT_INSTANCE, "Spring context not initialized yet.");
-		return DEFAULT_INSTANCE;
+		Assert.notNull(_INSTANCE, "Spring context not initialized yet.");
+		return _INSTANCE;
 	}
 
 	@Autowired
@@ -52,11 +52,11 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 
 	private SpringBeanLocator()
 	{
-		Assert.isNull(DEFAULT_INSTANCE, "A instance of " + this.getClass().getName() + " already exists.");
+		Assert.isNull(_INSTANCE, "A instance of " + this.getClass().getName() + " already exists.");
 
 		LOG.infoNew(this);
 
-		DEFAULT_INSTANCE = this;
+		_INSTANCE = this;
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 	 */
 	public void destroy()
 	{
-		DEFAULT_INSTANCE = null;
+		_INSTANCE = null;
 	}
 
 	public ListableBeanFactory getBeanFactory()
@@ -115,6 +115,10 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 		return factory;
 	}
 
+	/**
+	 * <p><b>For use by Spring only!</b></p>
+	 * {@inheritDoc}
+	 */
 	public void setBeanFactory(final BeanFactory beanFactory)
 	{
 		Args.notNull("beanFactory", beanFactory);

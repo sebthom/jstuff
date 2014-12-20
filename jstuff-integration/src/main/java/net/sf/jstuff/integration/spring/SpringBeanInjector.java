@@ -45,17 +45,17 @@ public class SpringBeanInjector implements DisposableBean
 {
 	private static final Logger LOG = Logger.create();
 
-	private static SpringBeanInjector DEFAULT_INSTANCE;
+	private static SpringBeanInjector _INSTANCE;
 
 	/**
 	 * @return the default instance (the last instantiated one by any spring context)
 	 */
 	public static SpringBeanInjector get()
 	{
-		Assert.notNull(DEFAULT_INSTANCE, "No SpringBeanInjector instance created yet. Add  <bean class=\"" + SpringBeanInjector.class.getName()
+		Assert.notNull(_INSTANCE, "No SpringBeanInjector instance created yet. Add  <bean class=\"" + SpringBeanInjector.class.getName()
 				+ "\" /> to your spring configuration!");
 
-		return DEFAULT_INSTANCE;
+		return _INSTANCE;
 	}
 
 	@Autowired
@@ -63,11 +63,11 @@ public class SpringBeanInjector implements DisposableBean
 
 	private SpringBeanInjector()
 	{
-		Assert.isNull(DEFAULT_INSTANCE, "A instance of " + this.getClass().getName() + " already exists.");
+		Assert.isNull(_INSTANCE, "A instance of " + this.getClass().getName() + " already exists.");
 
 		LOG.infoNew(this);
 
-		DEFAULT_INSTANCE = this;
+		_INSTANCE = this;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class SpringBeanInjector implements DisposableBean
 	 */
 	public void destroy()
 	{
-		DEFAULT_INSTANCE = null;
+		_INSTANCE = null;
 	}
 
 	public void inject(final Object unmanagedBean)

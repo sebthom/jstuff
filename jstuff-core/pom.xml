@@ -40,13 +40,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<!-- added for test case TypesTest.testGetVersion() -->
 			<groupId>commons-jxpath</groupId>
 			<artifactId>commons-jxpath</artifactId>

@@ -23,6 +23,16 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Proxies
 {
 	@SuppressWarnings("unchecked")
+	public static <T> T create(final Class<T> interfaceType, final ClassLoader loader, final InvocationHandler handler)
+	{
+		Args.notNull("interfaceType", interfaceType);
+		Args.notNull("handler", handler);
+		Args.notNull("loader", loader);
+
+		return (T) Proxy.newProxyInstance(loader, new Class[]{interfaceType}, handler);
+	}
+
+	@SuppressWarnings("unchecked")
 	public static <T> T create(final Class<T> interfaceType, final InvocationHandler handler)
 	{
 		Args.notNull("interfaceType", interfaceType);
@@ -32,12 +42,21 @@ public abstract class Proxies
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T create(final Class<T> interfaceType, final InvocationHandler handler, final ClassLoader loader)
+	public static <T> T create(final ClassLoader loader, final InvocationHandler handler, final Class< ? >... interfaceTypes)
 	{
-		Args.notNull("interfaceType", interfaceType);
 		Args.notNull("handler", handler);
 		Args.notNull("loader", loader);
+		Args.notEmpty("interfaceTypes", interfaceTypes);
 
-		return (T) Proxy.newProxyInstance(loader, new Class[]{interfaceType}, handler);
+		return (T) Proxy.newProxyInstance(loader, interfaceTypes, handler);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T create(final InvocationHandler handler, final Class< ? >... interfaceTypes)
+	{
+		Args.notNull("handler", handler);
+		Args.notEmpty("interfaceTypes", interfaceTypes);
+
+		return (T) Proxy.newProxyInstance(interfaceTypes[0].getClassLoader(), interfaceTypes, handler);
 	}
 }

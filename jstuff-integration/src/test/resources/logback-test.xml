@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<!-- http://logback.qos.ch/codes.html#layoutInsteadOfEncoder -->
+			<layout class="ch.qos.logback.classic.PatternLayout">
+				<!-- <pattern>%d %p [%c] - %m %n</pattern>-->
+				<pattern>%d %p (%file:%line\)#%M - %m %n</pattern>
+			</layout>
+		</encoder>
+	</appender>
+
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+	</root>
+
+	<logger name="org.springframework" level="INFO" />
+	<logger name="org.apache" level="INFO" />
+
+</configuration>
