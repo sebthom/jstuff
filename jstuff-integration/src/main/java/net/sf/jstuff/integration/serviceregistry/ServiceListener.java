@@ -15,9 +15,9 @@ package net.sf.jstuff.integration.serviceregistry;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface ServiceEndpoint
+public interface ServiceListener<SERVICE_INTERFACE>
 {
-	String getServiceEndpointId();
+	void onServiceAvailable(final ServiceProxy<SERVICE_INTERFACE> service);
 
-	Class< ? > getServiceInterface();
+	void onServiceUnavailable(final ServiceProxy<SERVICE_INTERFACE> service);
 }

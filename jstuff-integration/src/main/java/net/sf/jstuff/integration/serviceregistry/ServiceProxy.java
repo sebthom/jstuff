@@ -33,4 +33,12 @@ public interface ServiceProxy<SERVICE_INTERFACE>
 	 * @return true if the represented service is available
 	 */
 	boolean isServiceAvailable();
+
+	/**
+	 * Adds the given listener with a weak reference
+	 */
+	boolean addServiceListener(final ServiceListener<SERVICE_INTERFACE> listener);
+
+	boolean removeServiceListener(final ServiceListener<SERVICE_INTERFACE> listener);
+
 }

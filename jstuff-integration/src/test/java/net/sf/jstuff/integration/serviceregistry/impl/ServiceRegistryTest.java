@@ -13,9 +13,11 @@
 package net.sf.jstuff.integration.serviceregistry.impl;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.concurrent.Threads;
+import net.sf.jstuff.integration.serviceregistry.ServiceListener;
 import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
 
 /**
@@ -39,6 +41,15 @@ public class ServiceRegistryTest extends TestCase
 		}
 	}
 
+	public static class DefaultService2Extended extends DefaultService2 implements Service2Extended
+	{
+		public String getGoodbye()
+		{
+			return "Adios";
+		}
+
+	}
+
 	public interface Service1 extends TestService
 	{
 		String ENDPOINT_ID = Service1.class.getName();
@@ -51,6 +62,11 @@ public class ServiceRegistryTest extends TestCase
 		String ENDPOINT_ID = Service2.class.getName();
 
 		String getGreeting();
+	}
+
+	public interface Service2Extended extends Service2
+	{
+		String getGoodbye();
 	}
 
 	public interface TestService
@@ -90,6 +106,59 @@ public class ServiceRegistryTest extends TestCase
 
 		registry.addService(Service2.class, new DefaultService2());
 		assertFalse(srv2ProxyHashCode == registry.getService(Service2.ENDPOINT_ID, Service2.class).hashCode());
+	}
+
+	@SuppressWarnings("unused")
+	public void testServiceInheritance() throws IOException
+	{
+		final Service2 srv2 = new DefaultService2();
+		final Service2Extended srv2Ext = new DefaultService2Extended();
+		assertFalse(registry.getService(Service2.ENDPOINT_ID, Service2.class).isServiceAvailable());
+
+		registry.addService(Service2.ENDPOINT_ID, Service2.class, srv2);
+		assertTrue(registry.getService(Service2.ENDPOINT_ID, Service2.class).isServiceAvailable());
+		assertFalse(registry.getService(Service2.ENDPOINT_ID, Service2Extended.class).isServiceAvailable());
+		registry.removeService(Service2.ENDPOINT_ID, srv2);
+
+		registry.addService(Service2.ENDPOINT_ID, Service2Extended.class, srv2Ext);
+		assertTrue(registry.getService(Service2.ENDPOINT_ID, Service2.class).isServiceAvailable());
+		assertTrue(registry.getService(Service2.ENDPOINT_ID, Service2Extended.class).isServiceAvailable());
+		registry.removeService(Service2.ENDPOINT_ID, srv2Ext);
+	}
+
+	public void testServiceListener()
+	{
+		final ServiceProxy<Service1> srv1Proxy = registry.getService(Service1.ENDPOINT_ID, Service1.class);
+		final AtomicInteger count = new AtomicInteger();
+		final ServiceListener<ServiceRegistryTest.Service1> listener = new ServiceListener<ServiceRegistryTest.Service1>()
+			{
+				public void onServiceAvailable(final ServiceProxy<Service1> service)
+				{
+					count.incrementAndGet();
+				}
+
+				public void onServiceUnavailable(final ServiceProxy<Service1> service)
+				{
+					count.decrementAndGet();
+				}
+			};
+		srv1Proxy.addServiceListener(listener);
+
+		final DefaultService1 srv1Impl = new DefaultService1();
+		registry.addService(Service1.ENDPOINT_ID, Service1.class, srv1Impl);
+		registry.addService(Service1.ENDPOINT_ID, Service1.class, srv1Impl);
+
+		assertEquals(1, count.get());
+
+		registry.removeService(Service1.ENDPOINT_ID, srv1Impl);
+		registry.removeService(Service1.ENDPOINT_ID, srv1Impl);
+
+		assertEquals(0, count.get());
+
+		srv1Proxy.removeServiceListener(listener);
+		registry.addService(Service1.ENDPOINT_ID, Service1.class, srv1Impl);
+
+		assertEquals(0, count.get());
 	}
 
 	@SuppressWarnings("unused")

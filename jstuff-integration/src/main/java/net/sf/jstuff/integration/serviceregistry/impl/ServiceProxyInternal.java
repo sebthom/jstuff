@@ -10,14 +10,17 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.serviceregistry;
+package net.sf.jstuff.integration.serviceregistry.impl;
+
+import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface ServiceEndpoint
+public interface ServiceProxyInternal extends ServiceProxy<Object>
 {
-	String getServiceEndpointId();
+	void onServiceAvailable();
 
-	Class< ? > getServiceInterface();
+	void onServiceUnavailable();
+
 }

@@ -297,12 +297,15 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/RestServiceDescr
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/RestServiceError.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/XMLRestServiceExporter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/ServiceEndpoint.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/ServiceListener.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/ServiceProxy.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/ServiceRegistry.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/ServiceUnavailableException.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceEndpoint.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceProxyInvocationHandler.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceRegistry.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceRegistryMBean.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/ServiceProxyInternal.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/support/ServiceAsSpringBean.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/support/SpringBeanAsService.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ClassPathResourcesFilter.java -text

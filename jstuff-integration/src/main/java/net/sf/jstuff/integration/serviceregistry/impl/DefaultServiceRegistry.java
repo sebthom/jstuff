@@ -13,8 +13,6 @@
 package net.sf.jstuff.integration.serviceregistry.impl;
 
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,38 +35,41 @@ import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.serviceregistry.ServiceEndpoint;
 import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
 import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
-import net.sf.jstuff.integration.serviceregistry.ServiceUnavailableException;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRegistryMBean
 {
-	public final class ServiceEndpointConfig
+	public final class ServiceEndpointState
 	{
 		private final String serviceEndpointId;
-		private Object activeService;
-		private Class< ? > activeServiceInterface;
+		protected Object activeService;
+		protected Class< ? > activeServiceInterface;
 
 		/**
 		 * All service proxy instances handed out to service consumers for the given end point and still referenced somewhere in the JVM
 		 */
-		private final WeakHashSet<ServiceProxy< ? >> issuedServiceProxies = WeakHashSet.create();
+		private final WeakHashSet<ServiceProxyInternal> issuedServiceProxies = WeakHashSet.create();
 
-		private ServiceEndpointConfig(final String serviceEndpointId)
+		private ServiceEndpointState(final String serviceEndpointId)
 		{
 			this.serviceEndpointId = serviceEndpointId;
 		}
 
-		@SuppressWarnings("unchecked")
-		private <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> findIssuedServiceProxy(final Class<SERVICE_INTERFACE> serviceInterface)
+		private ServiceProxyInternal findIssuedServiceProxy(final Class< ? > serviceInterface)
 		{
-			for (final ServiceProxy< ? > serviceProxy : issuedServiceProxies)
+			for (final ServiceProxyInternal serviceProxy : issuedServiceProxies)
 			{
 				if (serviceProxy.getServiceInterface() == serviceInterface) //
-					return (ServiceProxy<SERVICE_INTERFACE>) serviceProxy;
+					return serviceProxy;
 			}
 			return null;
+		}
+
+		public Class< ? > getActiveServiceInterface()
+		{
+			return activeServiceInterface;
 		}
 
 		public String getServiceEndpointId()
@@ -76,9 +77,9 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 			return serviceEndpointId;
 		}
 
-		private <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> issueServiceProxy(final Class<SERVICE_INTERFACE> serviceInterface)
+		private ServiceProxyInternal issueServiceProxy(final Class< ? > serviceInterface)
 		{
-			ServiceProxy<SERVICE_INTERFACE> proxy = findIssuedServiceProxy(serviceInterface);
+			ServiceProxyInternal proxy = findIssuedServiceProxy(serviceInterface);
 			if (proxy == null)
 			{
 				proxy = createServiceProxy(this, serviceInterface);
@@ -92,82 +93,35 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 			activeServiceInterface = serviceInterface;
 			activeService = service;
 			issueServiceProxy(serviceInterface);
-		}
-	}
-
-	public static class ServiceProxyInvocationHandler<SERVICE_INTERFACE> implements InvocationHandler
-	{
-		private final Class<SERVICE_INTERFACE> serviceInterface;
-		private final ServiceEndpointConfig serviceEndpointConfig;
-
-		public ServiceProxyInvocationHandler(final ServiceEndpointConfig serviceEndpointConfig, final Class<SERVICE_INTERFACE> serviceInterface)
-		{
-			this.serviceEndpointConfig = serviceEndpointConfig;
-			this.serviceInterface = serviceInterface;
-		}
-
-		protected Object getActiveServiceIfCompatible()
-		{
-			final Object activeService = serviceEndpointConfig.activeService;
-			if (activeService != null && serviceInterface.isAssignableFrom(serviceEndpointConfig.activeServiceInterface)) //
-				return activeService;
-			return null;
-		}
-
-		public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
-		{
-			final String methodName = method.getName();
-			if (method.getDeclaringClass() == ServiceProxy.class)
+			for (final ServiceProxyInternal proxy : issuedServiceProxies)
 			{
-				if ("get".equals(methodName)) return proxy;
-				if ("isServiceAvailable".equals(methodName)) return getActiveServiceIfCompatible() != null;
-				if ("getServiceEndpointId".equals(methodName)) return serviceEndpointConfig.serviceEndpointId;
-				if ("getServiceInterface".equals(methodName)) return serviceInterface;
+				proxy.onServiceAvailable();
 			}
-
-			final int methodParamCount = method.getParameterTypes().length;
-			if (methodParamCount == 0)
-			{
-				if ("hashCode".equals(methodName)) //
-					return hashCode();
-				if ("toString".equals(methodName)) //
-					return ServiceProxy.class.getName() //
-							+ "[serviceEndpointId=" + serviceEndpointConfig.serviceEndpointId //
-							+ ", serviceInterface=" + serviceInterface //
-							+ ", service=" + getActiveServiceIfCompatible() + "]";
-			}
-			else if (methodParamCount == 1)
-			{
-				if ("equals".equals(methodName)) return proxy == args[0];
-			}
-
-			final Object service = getActiveServiceIfCompatible();
-			if (service == null) throw new ServiceUnavailableException(serviceEndpointConfig.serviceEndpointId, serviceInterface);
-
-			return method.invoke(service, args);
 		}
 	}
 
 	private final static Logger LOG = Logger.create();
 
-	private final Map<String, ServiceEndpointConfig> serviceEndpoints = new HashMap<String, ServiceEndpointConfig>();
-
-	private final ReadWriteLock lockRW = new ReentrantReadWriteLock();
-	private final Lock lockRead = lockRW.readLock();
-	private final Lock lockWrite = lockRW.writeLock();
+	private final Map<String, ServiceEndpointState> serviceEndpoints = new HashMap<String, ServiceEndpointState>();
+	private final Lock serviceEndpoints_READ;
+	private final Lock serviceEndpoints_WRITE;
 
 	public DefaultServiceRegistry()
 	{
 		LOG.infoNew(this);
+
+		final ReadWriteLock lock = new ReentrantReadWriteLock();
+		serviceEndpoints_READ = lock.readLock();
+		serviceEndpoints_WRITE = lock.writeLock();
 	}
 
 	private void _cleanup()
 	{
 		LOG.debug("Cleaning up service endpoints...");
-		for (final Iterator<Entry<String, ServiceEndpointConfig>> it = serviceEndpoints.entrySet().iterator(); it.hasNext();)
+		for (final Iterator<Entry<String, ServiceEndpointState>> it = serviceEndpoints.entrySet().iterator(); it.hasNext();)
 		{
-			final Entry<String, ServiceEndpointConfig> entry = it.next();
-			final ServiceEndpointConfig cfg = entry.getValue();
+			final Entry<String, ServiceEndpointState> entry = it.next();
+			final ServiceEndpointState cfg = entry.getValue();
 			if (cfg.activeService == null && cfg.issuedServiceProxies.size() == 0)
 			{
 				LOG.debug("Purging endpoint config for [%s]", cfg.serviceEndpointId);
@@ -193,13 +147,13 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		Args.notNull("serviceInstance", serviceInstance);
 
 		if (!serviceInterface.isInterface()) throw new IllegalArgumentException("[serviceInterface] must be an interface");
-		lockRead.lock();
+		serviceEndpoints_WRITE.lock();
 		try
 		{
-			ServiceEndpointConfig srvConfig = serviceEndpoints.get(serviceEndpointId);
+			ServiceEndpointState srvConfig = serviceEndpoints.get(serviceEndpointId);
 			if (srvConfig == null)
 			{
-				srvConfig = new ServiceEndpointConfig(serviceEndpointId);
+				srvConfig = new ServiceEndpointState(serviceEndpointId);
 				serviceEndpoints.put(serviceEndpointId, srvConfig);
 			}
 
@@ -213,6 +167,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 
 				return true;
 			}
+
 			if (srvConfig.activeService == serviceInstance) return false;
 
 			throw new IllegalStateException("Cannot register service [" + serviceInstance + "] at endpoint [" + serviceEndpointId + "] because service ["
@@ -220,27 +175,27 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		}
 		finally
 		{
-			lockRead.unlock();
+			serviceEndpoints_WRITE.unlock();
 		}
 	}
 
 	/**
 	 * This method is intended for subclassing
 	 */
-	protected <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointConfig serviceEndpointConfig,
+	protected <SERVICE_INTERFACE> ServiceProxyInternal createServiceProxy(final ServiceEndpointState serviceEndpointConfig,
 			final Class<SERVICE_INTERFACE> serviceInterface)
 	{
-		return Proxies.create(new ServiceProxyInvocationHandler<SERVICE_INTERFACE>(serviceEndpointConfig, serviceInterface), ServiceProxy.class,
+		return Proxies.create(new DefaultServiceProxyInvocationHandler<SERVICE_INTERFACE>(serviceEndpointConfig, serviceInterface), ServiceProxyInternal.class,
 				serviceInterface);
 	}
 
 	public List<ServiceEndpoint> getActiveServiceEndpoints()
 	{
-		lockRead.lock();
+		serviceEndpoints_READ.lock();
 		try
 		{
 			final List<ServiceEndpoint> result = new ArrayList<ServiceEndpoint>();
-			for (final ServiceEndpointConfig sep : serviceEndpoints.values())
+			for (final ServiceEndpointState sep : serviceEndpoints.values())
 			{
 				if (sep.activeService != null)
 				{
@@ -251,7 +206,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		}
 		finally
 		{
-			lockRead.unlock();
+			serviceEndpoints_READ.unlock();
 		}
 	}
 
@@ -260,45 +215,48 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		Args.notNull("serviceEndpointId", serviceEndpointId);
 		Args.notNull("serviceInterface", serviceInterface);
 
-		lockRead.lock();
+		serviceEndpoints_READ.lock();
 		try
 		{
-			final ServiceEndpointConfig srvConfig = serviceEndpoints.get(serviceEndpointId);
+			final ServiceEndpointState srvConfig = serviceEndpoints.get(serviceEndpointId);
 			if (srvConfig != null)
 			{
-				final ServiceProxy<SERVICE_INTERFACE> proxy = srvConfig.findIssuedServiceProxy(serviceInterface);
+				@SuppressWarnings("unchecked")
+				final ServiceProxy<SERVICE_INTERFACE> proxy = (ServiceProxy<SERVICE_INTERFACE>) srvConfig.findIssuedServiceProxy(serviceInterface);
 				if (proxy != null) return proxy;
 			}
 		}
 		finally
 		{
-			lockRead.unlock();
+			serviceEndpoints_READ.unlock();
 		}
 
-		lockWrite.lock();
+		serviceEndpoints_WRITE.lock();
 		try
 		{
-			ServiceEndpointConfig srvConfig = serviceEndpoints.get(serviceEndpointId);
+			ServiceEndpointState srvConfig = serviceEndpoints.get(serviceEndpointId);
 			if (srvConfig == null)
 			{
-				srvConfig = new ServiceEndpointConfig(serviceEndpointId);
+				srvConfig = new ServiceEndpointState(serviceEndpointId);
 				serviceEndpoints.put(serviceEndpointId, srvConfig);
 			}
-			return srvConfig.issueServiceProxy(serviceInterface);
+			@SuppressWarnings("unchecked")
+			final ServiceProxy<SERVICE_INTERFACE> proxy = (ServiceProxy<SERVICE_INTERFACE>) srvConfig.issueServiceProxy(serviceInterface);
+			return proxy;
 		}
 		finally
 		{
-			lockWrite.unlock();
+			serviceEndpoints_WRITE.unlock();
 		}
 	}
 
 	public Set<String> getServiceEndpointIds()
 	{
-		lockRead.lock();
+		serviceEndpoints_READ.lock();
 		try
 		{
 			final TreeSet<String> result = new TreeSet<String>();
-			for (final ServiceEndpointConfig sep : serviceEndpoints.values())
+			for (final ServiceEndpointState sep : serviceEndpoints.values())
 			{
 				if (sep.activeService != null)
 				{
@@ -309,7 +267,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		}
 		finally
 		{
-			lockRead.unlock();
+			serviceEndpoints_READ.unlock();
 		}
 	}
 
@@ -331,7 +289,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		{
 			if (mbeanName == null)
 			{
-				mbeanName = getClass().getPackage().getName() + ":type=" + this.getClass().getSimpleName();
+				mbeanName = getClass().getPackage().getName() + ":type=" + getClass().getSimpleName();
 			}
 			final ObjectName mbeanObjectName = new ObjectName(mbeanName);
 			LOG.info("Registering MBean %s", mbeanName);
@@ -352,10 +310,10 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		Args.notNull("serviceEndpointId", serviceEndpointId);
 		Args.notNull("serviceInstance", serviceInstance);
 
-		lockWrite.lock();
+		serviceEndpoints_WRITE.lock();
 		try
 		{
-			final ServiceEndpointConfig srvConfig = serviceEndpoints.get(serviceEndpointId);
+			final ServiceEndpointState srvConfig = serviceEndpoints.get(serviceEndpointId);
 			if (srvConfig == null) return false;
 
 			if (srvConfig.activeService != serviceInstance) return false;
@@ -364,14 +322,17 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 					srvConfig.activeServiceInterface.getName(), serviceInstance);
 			srvConfig.activeService = null;
 			srvConfig.activeServiceInterface = null;
-
+			for (final ServiceProxyInternal proxy : srvConfig.issuedServiceProxies)
+			{
+				proxy.onServiceUnavailable();
+			}
 			_cleanup();
 
 			return true;
 		}
 		finally
 		{
-			lockWrite.unlock();
+			serviceEndpoints_WRITE.unlock();
 		}
 	}
 }

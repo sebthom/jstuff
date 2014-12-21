@@ -8,7 +8,7 @@
 	<parent>
 		<artifactId>jstuff-parent</artifactId>
 		<groupId>net.sf.jstuff</groupId>
-		<version>2.2.1-SNAPSHOT</version>
+		<version>2.3.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>jstuff-core</artifactId>
@@ -27,9 +27,10 @@
 		</dependency>
 
 		<dependency>
+			<!-- for parameter names in Logger.traceEntry() -->
 			<groupId>com.thoughtworks.paranamer</groupId>
 			<artifactId>paranamer</artifactId>
-			<version>2.7</version>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>

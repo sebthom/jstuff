@@ -21,8 +21,6 @@ import org.apache.commons.lang3.ObjectUtils;
  */
 public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<DefaultServiceEndpoint>
 {
-	private static final long serialVersionUID = 1L;
-
 	protected final String serviceEndpointId;
 	protected final Class< ? > serviceInterface;
 

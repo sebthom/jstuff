@@ -20,9 +20,9 @@ import java.util.Collection;
 public interface ServiceRegistry
 {
 	/**
-	 * <i>This method is intended for troubleshooting purposes only</i>
+	 * <i>This method is intended for troubleshooting/debugging purposes only</i>
 	 * <p>
-	 * A list of all service end points with registered services.
+	 * @return a snapshot list of all service end points with registered services.
 	 */
 	Collection<ServiceEndpoint> getActiveServiceEndpoints();
 

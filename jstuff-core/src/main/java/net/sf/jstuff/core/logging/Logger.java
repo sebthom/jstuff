@@ -18,13 +18,10 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.validation.Args;
-
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import com.thoughtworks.paranamer.CachingParanamer;
-import com.thoughtworks.paranamer.Paranamer;
 
 /**
  * Features:
@@ -38,12 +35,46 @@ import com.thoughtworks.paranamer.Paranamer;
  */
 public abstract class Logger
 {
+	private static final class ParanamerParamNamesResolver implements Invocable<String[], Method, RuntimeException>
+	{
+		final com.thoughtworks.paranamer.Paranamer paranamer = new com.thoughtworks.paranamer.CachingParanamer(
+				new com.thoughtworks.paranamer.BytecodeReadingParanamer());
+
+		public String[] invoke(final Method method)
+		{
+			if (method == null) return ArrayUtils.EMPTY_STRING_ARRAY;
+			return paranamer.lookupParameterNames(method, false);
+		}
+	}
+
 	private static final String METHOD_ENTRY_MARKER = "ENTRY >> (";
 	private static final String METHOD_ENTRY_MARKER_NOARGS = METHOD_ENTRY_MARKER + ")";
 	private static final String METHOD_EXIT_MARKER = "EXIT  << ";
+
 	private static final String METHOD_EXIT_MARKER_VOID = METHOD_EXIT_MARKER + "*void*";
 
-	private static final Paranamer PARANAMER = new CachingParanamer(new BytecodeReadingParanamer());
+	private static Invocable<String[], Method, RuntimeException> paramNamesResolver;
+
+	static
+	{
+		try
+		{
+			// test if paranamer is available on classpath
+			@SuppressWarnings("unused")
+			final Class< ? > paranamerAvailable = com.thoughtworks.paranamer.BytecodeReadingParanamer.class;
+			paramNamesResolver = new ParanamerParamNamesResolver();
+		}
+		catch (final LinkageError err)
+		{
+			paramNamesResolver = new Invocable<String[], Method, RuntimeException>()
+					{
+				public String[] invoke(final Method arg) throws RuntimeException
+				{
+					return ArrayUtils.EMPTY_STRING_ARRAY;
+				}
+					};
+		}
+	}
 
 	private static String argToString(final Object object)
 	{
@@ -51,51 +82,6 @@ public abstract class Logger
 		if (object.getClass().isArray()) return Arrays.deepToString((Object[]) object);
 		if (object instanceof String) return "\"" + object + "\"";
 		return object.toString();
-	}
-
-	protected abstract void trace(final Method location, final String msg);
-
-	protected static String formatTraceExit()
-	{
-		return METHOD_EXIT_MARKER_VOID;
-	}
-
-	protected static String formatTraceExit(final Object returnValue)
-	{
-		return METHOD_EXIT_MARKER + argToString(returnValue);
-	}
-
-	protected static String formatTraceEntry(final Object... args)
-	{
-		if (args == null || args.length == 0) return METHOD_ENTRY_MARKER_NOARGS;
-
-		final Class< ? > loggedClass = StackTrace.getCallerClass(DelegatingLogger.FQCN);
-		final StackTraceElement loggedSTE = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
-		final Method method = Methods.findMatchingRecursive(loggedClass, loggedSTE.getMethodName(), args);
-		return formatTraceEntry(method, args);
-	}
-
-	protected static String formatTraceEntry(final Method method, final Object... args)
-	{
-		if (args == null || args.length == 0) return METHOD_ENTRY_MARKER_NOARGS;
-
-		final StringBuilder sb = new StringBuilder(METHOD_ENTRY_MARKER);
-
-		final String[] paramNames = method == null ? ArrayUtils.EMPTY_STRING_ARRAY : PARANAMER.lookupParameterNames(method, false);
-		final int paramNamesLen = paramNames.length;
-		if (paramNamesLen == 0)
-		{
-			sb.append(argToString(args[0]));
-			for (int i = 1; i < args.length; i++)
-				sb.append(", ").append(argToString(args[i]));
-		}
-		else
-		{
-			sb.append(paramNames[0]).append(": ").append(argToString(args[0]));
-			for (int i = 1; i < paramNamesLen; i++)
-				sb.append(", ").append(paramNames[i]).append(": ").append(argToString(args[i]));
-		}
-		return sb.append(")").toString();
 	}
 
 	public static Logger create()
@@ -156,20 +142,48 @@ public abstract class Logger
 		});
 	}
 
-	/**
-	 * @return the loggers name
-	 */
-	public abstract String getName();
+	protected static String formatTraceEntry(final Method method, final Object... args)
+	{
+		if (args == null || args.length == 0) return METHOD_ENTRY_MARKER_NOARGS;
 
-	public abstract boolean isDebugEnabled();
+		final StringBuilder sb = new StringBuilder(METHOD_ENTRY_MARKER);
 
-	public abstract boolean isErrorEnabled();
+		final String[] paramNames = paramNamesResolver.invoke(method);
+		final int paramNamesLen = paramNames.length;
+		if (paramNamesLen == 0)
+		{
+			sb.append(argToString(args[0]));
+			for (int i = 1; i < args.length; i++)
+				sb.append(", ").append(argToString(args[i]));
+		}
+		else
+		{
+			sb.append(paramNames[0]).append(": ").append(argToString(args[0]));
+			for (int i = 1; i < paramNamesLen; i++)
+				sb.append(", ").append(paramNames[i]).append(": ").append(argToString(args[i]));
+		}
+		return sb.append(")").toString();
+	}
 
-	public abstract boolean isInfoEnabled();
+	protected static String formatTraceEntry(final Object... args)
+	{
+		if (args == null || args.length == 0) return METHOD_ENTRY_MARKER_NOARGS;
 
-	public abstract boolean isTraceEnabled();
+		final Class< ? > loggedClass = StackTrace.getCallerClass(DelegatingLogger.FQCN);
+		final StackTraceElement loggedSTE = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
+		final Method method = Methods.findMatchingRecursive(loggedClass, loggedSTE.getMethodName(), args);
+		return formatTraceEntry(method, args);
+	}
 
-	public abstract boolean isWarnEnabled();
+	protected static String formatTraceExit()
+	{
+		return METHOD_EXIT_MARKER_VOID;
+	}
+
+	protected static String formatTraceExit(final Object returnValue)
+	{
+		return METHOD_EXIT_MARKER + argToString(returnValue);
+	}
 
 	public abstract void debug(final String msg);
 
@@ -223,6 +237,81 @@ public abstract class Logger
 	 */
 	public abstract void debug(final Throwable ex, final String messageTemplate, final Object... args);
 
+	public abstract void error(final String msg);
+
+	/**
+	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
+	 * @param arg Argument referenced by the format specifiers in the message template.
+	 */
+	public abstract void error(final String messageTemplate, final Object arg);
+
+	/**
+	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
+	 * @param arg1 Argument referenced by the format specifiers in the message template.
+	 * @param arg2 Argument referenced by the format specifiers in the message template.
+	 */
+	public abstract void error(final String messageTemplate, final Object arg1, final Object arg2);
+
+	/**
+	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
+	 * @param arg1 Argument referenced by the format specifiers in the message template.
+	 * @param arg2 Argument referenced by the format specifiers in the message template.
+	 * @param arg3 Argument referenced by the format specifiers in the message template.
+	 */
+	public abstract void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3);
+
+	/**
+	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
+	 * @param arg1 Argument referenced by the format specifiers in the message template.
+	 * @param arg2 Argument referenced by the format specifiers in the message template.
+	 * @param arg3 Argument referenced by the format specifiers in the message template.
+	 * @param arg4 Argument referenced by the format specifiers in the message template.
+	 */
+	public abstract void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4);
+
+	/**
+	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
+	 * @param arg1 Argument referenced by the format specifiers in the message template.
+	 * @param arg2 Argument referenced by the format specifiers in the message template.
+	 * @param arg3 Argument referenced by the format specifiers in the message template.
+	 * @param arg4 Argument referenced by the format specifiers in the message template.
+	 * @param arg5 Argument referenced by the format specifiers in the message template.
+	 */
+	public abstract void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
+
+	public abstract void error(final Throwable ex);
+
+	public abstract void error(final Throwable ex, final String msg);
+
+	/**
+	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
+	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
+	 */
+	public abstract void error(final Throwable ex, final String messageTemplate, final Object... args);
+
+	/**
+	 * Creates a log entry at ERROR level and always logs the full stack trace.
+	 */
+	public abstract void fatal(final Throwable ex);
+
+	/**
+	 * Creates a log entry at ERROR level and always logs the full stack trace.
+	 */
+	public abstract void fatal(final Throwable ex, final String msg);
+
+	/**
+	 * Creates a log entry at ERROR level and always logs the full stack trace.
+	 *
+	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
+	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
+	 */
+	public abstract void fatal(final Throwable ex, final String messageTemplate, final Object... args);
+
+	/**
+	 * @return the loggers name
+	 */
+	public abstract String getName();
+
 	public abstract void info(final String msg);
 
 	/**
@@ -270,15 +359,27 @@ public abstract class Logger
 	public abstract void info(final Throwable ex, final String msg);
 
 	/**
-	 * Logs the instantiation of the given object at INFO level including the corresponding class's implementation version.
-	 */
-	public abstract void infoNew(final Object newInstance);
-
-	/**
 	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public abstract void info(final Throwable ex, final String messageTemplate, final Object... args);
+
+	/**
+	 * Logs the instantiation of the given object at INFO level including the corresponding class's implementation version.
+	 */
+	public abstract void infoNew(final Object newInstance);
+
+	public abstract boolean isDebugEnabled();
+
+	public abstract boolean isErrorEnabled();
+
+	public abstract boolean isInfoEnabled();
+
+	public abstract boolean isTraceEnabled();
+
+	public abstract boolean isWarnEnabled();
+
+	protected abstract void trace(final Method location, final String msg);
 
 	public abstract void trace(final String msg);
 
@@ -322,6 +423,8 @@ public abstract class Logger
 	 */
 	public abstract void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
 
+	public abstract void trace(final Throwable ex);
+
 	public abstract void trace(final Throwable ex, final String msg);
 
 	/**
@@ -329,8 +432,6 @@ public abstract class Logger
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public abstract void trace(final Throwable ex, final String messageTemplate, final Object... args);
-
-	public abstract void trace(final Throwable ex);
 
 	/**
 	 * Logs a method entry
@@ -425,74 +526,4 @@ public abstract class Logger
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public abstract void warn(final Throwable ex, final String messageTemplate, final Object... args);
-
-	public abstract void error(final String msg);
-
-	/**
-	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-	 * @param arg Argument referenced by the format specifiers in the message template.
-	 */
-	public abstract void error(final String messageTemplate, final Object arg);
-
-	/**
-	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-	 * @param arg1 Argument referenced by the format specifiers in the message template.
-	 * @param arg2 Argument referenced by the format specifiers in the message template.
-	 */
-	public abstract void error(final String messageTemplate, final Object arg1, final Object arg2);
-
-	/**
-	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-	 * @param arg1 Argument referenced by the format specifiers in the message template.
-	 * @param arg2 Argument referenced by the format specifiers in the message template.
-	 * @param arg3 Argument referenced by the format specifiers in the message template.
-	 */
-	public abstract void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3);
-
-	/**
-	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-	 * @param arg1 Argument referenced by the format specifiers in the message template.
-	 * @param arg2 Argument referenced by the format specifiers in the message template.
-	 * @param arg3 Argument referenced by the format specifiers in the message template.
-	 * @param arg4 Argument referenced by the format specifiers in the message template.
-	 */
-	public abstract void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4);
-
-	/**
-	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-	 * @param arg1 Argument referenced by the format specifiers in the message template.
-	 * @param arg2 Argument referenced by the format specifiers in the message template.
-	 * @param arg3 Argument referenced by the format specifiers in the message template.
-	 * @param arg4 Argument referenced by the format specifiers in the message template.
-	 * @param arg5 Argument referenced by the format specifiers in the message template.
-	 */
-	public abstract void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
-
-	public abstract void error(final Throwable ex);
-
-	public abstract void error(final Throwable ex, final String msg);
-
-	/**
-	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
-	 */
-	public abstract void error(final Throwable ex, final String messageTemplate, final Object... args);
-
-	/**
-	 * Creates a log entry at ERROR level and always logs the full stack trace.
-	 */
-	public abstract void fatal(final Throwable ex);
-
-	/**
-	 * Creates a log entry at ERROR level and always logs the full stack trace.
-	 */
-	public abstract void fatal(final Throwable ex, final String msg);
-
-	/**
-	 * Creates a log entry at ERROR level and always logs the full stack trace.
-	 *
-	 * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
-	 */
-	public abstract void fatal(final Throwable ex, final String messageTemplate, final Object... args);
 }
