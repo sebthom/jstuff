@@ -87,6 +87,73 @@ public class LoggingTest extends TestCase
 		}
 	};
 
+	public void atest1LoggingJUL()
+	{
+		LoggerConfig.setPreferSLF4J(false);
+		LoggerConfig.setCompactExceptionLogging(true);
+		LoggerConfig.setDebugMessagePrefixEnabled(true);
+
+		assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof JULLogger);
+
+		genericLoggerTest();
+	}
+
+	public void atestCreateLogged()
+	{
+		LoggerConfig.setPreferSLF4J(false);
+		LoggerConfig.setCompactExceptionLogging(false);
+		LoggerConfig.setDebugMessagePrefixEnabled(true);
+
+		for (final Handler handler : ROOT_LOGGER.getHandlers())
+			handler.setLevel(java.util.logging.Level.ALL);
+		java.util.logging.Logger.getLogger(Entity.class.getName()).setLevel(java.util.logging.Level.FINEST);
+		final int[] count = new int[1];
+		final Handler h = new Handler()
+		{
+			@Override
+			public void close() throws SecurityException
+			{}
+
+			@Override
+			public void flush()
+			{}
+
+			@Override
+			public void publish(final LogRecord record)
+			{
+				count[0]++;
+				switch (count[0])
+				{
+					case 1 :
+						assertEquals("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])", record.getMessage());
+						break;
+					case 2 :
+						assertTrue(record.getMessage().startsWith("methodA():EXIT  << [foo, [bar]] "));
+						break;
+					case 3 :
+						assertEquals("methodB():ENTRY >> ()", record.getMessage());
+						break;
+					case 4 :
+						assertTrue(record.getMessage().startsWith("methodB():EXIT  << *void* "));
+						break;
+				}
+			}
+		};
+		ROOT_LOGGER.addHandler(h);
+		try
+		{
+			final Entity entity = new Entity();
+			final InterfaceA wrapped = Logger.createLogged(entity, InterfaceA.class, InterfaceB.class);
+			wrapped.methodA(1, "foo", "bar");
+
+			((InterfaceB) wrapped).methodB();
+		}
+		finally
+		{
+			ROOT_LOGGER.removeHandler(h);
+		}
+	}
+
 	private void coolMethod(final String label, final int number, final boolean flag, final Class< ? > clazz, final Object obj)
 	{
 		LOG.traceEntry();
@@ -146,8 +213,8 @@ public class LoggingTest extends TestCase
 		try
 		{
 			System.out.println("LOGGER LEVEL = DEFAULT (INFO) ****************");
-			assertEquals(true, LOG.isInfoEnabled());
-			assertEquals(false, LOG.isDebugEnabled());
+			assertTrue(LOG.isInfoEnabled());
+			assertFalse(LOG.isDebugEnabled());
 			count[0] = 0;
 			coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
 			assertEquals(5, count[0]);
@@ -155,8 +222,8 @@ public class LoggingTest extends TestCase
 			Threads.sleep(50);
 			System.out.println("LOGGER LEVEL = INFO **************************");
 			java.util.logging.Logger.getLogger(LOG.getName()).setLevel(java.util.logging.Level.INFO);
-			assertEquals(true, LOG.isInfoEnabled());
-			assertEquals(false, LOG.isDebugEnabled());
+			assertTrue(LOG.isInfoEnabled());
+			assertFalse(LOG.isDebugEnabled());
 			count[0] = 0;
 			coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
 			assertEquals(5, count[0]);
@@ -164,7 +231,7 @@ public class LoggingTest extends TestCase
 			Threads.sleep(50);
 			System.out.println("LOGGER LEVEL = FINEST **************************");
 			java.util.logging.Logger.getLogger(LOG.getName()).setLevel(java.util.logging.Level.FINEST);
-			assertEquals(true, LOG.isTraceEnabled());
+			assertTrue(LOG.isTraceEnabled());
 			count[0] = 0;
 			coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
 			assertEquals(12, count[0]);
@@ -172,10 +239,10 @@ public class LoggingTest extends TestCase
 			Threads.sleep(50);
 			System.out.println("LOGGER LEVEL = SEVERE (INHERTIED) ************");
 			ROOT_LOGGER.setLevel(java.util.logging.Level.SEVERE);
-			assertEquals(true, LOG.isTraceEnabled());
+			assertTrue(LOG.isTraceEnabled());
 			java.util.logging.Logger.getLogger(LOG.getName()).setLevel(null);
-			assertEquals(false, LOG.isWarnEnabled());
-			assertEquals(true, LOG.isErrorEnabled());
+			assertFalse(LOG.isWarnEnabled());
+			assertTrue(LOG.isErrorEnabled());
 			count[0] = 0;
 			coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
 			assertEquals(3, count[0]);
@@ -189,6 +256,8 @@ public class LoggingTest extends TestCase
 	@Override
 	protected void setUp() throws Exception
 	{
+		System.out.println(LOG.isDebugEnabled());
+
 		System.out.println("############################################");
 		System.out.println("Resetting loggers...");
 		System.out.println("############################################");
@@ -203,19 +272,10 @@ public class LoggingTest extends TestCase
 		Threads.sleep(50);
 	}
 
-	public void test1LoggingJUL()
-	{
-		LoggerConfig.setPreferSLF4J(false);
-		LoggerConfig.setCompactExceptionLogging(true);
-		LoggerConfig.setDebugMessagePrefixEnabled(true);
-
-		assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof JULLogger);
-
-		genericLoggerTest();
-	}
-
 	public void test2LoggingSLF4J()
 	{
+		System.out.println(LOG.isDebugEnabled());
+
 		LoggerConfig.setPreferSLF4J(true);
 		LoggerConfig.setCompactExceptionLogging(false);
 		LoggerConfig.setDebugMessagePrefixEnabled(false);
@@ -223,61 +283,5 @@ public class LoggingTest extends TestCase
 		assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof SLF4JLogger);
 
 		genericLoggerTest();
-	}
-
-	public void testCreateLogged()
-	{
-		LoggerConfig.setPreferSLF4J(false);
-		LoggerConfig.setCompactExceptionLogging(false);
-		LoggerConfig.setDebugMessagePrefixEnabled(true);
-
-		for (final Handler handler : ROOT_LOGGER.getHandlers())
-			handler.setLevel(java.util.logging.Level.ALL);
-		java.util.logging.Logger.getLogger(Entity.class.getName()).setLevel(java.util.logging.Level.FINEST);
-		final int[] count = new int[1];
-		final Handler h = new Handler()
-		{
-			@Override
-			public void close() throws SecurityException
-			{}
-
-			@Override
-			public void flush()
-			{}
-
-			@Override
-			public void publish(final LogRecord record)
-			{
-				count[0]++;
-				switch (count[0])
-				{
-					case 1 :
-						assertEquals("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])", record.getMessage());
-						break;
-					case 2 :
-						assertTrue(record.getMessage().startsWith("methodA():EXIT  << [foo, [bar]] "));
-						break;
-					case 3 :
-						assertEquals("methodB():ENTRY >> ()", record.getMessage());
-						break;
-					case 4 :
-						assertTrue(record.getMessage().startsWith("methodB():EXIT  << *void* "));
-						break;
-				}
-			}
-		};
-		ROOT_LOGGER.addHandler(h);
-		try
-		{
-			final Entity entity = new Entity();
-			final InterfaceA wrapped = Logger.createLogged(entity, InterfaceA.class, InterfaceB.class);
-			wrapped.methodA(1, "foo", "bar");
-
-			((InterfaceB) wrapped).methodB();
-		}
-		finally
-		{
-			ROOT_LOGGER.removeHandler(h);
-		}
 	}
 }
