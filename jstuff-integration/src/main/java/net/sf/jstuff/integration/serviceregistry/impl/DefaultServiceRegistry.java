@@ -44,7 +44,7 @@ import net.sf.jstuff.integration.serviceregistry.ServiceUnavailableException;
  */
 public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRegistryMBean
 {
-	protected final class ServiceEndpointConfig
+	public final class ServiceEndpointConfig
 	{
 		private final String serviceEndpointId;
 		private Object activeService;
@@ -95,7 +95,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		}
 	}
 
-	protected static class ServiceProxyInvocationHandler<SERVICE_INTERFACE> implements InvocationHandler
+	public static class ServiceProxyInvocationHandler<SERVICE_INTERFACE> implements InvocationHandler
 	{
 		private final Class<SERVICE_INTERFACE> serviceInterface;
 		private final ServiceEndpointConfig serviceEndpointConfig;
@@ -119,8 +119,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 			final String methodName = method.getName();
 			if (method.getDeclaringClass() == ServiceProxy.class)
 			{
-				if ("isServiceAvailable".equals(methodName)) return getActiveServiceIfCompatible() != null;
 				if ("get".equals(methodName)) return proxy;
+				if ("isServiceAvailable".equals(methodName)) return getActiveServiceIfCompatible() != null;
 				if ("getServiceEndpointId".equals(methodName)) return serviceEndpointConfig.serviceEndpointId;
 				if ("getServiceInterface".equals(methodName)) return serviceInterface;
 			}

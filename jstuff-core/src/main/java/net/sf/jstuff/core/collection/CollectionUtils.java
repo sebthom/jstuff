@@ -397,10 +397,10 @@ public abstract class CollectionUtils
 
 	public static <K, V, KK extends K, VV extends V> LinkedHashMap<K, V> newLinkedHashMap(final KK firstKey, final VV firstValue,
 			final Object... moreInitialKeysAndValues)
-	{
+			{
 		final LinkedHashMap<K, V> m = new LinkedHashMap<K, V>(1 + moreInitialKeysAndValues.length / 2);
 		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
-	}
+			}
 
 	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final Object[] initialKeysAndValues)
 	{
@@ -417,85 +417,85 @@ public abstract class CollectionUtils
 	public static <T> ThreadLocal<ArrayList<T>> newThreadLocalArrayList()
 	{
 		return new ThreadLocal<ArrayList<T>>()
-			{
-				@Override
-				public ArrayList<T> initialValue()
 				{
-					return new ArrayList<T>();
-				}
-			};
+			@Override
+			public ArrayList<T> initialValue()
+			{
+				return new ArrayList<T>();
+			}
+				};
 	}
 
 	public static <K, V> ThreadLocal<HashMap<K, V>> newThreadLocalHashMap()
 	{
 		return new ThreadLocal<HashMap<K, V>>()
-			{
-				@Override
-				public HashMap<K, V> initialValue()
 				{
-					return new HashMap<K, V>();
-				}
-			};
+			@Override
+			public HashMap<K, V> initialValue()
+			{
+				return new HashMap<K, V>();
+			}
+				};
 	}
 
 	public static <T> ThreadLocal<HashSet<T>> newThreadLocalHashSet()
 	{
 		return new ThreadLocal<HashSet<T>>()
-			{
-				@Override
-				public HashSet<T> initialValue()
 				{
-					return new HashSet<T>();
-				}
-			};
+			@Override
+			public HashSet<T> initialValue()
+			{
+				return new HashSet<T>();
+			}
+				};
 	}
 
 	public static <T> ThreadLocal<IdentityHashSet<T>> newThreadLocalIdentitySet()
 	{
 		return new ThreadLocal<IdentityHashSet<T>>()
-			{
-				@Override
-				public IdentityHashSet<T> initialValue()
 				{
-					return new IdentityHashSet<T>();
-				}
-			};
+			@Override
+			public IdentityHashSet<T> initialValue()
+			{
+				return new IdentityHashSet<T>();
+			}
+				};
 	}
 
 	public static <T> ThreadLocal<LinkedList<T>> newThreadLocalLinkedList()
 	{
 		return new ThreadLocal<LinkedList<T>>()
-			{
-				@Override
-				public LinkedList<T> initialValue()
 				{
-					return new LinkedList<T>();
-				}
-			};
+			@Override
+			public LinkedList<T> initialValue()
+			{
+				return new LinkedList<T>();
+			}
+				};
 	}
 
 	public static <K, V> ThreadLocal<WeakHashMap<K, V>> newThreadLocalWeakHashMap()
 	{
 		return new ThreadLocal<WeakHashMap<K, V>>()
-			{
-				@Override
-				public WeakHashMap<K, V> initialValue()
 				{
-					return new WeakHashMap<K, V>();
-				}
-			};
+			@Override
+			public WeakHashMap<K, V> initialValue()
+			{
+				return new WeakHashMap<K, V>();
+			}
+				};
 	}
 
 	public static <T> ThreadLocal<WeakHashSet<T>> newThreadLocalWeakHashSet()
 	{
 		return new ThreadLocal<WeakHashSet<T>>()
-			{
-				@Override
-				public WeakHashSet<T> initialValue()
 				{
-					return new WeakHashSet<T>();
-				}
-			};
+			@Override
+			public WeakHashSet<T> initialValue()
+			{
+				return new WeakHashSet<T>();
+			}
+				};
 	}
 
 	public static <K, V> TreeMap<K, V> newTreeMap()
@@ -510,10 +510,10 @@ public abstract class CollectionUtils
 
 	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator, final KK firstKey,
 			final VV firstValue, final Object... moreInitialKeysAndValues)
-	{
+			{
 		final TreeMap<K, V> m = new TreeMap<K, V>(keyComparator);
 		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
-	}
+			}
 
 	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator, final Object[] initialKeysAndValues)
 	{
@@ -612,12 +612,12 @@ public abstract class CollectionUtils
 		Args.notNull("it", it);
 
 		return new Iterable<T>()
-			{
-				public Iterator<T> iterator()
 				{
-					return it;
-				}
-			};
+			public Iterator<T> iterator()
+			{
+				return it;
+			}
+				};
 	}
 
 	public static <T> List<T> toList(final Iterator<T> it)
@@ -677,6 +677,16 @@ public abstract class CollectionUtils
 		if (source == null) return null;
 
 		final List<T> target = newArrayList(source.size());
+		for (final S sourceItem : source)
+			target.add(op.apply(sourceItem));
+		return target;
+	}
+
+	public static <S, T> Set<T> transform(final Set<S> source, final Function< ? super S, ? extends T> op)
+	{
+		if (source == null) return null;
+
+		final Set<T> target = newHashSet(source.size());
 		for (final S sourceItem : source)
 			target.add(op.apply(sourceItem));
 		return target;

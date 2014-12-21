@@ -29,8 +29,8 @@ import org.springframework.beans.factory.InitializingBean;
  * <bean id="myServiceFromTheRegistry" class="net.sf.jstuff.integration.serviceregistry.support.ServiceAsSpringBean">
  *     <property name="serviceRegistry" ref="mySpringManagedServiceRegistry" />
  *     <!-- if serviceEndpointId is not specified the fully qualified class name of the interface will be used -->
- *     <property name="serviceEndpointId" value="com.example.MySpringManagedService" />
- *     <property name="serviceInterface" value="com.example.MySpringManagedService" />
+ *     <property name="serviceEndpointId" value="com.example.MyService" />
+ *     <property name="serviceInterface" value="com.example.MyService" />
  * </bean>
  * }
  * </pre>
@@ -76,6 +76,14 @@ public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean
 	public boolean isSingleton()
 	{
 		return true;
+	}
+
+	public synchronized void setServiceEndpointId(final String serviceEndpointId)
+	{
+		Args.notNull("serviceEndpointId", serviceEndpointId);
+		Assert.isFalse(isInitialized, "Already initialized!");
+
+		this.serviceEndpointId = serviceEndpointId;
 	}
 
 	public synchronized void setServiceInterface(final Class<T> serviceInterface)
