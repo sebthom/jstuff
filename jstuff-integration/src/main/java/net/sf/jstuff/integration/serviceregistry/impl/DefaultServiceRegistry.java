@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.serviceregistry.impl;
 
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 import net.sf.jstuff.core.collection.WeakHashSet;
 import net.sf.jstuff.core.logging.Logger;
@@ -42,9 +46,9 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 {
 	protected final class ServiceEndpointConfig
 	{
-		protected final String serviceEndpointId;
-		protected Object activeService;
-		protected Class< ? > activeServiceInterface;
+		private final String serviceEndpointId;
+		private Object activeService;
+		private Class< ? > activeServiceInterface;
 
 		/**
 		 * All service proxy instances handed out to service consumers for the given end point and still referenced somewhere in the JVM
@@ -61,10 +65,15 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		{
 			for (final ServiceProxy< ? > serviceProxy : issuedServiceProxies)
 			{
-				if (serviceProxy.getServiceEndpoint().getServiceInterface() == serviceInterface) //
+				if (serviceProxy.getServiceInterface() == serviceInterface) //
 					return (ServiceProxy<SERVICE_INTERFACE>) serviceProxy;
 			}
 			return null;
+		}
+
+		public String getServiceEndpointId()
+		{
+			return serviceEndpointId;
 		}
 
 		private <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> issueServiceProxy(final Class<SERVICE_INTERFACE> serviceInterface)
@@ -86,33 +95,34 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		}
 	}
 
-	private static final class ServiceProxyInvocationHandler<SERVICE_INTERFACE> implements InvocationHandler
+	protected static class ServiceProxyInvocationHandler<SERVICE_INTERFACE> implements InvocationHandler
 	{
-		private final DefaultServiceEndpoint serviceEndpoint;
+		private final Class<SERVICE_INTERFACE> serviceInterface;
 		private final ServiceEndpointConfig serviceEndpointConfig;
 
 		public ServiceProxyInvocationHandler(final ServiceEndpointConfig serviceEndpointConfig, final Class<SERVICE_INTERFACE> serviceInterface)
 		{
 			this.serviceEndpointConfig = serviceEndpointConfig;
-			this.serviceEndpoint = new DefaultServiceEndpoint(serviceEndpointConfig.serviceEndpointId, serviceInterface);
+			this.serviceInterface = serviceInterface;
 		}
 
-		private Object getActiveServiceIfCompatible()
+		protected Object getActiveServiceIfCompatible()
 		{
 			final Object activeService = serviceEndpointConfig.activeService;
-			if (activeService != null && serviceEndpoint.serviceInterface.isAssignableFrom(serviceEndpointConfig.activeServiceInterface)) return activeService;
+			if (activeService != null && serviceInterface.isAssignableFrom(serviceEndpointConfig.activeServiceInterface)) //
+				return activeService;
 			return null;
 		}
 
 		public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 		{
-			final Object service = getActiveServiceIfCompatible();
 			final String methodName = method.getName();
 			if (method.getDeclaringClass() == ServiceProxy.class)
 			{
-				if ("isServiceAvailable".equals(methodName)) return service != null;
+				if ("isServiceAvailable".equals(methodName)) return getActiveServiceIfCompatible() != null;
 				if ("get".equals(methodName)) return proxy;
-				if ("getServiceEndpoint".equals(methodName)) return serviceEndpoint;
+				if ("getServiceEndpointId".equals(methodName)) return serviceEndpointConfig.serviceEndpointId;
+				if ("getServiceInterface".equals(methodName)) return serviceInterface;
 			}
 
 			final int methodParamCount = method.getParameterTypes().length;
@@ -122,18 +132,19 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 					return hashCode();
 				if ("toString".equals(methodName)) //
 					return ServiceProxy.class.getName() //
-							+ "[serviceEndpointId=" + serviceEndpoint.serviceEndpointId //
-							+ ", serviceInterface=" + serviceEndpoint.serviceInterface //
-							+ ", service=" + service + "]";
+							+ "[serviceEndpointId=" + serviceEndpointConfig.serviceEndpointId //
+							+ ", serviceInterface=" + serviceInterface //
+							+ ", service=" + getActiveServiceIfCompatible() + "]";
 			}
 			else if (methodParamCount == 1)
 			{
 				if ("equals".equals(methodName)) return proxy == args[0];
 			}
 
-			if (service == null) throw new ServiceUnavailableException(serviceEndpoint);
+			final Object service = getActiveServiceIfCompatible();
+			if (service == null) throw new ServiceUnavailableException(serviceEndpointConfig.serviceEndpointId, serviceInterface);
 
-			return method.invoke(serviceEndpointConfig.activeService, args);
+			return method.invoke(service, args);
 		}
 	}
 
@@ -213,6 +224,9 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		}
 	}
 
+	/**
+	 * This method is intended for subclassing
+	 */
 	protected <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointConfig serviceEndpointConfig,
 			final Class<SERVICE_INTERFACE> serviceInterface)
 	{
@@ -305,6 +319,32 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 	protected int getServieEndpointsCount()
 	{
 		return serviceEndpoints.size();
+	}
+
+	/**
+	 * @param mbeanServer if null, the platform mbeanServer is used
+	 * @param mbeanName if null, an mbean name based on the package and class name of the registry is used
+	 */
+	public void registerAsMBean(MBeanServer mbeanServer, String mbeanName)
+	{
+		try
+		{
+			if (mbeanName == null)
+			{
+				mbeanName = getClass().getPackage().getName() + ":type=" + this.getClass().getSimpleName();
+			}
+			final ObjectName mbeanObjectName = new ObjectName(mbeanName);
+			LOG.info("Registering MBean %s", mbeanName);
+			if (mbeanServer == null)
+			{
+				mbeanServer = ManagementFactory.getPlatformMBeanServer();
+			}
+			mbeanServer.registerMBean(this, mbeanObjectName);
+		}
+		catch (final Exception ex)
+		{
+			LOG.error(ex);
+		}
 	}
 
 	public boolean removeService(final String serviceEndpointId, final Object serviceInstance) throws IllegalArgumentException

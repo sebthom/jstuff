@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.serviceregistry;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -24,7 +24,7 @@ public interface ServiceRegistry
 	 * <p>
 	 * A list of all service end points with registered services.
 	 */
-	List<ServiceEndpoint> getActiveServiceEndpoints();
+	Collection<ServiceEndpoint> getActiveServiceEndpoints();
 
 	<SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(final String serviceEndpointId, final Class<SERVICE_INTERFACE> serviceInterface);
 

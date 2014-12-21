@@ -21,17 +21,23 @@ public class ServiceUnavailableException extends IllegalStateException
 {
 	private static final long serialVersionUID = 1L;
 
-	private final ServiceEndpoint serviceEndpoint;
+	private final String serviceEndpointId;
+	private final Class< ? > serviceInterface;
 
-	public ServiceUnavailableException(final ServiceEndpoint serviceEndpoint)
+	public ServiceUnavailableException(final String serviceEndpointId, final Class< ? > serviceInterface)
 	{
-		super(serviceEndpoint + " is currently not available.");
-
-		this.serviceEndpoint = serviceEndpoint;
+		super("A service of type [" + serviceInterface.getName() + "] at endpoint [" + serviceEndpointId + "] is currently not available.");
+		this.serviceInterface = serviceInterface;
+		this.serviceEndpointId = serviceEndpointId;
 	}
 
-	public ServiceEndpoint getServiceEndpoint()
+	public String getServiceEndpointId()
 	{
-		return serviceEndpoint;
+		return serviceEndpointId;
+	}
+
+	public Class< ? > getServiceInterface()
+	{
+		return serviceInterface;
 	}
 }

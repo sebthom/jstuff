@@ -111,8 +111,8 @@ public class ServiceRegistryTest extends TestCase
 		assertNotSame(srv1, srv1Impl);
 		assertTrue(srv1 instanceof ServiceProxy);
 		assertSame(srv1, srv1Proxy);
-		assertEquals(Service1.ENDPOINT_ID, srv1Proxy.getServiceEndpoint().getServiceEndpointId());
-		assertSame(Service1.class, srv1Proxy.getServiceEndpoint().getServiceInterface());
+		assertEquals(Service1.ENDPOINT_ID, srv1Proxy.getServiceEndpointId());
+		assertSame(Service1.class, srv1Proxy.getServiceInterface());
 		assertSame(srv1Proxy, registry.getService(Service1.ENDPOINT_ID, Service1.class));
 
 		// test adding another service instance to the same endpoint

@@ -25,7 +25,9 @@ public interface ServiceProxy<SERVICE_INTERFACE>
 	 */
 	SERVICE_INTERFACE get();
 
-	ServiceEndpoint getServiceEndpoint();
+	String getServiceEndpointId();
+
+	Class<SERVICE_INTERFACE> getServiceInterface();
 
 	/**
 	 * @return true if the represented service is available
