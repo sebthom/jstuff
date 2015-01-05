@@ -112,6 +112,9 @@ public abstract class Fields extends Members
 		Args.notNull("obj", obj);
 		Args.notNull("field", field);
 
+		if (isFinal(field))
+			throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field.getName());
+
 		try
 		{
 			ensureAccessible(field);
@@ -124,6 +127,44 @@ public abstract class Fields extends Members
 	}
 
 	public static void write(final Object obj, final String fieldName, final Object value) throws ReflectionException
+	{
+		Args.notNull("obj", obj);
+		Args.notNull("fieldName", fieldName);
+
+		final Field field = findRecursive(obj.getClass(), fieldName);
+		if (field == null) throw new ReflectionException("Field with name [" + fieldName + "] not found in object [" + obj + "]");
+
+		if (isFinal(field))
+			throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field.getName());
+
+		try
+		{
+			ensureAccessible(field);
+			field.set(obj, value);
+		}
+		catch (final Exception ex)
+		{
+			throw new SettingFieldValueFailedException(field, obj, ex);
+		}
+	}
+
+	public static void writeIgnoringFinal(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException
+	{
+		Args.notNull("obj", obj);
+		Args.notNull("field", field);
+
+		try
+		{
+			ensureAccessible(field);
+			field.set(obj, value);
+		}
+		catch (final Exception ex)
+		{
+			throw new SettingFieldValueFailedException(field, obj, ex);
+		}
+	}
+
+	public static void writeIgnoringFinal(final Object obj, final String fieldName, final Object value) throws ReflectionException
 	{
 		Args.notNull("obj", obj);
 		Args.notNull("fieldName", fieldName);

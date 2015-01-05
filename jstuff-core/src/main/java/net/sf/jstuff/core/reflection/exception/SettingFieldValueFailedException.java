@@ -28,6 +28,14 @@ public class SettingFieldValueFailedException extends ReflectionException
 	private final transient Object targetObject;
 	private final Serializable targetSerializableObject;
 
+	public SettingFieldValueFailedException(final Field field, final Object targetObject, final String message)
+	{
+		super(message);
+		this.field = SerializableField.get(field);
+		this.targetObject = targetObject;
+		targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
+	}
+
 	public SettingFieldValueFailedException(final Field field, final Object targetObject, final Throwable cause)
 	{
 		super("Setting value of field " + field.getName() + " failed.", cause);
