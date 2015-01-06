@@ -45,9 +45,9 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 	<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? extends TARGET_CLASS>> //
 	BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE> of(final Class<BUILDER_INTERFACE> builderInterface, final Class<TARGET_CLASS> targetClass,
 			final Object... constructorArgs)
-			{
+	{
 		return new BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE>(builderInterface, targetClass, constructorArgs);
-			}
+	}
 
 	private final Class<BUILDER_INTERFACE> builderInterface;
 	private final Class<TARGET_CLASS> targetClass;
@@ -73,70 +73,70 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 	public BUILDER_INTERFACE create()
 	{
 		return Proxies.create(builderInterface, new InvocationHandler()
-		{
-			final Map<String, Object> properties = newHashMap();
-
-			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
-				if ("build".equals(method.getName()) && method.getParameterTypes().length == 0 && method.getReturnType().isAssignableFrom(targetClass))
+				final Map<String, Object> properties = newHashMap();
+
+				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{
-					final TARGET_CLASS target = Types.newInstance(targetClass, constructorArgs);
-					for (final Entry<String, Object> property : properties.entrySet())
-						Types.writeProperty(target, property.getKey(), property.getValue());
-
-					// collecting @OnPostBuild methods
-					final List<Method> onPostBuilds = newArrayList(2);
-					Types.visit(targetClass, new DefaultClassVisitor()
+					if ("build".equals(method.getName()) && method.getParameterTypes().length == 0 && method.getReturnType().isAssignableFrom(targetClass))
 					{
-						@Override
-						public boolean isVisitingFields(final Class< ? > clazz)
-						{
-							return false;
-						}
+						final TARGET_CLASS target = Types.newInstance(targetClass, constructorArgs);
+						for (final Entry<String, Object> property : properties.entrySet())
+							Types.writeProperty(target, property.getKey(), property.getValue());
 
-						@Override
-						public boolean isVisitingInterfaces(final Class< ? > clazz)
-						{
-							return false;
-						}
+						// collecting @OnPostBuild methods
+						final List<Method> onPostBuilds = newArrayList(2);
+						Types.visit(targetClass, new DefaultClassVisitor()
+							{
+								@Override
+								public boolean isVisitingFields(final Class< ? > clazz)
+								{
+									return false;
+								}
 
-						@Override
-						public boolean isVisitingMethod(final Method method)
-						{
-							return !Methods.isAbstract(method) && !Methods.isStatic(method) && Annotations.exists(method, OnPostBuild.class, false);
-						}
+								@Override
+								public boolean isVisitingInterfaces(final Class< ? > clazz)
+								{
+									return false;
+								}
 
-						@Override
-						public boolean visit(final Method method)
-						{
-							onPostBuilds.add(method);
-							return true;
-						}
-					});
+								@Override
+								public boolean isVisitingMethod(final Method method)
+								{
+									return !Methods.isAbstract(method) && !Methods.isStatic(method) && Annotations.exists(method, OnPostBuild.class, false);
+								}
 
-					// invoking @OnPostBuild methods
-					for (int i = onPostBuilds.size() - 1; i >= 0; i--)
-						try
-					{
-							Methods.invoke(target, onPostBuilds.get(i), ArrayUtils.EMPTY_OBJECT_ARRAY);
+								@Override
+								public boolean visit(final Method method)
+								{
+									onPostBuilds.add(method);
+									return true;
+								}
+							});
+
+						// invoking @OnPostBuild methods
+						for (int i = onPostBuilds.size() - 1; i >= 0; i--)
+							try
+							{
+								Methods.invoke(target, onPostBuilds.get(i), ArrayUtils.EMPTY_OBJECT_ARRAY);
+							}
+							catch (final InvokingMethodFailedException ex)
+							{
+								if (ex.getCause() instanceof InvocationTargetException) throw (RuntimeException) ex.getCause().getCause();
+								throw ex;
+							}
+						return target;
 					}
-					catch (final InvokingMethodFailedException ex)
+
+					if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0) return builderInterface.getName() + "@" + hashCode();
+
+					if (method.getParameterTypes().length == 1 && method.getReturnType().isAssignableFrom(builderInterface))
 					{
-						if (ex.getCause() instanceof InvocationTargetException) throw (RuntimeException) ex.getCause().getCause();
-						throw ex;
+						properties.put(method.getName(), args[0]);
+						return proxy;
 					}
-					return target;
+					throw new UnsupportedOperationException(method.toString());
 				}
-
-				if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0) return builderInterface.getName() + "@" + hashCode();
-
-				if (method.getParameterTypes().length == 1 && method.getReturnType().isAssignableFrom(builderInterface))
-				{
-					properties.put(method.getName(), args[0]);
-					return proxy;
-				}
-				throw new UnsupportedOperationException();
-			}
-		});
+			});
 	}
 }
