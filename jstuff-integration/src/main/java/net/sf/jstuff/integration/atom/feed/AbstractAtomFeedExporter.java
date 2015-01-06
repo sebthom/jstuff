@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.jstuff.core.StringUtils;
 import net.sf.jstuff.core.date.DateUtils;
 
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.remoting.support.RemotingSupport;
 import org.springframework.web.HttpRequestHandler;
 
@@ -76,7 +76,9 @@ public abstract class AbstractAtomFeedExporter extends RemotingSupport implement
 				final String[] tagsArray = StringUtils.split(tags);
 				final AtomCategory[] cats = new AtomCategory[tagsArray.length];
 				for (int i = 0, l = tagsArray.length; i < l; i++)
+				{
 					cats[i] = new AtomCategory(tagsArray[i]);
+				}
 				entry.setCategories(cats);
 			}
 			entries.add(entry);
@@ -126,8 +128,7 @@ public abstract class AbstractAtomFeedExporter extends RemotingSupport implement
 
 	protected String getLogoURL(final HttpServletRequest request)
 	{
-		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
-				+ "/images/logo.png";
+		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/images/logo.png";
 	}
 
 	protected abstract List<SimpleEntry< ? >> getSimpleEntries(final HttpServletRequest request);

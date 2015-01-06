@@ -18,8 +18,8 @@ import java.lang.reflect.Method;
 import net.sf.jstuff.core.reflection.SerializableMethod;
 import net.sf.jstuff.core.validation.Args;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

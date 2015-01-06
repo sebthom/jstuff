@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.userregistry;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

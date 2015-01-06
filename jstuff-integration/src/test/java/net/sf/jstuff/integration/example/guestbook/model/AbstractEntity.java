@@ -17,7 +17,7 @@ import java.util.Date;
 import net.sf.jstuff.core.Identifiable;
 import net.sf.jstuff.core.validation.Args;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

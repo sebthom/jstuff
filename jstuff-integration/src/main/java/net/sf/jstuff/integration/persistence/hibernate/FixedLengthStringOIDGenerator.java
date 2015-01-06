@@ -17,7 +17,7 @@ import java.util.Properties;
 
 import net.sf.jstuff.core.logging.Logger;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.SessionImplementor;
