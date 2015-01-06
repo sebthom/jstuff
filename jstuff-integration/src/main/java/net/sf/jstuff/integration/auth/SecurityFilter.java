@@ -53,7 +53,8 @@ public class SecurityFilter implements Filter
 		// do nothing
 	}
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
+			ServletException
 	{
 		final HttpServletRequest req = (HttpServletRequest) request;
 		HTTP_SERVLET_REQUEST_HOLDER.set(req);
@@ -67,15 +68,17 @@ public class SecurityFilter implements Filter
 		Authentication auth = (Authentication) sess.getAttribute(SESSION_AUTHENTICATION_ATTRIBUTE);
 		try
 		{
-			if (auth == null) if (req.getRemoteUser() != null)
-			{
-				// build a auth object based on form-based login
-				auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(req.getRemoteUser()), (String) sess.getAttribute("j_password"));
-				sess.removeAttribute("j_password");
-				sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, auth);
-			}
-			else
-				auth = DefaultAuthentication.UNBOUND;
+			if (auth == null)
+				if (req.getRemoteUser() != null)
+				{
+					// build a auth object based on form-based login
+					auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(req.getRemoteUser()),
+							(String) sess.getAttribute("j_password"));
+					sess.removeAttribute("j_password");
+					sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, auth);
+				}
+				else
+					auth = DefaultAuthentication.UNBOUND;
 			AuthenticationHolder.setAuthentication(auth);
 
 			wasLoggedInBeforeChain = auth.isAuthenticated();

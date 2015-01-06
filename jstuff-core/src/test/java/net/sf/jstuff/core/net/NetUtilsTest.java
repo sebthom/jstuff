@@ -31,12 +31,10 @@ public class NetUtilsTest extends TestCase
 	public void testIsPortOpen() throws IOException
 	{
 		final ServerSocket serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort());
-		assertTrue(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(),
-				serverSocket.getLocalPort()));
+		assertTrue(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort()));
 
 		NetUtils.closeQuietly(serverSocket);
-		assertFalse(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(),
-				serverSocket.getLocalPort()));
+		assertFalse(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort()));
 	}
 
 	public void testIsReachable()

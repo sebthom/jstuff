@@ -159,8 +159,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 
 			if (srvConfig.activeService == null)
 			{
-				LOG.info("Registering service:\n  serviceEndpointId: %s\n  serviceInterface : %s\n  serviceInstance  : %s", serviceEndpointId,
-						serviceInterface.getName(), serviceInstance);
+				LOG.info("Registering service:\n  serviceEndpointId: %s\n  serviceInterface : %s\n  serviceInstance  : %s",
+						serviceEndpointId, serviceInterface.getName(), serviceInstance);
 				srvConfig.setActiveService(serviceInterface, serviceInstance);
 
 				_cleanup();
@@ -170,8 +170,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 
 			if (srvConfig.activeService == serviceInstance) return false;
 
-			throw new IllegalStateException("Cannot register service [" + serviceInstance + "] at endpoint [" + serviceEndpointId + "] because service ["
-					+ srvConfig.activeService + "] is already registered.");
+			throw new IllegalStateException("Cannot register service [" + serviceInstance + "] at endpoint [" + serviceEndpointId
+					+ "] because service [" + srvConfig.activeService + "] is already registered.");
 		}
 		finally
 		{
@@ -185,8 +185,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 	protected <SERVICE_INTERFACE> ServiceProxyInternal createServiceProxy(final ServiceEndpointState serviceEndpointConfig,
 			final Class<SERVICE_INTERFACE> serviceInterface)
 	{
-		return Proxies.create(new DefaultServiceProxyInvocationHandler<SERVICE_INTERFACE>(serviceEndpointConfig, serviceInterface), ServiceProxyInternal.class,
-				serviceInterface);
+		return Proxies.create(new DefaultServiceProxyInvocationHandler<SERVICE_INTERFACE>(serviceEndpointConfig, serviceInterface),
+				ServiceProxyInternal.class, serviceInterface);
 	}
 
 	public List<ServiceEndpoint> getActiveServiceEndpoints()
@@ -210,7 +210,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		}
 	}
 
-	public <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(final String serviceEndpointId, final Class<SERVICE_INTERFACE> serviceInterface)
+	public <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(final String serviceEndpointId,
+			final Class<SERVICE_INTERFACE> serviceInterface)
 	{
 		Args.notNull("serviceEndpointId", serviceEndpointId);
 		Args.notNull("serviceInterface", serviceInterface);
@@ -222,7 +223,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 			if (srvConfig != null)
 			{
 				@SuppressWarnings("unchecked")
-				final ServiceProxy<SERVICE_INTERFACE> proxy = (ServiceProxy<SERVICE_INTERFACE>) srvConfig.findIssuedServiceProxy(serviceInterface);
+				final ServiceProxy<SERVICE_INTERFACE> proxy = (ServiceProxy<SERVICE_INTERFACE>) srvConfig
+						.findIssuedServiceProxy(serviceInterface);
 				if (proxy != null) return proxy;
 			}
 		}

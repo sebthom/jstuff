@@ -28,8 +28,8 @@ public class EhcacheSupport
 
 	public synchronized Cache getCache()
 	{
-			if (cache == null) cache = cacheManager.getCache(cacheName);
-			return cache;
+		if (cache == null) cache = cacheManager.getCache(cacheName);
+		return cache;
 	}
 
 	/**
@@ -38,8 +38,8 @@ public class EhcacheSupport
 	@Inject
 	public synchronized void setCacheManager(final CacheManager cacheManager)
 	{
-			this.cacheManager = cacheManager;
-			this.cache = null;
+		this.cacheManager = cacheManager;
+		this.cache = null;
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class EhcacheSupport
 	@Inject
 	public synchronized void setCacheName(final String cacheName)
 	{
-			this.cacheName = cacheName;
-			this.cache = null;
+		this.cacheName = cacheName;
+		this.cache = null;
 	}
 }

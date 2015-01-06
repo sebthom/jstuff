@@ -475,8 +475,8 @@ public abstract class Accepts
 		return new Or<V>(first, second);
 	}
 
-	public static <V, PropertyType> Property<V, PropertyType> property(@SuppressWarnings("unused") final Class<V> castingHelper, final String propertyPath,
-			final Accept<PropertyType> accept)
+	public static <V, PropertyType> Property<V, PropertyType> property(@SuppressWarnings("unused") final Class<V> castingHelper,
+			final String propertyPath, final Accept<PropertyType> accept)
 	{
 		return new Property<V, PropertyType>(propertyPath, accept);
 	}

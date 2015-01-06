@@ -59,7 +59,7 @@ public abstract class NetUtils
 		}
 		catch (final IOException ex)
 		{
-			LOG.debug(ex,"Exception occured while closing socket.");
+			LOG.debug(ex, "Exception occured while closing socket.");
 		}
 	}
 
@@ -76,7 +76,7 @@ public abstract class NetUtils
 		}
 		catch (final IOException ex)
 		{
-			LOG.debug(ex,"Exception occured while closing socket.");
+			LOG.debug(ex, "Exception occured while closing socket.");
 		}
 	}
 
@@ -142,7 +142,7 @@ public abstract class NetUtils
 		}
 		catch (final UnknownHostException ex)
 		{
-			LOG.warn(ex,"Cannot determine fully qualified hostname of local host, returning 'localhost' instead.");
+			LOG.warn(ex, "Cannot determine fully qualified hostname of local host, returning 'localhost' instead.");
 			return "localhost";
 		}
 	}
@@ -175,7 +175,7 @@ public abstract class NetUtils
 		}
 		catch (final UnknownHostException ex)
 		{
-			LOG.warn(ex,"Cannot determine short hostname of local host, returning 'localhost' instead.");
+			LOG.warn(ex, "Cannot determine short hostname of local host, returning 'localhost' instead.");
 			return "localhost";
 		}
 	}

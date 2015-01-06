@@ -42,7 +42,8 @@ public class DefaultServiceProxyInvocationHandler<SERVICE_INTERFACE> implements 
 	private final Lock listeners_READ;
 	private final Lock listeners_WRITE;
 
-	public DefaultServiceProxyInvocationHandler(final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface)
+	public DefaultServiceProxyInvocationHandler(final ServiceEndpointState serviceEndpointState,
+			final Class<SERVICE_INTERFACE> serviceInterface)
 	{
 		Args.notNull("serviceEndpointState", serviceEndpointState);
 		Args.notNull("serviceInterface", serviceInterface);

@@ -250,8 +250,8 @@ public class DateTimeHelper implements Serializable
 	public boolean isValidDate(final String date)
 	{
 		return date != null
-				&& (isValidDate(DateFormatStyle.SHORT, date) || isValidDate(DateFormatStyle.MEDIUM, date) || isValidDate(DateFormatStyle.LONG, date) || isValidDate(
-						DateFormatStyle.FULL, date));
+				&& (isValidDate(DateFormatStyle.SHORT, date) || isValidDate(DateFormatStyle.MEDIUM, date)
+						|| isValidDate(DateFormatStyle.LONG, date) || isValidDate(DateFormatStyle.FULL, date));
 	}
 
 	protected boolean isValidDateTime(final DateFormatStyle style, final String dateTime)
@@ -302,8 +302,8 @@ public class DateTimeHelper implements Serializable
 	public boolean isValidTime(final String time)
 	{
 		return time != null
-				&& (isValidTime(DateFormatStyle.SHORT, time) || isValidTime(DateFormatStyle.MEDIUM, time) || isValidTime(DateFormatStyle.LONG, time) || isValidTime(
-						DateFormatStyle.FULL, time));
+				&& (isValidTime(DateFormatStyle.SHORT, time) || isValidTime(DateFormatStyle.MEDIUM, time)
+						|| isValidTime(DateFormatStyle.LONG, time) || isValidTime(DateFormatStyle.FULL, time));
 	}
 
 	/**

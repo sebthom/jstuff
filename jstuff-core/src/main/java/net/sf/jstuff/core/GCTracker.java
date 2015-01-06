@@ -124,7 +124,8 @@ public class GCTracker<Event> implements EventListenable<Event>
 	{
 		Args.notNull("target", target);
 		if (target == eventToFireOnGC)
-			throw new IllegalArgumentException("eventToFireOnGC callback cannot be the same as the target, this avoids garbage collection of target.");
+			throw new IllegalArgumentException(
+					"eventToFireOnGC callback cannot be the same as the target, this avoids garbage collection of target.");
 		monitoredReferences.add(new GCReference<Event>(target, eventToFireOnGC, this));
 	}
 

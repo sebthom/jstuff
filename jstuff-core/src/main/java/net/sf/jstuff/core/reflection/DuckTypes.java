@@ -56,7 +56,8 @@ public abstract class DuckTypes
 					}
 					catch (final NoSuchMethodException ex)
 					{
-						throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method " + duckInterface + ".");
+						throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method "
+								+ duckInterface + ".");
 					}
 				}
 			});

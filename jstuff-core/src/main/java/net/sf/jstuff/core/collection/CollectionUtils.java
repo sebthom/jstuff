@@ -68,7 +68,8 @@ public abstract class CollectionUtils
 			@Override
 			public String toString()
 			{
-				return EntryValueDiff.class.getSimpleName() + " [key=" + key + ", leftValue=" + leftValue + ", rightValue=" + rightValue + "]";
+				return EntryValueDiff.class.getSimpleName() + " [key=" + key + ", leftValue=" + leftValue + ", rightValue=" + rightValue
+						+ "]";
 			}
 		}
 
@@ -95,8 +96,8 @@ public abstract class CollectionUtils
 		@Override
 		public String toString()
 		{
-			return MapDiff.class.getSimpleName() + " [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries=" + leftOnlyEntries + ", rightOnlyEntries="
-					+ rightOnlyEntries + "]";
+			return MapDiff.class.getSimpleName() + " [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries=" + leftOnlyEntries
+					+ ", rightOnlyEntries=" + rightOnlyEntries + "]";
 		}
 	}
 
@@ -342,7 +343,8 @@ public abstract class CollectionUtils
 		return new HashMap<K, V>(initialSize);
 	}
 
-	public static <K, V, KK extends K, VV extends V> HashMap<K, V> newHashMap(final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues)
+	public static <K, V, KK extends K, VV extends V> HashMap<K, V> newHashMap(final KK firstKey, final VV firstValue,
+			final Object... moreInitialKeysAndValues)
 	{
 		final HashMap<K, V> m = new HashMap<K, V>(1 + moreInitialKeysAndValues.length / 2);
 		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
@@ -397,10 +399,10 @@ public abstract class CollectionUtils
 
 	public static <K, V, KK extends K, VV extends V> LinkedHashMap<K, V> newLinkedHashMap(final KK firstKey, final VV firstValue,
 			final Object... moreInitialKeysAndValues)
-			{
+	{
 		final LinkedHashMap<K, V> m = new LinkedHashMap<K, V>(1 + moreInitialKeysAndValues.length / 2);
 		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
-			}
+	}
 
 	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final Object[] initialKeysAndValues)
 	{
@@ -417,85 +419,85 @@ public abstract class CollectionUtils
 	public static <T> ThreadLocal<ArrayList<T>> newThreadLocalArrayList()
 	{
 		return new ThreadLocal<ArrayList<T>>()
-				{
-			@Override
-			public ArrayList<T> initialValue()
 			{
-				return new ArrayList<T>();
-			}
-				};
+				@Override
+				public ArrayList<T> initialValue()
+				{
+					return new ArrayList<T>();
+				}
+			};
 	}
 
 	public static <K, V> ThreadLocal<HashMap<K, V>> newThreadLocalHashMap()
 	{
 		return new ThreadLocal<HashMap<K, V>>()
-				{
-			@Override
-			public HashMap<K, V> initialValue()
 			{
-				return new HashMap<K, V>();
-			}
-				};
+				@Override
+				public HashMap<K, V> initialValue()
+				{
+					return new HashMap<K, V>();
+				}
+			};
 	}
 
 	public static <T> ThreadLocal<HashSet<T>> newThreadLocalHashSet()
 	{
 		return new ThreadLocal<HashSet<T>>()
-				{
-			@Override
-			public HashSet<T> initialValue()
 			{
-				return new HashSet<T>();
-			}
-				};
+				@Override
+				public HashSet<T> initialValue()
+				{
+					return new HashSet<T>();
+				}
+			};
 	}
 
 	public static <T> ThreadLocal<IdentityHashSet<T>> newThreadLocalIdentitySet()
 	{
 		return new ThreadLocal<IdentityHashSet<T>>()
-				{
-			@Override
-			public IdentityHashSet<T> initialValue()
 			{
-				return new IdentityHashSet<T>();
-			}
-				};
+				@Override
+				public IdentityHashSet<T> initialValue()
+				{
+					return new IdentityHashSet<T>();
+				}
+			};
 	}
 
 	public static <T> ThreadLocal<LinkedList<T>> newThreadLocalLinkedList()
 	{
 		return new ThreadLocal<LinkedList<T>>()
-				{
-			@Override
-			public LinkedList<T> initialValue()
 			{
-				return new LinkedList<T>();
-			}
-				};
+				@Override
+				public LinkedList<T> initialValue()
+				{
+					return new LinkedList<T>();
+				}
+			};
 	}
 
 	public static <K, V> ThreadLocal<WeakHashMap<K, V>> newThreadLocalWeakHashMap()
 	{
 		return new ThreadLocal<WeakHashMap<K, V>>()
-				{
-			@Override
-			public WeakHashMap<K, V> initialValue()
 			{
-				return new WeakHashMap<K, V>();
-			}
-				};
+				@Override
+				public WeakHashMap<K, V> initialValue()
+				{
+					return new WeakHashMap<K, V>();
+				}
+			};
 	}
 
 	public static <T> ThreadLocal<WeakHashSet<T>> newThreadLocalWeakHashSet()
 	{
 		return new ThreadLocal<WeakHashSet<T>>()
-				{
-			@Override
-			public WeakHashSet<T> initialValue()
 			{
-				return new WeakHashSet<T>();
-			}
-				};
+				@Override
+				public WeakHashSet<T> initialValue()
+				{
+					return new WeakHashSet<T>();
+				}
+			};
 	}
 
 	public static <K, V> TreeMap<K, V> newTreeMap()
@@ -508,21 +510,23 @@ public abstract class CollectionUtils
 		return new TreeMap<K, V>(keyComparator);
 	}
 
-	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator, final KK firstKey,
-			final VV firstValue, final Object... moreInitialKeysAndValues)
-			{
+	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator,
+			final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues)
+	{
 		final TreeMap<K, V> m = new TreeMap<K, V>(keyComparator);
 		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
-			}
+	}
 
-	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator, final Object[] initialKeysAndValues)
+	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator< ? super K> keyComparator,
+			final Object[] initialKeysAndValues)
 	{
 		if (initialKeysAndValues == null) return new TreeMap<K, V>(keyComparator);
 
 		return putAll(new TreeMap<K, V>(keyComparator), initialKeysAndValues);
 	}
 
-	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues)
+	public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue,
+			final Object... moreInitialKeysAndValues)
 	{
 		final TreeMap<K, V> m = new TreeMap<K, V>();
 		return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
@@ -534,7 +538,8 @@ public abstract class CollectionUtils
 		Args.notNull("keys", keys);
 		Args.notNull("values", values);
 
-		if (keys.length != values.length) throw new IllegalArgumentException("Arguments [keys] and [values] must have the same array size.");
+		if (keys.length != values.length)
+			throw new IllegalArgumentException("Arguments [keys] and [values] must have the same array size.");
 
 		for (int i = 0; i < keys.length; i++)
 			map.put(keys[i], values[i]);
@@ -612,12 +617,12 @@ public abstract class CollectionUtils
 		Args.notNull("it", it);
 
 		return new Iterable<T>()
-				{
-			public Iterator<T> iterator()
 			{
-				return it;
-			}
-				};
+				public Iterator<T> iterator()
+				{
+					return it;
+				}
+			};
 	}
 
 	public static <T> List<T> toList(final Iterator<T> it)

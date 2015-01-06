@@ -37,8 +37,8 @@ public class Tomcat6Authenticator implements Authenticator
 	{
 		//Note: this assumes the Container is "Catalina"
 		final Engine engine = (Engine) ServerFactory.getServer().findService("Catalina").getContainer();
-		final Context context = (Context) engine.findChild(engine.getDefaultHost())
-				.findChild(SecurityFilter.HTTP_SERVLET_REQUEST_HOLDER.get().getContextPath());
+		final Context context = (Context) engine.findChild(engine.getDefaultHost()).findChild(
+				SecurityFilter.HTTP_SERVLET_REQUEST_HOLDER.get().getContextPath());
 		return context.getRealm().authenticate(logonName, password) != null;
 	}
 }

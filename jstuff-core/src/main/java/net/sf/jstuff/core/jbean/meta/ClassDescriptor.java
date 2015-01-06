@@ -35,7 +35,8 @@ public final class ClassDescriptor<T> implements Serializable
 	private static final Map<Class< ? >, ClassDescriptor< ? >> REGISTRY = new WeakHashMap<Class< ? >, ClassDescriptor< ? >>();
 
 	@SuppressWarnings("unchecked")
-	public static <T> ClassDescriptor<T> of(final Class<T> type, final String name, final String description, final ClassDescriptor< ? > parent)
+	public static <T> ClassDescriptor<T> of(final Class<T> type, final String name, final String description,
+			final ClassDescriptor< ? > parent)
 	{
 		Args.notNull("type", type);
 		Args.notNull("name", name);

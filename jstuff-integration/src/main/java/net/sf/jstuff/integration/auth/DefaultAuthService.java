@@ -51,12 +51,14 @@ public class DefaultAuthService implements AuthService
 
 	public void assertAuthenticated() throws PermissionDeniedException
 	{
-		if (!isAuthenticated()) throw new PermissionDeniedException("You are not authorized to perform that operation. You need to authenticate first.");
+		if (!isAuthenticated())
+			throw new PermissionDeniedException("You are not authorized to perform that operation. You need to authenticate first.");
 	}
 
 	public void assertIdentity(final String userId) throws PermissionDeniedException
 	{
-		if (!isIdentity(userId)) throw new PermissionDeniedException("You are not authorized to perform that operation. Identity mismatch.");
+		if (!isIdentity(userId))
+			throw new PermissionDeniedException("You are not authorized to perform that operation. Identity mismatch.");
 	}
 
 	public void assertRole(final String applicationRole) throws PermissionDeniedException
@@ -223,7 +225,8 @@ public class DefaultAuthService implements AuthService
 				{
 					LOG.trace("Registering groupId -> application role mapping: %s => %s", group, role);
 
-					if (!applicationRoles.contains(role)) throw new UnknownApplicationRoleException("Application role is unknown: " + role);
+					if (!applicationRoles.contains(role))
+						throw new UnknownApplicationRoleException("Application role is unknown: " + role);
 
 					groupIdToApplicationRoleMappings.add(group, role);
 				}
@@ -234,7 +237,8 @@ public class DefaultAuthService implements AuthService
 	/**
 	 * @param mappings format = "groupIdXXX=roleXXX"
 	 */
-	public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final String[] mappings) throws UnknownApplicationRoleException
+	public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final String[] mappings)
+			throws UnknownApplicationRoleException
 	{
 		groupIdToApplicationRoleMappings = new MapWithSets<String, String>();
 		for (final String element : mappings)

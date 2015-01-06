@@ -128,7 +128,8 @@ public abstract class AbstractAtomFeedExporter extends RemotingSupport implement
 
 	protected String getLogoURL(final HttpServletRequest request)
 	{
-		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/images/logo.png";
+		return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
+				+ "/images/logo.png";
 	}
 
 	protected abstract List<SimpleEntry< ? >> getSimpleEntries(final HttpServletRequest request);

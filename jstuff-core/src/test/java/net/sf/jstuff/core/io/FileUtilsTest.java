@@ -22,7 +22,8 @@ import junit.framework.TestCase;
 public class FileUtilsTest extends TestCase
 {
 
-	private void _testFind(final String rootPath, final String globPattern, final int exceptedFiles, final int exceptedFolders) throws IOException
+	private void _testFind(final String rootPath, final String globPattern, final int exceptedFiles, final int exceptedFolders)
+			throws IOException
 	{
 		assertEquals(exceptedFiles, FileUtils.findFiles(rootPath, globPattern).size());
 		assertEquals(exceptedFolders, FileUtils.findDirectories(rootPath, globPattern).size());

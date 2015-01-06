@@ -93,12 +93,12 @@ public class XMLRestServiceExporter extends AbstractRestServiceExporter
 		}
 		catch (final Exception ex)
 		{
-			LOG.warn(ex,"Failed to use StaxDriver.");
+			LOG.warn(ex, "Failed to use StaxDriver.");
 		}
 		catch (final Error er)
 		{
 			if ("javax.xml.stream.FactoryConfigurationError".equals(er.getClass().getName()))
-				LOG.warn(er,"Failed to use StaxDriver.");
+				LOG.warn(er, "Failed to use StaxDriver.");
 			else
 				throw er;
 		}

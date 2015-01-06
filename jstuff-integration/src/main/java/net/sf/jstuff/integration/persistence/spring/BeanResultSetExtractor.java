@@ -103,8 +103,8 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>>
 		{
 			final String propName = prop.getName();
 			if (propsLowerCase.put(propName.toLowerCase(), propName) != null)
-				throw new IllegalStateException("Bean Class " + beanClass.getName() + " contains multiple properties with same lowercase representation: "
-						+ propName);
+				throw new IllegalStateException("Bean Class " + beanClass.getName()
+						+ " contains multiple properties with same lowercase representation: " + propName);
 		}
 
 		this.beanClass = beanClass;

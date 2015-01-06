@@ -159,7 +159,8 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5)
 	{
 		if (!logger.isDebugEnabled()) return;
 
@@ -236,7 +237,8 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5)
 	{
 		if (!logger.isErrorEnabled()) return;
 
@@ -355,7 +357,8 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5)
 	{
 		if (!logger.isInfoEnabled()) return;
 
@@ -479,7 +482,8 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5)
 	{
 		if (!logger.isTraceEnabled()) return;
 
@@ -621,7 +625,8 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5)
 	{
 		if (!logger.isWarnEnabled()) return;
 

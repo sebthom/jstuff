@@ -416,21 +416,21 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 							if (charAt(globPattern, idx + 3, (char) 0) == '*')
 							{
 								sb.append(".*"); // "**/*" => ".*"
-								idx = idx + 3;
-								ch = '*';
-							}
-							else
-							{
-								sb.append("(.*/)?"); // "**/" => "(.*/)?"
-								idx = idx + 2;
-								ch = '/';
-							}
+							idx = idx + 3;
+							ch = '*';
 						}
 						else
 						{
-							sb.append(".*"); // "**" => ".*"
-							idx++;
+							sb.append("(.*/)?"); // "**/" => "(.*/)?"
+							idx = idx + 2;
+							ch = '/';
 						}
+					}
+					else
+					{
+						sb.append(".*"); // "**" => ".*"
+						idx++;
+					}
 					}
 					else
 						sb.append("[^/]*"); // "*" => "[^/]*"
@@ -537,13 +537,13 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		{
 			final ParserDelegator pd = new ParserDelegator();
 			pd.parse(new CharSequenceReader(html), new ParserCallback()
-			{
-				@Override
-				public void handleText(final char[] text, final int pos)
 				{
-					sb.append(text);
-				}
-			}, true);
+					@Override
+					public void handleText(final char[] text, final int pos)
+					{
+						sb.append(text);
+					}
+				}, true);
 		}
 		catch (final IOException ex)
 		{
@@ -708,7 +708,8 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		return replaceEach(searchIn, searchFor, replaceWith);
 	}
 
-	public static CharSequence replaceEachGroup(final Pattern regex, final CharSequence searchIn, final int groupToReplace, final String replaceWith)
+	public static CharSequence replaceEachGroup(final Pattern regex, final CharSequence searchIn, final int groupToReplace,
+			final String replaceWith)
 	{
 		final Matcher m = regex.matcher(searchIn);
 		final StringBuilder sb = new StringBuilder(searchIn);
@@ -717,7 +718,8 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 		return sb;
 	}
 
-	public static CharSequence replaceEachGroup(final String regex, final CharSequence searchIn, final int groupToReplace, final String replaceWith)
+	public static CharSequence replaceEachGroup(final String regex, final CharSequence searchIn, final int groupToReplace,
+			final String replaceWith)
 	{
 		return replaceEachGroup(Pattern.compile(regex), searchIn, groupToReplace, replaceWith);
 	}

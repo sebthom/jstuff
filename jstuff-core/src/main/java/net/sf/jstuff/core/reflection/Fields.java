@@ -113,7 +113,8 @@ public abstract class Fields extends Members
 		Args.notNull("field", field);
 
 		if (isFinal(field))
-			throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field.getName());
+			throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName()
+					+ "#" + field.getName());
 
 		try
 		{
@@ -135,7 +136,8 @@ public abstract class Fields extends Members
 		if (field == null) throw new ReflectionException("Field with name [" + fieldName + "] not found in object [" + obj + "]");
 
 		if (isFinal(field))
-			throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field.getName());
+			throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName()
+					+ "#" + field.getName());
 
 		try
 		{

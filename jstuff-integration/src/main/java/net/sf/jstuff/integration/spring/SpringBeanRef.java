@@ -59,8 +59,7 @@ public class SpringBeanRef<T> implements Serializable
 	public T get()
 	{
 		if (springBean == null)
-			springBean = (T) (beanName == null ? SpringBeanLocator.get().byClass(beanType) : SpringBeanLocator.get()
-					.byName(beanName));
+			springBean = (T) (beanName == null ? SpringBeanLocator.get().byClass(beanType) : SpringBeanLocator.get().byName(beanName));
 		return springBean;
 	}
 }

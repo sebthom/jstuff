@@ -26,7 +26,8 @@ public interface ServiceRegistry
 	 */
 	Collection<ServiceEndpoint> getActiveServiceEndpoints();
 
-	<SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(final String serviceEndpointId, final Class<SERVICE_INTERFACE> serviceInterface);
+	<SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(final String serviceEndpointId,
+			final Class<SERVICE_INTERFACE> serviceInterface);
 
 	/**
 	 * Adds the given service using the fully qualified class name of the serviceInterface as service endpoint id.

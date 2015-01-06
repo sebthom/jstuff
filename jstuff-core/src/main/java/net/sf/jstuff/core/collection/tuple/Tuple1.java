@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection.tuple;
 
-
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */

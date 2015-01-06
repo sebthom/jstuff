@@ -119,7 +119,8 @@ public class DummyPrincipalInjectingFilter implements Filter
 	public void destroy()
 	{}
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
+			ServletException
 	{
 		if (username != null && request instanceof HttpServletRequest)
 		{

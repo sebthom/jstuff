@@ -177,8 +177,8 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 							else
 							{
 								final AbstractJPAEntity< ? > referencedEntity = (AbstractJPAEntity< ? >) fieldValue;
-								sb.append(intend).append("[").append(field.getName()).append("] id=").append(referencedEntity.getId()).append(" | ")
-										.append(referencedEntity.getClass().getName()).append(NEW_LINE);
+								sb.append(intend).append("[").append(field.getName()).append("] id=").append(referencedEntity.getId())
+										.append(" | ").append(referencedEntity.getClass().getName()).append(NEW_LINE);
 							}
 						}
 						else
@@ -192,7 +192,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 		}
 		catch (final Exception ex)
 		{
-			LOG.warn(ex,"toDebugString() failed on %s",this);
+			LOG.warn(ex, "toDebugString() failed on %s", this);
 			return toString();
 		}
 	}

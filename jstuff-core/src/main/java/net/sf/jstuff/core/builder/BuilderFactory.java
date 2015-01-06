@@ -43,8 +43,8 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 	 */
 	public static//
 	<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? extends TARGET_CLASS>> //
-	BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE> of(final Class<BUILDER_INTERFACE> builderInterface, final Class<TARGET_CLASS> targetClass,
-			final Object... constructorArgs)
+	BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE> of(final Class<BUILDER_INTERFACE> builderInterface,
+			final Class<TARGET_CLASS> targetClass, final Object... constructorArgs)
 	{
 		return new BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE>(builderInterface, targetClass, constructorArgs);
 	}
@@ -54,14 +54,16 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 	private final Object[] constructorArgs;
 
 	@SuppressWarnings("unchecked")
-	protected BuilderFactory(final Class<BUILDER_INTERFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs)
+	protected BuilderFactory(final Class<BUILDER_INTERFACE> builderInterface, final Class<TARGET_CLASS> targetClass,
+			final Object... constructorArgs)
 	{
 		Args.notNull("builderInterface", builderInterface);
 		if (!builderInterface.isInterface()) throw new IllegalArgumentException("[builderInterface] must be an interface!");
 
 		this.builderInterface = builderInterface;
 
-		this.targetClass = targetClass == null ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0] : targetClass;
+		this.targetClass = targetClass == null ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0]
+				: targetClass;
 
 		if (targetClass == null) throw new IllegalArgumentException("Target class is not specified.");
 		if (targetClass.isInterface()) throw new IllegalArgumentException("Target class [" + targetClass.getName() + "] is an interface.");
@@ -78,7 +80,8 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{
-					if ("build".equals(method.getName()) && method.getParameterTypes().length == 0 && method.getReturnType().isAssignableFrom(targetClass))
+					if ("build".equals(method.getName()) && method.getParameterTypes().length == 0
+							&& method.getReturnType().isAssignableFrom(targetClass))
 					{
 						final TARGET_CLASS target = Types.newInstance(targetClass, constructorArgs);
 						for (final Entry<String, Object> property : properties.entrySet())
@@ -103,7 +106,8 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 								@Override
 								public boolean isVisitingMethod(final Method method)
 								{
-									return !Methods.isAbstract(method) && !Methods.isStatic(method) && Annotations.exists(method, OnPostBuild.class, false);
+									return !Methods.isAbstract(method) && !Methods.isStatic(method)
+											&& Annotations.exists(method, OnPostBuild.class, false);
 								}
 
 								@Override
@@ -128,7 +132,8 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 						return target;
 					}
 
-					if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0) return builderInterface.getName() + "@" + hashCode();
+					if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0)
+						return builderInterface.getName() + "@" + hashCode();
 
 					if (method.getParameterTypes().length == 1 && method.getReturnType().isAssignableFrom(builderInterface))
 					{

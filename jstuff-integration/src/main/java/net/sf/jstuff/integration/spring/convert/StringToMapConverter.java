@@ -55,8 +55,7 @@ public class StringToMapConverter extends AbstractConverter
 			final String key = entryArr[0].trim();
 			final String value = entryArr[1].trim();
 
-			final Object targetKey = conversionService
-					.convert(key, sourceType, targetType.getMapKeyTypeDescriptor(key));
+			final Object targetKey = conversionService.convert(key, sourceType, targetType.getMapKeyTypeDescriptor(key));
 
 			result.put(targetKey, conversionService.convert(value, sourceType, targetType.getMapValueTypeDescriptor()));
 		}

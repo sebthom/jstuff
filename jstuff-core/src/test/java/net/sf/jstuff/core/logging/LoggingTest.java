@@ -57,35 +57,35 @@ public class LoggingTest extends TestCase
 	private static final java.util.logging.Logger ROOT_LOGGER = java.util.logging.Logger.getLogger("");
 	private static final Logger LOG = Logger.create();
 	private static final Formatter ROOT_LOGGER_FORMATTER = new Formatter()
-	{
-		private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-
-		@Override
-		public synchronized String format(final LogRecord record)
 		{
-			final StringBuilder sb = new StringBuilder(1000);
-			sb.append(df.format(new Date(record.getMillis()))).append(" ");
-			sb.append(record.getLevel().getName().charAt(0)).append(" ");
+			private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+
+			@Override
+			public synchronized String format(final LogRecord record)
 			{
-				sb.append("[");
-				if (record.getSourceClassName() != null)
-					sb.append(record.getSourceClassName());
-				else
-					sb.append(record.getLoggerName());
-				if (record.getSourceMethodName() != null) sb.append("#").append(record.getSourceMethodName()).append("()");
-				sb.append("] ");
+				final StringBuilder sb = new StringBuilder(1000);
+				sb.append(df.format(new Date(record.getMillis()))).append(" ");
+				sb.append(record.getLevel().getName().charAt(0)).append(" ");
+				{
+					sb.append("[");
+					if (record.getSourceClassName() != null)
+						sb.append(record.getSourceClassName());
+					else
+						sb.append(record.getLoggerName());
+					if (record.getSourceMethodName() != null) sb.append("#").append(record.getSourceMethodName()).append("()");
+					sb.append("] ");
+				}
+				sb.append(formatMessage(record));
+				if (record.getThrown() != null)
+				{
+					final StringWriter errors = new StringWriter();
+					record.getThrown().printStackTrace(new PrintWriter(errors));
+					sb.append(errors.toString());
+				}
+				sb.append("\n");
+				return sb.toString();
 			}
-			sb.append(formatMessage(record));
-			if (record.getThrown() != null)
-			{
-				final StringWriter errors = new StringWriter();
-				record.getThrown().printStackTrace(new PrintWriter(errors));
-				sb.append(errors.toString());
-			}
-			sb.append("\n");
-			return sb.toString();
-		}
-	};
+		};
 
 	public void atest1LoggingJUL()
 	{
@@ -109,36 +109,36 @@ public class LoggingTest extends TestCase
 		java.util.logging.Logger.getLogger(Entity.class.getName()).setLevel(java.util.logging.Level.FINEST);
 		final int[] count = new int[1];
 		final Handler h = new Handler()
-		{
-			@Override
-			public void close() throws SecurityException
-			{}
-
-			@Override
-			public void flush()
-			{}
-
-			@Override
-			public void publish(final LogRecord record)
 			{
-				count[0]++;
-				switch (count[0])
+				@Override
+				public void close() throws SecurityException
+				{}
+
+				@Override
+				public void flush()
+				{}
+
+				@Override
+				public void publish(final LogRecord record)
 				{
-					case 1 :
-						assertEquals("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])", record.getMessage());
-						break;
-					case 2 :
-						assertTrue(record.getMessage().startsWith("methodA():EXIT  << [foo, [bar]] "));
-						break;
-					case 3 :
-						assertEquals("methodB():ENTRY >> ()", record.getMessage());
-						break;
-					case 4 :
-						assertTrue(record.getMessage().startsWith("methodB():EXIT  << *void* "));
-						break;
+					count[0]++;
+					switch (count[0])
+					{
+						case 1 :
+							assertEquals("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])", record.getMessage());
+							break;
+						case 2 :
+							assertTrue(record.getMessage().startsWith("methodA():EXIT  << [foo, [bar]] "));
+							break;
+						case 3 :
+							assertEquals("methodB():ENTRY >> ()", record.getMessage());
+							break;
+						case 4 :
+							assertTrue(record.getMessage().startsWith("methodB():EXIT  << *void* "));
+							break;
+					}
 				}
-			}
-		};
+			};
 		ROOT_LOGGER.addHandler(h);
 		try
 		{
@@ -194,21 +194,21 @@ public class LoggingTest extends TestCase
 
 		final int[] count = {0};
 		final Handler h = new Handler()
-		{
-			@Override
-			public void close() throws SecurityException
-			{}
-
-			@Override
-			public void flush()
-			{}
-
-			@Override
-			public void publish(final LogRecord record)
 			{
-				count[0]++;
-			}
-		};
+				@Override
+				public void close() throws SecurityException
+				{}
+
+				@Override
+				public void flush()
+				{}
+
+				@Override
+				public void publish(final LogRecord record)
+				{
+					count[0]++;
+				}
+			};
 		ROOT_LOGGER.addHandler(h);
 		try
 		{

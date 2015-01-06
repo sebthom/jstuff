@@ -187,7 +187,8 @@ public abstract class Types
 		if (searchFor.getTypeParameters().length == 0) return ArrayUtils.EMPTY_CLASS_ARRAY;
 
 		if (!searchFor.isAssignableFrom(searchIn))
-			throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is assignable to [searchFor=" + searchFor.getName() + "]");
+			throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is assignable to [searchFor="
+					+ searchFor.getName() + "]");
 
 		final boolean isSearchForInterface = searchFor.isInterface();
 
@@ -267,7 +268,8 @@ public abstract class Types
 		try
 		{
 			// extract the jar path from: jar:file:/F:/allianz/apps/dev/java/sun_jdk1.5.0_22/jre/lib/rt.jar!/java/lang/String.class
-			return new File(URLDecoder.decode(StringUtils.substringBetween(location.getPath(), "file:", "!"), Charset.defaultCharset().name()));
+			return new File(URLDecoder.decode(StringUtils.substringBetween(location.getPath(), "file:", "!"), Charset.defaultCharset()
+					.name()));
 		}
 		catch (final UnsupportedEncodingException ex)
 		{
@@ -399,7 +401,8 @@ public abstract class Types
 		 * get version from jar file name
 		 */
 		{
-			final String version = StringUtils.trim(StringUtils.substringBeforeLast(StringUtils.substringAfterLast(location.getName(), "-"), "."));
+			final String version = StringUtils.trim(StringUtils.substringBeforeLast(
+					StringUtils.substringAfterLast(location.getName(), "-"), "."));
 			if (!StringUtils.isEmpty(version)) return version;
 		}
 
@@ -473,14 +476,16 @@ public abstract class Types
 	public static <T> T newInstance(final Class<T> type, final Object... constructorArgs)
 	{
 		final Constructor<T> ctor = Constructors.findCompatible(type, constructorArgs);
-		if (ctor == null) throw new IllegalArgumentException("No constructor found in class [" + type.getName() + "] compatible with give arguments!");
+		if (ctor == null)
+			throw new IllegalArgumentException("No constructor found in class [" + type.getName() + "] compatible with give arguments!");
 		return Constructors.invoke(ctor, constructorArgs);
 	}
 
 	/**
 	 * Tries to read the given value using a getter method or direct field access
 	 */
-	public static <T> T readPropety(final Object obj, final String propertyName, final Class< ? extends T> compatibleTo) throws ReflectionException
+	public static <T> T readPropety(final Object obj, final String propertyName, final Class< ? extends T> compatibleTo)
+			throws ReflectionException
 	{
 		Args.notNull("obj", obj);
 		Args.notNull("propertyName", propertyName);
@@ -493,7 +498,8 @@ public abstract class Types
 		final Field field = Fields.findRecursive(clazz, propertyName, compatibleTo);
 		if (field != null) return Fields.read(obj, field);
 
-		throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
+		throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class ["
+				+ clazz + "]");
 	}
 
 	public static void visit(final Class< ? > clazz, final ClassVisitor visitor)
@@ -594,6 +600,7 @@ public abstract class Types
 			Fields.write(obj, field, value);
 			return;
 		}
-		throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
+		throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class ["
+				+ clazz + "]");
 	}
 }

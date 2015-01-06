@@ -67,12 +67,12 @@ public abstract class Logger
 		catch (final LinkageError err)
 		{
 			paramNamesResolver = new Invocable<String[], Method, RuntimeException>()
-					{
-				public String[] invoke(final Method arg) throws RuntimeException
 				{
-					return ArrayUtils.EMPTY_STRING_ARRAY;
-				}
-					};
+					public String[] invoke(final Method arg) throws RuntimeException
+					{
+						return ArrayUtils.EMPTY_STRING_ARRAY;
+					}
+				};
 		}
 	}
 
@@ -119,27 +119,28 @@ public abstract class Logger
 		}
 
 		return (I) Proxy.newProxyInstance(object.getClass().getClassLoader(), interfaces, new InvocationHandler()
-		{
-			final Logger log = Logger.create(object.getClass());
-
-			public Object invoke(final Object proxy, final Method interfaceMethod, final Object[] args) throws Throwable
 			{
-				if (log.isTraceEnabled())
+				final Logger log = Logger.create(object.getClass());
+
+				public Object invoke(final Object proxy, final Method interfaceMethod, final Object[] args) throws Throwable
 				{
-					final long start = System.currentTimeMillis();
-					final Method methodWithParameterNames = Methods.find(object.getClass(), interfaceMethod.getName(), interfaceMethod.getParameterTypes());
-					log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
-					final Object returnValue = interfaceMethod.invoke(object, args);
-					final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
-					if (Methods.isReturningVoid(interfaceMethod))
-						log.trace(methodWithParameterNames, formatTraceExit() + " " + elapsed + "ms");
-					else
-						log.trace(methodWithParameterNames, formatTraceExit(returnValue) + " " + elapsed + "ms");
-					return returnValue;
+					if (log.isTraceEnabled())
+					{
+						final long start = System.currentTimeMillis();
+						final Method methodWithParameterNames = Methods.find(object.getClass(), interfaceMethod.getName(),
+								interfaceMethod.getParameterTypes());
+						log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
+						final Object returnValue = interfaceMethod.invoke(object, args);
+						final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
+						if (Methods.isReturningVoid(interfaceMethod))
+							log.trace(methodWithParameterNames, formatTraceExit() + " " + elapsed + "ms");
+						else
+							log.trace(methodWithParameterNames, formatTraceExit(returnValue) + " " + elapsed + "ms");
+						return returnValue;
+					}
+					return interfaceMethod.invoke(object, args);
 				}
-				return interfaceMethod.invoke(object, args);
-			}
-		});
+			});
 	}
 
 	protected static String formatTraceEntry(final Method method, final Object... args)
@@ -225,7 +226,8 @@ public abstract class Logger
 	 * @param arg4 Argument referenced by the format specifiers in the message template.
 	 * @param arg5 Argument referenced by the format specifiers in the message template.
 	 */
-	public abstract void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
+	public abstract void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5);
 
 	public abstract void debug(final Throwable ex);
 
@@ -277,7 +279,8 @@ public abstract class Logger
 	 * @param arg4 Argument referenced by the format specifiers in the message template.
 	 * @param arg5 Argument referenced by the format specifiers in the message template.
 	 */
-	public abstract void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
+	public abstract void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5);
 
 	public abstract void error(final Throwable ex);
 
@@ -352,7 +355,8 @@ public abstract class Logger
 	 * @param arg4 Argument referenced by the format specifiers in the message template.
 	 * @param arg5 Argument referenced by the format specifiers in the message template.
 	 */
-	public abstract void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
+	public abstract void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5);
 
 	public abstract void info(final Throwable ex);
 
@@ -421,7 +425,8 @@ public abstract class Logger
 	 * @param arg4 Argument referenced by the format specifiers in the message template.
 	 * @param arg5 Argument referenced by the format specifiers in the message template.
 	 */
-	public abstract void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
+	public abstract void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5);
 
 	public abstract void trace(final Throwable ex);
 
@@ -515,7 +520,8 @@ public abstract class Logger
 	 * @param arg4 Argument referenced by the format specifiers in the message template.
 	 * @param arg5 Argument referenced by the format specifiers in the message template.
 	 */
-	public abstract void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
+	public abstract void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5);
 
 	public abstract void warn(final Throwable ex);
 

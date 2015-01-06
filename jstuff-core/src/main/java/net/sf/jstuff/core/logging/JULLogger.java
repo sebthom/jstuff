@@ -64,7 +64,8 @@ final class JULLogger extends Logger
 				throw new IllegalStateException("Unexpected stacktrace " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
 			methodName = caller.getMethodName();
-			if (LoggerConfig.isDebugMessagePrefixEnabled) effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
+			if (LoggerConfig.isDebugMessagePrefixEnabled)
+				effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
 			sourceClassName = caller.getClassName();
 			effectiveException = ex;
 		}
@@ -135,7 +136,8 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_DEBUG) return;
@@ -221,7 +223,8 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_ERROR) return;
@@ -367,7 +370,8 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_INFO) return;
@@ -506,7 +510,8 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return;
@@ -665,7 +670,8 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+			final Object arg5)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_WARN) return;

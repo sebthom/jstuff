@@ -39,22 +39,22 @@ public class FileModificationMonitor extends Observable
 	private final Timer timer = new Timer();
 
 	private final TimerTask timerTask = new TimerTask()
-	{
-		@Override
-		public void run()
 		{
-			if (isMonitoring)
+			@Override
+			public void run()
 			{
-				final long currentLastModified = getModificationDate(file);
-				if (lastModified != currentLastModified)
+				if (isMonitoring)
 				{
-					lastModified = currentLastModified;
-					setChanged();
-					notifyObservers();
+					final long currentLastModified = getModificationDate(file);
+					if (lastModified != currentLastModified)
+					{
+						lastModified = currentLastModified;
+						setChanged();
+						notifyObservers();
+					}
 				}
 			}
-		}
-	};
+		};
 
 	public FileModificationMonitor(final File file)
 	{

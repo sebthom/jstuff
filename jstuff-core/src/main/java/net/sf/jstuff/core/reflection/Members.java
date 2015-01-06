@@ -35,14 +35,16 @@ public abstract class Members
 	public static void assertPrivateAccessAllowed()
 	{
 		final SecurityManager mgr = System.getSecurityManager();
-		if (mgr != null) try
-		{
-			mgr.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
-		}
-		catch (final SecurityException ex)
-		{
-			throw new ReflectionException("Current security manager configuration does not allow access to private fields and methods.", ex);
-		}
+		if (mgr != null)
+			try
+			{
+				mgr.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
+			}
+			catch (final SecurityException ex)
+			{
+				throw new ReflectionException(
+						"Current security manager configuration does not allow access to private fields and methods.", ex);
+			}
 	}
 
 	public static void ensureAccessible(final AccessibleObject ao)

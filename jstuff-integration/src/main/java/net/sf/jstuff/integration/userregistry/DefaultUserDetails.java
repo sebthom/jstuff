@@ -27,7 +27,8 @@ public class DefaultUserDetails implements UserDetails
 	private final String logonName;
 	private final String userId;
 
-	public DefaultUserDetails(final String userId, final String displayName, final String logonName, final String distingueshedName, final String mailAddress)
+	public DefaultUserDetails(final String userId, final String displayName, final String logonName, final String distingueshedName,
+			final String mailAddress)
 	{
 		this.userId = userId;
 		this.displayName = displayName;

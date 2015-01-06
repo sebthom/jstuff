@@ -48,9 +48,12 @@ public abstract class Assert
 	{
 		Args.notNull("file", file);
 
-		if (!file.exists()) throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] does not exist."));
-		if (!file.isFile()) throw removeFirstStackTraceElement(new IllegalStateException("Resource [" + file.getAbsolutePath() + "] is not a file."));
-		if (!file.canRead()) throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] is not readable."));
+		if (!file.exists())
+			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] does not exist."));
+		if (!file.isFile())
+			throw removeFirstStackTraceElement(new IllegalStateException("Resource [" + file.getAbsolutePath() + "] is not a file."));
+		if (!file.canRead())
+			throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] is not readable."));
 		return file;
 	}
 

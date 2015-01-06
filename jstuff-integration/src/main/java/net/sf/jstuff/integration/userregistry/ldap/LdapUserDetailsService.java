@@ -70,7 +70,8 @@ public class LdapUserDetailsService implements UserDetailsService
 				public Object invoke(final LdapContext ctx) throws NamingException
 				{
 					final Iterator<SearchResult> results = searchUser(ctx, filter,
-							new String[]{userAttributeDisplayName, userAttributeEMailAdress, userAttributeLogonName, userAttributeUserId}).iterator();
+							new String[]{userAttributeDisplayName, userAttributeEMailAdress, userAttributeLogonName, userAttributeUserId})
+							.iterator();
 					if (!results.hasNext()) return null;
 
 					final SearchResult sr = results.next();

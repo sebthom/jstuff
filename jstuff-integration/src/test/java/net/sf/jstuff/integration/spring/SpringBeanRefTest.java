@@ -34,8 +34,7 @@ public class SpringBeanRefTest extends TestCase
 	public void testSpringBeanRef()
 	{
 
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml",
-				SpringBeanRefTest.class);
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml", SpringBeanRefTest.class);
 
 		final Entity e = new Entity();
 		assertNotNull(e.springBean);

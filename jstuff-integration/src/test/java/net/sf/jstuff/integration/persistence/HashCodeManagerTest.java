@@ -85,7 +85,7 @@ public class HashCodeManagerTest extends TestCase
 		Thread.sleep(500);
 		System.gc();
 		Thread.sleep(500);
-		
+
 		assertEquals(0, HashCodeManager.getManagedIdsCount());
 		assertEquals(0, HashCodeManager.getManagedTrackingIdsCount());
 

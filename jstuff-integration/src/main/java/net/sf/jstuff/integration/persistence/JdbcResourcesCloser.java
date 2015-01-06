@@ -48,7 +48,7 @@ public class JdbcResourcesCloser
 		}
 		catch (final SQLException ex)
 		{
-			LOG.warn(ex,"Closing JDBC Resource %s failed.", resource);
+			LOG.warn(ex, "Closing JDBC Resource %s failed.", resource);
 			return false;
 		}
 		return true;
