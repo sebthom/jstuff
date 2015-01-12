@@ -75,26 +75,26 @@ public abstract class Types
 		Args.notEmpty("mixins", mixins);
 
 		return Proxies.create(objectInterface, new InvocationHandler()
-			{
-				final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<Method, Tuple2<Object, Method>>();
+		{
+			final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<Method, Tuple2<Object, Method>>();
 
-				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+			{
+				Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
+				if (mixedInMethod == null) for (final Object mixin : mixins)
 				{
-					Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
-					if (mixedInMethod == null) for (final Object mixin : mixins)
+					final Method methodImpl = Methods.findRecursive(mixin.getClass(), method.getName(), method.getParameterTypes());
+					if (methodImpl != null)
 					{
-						final Method methodImpl = Methods.findRecursive(mixin.getClass(), method.getName(), method.getParameterTypes());
-						if (methodImpl != null)
-						{
-							mixedInMethod = Tuple2.create(mixin, methodImpl);
-							mappedMethodsCache.put(method, mixedInMethod);
-							break;
-						}
+						mixedInMethod = Tuple2.create(mixin, methodImpl);
+						mappedMethodsCache.put(method, mixedInMethod);
+						break;
 					}
-					if (mixedInMethod == null) throw new UnsupportedOperationException("Method is not implemented.");
-					return Methods.invoke(mixedInMethod.get1(), mixedInMethod.get2(), args);
 				}
-			});
+				if (mixedInMethod == null) throw new UnsupportedOperationException("Method is not implemented.");
+				return Methods.invoke(mixedInMethod.get1(), mixedInMethod.get2(), args);
+			}
+		});
 	}
 
 	public static <T> T createSynchronized(final Class<T> objectInterface, final T object)
@@ -111,15 +111,15 @@ public abstract class Types
 		Args.notNull("object", object);
 
 		return Proxies.create(objectInterface, new InvocationHandler()
+		{
+			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
-				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+				synchronized (lock)
 				{
-					synchronized (lock)
-					{
-						return method.invoke(object, args);
-					}
+					return method.invoke(object, args);
 				}
-			});
+			}
+		});
 	}
 
 	public static <T> T createThreadLocalized(final Class<T> objectInterface, final ThreadLocal<T> threadLocal)
@@ -128,12 +128,12 @@ public abstract class Types
 		Args.notNull("threadLocal", threadLocal);
 
 		return Proxies.create(objectInterface, new InvocationHandler()
+		{
+			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
-				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
-				{
-					return method.invoke(threadLocal.get(), args);
-				}
-			});
+				return method.invoke(threadLocal.get(), args);
+			}
+		});
 	}
 
 	/**
@@ -199,37 +199,37 @@ public abstract class Types
 		final ParameterizedType[] searchForType = {null};
 
 		visit(searchIn, new ClassVisitorWithTypeArguments()
+		{
+			public boolean isVisiting(final Class< ? > clazz, final ParameterizedType type)
 			{
-				public boolean isVisiting(final Class< ? > clazz, final ParameterizedType type)
-				{
-					return searchFor.isAssignableFrom(clazz);
-				}
+				return searchFor.isAssignableFrom(clazz);
+			}
 
-				public boolean isVisitingInterfaces(final Class< ? > clazz, final ParameterizedType type)
-				{
-					return isSearchForInterface && searchFor.isAssignableFrom(clazz);
-				}
+			public boolean isVisitingInterfaces(final Class< ? > clazz, final ParameterizedType type)
+			{
+				return isSearchForInterface && searchFor.isAssignableFrom(clazz);
+			}
 
-				public boolean isVisitingSuperclass(final Class< ? > clazz, final ParameterizedType type)
-				{
-					return searchFor.isAssignableFrom(clazz);
-				}
+			public boolean isVisitingSuperclass(final Class< ? > clazz, final ParameterizedType type)
+			{
+				return searchFor.isAssignableFrom(clazz);
+			}
 
-				public boolean visit(final Class< ? > clazz, final ParameterizedType type)
-				{
-					if (type != null) CollectionUtils.putAll(genericVariableToArgumentMappings, //
-							/*generic variable*/(TypeVariable< ? >[]) clazz.getTypeParameters(), //
-							/*arguments (concrete types) for generic variables*/type.getActualTypeArguments() //
-							);
+			public boolean visit(final Class< ? > clazz, final ParameterizedType type)
+			{
+				if (type != null) CollectionUtils.putAll(genericVariableToArgumentMappings, //
+						/*generic variable*/(TypeVariable< ? >[]) clazz.getTypeParameters(), //
+						/*arguments (concrete types) for generic variables*/type.getActualTypeArguments() //
+						);
 
-					if (clazz == searchFor)
-					{
-						searchForType[0] = type;
-						return false;
-					}
-					return true;
+				if (clazz == searchFor)
+				{
+					searchForType[0] = type;
+					return false;
 				}
-			});
+				return true;
+			}
+		});
 
 		/*
 		 * build the result list based on the information collected in genericVariableToTypeMappings
@@ -255,14 +255,20 @@ public abstract class Types
 	 */
 	public static File findLibrary(final Class< ? > clazz)
 	{
-		final CodeSource cs = clazz.getProtectionDomain().getCodeSource();
-		if (cs != null && cs.getLocation() != null) return new File(cs.getLocation().getFile());
+		try
+		{
+			final CodeSource cs = clazz.getProtectionDomain().getCodeSource();
+			if (cs != null && cs.getLocation() != null) return new File(cs.getLocation().getFile());
+		}
+		catch (final SecurityException ex)
+		{
+			// ignore
+		}
 
 		/*
-		 * fallback mechanism in case CodeSource.getLocation() is null (should only be the case for JDK classes)
+		 * fallback mechanism in case CodeSource.getLocation() is null (should only be the case for JDK classes) or a SecurityManager is active
 		 */
-		final String classPath = "/" + StringUtils.replace(clazz.getName(), ".", "/") + ".class";
-		final URL location = clazz.getResource(classPath);
+		final URL location = clazz.getResource(clazz.getSimpleName() + ".class");
 		if (location == null) return null;
 
 		try
@@ -275,7 +281,6 @@ public abstract class Types
 		{
 			throw new RuntimeException(ex);
 		}
-
 	}
 
 	/**
@@ -352,58 +357,61 @@ public abstract class Types
 		}
 
 		final File location = findLibrary(clazz);
-		if (location == null || !location.isFile()) return null;
+		if (location == null) return null;
 
 		/*
 		 * get version from META-INF/maven/<groupId>/<artifactId>/pom.properties
 		 */
-		ZipFile jar = null;
-		try
+		if (location.isFile())
 		{
-			jar = new ZipFile(location);
-			for (final Enumeration< ? extends ZipEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements();)
+			ZipFile jar = null;
+			try
 			{
-				final ZipEntry jarEntry = jarEntries.nextElement();
-				if (jarEntry.isDirectory()) continue;
-
-				final String jarEntryName = jarEntry.getName();
-
-				if (jarEntryName.length() < 25 || !jarEntryName.startsWith("META-INF/maven")) continue;
-
-				if (jarEntryName.endsWith("/pom.properties"))
+				jar = new ZipFile(location);
+				for (final Enumeration< ? extends ZipEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements();)
 				{
-					final Properties p = new Properties();
-					final InputStream is = jar.getInputStream(jarEntry);
-					try
+					final ZipEntry jarEntry = jarEntries.nextElement();
+					if (jarEntry.isDirectory()) continue;
+
+					final String jarEntryName = jarEntry.getName();
+
+					if (jarEntryName.length() < 25 || !jarEntryName.startsWith("META-INF/maven")) continue;
+
+					if (jarEntryName.endsWith("/pom.properties"))
 					{
-						p.load(jar.getInputStream(jarEntry));
-						final String version = StringUtils.trim(p.getProperty("version"));
-						if (!StringUtils.isEmpty(version)) return version;
-						break;
-					}
-					finally
-					{
-						IOUtils.closeQuietly(is);
+						final InputStream is = jar.getInputStream(jarEntry);
+						try
+						{
+							final Properties p = new Properties();
+							p.load(jar.getInputStream(jarEntry));
+							final String version = StringUtils.trim(p.getProperty("version"));
+							if (!StringUtils.isEmpty(version)) return version;
+							break;
+						}
+						finally
+						{
+							IOUtils.closeQuietly(is);
+						}
 					}
 				}
 			}
-		}
-		catch (final IOException ex)
-		{
-			LOG.debug("Unexpected exception while accessing JAR", ex);
-		}
-		finally
-		{
-			IOUtils.closeQuietly(jar);
-		}
+			catch (final IOException ex)
+			{
+				LOG.debug(ex, "Unexpected exception while accessing JAR");
+			}
+			finally
+			{
+				IOUtils.closeQuietly(jar);
+			}
 
-		/*
-		 * get version from jar file name
-		 */
-		{
-			final String version = StringUtils.trim(StringUtils.substringBeforeLast(
-					StringUtils.substringAfterLast(location.getName(), "-"), "."));
-			if (!StringUtils.isEmpty(version)) return version;
+			/*
+			 * get version from jar file name
+			 */
+			{
+				final String version = StringUtils.trim(StringUtils.substringBeforeLast(
+						StringUtils.substringAfterLast(location.getName(), "-"), "."));
+				if (!StringUtils.isEmpty(version)) return version;
+			}
 		}
 
 		return null;

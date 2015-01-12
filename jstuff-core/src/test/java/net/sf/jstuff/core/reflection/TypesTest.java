@@ -55,10 +55,10 @@ public class TypesTest extends TestCase
 
 		// locate anonymous inner class in exploded directory (target/classes)
 		final Runnable r = new Runnable()
-			{
-				public void run()
-				{}
-			};
+		{
+			public void run()
+			{}
+		};
 		library = Types.findLibrary(r.getClass());
 		assertNotNull(library);
 		assertTrue(library.isDirectory());
@@ -75,7 +75,7 @@ public class TypesTest extends TestCase
 		assertEquals("2.7", Types.getVersion(Paranamer.class));
 
 		// from jar name
-		assertEquals("4.11", Types.getVersion(TestCase.class));
+		assertEquals("4.12", Types.getVersion(TestCase.class));
 	}
 
 	public void testIsAssignableTo()
