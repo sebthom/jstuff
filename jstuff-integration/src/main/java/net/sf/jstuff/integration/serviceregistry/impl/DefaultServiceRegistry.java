@@ -159,8 +159,10 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 
 			if (srvConfig.activeService == null)
 			{
-				LOG.info("Registering service:\n  serviceEndpointId: %s\n  serviceInterface : %s\n  serviceInstance  : %s",
-						serviceEndpointId, serviceInterface.getName(), serviceInstance);
+				LOG.info("Registering service:\n  serviceEndpointId : %s\n  serviceInterface  : %s [%s]\n  serviceInstance   : %s [%s]",
+						serviceEndpointId, //
+						serviceInterface.getName(), serviceInterface.getClassLoader(), //
+						serviceInstance, serviceInstance.getClass().getClassLoader());
 				srvConfig.setActiveService(serviceInterface, serviceInstance);
 
 				_cleanup();
@@ -320,8 +322,10 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 
 			if (srvConfig.activeService != serviceInstance) return false;
 
-			LOG.info("Removing service:\n  serviceEndpointId: %s\n  serviceInterface : %s\n  serviceInstance  : %s", serviceEndpointId,
-					srvConfig.activeServiceInterface.getName(), serviceInstance);
+			LOG.info("Removing service:\n  serviceEndpointId : %s\n  serviceInterface  : %s [%s]\n  serviceInstance   : %s [%s]",
+					serviceEndpointId, //
+					srvConfig.activeServiceInterface.getName(), srvConfig.activeServiceInterface.getClassLoader(), //
+					serviceInstance, serviceInstance.getClass().getClassLoader());
 			srvConfig.activeService = null;
 			srvConfig.activeServiceInterface = null;
 			for (final ServiceProxyInternal proxy : srvConfig.issuedServiceProxies)
