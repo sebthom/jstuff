@@ -50,19 +50,31 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		/**
 		 * All service proxy instances handed out to service consumers for the given end point and still referenced somewhere in the JVM
 		 */
-		private final WeakHashSet<ServiceProxyInternal> issuedServiceProxies = WeakHashSet.create();
+		private final WeakHashSet<ServiceProxyInternal< ? >> issuedServiceProxies = WeakHashSet.create();
 
 		private ServiceEndpointState(final String serviceEndpointId)
 		{
 			this.serviceEndpointId = serviceEndpointId;
 		}
 
-		private ServiceProxyInternal findIssuedServiceProxy(final Class< ? > serviceInterface)
+		private <T> ServiceProxyInternal<T> findOrCreateServiceProxy(final Class<T> serviceInterface)
 		{
-			for (final ServiceProxyInternal serviceProxy : issuedServiceProxies)
+			ServiceProxyInternal<T> proxy = findServiceProxy(serviceInterface);
+			if (proxy == null)
+			{
+				proxy = createServiceProxy(this, serviceInterface);
+				issuedServiceProxies.add(proxy);
+			}
+			return proxy;
+		}
+
+		@SuppressWarnings("unchecked")
+		private <T> ServiceProxyInternal<T> findServiceProxy(final Class<T> serviceInterface)
+		{
+			for (final ServiceProxyInternal< ? > serviceProxy : issuedServiceProxies)
 			{
 				if (serviceProxy.getServiceInterface() == serviceInterface) //
-					return serviceProxy;
+					return (ServiceProxyInternal<T>) serviceProxy;
 			}
 			return null;
 		}
@@ -77,23 +89,12 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 			return serviceEndpointId;
 		}
 
-		private ServiceProxyInternal issueServiceProxy(final Class< ? > serviceInterface)
-		{
-			ServiceProxyInternal proxy = findIssuedServiceProxy(serviceInterface);
-			if (proxy == null)
-			{
-				proxy = createServiceProxy(this, serviceInterface);
-				issuedServiceProxies.add(proxy);
-			}
-			return proxy;
-		}
-
 		private <SERVICE_INTERFACE> void setActiveService(final Class<SERVICE_INTERFACE> serviceInterface, final SERVICE_INTERFACE service)
 		{
 			activeServiceInterface = serviceInterface;
 			activeService = service;
-			issueServiceProxy(serviceInterface);
-			for (final ServiceProxyInternal proxy : issuedServiceProxies)
+			findOrCreateServiceProxy(serviceInterface);
+			for (final ServiceProxyInternal< ? > proxy : issuedServiceProxies)
 			{
 				proxy.onServiceAvailable();
 			}
@@ -184,8 +185,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 	/**
 	 * This method is intended for subclassing
 	 */
-	protected <SERVICE_INTERFACE> ServiceProxyInternal createServiceProxy(final ServiceEndpointState serviceEndpointConfig,
-			final Class<SERVICE_INTERFACE> serviceInterface)
+	protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(
+			final ServiceEndpointState serviceEndpointConfig, final Class<SERVICE_INTERFACE> serviceInterface)
 	{
 		return Proxies.create(new DefaultServiceProxyInvocationHandler<SERVICE_INTERFACE>(serviceEndpointConfig, serviceInterface),
 				ServiceProxyInternal.class, serviceInterface);
@@ -224,9 +225,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 			final ServiceEndpointState srvConfig = serviceEndpoints.get(serviceEndpointId);
 			if (srvConfig != null)
 			{
-				@SuppressWarnings("unchecked")
-				final ServiceProxy<SERVICE_INTERFACE> proxy = (ServiceProxy<SERVICE_INTERFACE>) srvConfig
-						.findIssuedServiceProxy(serviceInterface);
+				final ServiceProxy<SERVICE_INTERFACE> proxy = srvConfig.findServiceProxy(serviceInterface);
 				if (proxy != null) return proxy;
 			}
 		}
@@ -244,8 +243,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 				srvConfig = new ServiceEndpointState(serviceEndpointId);
 				serviceEndpoints.put(serviceEndpointId, srvConfig);
 			}
-			@SuppressWarnings("unchecked")
-			final ServiceProxy<SERVICE_INTERFACE> proxy = (ServiceProxy<SERVICE_INTERFACE>) srvConfig.issueServiceProxy(serviceInterface);
+			final ServiceProxy<SERVICE_INTERFACE> proxy = srvConfig.findOrCreateServiceProxy(serviceInterface);
 			return proxy;
 		}
 		finally
@@ -328,7 +326,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 					serviceInstance, serviceInstance.getClass().getClassLoader());
 			srvConfig.activeService = null;
 			srvConfig.activeServiceInterface = null;
-			for (final ServiceProxyInternal proxy : srvConfig.issuedServiceProxies)
+			for (final ServiceProxyInternal< ? > proxy : srvConfig.issuedServiceProxies)
 			{
 				proxy.onServiceUnavailable();
 			}
