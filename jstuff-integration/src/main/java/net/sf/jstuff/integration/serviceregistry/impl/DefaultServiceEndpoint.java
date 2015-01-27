@@ -32,7 +32,10 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
 
 	public int compareTo(final DefaultServiceEndpoint other)
 	{
-		return ObjectUtils.compare(this, other);
+		if (other == null) return 1;
+		final int res = ObjectUtils.compare(serviceEndpointId, other.serviceEndpointId, false);
+		if (res != 0) return res;
+		return ObjectUtils.compare(serviceInterface.getName(), other.serviceInterface.getName());
 	}
 
 	public String getServiceEndpointId()
