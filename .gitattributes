@@ -302,7 +302,7 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/Servi
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/ServiceRegistry.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/ServiceUnavailableException.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceEndpoint.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceProxyInvocationHandler.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceProxyAdvice.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceRegistry.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceRegistryMBean.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/ServiceProxyInternal.java -text

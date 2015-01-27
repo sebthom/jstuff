@@ -13,6 +13,8 @@
 package net.sf.jstuff.integration.serviceregistry.impl;
 
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +37,7 @@ import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.serviceregistry.ServiceEndpoint;
 import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
 import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
+import net.sf.jstuff.integration.serviceregistry.ServiceUnavailableException;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -76,6 +79,14 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 				if (serviceProxy.getServiceInterface() == serviceInterface) //
 					return (ServiceProxyInternal<T>) serviceProxy;
 			}
+			return null;
+		}
+
+		@SuppressWarnings("unchecked")
+		public <T> T getActiveServiceIfCompatible(final Class<T> serviceInterface)
+		{
+			if (activeService != null && serviceInterface.isAssignableFrom(activeService.getClass())) //
+				return (T) activeService;
 			return null;
 		}
 
@@ -186,10 +197,36 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 	 * This method is intended for subclassing
 	 */
 	protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(
-			final ServiceEndpointState serviceEndpointConfig, final Class<SERVICE_INTERFACE> serviceInterface)
+			final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface)
 	{
-		return Proxies.create(new DefaultServiceProxyInvocationHandler<SERVICE_INTERFACE>(serviceEndpointConfig, serviceInterface),
-				ServiceProxyInternal.class, serviceInterface);
+		final DefaultServiceProxyAdvice<SERVICE_INTERFACE> advice = new DefaultServiceProxyAdvice<SERVICE_INTERFACE>(serviceEndpointState,
+				serviceInterface);
+		final ServiceProxyInternal<SERVICE_INTERFACE> proxy = Proxies.create(new InvocationHandler()
+			{
+				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+				{
+					final String methodName = method.getName();
+					if (method.getDeclaringClass() == ServiceProxy.class) return method.invoke(advice, args);
+					if (method.getDeclaringClass() == ServiceProxyInternal.class) return method.invoke(advice, args);
+
+					final int methodParamCount = method.getParameterTypes().length;
+					if (methodParamCount == 0)
+					{
+						if ("hashCode".equals(methodName)) return advice.hashCode();
+						if ("toString".equals(methodName)) return advice.toString();
+					}
+					else if (methodParamCount == 1)
+					{
+						if ("equals".equals(methodName)) return proxy == args[0];
+					}
+
+					final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
+					if (service == null) throw new ServiceUnavailableException(advice.serviceEndpointId, serviceInterface);
+					return method.invoke(service, args);
+				}
+			}, ServiceProxyInternal.class, serviceInterface);
+		advice.setProxy(proxy);
+		return proxy;
 	}
 
 	public List<ServiceEndpoint> getActiveServiceEndpoints()
