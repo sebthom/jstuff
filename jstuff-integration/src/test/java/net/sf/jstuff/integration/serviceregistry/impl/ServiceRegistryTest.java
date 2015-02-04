@@ -116,11 +116,16 @@ public class ServiceRegistryTest extends TestCase
 		assertFalse(registry.getService(Service2.ENDPOINT_ID, Service2.class).isServiceAvailable());
 
 		registry.addService(Service2.ENDPOINT_ID, Service2.class, srv2);
+		assertEquals(DefaultService2.class, registry.getService(Service2.ENDPOINT_ID, Service2.class).getServiceImplementationClass());
 		assertTrue(registry.getService(Service2.ENDPOINT_ID, Service2.class).isServiceAvailable());
 		assertFalse(registry.getService(Service2.ENDPOINT_ID, Service2Extended.class).isServiceAvailable());
 		registry.removeService(Service2.ENDPOINT_ID, srv2);
 
 		registry.addService(Service2.ENDPOINT_ID, Service2Extended.class, srv2Ext);
+		assertEquals(DefaultService2Extended.class, registry.getService(Service2.ENDPOINT_ID, Service2.class)
+				.getServiceImplementationClass());
+		assertEquals(DefaultService2Extended.class, registry.getService(Service2.ENDPOINT_ID, Service2Extended.class)
+				.getServiceImplementationClass());
 		assertTrue(registry.getService(Service2.ENDPOINT_ID, Service2.class).isServiceAvailable());
 		assertTrue(registry.getService(Service2.ENDPOINT_ID, Service2Extended.class).isServiceAvailable());
 		registry.removeService(Service2.ENDPOINT_ID, srv2Ext);

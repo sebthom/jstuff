@@ -66,6 +66,12 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
 		return serviceEndpointId;
 	}
 
+	public Class< ? > getServiceImplementationClass()
+	{
+		final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
+		return service == null ? null : service.getClass();
+	}
+
 	public Class<SERVICE_INTERFACE> getServiceInterface()
 	{
 		return serviceInterface;

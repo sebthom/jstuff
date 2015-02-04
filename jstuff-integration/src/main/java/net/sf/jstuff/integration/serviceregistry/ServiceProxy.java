@@ -27,6 +27,11 @@ public interface ServiceProxy<SERVICE_INTERFACE>
 
 	String getServiceEndpointId();
 
+	/**
+	 * the concrete class of the service instance that has been registered
+	 */
+	Class< ? > getServiceImplementationClass();
+
 	Class<SERVICE_INTERFACE> getServiceInterface();
 
 	/**
