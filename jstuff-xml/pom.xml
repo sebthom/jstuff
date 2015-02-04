@@ -54,7 +54,7 @@
 				JDK activation does not work in m2eclipse https://issues.sonatype.org/browse/MNGECLIPSE-1635
 				thus we are using the following property as a workaround to allow compilation in eclipse workspace
 			-->
-			<id>1.5-m2e</id>
+			<id>jdk5-m2e</id>
 			<activation>
 				<property>
 					<name>eclipse.application</name>

@@ -2,7 +2,8 @@
 <!--
 	@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.sf.jstuff</groupId>
@@ -104,7 +105,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.5</java.version>
-		<slf4j.version>1.7.7</slf4j.version>
+		<slf4j.version>1.7.10</slf4j.version>
 	</properties>
 
 	<modules>
@@ -147,38 +148,12 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<profiles>
-		<!-- m2eclipse has problems when the compilerId is not "javac", thus we set it to "javac" when in Eclipse but set it to "eclipse" for command
-			line builds -->
-		<profile>
-			<activation>
-				<property>
-					<name>!eclipse.application</name>
-				</property>
-			</activation>
-			<properties>
-				<compilerId>eclipse</compilerId>
-			</properties>
-		</profile>
-		<profile>
-			<id>m2eclipse</id>
-			<activation>
-				<property>
-					<name>eclipse.application</name>
-				</property>
-			</activation>
-			<properties>
-				<compilerId>javac</compilerId>
-			</properties>
-		</profile>
-	</profiles>
-
 	<build>
 		<plugins>
 			<plugin>
 				<!-- http://maven.apache.org/guides/mini/guide-using-toolchains.html -->
 				<artifactId>maven-toolchains-plugin</artifactId>
-				<version>1.0</version>
+				<version>1.1</version>
 				<executions>
 					<execution>
 						<phase>validate</phase>
@@ -199,7 +174,7 @@
 
 			<plugin>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.3.1</version>
+				<version>1.4</version>
 				<executions>
 					<execution>
 						<goals>
@@ -234,8 +209,10 @@
 				phase: compile
 				********************************************************************* -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<!-- not upgrading to 3.2 -->
+				<!-- http://jira.codehaus.org/browse/MCOMPILER-235 -->
+				<!-- http://jira.codehaus.org/browse/MCOMPILER-236 -->
 				<!-- version 3.2 is broken:
 					[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.2:compile (default-compile) on project jstuff-core: Fatal
 					error compiling: basedir C:\workspace\jstuff-parent\jstuff-core\target\generated-sources\annotations does not exist -> [Help 1] -->
@@ -353,62 +330,6 @@
 			</plugin>
 		</plugins>
 
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-enforcer-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
-										<goals>
-											<goal>enforce</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.felix</groupId>
-										<artifactId>maven-bundle-plugin</artifactId>
-										<versionRange>[2.4.0,)</versionRange>
-										<goals>
-											<goal>manifest</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-toolchains-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
-										<goals>
-											<goal>toolchain</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
@@ -417,4 +338,141 @@
 			</extension>
 		</extensions>
 	</build>
+
+	<profiles>
+		<!-- m2eclipse has problems when the compilerId is not "javac", thus we set it to "javac" when in Eclipse but set it to "eclipse" for command line builds -->
+		<profile>
+			<activation>
+				<property>
+					<name>!eclipse.application</name>
+				</property>
+			</activation>
+			<properties>
+				<compilerId>eclipse</compilerId>
+			</properties>
+		</profile>
+		<profile>
+			<id>m2eclipse</id>
+			<activation>
+				<property>
+					<name>eclipse.application</name>
+				</property>
+			</activation>
+			<properties>
+				<compilerId>javac</compilerId>
+			</properties>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<!-- http://stackoverflow.com/questions/7905501/get-rid-of-pom-not-found-warning-for-org-eclipse-m2elifecycle-mapping -->
+						<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
+						<plugin>
+							<groupId>org.eclipse.m2e</groupId>
+							<artifactId>lifecycle-mapping</artifactId>
+							<version>1.0.0</version>
+							<configuration>
+								<lifecycleMappingMetadata>
+									<pluginExecutions>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.apache.maven.plugins</groupId>
+												<artifactId>maven-enforcer-plugin</artifactId>
+												<versionRange>[1.0,)</versionRange>
+												<goals>
+													<goal>enforce</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.apache.felix</groupId>
+												<artifactId>maven-bundle-plugin</artifactId>
+												<versionRange>[2.4.0,)</versionRange>
+												<goals>
+													<goal>manifest</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.apache.maven.plugins</groupId>
+												<artifactId>maven-toolchains-plugin</artifactId>
+												<versionRange>[1.0,)</versionRange>
+												<goals>
+													<goal>toolchain</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+									</pluginExecutions>
+								</lifecycleMappingMetadata>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+
+		<profile>
+			<id>jrebel-config</id>
+			<activation>
+				<file>
+					<exists>src/main/resources/rebel-remote.xml</exists>
+				</file>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.zeroturnaround</groupId>
+						<artifactId>jrebel-maven-plugin</artifactId>
+						<version>1.1.5</version>
+						<executions>
+							<execution>
+								<id>generate-rebel-xml</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<addResourcesDirToRebelXml>true</addResourcesDirToRebelXml>
+							<alwaysGenerate>false</alwaysGenerate>
+							<showGenerated>true</showGenerated>
+							<generateDefaultElements>false</generateDefaultElements>
+						</configuration>
+					</plugin>
+				</plugins>
+
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<artifactId>maven-war-plugin</artifactId>
+							<configuration>
+								<packagingExcludes>WEB-INF/classes/rebel.xml</packagingExcludes>
+							</configuration>
+						</plugin>
+						<plugin>
+							<artifactId>maven-jar-plugin</artifactId>
+							<configuration>
+								<excludes>
+									<exclude>rebel.xml</exclude>
+								</excludes>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
+
 </project>
