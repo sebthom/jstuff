@@ -61,8 +61,6 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public abstract class Types
 {
-	private static Logger LOG = Logger.create();
-
 	@SuppressWarnings("unchecked")
 	public static <T> T cast(final Object obj)
 	{
@@ -75,26 +73,26 @@ public abstract class Types
 		Args.notEmpty("mixins", mixins);
 
 		return Proxies.create(objectInterface, new InvocationHandler()
-		{
-			final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<Method, Tuple2<Object, Method>>();
-
-			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
-				Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
-				if (mixedInMethod == null) for (final Object mixin : mixins)
+				final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<Method, Tuple2<Object, Method>>();
+
+				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{
-					final Method methodImpl = Methods.findRecursive(mixin.getClass(), method.getName(), method.getParameterTypes());
-					if (methodImpl != null)
+					Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
+					if (mixedInMethod == null) for (final Object mixin : mixins)
 					{
-						mixedInMethod = Tuple2.create(mixin, methodImpl);
-						mappedMethodsCache.put(method, mixedInMethod);
-						break;
+						final Method methodImpl = Methods.findRecursive(mixin.getClass(), method.getName(), method.getParameterTypes());
+						if (methodImpl != null)
+						{
+							mixedInMethod = Tuple2.create(mixin, methodImpl);
+							mappedMethodsCache.put(method, mixedInMethod);
+							break;
+						}
 					}
+					if (mixedInMethod == null) throw new UnsupportedOperationException("Method is not implemented.");
+					return Methods.invoke(mixedInMethod.get1(), mixedInMethod.get2(), args);
 				}
-				if (mixedInMethod == null) throw new UnsupportedOperationException("Method is not implemented.");
-				return Methods.invoke(mixedInMethod.get1(), mixedInMethod.get2(), args);
-			}
-		});
+			});
 	}
 
 	public static <T> T createSynchronized(final Class<T> objectInterface, final T object)
@@ -111,15 +109,15 @@ public abstract class Types
 		Args.notNull("object", object);
 
 		return Proxies.create(objectInterface, new InvocationHandler()
-		{
-			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
-				synchronized (lock)
+				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{
-					return method.invoke(object, args);
+					synchronized (lock)
+					{
+						return method.invoke(object, args);
+					}
 				}
-			}
-		});
+			});
 	}
 
 	public static <T> T createThreadLocalized(final Class<T> objectInterface, final ThreadLocal<T> threadLocal)
@@ -128,12 +126,12 @@ public abstract class Types
 		Args.notNull("threadLocal", threadLocal);
 
 		return Proxies.create(objectInterface, new InvocationHandler()
-		{
-			public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 			{
-				return method.invoke(threadLocal.get(), args);
-			}
-		});
+				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+				{
+					return method.invoke(threadLocal.get(), args);
+				}
+			});
 	}
 
 	/**
@@ -187,7 +185,7 @@ public abstract class Types
 		if (searchFor.getTypeParameters().length == 0) return ArrayUtils.EMPTY_CLASS_ARRAY;
 
 		if (!searchFor.isAssignableFrom(searchIn))
-			throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is assignable to [searchFor="
+			throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is not assignable to [searchFor="
 					+ searchFor.getName() + "]");
 
 		final boolean isSearchForInterface = searchFor.isInterface();
@@ -199,37 +197,37 @@ public abstract class Types
 		final ParameterizedType[] searchForType = {null};
 
 		visit(searchIn, new ClassVisitorWithTypeArguments()
-		{
-			public boolean isVisiting(final Class< ? > clazz, final ParameterizedType type)
 			{
-				return searchFor.isAssignableFrom(clazz);
-			}
-
-			public boolean isVisitingInterfaces(final Class< ? > clazz, final ParameterizedType type)
-			{
-				return isSearchForInterface && searchFor.isAssignableFrom(clazz);
-			}
-
-			public boolean isVisitingSuperclass(final Class< ? > clazz, final ParameterizedType type)
-			{
-				return searchFor.isAssignableFrom(clazz);
-			}
-
-			public boolean visit(final Class< ? > clazz, final ParameterizedType type)
-			{
-				if (type != null) CollectionUtils.putAll(genericVariableToArgumentMappings, //
-						/*generic variable*/(TypeVariable< ? >[]) clazz.getTypeParameters(), //
-						/*arguments (concrete types) for generic variables*/type.getActualTypeArguments() //
-						);
-
-				if (clazz == searchFor)
+				public boolean isVisiting(final Class< ? > clazz, final ParameterizedType type)
 				{
-					searchForType[0] = type;
-					return false;
+					return searchFor.isAssignableFrom(clazz);
 				}
-				return true;
-			}
-		});
+
+				public boolean isVisitingInterfaces(final Class< ? > clazz, final ParameterizedType type)
+				{
+					return isSearchForInterface && searchFor.isAssignableFrom(clazz);
+				}
+
+				public boolean isVisitingSuperclass(final Class< ? > clazz, final ParameterizedType type)
+				{
+					return searchFor.isAssignableFrom(clazz);
+				}
+
+				public boolean visit(final Class< ? > clazz, final ParameterizedType type)
+				{
+					if (type != null) CollectionUtils.putAll(genericVariableToArgumentMappings, //
+							/*generic variable*/(TypeVariable< ? >[]) clazz.getTypeParameters(), //
+							/*arguments (concrete types) for generic variables*/type.getActualTypeArguments() //
+							);
+
+					if (clazz == searchFor)
+					{
+						searchForType[0] = type;
+						return false;
+					}
+					return true;
+				}
+			});
 
 		/*
 		 * build the result list based on the information collected in genericVariableToTypeMappings
@@ -611,4 +609,6 @@ public abstract class Types
 		throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class ["
 				+ clazz + "]");
 	}
+
+	private static Logger LOG = Logger.create();
 }
