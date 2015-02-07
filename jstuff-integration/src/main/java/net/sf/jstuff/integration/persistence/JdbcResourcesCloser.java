@@ -18,7 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import net.sf.jstuff.core.logging.Logger;
@@ -29,8 +28,6 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class JdbcResourcesCloser
 {
-	private static final Logger LOG = Logger.create();
-
 	private static boolean close(final Object resource)
 	{
 		if (resource == null) return false;
@@ -38,11 +35,17 @@ public class JdbcResourcesCloser
 		try
 		{
 			if (resource instanceof Connection)
+			{
 				((Connection) resource).close();
+			}
 			else if (resource instanceof Statement)
+			{
 				((Statement) resource).close();
+			}
 			else if (resource instanceof ResultSet)
+			{
 				((ResultSet) resource).close();
+			}
 			else
 				return false;
 		}
@@ -54,6 +57,8 @@ public class JdbcResourcesCloser
 		return true;
 	}
 
+	private static final Logger LOG = Logger.create();
+
 	private final LinkedList<Object> resources = new LinkedList<Object>();
 
 	/**
@@ -61,11 +66,11 @@ public class JdbcResourcesCloser
 	 */
 	public void closeAll()
 	{
-		for (final Iterator<Object> it = resources.iterator(); it.hasNext();)
+		for (final Object resource : resources)
 		{
-			close(it.next());
-			it.remove();
+			close(resource);
 		}
+		resources.clear();
 	}
 
 	/**
