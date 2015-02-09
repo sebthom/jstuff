@@ -173,8 +173,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 			{
 				LOG.info("Registering service:\n  serviceEndpointId : %s\n  serviceInterface  : %s [%s]\n  serviceInstance   : %s [%s]",
 						serviceEndpointId, //
-						serviceInterface.getName(), serviceInterface.getClassLoader(), //
-						serviceInstance, serviceInstance.getClass().getClassLoader());
+						serviceInterface.getName(), toString(serviceInterface.getClassLoader()), //
+						toString(serviceInstance), toString(serviceInstance.getClass().getClassLoader()));
 				srvConfig.setActiveService(serviceInterface, serviceInstance);
 
 				_cleanup();
@@ -359,8 +359,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 
 			LOG.info("Removing service:\n  serviceEndpointId : %s\n  serviceInterface  : %s [%s]\n  serviceInstance   : %s [%s]",
 					serviceEndpointId, //
-					srvConfig.activeServiceInterface.getName(), srvConfig.activeServiceInterface.getClassLoader(), //
-					serviceInstance, serviceInstance.getClass().getClassLoader());
+					srvConfig.activeServiceInterface.getName(), toString(srvConfig.activeServiceInterface.getClassLoader()), //
+					toString(serviceInstance), toString(serviceInstance.getClass().getClassLoader()));
 			srvConfig.activeService = null;
 			srvConfig.activeServiceInterface = null;
 			for (final ServiceProxyInternal< ? > proxy : srvConfig.issuedServiceProxies)
@@ -375,5 +375,11 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		{
 			serviceEndpoints_WRITE.unlock();
 		}
+	}
+
+	private String toString(final Object obj)
+	{
+		if (obj == null) return "null";
+		return obj.getClass().getName() + "@" + System.identityHashCode(obj);
 	}
 }
