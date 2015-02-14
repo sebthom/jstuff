@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -12,6 +12,12 @@
  *******************************************************************************/
 package net.sf.jstuff.core.concurrent;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+import java.util.Arrays;
+import java.util.Comparator;
+
+import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
@@ -20,7 +26,51 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Threads
 {
-	private static final Logger LOG = Logger.create();
+	public static Thread[] all()
+	{
+		final ThreadGroup root = rootThreadGroup();
+		int tmpSize = count() + 1;
+		Thread[] tmp;
+		int returned = 0;
+		do
+		{
+			tmp = new Thread[tmpSize];
+			returned = root.enumerate(tmp, true);
+			tmpSize *= 2;
+		}
+		while (returned == tmpSize);
+		final Thread[] result = new Thread[returned];
+		System.arraycopy(tmp, 0, result, 0, returned);
+		return result;
+	}
+
+	public static Thread[] allPrioritized()
+	{
+		final Thread[] allThreads = all();
+		Arrays.sort(allThreads, THREAD_PRIORITY_COMPARATOR);
+		return allThreads;
+	}
+
+	public static int count()
+	{
+		return TMX.getThreadCount();
+	}
+
+	/**
+	 * @return IDs of monitor deadlocked Threads
+	 */
+	public static long[] deadlockedIDs()
+	{
+		final long[] result = TMX.findMonitorDeadlockedThreads();
+		if (result == null) return ArrayUtils.EMPTY_LONG_ARRAY;
+		return result;
+	}
+
+	public static void handleInterruptedException(final InterruptedException ex)
+	{
+		LOG.error(ex, "InterruptedException caught");
+		Thread.currentThread().interrupt();
+	}
 
 	/**
 	 * Handles InterruptedException correctly.
@@ -36,9 +86,21 @@ public abstract class Threads
 		}
 		catch (final InterruptedException ex)
 		{
-			LOG.error(ex, "InterruptedException caught");
-			Thread.currentThread().interrupt();
+			handleInterruptedException(ex);
 		}
+	}
+
+	public static ThreadGroup rootThreadGroup()
+	{
+		if (rootTG != null) return rootTG;
+		ThreadGroup child = Thread.currentThread().getThreadGroup();
+		ThreadGroup parent;
+		while ((parent = child.getParent()) != null)
+		{
+			child = parent;
+		}
+		rootTG = child;
+		return rootTG;
 	}
 
 	/**
@@ -53,8 +115,7 @@ public abstract class Threads
 		}
 		catch (final InterruptedException ex)
 		{
-			LOG.error(ex, "InterruptedException caught");
-			Thread.currentThread().interrupt();
+			handleInterruptedException(ex);
 		}
 	}
 
@@ -70,8 +131,7 @@ public abstract class Threads
 		}
 		catch (final InterruptedException ex)
 		{
-			LOG.error(ex, "InterruptedException caught");
-			Thread.currentThread().interrupt();
+			handleInterruptedException(ex);
 		}
 	}
 
@@ -90,8 +150,22 @@ public abstract class Threads
 		}
 		catch (final InterruptedException ex)
 		{
-			LOG.error(ex, "InterruptedException caught");
-			Thread.currentThread().interrupt();
+			handleInterruptedException(ex);
 		}
 	}
+
+	private static final Logger LOG = Logger.create();
+
+	private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = new java.util.Comparator<Thread>()
+		{
+			public int compare(final Thread t1, final Thread t2)
+			{
+				return t2.getPriority() - t1.getPriority();
+			}
+		};
+
+	private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
+
+	private static ThreadGroup rootTG;
+
 }
