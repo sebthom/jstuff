@@ -20,39 +20,45 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-@SuppressWarnings("null")
 public final class LoggerConfig
 {
 	private static final Logger LOG;
-
-	private static final boolean isSLF4JAvailable;
-	private static boolean isPreferSLF4J;
-	private static boolean isUseSFL4J;
 
 	/**
 	 * weak set holding all instantiated loggers. required to switch the backing logger implementation during runtime if required.
 	 */
 	private static final Set<DelegatingLogger> LOGGERS = new WeakIdentityHashSet<DelegatingLogger>(64);
 
+	private static final boolean isSLF4JAvailable;
+
+	private static boolean isPreferSLF4J = false;
+
+	private static boolean isUseSFL4J = false;
+
 	/**
 	 * If set to true, method name and line number are added to the log message.
 	 * This is esp. helpful in environments where you have no control over the used logger pattern by the underlying logger infrastructure (e.g. in an JEE container).
 	 */
 	static boolean isDebugMessagePrefixEnabled = false;
+
 	static boolean isCompactExceptionLoggingDisabled = false;
 
 	static
 	{
-		Class< ? > slf4jClass = null;
+		LinkageError slf4jLinkageError = null;
 		try
 		{
-			slf4jClass = org.slf4j.Logger.class;
+			@SuppressWarnings("unused")
+			final SLF4JLogger test = new SLF4JLogger("");
 		}
 		catch (final LinkageError err)
-		{}
-		isSLF4JAvailable = slf4jClass != null;
+		{
+			slf4jLinkageError = err;
+		}
+		isSLF4JAvailable = slf4jLinkageError == null;
 
 		LOG = create(LoggerConfig.class.getName());
+		if (slf4jLinkageError != null) LOG.debug(slf4jLinkageError);
 
 		setPreferSLF4J("true".equals(System.getProperty(Logger.class.getName() + ".preferSLF4J", "true")));
 	}
