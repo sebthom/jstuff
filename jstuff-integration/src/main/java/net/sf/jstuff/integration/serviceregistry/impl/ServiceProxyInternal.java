@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -28,4 +28,6 @@ public interface ServiceProxyInternal<T> extends ServiceProxy<T>
 	 * called if a service has been removed from the respective serviceEndpointId
 	 */
 	void onServiceUnavailable();
+
+	int getListenerCount();
 }

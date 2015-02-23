@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -25,6 +25,27 @@ import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
  */
 public class ServiceRegistryTest extends TestCase
 {
+	private static final class CountingListener<T> implements ServiceListener<T>
+	{
+		private final AtomicInteger count;
+
+		public CountingListener(final AtomicInteger count)
+		{
+			this.count = count;
+		}
+
+		public void onServiceAvailable(final ServiceProxy<T> service)
+		{
+			count.incrementAndGet();
+		}
+
+		public void onServiceUnavailable(final ServiceProxy<T> service)
+		{
+			count.incrementAndGet();
+		}
+
+	};
+
 	public static class DefaultService1 implements Service1
 	{
 		public String getGreeting()
@@ -135,34 +156,58 @@ public class ServiceRegistryTest extends TestCase
 	{
 		final ServiceProxy<Service1> srv1Proxy = registry.getService(Service1.ENDPOINT_ID, Service1.class);
 		final AtomicInteger count = new AtomicInteger();
-		final ServiceListener<ServiceRegistryTest.Service1> listener = new ServiceListener<ServiceRegistryTest.Service1>()
-			{
-				public void onServiceAvailable(final ServiceProxy<Service1> service)
-				{
-					count.incrementAndGet();
-				}
-
-				public void onServiceUnavailable(final ServiceProxy<Service1> service)
-				{
-					count.decrementAndGet();
-				}
-			};
+		final CountingListener<ServiceRegistryTest.Service1> listener = new CountingListener<ServiceRegistryTest.Service1>(count);
 		srv1Proxy.addServiceListener(listener);
 
 		final DefaultService1 srv1Impl = new DefaultService1();
-		registry.addService(Service1.ENDPOINT_ID, Service1.class, srv1Impl);
-		registry.addService(Service1.ENDPOINT_ID, Service1.class, srv1Impl);
 
+		count.set(0);
+		registry.addService(Service1.ENDPOINT_ID, Service1.class, srv1Impl);
+		registry.addService(Service1.ENDPOINT_ID, Service1.class, srv1Impl);
 		assertEquals(1, count.get());
 
+		count.set(0);
 		registry.removeService(Service1.ENDPOINT_ID, srv1Impl);
 		registry.removeService(Service1.ENDPOINT_ID, srv1Impl);
+		assertEquals(1, count.get());
 
-		assertEquals(0, count.get());
-
+		count.set(0);
 		srv1Proxy.removeServiceListener(listener);
 		registry.addService(Service1.ENDPOINT_ID, Service1.class, srv1Impl);
+		assertEquals(0, count.get());
+	}
 
+	public void testServiceListenerGC() throws InterruptedException
+	{
+		ServiceProxy<Runnable> srv1Proxy = registry.getService(Runnable.class.getName(), Runnable.class);
+		final AtomicInteger count = new AtomicInteger();
+		CountingListener<Runnable> listener = new CountingListener<Runnable>(count);
+		assertTrue(srv1Proxy.addServiceListener(listener));
+		assertFalse(srv1Proxy.addServiceListener(listener));
+
+		srv1Proxy = null; // remove ref to service proxy, but still hold ref to listener
+		System.gc();
+		Thread.sleep(500);
+
+		final Runnable service = new Runnable()
+			{
+				public void run()
+				{}
+			};
+
+		count.set(0);
+		registry.addService(Runnable.class.getName(), Runnable.class, service);
+		registry.removeService(Runnable.class.getName(), service);
+		assertEquals(2, count.get());
+
+		listener.toString(); // this call ensures that the listener is not GCed before by some JIT optimization
+		listener = null; // also remove ref to listener
+		System.gc();
+		Thread.sleep(500);
+
+		count.set(0);
+		registry.addService(Runnable.class.getName(), Runnable.class, service);
+		registry.removeService(Runnable.class.getName(), service);
 		assertEquals(0, count.get());
 	}
 

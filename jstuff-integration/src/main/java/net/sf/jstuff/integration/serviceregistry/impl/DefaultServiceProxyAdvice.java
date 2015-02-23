@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
+ * Thomschke.
+ *
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.jstuff.integration.serviceregistry.impl;
 
 import java.util.Set;
@@ -12,6 +24,9 @@ import net.sf.jstuff.integration.serviceregistry.ServiceListener;
 import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
 import net.sf.jstuff.integration.serviceregistry.impl.DefaultServiceRegistry.ServiceEndpointState;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProxyInternal<SERVICE_INTERFACE>
 {
 	private final static Logger LOG = Logger.create();
@@ -24,7 +39,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
 	private final Lock listeners_READ;
 	private final Lock listeners_WRITE;
 
-	private ServiceProxy<SERVICE_INTERFACE> proxy;
+	private ServiceProxyInternal<SERVICE_INTERFACE> proxy;
 
 	public DefaultServiceProxyAdvice(final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface)
 	{
@@ -47,7 +62,9 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
 		listeners_WRITE.lock();
 		try
 		{
-			return listeners.add(listener);
+			final boolean rc = listeners.add(listener);
+			serviceEndpointState.onListenerAdded(proxy);
+			return rc;
 		}
 		finally
 		{
@@ -59,6 +76,19 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
 	public SERVICE_INTERFACE get()
 	{
 		return (SERVICE_INTERFACE) proxy;
+	}
+
+	public int getListenerCount()
+	{
+		listeners_READ.lock();
+		try
+		{
+			return listeners.size();
+		}
+		finally
+		{
+			listeners_READ.unlock();
+		}
 	}
 
 	public String getServiceEndpointId()
@@ -82,55 +112,65 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
 		return serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void onServiceAvailable()
 	{
-		listeners_READ.lock();
-		try
+		if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null)
 		{
-			if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null)
+			ServiceListener<SERVICE_INTERFACE>[] listeners;
+			listeners_READ.lock();
+			try
 			{
-				for (final ServiceListener<SERVICE_INTERFACE> listener : listeners)
+				if (this.listeners.size() == 0) return;
+				listeners = this.listeners.toArray(new ServiceListener[this.listeners.size()]);
+			}
+			finally
+			{
+				listeners_READ.unlock();
+			}
+
+			for (final ServiceListener<SERVICE_INTERFACE> listener : listeners)
+			{
+				try
 				{
-					try
-					{
-						listener.onServiceAvailable(proxy);
-					}
-					catch (final Exception ex)
-					{
-						LOG.error(ex, "Failed to notify listener %s", listener);
-					}
+					listener.onServiceAvailable(proxy);
+				}
+				catch (final Exception ex)
+				{
+					LOG.error(ex, "Failed to notify listener %s", listener);
 				}
 			}
-		}
-		finally
-		{
-			listeners_READ.unlock();
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void onServiceUnavailable()
 	{
-		listeners_READ.lock();
-		try
+		if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) == null)
 		{
-			if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) == null)
+			ServiceListener<SERVICE_INTERFACE>[] listeners;
+			listeners_READ.lock();
+			try
 			{
-				for (final ServiceListener<SERVICE_INTERFACE> listener : listeners)
+				if (this.listeners.size() == 0) return;
+				listeners = this.listeners.toArray(new ServiceListener[this.listeners.size()]);
+			}
+			finally
+			{
+				listeners_READ.unlock();
+			}
+
+			for (final ServiceListener<SERVICE_INTERFACE> listener : listeners)
+			{
+				try
 				{
-					try
-					{
-						listener.onServiceUnavailable(proxy);
-					}
-					catch (final Exception ex)
-					{
-						LOG.error(ex, "Failed to notify listener %s", listener);
-					}
+					listener.onServiceUnavailable(proxy);
+				}
+				catch (final Exception ex)
+				{
+					LOG.error(ex, "Failed to notify listener %s", listener);
 				}
 			}
-		}
-		finally
-		{
-			listeners_READ.unlock();
 		}
 	}
 
@@ -149,7 +189,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
 		}
 	}
 
-	public void setProxy(final ServiceProxy<SERVICE_INTERFACE> proxy)
+	public void setProxy(final ServiceProxyInternal<SERVICE_INTERFACE> proxy)
 	{
 		this.proxy = proxy;
 	}
