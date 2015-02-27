@@ -19,6 +19,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeCollection.java
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeList.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeMap.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeSet.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/collection/ConcurrentHashSet.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/DelegatingCollection.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/DelegatingList.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/DelegatingSet.java -text
