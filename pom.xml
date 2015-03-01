@@ -2,7 +2,8 @@
 <!--
 	@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.sf.jstuff</groupId>
@@ -104,6 +105,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.5</java.version>
+		<java.version.integration-tests>1.6</java.version.integration-tests>
 		<slf4j.version>1.7.10</slf4j.version>
 	</properties>
 
@@ -155,20 +157,36 @@
 				<version>1.1</version>
 				<executions>
 					<execution>
+						<id>toolchain@validate</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>toolchain</goal>
 						</goals>
+						<configuration>
+							<toolchains>
+								<jdk>
+									<version>${java.version}</version>
+									<vendor>sun</vendor>
+								</jdk>
+							</toolchains>
+						</configuration>
+					</execution>
+					<execution>
+						<id>toolchain@verify</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>toolchain</goal>
+						</goals>
+						<configuration>
+							<toolchains>
+								<jdk>
+									<version>${java.version.integration-tests}</version>
+									<vendor>sun</vendor>
+								</jdk>
+							</toolchains>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<toolchains>
-						<jdk>
-							<version>${java.version}</version>
-							<vendor>sun</vendor>
-						</jdk>
-					</toolchains>
-				</configuration>
 			</plugin>
 
 			<plugin>
@@ -189,6 +207,9 @@
 								-->
 								<enforceBytecodeVersion>
 									<maxJdkVersion>${java.version}</maxJdkVersion>
+									<ignoredScopes>
+										<ignoredScope>test</ignoredScope>
+									</ignoredScopes>
 								</enforceBytecodeVersion>
 							</rules>
 						</configuration>
