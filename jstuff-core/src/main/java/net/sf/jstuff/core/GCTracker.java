@@ -16,17 +16,14 @@ import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.event.EventManager;
 import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.ref.FinalRef;
-import net.sf.jstuff.core.ref.LazyInitializedRef;
-import net.sf.jstuff.core.ref.Ref;
 import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
@@ -55,6 +52,13 @@ public class GCTracker<Event> implements EventListenable<Event>
 		}
 	}
 
+	private static final class LazyInitialized
+	{
+		private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors
+				.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder().daemon(true).priority(Thread.NORM_PRIORITY)
+						.namingPattern("GCTracker-thread").build());
+	}
+
 	private static final Logger LOG = Logger.create();
 
 	private final EventManager<Event> events = new EventManager<Event>();
@@ -63,71 +67,49 @@ public class GCTracker<Event> implements EventListenable<Event>
 	 * synchronized list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage collected
 	 */
 	private final Queue<GCReference> monitoredReferences = new ConcurrentLinkedQueue<GCReference>();
-
 	private final ReferenceQueue<Object> garbageCollectedRefs = new ReferenceQueue<Object>();
 
-	private volatile Ref<ExecutorService> executorService;
+	private volatile ScheduledExecutorService executor;
 
-	public GCTracker(final boolean useDeamonThread)
+	private final int intervalMS;
+
+	public GCTracker(final int intervalMS)
 	{
-		executorService = new LazyInitializedRef<ExecutorService>()
-			{
-				@Override
-				protected ExecutorService create()
-				{
-					final String threadName = getClass().getSimpleName() + System.identityHashCode(GCTracker.this);
-					LOG.info("Creating fixed thread pool with 1 threads");
-					return Executors.newFixedThreadPool(
-							1,
-							new BasicThreadFactory.Builder().daemon(useDeamonThread).priority(Thread.NORM_PRIORITY)
-									.namingPattern(threadName).build());
-				}
-			};
-
+		this.intervalMS = intervalMS;
+		executor = LazyInitialized.DEFAULT_NOTIFICATION_THREAD;
 		init();
 	}
 
-	public GCTracker(final ExecutorService executorService)
+	public GCTracker(final int intervalMS, final ScheduledExecutorService executor)
 	{
-		Args.notNull("executorService", executorService);
-		this.executorService = FinalRef.of(executorService);
+		this.intervalMS = intervalMS;
+		Args.notNull("executor", executor);
+		this.executor = executor;
 		init();
 	}
 
 	private void init()
 	{
-		executorService.get().execute(new Runnable()
+		executor.scheduleWithFixedDelay(new Runnable()
 			{
 				@SuppressWarnings("unchecked")
 				public void run()
 				{
-					try
+					GCReference ref;
+					while ((ref = (GCReference) garbageCollectedRefs.poll()) != null)
 					{
-						LOG.info("GC event dispatching started...");
-						while (true)
+						ref.tracker.monitoredReferences.remove(ref);
+						try
 						{
-							GCReference ref;
-							while ((ref = (GCReference) garbageCollectedRefs.remove()) != null)
-							{
-								ref.tracker.monitoredReferences.remove(ref);
-								try
-								{
-									ref.tracker.onGCEvent(ref.eventToFireOnGC);
-								}
-								catch (final Exception ex)
-								{
-									LOG.error(ex, "Failed to execute callback.");
-								}
-							}
+							ref.tracker.onGCEvent(ref.eventToFireOnGC);
+						}
+						catch (final Exception ex)
+						{
+							LOG.error(ex, "Failed to execute callback.");
 						}
 					}
-					catch (final InterruptedException ex)
-					{
-						LOG.warn("GC event dispatching stopped.");
-						Threads.handleInterruptedException(ex);
-					}
 				}
-			});
+			}, intervalMS, intervalMS, TimeUnit.MILLISECONDS);
 	}
 
 	protected void onGCEvent(final Event event)

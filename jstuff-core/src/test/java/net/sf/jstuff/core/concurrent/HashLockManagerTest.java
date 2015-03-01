@@ -46,7 +46,7 @@ public class HashLockManagerTest extends TestCase
 
 	public void testWithHashLockManager() throws InterruptedException
 	{
-		final HashLockManager<String> lockManager = new HashLockManager<String>(100, TimeUnit.MILLISECONDS);
+		final HashLockManager<String> lockManager = new HashLockManager<String>(100);
 
 		final StopWatch sw = new StopWatch();
 		sw.start();

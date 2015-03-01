@@ -90,7 +90,7 @@ public final class HashCodeManager
 		}
 	}
 
-	private static final GCTracker<String> GC_TRACKER = new GCTracker<String>(true)
+	private static final GCTracker<String> GC_TRACKER = new GCTracker<String>(100)
 		{
 			@Override
 			protected void onGCEvent(final String trackingId)

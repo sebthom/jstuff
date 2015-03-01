@@ -32,7 +32,7 @@ public class GCTrackerTest extends TestCase
 				}
 			};
 
-		final GCTracker<Void> tracker = new GCTracker<Void>(true);
+		final GCTracker<Void> tracker = new GCTracker<Void>(100);
 		tracker.subscribe(countGC);
 
 		final int objects = 10000;

@@ -18,46 +18,37 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 
-import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.ref.FinalRef;
-import net.sf.jstuff.core.ref.LazyInitializedRef;
-import net.sf.jstuff.core.ref.Ref;
 import net.sf.jstuff.core.validation.Args;
+
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class EventManager<Event> implements EventListenable<Event>
 {
-	private static final Logger LOG = Logger.create();
+	private static final class LazyInitialized
+	{
+		private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors
+				.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder().daemon(true).priority(Thread.NORM_PRIORITY)
+						.namingPattern("EventManager-thread").build());
+	}
 
 	private final Set<EventListener<Event>> eventListeners = new CopyOnWriteArraySet<EventListener<Event>>();
 
-	private volatile Ref<ExecutorService> executorService;
+	private ExecutorService executor;
 
 	public EventManager()
 	{
-		this(5);
+		this(LazyInitialized.DEFAULT_NOTIFICATION_THREAD);
 	}
 
-	public EventManager(final ExecutorService executorService)
+	public EventManager(final ExecutorService executor)
 	{
-		Args.notNull("executorService", executorService);
-		this.executorService = FinalRef.of(executorService);
-	}
-
-	public EventManager(final int numberOfThreads)
-	{
-		executorService = new LazyInitializedRef<ExecutorService>()
-			{
-				@Override
-				protected ExecutorService create()
-				{
-					LOG.info("Creating fixed thread pool with %s threads", numberOfThreads);
-					return Executors.newFixedThreadPool(numberOfThreads);
-				}
-			};
+		Args.notNull("executor", executor);
+		this.executor = executor;
 	}
 
 	public int fire(final Event type)
@@ -70,7 +61,7 @@ public class EventManager<Event> implements EventListenable<Event>
 		@SuppressWarnings("unchecked")
 		final EventListener<Event>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
 
-		return executorService.get().submit(new Callable<Integer>()
+		return executor.submit(new Callable<Integer>()
 			{
 				public Integer call() throws Exception
 				{

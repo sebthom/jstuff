@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -27,6 +27,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
+
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 /**
  * A lock manager that allows to issue thread-owned read-write locks on objects based on
@@ -81,15 +83,23 @@ public class HashLockManager<KeyType>
 
 	private static final class LazyInitialized
 	{
-		private static final ScheduledExecutorService CLEANUP_THREAD = Executors.newSingleThreadScheduledExecutor();
+		private static final ScheduledExecutorService DEFAULT_CLEANUP_THREAD = Executors
+				.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder().daemon(true).priority(Thread.NORM_PRIORITY)
+						.namingPattern("HashLockManager-thread").build());
 	}
 
 	private final ConcurrentMap<KeyType, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<KeyType, ReentrantReadWriteLock>();
 
-	public HashLockManager(final long lockCleanupInterval, final TimeUnit unit)
+	public HashLockManager(final int intervalMS)
 	{
+		this(intervalMS, LazyInitialized.DEFAULT_CLEANUP_THREAD);
+	}
+
+	public HashLockManager(final int intervalMS, final ScheduledExecutorService executor)
+	{
+		Args.notNull("executor", executor);
 		final CleanUpTask<KeyType> cleanup = new CleanUpTask<KeyType>(this);
-		cleanup.future = LazyInitialized.CLEANUP_THREAD.scheduleAtFixedRate(cleanup, lockCleanupInterval, lockCleanupInterval, unit);
+		executor.scheduleWithFixedDelay(cleanup, intervalMS, intervalMS, TimeUnit.MILLISECONDS);
 	}
 
 	/**

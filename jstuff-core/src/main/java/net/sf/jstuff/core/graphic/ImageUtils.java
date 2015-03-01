@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -14,7 +14,6 @@ package net.sf.jstuff.core.graphic;
 
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Image;
@@ -35,28 +34,17 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class ImageUtils
 {
-	private static volatile GraphicsConfiguration gc;
-
-	private static GraphicsConfiguration getDefaultConfiguration() throws HeadlessException
+	private static final class LazyInitialized
 	{
-		if (gc == null) //
-			synchronized (ImageUtils.class)
-			{
-				if (gc == null)
-				{
-					final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-					final GraphicsDevice gd = ge.getDefaultScreenDevice(); // not supported in headless mode
-					gc = gd.getDefaultConfiguration();
-				}
-			}
-		return gc;
+		private static final GraphicsConfiguration GC = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
 	}
 
 	public static BufferedImage toBufferedImage(final Image image) throws HeadlessException
 	{
 		Args.notNull("image", image);
 
-		return toBufferedImage(image, getDefaultConfiguration());
+		return toBufferedImage(image, LazyInitialized.GC);
 	}
 
 	public static BufferedImage toBufferedImage(final Image image, final GraphicsConfiguration gc)
