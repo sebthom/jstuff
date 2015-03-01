@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -90,7 +90,7 @@ public final class HashCodeManager
 		}
 	}
 
-	private static final GCTracker<String> GC_TRACKER = new GCTracker<String>()
+	private static final GCTracker<String> GC_TRACKER = new GCTracker<String>(true)
 		{
 			@Override
 			protected void onGCEvent(final String trackingId)
@@ -102,14 +102,23 @@ public final class HashCodeManager
 
 					synchronized (ida.identifiables)
 					{
-						if (ida.identifiables.size() == 0) HASHCODE_ASSIGNMENT_BY_TRACKING_ID.remove(trackingId, ida);
+						if (ida.identifiables.size() == 0)
+						{
+							HASHCODE_ASSIGNMENT_BY_TRACKING_ID.remove(trackingId, ida);
+						}
 					}
 
 					if (ida.id == null) return;
 					final HashCodeAssignment ida2 = HASHCODE_ASSIGNMENT_BY_ID.get(ida.id);
-					if (ida2 != null) synchronized (ida2.identifiables)
+					if (ida2 != null)
 					{
-						if (ida2.identifiables.size() == 0) HASHCODE_ASSIGNMENT_BY_ID.remove(ida2.id, ida2);
+						synchronized (ida2.identifiables)
+						{
+							if (ida2.identifiables.size() == 0)
+							{
+								HASHCODE_ASSIGNMENT_BY_ID.remove(ida2.id, ida2);
+							}
+						}
 					}
 				}
 				catch (final Exception ex)
@@ -139,7 +148,10 @@ public final class HashCodeManager
 	{
 		final HashCodeAssignment newHca = new HashCodeAssignment(trackingId.hashCode());
 		HashCodeAssignment hca = HASHCODE_ASSIGNMENT_BY_TRACKING_ID.putIfAbsent(trackingId, newHca);
-		if (hca == null) hca = newHca;
+		if (hca == null)
+		{
+			hca = newHca;
+		}
 		synchronized (hca.identifiables)
 		{
 			hca.identifiables.add(entity);
@@ -184,7 +196,10 @@ public final class HashCodeManager
 		final HashCodeAssignment newHca = new HashCodeAssignment(trackingId.hashCode());
 		final FQId id = new FQId(entity.getIdRealm(), entity.getId());
 		HashCodeAssignment hca = HASHCODE_ASSIGNMENT_BY_ID.putIfAbsent(id, newHca);
-		if (hca == null) hca = newHca;
+		if (hca == null)
+		{
+			hca = newHca;
+		}
 		synchronized (hca.identifiables)
 		{
 			hca.id = id;
