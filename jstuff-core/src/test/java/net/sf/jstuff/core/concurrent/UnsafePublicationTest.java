@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.TestCase;
+import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.localization.NumberHelper;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.math.NumberUtils;
@@ -22,10 +23,10 @@ import org.junit.runners.MethodSorters;
 /**
  * Reproduced with:
  * <ul>
- * <li> Oracle JDK5_u22 32bit using -server
- * <li> Oracle JDK6_u37 32bit using -server
- * <li> Oracle JDK8_u31 32bit using -server
- * <li> Oracle JDK8_u31 64bit using -XX:-UseCompressedOops (much higher probability compared to 32bit JDKs)
+ * <li> Oracle JDK5_u22 32bit on Windows using -server
+ * <li> Oracle JDK6_u37 32bit on Windows using -server
+ * <li> Oracle JDK8_u31 32bit on Windows using -server
+ * <li> Oracle JDK8_u31 64bit on Windows using -XX:-UseCompressedOops (much higher probability compared to 32bit JDKs)
  * </ul>
  * http://www.infoq.com/articles/memory_barriers_jvm_concurrency
  * http://stackoverflow.com/questions/13578087/looking-for-a-test-to-reproduce-broken-double-checked-locking
@@ -104,6 +105,12 @@ public class UnsafePublicationTest extends TestCase
 
 	private boolean _isJVMSupported()
 	{
+		if (!SystemUtils.IS_OS_WINDOWS)
+		{
+			LOG.info("This test is only supported on Windows");
+			return false;
+		}
+
 		if (!StringUtils.contains(System.getProperty("java.vm.name"), "HotSpot"))
 		{
 			LOG.info("This test is only supported on HotSpot JVM");
