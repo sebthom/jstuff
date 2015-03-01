@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -32,7 +32,7 @@ public class GCTrackerTest extends TestCase
 				}
 			};
 
-		final GCTracker<Void> tracker = new GCTracker<Void>();
+		final GCTracker<Void> tracker = new GCTracker<Void>(true);
 		tracker.subscribe(countGC);
 
 		final int objects = 10000;

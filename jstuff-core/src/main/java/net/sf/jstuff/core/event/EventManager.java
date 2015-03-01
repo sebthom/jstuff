@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -19,6 +19,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.ref.FinalRef;
+import net.sf.jstuff.core.ref.LazyInitializedRef;
+import net.sf.jstuff.core.ref.Ref;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -26,13 +30,34 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class EventManager<Event> implements EventListenable<Event>
 {
+	private static final Logger LOG = Logger.create();
+
 	private final Set<EventListener<Event>> eventListeners = new CopyOnWriteArraySet<EventListener<Event>>();
 
-	private ExecutorService executorService;
+	private volatile Ref<ExecutorService> executorService;
 
-	protected ExecutorService createExecutorService()
+	public EventManager()
 	{
-		return Executors.newFixedThreadPool(5);
+		this(5);
+	}
+
+	public EventManager(final ExecutorService executorService)
+	{
+		Args.notNull("executorService", executorService);
+		this.executorService = FinalRef.of(executorService);
+	}
+
+	public EventManager(final int numberOfThreads)
+	{
+		executorService = new LazyInitializedRef<ExecutorService>()
+			{
+				@Override
+				protected ExecutorService create()
+				{
+					LOG.info("Creating fixed thread pool with %s threads", numberOfThreads);
+					return Executors.newFixedThreadPool(numberOfThreads);
+				}
+			};
 	}
 
 	public int fire(final Event type)
@@ -45,24 +70,13 @@ public class EventManager<Event> implements EventListenable<Event>
 		@SuppressWarnings("unchecked")
 		final EventListener<Event>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
 
-		return getExecutorService().submit(new Callable<Integer>()
+		return executorService.get().submit(new Callable<Integer>()
 			{
 				public Integer call() throws Exception
 				{
 					return Events.fire(type, copy);
 				}
 			});
-	}
-
-	protected final synchronized ExecutorService getExecutorService()
-	{
-		if (executorService == null) executorService = createExecutorService();
-		return executorService;
-	}
-
-	public void unsubscribeAll()
-	{
-		eventListeners.clear();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -78,4 +92,8 @@ public class EventManager<Event> implements EventListenable<Event>
 		return eventListeners.remove(listener);
 	}
 
+	public void unsubscribeAll()
+	{
+		eventListeners.clear();
+	}
 }

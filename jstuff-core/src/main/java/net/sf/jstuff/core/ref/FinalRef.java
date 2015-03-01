@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -10,42 +10,31 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.ref;
 
 import java.io.Serializable;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class Mutable<T> implements Serializable
+public class FinalRef<T> implements Ref<T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public static <T> Mutable<T> create(final T initialValue)
+	public static <T> FinalRef<T> of(final T value)
 	{
-		return new Mutable<T>(initialValue);
+		return new FinalRef<T>(value);
 	}
 
-	private T value;
+	final T value;
 
-	public Mutable(final T initialValue)
+	public FinalRef(final T value)
 	{
-		value = initialValue;
+		this.value = value;
 	}
 
-	public T getValue()
+	public T get()
 	{
 		return value;
-	}
-
-	public void setValue(final T newValue)
-	{
-		value = newValue;
-	}
-
-	@Override
-	public String toString()
-	{
-		return StringUtils.toString(this);
 	}
 }

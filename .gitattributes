@@ -5,7 +5,6 @@ jstuff-core/pom.xml -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Composite.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/GCTracker.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Identifiable.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/Mutable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/TypeSafeEnum.java -text
@@ -127,6 +126,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/logging/JULLogger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/logging/Logger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/logging/LoggerConfig.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/logging/SLF4JLogger.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/math/NumberUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/AbstractServer.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/NetUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockServerSocket.java -text
@@ -134,6 +134,10 @@ jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockSocket.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigationResult.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigatorDefaultImpl.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/ref/FinalRef.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/ref/LazyInitializedRef.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/ref/MutableRef.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/ref/Ref.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Annotations.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Beans.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Constructors.java -text
@@ -186,6 +190,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/collection/WeakIdentityHashSetTest.
 jstuff-core/src/test/java/net/sf/jstuff/core/comparator/PropertyComparatorTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/concurrent/HashLockManagerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/concurrent/ThreadsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/concurrent/UnsafePublicationTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/event/EventTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/AcceptsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/FunctionsTest.java -text
