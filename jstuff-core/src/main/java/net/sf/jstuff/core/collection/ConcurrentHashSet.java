@@ -25,4 +25,9 @@ public class ConcurrentHashSet<E> extends MapBackedSet<E>
 	{
 		super(new ConcurrentHashMap<E, Boolean>());
 	}
+
+	public ConcurrentHashSet(final int initialCapacity)
+	{
+		super(new ConcurrentHashMap<E, Boolean>(initialCapacity));
+	}
 }

@@ -117,9 +117,9 @@ public final class LoggerConfig
 			}
 
 			if (isUseSFL4J)
-				LOG.info("Using SLF4J as logging infrastructure.");
+				LOG.debug("Using SLF4J as logging infrastructure.");
 			else
-				LOG.info("Using java.util.logging as logging infrastructure.");
+				LOG.debug("Using java.util.logging as logging infrastructure.");
 		}
 	}
 
