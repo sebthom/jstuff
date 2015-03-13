@@ -13,6 +13,7 @@
 package net.sf.jstuff.core.concurrent;
 
 import junit.framework.TestCase;
+import net.sf.jstuff.core.concurrent.CrossThreadMethodInvoker.CrossThreadProxy;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
@@ -51,7 +52,7 @@ public class CrossThreadMethodInvokerTest extends TestCase
 		final Service service = new Service();
 
 		final CrossThreadMethodInvoker methodInvoker = new CrossThreadMethodInvoker(2000);
-		final IService serviceProxy = methodInvoker.createProxy(service, IService.class);
+		final CrossThreadProxy<IService> serviceProxy = methodInvoker.createProxy(service, IService.class);
 
 		try
 		{
@@ -72,7 +73,8 @@ public class CrossThreadMethodInvokerTest extends TestCase
 				{
 					try
 					{
-						assertEquals("foofoo", serviceProxy.work("foo"));
+						final IService srv = serviceProxy.get();
+						assertEquals("foofoo", srv.work("foo"));
 						try
 						{
 							service.work(null);
@@ -91,11 +93,11 @@ public class CrossThreadMethodInvokerTest extends TestCase
 						{
 							assertEquals("wrong thread!", ex.getMessage());
 						}
-						assertEquals("barbar", serviceProxy.work("bar"));
+						assertEquals("barbar", srv.work("bar"));
 					}
 					finally
 					{
-						methodInvoker.markThreadDone();
+						methodInvoker.backgroundThreadDone();
 					}
 				}
 			}.start();
@@ -107,15 +109,18 @@ public class CrossThreadMethodInvokerTest extends TestCase
 				{
 					try
 					{
-						assertEquals("heyhey", serviceProxy.work("hey"));
-						assertEquals("hoohoo", serviceProxy.work("hoo"));
+						final IService srv = serviceProxy.get();
+						assertEquals("heyhey", srv.work("hey"));
+						assertEquals("hoohoo", srv.work("hoo"));
 					}
 					finally
 					{
-						methodInvoker.markThreadDone();
+						methodInvoker.backgroundThreadDone();
 					}
 				}
 			}.start();
+
+		assertEquals(methodInvoker, serviceProxy.getCrossThreadMethodInvoker());
 
 		methodInvoker.waitForBackgroundThreads();
 

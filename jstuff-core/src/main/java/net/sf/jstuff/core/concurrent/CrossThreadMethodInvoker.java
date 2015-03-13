@@ -19,14 +19,24 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.sf.jstuff.core.functional.Function;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.Proxies;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class CrossThreadMethodInvoker
 {
+	public interface CrossThreadProxy<T>
+	{
+		CrossThreadMethodInvoker getCrossThreadMethodInvoker();
+
+		T get();
+	}
+
 	private static final class MethodInvocation
 	{
 		final Object target;
@@ -64,9 +74,9 @@ public class CrossThreadMethodInvoker
 	 * queue of method invocations that shall be executed in another thread
 	 */
 	private final ConcurrentLinkedQueue<MethodInvocation> invocations = new ConcurrentLinkedQueue<MethodInvocation>();
-	private final Thread owner = Thread.currentThread();
+	private Thread owner;
 	private final int timeout;
-	private AtomicInteger threadsWorking = new AtomicInteger(Integer.MIN_VALUE);
+	private AtomicInteger backgroundThreadCount = new AtomicInteger(Integer.MIN_VALUE);
 
 	public CrossThreadMethodInvoker(final int timeout)
 	{
@@ -74,28 +84,72 @@ public class CrossThreadMethodInvoker
 	}
 
 	/**
+	 * signals that one background thread is done.
+	 */
+	public void backgroundThreadDone()
+	{
+		ensureStarted();
+
+		backgroundThreadCount.decrementAndGet();
+	}
+
+	/**
 	 * Creates a JDK proxy executing all method in the {@link CrossThreadMethodInvoker}'s owner thread
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T createProxy(final T target, final Class< ? >... targetInterfaces)
+	public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
+			final Class< ? >... targetInterfaces)
 	{
-		return (T) Proxies.create(new InvocationHandler()
+		return (CrossThreadProxy<INTERFACE>) Proxies.create(new InvocationHandler()
 			{
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{
+					if (method.getDeclaringClass() == CrossThreadProxy.class)
+					{
+						final String mName = method.getName();
+						if (mName.equals("get")) return proxy;
+						return CrossThreadMethodInvoker.this;
+					}
 					return CrossThreadMethodInvoker.this.invokeInOwnerThread(target, method, args);
 				}
-			}, targetInterfaces);
+			}, ArrayUtils.add(targetInterfaces, CrossThreadProxy.class));
+	}
+
+	/**
+	 * Creates a JDK proxy executing all method in the {@link CrossThreadMethodInvoker}'s owner thread
+	 */
+	@SuppressWarnings("unchecked")
+	public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
+			final Function<Object, Object> resultTransformer, final Class< ? >... targetInterfaces)
+	{
+		return (CrossThreadProxy<INTERFACE>) Proxies.create(new InvocationHandler()
+			{
+				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
+				{
+					if (method.getDeclaringClass() == CrossThreadProxy.class)
+					{
+						final String mName = method.getName();
+						if (mName.equals("get")) return proxy;
+						return CrossThreadMethodInvoker.this;
+					}
+					return resultTransformer.apply(CrossThreadMethodInvoker.this.invokeInOwnerThread(target, method, args));
+				}
+			}, ArrayUtils.add(targetInterfaces, CrossThreadProxy.class));
 	}
 
 	private void ensureStarted()
 	{
-		if (threadsWorking.get() == Integer.MIN_VALUE) throw new IllegalStateException(this + " is not started!");
+		if (owner == null) throw new IllegalStateException(this + " is not started!");
 	}
 
 	public Thread getOwner()
 	{
 		return owner;
+	}
+
+	public int getTimeout()
+	{
+		return timeout;
 	}
 
 	/**
@@ -119,39 +173,44 @@ public class CrossThreadMethodInvoker
 		return m.result;
 	}
 
-	/**
-	 * signals that on thread is done
-	 */
-	public void markThreadDone()
+	public synchronized CrossThreadMethodInvoker start(final int numberOfBackgroundThreads)
 	{
-		ensureStarted();
-
-		threadsWorking.decrementAndGet();
+		backgroundThreadCount = new AtomicInteger(numberOfBackgroundThreads);
+		owner = Thread.currentThread();
+		invocations.clear();
+		return this;
 	}
 
-	public synchronized void start(final int numberOfBackgroundOfThreads)
+	public synchronized void stop()
 	{
-		threadsWorking = new AtomicInteger(numberOfBackgroundOfThreads);
+		owner = null;
 		invocations.clear();
 	}
 
 	/**
-	 * executes the queued method invocations in the current thread and waits for the background threads to finish
+	 * executes the queued method invocations in the current thread and waits for the background threads to finish.
+	 * Returns when the {@link #getTimeout()} is reached or {@link #backgroundThreadDone()} has been called as often as
+	 * the numberOfBackgroundThreads provided to the {@link #start(int)} method.
 	 */
 	public synchronized void waitForBackgroundThreads()
 	{
-		if (owner != Thread.currentThread()) throw new IllegalStateException("Can only be invoked by owning thread " + owner);
-
 		ensureStarted();
 
-		final long startedAt = System.currentTimeMillis();
+		if (owner != Thread.currentThread()) throw new IllegalStateException("Can only be invoked by owning thread " + owner);
 
-		while (threadsWorking.get() > 0 && System.currentTimeMillis() - startedAt < timeout)
+		try
 		{
-			final MethodInvocation m = invocations.poll();
-			if (m != null) m.invoke();
-			Thread.yield();
+			final long startedAt = System.currentTimeMillis();
+			while (backgroundThreadCount.get() > 0 && System.currentTimeMillis() - startedAt < timeout)
+			{
+				final MethodInvocation m = invocations.poll();
+				if (m != null) m.invoke();
+				Thread.yield();
+			}
 		}
-		threadsWorking.set(Integer.MIN_VALUE);
+		finally
+		{
+			stop();
+		}
 	}
 }
