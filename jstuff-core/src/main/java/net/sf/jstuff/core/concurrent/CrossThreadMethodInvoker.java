@@ -14,8 +14,8 @@ package net.sf.jstuff.core.concurrent;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -73,7 +73,7 @@ public class CrossThreadMethodInvoker
 	/**
 	 * queue of method invocations that shall be executed in another thread
 	 */
-	private final LinkedBlockingQueue<MethodInvocation> invocations = new LinkedBlockingQueue<MethodInvocation>();
+	private final ConcurrentLinkedQueue<MethodInvocation> invocations = new ConcurrentLinkedQueue<MethodInvocation>();
 	private volatile Thread owner;
 	private final int timeout;
 	private AtomicInteger backgroundThreadCount = new AtomicInteger(Integer.MIN_VALUE);
