@@ -14,8 +14,8 @@ package net.sf.jstuff.core.concurrent;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -73,8 +73,8 @@ public class CrossThreadMethodInvoker
 	/**
 	 * queue of method invocations that shall be executed in another thread
 	 */
-	private final ConcurrentLinkedQueue<MethodInvocation> invocations = new ConcurrentLinkedQueue<MethodInvocation>();
-	private Thread owner;
+	private final LinkedBlockingQueue<MethodInvocation> invocations = new LinkedBlockingQueue<MethodInvocation>();
+	private volatile Thread owner;
 	private final int timeout;
 	private AtomicInteger backgroundThreadCount = new AtomicInteger(Integer.MIN_VALUE);
 
@@ -188,9 +188,8 @@ public class CrossThreadMethodInvoker
 	}
 
 	/**
-	 * executes the queued method invocations in the current thread and waits for the background threads to finish.
-	 * Returns when the {@link #getTimeout()} is reached or {@link #backgroundThreadDone()} has been called as often as
-	 * the numberOfBackgroundThreads provided to the {@link #start(int)} method.
+	 * Executes the queued method invocations in the current thread until N background threads signal via {@link #backgroundThreadDone()} that they are finished.
+	 * or the {@link #getTimeout()} is reached. N = numberOfBackgroundThreads provided to the {@link #start(int)} method.
 	 */
 	public synchronized void waitForBackgroundThreads()
 	{
@@ -201,7 +200,8 @@ public class CrossThreadMethodInvoker
 		try
 		{
 			final long startedAt = System.currentTimeMillis();
-			while (backgroundThreadCount.get() > 0 && System.currentTimeMillis() - startedAt < timeout)
+			while (backgroundThreadCount.get() > 0 // still background threads alive?
+					&& System.currentTimeMillis() - startedAt < timeout) // timeout not yet reached?
 			{
 				final MethodInvocation m = invocations.poll();
 				if (m != null) m.invoke();
