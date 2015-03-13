@@ -122,7 +122,7 @@ public class CrossThreadMethodInvoker
 	public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
 			final Function<Object, Object> resultTransformer, final Class< ? >... targetInterfaces)
 	{
-		return (CrossThreadProxy<INTERFACE>) Proxies.create(new InvocationHandler()
+		return (CrossThreadProxy<INTERFACE>) Proxies.create(Thread.currentThread().getContextClassLoader(), new InvocationHandler()
 			{
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{

@@ -77,7 +77,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 		 */
 		try
 		{
-			return Proxies.create(annotationType, new InvocationHandler()
+			return Proxies.create(new InvocationHandler()
 				{
 					public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 					{
@@ -91,7 +91,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 						if ("annotationType".equals(name) && args == null && method.getReturnType() == Class.class) return annotationType;
 						return attrValues.get(method.getName());
 					}
-				});
+				}, annotationType);
 		}
 		catch (final Exception ex)
 		{

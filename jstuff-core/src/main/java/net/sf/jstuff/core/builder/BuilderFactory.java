@@ -74,7 +74,7 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 
 	public BUILDER_INTERFACE create()
 	{
-		return Proxies.create(builderInterface, new InvocationHandler()
+		return Proxies.create(new InvocationHandler()
 			{
 				final Map<String, Object> properties = newHashMap();
 
@@ -142,6 +142,6 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder< ? e
 					}
 					throw new UnsupportedOperationException(method.toString());
 				}
-			});
+			}, builderInterface);
 	}
 }

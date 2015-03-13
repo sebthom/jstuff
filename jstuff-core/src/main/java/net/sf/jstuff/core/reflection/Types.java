@@ -61,6 +61,8 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public abstract class Types
 {
+	private static Logger LOG = Logger.create();
+
 	@SuppressWarnings("unchecked")
 	public static <T> T cast(final Object obj)
 	{
@@ -72,7 +74,7 @@ public abstract class Types
 		Args.notNull("objectInterface", objectInterface);
 		Args.notEmpty("mixins", mixins);
 
-		return Proxies.create(objectInterface, new InvocationHandler()
+		return Proxies.create(new InvocationHandler()
 			{
 				final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<Method, Tuple2<Object, Method>>();
 
@@ -92,7 +94,7 @@ public abstract class Types
 					if (mixedInMethod == null) throw new UnsupportedOperationException("Method is not implemented.");
 					return Methods.invoke(mixedInMethod.get1(), mixedInMethod.get2(), args);
 				}
-			});
+			}, objectInterface);
 	}
 
 	public static <T> T createSynchronized(final Class<T> objectInterface, final T object)
@@ -108,7 +110,7 @@ public abstract class Types
 		Args.notNull("objectInterface", objectInterface);
 		Args.notNull("object", object);
 
-		return Proxies.create(objectInterface, new InvocationHandler()
+		return Proxies.create(new InvocationHandler()
 			{
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{
@@ -117,7 +119,7 @@ public abstract class Types
 						return method.invoke(object, args);
 					}
 				}
-			});
+			}, objectInterface);
 	}
 
 	public static <T> T createThreadLocalized(final Class<T> objectInterface, final ThreadLocal<T> threadLocal)
@@ -125,13 +127,13 @@ public abstract class Types
 		Args.notNull("objectInterface", objectInterface);
 		Args.notNull("threadLocal", threadLocal);
 
-		return Proxies.create(objectInterface, new InvocationHandler()
+		return Proxies.create(new InvocationHandler()
 			{
 				public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable
 				{
 					return method.invoke(threadLocal.get(), args);
 				}
-			});
+			}, objectInterface);
 	}
 
 	/**
@@ -450,7 +452,7 @@ public abstract class Types
 		return getPrimitiveWrapper(memberType).isAssignableFrom(getPrimitiveWrapper(valueType));
 	}
 
-	public static boolean isClassAvailable(final String className)
+	public static boolean isAvailable(final String className)
 	{
 		return find(className) != null;
 	}
@@ -477,6 +479,39 @@ public abstract class Types
 				Number.class.isAssignableFrom(type) || //
 				CharSequence.class.isAssignableFrom(type) || //
 				Date.class.isAssignableFrom(type);
+	}
+
+	/**
+	 * Determines if all given classes are visible to the given classloader
+	 */
+	public static boolean isVisible(final ClassLoader cl, final Class< ? >... classes)
+	{
+		try
+		{
+			for (final Class< ? > clazz : classes)
+				if (clazz != cl.loadClass(clazz.getName())) //
+					return false;
+			return true;
+		}
+		catch (final ClassNotFoundException ex)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Determines if the given class is visible to the given classloader
+	 */
+	public static boolean isVisible(final ClassLoader cl, final Class< ? > clazz)
+	{
+		try
+		{
+			return clazz == cl.loadClass(clazz.getName());
+		}
+		catch (final ClassNotFoundException ex)
+		{
+			return false;
+		}
 	}
 
 	public static <T> T newInstance(final Class<T> type, final Object... constructorArgs)
@@ -609,6 +644,4 @@ public abstract class Types
 		throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class ["
 				+ clazz + "]");
 	}
-
-	private static Logger LOG = Logger.create();
 }

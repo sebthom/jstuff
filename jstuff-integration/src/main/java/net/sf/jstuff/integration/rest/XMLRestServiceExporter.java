@@ -83,7 +83,7 @@ public class XMLRestServiceExporter extends AbstractRestServiceExporter
 
 	protected HierarchicalStreamDriver getXStreamDriver()
 	{
-		if (Types.isClassAvailable("javax.xml.stream.XMLStreamReader")) try
+		if (Types.isAvailable("javax.xml.stream.XMLStreamReader")) try
 		{
 
 			final StaxDriver xmlDriver = new StaxDriver();
@@ -103,7 +103,7 @@ public class XMLRestServiceExporter extends AbstractRestServiceExporter
 				throw er;
 		}
 
-		return Types.isClassAvailable("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
+		return Types.isAvailable("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
 				new DomDriver();
 	}
 

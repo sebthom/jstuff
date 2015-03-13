@@ -43,7 +43,7 @@ public abstract class DuckTypes
 
 		LOG.debug("Ducktyping %s to type %s", duckLikeObject, duckInterface);
 
-		return Proxies.create(duckInterface, new InvocationHandler()
+		return Proxies.create(new InvocationHandler()
 			{
 				public Object invoke(final Object duckProxy, final Method duckMethod, final Object[] args) throws Throwable
 				{
@@ -60,7 +60,7 @@ public abstract class DuckTypes
 								+ duckInterface + ".");
 					}
 				}
-			});
+			}, duckInterface);
 	}
 
 	/**
