@@ -173,6 +173,9 @@ public class CrossThreadMethodInvoker
 		return m.result;
 	}
 
+	/**
+	 * @return this
+	 */
 	public synchronized CrossThreadMethodInvoker start(final int numberOfBackgroundThreads)
 	{
 		backgroundThreadCount = new AtomicInteger(numberOfBackgroundThreads);
@@ -190,8 +193,10 @@ public class CrossThreadMethodInvoker
 	/**
 	 * Executes the queued method invocations in the current thread until N background threads signal via {@link #backgroundThreadDone()} that they are finished.
 	 * or the {@link #getTimeout()} is reached. N = numberOfBackgroundThreads provided to the {@link #start(int)} method.
+	 *
+	 * @return <code>true</code> if all background threads finished within time, <code>false</code> if a timeout occured
 	 */
-	public synchronized void waitForBackgroundThreads()
+	public synchronized boolean waitForBackgroundThreads()
 	{
 		ensureStarted();
 
@@ -204,9 +209,13 @@ public class CrossThreadMethodInvoker
 					&& System.currentTimeMillis() - startedAt < timeout) // timeout not yet reached?
 			{
 				final MethodInvocation m = invocations.poll();
-				if (m != null) m.invoke();
+				if (m != null)
+				{
+					m.invoke();
+				}
 				Thread.yield();
 			}
+			return backgroundThreadCount.get() < 1;
 		}
 		finally
 		{

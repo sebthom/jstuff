@@ -55,10 +55,10 @@ public class TypesTest extends TestCase
 
 		// locate anonymous inner class in exploded directory (target/classes)
 		final Runnable r = new Runnable()
-		{
-			public void run()
-			{}
-		};
+			{
+				public void run()
+				{}
+			};
 		library = Types.findLibrary(r.getClass());
 		assertNotNull(library);
 		assertTrue(library.isDirectory());

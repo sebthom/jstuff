@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -27,6 +27,7 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -73,7 +74,9 @@ public class DOMFile
 		{
 			// debug code to analyze "Content is not allowed in prolog."
 			if (ex.getCause() instanceof SAXParseException)
+			{
 				LOG.debug("Failed to parse file %s with content:\n%s", ex, xmlFile.getAbsolutePath(), FileUtils.readFileToString(xmlFile));
+			}
 			throw ex;
 		}
 		domRoot = domDocument.getDocumentElement();
@@ -107,8 +110,13 @@ public class DOMFile
 		Args.notNull("parentNode", parentNode);
 
 		final Element elem = (Element) parentNode.appendChild(domDocument.createElement(xmlTagName));
-		if (elementAttributes != null) for (final Entry<String, String> attr : elementAttributes.entrySet())
-			elem.setAttribute(attr.getKey(), attr.getValue());
+		if (elementAttributes != null)
+		{
+			for (final Entry<String, String> attr : elementAttributes.entrySet())
+			{
+				elem.setAttribute(attr.getKey(), attr.getValue());
+			}
+		}
 		return elem;
 	}
 
@@ -127,8 +135,31 @@ public class DOMFile
 
 		final Element elem = (Element) childToCreateBefore.getParentNode().insertBefore(domDocument.createElement(xmlTagName),
 				childToCreateBefore);
-		if (elementAttributes != null) for (final Entry<String, String> attr : elementAttributes.entrySet())
-			elem.setAttribute(attr.getKey(), attr.getValue());
+		if (elementAttributes != null)
+		{
+			for (final Entry<String, String> attr : elementAttributes.entrySet())
+			{
+				elem.setAttribute(attr.getKey(), attr.getValue());
+			}
+		}
+		return elem;
+	}
+
+	public Text createTextNode(final String text, final Node parentNode)
+	{
+		Args.notNull("text", text);
+		Args.notNull("parentNode", parentNode);
+
+		final Text elem = (Text) parentNode.appendChild(domDocument.createTextNode(text));
+		return elem;
+	}
+
+	public Text createTextNodeBefore(final String text, final Node childToCreateBefore)
+	{
+		Args.notNull("text", text);
+		Args.notNull("childToCreateBefore", childToCreateBefore);
+
+		final Text elem = (Text) childToCreateBefore.getParentNode().insertBefore(domDocument.createTextNode(text), childToCreateBefore);
 		return elem;
 	}
 
@@ -230,8 +261,20 @@ public class DOMFile
 		final List<Node> nodesToRemove = findNodes(xPathExpression, searchScope);
 
 		for (final Node nodeToRemove : nodesToRemove)
+		{
 			DOMUtils.removeNode(nodeToRemove);
+		}
 		return nodesToRemove;
+	}
+
+	public void removeWhiteSpaceNodes()
+	{
+		removeWhiteSpaceNodes(domRoot);
+	}
+
+	public void removeWhiteSpaceNodes(final Node searchScope)
+	{
+		removeNodes("text()[normalize-space()='']", searchScope);
 	}
 
 	public void save() throws IOException, XMLException
