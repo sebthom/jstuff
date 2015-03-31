@@ -3,6 +3,7 @@
 /coding-conventions.txt -text
 jstuff-core/pom.xml -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Composite.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/Disposable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/GCTracker.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Identifiable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
