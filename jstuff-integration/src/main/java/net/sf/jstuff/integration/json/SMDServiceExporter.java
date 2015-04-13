@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -42,18 +42,18 @@ import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
 /**
  * JSON-RPC Standard Method Definition
  *
- * http://dojotoolkit.org/reference-guide/dojox/rpc/SMDLibrary.html
- * http://dojotoolkit.org/reference-guide/1.8/dojox/rpc/smd.html#dojox-rpc-smd
+ * http://dojotoolkit.org/reference-guide/1.10/dojox/rpc/smd.html
+ * http://dojotoolkit.org/reference-guide/1.10/dojox/rpc/SMDLibrary.html
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class SMDServiceExporter extends RemoteExporter implements HttpRequestHandler, InitializingBean
 {
-	/**
-	 * Map<String, Method>
-	 *
-	 * @return a map
-	 */
+	private static final Logger LOG = Logger.create();
+
+	private static final ObjectMapper JSON = new ObjectMapper();
+	private static final ObjectWriter JSON_PRETTY_WRITER = JSON.writerWithDefaultPrettyPrinter();
+
 	public static Map<String, Method> buildExportedMethodsByName(final Class< ? > serviceInterface)
 	{
 		final Map<String, Method> methodsByMethodName = newTreeMap();
@@ -138,12 +138,6 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 		if (pretty) return JSON_PRETTY_WRITER.writeValueAsString(result);
 		return JSON.writeValueAsString(result);
 	}
-
-	private static final Logger LOG = Logger.create();
-
-	private static final ObjectMapper JSON = new ObjectMapper();
-
-	private static final ObjectWriter JSON_PRETTY_WRITER = JSON.writerWithDefaultPrettyPrinter();
 
 	/**
 	 * The exported methods by name.

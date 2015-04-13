@@ -50,16 +50,6 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		this.contentType = contentType;
 	}
 
-	public String getContentType()
-	{
-		return contentType;
-	}
-
-	public String getCharacterEncoding()
-	{
-		return characterEncoding;
-	}
-
 	public synchronized void afterPropertiesSet() throws IllegalStateException
 	{
 		// initialize resourceActions map
@@ -140,9 +130,9 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 		pw.println("<h1>");
 		pw.println(getServiceInterface().getSimpleName());
 		pw.println("</h1>");
-		pw.println("<p>Supported Content Type: ");
+		pw.println("<p>Supported Content Type: <b>");
 		pw.println(contentType);
-		pw.println("</p>");
+		pw.println("</b></p>");
 
 		pw.println("<h3>RESTful resource actions</h3>");
 		final RestServiceDescriptor serviceDef = buildRESTServiceDescriptor();
@@ -227,6 +217,16 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 			pw.println("</td></tr>");
 			pw.println("</table>");
 		}
+	}
+
+	public String getCharacterEncoding()
+	{
+		return characterEncoding;
+	}
+
+	public String getContentType()
+	{
+		return contentType;
 	}
 
 	public void handleRequest(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException
