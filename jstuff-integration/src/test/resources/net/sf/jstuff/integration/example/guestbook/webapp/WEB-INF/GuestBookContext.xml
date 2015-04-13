@@ -8,24 +8,24 @@
 	<bean name="guestbookService" class="net.sf.jstuff.integration.example.guestbook.service.GuestBookServiceInMemoryImpl" />
 
 	<!-- SMD service exporter -->
-	<bean name="guestbook.json" class="net.sf.jstuff.integration.json.SMDServiceExporter">
+	<bean name="/guestbook.json" class="net.sf.jstuff.integration.json.SMDServiceExporter">
 		<property name="service" ref="guestbookService" />
 		<property name="serviceInterface" value="net.sf.jstuff.integration.example.guestbook.service.GuestBookService" />
 	</bean>
 	<alias alias="guestbook.js" name="/guestbook.json" />
 
 	<!-- REST service exporters -->
-	<bean name="rest/xml/guestbook" class="net.sf.jstuff.integration.rest.XMLRestServiceExporter">
+	<bean name="/rest/xml/guestbook" class="net.sf.jstuff.integration.rest.XMLRestServiceExporter">
 		<property name="service" ref="guestbookService" />
 		<property name="serviceInterface" value="net.sf.jstuff.integration.example.guestbook.service.GuestBookService" />
 	</bean>
 
-	<bean name="rest/json/guestbook" class="net.sf.jstuff.integration.rest.JsonRestServiceExporter">
+	<bean name="/rest/json/guestbook" class="net.sf.jstuff.integration.rest.JsonRestServiceExporter">
 		<property name="service" ref="guestbookService" />
 		<property name="serviceInterface" value="net.sf.jstuff.integration.example.guestbook.service.GuestBookService" />
 	</bean>
 
-	<bean name="feed/atom/guestbook.xml" class="net.sf.jstuff.integration.example.guestbook.service.GuestBookAtomFeedExporter">
+	<bean name="/feed/atom/guestbook.xml" class="net.sf.jstuff.integration.example.guestbook.service.GuestBookAtomFeedExporter">
 		<property name="guestBookService" ref="guestbookService" />
 		<property name="maxEntries" value="20" />
 	</bean>
