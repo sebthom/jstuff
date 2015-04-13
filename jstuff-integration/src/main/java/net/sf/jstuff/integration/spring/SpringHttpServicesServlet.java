@@ -83,7 +83,14 @@ public class SpringHttpServicesServlet extends HttpServlet
 			{
 				final Map<String, HttpRequestHandler> beans = springContext.getBeansOfType(HttpRequestHandler.class);
 				final PrintWriter pw = response.getWriter();
-				pw.write("<html><body><ul>");
+				pw.write("<html><body>");
+				pw.write("<h3>Available services:</h3>");
+				pw.write("<ul>");
+				String contextRoot = request.getRequestURI();
+				if (!contextRoot.endsWith("/"))
+				{
+					contextRoot += "/";
+				}
 				for (final Entry<String, HttpRequestHandler> entry : beans.entrySet())
 				{
 					if (!entry.getKey().startsWith("/"))
@@ -91,10 +98,11 @@ public class SpringHttpServicesServlet extends HttpServlet
 						continue;
 					}
 
+					final String serviceID = entry.getKey().substring(1);
 					final String parameter = entry.getValue() instanceof AbstractRestServiceExporter ? "?explainAsHTML" : "";
 
 					pw.write("<li>");
-					pw.write("<a href=\"" + entry.getKey().substring(1) + parameter + "\">" + entry.getKey().substring(1) + "</a>");
+					pw.write("<a href=\"" + contextRoot + serviceID + parameter + "\">" + serviceID + "</a>");
 					pw.write("</li>");
 				}
 				pw.write("</ul></body></html>");
