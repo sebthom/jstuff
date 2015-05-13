@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -21,6 +21,7 @@ import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
+import javax.net.ssl.SSLSession;
 
 import net.sf.jstuff.core.functional.Invocable;
 
@@ -33,16 +34,25 @@ public class LdapTemplate
 	private Hashtable<String, Object> ldapSettings;
 	private String ldapURL;
 	private boolean pooled = true;
+
+	/**
+	 * https://docs.oracle.com/javase/jndi/tutorial/ldap/ext/starttls.html
+	 */
 	private boolean useStartTSL = false;
 
 	public Object execute(final Invocable<Object, LdapContext, ? extends Exception> callback)
 	{
 		LdapContext ctx = null;
-
+		StartTlsResponse tls = null;
 		try
 		{
 			ctx = new InitialLdapContext(ldapSettings, null);
-			if (useStartTSL) ((StartTlsResponse) ctx.extendedOperation(new StartTlsRequest())).negotiate();
+			if (useStartTSL)
+			{
+				tls = (StartTlsResponse) ctx.extendedOperation(new StartTlsRequest());
+				@SuppressWarnings("unused")
+				final SSLSession sess = tls.negotiate();
+			}
 			return callback.invoke(ctx);
 		}
 		catch (final Exception ex)
@@ -51,6 +61,7 @@ public class LdapTemplate
 		}
 		finally
 		{
+			LdapUtils.closeQuietly(tls);
 			LdapUtils.closeQuietly(ctx);
 		}
 	}
@@ -72,7 +83,10 @@ public class LdapTemplate
 		ldapSettings.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
 		ldapSettings.put(Context.PROVIDER_URL, ldapURL);
 		ldapSettings.put(Context.REFERRAL, "throw");
-		if (pooled) ldapSettings.put("com.sun.jndi.ldap.connect.pool", "true");
+		if (pooled)
+		{
+			ldapSettings.put("com.sun.jndi.ldap.connect.pool", "true");
+		}
 	}
 
 	public boolean isPooled()

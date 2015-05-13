@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -12,8 +12,11 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.ldap;
 
+import java.io.IOException;
+
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.naming.ldap.StartTlsResponse;
 
 import net.sf.jstuff.core.validation.Args;
 
@@ -26,9 +29,27 @@ public abstract class LdapUtils
 	{
 		try
 		{
-			if (context != null) context.close();
+			if (context != null)
+			{
+				context.close();
+			}
 		}
 		catch (final NamingException ex)
+		{
+			// ignore
+		}
+	}
+
+	public static void closeQuietly(final StartTlsResponse tls)
+	{
+		try
+		{
+			if (tls != null)
+			{
+				tls.close();
+			}
+		}
+		catch (final IOException ex)
 		{
 			// ignore
 		}
@@ -72,5 +93,22 @@ public abstract class LdapUtils
 			}
 		}
 		return sb;
+	}
+
+	public static String prettifyDN(final String dn)
+	{
+		final StringBuilder sb = new StringBuilder();
+		for (final String chunk : dn.split(","))
+		{
+			final String[] pair = chunk.split("=", 2);
+			if (sb.length() > 0)
+			{
+				sb.append(",");
+			}
+			sb.append(pair[0].trim().toUpperCase());
+			sb.append('=');
+			sb.append(pair[1].trim());
+		}
+		return sb.toString();
 	}
 }
