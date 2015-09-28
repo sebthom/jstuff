@@ -26,7 +26,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * Features:
  * <li>Logger implementation using the {@link java.util.Formatter} syntax for message templates.
- * <li>{@link Logger#traceEntry()} logs parameter name and parameter values.
+ * <li>{@link Logger#entry()} logs parameter name and parameter values.
  * <li>Stacktraces are logged truncated if logger is not at DEBUG level.
  * <li>{@link Logger#fatal}() always logs the full stacktrace
  * <li>Defaults to SLF4J as logging infrastructure and falls back to java.util.logging if SLF4J is not available.
@@ -239,6 +239,36 @@ public abstract class Logger
 	 */
 	public abstract void debug(final Throwable ex, final String messageTemplate, final Object... args);
 
+	/**
+	 * Logs a method entry
+	 */
+	public abstract void entry();
+
+	/**
+	 * Logs a method entry
+	 */
+	public abstract void entry(final Object arg1);
+
+	/**
+	 * Logs a method entry
+	 */
+	public abstract void entry(final Object arg1, final Object arg2);
+
+	/**
+	 * Logs a method entry
+	 */
+	public abstract void entry(final Object arg1, final Object arg2, final Object arg3);
+
+	/**
+	 * Logs a method entry
+	 */
+	public abstract void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4);
+
+	/**
+	 * Logs a method entry
+	 */
+	public abstract void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
+
 	public abstract void error(final String msg);
 
 	/**
@@ -291,6 +321,18 @@ public abstract class Logger
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public abstract void error(final Throwable ex, final String messageTemplate, final Object... args);
+
+	/**
+	 * Logs a method exit
+	 */
+	public abstract void exit();
+
+	/**
+	 * Logs a method exit
+	 *
+	 * @param returnValue the returnValue of the given method
+	 */
+	public abstract <T> T exit(final T returnValue);
 
 	/**
 	 * Creates a log entry at ERROR level and always logs the full stack trace.
@@ -437,48 +479,6 @@ public abstract class Logger
 	 * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra arguments are ignored.
 	 */
 	public abstract void trace(final Throwable ex, final String messageTemplate, final Object... args);
-
-	/**
-	 * Logs a method entry
-	 */
-	public abstract void traceEntry();
-
-	/**
-	 * Logs a method entry
-	 */
-	public abstract void traceEntry(final Object arg1);
-
-	/**
-	 * Logs a method entry
-	 */
-	public abstract void traceEntry(final Object arg1, final Object arg2);
-
-	/**
-	 * Logs a method entry
-	 */
-	public abstract void traceEntry(final Object arg1, final Object arg2, final Object arg3);
-
-	/**
-	 * Logs a method entry
-	 */
-	public abstract void traceEntry(final Object arg1, final Object arg2, final Object arg3, final Object arg4);
-
-	/**
-	 * Logs a method entry
-	 */
-	public abstract void traceEntry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
-
-	/**
-	 * Logs a method exit
-	 */
-	public abstract void traceExit();
-
-	/**
-	 * Logs a method exit
-	 *
-	 * @param returnValue the returnValue of the given method
-	 */
-	public abstract <T> T traceExit(final T returnValue);
 
 	public abstract void warn(final String msg);
 

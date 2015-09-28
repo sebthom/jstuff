@@ -335,51 +335,51 @@ final class DelegatingLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry()
+	public void entry()
 	{
-		delegate.traceEntry();
+		delegate.entry();
 	}
 
 	@Override
-	public void traceEntry(final Object arg1)
+	public void entry(final Object arg1)
 	{
-		delegate.traceEntry(arg1);
+		delegate.entry(arg1);
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2)
+	public void entry(final Object arg1, final Object arg2)
 	{
-		delegate.traceEntry(arg1, arg2);
+		delegate.entry(arg1, arg2);
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2, final Object arg3)
+	public void entry(final Object arg1, final Object arg2, final Object arg3)
 	{
-		delegate.traceEntry(arg1, arg2, arg3);
+		delegate.entry(arg1, arg2, arg3);
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2, final Object arg3, final Object arg4)
+	public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4)
 	{
-		delegate.traceEntry(arg1, arg2, arg3, arg4);
+		delegate.entry(arg1, arg2, arg3, arg4);
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
 	{
-		delegate.traceEntry(arg1, arg2, arg3, arg4, arg5);
+		delegate.entry(arg1, arg2, arg3, arg4, arg5);
 	}
 
 	@Override
-	public void traceExit()
+	public void exit()
 	{
-		delegate.traceExit();
+		delegate.exit();
 	}
 
 	@Override
-	public <T> T traceExit(final T returnValue)
+	public <T> T exit(final T returnValue)
 	{
-		return delegate.traceExit(returnValue);
+		return delegate.exit(returnValue);
 	}
 
 	@Override

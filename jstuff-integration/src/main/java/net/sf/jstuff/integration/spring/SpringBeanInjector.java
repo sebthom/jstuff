@@ -81,8 +81,8 @@ public class SpringBeanInjector implements DisposableBean
 
 	public void inject(final Object unmanagedBean)
 	{
-		LOG.traceEntry(unmanagedBean);
+		LOG.entry(unmanagedBean);
 		processor.processInjection(unmanagedBean);
-		LOG.traceExit();
+		LOG.exit();
 	}
 }

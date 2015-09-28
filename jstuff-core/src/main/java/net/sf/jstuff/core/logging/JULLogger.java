@@ -547,7 +547,7 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry()
+	public void entry()
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return;
@@ -556,7 +556,7 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry(final Object arg1)
+	public void entry(final Object arg1)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return;
@@ -565,7 +565,7 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2)
+	public void entry(final Object arg1, final Object arg2)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return;
@@ -574,7 +574,7 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2, final Object arg3)
+	public void entry(final Object arg1, final Object arg2, final Object arg3)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return;
@@ -583,7 +583,7 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2, final Object arg3, final Object arg4)
+	public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return;
@@ -592,7 +592,7 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return;
@@ -601,7 +601,7 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public void traceExit()
+	public void exit()
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return;
@@ -610,7 +610,7 @@ final class JULLogger extends Logger
 	}
 
 	@Override
-	public <T> T traceExit(final T returnValue)
+	public <T> T exit(final T returnValue)
 	{
 		final int effectiveLevel = getLevelInt();
 		if (effectiveLevel > L_TRACE) return returnValue;

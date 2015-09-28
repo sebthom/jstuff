@@ -134,7 +134,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 		result.put("target", "THE_SERVICE_URL");
 		result.put("services", methodDescriptions);
 
-		LOG.traceExit(result);
+		LOG.exit(result);
 		if (pretty) return JSON_PRETTY_WRITER.writeValueAsString(result);
 		return JSON.writeValueAsString(result);
 	}
@@ -215,7 +215,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 			result.put("result", methodReturnValue);
 			JSON.writeValue(response.getWriter(), result);
 
-			LOG.traceExit(result);
+			LOG.exit(result);
 		}
 		catch (final Exception ex)
 		{

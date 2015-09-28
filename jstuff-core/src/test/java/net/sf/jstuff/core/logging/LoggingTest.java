@@ -156,9 +156,9 @@ public class LoggingTest extends TestCase
 
 	private void coolMethod(final String label, final int number, final boolean flag, final Class< ? > clazz, final Object obj)
 	{
-		LOG.traceEntry();
-		LOG.traceEntry(label, number);
-		LOG.traceEntry(label, number, flag, clazz, obj);
+		LOG.entry();
+		LOG.entry(label, number);
+		LOG.entry(label, number, flag, clazz, obj);
 		LOG.error("ERROR");
 		try
 		{
@@ -180,8 +180,8 @@ public class LoggingTest extends TestCase
 		LOG.info("INFO");
 		LOG.debug("DEBUG");
 		LOG.trace("TRACE");
-		LOG.traceExit();
-		LOG.traceExit(1234);
+		LOG.exit();
+		LOG.exit(1234);
 	}
 
 	private void genericLoggerTest()

@@ -515,7 +515,7 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry()
+	public void entry()
 	{
 		if (!logger.isTraceEnabled()) return;
 
@@ -523,7 +523,7 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry(final Object arg1)
+	public void entry(final Object arg1)
 	{
 		if (!logger.isTraceEnabled()) return;
 
@@ -531,7 +531,7 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2)
+	public void entry(final Object arg1, final Object arg2)
 	{
 		if (!logger.isTraceEnabled()) return;
 
@@ -539,7 +539,7 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2, final Object arg3)
+	public void entry(final Object arg1, final Object arg2, final Object arg3)
 	{
 		if (!logger.isTraceEnabled()) return;
 
@@ -547,7 +547,7 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2, final Object arg3, final Object arg4)
+	public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4)
 	{
 		if (!logger.isTraceEnabled()) return;
 
@@ -555,7 +555,7 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void traceEntry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
+	public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5)
 	{
 		if (!logger.isTraceEnabled()) return;
 
@@ -563,7 +563,7 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public void traceExit()
+	public void exit()
 	{
 		if (!logger.isTraceEnabled()) return;
 
@@ -571,7 +571,7 @@ final class SLF4JLogger extends Logger
 	}
 
 	@Override
-	public <T> T traceExit(final T returnValue)
+	public <T> T exit(final T returnValue)
 	{
 		if (!logger.isTraceEnabled()) return returnValue;
 
