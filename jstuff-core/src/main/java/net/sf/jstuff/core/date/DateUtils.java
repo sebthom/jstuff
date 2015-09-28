@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -17,17 +17,36 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-
-import net.sf.jstuff.core.validation.Args;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.time.FastDateFormat;
+
+import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class DateUtils extends org.apache.commons.lang3.time.DateUtils
 {
+	private static final Logger LOG = Logger.create();
+
 	private static final FastDateFormat RFC3399_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+	public static final String DURATION_REGEX = "" + //
+			"((\\d+)(d((ay)s?)?)+)?" + // 1d, 1day, 2days
+			"\\s*" + //
+			"((\\d+)(h((our)s?)?)+)?" + // 1h, 1hour, 2hours
+			"\\s*" + //
+			"((\\d+)(m(in)?)+)?" + // 1m, 1min
+			"\\s*" + //
+			"((\\d+)(s((ec)s?)?)+)?" + // 1s, 1sec, 2secs
+			"\\s*" + //
+			"((\\d+)(ms)+)?" // 1ms
+			;
+
+	private static final Pattern DURATION_PATTERN = Pattern.compile("^" + DURATION_REGEX + "$");
 
 	public static Date fromRFC3399(final String dateString) throws ParseException
 	{
@@ -115,6 +134,35 @@ public abstract class DateUtils extends org.apache.commons.lang3.time.DateUtils
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @param duration e.g. "5d 2h 4m 30s 500ms"
+	 * @return duration in milliseconds
+	 */
+	public static long parseDuration(String duration) throws ParseException
+	{
+		LOG.entry(duration);
+
+		duration = duration.trim().toLowerCase();
+		final Matcher m = DURATION_PATTERN.matcher(duration);
+		if (!m.find()) throw new ParseException("Cannot parse duration " + duration, 0);
+		long milliseconds = 0;
+
+		if (LOG.isDebugEnabled()) for (int i = 0; i <= m.groupCount(); i++)
+			LOG.debug(i + "=" + m.group(i));
+
+		final String days = m.group(2);
+		final String hours = m.group(7);
+		final String mins = m.group(12);
+		final String secs = m.group(16);
+		final String msecs = m.group(21);
+		if (days != null) milliseconds += Integer.parseInt(days) * 1000 * 60 * 60 * 24;
+		if (hours != null) milliseconds += Integer.parseInt(hours) * 1000 * 60 * 60;
+		if (mins != null) milliseconds += Integer.parseInt(mins) * 1000 * 60;
+		if (secs != null) milliseconds += Integer.parseInt(secs) * 1000;
+		if (msecs != null) milliseconds += Integer.parseInt(msecs);
+		return milliseconds;
 	}
 
 	public static String toRFC3399(final Date date)
