@@ -28,7 +28,7 @@ public class JsonRestServiceExporter extends AbstractRestServiceExporter
 {
 	private static final Logger LOG = Logger.create();
 
-	private final static ObjectMapper JSON = new ObjectMapper();
+	private static final ObjectMapper JSON = new ObjectMapper();
 
 	public JsonRestServiceExporter()
 	{

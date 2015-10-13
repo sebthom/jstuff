@@ -29,7 +29,7 @@ public class EmptyQueue<E> extends AbstractQueue<E> implements Serializable
 	public static final Queue< ? > INSTANCE = new EmptyQueue<Object>();
 
 	@SuppressWarnings("unchecked")
-	public static final <T> EmptyQueue<T> get()
+	public static <T> EmptyQueue<T> get()
 	{
 		return (EmptyQueue<T>) INSTANCE;
 	}

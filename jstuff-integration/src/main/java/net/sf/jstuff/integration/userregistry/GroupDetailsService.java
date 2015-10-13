@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public interface GroupDetailsService
 {
-	GroupDetails getGroupDetailsByGroupDN(final String groupDN);
+	GroupDetails getGroupDetailsByGroupDN(String groupDN);
 
-	Set<String> getGroupIdsByUserDN(final String userDN);
+	Set<String> getGroupIdsByUserDN(String userDN);
 }

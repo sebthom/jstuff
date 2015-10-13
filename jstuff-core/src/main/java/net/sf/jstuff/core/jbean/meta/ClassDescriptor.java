@@ -57,9 +57,9 @@ public final class ClassDescriptor<T> implements Serializable
 	private final transient String name;
 	private final transient String description;
 
-	private transient final Map<String, PropertyDescriptor< ? >> properties = newLinkedHashMap();
-	private transient final Map<String, PropertyDescriptor< ? >> propertiesReadOnly = Collections.unmodifiableMap(properties);
-	private transient final Map<String, PropertyDescriptor< ? >> propertiesRecursivelyReadOnly;
+	private final transient Map<String, PropertyDescriptor< ? >> properties = newLinkedHashMap();
+	private final transient Map<String, PropertyDescriptor< ? >> propertiesReadOnly = Collections.unmodifiableMap(properties);
+	private final transient Map<String, PropertyDescriptor< ? >> propertiesRecursivelyReadOnly;
 
 	@SuppressWarnings("unchecked")
 	private ClassDescriptor(final Class<T> type, final String name, final String description, final ClassDescriptor< ? > parent)

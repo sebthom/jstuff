@@ -54,7 +54,7 @@ public abstract class TypeSafeEnum<VALUE_TYPE> implements Serializable
 
 	private static final AtomicInteger ORDINAL_COUNTER = new AtomicInteger();;
 
-	public static final <V, T extends TypeSafeEnum<V>> T getItem(final Class<T> enumType, final V value)
+	public static <V, T extends TypeSafeEnum<V>> T getItem(final Class<T> enumType, final V value)
 	{
 		@SuppressWarnings("unchecked")
 		final Map<V, T> enumsByValue = (Map<V, T>) ENUMS_BY_TYPE.get(enumType);
@@ -63,7 +63,7 @@ public abstract class TypeSafeEnum<VALUE_TYPE> implements Serializable
 	}
 
 	@SuppressWarnings("unchecked")
-	public static final <V, T extends TypeSafeEnum<V>> List<T> getItems(final Class<T> enumType)
+	public static <V, T extends TypeSafeEnum<V>> List<T> getItems(final Class<T> enumType)
 	{
 		Map<V, T> enumsByValue = (Map<V, T>) ENUMS_BY_TYPE.get(enumType);
 		if (enumsByValue == null)

@@ -24,9 +24,9 @@ public class BuilderTest extends TestCase
 	{
 		public interface EntityABuilder<T extends EntityA> extends Builder<T>
 		{
-			EntityABuilder<T> propertyA(final String value);
+			EntityABuilder<T> propertyA(String value);
 
-			EntityABuilder<T> propertyB(final int value);
+			EntityABuilder<T> propertyB(int value);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -51,13 +51,13 @@ public class BuilderTest extends TestCase
 	{
 		public interface EntityBBuilder<T extends EntityB> extends EntityABuilder<T>
 		{
-			EntityBBuilder<T> propertyA(final String value);
+			EntityBBuilder<T> propertyA(String value);
 
-			EntityBBuilder<T> propertyB(final int value);
+			EntityBBuilder<T> propertyB(int value);
 
-			EntityBBuilder<T> propertyC(final Long value);
+			EntityBBuilder<T> propertyC(Long value);
 
-			EntityBBuilder<T> propertyD(final String value);
+			EntityBBuilder<T> propertyD(String value);
 		}
 
 		@SuppressWarnings("unchecked")

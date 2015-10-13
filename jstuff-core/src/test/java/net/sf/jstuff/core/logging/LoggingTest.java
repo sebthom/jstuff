@@ -46,7 +46,7 @@ public class LoggingTest extends TestCase
 
 	private static interface InterfaceA
 	{
-		Object[] methodA(final int a, final String b, final String... c);
+		Object[] methodA(int a, String b, String... c);
 	}
 
 	private static interface InterfaceB

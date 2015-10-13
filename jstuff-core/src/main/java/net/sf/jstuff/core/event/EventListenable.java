@@ -17,7 +17,7 @@ package net.sf.jstuff.core.event;
  */
 public interface EventListenable<Event>
 {
-	<EventType extends Event> boolean subscribe(final EventListener<EventType> listener);
+	<EventType extends Event> boolean subscribe(EventListener<EventType> listener);
 
-	<EventType extends Event> boolean unsubscribe(final EventListener<EventType> listener);
+	<EventType extends Event> boolean unsubscribe(EventListener<EventType> listener);
 }

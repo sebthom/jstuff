@@ -21,5 +21,5 @@ public interface FilteringEventListener<Event> extends EventListener<Event>
 	 * Determines if this event listener accepts the given event.
 	 * The {@link #onEvent(Object)} method is only called when <code>true</code> is returned.
 	 */
-	boolean accept(final Event type);
+	boolean accept(Event type);
 }

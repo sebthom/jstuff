@@ -71,11 +71,11 @@ public interface Composite<Component>
 		}
 	}
 
-	void addComponent(final Component component);
+	void addComponent(Component component);
 
-	boolean hasComponent(final Component component);
+	boolean hasComponent(Component component);
 
 	boolean isCompositeModifiable();
 
-	boolean removeComponent(final Component component);
+	boolean removeComponent(Component component);
 }

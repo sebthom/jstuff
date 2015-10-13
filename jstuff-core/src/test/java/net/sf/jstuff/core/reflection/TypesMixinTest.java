@@ -21,9 +21,9 @@ public class TypesMixinTest extends TestCase
 {
 	protected interface TestEntity
 	{
-		String createGreeting(final String name);
+		String createGreeting(String name);
 
-		String createClosing(final String name);
+		String createClosing(String name);
 	}
 
 	protected static class TestEntityImpl implements TestEntity

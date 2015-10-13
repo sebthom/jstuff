@@ -24,7 +24,7 @@ public class CrossThreadMethodInvokerTest extends TestCase
 {
 	public static interface IService
 	{
-		String work(final String input);
+		String work(String input);
 	}
 
 	public static class Service implements IService

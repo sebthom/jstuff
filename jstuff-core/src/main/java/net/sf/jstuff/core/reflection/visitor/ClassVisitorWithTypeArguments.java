@@ -22,20 +22,20 @@ public interface ClassVisitorWithTypeArguments
 	/**
 	 * @return false if the class hierarchy visit shall be aborted
 	 */
-	boolean visit(final Class< ? > clazz, final ParameterizedType type);
+	boolean visit(Class< ? > clazz, ParameterizedType type);
 
 	/**
 	 * @return if the class shall be visited
 	 */
-	boolean isVisiting(final Class< ? > clazz, final ParameterizedType type);
+	boolean isVisiting(Class< ? > clazz, ParameterizedType type);
 
 	/**
 	 * @return if true the superclass shall be visited
 	 */
-	boolean isVisitingSuperclass(final Class< ? > clazz, final ParameterizedType type);
+	boolean isVisitingSuperclass(Class< ? > clazz, ParameterizedType type);
 
 	/**
 	 * @return if true the implemented interfaces shall be visited
 	 */
-	boolean isVisitingInterfaces(final Class< ? > clazz, final ParameterizedType type);
+	boolean isVisitingInterfaces(Class< ? > clazz, ParameterizedType type);
 }

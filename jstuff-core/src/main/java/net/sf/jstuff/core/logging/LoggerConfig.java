@@ -100,7 +100,7 @@ public final class LoggerConfig
 		LoggerConfig.isDebugMessagePrefixEnabled = enabled;
 	}
 
-	public synchronized static void setPreferSLF4J(final boolean value)
+	public static synchronized void setPreferSLF4J(final boolean value)
 	{
 		isPreferSLF4J = value;
 		final boolean old = isUseSFL4J;

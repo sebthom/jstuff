@@ -20,41 +20,41 @@ import java.lang.reflect.Method;
  */
 public interface ClassVisitor
 {
-	boolean isVisitingFields(final Class< ? > clazz);
+	boolean isVisitingFields(Class< ? > clazz);
 
-	boolean isVisitingField(final Field field);
-
-	/**
-	 * @return false if the class hierarchy visit shall be aborted
-	 */
-	boolean visit(final Field field);
-
-	boolean isVisitingMethods(final Class< ? > clazz);
-
-	boolean isVisitingMethod(final Method method);
+	boolean isVisitingField(Field field);
 
 	/**
 	 * @return false if the class hierarchy visit shall be aborted
 	 */
-	boolean visit(final Method method);
+	boolean visit(Field field);
+
+	boolean isVisitingMethods(Class< ? > clazz);
+
+	boolean isVisitingMethod(Method method);
+
+	/**
+	 * @return false if the class hierarchy visit shall be aborted
+	 */
+	boolean visit(Method method);
 
 	/**
 	* @return false if the class hierarchy visit shall be aborted
 	*/
-	boolean visit(final Class< ? > clazz);
+	boolean visit(Class< ? > clazz);
 
 	/**
 	 * @return if the class shall be visited
 	 */
-	boolean isVisiting(final Class< ? > clazz);
+	boolean isVisiting(Class< ? > clazz);
 
 	/**
 	 * @return if true the superclass shall be visited
 	 */
-	boolean isVisitingSuperclass(final Class< ? > clazz);
+	boolean isVisitingSuperclass(Class< ? > clazz);
 
 	/**
 	 * @return if true the implemented interfaces shall be visited
 	 */
-	boolean isVisitingInterfaces(final Class< ? > clazz);
+	boolean isVisitingInterfaces(Class< ? > clazz);
 }

@@ -17,5 +17,5 @@ package net.sf.jstuff.core.functional;
  */
 public interface Invocable<ReturnType, ArgumentType, ExceptionType extends Exception>
 {
-	ReturnType invoke(final ArgumentType arg) throws ExceptionType;
+	ReturnType invoke(ArgumentType arg) throws ExceptionType;
 }

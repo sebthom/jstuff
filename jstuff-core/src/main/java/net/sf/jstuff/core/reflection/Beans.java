@@ -38,7 +38,7 @@ public abstract class Beans extends java.beans.Beans
 	 * list of properties
 	 * @return an unmodifiable collection
 	 */
-	public static final Map<String, PropertyDescriptor> getBeanProperties(final Class< ? > beanType)
+	public static Map<String, PropertyDescriptor> getBeanProperties(final Class< ? > beanType)
 	{
 		Args.notNull("beanType", beanType);
 
@@ -54,7 +54,7 @@ public abstract class Beans extends java.beans.Beans
 	/**
 	 * @return list of properties
 	 */
-	public static final Collection<PropertyDescriptor> getBeanPropertyDescriptors(final Class< ? > beanType)
+	public static Collection<PropertyDescriptor> getBeanPropertyDescriptors(final Class< ? > beanType)
 	{
 		Args.notNull("beanType", beanType);
 
@@ -67,7 +67,7 @@ public abstract class Beans extends java.beans.Beans
 		return properties.values();
 	}
 
-	public static final Set<String> getBeanPropertyNames(final Class< ? > beanType)
+	public static Set<String> getBeanPropertyNames(final Class< ? > beanType)
 	{
 		Args.notNull("beanType", beanType);
 
@@ -97,7 +97,7 @@ public abstract class Beans extends java.beans.Beans
 		}
 	}
 
-	public static final Object valueOf(final String stringValue, final Class< ? > targetType)
+	public static Object valueOf(final String stringValue, final Class< ? > targetType)
 	{
 		Args.notNull("targetType", targetType);
 
@@ -110,7 +110,7 @@ public abstract class Beans extends java.beans.Beans
 		return stringValue;
 	}
 
-	public static final Object[] valuesOf(final String[] stringValues, final Class< ? >[] targetTypes)
+	public static Object[] valuesOf(final String[] stringValues, final Class< ? >[] targetTypes)
 	{
 		Args.notNull("stringValues", stringValues);
 		Args.notNull("targetTypes", targetTypes);

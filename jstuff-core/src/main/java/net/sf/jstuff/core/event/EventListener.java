@@ -17,5 +17,5 @@ package net.sf.jstuff.core.event;
  */
 public interface EventListener<Event>
 {
-	void onEvent(final Event event);
+	void onEvent(Event event);
 }

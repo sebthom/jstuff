@@ -17,5 +17,5 @@ package net.sf.jstuff.core.functional;
  */
 public interface ChainableFunction<In, Out> extends Function<In, Out>
 {
-	<NextOut> ChainableFunction<In, NextOut> and(final Function< ? super Out, NextOut> next);
+	<NextOut> ChainableFunction<In, NextOut> and(Function< ? super Out, NextOut> next);
 }

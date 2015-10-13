@@ -181,7 +181,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
 		}
 	}
 
-	private final static Logger LOG = Logger.create();
+	private static final Logger LOG = Logger.create();
 
 	private final Map<String, ServiceEndpointState> serviceEndpoints = new HashMap<String, ServiceEndpointState>();
 	private final Lock serviceEndpoints_READ;

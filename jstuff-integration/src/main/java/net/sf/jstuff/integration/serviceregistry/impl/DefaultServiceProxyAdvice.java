@@ -29,7 +29,7 @@ import net.sf.jstuff.integration.serviceregistry.impl.DefaultServiceRegistry.Ser
  */
 public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProxyInternal<SERVICE_INTERFACE>
 {
-	private final static Logger LOG = Logger.create();
+	private static final Logger LOG = Logger.create();
 
 	protected final Class<SERVICE_INTERFACE> serviceInterface;
 	protected final String serviceEndpointId;

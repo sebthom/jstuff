@@ -29,26 +29,26 @@ import net.sf.jstuff.integration.rest.REST_PUT;
 public interface GuestBookService
 {
 	@REST_POST("entries")
-	int addEntry(final AddGuestBookEntryCommand entry) throws PermissionDeniedException;
+	int addEntry(AddGuestBookEntryCommand entry) throws PermissionDeniedException;
 
 	@REST_HEAD(value = "entries", fallback = "entries/exists")
-	boolean existsEntry(final int entryId);
+	boolean existsEntry(int entryId);
 
 	@REST_GET("entries/of_author")
-	PagedListWithSortBy<GuestBookEntry, String> getEntriesOfAuthor(final String createdBy, final int start, final int max,
-			final SortBy<String>... sortBy);
+	PagedListWithSortBy<GuestBookEntry, String> getEntriesOfAuthor(String createdBy, int start, int max,
+			SortBy<String>... sortBy);
 
 	@REST_HEAD(value = "entries/of_author", fallback = "entries/of_author_count")
-	int getEntriesOfAuthorCount(final String createdBy);
+	int getEntriesOfAuthorCount(String createdBy);
 
 	@REST_GET("entries")
-	GuestBookEntry getEntry(final int entryId) throws PermissionDeniedException;
+	GuestBookEntry getEntry(int entryId) throws PermissionDeniedException;
 
 	/**
 	 * @sortBy supported fields: "createdBy", "createdOn", "lastModifiedBy", "lastModifiedOn", "responsesCount"
 	 */
 	@REST_GET("entries")
-	PagedListWithSortBy<GuestBookEntry, String> getEntries(final int start, final int max, final SortBy<String>... sortBy);
+	PagedListWithSortBy<GuestBookEntry, String> getEntries(int start, int max, SortBy<String>... sortBy);
 
 	@REST_HEAD(value = "entries", fallback = "entries/count")
 	int getEntriesCount();
@@ -61,24 +61,24 @@ public interface GuestBookService
 	 * @throws PermissionDeniedException if not authorized to access the comment with the given ID
 	 */
 	@REST_GET("responses")
-	PagedListWithSortBy<GuestBookEntry, String> getResponses(final int entryId, final int start, final int max,
-			final SortBy<String>... sortBy) throws PermissionDeniedException;
+	PagedListWithSortBy<GuestBookEntry, String> getResponses(int entryId, int start, int max,
+			SortBy<String>... sortBy) throws PermissionDeniedException;
 
 	@REST_HEAD(value = "responses", fallback = "responses_count")
-	int getResponsesCount(final int entryId) throws PermissionDeniedException;
+	int getResponsesCount(int entryId) throws PermissionDeniedException;
 
 	@REST_GET("version")
 	String getVersion();
 
 	@REST_POST("rating")
-	void rateEntry(final int entryId, final boolean isGoodEntry) throws PermissionDeniedException;
+	void rateEntry(int entryId, boolean isGoodEntry) throws PermissionDeniedException;
 
 	@REST_DELETE(value = "entries", fallback = "entries/deletion")
-	void removeEntry(final int entryId) throws PermissionDeniedException;
+	void removeEntry(int entryId) throws PermissionDeniedException;
 
 	@REST_DELETE(value = "entries/of_author", fallback = "entries/of_author_deletion")
-	int removeEntriesOfAuthor(final String createdBy) throws PermissionDeniedException;
+	int removeEntriesOfAuthor(String createdBy) throws PermissionDeniedException;
 
 	@REST_PUT(value = "entries", fallback = "entries/update")
-	void updateEntry(final int entryId, final UpdateGuestBookEntryCommand entry) throws PermissionDeniedException;
+	void updateEntry(int entryId, UpdateGuestBookEntryCommand entry) throws PermissionDeniedException;
 }

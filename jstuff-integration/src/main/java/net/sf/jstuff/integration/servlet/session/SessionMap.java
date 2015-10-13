@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public interface SessionMap extends Map<String, Object>
 {
-	Object get(final String key, final Object defaultValueIfNull);
+	Object get(String key, Object defaultValueIfNull);
 
 	/**
 	 * @return true if an underlying HTTP session exists already

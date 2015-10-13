@@ -25,7 +25,7 @@ public interface ObjectGraphNavigator
 	 * @return the result of the navigation operation. <code>null</code> is returned if the target could not be determined, e.g. because of null values in the path.
 	 * @throws IllegalArgumentException if the given path is invalid, e.g. because of non-existing fields/properties named in the path.
 	 */
-	ObjectGraphNavigationResult navigateTo(final Object root, final String path);
+	ObjectGraphNavigationResult navigateTo(Object root, String path);
 
-	<T> T getValueAt(final Object root, final String path);
+	<T> T getValueAt(Object root, String path);
 }

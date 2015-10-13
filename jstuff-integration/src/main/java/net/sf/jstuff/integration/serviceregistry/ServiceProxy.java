@@ -42,8 +42,8 @@ public interface ServiceProxy<SERVICE_INTERFACE>
 	/**
 	 * Adds the given listener with a weak reference
 	 */
-	boolean addServiceListener(final ServiceListener<SERVICE_INTERFACE> listener);
+	boolean addServiceListener(ServiceListener<SERVICE_INTERFACE> listener);
 
-	boolean removeServiceListener(final ServiceListener<SERVICE_INTERFACE> listener);
+	boolean removeServiceListener(ServiceListener<SERVICE_INTERFACE> listener);
 
 }

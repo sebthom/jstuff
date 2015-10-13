@@ -17,5 +17,5 @@ package net.sf.jstuff.core.functional;
  */
 public interface Accept<T>
 {
-	boolean accept(final T obj);
+	boolean accept(T obj);
 }
