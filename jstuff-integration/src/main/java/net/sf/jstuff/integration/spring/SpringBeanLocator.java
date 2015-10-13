@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -52,7 +52,7 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean
 
 	private SpringBeanLocator()
 	{
-		Assert.isNull(_INSTANCE, "A instance of " + this.getClass().getName() + " already exists.");
+		Assert.isNull(_INSTANCE, "A instance of " + getClass().getName() + " already exists.");
 
 		LOG.infoNew(this);
 

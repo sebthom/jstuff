@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -30,6 +30,6 @@ public class FunctionsTest extends TestCase
 				.and(stringToInt());
 
 		assertEquals(null, t1.apply(null));
-		assertEquals(new Integer(1), t1.apply("1"));
+		assertEquals(Integer.valueOf(1), t1.apply("1"));
 	}
 }

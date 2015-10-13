@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -556,10 +556,12 @@ public abstract class Types
 
 			if (!visitor.visit(current)) return;
 			if (visitor.isVisitingFields(current)) for (final Field f : current.getDeclaredFields())
-				if (visitor.isVisitingField(f)) if (!visitor.visit(f)) return;
+				if (visitor.isVisitingField(f) && !visitor.visit(f))
+                    return;
 
 			if (visitor.isVisitingMethods(current)) for (final Method m : current.getDeclaredMethods())
-				if (visitor.isVisitingMethod(m)) if (!visitor.visit(m)) return;
+				if (visitor.isVisitingMethod(m) && !visitor.visit(m))
+                    return;
 
 			if (visitor.isVisitingSuperclass(current))
 			{

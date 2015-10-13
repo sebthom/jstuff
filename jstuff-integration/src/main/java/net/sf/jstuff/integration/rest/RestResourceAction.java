@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -165,7 +165,7 @@ public class RestResourceAction implements Serializable
 	@Override
 	public String toString()
 	{
-		return this.getClass().getSimpleName() + ": resource=" + resourceName + "; httpMethod = " + httpRequestMethod + "; method="
+		return getClass().getSimpleName() + ": resource=" + resourceName + "; httpMethod = " + httpRequestMethod + "; method="
 				+ serviceMethod;
 	}
 }

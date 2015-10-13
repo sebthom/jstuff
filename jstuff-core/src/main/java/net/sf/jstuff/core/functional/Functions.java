@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -98,7 +98,7 @@ public abstract class Functions
 
 		public String apply(final In source)
 		{
-			return source == null ? null : prefix + source.toString();
+			return source == null ? null : prefix + source;
 		}
 	}
 
@@ -127,7 +127,7 @@ public abstract class Functions
 
 		public String apply(final In source)
 		{
-			return source == null ? null : source.toString() + suffix;
+			return source == null ? null : source + suffix;
 		}
 	}
 

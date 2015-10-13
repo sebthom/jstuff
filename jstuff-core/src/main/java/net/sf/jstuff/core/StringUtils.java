@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -360,10 +360,6 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 				case ESCAPE_CHAR :
 					if (chPrev == ESCAPE_CHAR)
 						sb.append(ESCAPE_CHAR).append(ESCAPE_CHAR); // "\\" => "\\"
-					else
-					{
-						// do nothing
-					}
 					break;
 				case '$' :
 					sb.append(ESCAPE_CHAR).append("$"); // "$" => "\$"
@@ -758,11 +754,11 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils
 
 		while ((foundAt = searchInLowerCase.indexOf(searchFor, startSearchAt)) >= 0)
 		{
-			out.append(searchIn.substring(startSearchAt, foundAt));
+			out.append(searchIn, startSearchAt, foundAt);
 			out.append(replaceWith);
 			startSearchAt = foundAt + searchForLen;
 		}
-		out.append(searchIn.substring(startSearchAt, searchInLen));
+		out.append(searchIn, startSearchAt, searchInLen);
 		return out;
 	}
 

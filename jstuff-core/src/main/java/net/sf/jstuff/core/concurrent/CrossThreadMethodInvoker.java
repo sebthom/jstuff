@@ -107,7 +107,7 @@ public class CrossThreadMethodInvoker
 					if (method.getDeclaringClass() == CrossThreadProxy.class)
 					{
 						final String mName = method.getName();
-						if (mName.equals("get")) return proxy;
+						if ("get".equals(mName)) return proxy;
 						return CrossThreadMethodInvoker.this;
 					}
 					return CrossThreadMethodInvoker.this.invokeInOwnerThread(target, method, args);
@@ -129,7 +129,7 @@ public class CrossThreadMethodInvoker
 					if (method.getDeclaringClass() == CrossThreadProxy.class)
 					{
 						final String mName = method.getName();
-						if (mName.equals("get")) return proxy;
+						if ("get".equals(mName)) return proxy;
 						return CrossThreadMethodInvoker.this;
 					}
 					return resultTransformer.apply(CrossThreadMethodInvoker.this.invokeInOwnerThread(target, method, args));

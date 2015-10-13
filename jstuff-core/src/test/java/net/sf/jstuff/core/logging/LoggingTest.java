@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -80,7 +80,7 @@ public class LoggingTest extends TestCase
 				{
 					final StringWriter errors = new StringWriter();
 					record.getThrown().printStackTrace(new PrintWriter(errors));
-					sb.append(errors.toString());
+					sb.append(errors);
 				}
 				sb.append("\n");
 				return sb.toString();

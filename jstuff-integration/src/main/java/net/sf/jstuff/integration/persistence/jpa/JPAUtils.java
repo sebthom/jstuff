@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -33,11 +33,11 @@ public abstract class JPAUtils
 
 		for (int i = 1; (foundAt = queryString.indexOf("?", startSearchAt)) >= 0; i++)
 		{
-			final String replaceValue = new StringBuilder("?").append(i).toString();
-			out.append(queryString.substring(startSearchAt, foundAt)).append(replaceValue);
+			final String replaceValue = "?" + i;
+			out.append(queryString, startSearchAt, foundAt).append(replaceValue);
 			startSearchAt = foundAt + 1;
 		}
-		return out.append(queryString.substring(startSearchAt, queryString.length())).toString();
+		return out.append(queryString, startSearchAt, queryString.length()).toString();
 	}
 
 	public static void setParameters(final Query query, final Object... parameters)

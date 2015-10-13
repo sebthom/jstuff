@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -83,7 +83,8 @@ public class URLClassLoaderExt extends URLClassLoader
 				addJAR(child);
 				jarsAdded = true;
 			}
-			else if (recursive && child.isDirectory()) if (addJARs(child, true)) jarsAdded = true;
+			else if (recursive && child.isDirectory() && addJARs(child, true))
+                jarsAdded = true;
 		return jarsAdded;
 	}
 
@@ -102,7 +103,8 @@ public class URLClassLoaderExt extends URLClassLoader
 				addJAR(child);
 				jarsAdded = true;
 			}
-			else if (recursive && child.isDirectory()) if (addJARs(child, true, jarNamePattern)) jarsAdded = true;
+			else if (recursive && child.isDirectory() && addJARs(child, true, jarNamePattern))
+                jarsAdded = true;
 		return jarsAdded;
 	}
 
@@ -122,7 +124,8 @@ public class URLClassLoaderExt extends URLClassLoader
 				addJAR(child);
 				jarsAdded = true;
 			}
-			else if (recursive && child.isDirectory()) if (addJARs(child, true, pattern)) jarsAdded = true;
+			else if (recursive && child.isDirectory() && addJARs(child, true, pattern))
+                jarsAdded = true;
 
 		return jarsAdded;
 	}

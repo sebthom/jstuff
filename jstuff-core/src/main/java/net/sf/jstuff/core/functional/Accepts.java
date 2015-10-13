@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -97,7 +97,7 @@ public abstract class Accepts
 		@Override
 		public String toString()
 		{
-			return "(" + first.toString() + " && " + second.toString() + ")";
+			return "(" + first + " && " + second + ")";
 		}
 	}
 
@@ -280,7 +280,7 @@ public abstract class Accepts
 		@Override
 		public String toString()
 		{
-			return "!" + accept.toString();
+			return "!" + accept;
 		}
 	}
 
@@ -340,7 +340,7 @@ public abstract class Accepts
 		@Override
 		public String toString()
 		{
-			return "(" + first.toString() + " || " + second.toString() + ")";
+			return "(" + first + " || " + second + ")";
 		}
 	}
 

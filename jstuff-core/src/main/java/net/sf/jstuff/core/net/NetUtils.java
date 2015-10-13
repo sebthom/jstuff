@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -129,7 +129,7 @@ public abstract class NetUtils
 		 * getLastmodified() method.
 		 * http://www.orionserver.com/docs/tutorials/taglibs/8.html
 		 */
-		if (resourceURL.getProtocol().equals("file")) return new File(resourceURL.getFile()).lastModified();
+		if ("file".equals(resourceURL.getProtocol())) return new File(resourceURL.getFile()).lastModified();
 
 		return con.getLastModified();
 	}

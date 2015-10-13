@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -126,7 +126,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 
 	public Object getIdRealm()
 	{
-		return this.getClass();
+		return getClass();
 	}
 
 	@Override
@@ -156,7 +156,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 	public CharSequence toDebugString()
 	{
 		final StringBuilder sb = new StringBuilder(64);
-		Class< ? > currClazz = this.getClass();
+		Class< ? > currClazz = getClass();
 		String intend = "";
 
 		try
@@ -182,13 +182,13 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 							}
 						}
 						else
-							sb.append(intend + "[" + field.getName() + "] " + fieldValue + " | " + field.getType().getName() + NEW_LINE);
+							sb.append(intend).append("[").append(field.getName()).append("] ").append(fieldValue).append(" | ").append(field.getType().getName()).append(NEW_LINE);
 					}
 				sb.append(NEW_LINE);
 
 				currClazz = currClazz.getSuperclass();
 			}
-			return sb.append(this.getClass()).append(" *** END ***").append(NEW_LINE);
+			return sb.append(getClass()).append(" *** END ***").append(NEW_LINE);
 		}
 		catch (final Exception ex)
 		{

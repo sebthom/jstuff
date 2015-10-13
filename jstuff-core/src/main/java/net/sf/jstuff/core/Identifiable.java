@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -40,7 +40,7 @@ public interface Identifiable<IdType>
 
 		public Object getIdRealm()
 		{
-			return this.getClass();
+			return getClass();
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -139,8 +139,7 @@ public final class ObjectCache<K, V>
 		}
 
 		// update MRU list
-		if (maxObjectsToKeep > 0) if (mru.size() == 0 || value != mru.getFirst())
-		{
+		if (maxObjectsToKeep > 0 && (mru.size() == 0 || value != mru.getFirst())) {
 			mru.remove(value);
 			mru.addFirst(value);
 			if (mru.size() > maxObjectsToKeep) mru.removeLast();

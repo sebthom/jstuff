@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -30,7 +30,7 @@ public abstract class ServletUtils
 		url.append(scheme); // http, https
 		url.append("://");
 		url.append(request.getServerName());
-		if (scheme.equals("http") && port != 80 || scheme.equals("https") && port != 443)
+		if (("http".equals(scheme) && port != 80) || ("https".equals(scheme) && port != 443))
 		{
 			url.append(':');
 			url.append(request.getServerPort());

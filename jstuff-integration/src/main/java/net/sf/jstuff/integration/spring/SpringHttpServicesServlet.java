@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -79,7 +79,7 @@ public class SpringHttpServicesServlet extends HttpServlet
 
 		if (relativePath == null || "/".equals(relativePath))
 		{
-			if (showIndex == true)
+			if (showIndex)
 			{
 				final Map<String, HttpRequestHandler> beans = springContext.getBeansOfType(HttpRequestHandler.class);
 				final PrintWriter pw = response.getWriter();

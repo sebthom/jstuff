@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2014 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -33,9 +33,7 @@ public class CompositeCollectionTest extends TestCase
 		final Collection<String> cc = CompositeCollection.of(l1, l2);
 		assertEquals(4, cc.size());
 
-		final List<String> l3 = new ArrayList<String>();
-		for (final String s : cc)
-			l3.add(s);
+		final List<String> l3 = new ArrayList<String>(cc);
 		assertEquals("a", l3.get(0));
 		assertEquals("b", l3.get(1));
 		assertEquals("c", l3.get(2));
