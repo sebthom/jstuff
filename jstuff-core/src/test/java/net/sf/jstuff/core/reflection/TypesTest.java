@@ -14,13 +14,13 @@ package net.sf.jstuff.core.reflection;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-import net.sf.jstuff.core.collection.ObjectCache;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.helpers.NOPLogger;
 
 import com.thoughtworks.paranamer.Paranamer;
+
+import junit.framework.TestCase;
+import net.sf.jstuff.core.collection.ObjectCache;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -72,7 +72,7 @@ public class TypesTest extends TestCase
 		assertEquals("3.1", Types.getVersion(ObjectUtils.class));
 
 		// from META-INF/maven/.../pom.properties
-		assertEquals("2.7", Types.getVersion(Paranamer.class));
+		assertEquals("2.8", Types.getVersion(Paranamer.class));
 
 		// from jar name
 		assertEquals("4.12", Types.getVersion(TestCase.class));
