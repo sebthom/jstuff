@@ -30,7 +30,6 @@ public interface Composite<Component>
 		private static final long serialVersionUID = 1L;
 
 		protected final ArrayList<Component> components = new ArrayList<Component>();
-		private final boolean canAddRemoveComponents = true;
 
 		public Default()
 		{
@@ -62,7 +61,7 @@ public interface Composite<Component>
 
 		public boolean isCompositeModifiable()
 		{
-			return canAddRemoveComponents;
+			return true;
 		}
 
 		public boolean removeComponent(final Component component)
@@ -74,9 +73,9 @@ public interface Composite<Component>
 
 	void addComponent(final Component component);
 
+	boolean hasComponent(final Component component);
+
 	boolean isCompositeModifiable();
 
 	boolean removeComponent(final Component component);
-
-	boolean hasComponent(final Component component);
 }
