@@ -72,13 +72,6 @@
 		</repository>
 	</repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>Codehaus repository</id>
-			<url>http://repository.codehaus.org/</url>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<distributionManagement>
 		<downloadUrl>https://sourceforge.net/downloads/jstuff/</downloadUrl>
 		<repository>
@@ -216,10 +209,10 @@
 				</executions>
 				<dependencies>
 					<dependency>
-						<!-- http://mojo.codehaus.org/extra-enforcer-rules/ -->
+						<!-- http://www.mojohaus.org/extra-enforcer-rules/ -->
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>extra-enforcer-rules</artifactId>
-						<version>1.0-beta-3</version>
+						<version>1.0-beta-4</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -230,8 +223,8 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<!-- not upgrading to 3.2 -->
-				<!-- http://jira.codehaus.org/browse/MCOMPILER-235 -->
-				<!-- http://jira.codehaus.org/browse/MCOMPILER-236 -->
+				<!-- https://issues.apache.org/jira/browse/MCOMPILER-235 -->
+				<!-- https://issues.apache.org/jira/browse/MCOMPILER-236 -->
 				<!-- version 3.2 is broken:
 					[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.2:compile (default-compile) on project jstuff-core: Fatal
 					error compiling: basedir C:\workspace\jstuff-parent\jstuff-core\target\generated-sources\annotations does not exist -> [Help 1] -->
