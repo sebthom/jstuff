@@ -100,6 +100,13 @@
 		<java.version>1.5</java.version>
 		<java.version.integration-tests>1.6</java.version.integration-tests>
 		<slf4j.version>1.7.13</slf4j.version>
+		
+		<maven.javadoc.skip>true</maven.javadoc.skip>  <!-- we don't really need javadoc -->
+		
+		<!-- see http://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
+		<!-- see http://java-drobnosti.blogspot.de/2012/12/maven-slow-generating-dependencies.html -->
+		<dependency.locations.enabled>false</dependency.locations.enabled>
+		<dependency.details.enabled>false</dependency.details.enabled>
 	</properties>
 
 	<modules>
