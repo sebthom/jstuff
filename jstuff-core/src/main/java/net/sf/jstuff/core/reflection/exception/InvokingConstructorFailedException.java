@@ -19,20 +19,17 @@ import net.sf.jstuff.core.reflection.SerializableConstructor;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class InvokingConstructorFailedException extends ReflectionException
-{
-	private static final long serialVersionUID = 1L;
+public class InvokingConstructorFailedException extends ReflectionException {
+    private static final long serialVersionUID = 1L;
 
-	private final SerializableConstructor ctor;
+    private final SerializableConstructor ctor;
 
-	public InvokingConstructorFailedException(final Constructor< ? > ctor, final Throwable cause)
-	{
-		super("Invoking constructor " + ctor + " failed.", cause);
-		this.ctor = SerializableConstructor.get(ctor);
-	}
+    public InvokingConstructorFailedException(final Constructor<?> ctor, final Throwable cause) {
+        super("Invoking constructor " + ctor + " failed.", cause);
+        this.ctor = SerializableConstructor.get(ctor);
+    }
 
-	public Constructor< ? > getConstructor()
-	{
-		return ctor.getConstructor();
-	}
+    public Constructor<?> getConstructor() {
+        return ctor.getConstructor();
+    }
 }

@@ -17,15 +17,12 @@ import java.util.Set;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObservableSet<E> extends ObservableCollection<E, Set<E>> implements Set<E>
-{
-	public static <E> ObservableSet<E> of(final Set<E> set)
-	{
-		return new ObservableSet<E>(set);
-	}
+public class ObservableSet<E> extends ObservableCollection<E, Set<E>> implements Set<E> {
+    public static <E> ObservableSet<E> of(final Set<E> set) {
+        return new ObservableSet<E>(set);
+    }
 
-	public ObservableSet(final Set<E> set)
-	{
-		super(set);
-	}
+    public ObservableSet(final Set<E> set) {
+        super(set);
+    }
 }

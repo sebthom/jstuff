@@ -20,101 +20,88 @@ import java.util.Set;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeSet<V> extends CompositeCollection<V> implements Set<V>
-{
-	private static final long serialVersionUID = 1L;
+public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
 
-	public static <V> CompositeSet<V> of(final Collection<Set< ? extends V>> components)
-	{
-		return new CompositeSet<V>(components);
-	}
+    private static final long serialVersionUID = 1L;
 
-	public static <V> CompositeSet<V> of(final Set< ? extends V>... components)
-	{
-		return new CompositeSet<V>(components);
-	}
+    public static <V> CompositeSet<V> of(final Collection<Set<? extends V>> components) {
+        return new CompositeSet<V>(components);
+    }
 
-	public CompositeSet()
-	{
-		super();
-	}
+    public static <V> CompositeSet<V> of(final Set<? extends V>... components) {
+        return new CompositeSet<V>(components);
+    }
 
-	public CompositeSet(final Collection<Set< ? extends V>> components)
-	{
-		super(components);
-	}
+    public CompositeSet() {
+        super();
+    }
 
-	public CompositeSet(final Set< ? extends V>... sets)
-	{
-		super(sets);
-	}
+    public CompositeSet(final Collection<Set<? extends V>> components) {
+        super(components);
+    }
 
-	@Override
-	public boolean equals(final Object obi)
-	{
-		if (obi == this) return true;
-		if (!(obi instanceof Set)) return false;
-		final Collection< ? > c = (Collection< ? >) obi;
-		if (c.size() != size()) return false;
-		try
-		{
-			return containsAll(c);
-		}
-		catch (final ClassCastException ignore)
-		{
-			return false;
-		}
-		catch (final NullPointerException ignore)
-		{
-			return false;
-		}
-	}
+    public CompositeSet(final Set<? extends V>... sets) {
+        super(sets);
+    }
 
-	private Set<V> getSnapshot()
-	{
-		final LinkedHashSet<V> values = new LinkedHashSet<V>();
-		for (final Collection< ? extends V> coll : components)
-			values.addAll(coll);
-		return values;
-	}
+    @Override
+    public boolean equals(final Object obi) {
+        if (obi == this)
+            return true;
+        if (!(obi instanceof Set))
+            return false;
+        final Collection<?> c = (Collection<?>) obi;
+        if (c.size() != size())
+            return false;
+        try {
+            return containsAll(c);
+        } catch (final ClassCastException ignore) {
+            return false;
+        } catch (final NullPointerException ignore) {
+            return false;
+        }
+    }
 
-	@Override
-	public int hashCode()
-	{
-		int h = 0;
+    private Set<V> getSnapshot() {
+        final LinkedHashSet<V> values = new LinkedHashSet<V>();
+        for (final Collection<? extends V> coll : components) {
+            values.addAll(coll);
+        }
+        return values;
+    }
 
-		for (final V obj : this)
-			if (obj != null) h += obj.hashCode();
-		return h;
-	}
+    @Override
+    public int hashCode() {
+        int h = 0;
 
-	@Override
-	public Iterator<V> iterator()
-	{
-		// to avoid duplicate elements from the different backing sets we dump the values of all into a new set
-		final Iterator<V> it = getSnapshot().iterator();
-		return new Iterator<V>()
-			{
-				public boolean hasNext()
-				{
-					return it.hasNext();
-				}
+        for (final V obj : this)
+            if (obj != null) {
+                h += obj.hashCode();
+            }
+        return h;
+    }
 
-				public V next()
-				{
-					return it.next();
-				}
+    @Override
+    public Iterator<V> iterator() {
+        // to avoid duplicate elements from the different backing sets we dump the values of all into a new set
+        final Iterator<V> it = getSnapshot().iterator();
+        return new Iterator<V>() {
+            public boolean hasNext() {
+                return it.hasNext();
+            }
 
-				public void remove()
-				{
-					throw new UnsupportedOperationException();
-				}
-			};
-	}
+            public V next() {
+                return it.next();
+            }
 
-	@Override
-	public int size()
-	{
-		return getSnapshot().size();
-	}
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    @Override
+    public int size() {
+        return getSnapshot().size();
+    }
 }

@@ -22,65 +22,55 @@ import java.util.Queue;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EmptyQueue<E> extends AbstractQueue<E> implements Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class EmptyQueue<E> extends AbstractQueue<E> implements Serializable {
 
-	public static final Queue< ? > INSTANCE = new EmptyQueue<Object>();
+    private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unchecked")
-	public static <T> EmptyQueue<T> get()
-	{
-		return (EmptyQueue<T>) INSTANCE;
-	}
+    public static final Queue<?> INSTANCE = new EmptyQueue<Object>();
 
-	private EmptyQueue()
-	{
-		super();
-	}
+    @SuppressWarnings("unchecked")
+    public static <T> EmptyQueue<T> get() {
+        return (EmptyQueue<T>) INSTANCE;
+    }
 
-	@Override
-	public void clear()
-	{
-		// nothing to do
-	}
+    private EmptyQueue() {
+        super();
+    }
 
-	@Override
-	public boolean isEmpty()
-	{
-		return true;
-	}
+    @Override
+    public void clear() {
+        // nothing to do
+    }
 
-	@Override
-	public Iterator<E> iterator()
-	{
-		return Collections.<E> emptySet().iterator();
-	}
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
 
-	public boolean offer(final E o)
-	{
-		return false;
-	}
+    @Override
+    public Iterator<E> iterator() {
+        return Collections.<E> emptySet().iterator();
+    }
 
-	public E peek()
-	{
-		return null;
-	}
+    public boolean offer(final E o) {
+        return false;
+    }
 
-	public E poll()
-	{
-		return null;
-	}
+    public E peek() {
+        return null;
+    }
 
-	@SuppressWarnings({"static-method", "unused"})
-	private Object readResolve() throws ObjectStreamException
-	{
-		return INSTANCE;
-	}
+    public E poll() {
+        return null;
+    }
 
-	@Override
-	public int size()
-	{
-		return 0;
-	}
+    @SuppressWarnings({ "static-method", "unused" })
+    private Object readResolve() throws ObjectStreamException {
+        return INSTANCE;
+    }
+
+    @Override
+    public int size() {
+        return 0;
+    }
 }

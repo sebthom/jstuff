@@ -19,38 +19,33 @@ import java.util.NoSuchElementException;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SingleObjectIterator<T> implements Iterator<T>, Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class SingleObjectIterator<T> implements Iterator<T>, Serializable {
 
-	private T item;
-	private boolean hasNext = true;
+    private static final long serialVersionUID = 1L;
 
-	public SingleObjectIterator(final T item)
-	{
-		this.item = item;
-	}
+    private T item;
+    private boolean hasNext = true;
 
-	public boolean hasNext()
-	{
-		return hasNext;
-	}
+    public SingleObjectIterator(final T item) {
+        this.item = item;
+    }
 
-	public T next()
-	{
-		if (hasNext)
-		{
-			hasNext = false;
-			final T tmp = item;
-			// help the gc
-			item = null;
-			return tmp;
-		}
-		throw new NoSuchElementException();
-	}
+    public boolean hasNext() {
+        return hasNext;
+    }
 
-	public void remove()
-	{
-		throw new UnsupportedOperationException();
-	}
+    public T next() {
+        if (hasNext) {
+            hasNext = false;
+            final T tmp = item;
+            // help the gc
+            item = null;
+            return tmp;
+        }
+        throw new NoSuchElementException();
+    }
+
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

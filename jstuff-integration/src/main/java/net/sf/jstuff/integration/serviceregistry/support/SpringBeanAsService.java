@@ -38,62 +38,56 @@ import org.springframework.beans.factory.InitializingBean;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanAsService<T> implements InitializingBean, DisposableBean
-{
-	private boolean isInitialized = false;
+public class SpringBeanAsService<T> implements InitializingBean, DisposableBean {
+    private boolean isInitialized = false;
 
-	private ServiceRegistry serviceRegistry;
+    private ServiceRegistry serviceRegistry;
 
-	/**
-	 * @optional by default the fully qualified name of the service interface is used
-	 */
-	private String serviceEndpointId;
-	private Class<T> serviceInterface;
-	private T springBean;
+    /**
+     * @optional by default the fully qualified name of the service interface is used
+     */
+    private String serviceEndpointId;
+    private Class<T> serviceInterface;
+    private T springBean;
 
-	public synchronized void afterPropertiesSet() throws Exception
-	{
-		Assert.isFalse(isInitialized, "Already initialized!");
-		Assert.notNull(serviceRegistry, "[serviceRegistry] must not be null!");
-		Assert.notNull(serviceInterface, "[serviceInterface] must not be null!");
-		Assert.notNull(springBean, "[service] must not be null!");
-		if (serviceEndpointId == null)
-		{
-			serviceEndpointId = serviceInterface.getName();
-		}
-		isInitialized = true;
+    public synchronized void afterPropertiesSet() throws Exception {
+        Assert.isFalse(isInitialized, "Already initialized!");
+        Assert.notNull(serviceRegistry, "[serviceRegistry] must not be null!");
+        Assert.notNull(serviceInterface, "[serviceInterface] must not be null!");
+        Assert.notNull(springBean, "[service] must not be null!");
+        if (serviceEndpointId == null) {
+            serviceEndpointId = serviceInterface.getName();
+        }
+        isInitialized = true;
 
-		serviceRegistry.addService(serviceEndpointId, serviceInterface, springBean);
-	}
+        serviceRegistry.addService(serviceEndpointId, serviceInterface, springBean);
+    }
 
-	public synchronized void destroy() throws Exception
-	{
-		if (!isInitialized) return;
-		serviceRegistry.removeService(serviceEndpointId, springBean);
-	}
+    public synchronized void destroy() throws Exception {
+        if (!isInitialized)
+            return;
+        serviceRegistry.removeService(serviceEndpointId, springBean);
+    }
 
-	public synchronized void setService(final T service)
-	{
-		Args.notNull("service", service);
-		Assert.isFalse(isInitialized, "Already initialized!");
+    public synchronized void setService(final T service) {
+        Args.notNull("service", service);
+        Assert.isFalse(isInitialized, "Already initialized!");
 
-		this.springBean = service;
-	}
+        this.springBean = service;
+    }
 
-	public synchronized void setServiceInterface(final Class<T> serviceInterface)
-	{
-		Args.notNull("serviceInterface", serviceInterface);
-		Assert.isFalse(isInitialized, "Already initialized!");
-		Assert.isTrue(serviceInterface.isInterface(), "[serviceInterface] must be an interface but is " + serviceInterface);
+    public synchronized void setServiceInterface(final Class<T> serviceInterface) {
+        Args.notNull("serviceInterface", serviceInterface);
+        Assert.isFalse(isInitialized, "Already initialized!");
+        Assert.isTrue(serviceInterface.isInterface(), "[serviceInterface] must be an interface but is " + serviceInterface);
 
-		this.serviceInterface = serviceInterface;
-	}
+        this.serviceInterface = serviceInterface;
+    }
 
-	public synchronized void setServiceRegistry(final ServiceRegistry serviceRegistry)
-	{
-		Args.notNull("serviceRegistry", serviceRegistry);
-		Assert.isFalse(isInitialized, "Already initialized!");
+    public synchronized void setServiceRegistry(final ServiceRegistry serviceRegistry) {
+        Args.notNull("serviceRegistry", serviceRegistry);
+        Assert.isFalse(isInitialized, "Already initialized!");
 
-		this.serviceRegistry = serviceRegistry;
-	}
+        this.serviceRegistry = serviceRegistry;
+    }
 }

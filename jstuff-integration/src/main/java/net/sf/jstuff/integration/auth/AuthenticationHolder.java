@@ -15,24 +15,21 @@ package net.sf.jstuff.integration.auth;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-final class AuthenticationHolder
-{
-	private static final ThreadLocal<Authentication> threadLocal = new ThreadLocal<Authentication>();
+final class AuthenticationHolder {
+    private static final ThreadLocal<Authentication> threadLocal = new ThreadLocal<Authentication>();
 
-	public static Authentication getAuthentication()
-	{
-		final Authentication auth = threadLocal.get();
-		if (auth == null) return DefaultAuthentication.UNBOUND;
-		return auth;
-	}
+    public static Authentication getAuthentication() {
+        final Authentication auth = threadLocal.get();
+        if (auth == null)
+            return DefaultAuthentication.UNBOUND;
+        return auth;
+    }
 
-	public static void setAuthentication(final Authentication authentication)
-	{
-		threadLocal.set(authentication);
-	}
+    public static void setAuthentication(final Authentication authentication) {
+        threadLocal.set(authentication);
+    }
 
-	private AuthenticationHolder()
-	{
-		super();
-	}
+    private AuthenticationHolder() {
+        super();
+    }
 }

@@ -33,6 +33,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * <u>applicationContext.xml:</u>
+ * 
  * <pre>
  *   &lt;bean name="/UserService" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter" lazy-init="false"&gt;
  *     &lt;property name="service" ref="userService" /&gt;
@@ -43,7 +44,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *     &lt;property name="serviceInterface" value="com.acme.services.GroupService" /&gt;
  *   &lt;/bean>
  * </pre>
+ * 
  * <u>web.xml</u>:
+ * 
  * <pre>
  * &lt;servlet&gt;
  *    &lt;servlet-name&gt;httpServicesServlet&lt;/servlet-name&gt;
@@ -57,90 +60,74 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringHttpServicesServlet extends HttpServlet
-{
-	private static final long serialVersionUID = 1L;
+public class SpringHttpServicesServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
-	private static final Logger LOG = Logger.create();
+    private static final Logger LOG = Logger.create();
 
-	private boolean showIndex = true;
+    private boolean showIndex = true;
 
-	public SpringHttpServicesServlet()
-	{
-		LOG.infoNew(this);
-	}
+    public SpringHttpServicesServlet() {
+        LOG.infoNew(this);
+    }
 
-	@Override
-	protected void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
-	{
-		final String relativePath = request.getPathInfo();
+    @Override
+    protected void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+        final String relativePath = request.getPathInfo();
 
-		final WebApplicationContext springContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+        final WebApplicationContext springContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 
-		if (relativePath == null || "/".equals(relativePath))
-		{
-			if (showIndex)
-			{
-				final Map<String, HttpRequestHandler> beans = springContext.getBeansOfType(HttpRequestHandler.class);
-				final PrintWriter pw = response.getWriter();
-				pw.write("<html><body>");
-				pw.write("<h3>Available services:</h3>");
-				pw.write("<ul>");
-				String contextRoot = request.getRequestURI();
-				if (!contextRoot.endsWith("/"))
-				{
-					contextRoot += "/";
-				}
-				for (final Entry<String, HttpRequestHandler> entry : beans.entrySet())
-				{
-					if (!entry.getKey().startsWith("/"))
-					{
-						continue;
-					}
+        if (relativePath == null || "/".equals(relativePath)) {
+            if (showIndex) {
+                final Map<String, HttpRequestHandler> beans = springContext.getBeansOfType(HttpRequestHandler.class);
+                final PrintWriter pw = response.getWriter();
+                pw.write("<html><body>");
+                pw.write("<h3>Available services:</h3>");
+                pw.write("<ul>");
+                String contextRoot = request.getRequestURI();
+                if (!contextRoot.endsWith("/")) {
+                    contextRoot += "/";
+                }
+                for (final Entry<String, HttpRequestHandler> entry : beans.entrySet()) {
+                    if (!entry.getKey().startsWith("/")) {
+                        continue;
+                    }
 
-					final String serviceID = entry.getKey().substring(1);
-					final String parameter = entry.getValue() instanceof AbstractRestServiceExporter ? "?explainAsHTML" : "";
+                    final String serviceID = entry.getKey().substring(1);
+                    final String parameter = entry.getValue() instanceof AbstractRestServiceExporter ? "?explainAsHTML" : "";
 
-					pw.write("<li>");
-					pw.write("<a href=\"" + contextRoot + serviceID + parameter + "\">" + serviceID + "</a>");
-					pw.write("</li>");
-				}
-				pw.write("</ul></body></html>");
-				pw.flush();
-				pw.close();
-			}
-			else
-			{
-				response.sendError(HttpServletResponse.SC_FORBIDDEN);
-			}
-			return;
-		}
+                    pw.write("<li>");
+                    pw.write("<a href=\"" + contextRoot + serviceID + parameter + "\">" + serviceID + "</a>");
+                    pw.write("</li>");
+                }
+                pw.write("</ul></body></html>");
+                pw.flush();
+                pw.close();
+            } else {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            }
+            return;
+        }
 
-		try
-		{
-			// going backwards to the relativePath to find the best matching bean
-			String beanName = relativePath;
-			while (beanName.contains("/"))
-			{
-				if (springContext.containsBean(beanName))
-				{
-					request.setAttribute("beanName", beanName);
-					springContext.getBean(beanName, HttpRequestHandler.class).handleRequest(request, response);
-					return;
-				}
-				beanName = StringUtils.substringBeforeLast(beanName, "/");
-			}
-		}
-		catch (final BeansException ex)
-		{
-			LOG.error(ex, "Unexpected exception occured while retrieving bean [%s].", relativePath);
-		}
-		response.sendError(HttpServletResponse.SC_NOT_FOUND);
-		return;
-	}
+        try {
+            // going backwards to the relativePath to find the best matching bean
+            String beanName = relativePath;
+            while (beanName.contains("/")) {
+                if (springContext.containsBean(beanName)) {
+                    request.setAttribute("beanName", beanName);
+                    springContext.getBean(beanName, HttpRequestHandler.class).handleRequest(request, response);
+                    return;
+                }
+                beanName = StringUtils.substringBeforeLast(beanName, "/");
+            }
+        } catch (final BeansException ex) {
+            LOG.error(ex, "Unexpected exception occured while retrieving bean [%s].", relativePath);
+        }
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return;
+    }
 
-	public void setShowIndex(final boolean showIndex)
-	{
-		this.showIndex = showIndex;
-	}
+    public void setShowIndex(final boolean showIndex) {
+        this.showIndex = showIndex;
+    }
 }

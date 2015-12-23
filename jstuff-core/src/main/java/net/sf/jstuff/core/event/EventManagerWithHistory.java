@@ -21,68 +21,57 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EventManagerWithHistory<Event> extends EventManager<Event>
-{
-	private LinkedList<Event> eventHistory;
+public class EventManagerWithHistory<Event> extends EventManager<Event> {
+    private LinkedList<Event> eventHistory;
 
-	public EventManagerWithHistory()
-	{
-		initEventHistory();
-	}
+    public EventManagerWithHistory() {
+        initEventHistory();
+    }
 
-	protected void addEventToHistory(final Event event)
-	{
-		eventHistory.add(event);
-	}
+    protected void addEventToHistory(final Event event) {
+        eventHistory.add(event);
+    }
 
-	public void clearHistory()
-	{
-		eventHistory.clear();
-	}
+    public void clearHistory() {
+        eventHistory.clear();
+    }
 
-	@Override
-	public int fire(final Event event)
-	{
-		addEventToHistory(event);
+    @Override
+    public int fire(final Event event) {
+        addEventToHistory(event);
 
-		return super.fire(event);
-	}
+        return super.fire(event);
+    }
 
-	@Override
-	public Future<Integer> fireAsync(final Event event)
-	{
-		addEventToHistory(event);
+    @Override
+    public Future<Integer> fireAsync(final Event event) {
+        addEventToHistory(event);
 
-		return super.fireAsync(event);
-	}
+        return super.fireAsync(event);
+    }
 
-	protected Iterator<Event> getEventHistory()
-	{
-		return eventHistory.iterator();
-	}
+    protected Iterator<Event> getEventHistory() {
+        return eventHistory.iterator();
+    }
 
-	protected void initEventHistory()
-	{
-		eventHistory = new LinkedList<Event>();
-	}
+    protected void initEventHistory() {
+        eventHistory = new LinkedList<Event>();
+    }
 
-	/**
-	 * Sends all recorded events to the given listeners in case it was not added already.
-	 */
-	public boolean subscribeAndReplayHistory(final EventListener<Event> listener)
-	{
-		Args.notNull("listener", listener);
+    /**
+     * Sends all recorded events to the given listeners in case it was not added already.
+     */
+    public boolean subscribeAndReplayHistory(final EventListener<Event> listener) {
+        Args.notNull("listener", listener);
 
-		if (super.subscribe(listener))
-		{
-			for (final Iterator<Event> it = getEventHistory(); it.hasNext();)
-			{
-				final Event event = it.next();
-				listener.onEvent(event);
-			}
-			return true;
-		}
+        if (super.subscribe(listener)) {
+            for (final Iterator<Event> it = getEventHistory(); it.hasNext();) {
+                final Event event = it.next();
+                listener.onEvent(event);
+            }
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

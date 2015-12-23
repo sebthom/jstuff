@@ -17,7 +17,6 @@ import java.util.Set;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface DefaultServiceRegistryMBean
-{
-	Set<String> getServiceEndpointIds();
+public interface DefaultServiceRegistryMBean {
+    Set<String> getServiceEndpointIds();
 }

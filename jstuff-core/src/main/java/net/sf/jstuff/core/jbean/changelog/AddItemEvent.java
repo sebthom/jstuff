@@ -20,23 +20,20 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AddItemEvent extends PropertyChangeEvent
-{
-	private static final long serialVersionUID = 1L;
+public class AddItemEvent extends PropertyChangeEvent {
+    private static final long serialVersionUID = 1L;
 
-	public final Object item;
-	public final int index;
+    public final Object item;
+    public final int index;
 
-	public AddItemEvent(final JBean< ? > bean, final PropertyDescriptor< ? > property, final Object item, final int index)
-	{
-		super(bean, property);
-		this.item = item;
-		this.index = index;
-	}
+    public AddItemEvent(final JBean<?> bean, final PropertyDescriptor<?> property, final Object item, final int index) {
+        super(bean, property);
+        this.item = item;
+        this.index = index;
+    }
 
-	@Override
-	void undo()
-	{
-		((Collection< ? >) bean._get(property)).remove(item);
-	}
+    @Override
+    void undo() {
+        ((Collection<?>) bean._get(property)).remove(item);
+    }
 }

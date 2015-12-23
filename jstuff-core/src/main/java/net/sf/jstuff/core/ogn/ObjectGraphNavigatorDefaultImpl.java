@@ -29,85 +29,75 @@ import net.sf.jstuff.core.validation.Args;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator
-{
-	public static final ObjectGraphNavigatorDefaultImpl INSTANCE = new ObjectGraphNavigatorDefaultImpl(false);
+public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
+    public static final ObjectGraphNavigatorDefaultImpl INSTANCE = new ObjectGraphNavigatorDefaultImpl(false);
 
-	private final boolean strict;
+    private final boolean strict;
 
-	public ObjectGraphNavigatorDefaultImpl(final boolean strict)
-	{
-		this.strict = strict;
-	}
+    public ObjectGraphNavigatorDefaultImpl(final boolean strict) {
+        this.strict = strict;
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T> T getValueAt(final Object root, final String path)
-	{
-		Args.notNull("root", root);
-		Args.notNull("path", path);
+    @SuppressWarnings("unchecked")
+    public <T> T getValueAt(final Object root, final String path) {
+        Args.notNull("root", root);
+        Args.notNull("path", path);
 
-		Object parent = null;
-		Object target = root;
-		for (final String chunk : path.split("\\."))
-		{
-			parent = target;
-			if (parent == null) return null;
+        Object parent = null;
+        Object target = root;
+        for (final String chunk : path.split("\\.")) {
+            parent = target;
+            if (parent == null)
+                return null;
 
-			final Method getter = Methods.findGetterRecursive(parent.getClass(), chunk);
-			if (getter == null)
-			{
-				final Field field = Fields.findRecursive(parent.getClass(), chunk);
-				if (field == null)
-				{
-					if (strict) throw new IllegalArgumentException(
-							"Invalid object navigation path from root object class [" + root.getClass().getName() + "] path: " + path);
-					return null;
-				}
-				target = Fields.read(parent, field);
-			}
-			else
-				target = Methods.invoke(parent, getter);
-		}
-		return (T) target;
-	}
+            final Method getter = Methods.findGetterRecursive(parent.getClass(), chunk);
+            if (getter == null) {
+                final Field field = Fields.findRecursive(parent.getClass(), chunk);
+                if (field == null) {
+                    if (strict)
+                        throw new IllegalArgumentException("Invalid object navigation path from root object class [" + root.getClass().getName() + "] path: "
+                                + path);
+                    return null;
+                }
+                target = Fields.read(parent, field);
+            } else
+                target = Methods.invoke(parent, getter);
+        }
+        return (T) target;
+    }
 
-	public boolean isStrict()
-	{
-		return strict;
-	}
+    public boolean isStrict() {
+        return strict;
+    }
 
-	public ObjectGraphNavigationResult navigateTo(final Object root, final String path)
-	{
-		Args.notNull("root", root);
-		Args.notNull("path", path);
+    public ObjectGraphNavigationResult navigateTo(final Object root, final String path) {
+        Args.notNull("root", root);
+        Args.notNull("path", path);
 
-		Object parent = null;
-		Object target = root;
-		AccessibleObject targetAccessor = null;
-		for (final String chunk : path.split("\\."))
-		{
-			parent = target;
-			if (parent == null) return null;
+        Object parent = null;
+        Object target = root;
+        AccessibleObject targetAccessor = null;
+        for (final String chunk : path.split("\\.")) {
+            parent = target;
+            if (parent == null)
+                return null;
 
-			final Method getter = Methods.findGetterRecursive(parent.getClass(), chunk);
-			if (getter == null)
-			{
-				final Field field = Fields.findRecursive(parent.getClass(), chunk);
-				if (field == null)
-				{
-					if (strict) throw new IllegalArgumentException(
-							"Invalid object navigation path from root object class [" + root.getClass().getName() + "] path: " + path);
-					return null;
-				}
-				target = Fields.read(parent, field);
-				targetAccessor = field;
-			}
-			else
-			{
-				target = Methods.invoke(parent, getter);
-				targetAccessor = getter;
-			}
-		}
-		return new ObjectGraphNavigationResult(root, path, parent, targetAccessor, target);
-	}
+            final Method getter = Methods.findGetterRecursive(parent.getClass(), chunk);
+            if (getter == null) {
+                final Field field = Fields.findRecursive(parent.getClass(), chunk);
+                if (field == null) {
+                    if (strict)
+                        throw new IllegalArgumentException("Invalid object navigation path from root object class [" + root.getClass().getName() + "] path: "
+                                + path);
+                    return null;
+                }
+                target = Fields.read(parent, field);
+                targetAccessor = field;
+            } else {
+                target = Methods.invoke(parent, getter);
+                targetAccessor = getter;
+            }
+        }
+        return new ObjectGraphNavigationResult(root, path, parent, targetAccessor, target);
+    }
 }

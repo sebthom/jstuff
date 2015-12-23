@@ -17,25 +17,21 @@ import java.util.Comparator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ReverseComparator<T> implements Comparator<T>
-{
-	private final Comparator<T> delegate;
+public class ReverseComparator<T> implements Comparator<T> {
+    private final Comparator<T> delegate;
 
-	public static <T> ReverseComparator<T> of(final Comparator<T> delegate)
-	{
-		return new ReverseComparator<T>(delegate);
-	}
+    public static <T> ReverseComparator<T> of(final Comparator<T> delegate) {
+        return new ReverseComparator<T>(delegate);
+    }
 
-	/**
-	 * @param delegate the comparator to reverse
-	 */
-	public ReverseComparator(final Comparator<T> delegate)
-	{
-		this.delegate = delegate;
-	}
+    /**
+     * @param delegate the comparator to reverse
+     */
+    public ReverseComparator(final Comparator<T> delegate) {
+        this.delegate = delegate;
+    }
 
-	public int compare(final T o1, final T o2)
-	{
-		return -delegate.compare(o1, o2);
-	}
+    public int compare(final T o1, final T o2) {
+        return -delegate.compare(o1, o2);
+    }
 }

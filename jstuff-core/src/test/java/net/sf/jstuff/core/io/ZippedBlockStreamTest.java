@@ -20,20 +20,18 @@ import junit.framework.TestCase;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ZippedBlockStreamTest extends TestCase
-{
-	@SuppressWarnings("resource")
-	public void testZippedBlockStream() throws IOException
-	{
-		final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
-		final ZippedBlockOutputStream zos = new ZippedBlockOutputStream(bos, 16, Deflater.BEST_SPEED);
-		zos.write("Hello World! Hello World!".getBytes());
-		zos.flush();
+public class ZippedBlockStreamTest extends TestCase {
+    @SuppressWarnings("resource")
+    public void testZippedBlockStream() throws IOException {
+        final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
+        final ZippedBlockOutputStream zos = new ZippedBlockOutputStream(bos, 16, Deflater.BEST_SPEED);
+        zos.write("Hello World! Hello World!".getBytes());
+        zos.flush();
 
-		final FastByteArrayInputStream bis = new FastByteArrayInputStream(bos.toByteArray());
-		final ZippedBlockInputStream zis = new ZippedBlockInputStream(bis);
-		assertEquals(12, IOUtils.readBytes(zis, 12).length);
+        final FastByteArrayInputStream bis = new FastByteArrayInputStream(bos.toByteArray());
+        final ZippedBlockInputStream zis = new ZippedBlockInputStream(bis);
+        assertEquals(12, IOUtils.readBytes(zis, 12).length);
 
-		assertEquals(" Hello World!", new String(IOUtils.readBytes(zis, 13)));
-	}
+        assertEquals(" Hello World!", new String(IOUtils.readBytes(zis, 13)));
+    }
 }

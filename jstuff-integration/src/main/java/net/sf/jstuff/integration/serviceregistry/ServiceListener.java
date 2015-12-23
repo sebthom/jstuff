@@ -15,9 +15,8 @@ package net.sf.jstuff.integration.serviceregistry;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface ServiceListener<SERVICE_INTERFACE>
-{
-	void onServiceAvailable(ServiceProxy<SERVICE_INTERFACE> service);
+public interface ServiceListener<SERVICE_INTERFACE> {
+    void onServiceAvailable(ServiceProxy<SERVICE_INTERFACE> service);
 
-	void onServiceUnavailable(ServiceProxy<SERVICE_INTERFACE> service);
+    void onServiceUnavailable(ServiceProxy<SERVICE_INTERFACE> service);
 }

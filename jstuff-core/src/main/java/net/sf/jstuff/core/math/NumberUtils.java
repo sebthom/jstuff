@@ -15,10 +15,9 @@ package net.sf.jstuff.core.math;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils
-{
-	public static final int HUNDRED = 100;
-	public static final int THOUSAND = 1000;
-	public static final int MILLION = THOUSAND * THOUSAND;
-	public static final int BILLION = THOUSAND * MILLION;
+public class NumberUtils extends org.apache.commons.lang3.math.NumberUtils {
+    public static final int HUNDRED = 100;
+    public static final int THOUSAND = 1000;
+    public static final int MILLION = THOUSAND * THOUSAND;
+    public static final int BILLION = THOUSAND * MILLION;
 }

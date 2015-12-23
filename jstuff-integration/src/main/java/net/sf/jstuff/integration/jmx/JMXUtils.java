@@ -22,67 +22,53 @@ import net.sf.jstuff.core.logging.Logger;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class JMXUtils
-{
-	private static Logger LOG = Logger.create();
+public abstract class JMXUtils {
+    private static Logger LOG = Logger.create();
 
-	public static MBeanServer getMBeanServer()
-	{
-		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    public static MBeanServer getMBeanServer() {
+        final ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-		// try JBoss way
-		try
-		{
-			// http://wiki.jboss.org/wiki/FindMBeanServer
-			final Class< ? > clazz = cl.loadClass("org.jboss.mx.util.MBeanServerLocator");
-			final Method method = clazz.getMethod("locateJBoss", (Class[]) null);
-			final MBeanServer server = (MBeanServer) method.invoke((Object[]) null, (Object[]) null);
-			if (server != null)
-			{
-				LOG.info("Found MBeanServer via org.jboss.mx.util.MBeanServerLocator.locateJBoss()");
-				return server;
-			}
-		}
-		catch (final Exception ex)
-		{
-			LOG.debug("Locating MBeanServer the JBoss way failed.", ex);
-		}
+        // try JBoss way
+        try {
+            // http://wiki.jboss.org/wiki/FindMBeanServer
+            final Class<?> clazz = cl.loadClass("org.jboss.mx.util.MBeanServerLocator");
+            final Method method = clazz.getMethod("locateJBoss", (Class[]) null);
+            final MBeanServer server = (MBeanServer) method.invoke((Object[]) null, (Object[]) null);
+            if (server != null) {
+                LOG.info("Found MBeanServer via org.jboss.mx.util.MBeanServerLocator.locateJBoss()");
+                return server;
+            }
+        } catch (final Exception ex) {
+            LOG.debug("Locating MBeanServer the JBoss way failed.", ex);
+        }
 
-		// try the JDK 1.5 way
-		try
-		{
-			final Class< ? > clazz = cl.loadClass("java.lang.management.ManagementFactory");
-			final Method method = clazz.getMethod("getPlatformMBeanServer", (Class[]) null);
-			final MBeanServer server = (MBeanServer) method.invoke((Object[]) null, (Object[]) null);
-			if (server != null)
-			{
-				LOG.info("Found MBeanServer via java.lang.management.ManagementFactory.getPlatformMBeanServer()");
-				return server;
-			}
-		}
-		catch (final Exception ex)
-		{
-			LOG.debug("Locating MBeanServer the brute force way failed.", ex);
-		}
+        // try the JDK 1.5 way
+        try {
+            final Class<?> clazz = cl.loadClass("java.lang.management.ManagementFactory");
+            final Method method = clazz.getMethod("getPlatformMBeanServer", (Class[]) null);
+            final MBeanServer server = (MBeanServer) method.invoke((Object[]) null, (Object[]) null);
+            if (server != null) {
+                LOG.info("Found MBeanServer via java.lang.management.ManagementFactory.getPlatformMBeanServer()");
+                return server;
+            }
+        } catch (final Exception ex) {
+            LOG.debug("Locating MBeanServer the brute force way failed.", ex);
+        }
 
-		// try MBeanServerFactory.findMBeanServer(null).get(0) way
-		try
-		{
-			final MBeanServer server = (MBeanServer) MBeanServerFactory.findMBeanServer(null).get(0);
-			if (server != null)
-			{
-				LOG.info("Found MBeanServer via MBeanServerFactory.findMBeanServer(null).get(0)");
-				return server;
-			}
-		}
-		catch (final Exception ex)
-		{
-			LOG.debug("Locating MBeanServer via MBeanServerFactory.findMBeanServer(null).get(0) failed.", ex);
-		}
+        // try MBeanServerFactory.findMBeanServer(null).get(0) way
+        try {
+            final MBeanServer server = (MBeanServer) MBeanServerFactory.findMBeanServer(null).get(0);
+            if (server != null) {
+                LOG.info("Found MBeanServer via MBeanServerFactory.findMBeanServer(null).get(0)");
+                return server;
+            }
+        } catch (final Exception ex) {
+            LOG.debug("Locating MBeanServer via MBeanServerFactory.findMBeanServer(null).get(0) failed.", ex);
+        }
 
-		// create a new MBeanServer
-		final MBeanServer server = MBeanServerFactory.createMBeanServer();
-		LOG.info("Created new MBeanServer");
-		return server;
-	}
+        // create a new MBeanServer
+        final MBeanServer server = MBeanServerFactory.createMBeanServer();
+        LOG.info("Created new MBeanServer");
+        return server;
+    }
 }

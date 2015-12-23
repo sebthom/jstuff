@@ -21,59 +21,54 @@ import javax.xml.stream.XMLStreamReader;
 
 import net.sf.jstuff.xml.StAXUtils;
 
-public class AtomBlogPostEntryResponseReader
-{
-	private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = new ThreadLocal<XMLInputFactory>()
-		{
-			@Override
-			protected XMLInputFactory initialValue()
-			{
-				return XMLInputFactory.newInstance();
-			};
-		};
+public class AtomBlogPostEntryResponseReader {
+    private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = new ThreadLocal<XMLInputFactory>() {
+        @Override
+        protected XMLInputFactory initialValue() {
+            return XMLInputFactory.newInstance();
+        };
+    };
 
-	private static AtomBlogEntry processEntry(final XMLStreamReader xmlr) throws XMLStreamException
-	{
-		if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("entry"))) return null;
+    private static AtomBlogEntry processEntry(final XMLStreamReader xmlr) throws XMLStreamException {
+        if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("entry")))
+            return null;
 
-		final AtomBlogEntry atomBlockEntry = new AtomBlogEntry();
+        final AtomBlogEntry atomBlockEntry = new AtomBlogEntry();
 
-		while (xmlr.hasNext())
-		{
-			xmlr.next();
-			processId(xmlr, atomBlockEntry);
-			processLink(xmlr, atomBlockEntry);
-		}
-		return atomBlockEntry;
-	}
+        while (xmlr.hasNext()) {
+            xmlr.next();
+            processId(xmlr, atomBlockEntry);
+            processLink(xmlr, atomBlockEntry);
+        }
+        return atomBlockEntry;
+    }
 
-	private static void processId(final XMLStreamReader xmlr, final AtomBlogEntry atomBlogEntry) throws XMLStreamException
-	{
-		if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("id"))) return;
+    private static void processId(final XMLStreamReader xmlr, final AtomBlogEntry atomBlogEntry) throws XMLStreamException {
+        if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("id")))
+            return;
 
-		atomBlogEntry.setId(xmlr.getElementText());
-	}
+        atomBlogEntry.setId(xmlr.getElementText());
+    }
 
-	private static void processLink(final XMLStreamReader xmlr, final AtomBlogEntry atomBlogEntry)
-	{
-		if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("link"))) return;
+    private static void processLink(final XMLStreamReader xmlr, final AtomBlogEntry atomBlogEntry) {
+        if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("link")))
+            return;
 
-		final String rel = StAXUtils.getAttributeValue(xmlr, "rel");
-		if (rel.equals("edit"))
-			atomBlogEntry.setEditURL(StAXUtils.getAttributeValue(xmlr, "href"));
-		else if (rel.equals("alternate")) atomBlogEntry.setDisplayURL(StAXUtils.getAttributeValue(xmlr, "href"));
-	}
+        final String rel = StAXUtils.getAttributeValue(xmlr, "rel");
+        if (rel.equals("edit"))
+            atomBlogEntry.setEditURL(StAXUtils.getAttributeValue(xmlr, "href"));
+        else if (rel.equals("alternate"))
+            atomBlogEntry.setDisplayURL(StAXUtils.getAttributeValue(xmlr, "href"));
+    }
 
-	public static AtomBlogEntry processStream(final InputStream is, final String encoding) throws XMLStreamException
-	{
-		final XMLStreamReader xmlr = XML_INPUT_FACTORY.get().createXMLStreamReader(is, encoding);
+    public static AtomBlogEntry processStream(final InputStream is, final String encoding) throws XMLStreamException {
+        final XMLStreamReader xmlr = XML_INPUT_FACTORY.get().createXMLStreamReader(is, encoding);
 
-		// Loop over XML input stream and process events
-		while (xmlr.hasNext())
-		{
-			xmlr.next();
-			return processEntry(xmlr);
-		}
-		return null;
-	}
+        // Loop over XML input stream and process events
+        while (xmlr.hasNext()) {
+            xmlr.next();
+            return processEntry(xmlr);
+        }
+        return null;
+    }
 }

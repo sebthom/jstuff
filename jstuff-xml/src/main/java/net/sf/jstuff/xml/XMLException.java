@@ -17,12 +17,10 @@ package net.sf.jstuff.xml;
  * 
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class XMLException extends RuntimeException
-{
-	private static final long serialVersionUID = 1L;
+public final class XMLException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
-	public XMLException(final Throwable cause)
-	{
-		super(cause);
-	}
+    public XMLException(final Throwable cause) {
+        super(cause);
+    }
 }

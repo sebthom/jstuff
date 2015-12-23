@@ -22,42 +22,34 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class FilenameUtils extends org.apache.commons.io.FilenameUtils
-{
-	public static String concat(final File basePath, final String... paths)
-	{
-		Args.notNull("basePath", basePath);
-		return concat(basePath.getPath(), paths);
-	}
+public abstract class FilenameUtils extends org.apache.commons.io.FilenameUtils {
+    public static String concat(final File basePath, final String... paths) {
+        Args.notNull("basePath", basePath);
+        return concat(basePath.getPath(), paths);
+    }
 
-	public static String concat(final String basePath, final String... paths)
-	{
-		Args.notNull("basePath", basePath);
-		String result = basePath;
-		for (final String path : paths)
-			if (StringUtils.isNotEmpty(path)) result = org.apache.commons.io.FilenameUtils.concat(result, path);
-		return result;
-	}
+    public static String concat(final String basePath, final String... paths) {
+        Args.notNull("basePath", basePath);
+        String result = basePath;
+        for (final String path : paths)
+            if (StringUtils.isNotEmpty(path))
+                result = org.apache.commons.io.FilenameUtils.concat(result, path);
+        return result;
+    }
 
-	public static String getBaseName(final File file)
-	{
-		return getBaseName(file.getName());
-	}
+    public static String getBaseName(final File file) {
+        return getBaseName(file.getName());
+    }
 
-	public static String getCurrentPath()
-	{
-		try
-		{
-			return new File(".").getCanonicalPath();
-		}
-		catch (final IOException ex)
-		{
-			throw new RuntimeException(ex);
-		}
-	}
+    public static String getCurrentPath() {
+        try {
+            return new File(".").getCanonicalPath();
+        } catch (final IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	public static String getExtension(final File file)
-	{
-		return getExtension(file.getName());
-	}
+    public static String getExtension(final File file) {
+        return getExtension(file.getName());
+    }
 }

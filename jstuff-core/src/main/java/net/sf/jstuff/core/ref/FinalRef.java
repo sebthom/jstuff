@@ -17,24 +17,20 @@ import java.io.Serializable;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FinalRef<T> implements Ref<T>, Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class FinalRef<T> implements Ref<T>, Serializable {
+    private static final long serialVersionUID = 1L;
 
-	public static <T> FinalRef<T> of(final T value)
-	{
-		return new FinalRef<T>(value);
-	}
+    public static <T> FinalRef<T> of(final T value) {
+        return new FinalRef<T>(value);
+    }
 
-	final T value;
+    final T value;
 
-	public FinalRef(final T value)
-	{
-		this.value = value;
-	}
+    public FinalRef(final T value) {
+        this.value = value;
+    }
 
-	public T get()
-	{
-		return value;
-	}
+    public T get() {
+        return value;
+    }
 }

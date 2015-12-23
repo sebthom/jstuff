@@ -22,167 +22,143 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Fields extends Members
-{
-	public static boolean exists(final Class< ? > clazz, final String fieldName)
-	{
-		return find(clazz, fieldName) != null;
-	}
+public abstract class Fields extends Members {
+    public static boolean exists(final Class<?> clazz, final String fieldName) {
+        return find(clazz, fieldName) != null;
+    }
 
-	public static boolean exists(final Class< ? > clazz, final String fieldName, final Class< ? > compatibleTo)
-	{
-		return find(clazz, fieldName, compatibleTo) != null;
-	}
+    public static boolean exists(final Class<?> clazz, final String fieldName, final Class<?> compatibleTo) {
+        return find(clazz, fieldName, compatibleTo) != null;
+    }
 
-	/**
-	 * @return the field or null if the field does not exist
-	 */
-	public static Field find(final Class< ? > clazz, final String fieldName)
-	{
-		return find(clazz, fieldName, null);
-	}
+    /**
+     * @return the field or null if the field does not exist
+     */
+    public static Field find(final Class<?> clazz, final String fieldName) {
+        return find(clazz, fieldName, null);
+    }
 
-	/**
-	 * @param compatibleTo the field type must assignable from this type, i.e. objects of type <code>compatibleTo</code> must be assignable to the field
-	 * @return the field or null if the field does not exist
-	 */
-	public static Field find(final Class< ? > clazz, final String fieldName, final Class< ? > compatibleTo)
-	{
-		Args.notNull("clazz", clazz);
-		Args.notNull("fieldName", fieldName);
+    /**
+     * @param compatibleTo the field type must assignable from this type, i.e. objects of type <code>compatibleTo</code> must be assignable to the field
+     * @return the field or null if the field does not exist
+     */
+    public static Field find(final Class<?> clazz, final String fieldName, final Class<?> compatibleTo) {
+        Args.notNull("clazz", clazz);
+        Args.notNull("fieldName", fieldName);
 
-		try
-		{
-			final Field field = clazz.getDeclaredField(fieldName);
-			if (compatibleTo == null) return field;
-			if (Types.isAssignableTo(compatibleTo, field.getType())) return field;
-		}
-		catch (final NoSuchFieldException ex)
-		{
-			// ignore
-		}
-		return null;
-	}
+        try {
+            final Field field = clazz.getDeclaredField(fieldName);
+            if (compatibleTo == null)
+                return field;
+            if (Types.isAssignableTo(compatibleTo, field.getType()))
+                return field;
+        } catch (final NoSuchFieldException ex) {
+            // ignore
+        }
+        return null;
+    }
 
-	/**
-	 * @return the field or null if the field does not exist
-	 */
-	public static Field findRecursive(final Class< ? > clazz, final String fieldName)
-	{
-		return findRecursive(clazz, fieldName, null);
-	}
+    /**
+     * @return the field or null if the field does not exist
+     */
+    public static Field findRecursive(final Class<?> clazz, final String fieldName) {
+        return findRecursive(clazz, fieldName, null);
+    }
 
-	/**
-	 * @param compatibleTo the field type must be a super class or interface of <code>compatibleTo</code>
-	 * @return the field or null if the field does not exist
-	 */
-	public static Field findRecursive(final Class< ? > clazz, final String fieldName, final Class< ? > compatibleTo)
-	{
-		Args.notNull("clazz", clazz);
-		Args.notNull("fieldName", fieldName);
+    /**
+     * @param compatibleTo the field type must be a super class or interface of <code>compatibleTo</code>
+     * @return the field or null if the field does not exist
+     */
+    public static Field findRecursive(final Class<?> clazz, final String fieldName, final Class<?> compatibleTo) {
+        Args.notNull("clazz", clazz);
+        Args.notNull("fieldName", fieldName);
 
-		final Field field = find(clazz, fieldName, compatibleTo);
-		if (field != null) return field;
+        final Field field = find(clazz, fieldName, compatibleTo);
+        if (field != null)
+            return field;
 
-		final Class< ? > superclazz = clazz.getSuperclass();
-		if (superclazz == null) return null;
+        final Class<?> superclazz = clazz.getSuperclass();
+        if (superclazz == null)
+            return null;
 
-		return findRecursive(superclazz, fieldName, compatibleTo);
-	}
+        return findRecursive(superclazz, fieldName, compatibleTo);
+    }
 
-	@SuppressWarnings("unchecked")
-	public static <T> T read(final Object obj, final Field field) throws AccessingFieldValueFailedException
-	{
-		Args.notNull("obj", obj);
-		Args.notNull("field", field);
+    @SuppressWarnings("unchecked")
+    public static <T> T read(final Object obj, final Field field) throws AccessingFieldValueFailedException {
+        Args.notNull("obj", obj);
+        Args.notNull("field", field);
 
-		try
-		{
-			ensureAccessible(field);
-			return (T) field.get(obj);
-		}
-		catch (final Exception ex)
-		{
-			throw new AccessingFieldValueFailedException(field, obj, ex);
-		}
-	}
+        try {
+            ensureAccessible(field);
+            return (T) field.get(obj);
+        } catch (final Exception ex) {
+            throw new AccessingFieldValueFailedException(field, obj, ex);
+        }
+    }
 
-	public static void write(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException
-	{
-		Args.notNull("obj", obj);
-		Args.notNull("field", field);
+    public static void write(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException {
+        Args.notNull("obj", obj);
+        Args.notNull("field", field);
 
-		if (isFinal(field))
-			throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName()
-					+ "#" + field.getName());
+        if (isFinal(field))
+            throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field
+                .getName());
 
-		try
-		{
-			ensureAccessible(field);
-			field.set(obj, value);
-		}
-		catch (final Exception ex)
-		{
-			throw new SettingFieldValueFailedException(field, obj, ex);
-		}
-	}
+        try {
+            ensureAccessible(field);
+            field.set(obj, value);
+        } catch (final Exception ex) {
+            throw new SettingFieldValueFailedException(field, obj, ex);
+        }
+    }
 
-	public static void write(final Object obj, final String fieldName, final Object value) throws ReflectionException
-	{
-		Args.notNull("obj", obj);
-		Args.notNull("fieldName", fieldName);
+    public static void write(final Object obj, final String fieldName, final Object value) throws ReflectionException {
+        Args.notNull("obj", obj);
+        Args.notNull("fieldName", fieldName);
 
-		final Field field = findRecursive(obj.getClass(), fieldName);
-		if (field == null) throw new ReflectionException("Field with name [" + fieldName + "] not found in object [" + obj + "]");
+        final Field field = findRecursive(obj.getClass(), fieldName);
+        if (field == null)
+            throw new ReflectionException("Field with name [" + fieldName + "] not found in object [" + obj + "]");
 
-		if (isFinal(field))
-			throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName()
-					+ "#" + field.getName());
+        if (isFinal(field))
+            throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field
+                .getName());
 
-		try
-		{
-			ensureAccessible(field);
-			field.set(obj, value);
-		}
-		catch (final Exception ex)
-		{
-			throw new SettingFieldValueFailedException(field, obj, ex);
-		}
-	}
+        try {
+            ensureAccessible(field);
+            field.set(obj, value);
+        } catch (final Exception ex) {
+            throw new SettingFieldValueFailedException(field, obj, ex);
+        }
+    }
 
-	public static void writeIgnoringFinal(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException
-	{
-		Args.notNull("obj", obj);
-		Args.notNull("field", field);
+    public static void writeIgnoringFinal(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException {
+        Args.notNull("obj", obj);
+        Args.notNull("field", field);
 
-		try
-		{
-			ensureAccessible(field);
-			field.set(obj, value);
-		}
-		catch (final Exception ex)
-		{
-			throw new SettingFieldValueFailedException(field, obj, ex);
-		}
-	}
+        try {
+            ensureAccessible(field);
+            field.set(obj, value);
+        } catch (final Exception ex) {
+            throw new SettingFieldValueFailedException(field, obj, ex);
+        }
+    }
 
-	public static void writeIgnoringFinal(final Object obj, final String fieldName, final Object value) throws ReflectionException
-	{
-		Args.notNull("obj", obj);
-		Args.notNull("fieldName", fieldName);
+    public static void writeIgnoringFinal(final Object obj, final String fieldName, final Object value) throws ReflectionException {
+        Args.notNull("obj", obj);
+        Args.notNull("fieldName", fieldName);
 
-		final Field field = findRecursive(obj.getClass(), fieldName);
-		if (field == null) throw new ReflectionException("Field with name [" + fieldName + "] not found in object [" + obj + "]");
+        final Field field = findRecursive(obj.getClass(), fieldName);
+        if (field == null)
+            throw new ReflectionException("Field with name [" + fieldName + "] not found in object [" + obj + "]");
 
-		try
-		{
-			ensureAccessible(field);
-			field.set(obj, value);
-		}
-		catch (final Exception ex)
-		{
-			throw new SettingFieldValueFailedException(field, obj, ex);
-		}
-	}
+        try {
+            ensureAccessible(field);
+            field.set(obj, value);
+        } catch (final Exception ex) {
+            throw new SettingFieldValueFailedException(field, obj, ex);
+        }
+    }
 
 }

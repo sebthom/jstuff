@@ -18,8 +18,7 @@ package net.sf.jstuff.core.comparator;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  *
  */
-public enum SortDirection
-{
-	ASC,
-	DESC
+public enum SortDirection {
+    ASC,
+    DESC
 }

@@ -21,21 +21,18 @@ import net.sf.jstuff.core.collection.DelegatingList;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Tuple extends DelegatingList<Object>
-{
-	private static final long serialVersionUID = 1L;
+public abstract class Tuple extends DelegatingList<Object> {
+    private static final long serialVersionUID = 1L;
 
-	protected Tuple(final Object... items)
-	{
-		super(Collections.unmodifiableList(newArrayList(items)));
-	}
+    protected Tuple(final Object... items) {
+        super(Collections.unmodifiableList(newArrayList(items)));
+    }
 
-	/**
-	 * @param index 0 = first element
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> T getTyped(final int index)
-	{
-		return (T) get(index);
-	}
+    /**
+     * @param index 0 = first element
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getTyped(final int index) {
+        return (T) get(index);
+    }
 }

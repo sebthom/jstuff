@@ -27,64 +27,52 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EventManager<Event> implements EventListenable<Event>
-{
-	private static final class LazyInitialized
-	{
-		private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors
-				.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder().daemon(true).priority(Thread.NORM_PRIORITY)
-						.namingPattern("EventManager-thread").build());
-	}
+public class EventManager<Event> implements EventListenable<Event> {
+    private static final class LazyInitialized {
+        private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder()
+            .daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("EventManager-thread").build());
+    }
 
-	private final Set<EventListener<Event>> eventListeners = new CopyOnWriteArraySet<EventListener<Event>>();
+    private final Set<EventListener<Event>> eventListeners = new CopyOnWriteArraySet<EventListener<Event>>();
 
-	private ExecutorService executor;
+    private ExecutorService executor;
 
-	public EventManager()
-	{
-		this(LazyInitialized.DEFAULT_NOTIFICATION_THREAD);
-	}
+    public EventManager() {
+        this(LazyInitialized.DEFAULT_NOTIFICATION_THREAD);
+    }
 
-	public EventManager(final ExecutorService executor)
-	{
-		Args.notNull("executor", executor);
-		this.executor = executor;
-	}
+    public EventManager(final ExecutorService executor) {
+        Args.notNull("executor", executor);
+        this.executor = executor;
+    }
 
-	public int fire(final Event type)
-	{
-		return Events.fire(type, eventListeners);
-	}
+    public int fire(final Event type) {
+        return Events.fire(type, eventListeners);
+    }
 
-	public Future<Integer> fireAsync(final Event type)
-	{
-		@SuppressWarnings("unchecked")
-		final EventListener<Event>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
+    public Future<Integer> fireAsync(final Event type) {
+        @SuppressWarnings("unchecked")
+        final EventListener<Event>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
 
-		return executor.submit(new Callable<Integer>()
-			{
-				public Integer call() throws Exception
-				{
-					return Events.fire(type, copy);
-				}
-			});
-	}
+        return executor.submit(new Callable<Integer>() {
+            public Integer call() throws Exception {
+                return Events.fire(type, copy);
+            }
+        });
+    }
 
-	@SuppressWarnings("unchecked")
-	public <EventType extends Event> boolean subscribe(final EventListener<EventType> listener)
-	{
-		Args.notNull("listener", listener);
-		return eventListeners.add((EventListener<Event>) listener);
-	}
+    @SuppressWarnings("unchecked")
+    public <EventType extends Event> boolean subscribe(final EventListener<EventType> listener) {
+        Args.notNull("listener", listener);
+        return eventListeners.add((EventListener<Event>) listener);
+    }
 
-	public <EventType extends Event> boolean unsubscribe(final EventListener<EventType> listener)
-	{
-		Args.notNull("listener", listener);
-		return eventListeners.remove(listener);
-	}
+    public <EventType extends Event> boolean unsubscribe(final EventListener<EventType> listener) {
+        Args.notNull("listener", listener);
+        return eventListeners.remove(listener);
+    }
 
-	public void unsubscribeAll()
-	{
-		eventListeners.clear();
-	}
+    public void unsubscribeAll() {
+        eventListeners.clear();
+    }
 }

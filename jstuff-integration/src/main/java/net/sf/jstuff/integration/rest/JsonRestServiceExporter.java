@@ -24,27 +24,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class JsonRestServiceExporter extends AbstractRestServiceExporter
-{
-	private static final Logger LOG = Logger.create();
+public class JsonRestServiceExporter extends AbstractRestServiceExporter {
+    private static final Logger LOG = Logger.create();
 
-	private static final ObjectMapper JSON = new ObjectMapper();
+    private static final ObjectMapper JSON = new ObjectMapper();
 
-	public JsonRestServiceExporter()
-	{
-		super("UTF-8", "application/json;charset=UTF-8");
-		LOG.infoNew(this);
-	}
+    public JsonRestServiceExporter() {
+        super("UTF-8", "application/json;charset=UTF-8");
+        LOG.infoNew(this);
+    }
 
-	@Override
-	protected <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException
-	{
-		return JSON.readValue(request.getReader(), targetType);
-	}
+    @Override
+    protected <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException {
+        return JSON.readValue(request.getReader(), targetType);
+    }
 
-	@Override
-	protected String serializeResponse(final Object resultObject) throws JsonProcessingException
-	{
-		return JSON.writeValueAsString(resultObject);
-	}
+    @Override
+    protected String serializeResponse(final Object resultObject) throws JsonProcessingException {
+        return JSON.writeValueAsString(resultObject);
+    }
 }

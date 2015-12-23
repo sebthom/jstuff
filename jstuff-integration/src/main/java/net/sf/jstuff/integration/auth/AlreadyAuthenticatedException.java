@@ -15,27 +15,22 @@ package net.sf.jstuff.integration.auth;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AlreadyAuthenticatedException extends RuntimeException
-{
-	private static final long serialVersionUID = 1L;
+public class AlreadyAuthenticatedException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
-	public AlreadyAuthenticatedException()
-	{
-		super();
-	}
+    public AlreadyAuthenticatedException() {
+        super();
+    }
 
-	public AlreadyAuthenticatedException(final String message)
-	{
-		super(message);
-	}
+    public AlreadyAuthenticatedException(final String message) {
+        super(message);
+    }
 
-	public AlreadyAuthenticatedException(final String message, final Throwable cause)
-	{
-		super(message, cause);
-	}
+    public AlreadyAuthenticatedException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-	public AlreadyAuthenticatedException(final Throwable cause)
-	{
-		super(cause);
-	}
+    public AlreadyAuthenticatedException(final Throwable cause) {
+        super(cause);
+    }
 }

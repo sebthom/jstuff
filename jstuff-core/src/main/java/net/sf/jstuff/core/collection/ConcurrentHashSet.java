@@ -17,17 +17,15 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ConcurrentHashSet<E> extends MapBackedSet<E>
-{
-	private static final long serialVersionUID = 1L;
+public class ConcurrentHashSet<E> extends MapBackedSet<E> {
 
-	public ConcurrentHashSet()
-	{
-		super(new ConcurrentHashMap<E, Boolean>());
-	}
+    private static final long serialVersionUID = 1L;
 
-	public ConcurrentHashSet(final int initialCapacity)
-	{
-		super(new ConcurrentHashMap<E, Boolean>(initialCapacity));
-	}
+    public ConcurrentHashSet() {
+        super(new ConcurrentHashMap<E, Boolean>());
+    }
+
+    public ConcurrentHashSet(final int initialCapacity) {
+        super(new ConcurrentHashMap<E, Boolean>(initialCapacity));
+    }
 }

@@ -22,57 +22,48 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class AbstractEntity extends Identifiable.Default<Integer>
-{
-	private static final long serialVersionUID = 1L;
+public abstract class AbstractEntity extends Identifiable.Default<Integer> {
+    private static final long serialVersionUID = 1L;
 
-	private final Date createdOn;
-	private Date lastModifiedOn;
-	private final String createdBy;
-	private String lastModifiedBy;
+    private final Date createdOn;
+    private Date lastModifiedOn;
+    private final String createdBy;
+    private String lastModifiedBy;
 
-	public String getCreatedBy()
-	{
-		return createdBy;
-	}
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	public AbstractEntity(final String createdBy)
-	{
-		Args.notNull("createdBy", createdBy);
-		this.createdBy = createdBy;
-		lastModifiedBy = createdBy;
-		createdOn = new Date();
-		lastModifiedOn = createdOn;
-	}
+    public AbstractEntity(final String createdBy) {
+        Args.notNull("createdBy", createdBy);
+        this.createdBy = createdBy;
+        lastModifiedBy = createdBy;
+        createdOn = new Date();
+        lastModifiedOn = createdOn;
+    }
 
-	public String getLastModifiedBy()
-	{
-		return lastModifiedBy;
-	}
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
 
-	public void setLastModifiedBy(final String lastModifiedBy)
-	{
-		this.lastModifiedBy = lastModifiedBy;
-	}
+    public void setLastModifiedBy(final String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
 
-	public Date getLastModifiedOn()
-	{
-		return lastModifiedOn;
-	}
+    public Date getLastModifiedOn() {
+        return lastModifiedOn;
+    }
 
-	public void setLastModifiedOn(final Date lastModifiedOn)
-	{
-		this.lastModifiedOn = lastModifiedOn;
-	}
+    public void setLastModifiedOn(final Date lastModifiedOn) {
+        this.lastModifiedOn = lastModifiedOn;
+    }
 
-	public Date getCreatedOn()
-	{
-		return createdOn;
-	}
+    public Date getCreatedOn() {
+        return createdOn;
+    }
 
-	@Override
-	public String toString()
-	{
-		return ToStringBuilder.reflectionToString(this);
-	}
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }

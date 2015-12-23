@@ -286,6 +286,28 @@ public abstract class DOMUtils {
         });
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T extends Node> T findNode(final String xPathExpression, final Node searchScope) throws XMLException {
+        Args.notNull("xPathExpression", xPathExpression);
+
+        try {
+            return (T) XPATH.get().evaluate(xPathExpression, searchScope, XPathConstants.NODE);
+        } catch (final XPathExpressionException ex) {
+            throw new XMLException(ex);
+        }
+    }
+
+    public static <T extends Node> List<T> findNodes(final String xPathExpression, final Node searchScope) throws XMLException {
+        Args.notNull("xPathExpression", xPathExpression);
+        Args.notNull("searchScope", searchScope);
+
+        try {
+            return DOMUtils.nodeListToList((NodeList) XPATH.get().evaluate(xPathExpression, searchScope, XPathConstants.NODESET));
+        } catch (final XPathExpressionException ex) {
+            throw new XMLException(ex);
+        }
+    }
+
     /**
      * @param recursive return text content of child nodes
      */
@@ -299,30 +321,6 @@ public abstract class DOMUtils {
             if (node == null)
                 return null;
             return node.getNodeValue();
-        } catch (final XPathExpressionException ex) {
-            throw new XMLException(ex);
-        }
-    }
-
-    /**
-     * @throws XMLException
-     */
-    public static Node findNode(final String xPathExpression, final Node searchScope) throws XMLException {
-        Args.notNull("xPathExpression", xPathExpression);
-
-        try {
-            return (Node) XPATH.get().evaluate(xPathExpression, searchScope, XPathConstants.NODE);
-        } catch (final XPathExpressionException ex) {
-            throw new XMLException(ex);
-        }
-    }
-
-    public static <T extends Node> List<T> findNodes(final String xPathExpression, final Node searchScope) throws XMLException {
-        Args.notNull("xPathExpression", xPathExpression);
-        Args.notNull("searchScope", searchScope);
-
-        try {
-            return DOMUtils.nodeListToList((NodeList) XPATH.get().evaluate(xPathExpression, searchScope, XPathConstants.NODESET));
         } catch (final XPathExpressionException ex) {
             throw new XMLException(ex);
         }

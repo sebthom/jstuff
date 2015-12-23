@@ -33,64 +33,55 @@ import org.apache.commons.io.IOUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Crypto
-{
-	private static final class LazyInitialized
-	{
-		private static final SecureRandom _RANDOM = new SecureRandom();
-	}
+public abstract class Crypto {
+    private static final class LazyInitialized {
+        private static final SecureRandom _RANDOM = new SecureRandom();
+    }
 
-	public static byte[] createRandomBytes(final int numBytes)
-	{
-		final byte[] arr = new byte[numBytes];
-		LazyInitialized._RANDOM.nextBytes(arr);
-		return arr;
-	}
+    public static byte[] createRandomBytes(final int numBytes) {
+        final byte[] arr = new byte[numBytes];
+        LazyInitialized._RANDOM.nextBytes(arr);
+        return arr;
+    }
 
-	public static CharSequence createRandomDigits(final int len)
-	{
-		final StringBuilder sb = new StringBuilder(len);
-		for (final byte b : createRandomBytes(len))
-			sb.append((char) (48 + Math.abs(b % 10)));
-		return sb;
-	}
+    public static CharSequence createRandomDigits(final int len) {
+        final StringBuilder sb = new StringBuilder(len);
+        for (final byte b : createRandomBytes(len))
+            sb.append((char) (48 + Math.abs(b % 10)));
+        return sb;
+    }
 
-	/**
-	 * Creates a X509 certificate object from a PEM encoded certificate stored in a file
-	 * @param pemFile The PEM encoded certificate file
-	 */
-	public Certificate getCertificateFromPEMFile(final File pemFile) throws CertificateException, FileNotFoundException
-	{
-		final InputStream is = new BufferedInputStream(new FileInputStream(pemFile));
-		try
-		{
-			return CertificateFactory.getInstance("X.509").generateCertificate(is);
-		}
-		finally
-		{
-			IOUtils.closeQuietly(is);
-		}
-	}
+    /**
+     * Creates a X509 certificate object from a PEM encoded certificate stored in a file
+     * 
+     * @param pemFile The PEM encoded certificate file
+     */
+    public Certificate getCertificateFromPEMFile(final File pemFile) throws CertificateException, FileNotFoundException {
+        final InputStream is = new BufferedInputStream(new FileInputStream(pemFile));
+        try {
+            return CertificateFactory.getInstance("X.509").generateCertificate(is);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
 
-	/**
-	 * @param keysize e.g. 1024
-	 * @param algorithm e.g. RSA
-	 */
-	public KeyPair newKeyPair(final int keysize, final String algorithm) throws NoSuchAlgorithmException
-	{
-		final KeyPairGenerator kg = KeyPairGenerator.getInstance(algorithm);
-		kg.initialize(keysize, LazyInitialized._RANDOM);
-		return kg.genKeyPair();
-	}
+    /**
+     * @param keysize e.g. 1024
+     * @param algorithm e.g. RSA
+     */
+    public KeyPair newKeyPair(final int keysize, final String algorithm) throws NoSuchAlgorithmException {
+        final KeyPairGenerator kg = KeyPairGenerator.getInstance(algorithm);
+        kg.initialize(keysize, LazyInitialized._RANDOM);
+        return kg.genKeyPair();
+    }
 
-	/**
-	 * @param keysize e.g. 512
-	 * @param algorithm e.g. AES
-	 */
-	public SecretKey newSecretKey(final int keysize, final String algorithm) throws NoSuchAlgorithmException
-	{
-		final KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-		kg.init(keysize, LazyInitialized._RANDOM);
-		return kg.generateKey();
-	}
+    /**
+     * @param keysize e.g. 512
+     * @param algorithm e.g. AES
+     */
+    public SecretKey newSecretKey(final int keysize, final String algorithm) throws NoSuchAlgorithmException {
+        final KeyGenerator kg = KeyGenerator.getInstance(algorithm);
+        kg.init(keysize, LazyInitialized._RANDOM);
+        return kg.generateKey();
+    }
 }

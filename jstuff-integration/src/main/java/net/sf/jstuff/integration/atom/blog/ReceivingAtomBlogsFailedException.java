@@ -12,28 +12,23 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.atom.blog;
 
-public class ReceivingAtomBlogsFailedException extends AtomBlogException
-{
-	private static final long serialVersionUID = 1L;
+public class ReceivingAtomBlogsFailedException extends AtomBlogException {
+    private static final long serialVersionUID = 1L;
 
-	public ReceivingAtomBlogsFailedException()
-	{
-		super();
-	}
+    public ReceivingAtomBlogsFailedException() {
+        super();
+    }
 
-	public ReceivingAtomBlogsFailedException(final String message)
-	{
-		super(message);
-	}
+    public ReceivingAtomBlogsFailedException(final String message) {
+        super(message);
+    }
 
-	public ReceivingAtomBlogsFailedException(final String message, final Throwable cause)
-	{
-		super(message, cause);
-	}
+    public ReceivingAtomBlogsFailedException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-	public ReceivingAtomBlogsFailedException(final Throwable cause)
-	{
-		super(cause);
-	}
+    public ReceivingAtomBlogsFailedException(final Throwable cause) {
+        super(cause);
+    }
 
 }

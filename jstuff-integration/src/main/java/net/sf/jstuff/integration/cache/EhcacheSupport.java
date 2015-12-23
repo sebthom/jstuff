@@ -20,35 +20,32 @@ import net.sf.ehcache.CacheManager;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EhcacheSupport
-{
-	private CacheManager cacheManager;
-	private Cache cache;
-	private String cacheName;
+public class EhcacheSupport {
+    private CacheManager cacheManager;
+    private Cache cache;
+    private String cacheName;
 
-	public synchronized Cache getCache()
-	{
-		if (cache == null) cache = cacheManager.getCache(cacheName);
-		return cache;
-	}
+    public synchronized Cache getCache() {
+        if (cache == null)
+            cache = cacheManager.getCache(cacheName);
+        return cache;
+    }
 
-	/**
-	 * @param cacheManager the cacheManager to set
-	 */
-	@Inject
-	public synchronized void setCacheManager(final CacheManager cacheManager)
-	{
-		this.cacheManager = cacheManager;
-		this.cache = null;
-	}
+    /**
+     * @param cacheManager the cacheManager to set
+     */
+    @Inject
+    public synchronized void setCacheManager(final CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+        this.cache = null;
+    }
 
-	/**
-	 * @param cacheName the cacheName to set
-	 */
-	@Inject
-	public synchronized void setCacheName(final String cacheName)
-	{
-		this.cacheName = cacheName;
-		this.cache = null;
-	}
+    /**
+     * @param cacheName the cacheName to set
+     */
+    @Inject
+    public synchronized void setCacheName(final String cacheName) {
+        this.cacheName = cacheName;
+        this.cache = null;
+    }
 }

@@ -20,30 +20,26 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class UnmodifiableIterator<T> implements Iterator<T>, Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class UnmodifiableIterator<T> implements Iterator<T>, Serializable {
 
-	private final Iterator<T> delegate;
+    private static final long serialVersionUID = 1L;
 
-	public UnmodifiableIterator(final Iterator<T> delegate)
-	{
-		Args.notNull("delegate", delegate);
-		this.delegate = delegate;
-	}
+    private final Iterator<T> delegate;
 
-	public boolean hasNext()
-	{
-		return delegate.hasNext();
-	}
+    public UnmodifiableIterator(final Iterator<T> delegate) {
+        Args.notNull("delegate", delegate);
+        this.delegate = delegate;
+    }
 
-	public T next()
-	{
-		return delegate.next();
-	}
+    public boolean hasNext() {
+        return delegate.hasNext();
+    }
 
-	public void remove()
-	{
-		throw new UnsupportedOperationException();
-	}
+    public T next() {
+        return delegate.next();
+    }
+
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

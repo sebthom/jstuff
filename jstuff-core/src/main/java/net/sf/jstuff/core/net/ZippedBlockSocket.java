@@ -24,44 +24,38 @@ import net.sf.jstuff.core.io.ZippedBlockOutputStream;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ZippedBlockSocket extends Socket
-{
-	private ZippedBlockInputStream in;
-	private ZippedBlockOutputStream out;
+public class ZippedBlockSocket extends Socket {
+    private ZippedBlockInputStream in;
+    private ZippedBlockOutputStream out;
 
-	public ZippedBlockSocket()
-	{
-		super();
-	}
+    public ZippedBlockSocket() {
+        super();
+    }
 
-	public ZippedBlockSocket(final String host, final int port) throws IOException
-	{
-		super(host, port);
-	}
+    public ZippedBlockSocket(final String host, final int port) throws IOException {
+        super(host, port);
+    }
 
-	@Override
-	public synchronized void close() throws IOException
-	{
-		getOutputStream().flush();
-		super.close();
-	}
+    @Override
+    public synchronized void close() throws IOException {
+        getOutputStream().flush();
+        super.close();
+    }
 
-	@Override
-	public InputStream getInputStream() throws IOException
-	{
-		if (in == null) in = new ZippedBlockInputStream(super.getInputStream());
-		return in;
-	}
+    @Override
+    public InputStream getInputStream() throws IOException {
+        if (in == null)
+            in = new ZippedBlockInputStream(super.getInputStream());
+        return in;
+    }
 
-	@Override
-	public OutputStream getOutputStream() throws IOException
-	{
-		if (out == null)
-		{
-			out = new ZippedBlockOutputStream(super.getOutputStream(), 1024);
-			out.getCompressor().setStrategy(Deflater.DEFAULT_STRATEGY);
-			out.getCompressor().setLevel(Deflater.BEST_COMPRESSION);
-		}
-		return out;
-	}
+    @Override
+    public OutputStream getOutputStream() throws IOException {
+        if (out == null) {
+            out = new ZippedBlockOutputStream(super.getOutputStream(), 1024);
+            out.getCompressor().setStrategy(Deflater.DEFAULT_STRATEGY);
+            out.getCompressor().setLevel(Deflater.BEST_COMPRESSION);
+        }
+        return out;
+    }
 }

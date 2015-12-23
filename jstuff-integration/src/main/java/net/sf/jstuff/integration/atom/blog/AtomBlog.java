@@ -19,42 +19,35 @@ import java.io.Serializable;
  * 
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AtomBlog implements Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class AtomBlog implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-	private String title;
-	private String entriesUrl;
+    private String title;
+    private String entriesUrl;
 
-	public AtomBlog()
-	{
-		super();
-	}
+    public AtomBlog() {
+        super();
+    }
 
-	public AtomBlog(final String title, final String entriesUrl)
-	{
-		super();
-		this.title = title;
-		this.entriesUrl = entriesUrl;
-	}
+    public AtomBlog(final String title, final String entriesUrl) {
+        super();
+        this.title = title;
+        this.entriesUrl = entriesUrl;
+    }
 
-	public String getEntriesUrl()
-	{
-		return entriesUrl;
-	}
+    public String getEntriesUrl() {
+        return entriesUrl;
+    }
 
-	public String getTitle()
-	{
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setEntriesUrl(final String entriesUrl)
-	{
-		this.entriesUrl = entriesUrl;
-	}
+    public void setEntriesUrl(final String entriesUrl) {
+        this.entriesUrl = entriesUrl;
+    }
 
-	public void setTitle(final String title)
-	{
-		this.title = title;
-	}
+    public void setTitle(final String title) {
+        this.title = title;
+    }
 }

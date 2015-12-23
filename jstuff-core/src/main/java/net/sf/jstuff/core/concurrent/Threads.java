@@ -24,148 +24,122 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Threads
-{
-	public static Thread[] all()
-	{
-		final ThreadGroup root = rootThreadGroup();
-		int tmpSize = count() + 1;
-		Thread[] tmp;
-		int returned = 0;
-		do
-		{
-			tmp = new Thread[tmpSize];
-			returned = root.enumerate(tmp, true);
-			tmpSize *= 2;
-		}
-		while (returned == tmpSize);
-		final Thread[] result = new Thread[returned];
-		System.arraycopy(tmp, 0, result, 0, returned);
-		return result;
-	}
+public abstract class Threads {
+    public static Thread[] all() {
+        final ThreadGroup root = rootThreadGroup();
+        int tmpSize = count() + 1;
+        Thread[] tmp;
+        int returned = 0;
+        do {
+            tmp = new Thread[tmpSize];
+            returned = root.enumerate(tmp, true);
+            tmpSize *= 2;
+        }
+        while (returned == tmpSize);
+        final Thread[] result = new Thread[returned];
+        System.arraycopy(tmp, 0, result, 0, returned);
+        return result;
+    }
 
-	public static Thread[] allPrioritized()
-	{
-		final Thread[] allThreads = all();
-		Arrays.sort(allThreads, THREAD_PRIORITY_COMPARATOR);
-		return allThreads;
-	}
+    public static Thread[] allPrioritized() {
+        final Thread[] allThreads = all();
+        Arrays.sort(allThreads, THREAD_PRIORITY_COMPARATOR);
+        return allThreads;
+    }
 
-	public static int count()
-	{
-		return TMX.getThreadCount();
-	}
+    public static int count() {
+        return TMX.getThreadCount();
+    }
 
-	/**
-	 * @return IDs of monitor deadlocked Threads
-	 */
-	public static long[] deadlockedIDs()
-	{
-		final long[] result = TMX.findMonitorDeadlockedThreads();
-		if (result == null) return ArrayUtils.EMPTY_LONG_ARRAY;
-		return result;
-	}
+    /**
+     * @return IDs of monitor deadlocked Threads
+     */
+    public static long[] deadlockedIDs() {
+        final long[] result = TMX.findMonitorDeadlockedThreads();
+        if (result == null)
+            return ArrayUtils.EMPTY_LONG_ARRAY;
+        return result;
+    }
 
-	public static void handleInterruptedException(final InterruptedException ex)
-	{
-		LOG.error(ex, "InterruptedException caught");
-		Thread.currentThread().interrupt();
-	}
+    public static void handleInterruptedException(final InterruptedException ex) {
+        LOG.error(ex, "InterruptedException caught");
+        Thread.currentThread().interrupt();
+    }
 
-	/**
-	 * Handles InterruptedException correctly.
-	 */
-	public static void join(final Thread thread) throws RuntimeInterruptedException
-	{
-		Args.notNull("thread", thread);
+    /**
+     * Handles InterruptedException correctly.
+     */
+    public static void join(final Thread thread) throws RuntimeInterruptedException {
+        Args.notNull("thread", thread);
 
-		try
-		{
-			LOG.trace("Waiting for thread %s...", thread);
-			thread.join();
-		}
-		catch (final InterruptedException ex)
-		{
-			handleInterruptedException(ex);
-		}
-	}
+        try {
+            LOG.trace("Waiting for thread %s...", thread);
+            thread.join();
+        } catch (final InterruptedException ex) {
+            handleInterruptedException(ex);
+        }
+    }
 
-	public static ThreadGroup rootThreadGroup()
-	{
-		if (rootTG != null) return rootTG;
-		ThreadGroup child = Thread.currentThread().getThreadGroup();
-		ThreadGroup parent;
-		while ((parent = child.getParent()) != null)
-		{
-			child = parent;
-		}
-		rootTG = child;
-		return rootTG;
-	}
+    public static ThreadGroup rootThreadGroup() {
+        if (rootTG != null)
+            return rootTG;
+        ThreadGroup child = Thread.currentThread().getThreadGroup();
+        ThreadGroup parent;
+        while ((parent = child.getParent()) != null) {
+            child = parent;
+        }
+        rootTG = child;
+        return rootTG;
+    }
 
-	/**
-	 * Handles InterruptedException correctly.
-	 */
-	public static void sleep(final long millis) throws RuntimeInterruptedException
-	{
-		try
-		{
-			LOG.trace("Sending current thread to sleep for %s ms...", millis);
-			Thread.sleep(millis);
-		}
-		catch (final InterruptedException ex)
-		{
-			handleInterruptedException(ex);
-		}
-	}
+    /**
+     * Handles InterruptedException correctly.
+     */
+    public static void sleep(final long millis) throws RuntimeInterruptedException {
+        try {
+            LOG.trace("Sending current thread to sleep for %s ms...", millis);
+            Thread.sleep(millis);
+        } catch (final InterruptedException ex) {
+            handleInterruptedException(ex);
+        }
+    }
 
-	/**
-	 * Handles InterruptedException correctly.
-	 */
-	public static void sleep(final long millis, final int nanos) throws RuntimeInterruptedException
-	{
-		try
-		{
-			LOG.trace("Sending current thread to sleep for %s ms %s nanos...", millis, nanos);
-			Thread.sleep(millis, nanos);
-		}
-		catch (final InterruptedException ex)
-		{
-			handleInterruptedException(ex);
-		}
-	}
+    /**
+     * Handles InterruptedException correctly.
+     */
+    public static void sleep(final long millis, final int nanos) throws RuntimeInterruptedException {
+        try {
+            LOG.trace("Sending current thread to sleep for %s ms %s nanos...", millis, nanos);
+            Thread.sleep(millis, nanos);
+        } catch (final InterruptedException ex) {
+            handleInterruptedException(ex);
+        }
+    }
 
-	/**
-	 * Handles InterruptedException correctly.
-	 */
-	public static void wait(final Object obj, final long millis) throws RuntimeInterruptedException
-	{
-		try
-		{
-			LOG.trace("Waiting for %s ms...", millis);
-			synchronized (obj)
-			{
-				obj.wait(millis);
-			}
-		}
-		catch (final InterruptedException ex)
-		{
-			handleInterruptedException(ex);
-		}
-	}
+    /**
+     * Handles InterruptedException correctly.
+     */
+    public static void wait(final Object obj, final long millis) throws RuntimeInterruptedException {
+        try {
+            LOG.trace("Waiting for %s ms...", millis);
+            synchronized (obj) {
+                obj.wait(millis);
+            }
+        } catch (final InterruptedException ex) {
+            handleInterruptedException(ex);
+        }
+    }
 
-	private static final Logger LOG = Logger.create();
+    private static final Logger LOG = Logger.create();
 
-	private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = new java.util.Comparator<Thread>()
-		{
-			public int compare(final Thread t1, final Thread t2)
-			{
-				return t2.getPriority() - t1.getPriority();
-			}
-		};
+    private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = new java.util.Comparator<Thread>() {
+        public int compare(final Thread t1, final Thread t2) {
+            return t2.getPriority() - t1.getPriority();
+        }
+    };
 
-	private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
+    private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
 
-	private static ThreadGroup rootTG;
+    private static ThreadGroup rootTG;
 
 }

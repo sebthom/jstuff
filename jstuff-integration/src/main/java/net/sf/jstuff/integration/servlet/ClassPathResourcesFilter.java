@@ -32,7 +32,9 @@ import net.sf.jstuff.core.net.NetUtils;
 
 /**
  * <b>Example:</b>
-<pre>{@code
+ * 
+ * <pre>
+ * {@code
 <filter>
     <filter-name>ClassPathResourcesFilter</filter-name>
     <filter-class>net.sf.jstuff.integration.servlet.ClassPathResourcesFilter</filter-class>
@@ -45,131 +47,115 @@ import net.sf.jstuff.core.net.NetUtils;
 	<filter-name>ClassPathResourcesFilter</filter-name>
 	<url-pattern>*.jpg</url-pattern>
 </filter-mapping>
-}</pre>
+}
+ * </pre>
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ClassPathResourcesFilter implements Filter
-{
-	private static final Logger LOG = Logger.create();
+public class ClassPathResourcesFilter implements Filter {
+    private static final Logger LOG = Logger.create();
 
-	public static final int DEFAULT_CACHE_TIME_IN_SEC = 60 * 60 * 24; // one day
+    public static final int DEFAULT_CACHE_TIME_IN_SEC = 60 * 60 * 24; // one day
 
-	public static URL findResourceInClassPath(final String path)
-	{
-		final ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		URL resource = cl.getResource(path);
-		if (resource == null && path.startsWith("/")) resource = cl.getResource(path.substring(1));
-		return resource;
-	}
+    public static URL findResourceInClassPath(final String path) {
+        final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        URL resource = cl.getResource(path);
+        if (resource == null && path.startsWith("/"))
+            resource = cl.getResource(path.substring(1));
+        return resource;
+    }
 
-	protected ServletContext ctx;
+    protected ServletContext ctx;
 
-	protected int maxAgeInSeconds;
+    protected int maxAgeInSeconds;
 
-	public ClassPathResourcesFilter()
-	{
-		LOG.infoNew(this);
-	}
+    public ClassPathResourcesFilter() {
+        LOG.infoNew(this);
+    }
 
-	public void destroy()
-	{}
+    public void destroy() {
+    }
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-			ServletException
-	{
-		if (!(request instanceof HttpServletRequest && response instanceof HttpServletResponse))
-		{
-			chain.doFilter(request, response);
-			return;
-		}
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+        if (!(request instanceof HttpServletRequest && response instanceof HttpServletResponse)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-		final HttpServletRequest req = (HttpServletRequest) request;
-		final HttpServletResponse resp = (HttpServletResponse) response;
+        final HttpServletRequest req = (HttpServletRequest) request;
+        final HttpServletResponse resp = (HttpServletResponse) response;
 
-		String resourcePath = req.getServletPath();
-		if (resourcePath == null) resourcePath = req.getPathInfo();
+        String resourcePath = req.getServletPath();
+        if (resourcePath == null)
+            resourcePath = req.getPathInfo();
 
-		URL resource = ctx.getResource(resourcePath);
-		// if resource was found on file system simply continue
-		if (resource != null)
-		{
-			chain.doFilter(request, response);
-			return;
-		}
+        URL resource = ctx.getResource(resourcePath);
+        // if resource was found on file system simply continue
+        if (resource != null) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-		// try to lookup the resource in the classpath
-		resource = findResourceInClassPath(resourcePath);
+        // try to lookup the resource in the classpath
+        resource = findResourceInClassPath(resourcePath);
 
-		// resource not found in classpath
-		if (resource == null)
-		{
-			chain.doFilter(request, response);
-			return;
-		}
+        // resource not found in classpath
+        if (resource == null) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-		// check for if-modified-since, prior to any other headers
-		long ifModifiedSince = 0;
-		try
-		{
-			ifModifiedSince = req.getDateHeader("If-Modified-Since");
-		}
-		catch (final IllegalArgumentException ex)
-		{
-			// ignore if date is unconvertible
-		}
+        // check for if-modified-since, prior to any other headers
+        long ifModifiedSince = 0;
+        try {
+            ifModifiedSince = req.getDateHeader("If-Modified-Since");
+        } catch (final IllegalArgumentException ex) {
+            // ignore if date is unconvertible
+        }
 
-		final long lastModified = NetUtils.getLastModified(resource);
-		final long now = System.currentTimeMillis();
-		final long expires = now + maxAgeInSeconds * 1000;
+        final long lastModified = NetUtils.getLastModified(resource);
+        final long now = System.currentTimeMillis();
+        final long expires = now + maxAgeInSeconds * 1000;
 
-		if (ifModifiedSince > 0 && ifModifiedSince <= lastModified)
-		{
-			resp.setDateHeader("Expires", expires);
-			resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-		}
-		else
-		{
-			resp.setDateHeader("Date", now);
-			resp.setDateHeader("Last-Modified", lastModified);
+        if (ifModifiedSince > 0 && ifModifiedSince <= lastModified) {
+            resp.setDateHeader("Expires", expires);
+            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        } else {
+            resp.setDateHeader("Date", now);
+            resp.setDateHeader("Last-Modified", lastModified);
 
-			// cache control
-			resp.setDateHeader("Expires", expires);
-			resp.setHeader("Cache-Control", "public"); // public = caching in proxies is allowed, private = only caching in clients
-			resp.addHeader("Cache-Control", "max-age=" + maxAgeInSeconds);
-			resp.addHeader("Cache-Control", "must-revalidate");
+            // cache control
+            resp.setDateHeader("Expires", expires);
+            resp.setHeader("Cache-Control", "public"); // public = caching in proxies is allowed, private = only caching in clients
+            resp.addHeader("Cache-Control", "max-age=" + maxAgeInSeconds);
+            resp.addHeader("Cache-Control", "must-revalidate");
 
-			final InputStream in = resource.openStream();
-			try
-			{
-				resp.setHeader("Content-Length", String.valueOf(in.available()));
+            final InputStream in = resource.openStream();
+            try {
+                resp.setHeader("Content-Length", String.valueOf(in.available()));
 
-				IOUtils.copy(in, response.getOutputStream());
-			}
-			finally
-			{
-				IOUtils.closeQuietly(in);
-			}
-		}
-	}
+                IOUtils.copy(in, response.getOutputStream());
+            } finally {
+                IOUtils.closeQuietly(in);
+            }
+        }
+    }
 
-	public int getMaxAgeInSeconds()
-	{
-		return maxAgeInSeconds;
-	}
+    public int getMaxAgeInSeconds() {
+        return maxAgeInSeconds;
+    }
 
-	public void init(final FilterConfig cfg) throws ServletException
-	{
-		ctx = cfg.getServletContext();
+    public void init(final FilterConfig cfg) throws ServletException {
+        ctx = cfg.getServletContext();
 
-		maxAgeInSeconds = DEFAULT_CACHE_TIME_IN_SEC;
+        maxAgeInSeconds = DEFAULT_CACHE_TIME_IN_SEC;
 
-		final String maxAge = cfg.getInitParameter("max-age-in-seconds");
-		if (maxAge != null) maxAgeInSeconds = Integer.parseInt(maxAge);
-	}
+        final String maxAge = cfg.getInitParameter("max-age-in-seconds");
+        if (maxAge != null)
+            maxAgeInSeconds = Integer.parseInt(maxAge);
+    }
 
-	public void setMaxAgeInSeconds(final int maxAgeInSeconds)
-	{
-		this.maxAgeInSeconds = maxAgeInSeconds;
-	}
+    public void setMaxAgeInSeconds(final int maxAgeInSeconds) {
+        this.maxAgeInSeconds = maxAgeInSeconds;
+    }
 }

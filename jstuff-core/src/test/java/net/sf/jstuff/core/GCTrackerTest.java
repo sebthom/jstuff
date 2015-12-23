@@ -18,56 +18,46 @@ import net.sf.jstuff.core.event.EventListener;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class GCTrackerTest extends TestCase
-{
-	private volatile int garbageCollected;
+public class GCTrackerTest extends TestCase {
+    private volatile int garbageCollected;
 
-	public void testGCTracker() throws InterruptedException
-	{
-		final EventListener<Void> countGC = new EventListener<Void>()
-			{
-				public void onEvent(final Void event)
-				{
-					garbageCollected++;
-				}
-			};
+    public void testGCTracker() throws InterruptedException {
+        final EventListener<Void> countGC = new EventListener<Void>() {
+            public void onEvent(final Void event) {
+                garbageCollected++;
+            }
+        };
 
-		final GCTracker<Void> tracker = new GCTracker<Void>(100);
-		tracker.subscribe(countGC);
+        final GCTracker<Void> tracker = new GCTracker<Void>(100);
+        tracker.subscribe(countGC);
 
-		final int objects = 10000;
-		final Thread t1 = new Thread()
-			{
-				@Override
-				public void run()
-				{
-					for (int i = 0; i < objects; i++)
-					{
-						System.out.println("[T1] new " + i);
-						tracker.track(new Object(), null);
-					}
-				};
-			};
-		final Thread t2 = new Thread()
-			{
-				@Override
-				public void run()
-				{
-					for (int i = 0; i < objects; i++)
-					{
-						System.err.println("[T2] new " + i);
-						tracker.track(new Object(), null);
-					}
-				};
-			};
-		t1.start();
-		t2.start();
-		t1.join();
-		t2.join();
-		System.gc();
-		Thread.sleep(1000);
-		System.gc();
-		Thread.sleep(1000);
-		assertEquals(2 * objects, garbageCollected);
-	}
+        final int objects = 10000;
+        final Thread t1 = new Thread() {
+            @Override
+            public void run() {
+                for (int i = 0; i < objects; i++) {
+                    System.out.println("[T1] new " + i);
+                    tracker.track(new Object(), null);
+                }
+            };
+        };
+        final Thread t2 = new Thread() {
+            @Override
+            public void run() {
+                for (int i = 0; i < objects; i++) {
+                    System.err.println("[T2] new " + i);
+                    tracker.track(new Object(), null);
+                }
+            };
+        };
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        System.gc();
+        Thread.sleep(1000);
+        System.gc();
+        Thread.sleep(1000);
+        assertEquals(2 * objects, garbageCollected);
+    }
 }

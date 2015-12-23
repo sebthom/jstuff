@@ -20,40 +20,30 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanInjectorTest extends TestCase
-{
-	public static class Entity
-	{
-		@Autowired
-		public Object springBean;
-	}
+public class SpringBeanInjectorTest extends TestCase {
+    public static class Entity {
+        @Autowired
+        public Object springBean;
+    }
 
-	public void testSpringBeanInjector()
-	{
-		try
-		{
-			SpringBeanInjector.get(); // must fail, since the spring context is not yet opened
-			fail();
-		}
-		catch (final IllegalStateException ex)
-		{}
+    public void testSpringBeanInjector() {
+        try {
+            SpringBeanInjector.get(); // must fail, since the spring context is not yet opened
+            fail();
+        } catch (final IllegalStateException ex) {}
 
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanInjectorTest.xml",
-				SpringBeanInjectorTest.class);
+        final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanInjectorTest.xml", SpringBeanInjectorTest.class);
 
-		final SpringBeanInjector injector = SpringBeanInjector.get();
-		final Entity e = new Entity();
-		injector.inject(e);
-		assertNotNull(e.springBean);
+        final SpringBeanInjector injector = SpringBeanInjector.get();
+        final Entity e = new Entity();
+        injector.inject(e);
+        assertNotNull(e.springBean);
 
-		ctx.close();
+        ctx.close();
 
-		try
-		{
-			SpringBeanInjector.get(); // must fail, since the spring context is closed
-			fail();
-		}
-		catch (final IllegalStateException ex)
-		{}
-	}
+        try {
+            SpringBeanInjector.get(); // must fail, since the spring context is closed
+            fail();
+        } catch (final IllegalStateException ex) {}
+    }
 }

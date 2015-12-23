@@ -15,9 +15,8 @@ package net.sf.jstuff.core.functional;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface ChainableAccept<T> extends Accept<T>
-{
-	<V extends T> ChainableAccept<V> and(Accept< ? super V> next);
+public interface ChainableAccept<T> extends Accept<T> {
+    <V extends T> ChainableAccept<V> and(Accept<? super V> next);
 
-	<V extends T> ChainableAccept<V> or(Accept< ? super V> next);
+    <V extends T> ChainableAccept<V> or(Accept<? super V> next);
 }

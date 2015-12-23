@@ -15,10 +15,9 @@ package net.sf.jstuff.integration.auth;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Authenticator
-{
-	/**
-	 * @return true if authenticated, false if not
-	 */
-	boolean authenticate(String logonName, String password);
+public interface Authenticator {
+    /**
+     * @return true if authenticated, false if not
+     */
+    boolean authenticate(String logonName, String password);
 }

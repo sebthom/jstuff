@@ -18,35 +18,30 @@ import java.util.Iterator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ArrayIterator<T> implements Iterator<T>, Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class ArrayIterator<T> implements Iterator<T>, Serializable {
 
-	public static <T> ArrayIterator<T> of(final T... array)
-	{
-		return new ArrayIterator<T>(array);
-	}
+    private static final long serialVersionUID = 1L;
 
-	private final T[] array;
-	private int currentIndex = 0;
+    public static <T> ArrayIterator<T> of(final T... array) {
+        return new ArrayIterator<T>(array);
+    }
 
-	public ArrayIterator(final T... array)
-	{
-		this.array = array;
-	}
+    private final T[] array;
+    private int currentIndex = 0;
 
-	public boolean hasNext()
-	{
-		return currentIndex < array.length;
-	}
+    public ArrayIterator(final T... array) {
+        this.array = array;
+    }
 
-	public T next()
-	{
-		return array[currentIndex++];
-	}
+    public boolean hasNext() {
+        return currentIndex < array.length;
+    }
 
-	public void remove()
-	{
-		throw new UnsupportedOperationException();
-	}
+    public T next() {
+        return array[currentIndex++];
+    }
+
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

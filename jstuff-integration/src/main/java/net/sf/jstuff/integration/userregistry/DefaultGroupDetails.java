@@ -17,58 +17,48 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DefaultGroupDetails implements GroupDetails
-{
-	private static final long serialVersionUID = 1L;
+public class DefaultGroupDetails implements GroupDetails {
+    private static final long serialVersionUID = 1L;
 
-	private String displayName;
-	private String distingueshedName;
-	private String groupId;
-	private String[] memberDNs;
+    private String displayName;
+    private String distingueshedName;
+    private String groupId;
+    private String[] memberDNs;
 
-	public String getDisplayName()
-	{
-		return displayName;
-	}
+    public String getDisplayName() {
+        return displayName;
+    }
 
-	public String getDistingueshedName()
-	{
-		return distingueshedName;
-	}
+    public String getDistingueshedName() {
+        return distingueshedName;
+    }
 
-	public String getGroupId()
-	{
-		return groupId;
-	}
+    public String getGroupId() {
+        return groupId;
+    }
 
-	public String[] getMemberDNs()
-	{
-		return memberDNs.clone();
-	}
+    public String[] getMemberDNs() {
+        return memberDNs.clone();
+    }
 
-	public void setDisplayName(final String displayName)
-	{
-		this.displayName = displayName;
-	}
+    public void setDisplayName(final String displayName) {
+        this.displayName = displayName;
+    }
 
-	public void setDistingueshedName(final String distingueshedName)
-	{
-		this.distingueshedName = distingueshedName;
-	}
+    public void setDistingueshedName(final String distingueshedName) {
+        this.distingueshedName = distingueshedName;
+    }
 
-	public void setGroupId(final String groupId)
-	{
-		this.groupId = groupId;
-	}
+    public void setGroupId(final String groupId) {
+        this.groupId = groupId;
+    }
 
-	public void setMemberDNs(final String[] memberDNs)
-	{
-		this.memberDNs = memberDNs.clone();
-	}
+    public void setMemberDNs(final String[] memberDNs) {
+        this.memberDNs = memberDNs.clone();
+    }
 
-	@Override
-	public String toString()
-	{
-		return ToStringBuilder.reflectionToString(this);
-	}
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }

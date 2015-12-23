@@ -27,48 +27,44 @@ import org.hibernate.util.PropertiesHelper;
 
 /**
  * <code>
- * @javax.persistence.Id
- * @javax.persistence.GeneratedValueValue(generator = "oid")
- * @org.hibernate.annotations.GenericGenerator(
+ * &#64;javax.persistence.Id
+ * &#64;javax.persistence.GeneratedValueValue(generator = "oid")
+ * &#64;org.hibernate.annotations.GenericGenerator(
  *    name = "oid", strategy = net.sf.jstuff.integration.persistence.hibernate.IntegerOidGenerator.class.getName(),
  *    parameters = {
- *	     @Parameter(name = net.sf.jstuff.integration.persistence.hibernate.IntegerOidGenerator.PARAM_SUFFIX, value = "001"),
- *       @Parameter(name = "max_lo", value = "1")}
+ *	     &#64;Parameter(name = net.sf.jstuff.integration.persistence.hibernate.IntegerOidGenerator.PARAM_SUFFIX, value = "001"),
+ *       &#64;Parameter(name = "max_lo", value = "1")}
  * )
  * private Integer oid;
  * </code>
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class IntegerOIDGenerator extends TableHiLoGenerator
-{
-	private static final Logger LOG = Logger.create();
+public class IntegerOIDGenerator extends TableHiLoGenerator {
+    private static final Logger LOG = Logger.create();
 
-	public static final String PARAM_PREFIX = "prefix";
-	public static final String PARAM_SUFFIX = "suffix";
+    public static final String PARAM_PREFIX = "prefix";
+    public static final String PARAM_SUFFIX = "suffix";
 
-	private String prefix;
-	private String suffix;
+    private String prefix;
+    private String suffix;
 
-	public IntegerOIDGenerator()
-	{
-		LOG.infoNew(this);
-	}
+    public IntegerOIDGenerator() {
+        LOG.infoNew(this);
+    }
 
-	@Override
-	public void configure(final Type type, final Properties params, final Dialect d)
-	{
-		super.configure(new IntegerType(), params, d);
+    @Override
+    public void configure(final Type type, final Properties params, final Dialect d) {
+        super.configure(new IntegerType(), params, d);
 
-		prefix = PropertiesHelper.getString(PARAM_PREFIX, params, "");
-		suffix = PropertiesHelper.getString(PARAM_SUFFIX, params, "");
-	}
+        prefix = PropertiesHelper.getString(PARAM_PREFIX, params, "");
+        suffix = PropertiesHelper.getString(PARAM_SUFFIX, params, "");
+    }
 
-	@Override
-	public synchronized Serializable generate(final SessionImplementor session, final Object obj) throws HibernateException
-	{
-		final int id = ((Integer) super.generate(session, obj)).intValue();
+    @Override
+    public synchronized Serializable generate(final SessionImplementor session, final Object obj) throws HibernateException {
+        final int id = ((Integer) super.generate(session, obj)).intValue();
 
-		return Integer.parseInt(prefix + id + suffix);
-	}
+        return Integer.parseInt(prefix + id + suffix);
+    }
 }

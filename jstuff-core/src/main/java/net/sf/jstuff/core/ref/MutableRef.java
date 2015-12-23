@@ -17,29 +17,24 @@ import java.io.Serializable;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MutableRef<T> implements Ref<T>, Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class MutableRef<T> implements Ref<T>, Serializable {
+    private static final long serialVersionUID = 1L;
 
-	private T value;
+    private T value;
 
-	public MutableRef()
-	{
-		super();
-	}
+    public MutableRef() {
+        super();
+    }
 
-	public MutableRef(final T value)
-	{
-		this.value = value;
-	}
+    public MutableRef(final T value) {
+        this.value = value;
+    }
 
-	public T get()
-	{
-		return value;
-	}
+    public T get() {
+        return value;
+    }
 
-	public void set(final T value)
-	{
-		this.value = value;
-	}
+    public void set(final T value) {
+        this.value = value;
+    }
 }

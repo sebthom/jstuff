@@ -19,32 +19,23 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanLocatorTest extends TestCase
-{
-	public void testSpringBeanLocator()
-	{
-		try
-		{
-			SpringBeanLocator.get().byClass(Object.class); // must fail, since the spring context is not yet opened
-			fail();
-		}
-		catch (final IllegalStateException ex)
-		{}
+public class SpringBeanLocatorTest extends TestCase {
+    public void testSpringBeanLocator() {
+        try {
+            SpringBeanLocator.get().byClass(Object.class); // must fail, since the spring context is not yet opened
+            fail();
+        } catch (final IllegalStateException ex) {}
 
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml",
-				SpringBeanLocatorTest.class);
+        final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml", SpringBeanLocatorTest.class);
 
-		assertNotNull(SpringBeanLocator.get().byClass(SpringBeanLocator.class));
-		assertNotNull(SpringBeanLocator.get().byName("springBean"));
+        assertNotNull(SpringBeanLocator.get().byClass(SpringBeanLocator.class));
+        assertNotNull(SpringBeanLocator.get().byName("springBean"));
 
-		ctx.close();
+        ctx.close();
 
-		try
-		{
-			SpringBeanLocator.get().byClass(Object.class); // must fail, since the spring context is closed
-			fail();
-		}
-		catch (final IllegalStateException ex)
-		{}
-	}
+        try {
+            SpringBeanLocator.get().byClass(Object.class); // must fail, since the spring context is closed
+            fail();
+        } catch (final IllegalStateException ex) {}
+    }
 }

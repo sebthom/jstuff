@@ -37,69 +37,60 @@ import org.springframework.beans.factory.InitializingBean;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean
-{
-	private boolean isInitialized = false;
+public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean {
+    private boolean isInitialized = false;
 
-	private ServiceRegistry serviceRegistry;
+    private ServiceRegistry serviceRegistry;
 
-	/**
-	 * @optional by default the fully qualified name of the service interface is used
-	 */
-	private String serviceEndpointId;
-	private Class<T> serviceInterface;
-	private T service;
+    /**
+     * @optional by default the fully qualified name of the service interface is used
+     */
+    private String serviceEndpointId;
+    private Class<T> serviceInterface;
+    private T service;
 
-	public synchronized void afterPropertiesSet() throws Exception
-	{
-		Assert.isFalse(isInitialized, "Already initialized!");
-		Assert.notNull(serviceRegistry, "[serviceRegistry] must not be null!");
-		Assert.notNull(serviceInterface, "[serviceInterface] must not be null!");
-		if (serviceEndpointId == null)
-		{
-			serviceEndpointId = serviceInterface.getName();
-		}
-		isInitialized = true;
-		service = serviceRegistry.getService(serviceEndpointId, serviceInterface).get();
-	}
+    public synchronized void afterPropertiesSet() throws Exception {
+        Assert.isFalse(isInitialized, "Already initialized!");
+        Assert.notNull(serviceRegistry, "[serviceRegistry] must not be null!");
+        Assert.notNull(serviceInterface, "[serviceInterface] must not be null!");
+        if (serviceEndpointId == null) {
+            serviceEndpointId = serviceInterface.getName();
+        }
+        isInitialized = true;
+        service = serviceRegistry.getService(serviceEndpointId, serviceInterface).get();
+    }
 
-	public T getObject() throws Exception
-	{
-		return service;
-	}
+    public T getObject() throws Exception {
+        return service;
+    }
 
-	public Class<T> getObjectType()
-	{
-		return serviceInterface;
-	}
+    public Class<T> getObjectType() {
+        return serviceInterface;
+    }
 
-	public boolean isSingleton()
-	{
-		return true;
-	}
+    public boolean isSingleton() {
+        return true;
+    }
 
-	public synchronized void setServiceEndpointId(final String serviceEndpointId)
-	{
-		Args.notNull("serviceEndpointId", serviceEndpointId);
-		Assert.isFalse(isInitialized, "Already initialized!");
+    public synchronized void setServiceEndpointId(final String serviceEndpointId) {
+        Args.notNull("serviceEndpointId", serviceEndpointId);
+        Assert.isFalse(isInitialized, "Already initialized!");
 
-		this.serviceEndpointId = serviceEndpointId;
-	}
+        this.serviceEndpointId = serviceEndpointId;
+    }
 
-	public synchronized void setServiceInterface(final Class<T> serviceInterface)
-	{
-		Args.notNull("serviceInterface", serviceInterface);
-		Assert.isFalse(isInitialized, "Already initialized!");
-		Assert.isTrue(serviceInterface.isInterface(), "[serviceInterface] must be an interface but is " + serviceInterface);
+    public synchronized void setServiceInterface(final Class<T> serviceInterface) {
+        Args.notNull("serviceInterface", serviceInterface);
+        Assert.isFalse(isInitialized, "Already initialized!");
+        Assert.isTrue(serviceInterface.isInterface(), "[serviceInterface] must be an interface but is " + serviceInterface);
 
-		this.serviceInterface = serviceInterface;
-	}
+        this.serviceInterface = serviceInterface;
+    }
 
-	public synchronized void setServiceRegistry(final ServiceRegistry serviceRegistry)
-	{
-		Args.notNull("serviceRegistry", serviceRegistry);
-		Assert.isFalse(isInitialized, "Already initialized!");
+    public synchronized void setServiceRegistry(final ServiceRegistry serviceRegistry) {
+        Args.notNull("serviceRegistry", serviceRegistry);
+        Assert.isFalse(isInitialized, "Already initialized!");
 
-		this.serviceRegistry = serviceRegistry;
-	}
+        this.serviceRegistry = serviceRegistry;
+    }
 }

@@ -17,45 +17,38 @@ import junit.framework.TestCase;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class JAXBUtilsTest extends TestCase
-{
-	public static class MyEntity
-	{
-		private MyEntity child;
-		private String name;
+public class JAXBUtilsTest extends TestCase {
 
-		public MyEntity getChild()
-		{
-			return child;
-		}
+    public static class MyEntity {
+        private MyEntity child;
+        private String name;
 
-		public String getName()
-		{
-			return name;
-		}
+        public MyEntity getChild() {
+            return child;
+        }
 
-		public void setChild(final MyEntity child)
-		{
-			this.child = child;
-		}
+        public String getName() {
+            return name;
+        }
 
-		public void setName(final String name)
-		{
-			this.name = name;
-		}
-	}
+        public void setChild(final MyEntity child) {
+            this.child = child;
+        }
 
-	public void testToXML()
-	{
-		final MyEntity e = new MyEntity();
-		e.name = "a";
-		e.child = new MyEntity();
-		e.child.name = "b";
-		System.out.println(JAXBUtils.toXML(e));
-	}
+        public void setName(final String name) {
+            this.name = name;
+        }
+    }
 
-	public void testToXSD()
-	{
-		System.out.println(JAXBUtils.toXSD(MyEntity.class));
-	}
+    public void testToXML() {
+        final MyEntity e = new MyEntity();
+        e.name = "a";
+        e.child = new MyEntity();
+        e.child.name = "b";
+        System.out.println(JAXBUtils.toXML(e));
+    }
+
+    public void testToXSD() {
+        System.out.println(JAXBUtils.toXSD(MyEntity.class));
+    }
 }

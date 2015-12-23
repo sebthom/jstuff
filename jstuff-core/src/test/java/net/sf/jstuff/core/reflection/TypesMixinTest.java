@@ -17,40 +17,32 @@ import junit.framework.TestCase;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TypesMixinTest extends TestCase
-{
-	protected interface TestEntity
-	{
-		String createGreeting(String name);
+public class TypesMixinTest extends TestCase {
+    protected interface TestEntity {
+        String createGreeting(String name);
 
-		String createClosing(String name);
-	}
+        String createClosing(String name);
+    }
 
-	protected static class TestEntityImpl implements TestEntity
-	{
-		public String createClosing(final String name)
-		{
-			return "Goodbye " + name + ".";
-		}
+    protected static class TestEntityImpl implements TestEntity {
+        public String createClosing(final String name) {
+            return "Goodbye " + name + ".";
+        }
 
-		public String createGreeting(final String name)
-		{
-			return "Hello " + name + "!";
-		}
-	}
+        public String createGreeting(final String name) {
+            return "Hello " + name + "!";
+        }
+    }
 
-	public void testMixin()
-	{
-		final TestEntityImpl delegate = new TestEntityImpl();
-		final TestEntity proxy = Types.createMixin(TestEntity.class, new Object()
-			{
-				@SuppressWarnings("unused")
-				public String createGreeting(final String name)
-				{
-					return delegate.createGreeting(name) + " How are you?";
-				}
-			}, delegate);
-		assertEquals("Hello John! How are you?", proxy.createGreeting("John"));
-		assertEquals("Goodbye John.", proxy.createClosing("John"));
-	}
+    public void testMixin() {
+        final TestEntityImpl delegate = new TestEntityImpl();
+        final TestEntity proxy = Types.createMixin(TestEntity.class, new Object() {
+            @SuppressWarnings("unused")
+            public String createGreeting(final String name) {
+                return delegate.createGreeting(name) + " How are you?";
+            }
+        }, delegate);
+        assertEquals("Hello John! How are you?", proxy.createGreeting("John"));
+        assertEquals("Goodbye John.", proxy.createClosing("John"));
+    }
 }

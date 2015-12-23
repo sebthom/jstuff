@@ -17,12 +17,10 @@ import org.springframework.dao.DataAccessException;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NestedDataAccessException extends DataAccessException
-{
-	private static final long serialVersionUID = 1L;
+public class NestedDataAccessException extends DataAccessException {
+    private static final long serialVersionUID = 1L;
 
-	public NestedDataAccessException(final String msg, final Throwable cause)
-	{
-		super(msg, cause);
-	}
+    public NestedDataAccessException(final String msg, final Throwable cause) {
+        super(msg, cause);
+    }
 }

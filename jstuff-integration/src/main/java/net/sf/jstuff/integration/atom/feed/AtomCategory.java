@@ -16,34 +16,30 @@ package net.sf.jstuff.integration.atom.feed;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  *
  */
-public class AtomCategory
-{
-	private String term;
+public class AtomCategory {
+    private String term;
 
-	public AtomCategory()
-	{}
+    public AtomCategory() {
+    }
 
-	/**
-	 * @param term
-	 */
-	public AtomCategory(final String term)
-	{
-		this.term = term;
-	}
+    /**
+     * @param term
+     */
+    public AtomCategory(final String term) {
+        this.term = term;
+    }
 
-	/**
-	 * @return the term
-	 */
-	public String getTerm()
-	{
-		return term;
-	}
+    /**
+     * @return the term
+     */
+    public String getTerm() {
+        return term;
+    }
 
-	/**
-	 * @param term the term to set
-	 */
-	public void setTerm(final String term)
-	{
-		this.term = term;
-	}
+    /**
+     * @param term the term to set
+     */
+    public void setTerm(final String term) {
+        this.term = term;
+    }
 }

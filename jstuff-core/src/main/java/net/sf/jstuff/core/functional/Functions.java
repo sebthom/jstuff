@@ -22,152 +22,125 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Functions
-{
-	public static abstract class AbstractFunction<In, Out> implements ChainableFunction<In, Out>, Serializable
-	{
-		private static final long serialVersionUID = 1L;
+public abstract class Functions {
+    public static abstract class AbstractFunction<In, Out> implements ChainableFunction<In, Out>, Serializable {
+        private static final long serialVersionUID = 1L;
 
-		public <NextOut> ChainableFunction<In, NextOut> and(final Function< ? super Out, NextOut> next)
-		{
-			return new And<In, Out, NextOut>(this, next);
-		}
+        public <NextOut> ChainableFunction<In, NextOut> and(final Function<? super Out, NextOut> next) {
+            return new And<In, Out, NextOut>(this, next);
+        }
 
-		@Override
-		public String toString()
-		{
-			return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-		}
-	}
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        }
+    }
 
-	public static class And<In, Intermediate, Out> extends AbstractFunction<In, Out>
-	{
-		private static final long serialVersionUID = 1L;
+    public static class And<In, Intermediate, Out> extends AbstractFunction<In, Out> {
+        private static final long serialVersionUID = 1L;
 
-		private final Function<In, Intermediate> first;
-		private final Function< ? super Intermediate, Out> second;
+        private final Function<In, Intermediate> first;
+        private final Function<? super Intermediate, Out> second;
 
-		public And(final Function<In, Intermediate> first, final Function< ? super Intermediate, Out> second)
-		{
-			Args.notNull("first", first);
-			Args.notNull("second", second);
+        public And(final Function<In, Intermediate> first, final Function<? super Intermediate, Out> second) {
+            Args.notNull("first", first);
+            Args.notNull("second", second);
 
-			this.first = first;
-			this.second = second;
-		}
+            this.first = first;
+            this.second = second;
+        }
 
-		public final Out apply(final In source)
-		{
-			return second.apply(first.apply(source));
-		}
-	}
+        public final Out apply(final In source) {
+            return second.apply(first.apply(source));
+        }
+    }
 
-	public static class CastTo<In, Out> extends AbstractFunction<In, Out>
-	{
-		private static final long serialVersionUID = 1L;
+    public static class CastTo<In, Out> extends AbstractFunction<In, Out> {
+        private static final long serialVersionUID = 1L;
 
-		@SuppressWarnings("unchecked")
-		public Out apply(final In source)
-		{
-			return (Out) source;
-		}
-	}
+        @SuppressWarnings("unchecked")
+        public Out apply(final In source) {
+            return (Out) source;
+        }
+    }
 
-	public static class ObjectToString<In> extends AbstractFunction<In, String>
-	{
-		private static final long serialVersionUID = 1L;
+    public static class ObjectToString<In> extends AbstractFunction<In, String> {
+        private static final long serialVersionUID = 1L;
 
-		public String apply(final In source)
-		{
-			return source == null ? null : source.toString();
-		}
-	}
+        public String apply(final In source) {
+            return source == null ? null : source.toString();
+        }
+    }
 
-	public static class Prefix<In> extends AbstractFunction<In, String>
-	{
-		private static final long serialVersionUID = 1L;
+    public static class Prefix<In> extends AbstractFunction<In, String> {
+        private static final long serialVersionUID = 1L;
 
-		public final String prefix;
+        public final String prefix;
 
-		public Prefix(final String prefix)
-		{
-			Args.notNull("prefix", prefix);
+        public Prefix(final String prefix) {
+            Args.notNull("prefix", prefix);
 
-			this.prefix = prefix;
-		}
+            this.prefix = prefix;
+        }
 
-		public String apply(final In source)
-		{
-			return source == null ? null : prefix + source;
-		}
-	}
+        public String apply(final In source) {
+            return source == null ? null : prefix + source;
+        }
+    }
 
-	public static class StringToInt extends AbstractFunction<String, Integer>
-	{
-		private static final long serialVersionUID = 1L;
+    public static class StringToInt extends AbstractFunction<String, Integer> {
+        private static final long serialVersionUID = 1L;
 
-		public Integer apply(final String source)
-		{
-			return source == null ? null : Integer.parseInt(source);
-		}
-	}
+        public Integer apply(final String source) {
+            return source == null ? null : Integer.parseInt(source);
+        }
+    }
 
-	public static class Suffix<In> extends AbstractFunction<In, String>
-	{
-		private static final long serialVersionUID = 1L;
+    public static class Suffix<In> extends AbstractFunction<In, String> {
+        private static final long serialVersionUID = 1L;
 
-		public final String suffix;
+        public final String suffix;
 
-		public Suffix(final String suffix)
-		{
-			Args.notNull("suffix", suffix);
+        public Suffix(final String suffix) {
+            Args.notNull("suffix", suffix);
 
-			this.suffix = suffix;
-		}
+            this.suffix = suffix;
+        }
 
-		public String apply(final In source)
-		{
-			return source == null ? null : source + suffix;
-		}
-	}
+        public String apply(final In source) {
+            return source == null ? null : source + suffix;
+        }
+    }
 
-	public static class Trim<In> extends AbstractFunction<In, String>
-	{
-		private static final long serialVersionUID = 1L;
+    public static class Trim<In> extends AbstractFunction<In, String> {
+        private static final long serialVersionUID = 1L;
 
-		public String apply(final In source)
-		{
-			return source == null ? null : source.toString().trim();
-		}
-	}
+        public String apply(final In source) {
+            return source == null ? null : source.toString().trim();
+        }
+    }
 
-	public static <In, Out> CastTo<In, Out> castTo(@SuppressWarnings("unused") final Class<Out> targetType)
-	{
-		return new CastTo<In, Out>();
-	}
+    public static <In, Out> CastTo<In, Out> castTo(@SuppressWarnings("unused") final Class<Out> targetType) {
+        return new CastTo<In, Out>();
+    }
 
-	public static <In> ObjectToString<In> objectToString()
-	{
-		return new ObjectToString<In>();
-	}
+    public static <In> ObjectToString<In> objectToString() {
+        return new ObjectToString<In>();
+    }
 
-	public static <In> Prefix<In> prefix(final String prefix)
-	{
-		return new Prefix<In>(prefix);
-	}
+    public static <In> Prefix<In> prefix(final String prefix) {
+        return new Prefix<In>(prefix);
+    }
 
-	public static StringToInt stringToInt()
-	{
-		return new StringToInt();
-	}
+    public static StringToInt stringToInt() {
+        return new StringToInt();
+    }
 
-	public static <In> Suffix<In> suffix(final String suffix)
-	{
-		return new Suffix<In>(suffix);
-	}
+    public static <In> Suffix<In> suffix(final String suffix) {
+        return new Suffix<In>(suffix);
+    }
 
-	public static <In> Trim<In> trim()
-	{
-		return new Trim<In>();
-	}
+    public static <In> Trim<In> trim() {
+        return new Trim<In>();
+    }
 }

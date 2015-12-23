@@ -26,31 +26,31 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * The following child elements are defined by this specification (note
  * that the presence of some of these elements is required):
  * <ol>
- * <li> atom:feed elements MUST contain one or more atom:author elements,
+ * <li>atom:feed elements MUST contain one or more atom:author elements,
  * unless all of the atom:feed element's child atom:entry elements
  * contain at least one atom:author element.
- * <li> atom:feed elements MAY contain any number of atom:category elements.
- * <li> atom:feed elements MAY contain any number of atom:contributor elements.
- * <li> atom:feed elements MUST NOT contain more than one atom:generator element.
- * <li> atom:feed elements MUST NOT contain more than one atom:icon element.
- * <li> atom:feed elements MUST NOT contain more than one atom:logo element.
- * <li> atom:feed elements MUST contain exactly one atom:id element.
- * <li> atom:feed elements SHOULD contain one atom:link element with a rel
- * attribute value of "self".  This is the preferred URI for
+ * <li>atom:feed elements MAY contain any number of atom:category elements.
+ * <li>atom:feed elements MAY contain any number of atom:contributor elements.
+ * <li>atom:feed elements MUST NOT contain more than one atom:generator element.
+ * <li>atom:feed elements MUST NOT contain more than one atom:icon element.
+ * <li>atom:feed elements MUST NOT contain more than one atom:logo element.
+ * <li>atom:feed elements MUST contain exactly one atom:id element.
+ * <li>atom:feed elements SHOULD contain one atom:link element with a rel
+ * attribute value of "self". This is the preferred URI for
  * retrieving Atom Feed Documents representing this Atom feed.
- * <li> atom:feed elements MUST NOT contain more than one atom:link
+ * <li>atom:feed elements MUST NOT contain more than one atom:link
  * element with a rel attribute value of "alternate" that has the
  * same combination of type and hreflang attribute values.
- * <li> atom:feed elements MAY contain additional atom:link elements
+ * <li>atom:feed elements MAY contain additional atom:link elements
  * beyond those described above.
- * <li> atom:feed elements MUST NOT contain more than one atom:rights element.
- * <li> atom:feed elements MUST NOT contain more than one atom:subtitle element.
- * <li> atom:feed elements MUST contain exactly one atom:title element.
- * <li> atom:feed elements MUST contain exactly one atom:updated element.
+ * <li>atom:feed elements MUST NOT contain more than one atom:rights element.
+ * <li>atom:feed elements MUST NOT contain more than one atom:subtitle element.
+ * <li>atom:feed elements MUST contain exactly one atom:title element.
+ * <li>atom:feed elements MUST contain exactly one atom:updated element.
  * </ol>
  * If multiple atom:entry elements with the same atom:id value appear in
- * an Atom Feed Document, they represent the same entry.  Their
- * atom:updated timestamps SHOULD be different.  If an Atom Feed
+ * an Atom Feed Document, they represent the same entry. Their
+ * atom:updated timestamps SHOULD be different. If an Atom Feed
  * Document contains multiple entries with the same atom:id, Atom
  * Processors MAY choose to display all of them or some subset of them.
  * One typical behavior would be to display only the entry with the
@@ -58,157 +58,139 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AtomEntry extends Identifiable.Default<String>
-{
-	private static final long serialVersionUID = 1L;
+public class AtomEntry extends Identifiable.Default<String> {
+    private static final long serialVersionUID = 1L;
 
-	private String title;
-	private AtomText summary;
-	private AtomText content;
+    private String title;
+    private AtomText summary;
+    private AtomText content;
 
-	@XStreamImplicit(itemFieldName = "category")
-	private Collection<AtomCategory> categories;
+    @XStreamImplicit(itemFieldName = "category")
+    private Collection<AtomCategory> categories;
 
-	private AtomLink link;
-	private String published;
-	private String updated;
-	private AtomPerson author;
+    private AtomLink link;
+    private String published;
+    private String updated;
+    private AtomPerson author;
 
-	/**
-	 * @return the author
-	 */
-	public AtomPerson getAuthor()
-	{
-		return author;
-	}
+    /**
+     * @return the author
+     */
+    public AtomPerson getAuthor() {
+        return author;
+    }
 
-	/**
-	 * @return the categories
-	 */
-	public Collection<AtomCategory> getCategories()
-	{
-		return categories;
-	}
+    /**
+     * @return the categories
+     */
+    public Collection<AtomCategory> getCategories() {
+        return categories;
+    }
 
-	/**
-	 * @return the content
-	 */
-	public AtomText getContent()
-	{
-		return content;
-	}
+    /**
+     * @return the content
+     */
+    public AtomText getContent() {
+        return content;
+    }
 
-	/**
-	 * @return the link
-	 */
-	public AtomLink getLink()
-	{
-		return link;
-	}
+    /**
+     * @return the link
+     */
+    public AtomLink getLink() {
+        return link;
+    }
 
-	/**
-	 * @return the published
-	 * @throws ParseException
-	 */
-	public Date getPublished() throws ParseException
-	{
-		return DateUtils.fromRFC3399(published);
-	}
+    /**
+     * @return the published
+     * @throws ParseException
+     */
+    public Date getPublished() throws ParseException {
+        return DateUtils.fromRFC3399(published);
+    }
 
-	/**
-	 * @return the summary
-	 */
-	public AtomText getSummary()
-	{
-		return summary;
-	}
+    /**
+     * @return the summary
+     */
+    public AtomText getSummary() {
+        return summary;
+    }
 
-	/**
-	 * @return the title
-	 */
-	public String getTitle()
-	{
-		return title;
-	}
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
 
-	/**
-	 * @return the updated
-	 * @throws ParseException
-	 */
-	public Date getUpdated() throws ParseException
-	{
-		return DateUtils.fromRFC3399(updated);
-	}
+    /**
+     * @return the updated
+     * @throws ParseException
+     */
+    public Date getUpdated() throws ParseException {
+        return DateUtils.fromRFC3399(updated);
+    }
 
-	/**
-	 * @param author the author to set
-	 */
-	public void setAuthor(final AtomPerson author)
-	{
-		this.author = author;
-	}
+    /**
+     * @param author the author to set
+     */
+    public void setAuthor(final AtomPerson author) {
+        this.author = author;
+    }
 
-	/**
-	 * @param categories the categories to set
-	 */
-	public void setCategories(final AtomCategory... categories)
-	{
-		this.categories = Arrays.asList(categories);
-	}
+    /**
+     * @param categories the categories to set
+     */
+    public void setCategories(final AtomCategory... categories) {
+        this.categories = Arrays.asList(categories);
+    }
 
-	/**
-	 * @param categories the categories to set
-	 */
-	public void setCategories(final Collection<AtomCategory> categories)
-	{
-		this.categories = categories;
-	}
+    /**
+     * @param categories the categories to set
+     */
+    public void setCategories(final Collection<AtomCategory> categories) {
+        this.categories = categories;
+    }
 
-	/**
-	 * @param content the content to set
-	 */
-	public void setContent(final AtomText content)
-	{
-		this.content = content;
-	}
+    /**
+     * @param content the content to set
+     */
+    public void setContent(final AtomText content) {
+        this.content = content;
+    }
 
-	/**
-	 * @param link the link to set
-	 */
-	public void setLink(final AtomLink link)
-	{
-		this.link = link;
-	}
+    /**
+     * @param link the link to set
+     */
+    public void setLink(final AtomLink link) {
+        this.link = link;
+    }
 
-	/**
-	 * @param published the published to set
-	 */
-	public void setPublished(final Date published)
-	{
-		this.published = DateUtils.toRFC3399_UTC(published);
-	}
+    /**
+     * @param published the published to set
+     */
+    public void setPublished(final Date published) {
+        this.published = DateUtils.toRFC3399_UTC(published);
+    }
 
-	/**
-	 * @param summary the summary to set
-	 */
-	public void setSummary(final AtomText summary)
-	{
-		this.summary = summary;
-	}
+    /**
+     * @param summary the summary to set
+     */
+    public void setSummary(final AtomText summary) {
+        this.summary = summary;
+    }
 
-	/**
-	 * @param title the title to set
-	 */
-	public void setTitle(final String title)
-	{
-		this.title = title;
-	}
+    /**
+     * @param title the title to set
+     */
+    public void setTitle(final String title) {
+        this.title = title;
+    }
 
-	/**
-	 * @param updated the updated to set
-	 */
-	public void setUpdated(final Date updated)
-	{
-		this.updated = DateUtils.toRFC3399_UTC(updated);
-	}
+    /**
+     * @param updated the updated to set
+     */
+    public void setUpdated(final Date updated) {
+        this.updated = DateUtils.toRFC3399_UTC(updated);
+    }
 }

@@ -17,12 +17,10 @@ import java.util.Set;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DelegatingSet<V> extends DelegatingCollection<V> implements Set<V>
-{
-	private static final long serialVersionUID = 1L;
+public class DelegatingSet<V> extends DelegatingCollection<V> implements Set<V> {
+    private static final long serialVersionUID = 1L;
 
-	public DelegatingSet(final Set<V> delegate)
-	{
-		super(delegate);
-	}
+    public DelegatingSet(final Set<V> delegate) {
+        super(delegate);
+    }
 }

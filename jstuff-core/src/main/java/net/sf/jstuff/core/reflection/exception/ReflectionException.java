@@ -15,22 +15,18 @@ package net.sf.jstuff.core.reflection.exception;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ReflectionException extends RuntimeException
-{
-	private static final long serialVersionUID = 1L;
+public class ReflectionException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
-	public ReflectionException(final String message)
-	{
-		super(message);
-	}
+    public ReflectionException(final String message) {
+        super(message);
+    }
 
-	public ReflectionException(final String message, final Throwable cause)
-	{
-		super(message, cause);
-	}
+    public ReflectionException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-	public ReflectionException(final Throwable cause)
-	{
-		super(cause);
-	}
+    public ReflectionException(final Throwable cause) {
+        super(cause);
+    }
 }

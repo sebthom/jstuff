@@ -27,14 +27,14 @@ import org.springframework.context.annotation.AnnotationBeanNameGenerator;
  * 
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AffixesRemovingBeanNameGenerator extends AnnotationBeanNameGenerator
-{
-	@Override
-	public String generateBeanName(final BeanDefinition definition, final BeanDefinitionRegistry registry)
-	{
-		final String beanName = super.generateBeanName(definition, registry);
-		if (beanName.startsWith("Default")) return StringUtils.substringAfter(beanName, "Default");
-		if (beanName.endsWith("Impl")) return StringUtils.substringBeforeLast(beanName, "Impl");
-		return beanName;
-	}
+public class AffixesRemovingBeanNameGenerator extends AnnotationBeanNameGenerator {
+    @Override
+    public String generateBeanName(final BeanDefinition definition, final BeanDefinitionRegistry registry) {
+        final String beanName = super.generateBeanName(definition, registry);
+        if (beanName.startsWith("Default"))
+            return StringUtils.substringAfter(beanName, "Default");
+        if (beanName.endsWith("Impl"))
+            return StringUtils.substringBeforeLast(beanName, "Impl");
+        return beanName;
+    }
 }

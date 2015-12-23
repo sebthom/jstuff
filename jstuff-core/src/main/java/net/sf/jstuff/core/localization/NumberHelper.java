@@ -23,300 +23,250 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NumberHelper implements Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class NumberHelper implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-	private final Locale locale;
+    private final Locale locale;
 
-	private transient String currencyCode;
-	private transient String currencySymbol;
+    private transient String currencyCode;
+    private transient String currencySymbol;
 
-	/**
-	 * locale will be set to Locale.getDefault();
-	 */
-	public NumberHelper()
-	{
-		this(Locale.getDefault());
-	}
+    /**
+     * locale will be set to Locale.getDefault();
+     */
+    public NumberHelper() {
+        this(Locale.getDefault());
+    }
 
-	public NumberHelper(final Locale locale)
-	{
-		Args.notNull("locale", locale);
+    public NumberHelper(final Locale locale) {
+        Args.notNull("locale", locale);
 
-		this.locale = locale;
-	}
+        this.locale = locale;
+    }
 
-	public String getCurrencyCode()
-	{
-		if (currencyCode == null) currencyCode = NumberFormat.getCurrencyInstance(locale).getCurrency().getCurrencyCode();
-		return currencyCode;
-	}
+    public String getCurrencyCode() {
+        if (currencyCode == null)
+            currencyCode = NumberFormat.getCurrencyInstance(locale).getCurrency().getCurrencyCode();
+        return currencyCode;
+    }
 
-	public NumberFormat getCurrencyFormat(final int minDigits, final int maxDigits)
-	{
-		final DecimalFormat df = (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
-		df.setMinimumFractionDigits(minDigits);
-		df.setMaximumFractionDigits(maxDigits);
-		return df;
-	}
+    public NumberFormat getCurrencyFormat(final int minDigits, final int maxDigits) {
+        final DecimalFormat df = (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
+        df.setMinimumFractionDigits(minDigits);
+        df.setMaximumFractionDigits(maxDigits);
+        return df;
+    }
 
-	public String getCurrencyFormatted(final Number value, final int digits)
-	{
-		Args.notNull("value", value);
+    public String getCurrencyFormatted(final Number value, final int digits) {
+        Args.notNull("value", value);
 
-		return getCurrencyFormat(digits, digits).format(value);
-	}
+        return getCurrencyFormat(digits, digits).format(value);
+    }
 
-	public String getCurrencySymbol()
-	{
-		if (currencySymbol == null) currencySymbol = NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol();
-		return currencySymbol;
-	}
+    public String getCurrencySymbol() {
+        if (currencySymbol == null)
+            currencySymbol = NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol();
+        return currencySymbol;
+    }
 
-	public DecimalFormat getDecimalFormat(final int minDigits, final int maxDigits)
-	{
-		final DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(locale);
-		df.setMinimumFractionDigits(minDigits);
-		df.setMaximumFractionDigits(maxDigits);
-		return df;
-	}
+    public DecimalFormat getDecimalFormat(final int minDigits, final int maxDigits) {
+        final DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(locale);
+        df.setMinimumFractionDigits(minDigits);
+        df.setMaximumFractionDigits(maxDigits);
+        return df;
+    }
 
-	public String getDecimalFormatted(final Number value, final int digits)
-	{
-		Args.notNull("value", value);
+    public String getDecimalFormatted(final Number value, final int digits) {
+        Args.notNull("value", value);
 
-		return getDecimalFormat(digits, digits).format(value);
-	}
+        return getDecimalFormat(digits, digits).format(value);
+    }
 
-	/**
-	 * @param value
-	 * @throws NumberFormatException if value is invalid
-	 */
-	public double getDoubleValue(final String value) throws NumberFormatException
-	{
-		Args.notNull("value", value);
+    /**
+     * @param value
+     * @throws NumberFormatException if value is invalid
+     */
+    public double getDoubleValue(final String value) throws NumberFormatException {
+        Args.notNull("value", value);
 
-		if (isValidCurrency(value)) try
-		{
-			return getCurrencyFormat(0, 0).parse(value).doubleValue();
-		}
-		catch (final ParseException e)
-		{
-			throw new NumberFormatException(e.getMessage());
-		}
+        if (isValidCurrency(value))
+            try {
+            return getCurrencyFormat(0, 0).parse(value).doubleValue();
+        } catch (final ParseException e) {
+            throw new NumberFormatException(e.getMessage());
+        }
 
-		try
-		{
-			return getDecimalFormat(0, 0).parse(value).doubleValue();
-		}
-		catch (final ParseException e)
-		{
-			throw new NumberFormatException(e.getMessage());
-		}
-	}
+        try {
+            return getDecimalFormat(0, 0).parse(value).doubleValue();
+        } catch (final ParseException e) {
+            throw new NumberFormatException(e.getMessage());
+        }
+    }
 
-	/**
-	 * @param value
-	 * @return returns 0 if value is invalid
-	 */
-	public double getDoubleValueSafe(final String value)
-	{
-		if (value == null) return 0;
+    /**
+     * @param value
+     * @return returns 0 if value is invalid
+     */
+    public double getDoubleValueSafe(final String value) {
+        if (value == null)
+            return 0;
 
-		try
-		{
-			return getDoubleValue(value);
-		}
-		catch (final NumberFormatException e)
-		{
-			return 0;
-		}
-	}
+        try {
+            return getDoubleValue(value);
+        } catch (final NumberFormatException e) {
+            return 0;
+        }
+    }
 
-	/**
-	 * @param value
-	 * @throws NumberFormatException if value is invalid
-	 */
-	public int getIntValue(final String value) throws NumberFormatException
-	{
-		Args.notNull("value", value);
+    /**
+     * @param value
+     * @throws NumberFormatException if value is invalid
+     */
+    public int getIntValue(final String value) throws NumberFormatException {
+        Args.notNull("value", value);
 
-		if (isValidCurrency(value)) try
-		{
-			return getCurrencyFormat(0, 0).parse(value).intValue();
-		}
-		catch (final ParseException e)
-		{
-			throw new NumberFormatException(e.getMessage());
-		}
-		try
-		{
-			return getWholeNumberFormat().parse(value).intValue();
-		}
-		catch (final ParseException e)
-		{
-			throw new NumberFormatException(e.getMessage());
-		}
-	}
+        if (isValidCurrency(value))
+            try {
+            return getCurrencyFormat(0, 0).parse(value).intValue();
+        } catch (final ParseException e) {
+            throw new NumberFormatException(e.getMessage());
+        }
+        try {
+            return getWholeNumberFormat().parse(value).intValue();
+        } catch (final ParseException e) {
+            throw new NumberFormatException(e.getMessage());
+        }
+    }
 
-	/**
-	 * @param value
-	 * @return returns 0 if value is invalid
-	 */
-	public int getIntValueSafe(final String value)
-	{
-		if (value == null) return 0;
+    /**
+     * @param value
+     * @return returns 0 if value is invalid
+     */
+    public int getIntValueSafe(final String value) {
+        if (value == null)
+            return 0;
 
-		try
-		{
-			return getIntValue(value);
-		}
-		catch (final NumberFormatException e)
-		{
-			return 0;
-		}
-	}
+        try {
+            return getIntValue(value);
+        } catch (final NumberFormatException e) {
+            return 0;
+        }
+    }
 
-	/**
-	 * Returns the locale.
-	 * @return Locale
-	 */
-	public Locale getLocale()
-	{
-		return locale;
-	}
+    /**
+     * Returns the locale.
+     * 
+     * @return Locale
+     */
+    public Locale getLocale() {
+        return locale;
+    }
 
-	/**
-	 * @param value
-	 * @throws NumberFormatException if value is invalid
-	 */
-	public long getLongValue(final String value) throws NumberFormatException
-	{
-		Args.notNull("value", value);
+    /**
+     * @param value
+     * @throws NumberFormatException if value is invalid
+     */
+    public long getLongValue(final String value) throws NumberFormatException {
+        Args.notNull("value", value);
 
-		if (isValidCurrency(value)) try
-		{
-			return getCurrencyFormat(0, 0).parse(value).longValue();
-		}
-		catch (final ParseException e)
-		{
-			throw new NumberFormatException(e.getMessage());
-		}
-		try
-		{
-			return getWholeNumberFormat().parse(value).longValue();
-		}
-		catch (final ParseException e)
-		{
-			throw new NumberFormatException(e.getMessage());
-		}
-	}
+        if (isValidCurrency(value))
+            try {
+            return getCurrencyFormat(0, 0).parse(value).longValue();
+        } catch (final ParseException e) {
+            throw new NumberFormatException(e.getMessage());
+        }
+        try {
+            return getWholeNumberFormat().parse(value).longValue();
+        } catch (final ParseException e) {
+            throw new NumberFormatException(e.getMessage());
+        }
+    }
 
-	/**
-	 * @param value
-	 * @return returns 0 if value is invalid
-	 */
-	public long getLongValueSafe(final String value)
-	{
-		if (value == null) return 0;
+    /**
+     * @param value
+     * @return returns 0 if value is invalid
+     */
+    public long getLongValueSafe(final String value) {
+        if (value == null)
+            return 0;
 
-		try
-		{
-			return getLongValue(value);
-		}
-		catch (final NumberFormatException e)
-		{
-			return 0;
-		}
-	}
+        try {
+            return getLongValue(value);
+        } catch (final NumberFormatException e) {
+            return 0;
+        }
+    }
 
-	public NumberFormat getPercentFormat(final int digits)
-	{
-		final DecimalFormat df = (DecimalFormat) NumberFormat.getPercentInstance(locale);
-		df.setMinimumFractionDigits(digits);
-		df.setMaximumFractionDigits(digits);
-		return df;
-	}
+    public NumberFormat getPercentFormat(final int digits) {
+        final DecimalFormat df = (DecimalFormat) NumberFormat.getPercentInstance(locale);
+        df.setMinimumFractionDigits(digits);
+        df.setMaximumFractionDigits(digits);
+        return df;
+    }
 
-	public String getPercentFormatted(final Number value, final int digits)
-	{
-		Args.notNull("value", value);
+    public String getPercentFormatted(final Number value, final int digits) {
+        Args.notNull("value", value);
 
-		return getPercentFormat(digits).format(value);
-	}
+        return getPercentFormat(digits).format(value);
+    }
 
-	public NumberFormat getWholeNumberFormat()
-	{
-		return NumberFormat.getIntegerInstance(locale);
-	}
+    public NumberFormat getWholeNumberFormat() {
+        return NumberFormat.getIntegerInstance(locale);
+    }
 
-	public String getWholeNumberFormatted(final Number value)
-	{
-		Args.notNull("value", value);
+    public String getWholeNumberFormatted(final Number value) {
+        Args.notNull("value", value);
 
-		return getWholeNumberFormat().format(value);
-	}
+        return getWholeNumberFormat().format(value);
+    }
 
-	public boolean isValidCurrency(final String value)
-	{
-		if (value == null) return false;
+    public boolean isValidCurrency(final String value) {
+        if (value == null)
+            return false;
 
-		try
-		{
-			getCurrencyFormat(0, 0).parse(value);
-			return true;
-		}
-		catch (final ParseException e)
-		{
-			return false;
-		}
-	}
+        try {
+            getCurrencyFormat(0, 0).parse(value);
+            return true;
+        } catch (final ParseException e) {
+            return false;
+        }
+    }
 
-	public boolean isValidDecimal(final String value)
-	{
-		if (value == null) return false;
+    public boolean isValidDecimal(final String value) {
+        if (value == null)
+            return false;
 
-		try
-		{
-			getDecimalFormat(0, 0).parse(value);
-			return true;
-		}
-		catch (final ParseException e)
-		{
-			return false;
-		}
-	}
+        try {
+            getDecimalFormat(0, 0).parse(value);
+            return true;
+        } catch (final ParseException e) {
+            return false;
+        }
+    }
 
-	public boolean isValidPercent(final String value)
-	{
-		if (value == null) return false;
+    public boolean isValidPercent(final String value) {
+        if (value == null)
+            return false;
 
-		final NumberFormat nf = NumberFormat.getPercentInstance(locale);
+        final NumberFormat nf = NumberFormat.getPercentInstance(locale);
 
-		try
-		{
-			nf.parse(value);
-			return true;
-		}
-		catch (final ParseException e)
-		{
-			return false;
-		}
-	}
+        try {
+            nf.parse(value);
+            return true;
+        } catch (final ParseException e) {
+            return false;
+        }
+    }
 
-	public boolean isValidWholeNumber(final String value)
-	{
-		if (value == null) return false;
+    public boolean isValidWholeNumber(final String value) {
+        if (value == null)
+            return false;
 
-		try
-		{
-			getWholeNumberFormat().parse(value);
-			return true;
-		}
-		catch (final ParseException e)
-		{
-			return false;
-		}
-	}
+        try {
+            getWholeNumberFormat().parse(value);
+            return true;
+        } catch (final ParseException e) {
+            return false;
+        }
+    }
 }

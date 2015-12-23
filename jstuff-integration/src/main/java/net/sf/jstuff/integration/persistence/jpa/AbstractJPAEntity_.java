@@ -21,10 +21,9 @@ import javax.persistence.metamodel.StaticMetamodel;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @StaticMetamodel(AbstractJPAEntity.class)
-public abstract class AbstractJPAEntity_
-{
-	public static volatile SingularAttribute<AbstractJPAEntity< ? >, Integer> _version;
-	public static volatile SingularAttribute<AbstractJPAEntity< ? >, Boolean> _isMarkedAsDeleted;
-	public static volatile SingularAttribute<AbstractJPAEntity< ? >, Date> _firstPersistedOn;
-	public static volatile SingularAttribute<AbstractJPAEntity< ? >, Date> _lastPersistedOn;
+public abstract class AbstractJPAEntity_ {
+    public static volatile SingularAttribute<AbstractJPAEntity<?>, Integer> _version;
+    public static volatile SingularAttribute<AbstractJPAEntity<?>, Boolean> _isMarkedAsDeleted;
+    public static volatile SingularAttribute<AbstractJPAEntity<?>, Date> _firstPersistedOn;
+    public static volatile SingularAttribute<AbstractJPAEntity<?>, Date> _lastPersistedOn;
 }

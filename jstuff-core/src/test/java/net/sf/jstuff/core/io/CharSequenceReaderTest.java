@@ -19,31 +19,29 @@ import junit.framework.TestCase;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CharSequenceReaderTest extends TestCase
-{
+public class CharSequenceReaderTest extends TestCase {
 
-	@SuppressWarnings("resource")
-	public void testCharSequenceReader() throws IOException
-	{
-		{
-			final char[] buf = new char[5];
-			final CharSequenceReader r = new CharSequenceReader("Hello World!");
-			r.read(buf, 0, 5);
-			assertEquals("Hello", new String(buf).intern());
-		}
+    @SuppressWarnings("resource")
+    public void testCharSequenceReader() throws IOException {
+        {
+            final char[] buf = new char[5];
+            final CharSequenceReader r = new CharSequenceReader("Hello World!");
+            r.read(buf, 0, 5);
+            assertEquals("Hello", new String(buf).intern());
+        }
 
-		{
-			final char[] buf = new char[5];
-			final CharSequenceReader r = new CharSequenceReader(new StringBuffer("Hello World!"));
-			r.read(buf, 0, 5);
-			assertEquals("Hello", new String(buf).intern());
-		}
+        {
+            final char[] buf = new char[5];
+            final CharSequenceReader r = new CharSequenceReader(new StringBuffer("Hello World!"));
+            r.read(buf, 0, 5);
+            assertEquals("Hello", new String(buf).intern());
+        }
 
-		{
-			final char[] buf = new char[5];
-			final CharSequenceReader r = new CharSequenceReader(new StringBuilder("Hello World!"));
-			r.read(buf, 0, 5);
-			assertEquals("Hello", new String(buf).intern());
-		}
-	}
+        {
+            final char[] buf = new char[5];
+            final CharSequenceReader r = new CharSequenceReader(new StringBuilder("Hello World!"));
+            r.read(buf, 0, 5);
+            assertEquals("Hello", new String(buf).intern());
+        }
+    }
 }

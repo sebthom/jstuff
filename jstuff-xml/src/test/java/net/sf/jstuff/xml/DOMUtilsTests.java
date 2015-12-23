@@ -29,6 +29,16 @@ import net.sf.jstuff.xml.DOMUtils.XPathNodeConfiguration;
  */
 public class DOMUtilsTests extends TestCase {
 
+    public void testFindTextContent() {
+        final Element elem = DOMUtils.parseString("<foo id='1'>1111<bar name='name'>2222</bar></foo>", null).getDocumentElement();
+
+        assertEquals("11112222", DOMUtils.findTextContent("/foo", elem, true));
+        assertEquals("1111", DOMUtils.findTextContent("/foo", elem, false));
+        assertEquals("2222", DOMUtils.findTextContent("/foo/bar", elem, true));
+        assertEquals(null, DOMUtils.findTextContent("/foo/dummy", elem, false));
+        assertEquals(null, DOMUtils.findTextContent("/foo/dummy", elem, false));
+    }
+
     public void testGetXPathNodes() throws XMLException {
         final Element elem = DOMUtils.parseString("<foo id='1'><bar name='name'>blabla</bar></foo>", null).getDocumentElement();
 
@@ -64,15 +74,5 @@ public class DOMUtilsTests extends TestCase {
     public void testToXML() throws XMLException {
         final Document doc = DOMUtils.parseString("<foo id='1'><bar name='name'>blabla</bar></foo>", null);
         assertEquals("<bar name=\"name\">blabla</bar>", DOMUtils.toXML(doc.getFirstChild().getFirstChild(), false, false));
-    }
-
-    public void testFindTextContent() {
-        final Element elem = DOMUtils.parseString("<foo id='1'>1111<bar name='name'>2222</bar></foo>", null).getDocumentElement();
-
-        assertEquals("11112222", DOMUtils.findTextContent("/foo", elem, true));
-        assertEquals("1111", DOMUtils.findTextContent("/foo", elem, false));
-        assertEquals("2222", DOMUtils.findTextContent("/foo/bar", elem, true));
-        assertEquals(null, DOMUtils.findTextContent("/foo/dummy", elem, false));
-        assertEquals(null, DOMUtils.findTextContent("/foo/dummy", elem, false));
     }
 }

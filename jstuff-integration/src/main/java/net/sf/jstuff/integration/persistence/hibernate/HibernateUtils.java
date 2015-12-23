@@ -19,18 +19,16 @@ import org.hibernate.proxy.HibernateProxy;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class HibernateUtils
-{
-	public static boolean isInitializable(final Object object)
-	{
-		if (Hibernate.isInitialized(object)) return true;
+public abstract class HibernateUtils {
+    public static boolean isInitializable(final Object object) {
+        if (Hibernate.isInitialized(object))
+            return true;
 
-		if (object instanceof HibernateProxy)
-		{
-			final HibernateProxy proxy = (HibernateProxy) object;
-			return proxy.getHibernateLazyInitializer().getSession() != null && proxy.getHibernateLazyInitializer().getSession().isOpen();
-		}
-		final AbstractPersistentCollection coll = (AbstractPersistentCollection) object;
-		return coll.getSession() != null && coll.getSession().isOpen();
-	}
+        if (object instanceof HibernateProxy) {
+            final HibernateProxy proxy = (HibernateProxy) object;
+            return proxy.getHibernateLazyInitializer().getSession() != null && proxy.getHibernateLazyInitializer().getSession().isOpen();
+        }
+        final AbstractPersistentCollection coll = (AbstractPersistentCollection) object;
+        return coll.getSession() != null && coll.getSession().isOpen();
+    }
 }

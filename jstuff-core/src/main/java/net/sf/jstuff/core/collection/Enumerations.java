@@ -15,70 +15,60 @@ package net.sf.jstuff.core.collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 
-import net.sf.jstuff.core.validation.Args;
-
 import org.apache.commons.lang3.ObjectUtils;
+
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Enumerations
-{
-	public static boolean contains(final Enumeration< ? > en, final Object searchFor)
-	{
-		Args.notNull("en", en);
-		while (en.hasMoreElements())
-		{
-			final Object elem = en.nextElement();
-			if (ObjectUtils.equals(elem, searchFor)) return true;
-		}
-		return false;
-	}
+public abstract class Enumerations {
 
-	public static boolean containsIdentical(final Enumeration< ? > en, final Object searchFor)
-	{
-		Args.notNull("en", en);
-		while (en.hasMoreElements())
-			if (searchFor == en.nextElement()) return true;
-		return false;
-	}
+    public static boolean contains(final Enumeration<?> en, final Object searchFor) {
+        Args.notNull("en", en);
+        while (en.hasMoreElements()) {
+            final Object elem = en.nextElement();
+            if (ObjectUtils.equals(elem, searchFor))
+                return true;
+        }
+        return false;
+    }
 
-	public static int size(final Enumeration< ? > en)
-	{
-		Args.notNull("en", en);
-		int size = 0;
-		while (en.hasMoreElements())
-		{
-			size++;
-			en.nextElement();
-		}
-		return size;
-	}
+    public static boolean containsIdentical(final Enumeration<?> en, final Object searchFor) {
+        Args.notNull("en", en);
+        while (en.hasMoreElements())
+            if (searchFor == en.nextElement())
+                return true;
+        return false;
+    }
 
-	public static <T> Iterable<T> toIterable(final Enumeration<T> en)
-	{
-		return new Iterable<T>()
-			{
-				public Iterator<T> iterator()
-				{
-					return new Iterator<T>()
-						{
-							public boolean hasNext()
-							{
-								return en == null ? false : en.hasMoreElements();
-							}
+    public static int size(final Enumeration<?> en) {
+        Args.notNull("en", en);
+        int size = 0;
+        while (en.hasMoreElements()) {
+            size++;
+            en.nextElement();
+        }
+        return size;
+    }
 
-							public T next()
-							{
-								return en.nextElement();
-							}
+    public static <T> Iterable<T> toIterable(final Enumeration<T> en) {
+        return new Iterable<T>() {
+            public Iterator<T> iterator() {
+                return new Iterator<T>() {
+                    public boolean hasNext() {
+                        return en == null ? false : en.hasMoreElements();
+                    }
 
-							public void remove()
-							{
-								throw new UnsupportedOperationException();
-							}
-						};
-				}
-			};
-	}
+                    public T next() {
+                        return en.nextElement();
+                    }
+
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+        };
+    }
 }

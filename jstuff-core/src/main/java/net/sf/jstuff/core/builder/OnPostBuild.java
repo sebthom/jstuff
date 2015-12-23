@@ -21,7 +21,6 @@ import java.lang.annotation.RetentionPolicy;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface OnPostBuild
-{
+public @interface OnPostBuild {
 
 }

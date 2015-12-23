@@ -19,34 +19,28 @@ import net.sf.jstuff.core.comparator.SortBy;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class PagedListWithSortBy<E, SortKeyType> extends PagedList<E>
-{
-	private static final long serialVersionUID = 1L;
+public class PagedListWithSortBy<E, SortKeyType> extends PagedList<E> {
+    private static final long serialVersionUID = 1L;
 
-	private SortBy<SortKeyType>[] sortedBy;
+    private SortBy<SortKeyType>[] sortedBy;
 
-	public PagedListWithSortBy()
-	{
-		super();
-	}
+    public PagedListWithSortBy() {
+        super();
+    }
 
-	public PagedListWithSortBy(final Class<E> elementType)
-	{
-		super(elementType);
-	}
+    public PagedListWithSortBy(final Class<E> elementType) {
+        super(elementType);
+    }
 
-	public PagedListWithSortBy(final Class<E> elementType, final List<E> elements, final int start, final int totalCount)
-	{
-		super(elementType, elements, start, totalCount);
-	}
+    public PagedListWithSortBy(final Class<E> elementType, final List<E> elements, final int start, final int totalCount) {
+        super(elementType, elements, start, totalCount);
+    }
 
-	public SortBy<SortKeyType>[] getSortedBy()
-	{
-		return sortedBy;
-	}
+    public SortBy<SortKeyType>[] getSortedBy() {
+        return sortedBy;
+    }
 
-	public void setSortedBy(final SortBy<SortKeyType>[] sortedBy)
-	{
-		this.sortedBy = sortedBy;
-	}
+    public void setSortedBy(final SortBy<SortKeyType>[] sortedBy) {
+        this.sortedBy = sortedBy;
+    }
 }

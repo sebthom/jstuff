@@ -15,27 +15,22 @@ package net.sf.jstuff.integration.auth;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AuthenticationFailedException extends RuntimeException
-{
-	private static final long serialVersionUID = 1L;
+public class AuthenticationFailedException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
-	public AuthenticationFailedException()
-	{
-		super();
-	}
+    public AuthenticationFailedException() {
+        super();
+    }
 
-	public AuthenticationFailedException(final String message)
-	{
-		super(message);
-	}
+    public AuthenticationFailedException(final String message) {
+        super(message);
+    }
 
-	public AuthenticationFailedException(final String message, final Throwable cause)
-	{
-		super(message, cause);
-	}
+    public AuthenticationFailedException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-	public AuthenticationFailedException(final Throwable cause)
-	{
-		super(cause);
-	}
+    public AuthenticationFailedException(final Throwable cause) {
+        super(cause);
+    }
 }

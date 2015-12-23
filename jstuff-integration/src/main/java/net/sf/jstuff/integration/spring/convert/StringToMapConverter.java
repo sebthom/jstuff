@@ -24,48 +24,44 @@ import org.springframework.core.convert.TypeDescriptor;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class StringToMapConverter extends AbstractConverter
-{
-	private static final String ENTRY_SEPARATOR = ";";
-	private static final String VALUE_ASSIGNMENT = "=>";
+public class StringToMapConverter extends AbstractConverter {
+    private static final String ENTRY_SEPARATOR = ";";
+    private static final String VALUE_ASSIGNMENT = "=>";
 
-	public StringToMapConverter()
-	{
-		super();
-	}
+    public StringToMapConverter() {
+        super();
+    }
 
-	public StringToMapConverter(final ConversionService conversionService)
-	{
-		super(conversionService);
-	}
+    public StringToMapConverter(final ConversionService conversionService) {
+        super(conversionService);
+    }
 
-	@SuppressWarnings("unchecked")
-	public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType)
-	{
-		if (source == null) return null;
-		final String sourceString = (String) source;
-		if (StringUtils.isBlank(sourceString)) return Collections.emptyMap();
+    @SuppressWarnings("unchecked")
+    public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
+        if (source == null)
+            return null;
+        final String sourceString = (String) source;
+        if (StringUtils.isBlank(sourceString))
+            return Collections.emptyMap();
 
-		@SuppressWarnings("rawtypes")
-		final Map result = new HashMap();
+        @SuppressWarnings("rawtypes")
+        final Map result = new HashMap();
 
-		for (final String entry : sourceString.split(ENTRY_SEPARATOR))
-		{
-			final String[] entryArr = entry.split(VALUE_ASSIGNMENT);
-			final String key = entryArr[0].trim();
-			final String value = entryArr[1].trim();
+        for (final String entry : sourceString.split(ENTRY_SEPARATOR)) {
+            final String[] entryArr = entry.split(VALUE_ASSIGNMENT);
+            final String key = entryArr[0].trim();
+            final String value = entryArr[1].trim();
 
-			final Object targetKey = conversionService.convert(key, sourceType, targetType.getMapKeyTypeDescriptor(key));
+            final Object targetKey = conversionService.convert(key, sourceType, targetType.getMapKeyTypeDescriptor(key));
 
-			result.put(targetKey, conversionService.convert(value, sourceType, targetType.getMapValueTypeDescriptor()));
-		}
+            result.put(targetKey, conversionService.convert(value, sourceType, targetType.getMapValueTypeDescriptor()));
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	public Set<ConvertiblePair> getConvertibleTypes()
-	{
-		return Collections.singleton(new ConvertiblePair(String.class, Map.class));
-	}
+    public Set<ConvertiblePair> getConvertibleTypes() {
+        return Collections.singleton(new ConvertiblePair(String.class, Map.class));
+    }
 
 }

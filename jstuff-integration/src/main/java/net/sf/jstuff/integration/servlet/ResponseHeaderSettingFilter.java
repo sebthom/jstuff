@@ -32,31 +32,27 @@ import net.sf.jstuff.core.logging.Logger;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ResponseHeaderSettingFilter implements Filter
-{
-	private static final Logger LOG = Logger.create();
+public class ResponseHeaderSettingFilter implements Filter {
+    private static final Logger LOG = Logger.create();
 
-	private final Map<String, String> parameter = new LinkedHashMap<String, String>();
+    private final Map<String, String> parameter = new LinkedHashMap<String, String>();
 
-	public void destroy()
-	{}
+    public void destroy() {
+    }
 
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-			ServletException
-	{
-		LOG.trace("For request %s setting HTTP response headers: %s", request, parameter);
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+        LOG.trace("For request %s setting HTTP response headers: %s", request, parameter);
 
-		final HttpServletResponse res = (HttpServletResponse) response;
-		for (final Entry<String, String> entry : parameter.entrySet())
-			res.setHeader(entry.getKey(), entry.getValue());
+        final HttpServletResponse res = (HttpServletResponse) response;
+        for (final Entry<String, String> entry : parameter.entrySet())
+            res.setHeader(entry.getKey(), entry.getValue());
 
-		chain.doFilter(request, response);
-	}
+        chain.doFilter(request, response);
+    }
 
-	@SuppressWarnings("unchecked")
-	public void init(final FilterConfig filterConfig) throws ServletException
-	{
-		for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames()))
-			parameter.put(param, filterConfig.getInitParameter(param));
-	}
+    @SuppressWarnings("unchecked")
+    public void init(final FilterConfig filterConfig) throws ServletException {
+        for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames()))
+            parameter.put(param, filterConfig.getInitParameter(param));
+    }
 }

@@ -17,22 +17,21 @@ import java.util.Map;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface SessionMap extends Map<String, Object>
-{
-	Object get(String key, Object defaultValueIfNull);
+public interface SessionMap extends Map<String, Object> {
+    Object get(String key, Object defaultValueIfNull);
 
-	/**
-	 * @return true if an underlying HTTP session exists already
-	 */
-	boolean exists();
+    /**
+     * @return true if an underlying HTTP session exists already
+     */
+    boolean exists();
 
-	/**
-	 * @return the session Id
-	 */
-	Object getId();
+    /**
+     * @return the session Id
+     */
+    Object getId();
 
-	/**
-	 * invalidates the underlying HTTP session
-	 */
-	void invalidate();
+    /**
+     * invalidates the underlying HTTP session
+     */
+    void invalidate();
 }

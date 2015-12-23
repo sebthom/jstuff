@@ -18,29 +18,24 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MapWithQueues<K, V> extends MapWithCollections<K, V, Queue<V>>
-{
-	private static final long serialVersionUID = 1L;
+public class MapWithQueues<K, V> extends MapWithCollections<K, V, Queue<V>> {
+    private static final long serialVersionUID = 1L;
 
-	public static <K, V> MapWithQueues<K, V> create()
-	{
-		return new MapWithQueues<K, V>();
-	}
+    public static <K, V> MapWithQueues<K, V> create() {
+        return new MapWithQueues<K, V>();
+    }
 
-	public MapWithQueues()
-	{
-		super();
-	}
+    public MapWithQueues() {
+        super();
+    }
 
-	@Override
-	protected Queue<V> create(final K key)
-	{
-		return new ConcurrentLinkedQueue<V>();
-	}
+    @Override
+    protected Queue<V> create(final K key) {
+        return new ConcurrentLinkedQueue<V>();
+    }
 
-	@Override
-	protected Queue<V> createNullSafe(final K key)
-	{
-		return EmptyQueue.get();
-	}
+    @Override
+    protected Queue<V> createNullSafe(final K key) {
+        return EmptyQueue.get();
+    }
 }

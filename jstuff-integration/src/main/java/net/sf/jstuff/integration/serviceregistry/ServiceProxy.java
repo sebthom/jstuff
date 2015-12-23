@@ -18,32 +18,31 @@ package net.sf.jstuff.integration.serviceregistry;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface ServiceProxy<SERVICE_INTERFACE>
-{
-	/**
-	 * @return itself casted as the service interface
-	 */
-	SERVICE_INTERFACE get();
+public interface ServiceProxy<SERVICE_INTERFACE> {
+    /**
+     * @return itself casted as the service interface
+     */
+    SERVICE_INTERFACE get();
 
-	String getServiceEndpointId();
+    String getServiceEndpointId();
 
-	/**
-	 * the concrete class of the service instance that has been registered
-	 */
-	Class< ? > getServiceImplementationClass();
+    /**
+     * the concrete class of the service instance that has been registered
+     */
+    Class<?> getServiceImplementationClass();
 
-	Class<SERVICE_INTERFACE> getServiceInterface();
+    Class<SERVICE_INTERFACE> getServiceInterface();
 
-	/**
-	 * @return true if the represented service is available
-	 */
-	boolean isServiceAvailable();
+    /**
+     * @return true if the represented service is available
+     */
+    boolean isServiceAvailable();
 
-	/**
-	 * Adds the given listener with a weak reference
-	 */
-	boolean addServiceListener(ServiceListener<SERVICE_INTERFACE> listener);
+    /**
+     * Adds the given listener with a weak reference
+     */
+    boolean addServiceListener(ServiceListener<SERVICE_INTERFACE> listener);
 
-	boolean removeServiceListener(ServiceListener<SERVICE_INTERFACE> listener);
+    boolean removeServiceListener(ServiceListener<SERVICE_INTERFACE> listener);
 
 }

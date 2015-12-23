@@ -19,53 +19,44 @@ import java.io.Serializable;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SortBy<SortKeyType> implements Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class SortBy<SortKeyType> implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-	private SortDirection direction;
-	private SortKeyType key;
+    private SortDirection direction;
+    private SortKeyType key;
 
-	public SortBy()
-	{
-		super();
-	}
+    public SortBy() {
+        super();
+    }
 
-	public SortBy(final SortKeyType key)
-	{
-		this.key = key;
-		this.direction = SortDirection.ASC;
-	}
+    public SortBy(final SortKeyType key) {
+        this.key = key;
+        this.direction = SortDirection.ASC;
+    }
 
-	public SortBy(final SortKeyType key, final SortDirection direction)
-	{
-		this.key = key;
-		this.direction = direction;
-	}
+    public SortBy(final SortKeyType key, final SortDirection direction) {
+        this.key = key;
+        this.direction = direction;
+    }
 
-	public SortDirection getDirection()
-	{
-		return direction;
-	}
+    public SortDirection getDirection() {
+        return direction;
+    }
 
-	public void setDirection(final SortDirection direction)
-	{
-		this.direction = direction;
-	}
+    public void setDirection(final SortDirection direction) {
+        this.direction = direction;
+    }
 
-	public SortKeyType getKey()
-	{
-		return key;
-	}
+    public SortKeyType getKey() {
+        return key;
+    }
 
-	public void setKey(final SortKeyType key)
-	{
-		this.key = key;
-	}
+    public void setKey(final SortKeyType key) {
+        this.key = key;
+    }
 
-	@Override
-	public String toString()
-	{
-		return key + " " + direction;
-	}
+    @Override
+    public String toString() {
+        return key + " " + direction;
+    }
 }

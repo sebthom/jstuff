@@ -16,65 +16,58 @@ package net.sf.jstuff.integration.atom.feed;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  *
  */
-public class AtomText
-{
-	public static final String TYPE_HTML = "html";
-	public static final String TYPE_TEXT = "text";
+public class AtomText {
+    public static final String TYPE_HTML = "html";
+    public static final String TYPE_TEXT = "text";
 
-	private String content;
+    private String content;
 
-	private String type = TYPE_TEXT;
+    private String type = TYPE_TEXT;
 
-	public AtomText()
-	{}
+    public AtomText() {
+    }
 
-	/**
-	 * @param content
-	 */
-	public AtomText(final String content)
-	{
-		this.content = content;
-	}
+    /**
+     * @param content
+     */
+    public AtomText(final String content) {
+        this.content = content;
+    }
 
-	/**
-	 * @param content
-	 * @param type
-	 */
-	public AtomText(final String content, final String type)
-	{
-		this.content = content;
-		this.type = type;
-	}
+    /**
+     * @param content
+     * @param type
+     */
+    public AtomText(final String content, final String type) {
+        this.content = content;
+        this.type = type;
+    }
 
-	/**
-	 * @return the value
-	 */
-	public String getContent()
-	{
-		return content;
-	}
+    /**
+     * @return the value
+     */
+    public String getContent() {
+        return content;
+    }
 
-	/**
-	 * @return the type
-	 */
-	public String getType()
-	{
-		return type;
-	}
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
 
-	/**
-	 * @param value the value to set
-	 */
-	public void setContent(final String value)
-	{
-		this.content = value;
-	}
+    /**
+     * @param value the value to set
+     */
+    public void setContent(final String value) {
+        this.content = value;
+    }
 
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(final String type)
-	{
-		this.type = type;
-	}
+    /**
+     * @param type the type to set
+     */
+    public void setType(final String type) {
+        this.type = type;
+    }
 }

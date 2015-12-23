@@ -12,17 +12,17 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.spring;
 
-import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.validation.Assert;
-
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.stereotype.Component;
 
+import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.validation.Assert;
+
 /**
  * Injects spring beans into unmanaged Java objects having {@link org.springframework.beans.factory.annotation.Autowired},
- * {@link org.springframework.beans.factory.annotation.Value} and  {@link javax.inject.Inject} annotations.
+ * {@link org.springframework.beans.factory.annotation.Value} and {@link javax.inject.Inject} annotations.
  *
  * <pre>
  * &lt;context:annotation-config /&gt;
@@ -41,48 +41,42 @@ import org.springframework.stereotype.Component;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @Component
-public class SpringBeanInjector implements DisposableBean
-{
-	private static final Logger LOG = Logger.create();
+public class SpringBeanInjector implements DisposableBean {
+    private static final Logger LOG = Logger.create();
 
-	private static SpringBeanInjector _INSTANCE;
+    private static SpringBeanInjector _INSTANCE;
 
-	/**
-	 * @return the default instance (the last instantiated one by any spring context)
-	 */
-	public static SpringBeanInjector get()
-	{
-		Assert.notNull(_INSTANCE, "No SpringBeanInjector instance created yet. Add  <bean class=\"" + SpringBeanInjector.class.getName()
-				+ "\" /> to your spring configuration!");
+    /**
+     * @return the default instance (the last instantiated one by any spring context)
+     */
+    public static SpringBeanInjector get() {
+        Assert.notNull(_INSTANCE, "No SpringBeanInjector instance created yet. Add  <bean class=\"" + SpringBeanInjector.class.getName()
+                + "\" /> to your spring configuration!");
 
-		return _INSTANCE;
-	}
+        return _INSTANCE;
+    }
 
-	@Autowired
-	private AutowiredAnnotationBeanPostProcessor processor;
+    @Autowired
+    private AutowiredAnnotationBeanPostProcessor processor;
 
-	private SpringBeanInjector()
-	{
-		Assert.isNull(_INSTANCE, "A instance of " + getClass().getName() + " already exists.");
+    private SpringBeanInjector() {
+        Assert.isNull(_INSTANCE, "A instance of " + getClass().getName() + " already exists.");
 
-		LOG.infoNew(this);
+        LOG.infoNew(this);
 
-		_INSTANCE = this;
-	}
+        _INSTANCE = this;
+    }
 
-	/**
-	 * <p><b>For use by Spring only!</b></p>
-	 * {@inheritDoc}
-	 */
-	public void destroy()
-	{
-		_INSTANCE = null;
-	}
+    /**
+     * <b>For use by Spring only!</b>
+     */
+    public void destroy() {
+        _INSTANCE = null;
+    }
 
-	public void inject(final Object unmanagedBean)
-	{
-		LOG.entry(unmanagedBean);
-		processor.processInjection(unmanagedBean);
-		LOG.exit();
-	}
+    public void inject(final Object unmanagedBean) {
+        LOG.entry(unmanagedBean);
+        processor.processInjection(unmanagedBean);
+        LOG.exit();
+    }
 }

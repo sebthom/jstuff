@@ -20,29 +20,25 @@ import net.sf.jstuff.core.reflection.SerializableMethod;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class InvokingMethodFailedException extends ReflectionException
-{
-	private static final long serialVersionUID = 1L;
+public class InvokingMethodFailedException extends ReflectionException {
+    private static final long serialVersionUID = 1L;
 
-	private final SerializableMethod method;
-	private final transient Object targetObject;
-	private final Serializable targetSerializableObject;
+    private final SerializableMethod method;
+    private final transient Object targetObject;
+    private final Serializable targetSerializableObject;
 
-	public InvokingMethodFailedException(final Method method, final Object targetObject, final Throwable cause)
-	{
-		super("Invoking method [" + method.getDeclaringClass().getName() + "." + method.getName() + "] failed.", cause);
-		this.method = SerializableMethod.get(method);
-		this.targetObject = targetObject;
-		targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
-	}
+    public InvokingMethodFailedException(final Method method, final Object targetObject, final Throwable cause) {
+        super("Invoking method [" + method.getDeclaringClass().getName() + "." + method.getName() + "] failed.", cause);
+        this.method = SerializableMethod.get(method);
+        this.targetObject = targetObject;
+        targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
+    }
 
-	public Method getMethod()
-	{
-		return method.getMethod();
-	}
+    public Method getMethod() {
+        return method.getMethod();
+    }
 
-	public Object getTargetObject()
-	{
-		return targetObject != null ? targetObject : targetSerializableObject;
-	}
+    public Object getTargetObject() {
+        return targetObject != null ? targetObject : targetSerializableObject;
+    }
 }

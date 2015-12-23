@@ -20,41 +20,35 @@ import java.util.NoSuchElementException;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EmptyIterator<T> implements Iterator<T>, Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class EmptyIterator<T> implements Iterator<T>, Serializable {
 
-	static final EmptyIterator< ? > INSTANCE = new EmptyIterator<Object>();
+    private static final long serialVersionUID = 1L;
 
-	@SuppressWarnings("unchecked")
-	public static <T> EmptyIterator<T> get()
-	{
-		return (EmptyIterator<T>) INSTANCE;
-	}
+    static final EmptyIterator<?> INSTANCE = new EmptyIterator<Object>();
 
-	private EmptyIterator()
-	{
-		super();
-	}
+    @SuppressWarnings("unchecked")
+    public static <T> EmptyIterator<T> get() {
+        return (EmptyIterator<T>) INSTANCE;
+    }
 
-	public boolean hasNext()
-	{
-		return false;
-	}
+    private EmptyIterator() {
+        super();
+    }
 
-	public T next()
-	{
-		throw new NoSuchElementException();
-	}
+    public boolean hasNext() {
+        return false;
+    }
 
-	@SuppressWarnings({"static-method", "unused"})
-	private Object readResolve() throws ObjectStreamException
-	{
-		return INSTANCE;
-	}
+    public T next() {
+        throw new NoSuchElementException();
+    }
 
-	public void remove()
-	{
-		throw new UnsupportedOperationException();
-	}
+    @SuppressWarnings({ "static-method", "unused" })
+    private Object readResolve() throws ObjectStreamException {
+        return INSTANCE;
+    }
+
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -17,13 +17,12 @@ import java.io.Serializable;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface GroupDetails extends Serializable
-{
-	String getDisplayName();
+public interface GroupDetails extends Serializable {
+    String getDisplayName();
 
-	String getDistingueshedName();
+    String getDistingueshedName();
 
-	String getGroupId();
+    String getGroupId();
 
-	String[] getMemberDNs();
+    String[] getMemberDNs();
 }

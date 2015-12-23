@@ -17,21 +17,18 @@ import junit.framework.TestCase;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ThreadsTest extends TestCase
-{
-	public void testSleep()
-	{
-		final long now = System.currentTimeMillis();
-		Threads.sleep(100);
-		assertTrue(System.currentTimeMillis() - now >= 100);
-	}
+public class ThreadsTest extends TestCase {
+    public void testSleep() {
+        final long now = System.currentTimeMillis();
+        Threads.sleep(100);
+        assertTrue(System.currentTimeMillis() - now >= 100);
+    }
 
-	public void testThreads()
-	{
-		assertEquals(0, Threads.deadlockedIDs().length);
-		assertTrue(Threads.count() > 0);
-		assertEquals(Threads.count(), Threads.all().length);
-		assertEquals(Threads.count(), Threads.allPrioritized().length);
-		assertNotNull(Threads.rootThreadGroup());
-	}
+    public void testThreads() {
+        assertEquals(0, Threads.deadlockedIDs().length);
+        assertTrue(Threads.count() > 0);
+        assertEquals(Threads.count(), Threads.all().length);
+        assertEquals(Threads.count(), Threads.allPrioritized().length);
+        assertNotNull(Threads.rootThreadGroup());
+    }
 }

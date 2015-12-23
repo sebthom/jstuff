@@ -15,7 +15,7 @@ package net.sf.jstuff.core;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Disposable
-{
-	void dispose();
+public interface Disposable {
+
+    void dispose();
 }

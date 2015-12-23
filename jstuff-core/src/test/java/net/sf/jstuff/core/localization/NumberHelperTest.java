@@ -19,23 +19,21 @@ import junit.framework.TestCase;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NumberHelperTest extends TestCase
-{
-	public void testIsValidCurrency()
-	{
-		final NumberHelper numberHelper = new NumberHelper(Locale.GERMANY);
+public class NumberHelperTest extends TestCase {
+    public void testIsValidCurrency() {
+        final NumberHelper numberHelper = new NumberHelper(Locale.GERMANY);
 
-		assertTrue(numberHelper.isValidCurrency("10,00 €"));
-		assertTrue(numberHelper.isValidCurrency("1000 €"));
-		assertTrue(numberHelper.isValidCurrency("1.000,00 €"));
-		assertTrue(numberHelper.isValidCurrency("1000.00 €"));
+        assertTrue(numberHelper.isValidCurrency("10,00 €"));
+        assertTrue(numberHelper.isValidCurrency("1000 €"));
+        assertTrue(numberHelper.isValidCurrency("1.000,00 €"));
+        assertTrue(numberHelper.isValidCurrency("1000.00 €"));
 
-		assertFalse(numberHelper.isValidCurrency("10,00"));
-		assertFalse(numberHelper.isValidCurrency("1000"));
-		assertFalse(numberHelper.isValidCurrency("1.000,00"));
-		assertFalse(numberHelper.isValidCurrency("1000.00"));
+        assertFalse(numberHelper.isValidCurrency("10,00"));
+        assertFalse(numberHelper.isValidCurrency("1000"));
+        assertFalse(numberHelper.isValidCurrency("1.000,00"));
+        assertFalse(numberHelper.isValidCurrency("1000.00"));
 
-		assertFalse(numberHelper.isValidCurrency("10,00.00 €"));
-		assertFalse(numberHelper.isValidCurrency(" €"));
-	}
+        assertFalse(numberHelper.isValidCurrency("10,00.00 €"));
+        assertFalse(numberHelper.isValidCurrency(" €"));
+    }
 }

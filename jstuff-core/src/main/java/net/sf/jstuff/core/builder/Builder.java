@@ -15,7 +15,6 @@ package net.sf.jstuff.core.builder;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Builder<TARGET_TYPE>
-{
-	TARGET_TYPE build();
+public interface Builder<TARGET_TYPE> {
+    TARGET_TYPE build();
 }

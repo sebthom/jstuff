@@ -17,15 +17,14 @@ import java.io.Serializable;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface UserDetails extends Serializable
-{
-	String getDisplayName();
+public interface UserDetails extends Serializable {
+    String getDisplayName();
 
-	String getDistingueshedName();
+    String getDistingueshedName();
 
-	String getEMailAddress();
+    String getEMailAddress();
 
-	String getLogonName();
+    String getLogonName();
 
-	String getUserId();
+    String getUserId();
 }

@@ -17,9 +17,8 @@ import java.io.Serializable;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class UpdateGuestBookEntryCommand implements Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class UpdateGuestBookEntryCommand implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-	public String message;
+    public String message;
 }

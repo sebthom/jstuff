@@ -22,60 +22,41 @@ import net.sf.jstuff.core.StringUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Checksums
-{
+public abstract class Checksums {
 
-	public static String md5(final String txt) throws SecurityException
-	{
-		try
-		{
-			final MessageDigest md = MessageDigest.getInstance("MD5");
-			final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
-			return StringUtils.leftPad(number.toString(16), 32, '0');
-		}
-		catch (final NoSuchAlgorithmException ex)
-		{
-			throw new SecurityException(ex);
-		}
-		catch (final UnsupportedEncodingException ex)
-		{
-			throw new SecurityException(ex);
-		}
-	}
+    public static String md5(final String txt) throws SecurityException {
+        try {
+            final MessageDigest md = MessageDigest.getInstance("MD5");
+            final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
+            return StringUtils.leftPad(number.toString(16), 32, '0');
+        } catch (final NoSuchAlgorithmException ex) {
+            throw new SecurityException(ex);
+        } catch (final UnsupportedEncodingException ex) {
+            throw new SecurityException(ex);
+        }
+    }
 
-	public static String sha1(final String txt) throws SecurityException
-	{
-		try
-		{
-			final MessageDigest md = MessageDigest.getInstance("SHA-1");
-			final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
-			return StringUtils.leftPad(number.toString(16), 48, '0');
-		}
-		catch (final NoSuchAlgorithmException ex)
-		{
-			throw new SecurityException(ex);
-		}
-		catch (final UnsupportedEncodingException ex)
-		{
-			throw new SecurityException(ex);
-		}
-	}
+    public static String sha1(final String txt) throws SecurityException {
+        try {
+            final MessageDigest md = MessageDigest.getInstance("SHA-1");
+            final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
+            return StringUtils.leftPad(number.toString(16), 48, '0');
+        } catch (final NoSuchAlgorithmException ex) {
+            throw new SecurityException(ex);
+        } catch (final UnsupportedEncodingException ex) {
+            throw new SecurityException(ex);
+        }
+    }
 
-	public static String sha256(final String txt) throws SecurityException
-	{
-		try
-		{
-			final MessageDigest md = MessageDigest.getInstance("SHA-256");
-			final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
-			return StringUtils.leftPad(number.toString(16), 64, '0');
-		}
-		catch (final NoSuchAlgorithmException ex)
-		{
-			throw new SecurityException(ex);
-		}
-		catch (final UnsupportedEncodingException ex)
-		{
-			throw new SecurityException(ex);
-		}
-	}
+    public static String sha256(final String txt) throws SecurityException {
+        try {
+            final MessageDigest md = MessageDigest.getInstance("SHA-256");
+            final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
+            return StringUtils.leftPad(number.toString(16), 64, '0');
+        } catch (final NoSuchAlgorithmException ex) {
+            throw new SecurityException(ex);
+        } catch (final UnsupportedEncodingException ex) {
+            throw new SecurityException(ex);
+        }
+    }
 }

@@ -19,71 +19,59 @@ import java.util.ListIterator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DelegatingList<V> extends DelegatingCollection<V> implements List<V>
-{
-	private static final long serialVersionUID = 1L;
+public class DelegatingList<V> extends DelegatingCollection<V> implements List<V> {
 
-	private final List<V> delegate;
+    private static final long serialVersionUID = 1L;
 
-	public DelegatingList(final List<V> delegate)
-	{
-		super(delegate);
-		this.delegate = delegate;
-	}
+    private final List<V> delegate;
 
-	public void add(final int index, final V element)
-	{
-		delegate.add(index, element);
-	}
+    public DelegatingList(final List<V> delegate) {
+        super(delegate);
+        this.delegate = delegate;
+    }
 
-	public boolean addAll(final int index, final Collection< ? extends V> c)
-	{
-		return delegate.addAll(index, c);
-	}
+    public void add(final int index, final V element) {
+        delegate.add(index, element);
+    }
 
-	public V get(final int index)
-	{
-		return delegate.get(index);
-	}
+    public boolean addAll(final int index, final Collection<? extends V> c) {
+        return delegate.addAll(index, c);
+    }
 
-	public int indexOf(final Object o)
-	{
-		return delegate.indexOf(o);
-	}
+    public V get(final int index) {
+        return delegate.get(index);
+    }
 
-	public int lastIndexOf(final Object o)
-	{
-		return delegate.lastIndexOf(o);
-	}
+    public int indexOf(final Object o) {
+        return delegate.indexOf(o);
+    }
 
-	public ListIterator<V> listIterator()
-	{
-		return delegate.listIterator();
-	}
+    public int lastIndexOf(final Object o) {
+        return delegate.lastIndexOf(o);
+    }
 
-	public ListIterator<V> listIterator(final int index)
-	{
-		return delegate.listIterator(index);
-	}
+    public ListIterator<V> listIterator() {
+        return delegate.listIterator();
+    }
 
-	public V remove(final int index)
-	{
-		return delegate.remove(index);
-	}
+    public ListIterator<V> listIterator(final int index) {
+        return delegate.listIterator(index);
+    }
 
-	public V set(final int index, final V element)
-	{
-		return delegate.set(index, element);
-	}
+    public V remove(final int index) {
+        return delegate.remove(index);
+    }
 
-	public List<V> subList(final int fromIndex, final int toIndex)
-	{
-		return delegate.subList(fromIndex, toIndex);
-	}
+    public V set(final int index, final V element) {
+        return delegate.set(index, element);
+    }
 
-	@Override
-	public String toString()
-	{
-		return super.toString() + delegate;
-	}
+    public List<V> subList(final int fromIndex, final int toIndex) {
+        return delegate.subList(fromIndex, toIndex);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + delegate;
+    }
 }

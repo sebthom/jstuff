@@ -21,45 +21,39 @@ import net.sf.jstuff.core.validation.Args;
  * 
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanRef<T> implements Serializable
-{
-	private static final long serialVersionUID = 1L;
+public class SpringBeanRef<T> implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-	public static <T> SpringBeanRef<T> of(final Class<T> beanType)
-	{
-		return new SpringBeanRef<T>(beanType);
-	}
+    public static <T> SpringBeanRef<T> of(final Class<T> beanType) {
+        return new SpringBeanRef<T>(beanType);
+    }
 
-	public static <T> SpringBeanRef<T> of(final String beanName)
-	{
-		return new SpringBeanRef<T>(beanName);
-	}
+    public static <T> SpringBeanRef<T> of(final String beanName) {
+        return new SpringBeanRef<T>(beanName);
+    }
 
-	private transient T springBean;
+    private transient T springBean;
 
-	private final String beanName;
+    private final String beanName;
 
-	private final Class<T> beanType;
+    private final Class<T> beanType;
 
-	private SpringBeanRef(final Class<T> beanType)
-	{
-		Args.notNull("beanType", beanType);
-		this.beanType = beanType;
-		beanName = null;
-	}
+    private SpringBeanRef(final Class<T> beanType) {
+        Args.notNull("beanType", beanType);
+        this.beanType = beanType;
+        beanName = null;
+    }
 
-	private SpringBeanRef(final String beanName)
-	{
-		Args.notNull("beanName", beanName);
-		this.beanName = beanName;
-		beanType = null;
-	}
+    private SpringBeanRef(final String beanName) {
+        Args.notNull("beanName", beanName);
+        this.beanName = beanName;
+        beanType = null;
+    }
 
-	@SuppressWarnings("unchecked")
-	public T get()
-	{
-		if (springBean == null)
-			springBean = (T) (beanName == null ? SpringBeanLocator.get().byClass(beanType) : SpringBeanLocator.get().byName(beanName));
-		return springBean;
-	}
+    @SuppressWarnings("unchecked")
+    public T get() {
+        if (springBean == null)
+            springBean = (T) (beanName == null ? SpringBeanLocator.get().byClass(beanType) : SpringBeanLocator.get().byName(beanName));
+        return springBean;
+    }
 }

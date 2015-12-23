@@ -17,17 +17,15 @@ import java.text.DateFormat;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public enum DateFormatStyle
-{
-	FULL(DateFormat.FULL), //
-	LONG(DateFormat.LONG), //
-	MEDIUM(DateFormat.MEDIUM), //
-	SHORT(DateFormat.SHORT);
+public enum DateFormatStyle {
+    FULL(DateFormat.FULL), //
+    LONG(DateFormat.LONG), //
+    MEDIUM(DateFormat.MEDIUM), //
+    SHORT(DateFormat.SHORT);
 
-	public final int style;
+    public final int style;
 
-	private DateFormatStyle(final int style)
-	{
-		this.style = style;
-	}
+    private DateFormatStyle(final int style) {
+        this.style = style;
+    }
 }

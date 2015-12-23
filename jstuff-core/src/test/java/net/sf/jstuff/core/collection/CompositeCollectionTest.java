@@ -22,40 +22,32 @@ import junit.framework.TestCase;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeCollectionTest extends TestCase
-{
+public class CompositeCollectionTest extends TestCase {
 
-	public void testCompositeCollection()
-	{
-		final List<String> l1 = Arrays.asList("a", "b");
-		final List<String> l2 = Arrays.asList("c", "d");
-		@SuppressWarnings("unchecked")
-		final Collection<String> cc = CompositeCollection.of(l1, l2);
-		assertEquals(4, cc.size());
+    public void testCompositeCollection() {
+        final List<String> l1 = Arrays.asList("a", "b");
+        final List<String> l2 = Arrays.asList("c", "d");
+        @SuppressWarnings("unchecked")
+        final Collection<String> cc = CompositeCollection.of(l1, l2);
+        assertEquals(4, cc.size());
 
-		final List<String> l3 = new ArrayList<String>(cc);
-		assertEquals("a", l3.get(0));
-		assertEquals("b", l3.get(1));
-		assertEquals("c", l3.get(2));
-		assertEquals("d", l3.get(3));
-		assertEquals(4, l3.size());
+        final List<String> l3 = new ArrayList<String>(cc);
+        assertEquals("a", l3.get(0));
+        assertEquals("b", l3.get(1));
+        assertEquals("c", l3.get(2));
+        assertEquals("d", l3.get(3));
+        assertEquals(4, l3.size());
 
-		try
-		{
-			cc.add("foo");
-		}
-		catch (final UnsupportedOperationException ex)
-		{
+        try {
+            cc.add("foo");
+        } catch (final UnsupportedOperationException ex) {
 
-		}
+        }
 
-		try
-		{
-			cc.remove("a");
-		}
-		catch (final UnsupportedOperationException ex)
-		{
+        try {
+            cc.remove("a");
+        } catch (final UnsupportedOperationException ex) {
 
-		}
-	}
+        }
+    }
 }

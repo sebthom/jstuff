@@ -17,31 +17,27 @@ import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ZippedBlockRMIProxyFactoryBean extends RmiProxyFactoryBean
-{
-	private boolean useCompressedRMISocketFactory = true;
+public class ZippedBlockRMIProxyFactoryBean extends RmiProxyFactoryBean {
+    private boolean useCompressedRMISocketFactory = true;
 
-	public ZippedBlockRMIProxyFactoryBean()
-	{
-		setLookupStubOnStartup(false);
-		setRefreshStubOnConnectFailure(true);
-	}
+    public ZippedBlockRMIProxyFactoryBean() {
+        setLookupStubOnStartup(false);
+        setRefreshStubOnConnectFailure(true);
+    }
 
-	@Override
-	public void afterPropertiesSet()
-	{
-		if (useCompressedRMISocketFactory) setRegistryClientSocketFactory(new ZippedBlockRMISocketFactory());
+    @Override
+    public void afterPropertiesSet() {
+        if (useCompressedRMISocketFactory)
+            setRegistryClientSocketFactory(new ZippedBlockRMISocketFactory());
 
-		super.afterPropertiesSet();
-	}
+        super.afterPropertiesSet();
+    }
 
-	public boolean isUseCompressedRMISocketFactory()
-	{
-		return useCompressedRMISocketFactory;
-	}
+    public boolean isUseCompressedRMISocketFactory() {
+        return useCompressedRMISocketFactory;
+    }
 
-	public void setUseCompressedRMISocketFactory(final boolean useCompressedRMISocketFactory)
-	{
-		this.useCompressedRMISocketFactory = useCompressedRMISocketFactory;
-	}
+    public void setUseCompressedRMISocketFactory(final boolean useCompressedRMISocketFactory) {
+        this.useCompressedRMISocketFactory = useCompressedRMISocketFactory;
+    }
 }

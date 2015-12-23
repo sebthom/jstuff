@@ -18,28 +18,23 @@ import java.util.ResourceBundle;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public enum Day
-{
-	MONDAY,
-	TUESDAY,
-	WEDNESDAY,
-	THURSDAY,
-	FRIDAY,
-	SATURDAY,
-	SUNDAY;
+public enum Day {
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY;
 
-	private static final String BUNDLE_NAME = Day.class.getName();
+    private static final String BUNDLE_NAME = Day.class.getName();
 
-	@Override
-	public String toString()
-	{
-		try
-		{
-			return ResourceBundle.getBundle(BUNDLE_NAME).getString(name());
-		}
-		catch (final MissingResourceException e)
-		{
-			return name();
-		}
-	}
+    @Override
+    public String toString() {
+        try {
+            return ResourceBundle.getBundle(BUNDLE_NAME).getString(name());
+        } catch (final MissingResourceException e) {
+            return name();
+        }
+    }
 }

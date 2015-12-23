@@ -15,14 +15,13 @@ package net.sf.jstuff.integration.rest;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public enum HttpRequestMethod
-{
-	DELETE,
-	GET,
-	HEAD,
-	POST,
-	PUT
-	/*,TRACE,
-	CONNECT,
-	OPTIONS*/
+public enum HttpRequestMethod {
+    DELETE,
+    GET,
+    HEAD,
+    POST,
+    PUT
+    /*,TRACE,
+    CONNECT,
+    OPTIONS*/
 }
