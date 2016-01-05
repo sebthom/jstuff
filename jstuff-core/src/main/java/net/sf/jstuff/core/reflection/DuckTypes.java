@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -40,18 +40,19 @@ public abstract class DuckTypes {
         if (duckInterface.isAssignableFrom(duckLikeClass))
             return (T) duckLikeObject;
 
-        LOG.debug("Ducktyping %s to type %s", duckLikeObject, duckInterface);
+        LOG.debug("Duck-typing %s to type %s", duckLikeObject, duckInterface);
 
         return Proxies.create(new InvocationHandler() {
             public Object invoke(final Object duckProxy, final Method duckMethod, final Object[] args) throws Throwable {
-                try {
-                    final Method duckLikeMethod = duckLikeClass.getMethod(duckMethod.getName(), duckMethod.getParameterTypes());
+                final Method duckLikeMethod = Methods.findMatchingRecursive(duckLikeClass, duckMethod.getName(), duckMethod.getParameterTypes());
+                if (duckLikeMethod == null || Methods.isAbstract(duckLikeMethod) || !Methods.isPublic(duckLikeMethod))
+                    throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method " + duckLikeMethod + ".");
 
-                    // delegate method invocation on duck proxy to duckLikeObject's method
-                    return duckLikeMethod.invoke(duckLikeObject, args);
-                } catch (final NoSuchMethodException ex) {
-                    throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method " + duckInterface + ".");
-                }
+                // the public method might be inaccessible if it was declared on a non-public class
+                Methods.ensureAccessible(duckLikeMethod);
+
+                // delegate method invocation on duck proxy to duckLikeObject's method
+                return duckLikeMethod.invoke(duckLikeObject, args);
             }
         }, duckInterface);
     }
@@ -66,12 +67,11 @@ public abstract class DuckTypes {
         final Class<?> duckLikeClass = duckLikeObject.getClass();
         if (duckType.isAssignableFrom(duckLikeClass))
             return true;
-        for (final Method method : duckType.getMethods())
-            try {
-                duckLikeClass.getMethod(method.getName(), method.getParameterTypes());
-            } catch (final NoSuchMethodException e) {
+        for (final Method method : duckType.getMethods()) {
+            final Method m = Methods.findMatchingRecursive(duckLikeClass, method.getName(), method.getParameterTypes());
+            if (m == null || Methods.isAbstract(m) || !Methods.isPublic(m))
                 return false;
-            }
+        }
         return true;
     }
 }
