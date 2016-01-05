@@ -26,11 +26,11 @@ public class StackTraceTest extends TestCase {
 
             public void innerMethod() {
                 ensureEquals("innerMethod", StackTrace.getThisMethodName());
-                ensureEquals(34, StackTrace.getThisLineNumber());
+                ensureEquals(29, StackTrace.getThisLineNumber());
                 ensureEquals("StackTraceTest.java", StackTrace.getThisFileName());
 
                 ensureEquals("outerMethod", StackTrace.getCallerMethodName());
-                ensureEquals(49, StackTrace.getCallerLineNumber());
+                ensureEquals(43, StackTrace.getCallerLineNumber());
                 ensureEquals("StackTraceTest.java", StackTrace.getCallerFileName());
                 ensureEquals(Outer.class.getName(), StackTrace.getCallerClassName());
                 ensureEquals(Outer.class, StackTrace.getCallerClass());
