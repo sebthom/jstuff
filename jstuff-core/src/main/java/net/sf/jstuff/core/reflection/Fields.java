@@ -84,9 +84,11 @@ public abstract class Fields extends Members {
         return findRecursive(superclazz, fieldName, compatibleTo);
     }
 
+    /**
+     * @param obj specify <code>null</code> for static fields
+     */
     @SuppressWarnings("unchecked")
     public static <T> T read(final Object obj, final Field field) throws AccessingFieldValueFailedException {
-        Args.notNull("obj", obj);
         Args.notNull("field", field);
 
         try {
@@ -97,8 +99,10 @@ public abstract class Fields extends Members {
         }
     }
 
+    /**
+     * @param obj specify <code>null</code> for static fields
+     */
     public static void write(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException {
-        Args.notNull("obj", obj);
         Args.notNull("field", field);
 
         if (isFinal(field))
@@ -113,8 +117,10 @@ public abstract class Fields extends Members {
         }
     }
 
+    /**
+     * @param obj specify <code>null</code> for static fields
+     */
     public static void write(final Object obj, final String fieldName, final Object value) throws ReflectionException {
-        Args.notNull("obj", obj);
         Args.notNull("fieldName", fieldName);
 
         final Field field = findRecursive(obj.getClass(), fieldName);
@@ -133,8 +139,10 @@ public abstract class Fields extends Members {
         }
     }
 
+    /**
+     * @param obj specify <code>null</code> for static fields
+     */
     public static void writeIgnoringFinal(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException {
-        Args.notNull("obj", obj);
         Args.notNull("field", field);
 
         try {
@@ -145,8 +153,10 @@ public abstract class Fields extends Members {
         }
     }
 
+    /**
+     * @param obj specify <code>null</code> for static fields
+     */
     public static void writeIgnoringFinal(final Object obj, final String fieldName, final Object value) throws ReflectionException {
-        Args.notNull("obj", obj);
         Args.notNull("fieldName", fieldName);
 
         final Field field = findRecursive(obj.getClass(), fieldName);
