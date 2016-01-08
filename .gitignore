@@ -1,6 +1,7 @@
 /.*
 /.project
 /.settings
+jstuff-core/.*
 jstuff-core/.classpath
 jstuff-core/.project
 jstuff-core/.settings
@@ -11,6 +12,7 @@ jstuff-integration/.project
 jstuff-integration/.settings
 jstuff-integration/pom.xml.releaseBackup
 jstuff-integration/target
+jstuff-xml/.*
 jstuff-xml/.classpath
 jstuff-xml/.project
 jstuff-xml/.settings

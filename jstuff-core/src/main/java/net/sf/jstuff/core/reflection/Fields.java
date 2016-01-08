@@ -13,6 +13,7 @@
 package net.sf.jstuff.core.reflection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import net.sf.jstuff.core.reflection.exception.AccessingFieldValueFailedException;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
@@ -117,10 +118,8 @@ public abstract class Fields extends Members {
         }
     }
 
-    /**
-     * @param obj specify <code>null</code> for static fields
-     */
     public static void write(final Object obj, final String fieldName, final Object value) throws ReflectionException {
+        Args.notNull("obj", obj);
         Args.notNull("fieldName", fieldName);
 
         final Field field = findRecursive(obj.getClass(), fieldName);
@@ -147,16 +146,15 @@ public abstract class Fields extends Members {
 
         try {
             ensureAccessible(field);
+            write(field, "modifiers", field.getModifiers() & ~Modifier.FINAL);
             field.set(obj, value);
         } catch (final Exception ex) {
             throw new SettingFieldValueFailedException(field, obj, ex);
         }
     }
 
-    /**
-     * @param obj specify <code>null</code> for static fields
-     */
     public static void writeIgnoringFinal(final Object obj, final String fieldName, final Object value) throws ReflectionException {
+        Args.notNull("obj", obj);
         Args.notNull("fieldName", fieldName);
 
         final Field field = findRecursive(obj.getClass(), fieldName);
@@ -165,6 +163,7 @@ public abstract class Fields extends Members {
 
         try {
             ensureAccessible(field);
+            write(field, "modifiers", field.getModifiers() & ~Modifier.FINAL);
             field.set(obj, value);
         } catch (final Exception ex) {
             throw new SettingFieldValueFailedException(field, obj, ex);
