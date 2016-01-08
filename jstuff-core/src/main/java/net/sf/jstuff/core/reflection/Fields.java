@@ -118,6 +118,17 @@ public abstract class Fields extends Members {
         }
     }
 
+    /**
+     * Writes to a static field
+     */
+    public static void write(final Class<?> clazz, final String fieldName, final Object value) throws ReflectionException {
+        Args.notNull("clazz", clazz);
+        Args.notNull("fieldName", fieldName);
+
+        final Field field = findRecursive(clazz, fieldName);
+        write(null, field, value);
+    }
+
     public static void write(final Object obj, final String fieldName, final Object value) throws ReflectionException {
         Args.notNull("obj", obj);
         Args.notNull("fieldName", fieldName);
@@ -136,6 +147,17 @@ public abstract class Fields extends Members {
         } catch (final Exception ex) {
             throw new SettingFieldValueFailedException(field, obj, ex);
         }
+    }
+
+    /**
+     * Writes to a static field
+     */
+    public static void writeIgnoringFinal(final Class<?> clazz, final String fieldName, final Object value) throws ReflectionException {
+        Args.notNull("clazz", clazz);
+        Args.notNull("fieldName", fieldName);
+
+        final Field field = findRecursive(clazz, fieldName);
+        writeIgnoringFinal(null, field, value);
     }
 
     /**
@@ -169,5 +191,4 @@ public abstract class Fields extends Members {
             throw new SettingFieldValueFailedException(field, obj, ex);
         }
     }
-
 }
