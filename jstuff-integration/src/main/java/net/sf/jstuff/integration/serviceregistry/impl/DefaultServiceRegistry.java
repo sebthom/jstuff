@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -14,6 +14,7 @@ package net.sf.jstuff.integration.serviceregistry.impl;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -228,7 +229,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
     }
 
     /**
-     * This method is intended for subclassing
+     * This method is intended for sub-classing
      */
     protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointState serviceEndpointState,
             final Class<SERVICE_INTERFACE> serviceInterface) {
@@ -255,7 +256,11 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
                 final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
                 if (service == null)
                     throw new ServiceUnavailableException(advice.serviceEndpointId, serviceInterface);
-                return method.invoke(service, args);
+                try {
+                    return method.invoke(service, args);
+                } catch (final InvocationTargetException ex) {
+                    throw ex.getTargetException();
+                }
             }
         }, ServiceProxyInternal.class, serviceInterface);
         advice.setProxy(proxy);
