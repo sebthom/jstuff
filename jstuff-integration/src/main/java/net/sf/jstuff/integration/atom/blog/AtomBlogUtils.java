@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -19,8 +19,6 @@ import java.util.UUID;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
-import net.sf.jstuff.core.io.IOUtils;
-
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -29,6 +27,8 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+
+import net.sf.jstuff.core.io.IOUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -43,8 +43,6 @@ public class AtomBlogUtils {
 
     /**
      * @param blogEntryEditURL e.g. http://myserver/weblogs/services/atom/me@acme.com/entries/24CG0902859327955BED3587DC5B5A0003E8
-     * @param logonName
-     * @param password
      */
     public static void deleteBlogEntry(final String blogEntryEditURL, final String logonName, final String password)
             throws DeletingAtomBlogEntryFailedException {
@@ -124,14 +122,8 @@ public class AtomBlogUtils {
     }
 
     /**
-     * @param atomBlogEntry
-     * @param blogAtomServiceEntriesURL
-     *            e.g.
-     *            http://myserver/weblogs/services/atom/blueComment/entries
-     * @param logonName
-     * @param password
+     * @param blogAtomServiceEntriesURL e.g. http://myserver/weblogs/services/atom/blueComment/entries
      */
-    @SuppressWarnings("resource")
     public static void postBlogEntry(final AtomBlogEntry atomBlogEntry, final String blogAtomServiceEntriesURL, final String logonName, final String password)
             throws PublishingAtomBlogEntryFailedException {
         try {
@@ -163,11 +155,12 @@ public class AtomBlogUtils {
                     staxWriter.writeEndElement();
                 }
                 {
-                    if (atomBlogEntry.getTags() != null)
+                    if (atomBlogEntry.getTags() != null) {
                         for (final String category : atomBlogEntry.getTags()) {
-                        staxWriter.writeStartElement("category");
-                        staxWriter.writeAttribute("term", category);
-                        staxWriter.writeEndElement();
+                            staxWriter.writeStartElement("category");
+                            staxWriter.writeAttribute("term", category);
+                            staxWriter.writeEndElement();
+                        }
                     }
                 }
                 {
