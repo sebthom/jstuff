@@ -29,6 +29,13 @@ import net.sf.jstuff.xml.DOMUtils.XPathNodeConfiguration;
  */
 public class DOMUtilsTests extends TestCase {
 
+    public void testEvaluate() {
+        final Element elem = DOMUtils.parseString("<foo id='myid'><bar/><bar/><bar/></foo>", null).getDocumentElement();
+
+        assertEquals("myid", DOMUtils.evaluate("/foo/@id", elem));
+        assertEquals("3", DOMUtils.evaluate("count(/foo/bar)", elem));
+    }
+
     public void testFindTextContent() {
         final Element elem = DOMUtils.parseString("<foo id='1'>1111<bar name='name'>2222</bar></foo>", null).getDocumentElement();
 

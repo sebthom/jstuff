@@ -142,6 +142,19 @@ public class DOMFile {
         return elem;
     }
 
+    public String evaluate(final String xPathExpression) throws XMLException {
+        Args.notNull("xPathExpression", xPathExpression);
+
+        return DOMUtils.evaluate(xPathExpression, domRoot);
+    }
+
+    public String evaluate(final String xPathExpression, final Node searchScope) throws XMLException {
+        Args.notNull("xPathExpression", xPathExpression);
+        Args.notNull("searchScope", searchScope);
+
+        return DOMUtils.evaluate(xPathExpression, searchScope);
+    }
+
     public Node findNode(final String xPathExpression) throws XMLException {
         Args.notEmpty("xPathExpression", xPathExpression);
 

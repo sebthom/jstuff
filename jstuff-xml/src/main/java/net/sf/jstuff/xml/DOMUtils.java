@@ -286,9 +286,21 @@ public abstract class DOMUtils {
         });
     }
 
+    public static String evaluate(final String xPathExpression, final Node searchScope) throws XMLException {
+        Args.notNull("xPathExpression", xPathExpression);
+        Args.notNull("searchScope", searchScope);
+
+        try {
+            return XPATH.get().evaluate(xPathExpression, searchScope);
+        } catch (final XPathExpressionException ex) {
+            throw new XMLException(ex);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static <T extends Node> T findNode(final String xPathExpression, final Node searchScope) throws XMLException {
         Args.notNull("xPathExpression", xPathExpression);
+        Args.notNull("searchScope", searchScope);
 
         try {
             return (T) XPATH.get().evaluate(xPathExpression, searchScope, XPathConstants.NODE);
@@ -313,6 +325,7 @@ public abstract class DOMUtils {
      */
     public static String findTextContent(final String xPathExpression, final Node searchScope, final boolean recursive) throws XMLException {
         Args.notNull("xPathExpression", xPathExpression);
+        Args.notNull("searchScope", searchScope);
 
         try {
             if (recursive)
