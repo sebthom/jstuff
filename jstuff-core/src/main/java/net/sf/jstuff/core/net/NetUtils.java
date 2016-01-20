@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -150,7 +150,7 @@ public abstract class NetUtils {
     public static String getLocalShortHostName() {
         try {
             // getHostName() does not reliable return only the short name therefore we extract it manually
-            return StringUtils.substringBefore(InetAddress.getLocalHost().getHostName() + ".", ".");
+            return Strings.substringBefore(InetAddress.getLocalHost().getHostName() + ".", ".");
         } catch (final UnknownHostException ex) {
             LOG.warn(ex, "Cannot determine short hostname of local host, returning 'localhost' instead.");
             return "localhost";

@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import net.sf.jstuff.core.Identifiable;
-import net.sf.jstuff.core.date.DateUtils;
+import net.sf.jstuff.core.date.Dates;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
@@ -106,7 +106,7 @@ public class AtomEntry extends Identifiable.Default<String> {
      * @throws ParseException
      */
     public Date getPublished() throws ParseException {
-        return DateUtils.fromRFC3399(published);
+        return Dates.fromRFC3399(published);
     }
 
     /**
@@ -128,7 +128,7 @@ public class AtomEntry extends Identifiable.Default<String> {
      * @throws ParseException
      */
     public Date getUpdated() throws ParseException {
-        return DateUtils.fromRFC3399(updated);
+        return Dates.fromRFC3399(updated);
     }
 
     /**
@@ -170,7 +170,7 @@ public class AtomEntry extends Identifiable.Default<String> {
      * @param published the published to set
      */
     public void setPublished(final Date published) {
-        this.published = DateUtils.toRFC3399_UTC(published);
+        this.published = Dates.toRFC3399_UTC(published);
     }
 
     /**
@@ -191,6 +191,6 @@ public class AtomEntry extends Identifiable.Default<String> {
      * @param updated the updated to set
      */
     public void setUpdated(final Date updated) {
-        this.updated = DateUtils.toRFC3399_UTC(updated);
+        this.updated = Dates.toRFC3399_UTC(updated);
     }
 }

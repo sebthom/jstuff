@@ -5,7 +5,7 @@ import static net.sf.jstuff.core.collection.CollectionUtils.*;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.MapWith;
 import net.sf.jstuff.core.collection.MapWithLists;
 import net.sf.jstuff.integration.spring.SpringBeanParanamer;
@@ -63,13 +63,13 @@ public class RestResourceActionRegistry {
         String key = requestParameters + "/";
         List<RestResourceAction> matchingActions = null;
         do {
-            key = StringUtils.substringBeforeLast(key, "/");
+            key = Strings.substringBeforeLast(key, "/");
 
             if (resourceActions.containsKey(key)) {
                 matchingActions = resourceActions.get(key);
                 if (matchingActions.size() == 1)
                     return matchingActions.get(0);
-                final int paramCount = StringUtils.countMatches(requestParameters.substring(key.length()), "/");
+                final int paramCount = Strings.countMatches(requestParameters.substring(key.length()), "/");
                 for (final RestResourceAction action : matchingActions)
                     if (action.getRequiredURLParameterCount() == paramCount)
                         return action;

@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils.MapDiff.EntryValueDiff;
 import net.sf.jstuff.core.functional.Accept;
 import net.sf.jstuff.core.functional.Function;
@@ -595,8 +595,8 @@ public abstract class CollectionUtils {
         Args.notNull("assignmentOperator", assignmentOperator);
 
         final Map<String, String> result = newHashMap();
-        for (final String element : StringUtils.split(valuePairs, valueSeparator)) {
-            final String[] valuePairSplitted = StringUtils.split(element, assignmentOperator);
+        for (final String element : Strings.split(valuePairs, valueSeparator)) {
+            final String[] valuePairSplitted = Strings.split(element, assignmentOperator);
             result.put(valuePairSplitted[0], valuePairSplitted[1]);
         }
         return result;

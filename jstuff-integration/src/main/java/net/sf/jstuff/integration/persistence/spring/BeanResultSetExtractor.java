@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Assert;
 
@@ -67,8 +67,8 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
                 }
                 extractedBeans.add(bean);
             } catch (final Exception ex) {
-                LOG.error(ex, "Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass, StringUtils.toString(
-                    bean), StringUtils.toString(dynaBean));
+                LOG.error(ex, "Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass, Strings.toString(
+                    bean), Strings.toString(dynaBean));
             }
         }
         return extractedBeans;

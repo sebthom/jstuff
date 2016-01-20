@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.localization.NumberHelper;
 import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.math.NumberUtils;
+import net.sf.jstuff.core.math.Numbers;
 import net.sf.jstuff.core.ref.FinalRef;
 import net.sf.jstuff.core.ref.MutableRef;
 import net.sf.jstuff.core.ref.Ref;
@@ -86,7 +86,7 @@ public class UnsafePublicationTest extends TestCase {
     private static final Logger LOG = Logger.create();
 
     private static final long TOTAL_CPUs = Runtime.getRuntime().availableProcessors();
-    private static final long TOTAL_REPETITIONS = 10 * NumberUtils.MILLION;
+    private static final long TOTAL_REPETITIONS = 10 * Numbers.MILLION;
     private static final AtomicInteger FAILURES = new AtomicInteger();
 
     private static Subject subject = new Subject(1); // must be static to provoke instruction re-ordering

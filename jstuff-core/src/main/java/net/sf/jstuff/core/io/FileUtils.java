@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -204,13 +204,13 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
         Args.notNull("globPattern", globPattern);
         Args.notNull("onMatch", onMatch);
 
-        if (StringUtils.isEmpty(searchRootPath))
+        if (Strings.isEmpty(searchRootPath))
             searchRootPath = ".";
 
-        final String searchRoot = new File(FilenameUtils.concat(searchRootPath, StringUtils.substringBeforeLast(StringUtils.substringBefore(globPattern, "*"),
+        final String searchRoot = new File(FilenameUtils.concat(searchRootPath, Strings.substringBeforeLast(Strings.substringBefore(globPattern, "*"),
             "/"))).getAbsolutePath();
 
-        final String searchRegEx = StringUtils.globToRegex(globPattern).toString();
+        final String searchRegEx = Strings.globToRegex(globPattern).toString();
         LOG.debug("\n  glob:  %s\n  regex: %s\n  searchRoot: %s", globPattern, searchRegEx, searchRoot);
         final Pattern filePattern = Pattern.compile(searchRegEx);
         new DirectoryWalker<File>() {

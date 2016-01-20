@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.reflection;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -73,7 +73,7 @@ public abstract class StackTrace {
 
     public static String getCallerClassSimpleName() {
         final StackTraceElement ste = getCallerStackTraceElement();
-        return StringUtils.substringAfterLast(ste.getClassName(), ".");
+        return Strings.substringAfterLast(ste.getClassName(), ".");
     }
 
     public static String getCallerFileName() {

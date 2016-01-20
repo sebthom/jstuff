@@ -6,7 +6,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/Composite.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Disposable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/GCTracker.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Identifiable.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/StringUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/Strings.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/TypeSafeEnum.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/URLClassLoaderExt.java -text
@@ -75,7 +75,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/HashLockManager.java -te
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/RuntimeInterruptedException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/ScalingThreadPoolExecutor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/concurrent/Threads.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/date/DateUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/date/Dates.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/Day.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/ImmutableDate.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/date/Month.java -text
@@ -95,7 +95,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/functional/Function.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Functions.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Invocable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/IsEqual.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/graphic/ImageUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/graphic/Images.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedInputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedOutputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/CharSequenceReader.java -text
@@ -128,7 +128,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/logging/JULLogger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/logging/Logger.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/logging/LoggerConfig.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/logging/SLF4JLogger.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/math/NumberUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/math/Numbers.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/AbstractServer.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/NetUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockServerSocket.java -text

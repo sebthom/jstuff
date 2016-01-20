@@ -54,7 +54,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.MapWithLists;
 import net.sf.jstuff.core.io.FastByteArrayOutputStream;
@@ -609,7 +609,7 @@ public abstract class DOMUtils {
             }
 
             Assert.isTrue(errorHandler.violations.size() == 0, errorHandler.violations.size() + " XML schema violation(s) detected in [" + inputId
-                    + "]:\n\n => " + StringUtils.join(errorHandler.violations, "\n => "));
+                    + "]:\n\n => " + Strings.join(errorHandler.violations, "\n => "));
             return domDocument;
         } catch (final ParserConfigurationException ex) {
             throw new XMLException(ex);
@@ -753,7 +753,7 @@ public abstract class DOMUtils {
                 // because of a bug in Xalan omitting new line characters after the <?xml...> declaration header, we output the header own our own
                 transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
                 out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".getBytes());
-                out.write(StringUtils.NEW_LINE.getBytes());
+                out.write(Strings.NEW_LINE.getBytes());
             } else {
                 transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             }

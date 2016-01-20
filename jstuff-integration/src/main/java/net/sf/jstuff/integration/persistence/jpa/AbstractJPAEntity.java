@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.persistence.jpa;
 
-import static net.sf.jstuff.core.StringUtils.*;
+import static net.sf.jstuff.core.Strings.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;

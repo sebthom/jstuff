@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.io.IOUtils;
@@ -243,7 +243,7 @@ public abstract class Types {
 
         try {
             // extract the jar path from: jar:file:/F:/allianz/apps/dev/java/sun_jdk1.5.0_22/jre/lib/rt.jar!/java/lang/String.class
-            return new File(URLDecoder.decode(StringUtils.substringBetween(location.getPath(), "file:", "!"), Charset.defaultCharset().name()));
+            return new File(URLDecoder.decode(Strings.substringBetween(location.getPath(), "file:", "!"), Charset.defaultCharset().name()));
         } catch (final UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }
@@ -323,8 +323,8 @@ public abstract class Types {
          * get version from META-INF/MANIFEST.MF
          */
         {
-            final String version = StringUtils.trim(clazz.getPackage().getImplementationVersion());
-            if (!StringUtils.isEmpty(version))
+            final String version = Strings.trim(clazz.getPackage().getImplementationVersion());
+            if (!Strings.isEmpty(version))
                 return version;
         }
 
@@ -354,8 +354,8 @@ public abstract class Types {
                         try {
                             final Properties p = new Properties();
                             p.load(jar.getInputStream(jarEntry));
-                            final String version = StringUtils.trim(p.getProperty("version"));
-                            if (!StringUtils.isEmpty(version))
+                            final String version = Strings.trim(p.getProperty("version"));
+                            if (!Strings.isEmpty(version))
                                 return version;
                             break;
                         } finally {
@@ -373,8 +373,8 @@ public abstract class Types {
              * get version from jar file name
              */
             {
-                final String version = StringUtils.trim(StringUtils.substringBeforeLast(StringUtils.substringAfterLast(location.getName(), "-"), "."));
-                if (!StringUtils.isEmpty(version))
+                final String version = Strings.trim(Strings.substringBeforeLast(Strings.substringAfterLast(location.getName(), "-"), "."));
+                if (!Strings.isEmpty(version))
                     return version;
             }
         }

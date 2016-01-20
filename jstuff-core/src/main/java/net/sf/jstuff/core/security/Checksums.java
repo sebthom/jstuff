@@ -17,7 +17,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -28,7 +28,7 @@ public abstract class Checksums {
         try {
             final MessageDigest md = MessageDigest.getInstance("MD5");
             final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
-            return StringUtils.leftPad(number.toString(16), 32, '0');
+            return Strings.leftPad(number.toString(16), 32, '0');
         } catch (final NoSuchAlgorithmException ex) {
             throw new SecurityException(ex);
         } catch (final UnsupportedEncodingException ex) {
@@ -40,7 +40,7 @@ public abstract class Checksums {
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA-1");
             final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
-            return StringUtils.leftPad(number.toString(16), 48, '0');
+            return Strings.leftPad(number.toString(16), 48, '0');
         } catch (final NoSuchAlgorithmException ex) {
             throw new SecurityException(ex);
         } catch (final UnsupportedEncodingException ex) {
@@ -52,7 +52,7 @@ public abstract class Checksums {
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA-256");
             final BigInteger number = new BigInteger(1, md.digest(txt.getBytes("UTF-8")));
-            return StringUtils.leftPad(number.toString(16), 64, '0');
+            return Strings.leftPad(number.toString(16), 64, '0');
         } catch (final NoSuchAlgorithmException ex) {
             throw new SecurityException(ex);
         } catch (final UnsupportedEncodingException ex) {

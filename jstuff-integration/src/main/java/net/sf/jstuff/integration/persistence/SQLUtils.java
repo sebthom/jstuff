@@ -21,7 +21,7 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -41,7 +41,7 @@ public abstract class SQLUtils {
         if (columnNames.length == 1)
             return "INSERT INTO " + table + "(" + columnNames[0] + ") VALUES (?)";
 
-        return "INSERT INTO " + table + "(" + StringUtils.join(columnNames, ",") + ") VALUES (" + StringUtils.repeat("?,", columnNames.length - 1) + "?)";
+        return "INSERT INTO " + table + "(" + Strings.join(columnNames, ",") + ") VALUES (" + Strings.repeat("?,", columnNames.length - 1) + "?)";
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class SQLUtils {
         if (columnNames.length == 1)
             return "UPDATE " + table + " SET " + columnNames[0] + " = ? " + (where == null ? "" : " WHERE " + where);
 
-        return "UPDATE " + table + " SET " + StringUtils.join(columnNames, " = ?, ") + " = ? " + (where == null ? "" : " WHERE " + where);
+        return "UPDATE " + table + " SET " + Strings.join(columnNames, " = ?, ") + " = ? " + (where == null ? "" : " WHERE " + where);
     }
 
     /**

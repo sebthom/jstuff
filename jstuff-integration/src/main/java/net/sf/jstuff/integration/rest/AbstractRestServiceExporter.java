@@ -23,7 +23,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Beans;
@@ -139,7 +139,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
                 pw.println("<span style='color:red'>*isFallback*</span> ");
             }
             pw.println("<b>" + action.getHttpRequestMethod() + "</b>");
-            pw.println(StringUtils.replace(StringUtils.replace(StringUtils.replace(requestURL, "${", "<span style='color:blue'>${"), "}", "}</span>"),
+            pw.println(Strings.replace(Strings.replace(Strings.replace(requestURL, "${", "<span style='color:blue'>${"), "}", "}</span>"),
                 baseRequestURL, baseRequestURL + "<b>") + "</b>");
             pw.println("</p><table style='border: 1px solid black;width:90%;margin-bottom:0.5em'>");
 
@@ -167,17 +167,17 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
             pw.println("<tr><td width='200px'>Mapped Service Method</td><td style='font-weight:bold;color:gray'>");
 
             // extract the parameter names from the request url
-            final String[] requestParams = StringUtils.substringsBetween(requestURL, "${", "}");
+            final String[] requestParams = Strings.substringsBetween(requestURL, "${", "}");
 
             pw.println("<span style='font-weight:bold;color:darkgreen'>" + action.getHttpResponseBodyType().getSimpleName() + "</span>");
 
             if (action.getHttpRequestBodyType() == null) {
-                pw.println(StringUtils.replace(action.getServiceMethodSignature(), StringUtils.join(requestParams, ","), "<span style='color:blue'>"
-                        + StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"));
+                pw.println(Strings.replace(action.getServiceMethodSignature(), Strings.join(requestParams, ","), "<span style='color:blue'>"
+                        + Strings.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"));
             } else {
-                final String param = StringUtils.substringAfterLast("," + StringUtils.substringBetween(action.getServiceMethodSignature(), "(", ")"), ",");
-                pw.println(StringUtils.replace(StringUtils.replace(action.getServiceMethodSignature(), StringUtils.join(requestParams, ","),
-                    "<span style='color:blue'>" + StringUtils.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"), param + ")",
+                final String param = Strings.substringAfterLast("," + Strings.substringBetween(action.getServiceMethodSignature(), "(", ")"), ",");
+                pw.println(Strings.replace(Strings.replace(action.getServiceMethodSignature(), Strings.join(requestParams, ","),
+                    "<span style='color:blue'>" + Strings.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"), param + ")",
                     "<span style='color:darkred'>" + param + "</span>)"));
             }
             pw.println("</td></tr>");
@@ -216,7 +216,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
         }
 
         final String beanName = req.getAttribute("beanName").toString();
-        final String requestParameters = StringUtils.substringAfter(req.getPathInfo(), beanName + "/");
+        final String requestParameters = Strings.substringAfter(req.getPathInfo(), beanName + "/");
 
         final RestResourceAction action = actionRegistry.getResourceAction(reqMethod, requestParameters);
 
@@ -230,7 +230,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
         LOG.debug("Invoking %s", action);
 
         final String argsString = requestParameters.substring(action.getResourceName().length());
-        String[] args = "".equals(argsString) ? ArrayUtils.EMPTY_STRING_ARRAY : StringUtils.split(argsString.substring(1), "/");
+        String[] args = "".equals(argsString) ? ArrayUtils.EMPTY_STRING_ARRAY : Strings.split(argsString.substring(1), "/");
         if (args.length < action.getRequiredURLParameterCount()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().println(serializeResponse(new RestServiceError("MissingArgumentException", "Missing parameter " + action

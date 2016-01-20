@@ -33,7 +33,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -72,7 +72,7 @@ public abstract class MailUtils {
         props.put("mail.smtp.dsn.notify", "FAILURE");
         props.put("mail.smtp.port", Integer.toString(mailServer.smtpPort));
         final Session session;
-        if (StringUtils.isEmpty(mailServer.smtpUsername))
+        if (Strings.isEmpty(mailServer.smtpUsername))
             session = Session.getDefaultInstance(props, null);
         else {
             props.put("mail.smtp.auth", "true");

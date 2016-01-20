@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.core.io;
 
-import static net.sf.jstuff.core.StringUtils.*;
+import static net.sf.jstuff.core.Strings.*;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipFile;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -163,7 +163,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
             final String output = readChunkAsString(is, 4096);
             LOG.trace("Current output from stream %s: %s", is, output);
             result.append(output);
-            if (StringUtils.containsAny(result, searchFor)) {
+            if (Strings.containsAny(result, searchFor)) {
                 LOG.trace("One of %s was found in stream %s", searchFor, is);
                 break;
             }

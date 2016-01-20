@@ -33,7 +33,7 @@ import org.apache.commons.configuration.AbstractFileConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.functional.Function;
@@ -114,11 +114,11 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
 
     @Override
     public String getProperty(final String key) {
-        return StringUtils.toString(super.getProperty(key));
+        return Strings.toString(super.getProperty(key));
     }
 
     public String getPropertyNonInterpolated(final String key) {
-        return StringUtils.toString(resolveContainerStore(key));
+        return Strings.toString(resolveContainerStore(key));
     }
 
     public Set<String> getSections() {
@@ -147,11 +147,11 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
         if (line.length() == 0)
             return true;
 
-        return StringUtils.startsWith(line, '#') || StringUtils.startsWith(line, ';');
+        return Strings.startsWith(line, '#') || Strings.startsWith(line, ';');
     }
 
     protected boolean isSectionLine(final String line) {
-        return StringUtils.startsWith(line, '[') && StringUtils.endsWith(line, ']');
+        return Strings.startsWith(line, '[') && Strings.endsWith(line, ']');
     }
 
     public void load(final Reader in) throws ConfigurationException {
@@ -306,7 +306,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
                     if (value.indexOf("#") > -1 || value.indexOf(";") > -1 || value.indexOf(" ") > -1) {
                         // add quotes around the specified value if it contains a comment character
                         bw.write('"');
-                        bw.write(StringUtils.replace(value, "\"", "\\\""));
+                        bw.write(Strings.replace(value, "\"", "\\\""));
                         bw.write('"');
                     } else {
                         bw.write(value);

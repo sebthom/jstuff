@@ -23,8 +23,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.jstuff.core.StringUtils;
-import net.sf.jstuff.core.date.DateUtils;
+import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.date.Dates;
 
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.remoting.support.RemotingSupport;
@@ -61,14 +61,14 @@ public abstract class AbstractAtomFeedExporter extends RemotingSupport implement
             entry.setId("tag:" + request.getServerName() + "," + DF.format(se.getDateCreated()) + ":" + feedId + "/" + se.getId());
             entry.setTitle(se.getSubject());
             //entry.setLink(new AtomLink("TODO", AtomLink.REL_RELATED, null));
-            entry.setSummary(new AtomText(StringUtils.htmlToPlainText(StringUtils.nullToEmpty(se.getContent())).toString()));
+            entry.setSummary(new AtomText(Strings.htmlToPlainText(Strings.nullToEmpty(se.getContent())).toString()));
             entry.setContent(new AtomText(se.getContent(), se.getContent().indexOf('<') > -1 ? AtomText.TYPE_HTML : AtomText.TYPE_TEXT));
             entry.setPublished(se.getDateCreated());
             entry.setUpdated(se.getDateLastModified() == null ? se.getDateCreated() : se.getDateLastModified());
             entry.setAuthor(new AtomPerson(se.getAuthorDisplayName(), se.getAuthorEMailAddress(), se.getAuthorURL()));
             final String tags = se.getTags();
-            if (!StringUtils.isBlank(tags)) {
-                final String[] tagsArray = StringUtils.split(tags);
+            if (!Strings.isBlank(tags)) {
+                final String[] tagsArray = Strings.split(tags);
                 final AtomCategory[] cats = new AtomCategory[tagsArray.length];
                 for (int i = 0, l = tagsArray.length; i < l; i++) {
                     cats[i] = new AtomCategory(tagsArray[i]);
@@ -122,7 +122,7 @@ public abstract class AbstractAtomFeedExporter extends RemotingSupport implement
     protected abstract List<SimpleEntry<?>> getSimpleEntries(final HttpServletRequest request);
 
     public void handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        final AtomFeed atomFeed = new AtomFeed("tag:" + request.getServerName() + "," + DateUtils.getCurrentYear() + ":" + feedId);
+        final AtomFeed atomFeed = new AtomFeed("tag:" + request.getServerName() + "," + Dates.getCurrentYear() + ":" + feedId);
         atomFeed.setLogo(getLogoURL(request));
         atomFeed.setTitle(feedTitle);
         atomFeed.setSubtitle(feedSubTitle);

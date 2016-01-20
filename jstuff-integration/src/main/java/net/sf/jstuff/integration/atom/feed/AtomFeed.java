@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import net.sf.jstuff.core.Identifiable;
-import net.sf.jstuff.core.date.DateUtils;
+import net.sf.jstuff.core.date.Dates;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -133,7 +133,7 @@ public class AtomFeed extends Identifiable.Default<String> {
      * @throws ParseException
      */
     public Date getUpdated() throws ParseException {
-        return DateUtils.fromRFC3399(updated);
+        return Dates.fromRFC3399(updated);
     }
 
     /**
@@ -210,7 +210,7 @@ public class AtomFeed extends Identifiable.Default<String> {
      * @param updated the updated to set
      */
     public void setUpdated(final Date updated) {
-        this.updated = DateUtils.toRFC3399_UTC(updated);
+        this.updated = Dates.toRFC3399_UTC(updated);
     }
 
     /**

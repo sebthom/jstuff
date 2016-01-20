@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.io.FastByteArrayOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
@@ -56,7 +56,7 @@ public abstract class JAXBUtils {
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
             if (ctx.createJAXBIntrospector().getElementName(obj) == null)
-                m.marshal(new JAXBElement(new QName(StringUtils.lowerCaseFirstChar(obj.getClass().getSimpleName())), obj.getClass(), obj), out);
+                m.marshal(new JAXBElement(new QName(Strings.lowerCaseFirstChar(obj.getClass().getSimpleName())), obj.getClass(), obj), out);
             else
                 m.marshal(obj, out);
         } catch (final JAXBException ex) {

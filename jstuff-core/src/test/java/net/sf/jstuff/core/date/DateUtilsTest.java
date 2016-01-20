@@ -21,15 +21,15 @@ import junit.framework.TestCase;
  */
 public class DateUtilsTest extends TestCase {
     public void testParseDuration() throws ParseException {
-        assertEquals(1, DateUtils.parseDuration("1ms"));
-        assertEquals(1000, DateUtils.parseDuration("1s"));
-        assertEquals(1000, DateUtils.parseDuration(" 1sec "));
-        assertEquals(1000 * 60, DateUtils.parseDuration("1m"));
-        assertEquals(1000 * 60, DateUtils.parseDuration(" 1min "));
-        assertEquals(1000 * 60 * 60, DateUtils.parseDuration("1h"));
-        assertEquals(1000 * 60 * 60, DateUtils.parseDuration(" 1hour "));
-        assertEquals(1000 * 60 * 60 * 24, DateUtils.parseDuration("1d"));
-        assertEquals(1000 * 60 * 60 * 24, DateUtils.parseDuration(" 1day "));
-        assertEquals(446582002, DateUtils.parseDuration("5d 4h 3m 2s 2ms"));
+        assertEquals(1, Dates.parseDuration("1ms"));
+        assertEquals(1000, Dates.parseDuration("1s"));
+        assertEquals(1000, Dates.parseDuration(" 1sec "));
+        assertEquals(1000 * 60, Dates.parseDuration("1m"));
+        assertEquals(1000 * 60, Dates.parseDuration(" 1min "));
+        assertEquals(1000 * 60 * 60, Dates.parseDuration("1h"));
+        assertEquals(1000 * 60 * 60, Dates.parseDuration(" 1hour "));
+        assertEquals(1000 * 60 * 60 * 24, Dates.parseDuration("1d"));
+        assertEquals(1000 * 60 * 60 * 24, Dates.parseDuration(" 1day "));
+        assertEquals(446582002, Dates.parseDuration("5d 4h 3m 2s 2ms"));
     }
 }

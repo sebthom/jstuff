@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.spring;
 
-import net.sf.jstuff.core.StringUtils;
+import net.sf.jstuff.core.Strings;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -32,9 +32,9 @@ public class AffixesRemovingBeanNameGenerator extends AnnotationBeanNameGenerato
     public String generateBeanName(final BeanDefinition definition, final BeanDefinitionRegistry registry) {
         final String beanName = super.generateBeanName(definition, registry);
         if (beanName.startsWith("Default"))
-            return StringUtils.substringAfter(beanName, "Default");
+            return Strings.substringAfter(beanName, "Default");
         if (beanName.endsWith("Impl"))
-            return StringUtils.substringBeforeLast(beanName, "Impl");
+            return Strings.substringBeforeLast(beanName, "Impl");
         return beanName;
     }
 }

@@ -34,7 +34,7 @@ import net.sf.jstuff.core.validation.Assert;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
+public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
     public static final class ANSIState {
 
@@ -352,7 +352,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
      */
     public static CharSequence globToRegex(final String globPattern) {
-        if (StringUtils.isEmpty(globPattern))
+        if (Strings.isEmpty(globPattern))
             return globPattern;
 
         final StringBuilder sb = new StringBuilder();
@@ -453,9 +453,9 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
      */
     @SuppressWarnings("unused")
     private static CharSequence globToRegex2(final String globPattern) {
-        if (StringUtils.isEmpty(globPattern))
+        if (Strings.isEmpty(globPattern))
             return globPattern;
-        CharSequence regex = StringUtils.replaceEach(globPattern, //
+        CharSequence regex = Strings.replaceEach(globPattern, //
             "?", ".", //
             ".", "\\.", //
             "|", "\\|", //
@@ -570,6 +570,10 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     public static String nullToEmpty(final Object txt) {
         return txt == null ? "" : txt instanceof String ? (String) txt : txt.toString();
+    }
+
+    public static String nullToEmpty(final String txt) {
+        return txt == null ? "" : txt;
     }
 
     /**
@@ -757,7 +761,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     public static String[] splitLines(final String text) {
         if (text.indexOf(NEW_LINE) > -1)
-            return split(text, StringUtils.NEW_LINE);
+            return split(text, Strings.NEW_LINE);
         if (text.indexOf(CR_LF) > -1)
             return splitByWholeSeparatorPreserveAllTokens(text, CR_LF);
         if (text.indexOf(LF) > -1)
@@ -769,7 +773,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     public static String[] splitLinesPreserveAllTokens(final String text) {
         if (text.indexOf(NEW_LINE) > -1)
-            return splitByWholeSeparatorPreserveAllTokens(text, StringUtils.NEW_LINE);
+            return splitByWholeSeparatorPreserveAllTokens(text, Strings.NEW_LINE);
         if (text.indexOf(CR_LF) > -1)
             return splitByWholeSeparatorPreserveAllTokens(text, CR_LF);
         if (text.indexOf(LF) > -1)
