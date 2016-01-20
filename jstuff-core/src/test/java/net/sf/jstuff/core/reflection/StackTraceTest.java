@@ -25,12 +25,14 @@ public class StackTraceTest extends TestCase {
             }
 
             public void innerMethod() {
+                ensureEquals("net.sf.jstuff.core.reflection.StackTraceTest$Outer$Inner", StackTrace.getThisStackTraceElement().getClassName());
                 ensureEquals("innerMethod", StackTrace.getThisMethodName());
-                ensureEquals(29, StackTrace.getThisLineNumber());
+                ensureEquals("innerMethod", StackTrace.getThisStackTraceElement().getMethodName());
+                ensureEquals(31, StackTrace.getThisLineNumber());
                 ensureEquals("StackTraceTest.java", StackTrace.getThisFileName());
 
                 ensureEquals("outerMethod", StackTrace.getCallerMethodName());
-                ensureEquals(43, StackTrace.getCallerLineNumber());
+                ensureEquals(45, StackTrace.getCallerLineNumber());
                 ensureEquals("StackTraceTest.java", StackTrace.getCallerFileName());
                 ensureEquals(Outer.class.getName(), StackTrace.getCallerClassName());
                 ensureEquals(Outer.class, StackTrace.getCallerClass());

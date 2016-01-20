@@ -19,6 +19,9 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class StackTrace {
+
+    private static final String CLASSNAME = StackTrace.class.getName();
+
     private static final class CallerResolver extends SecurityManager {
         private static final CallerResolver INSTANCE = new CallerResolver();
 
@@ -28,65 +31,79 @@ public abstract class StackTrace {
         }
     }
 
-    private static StackTraceElement _getCallerStackTraceElement() {
-        return Thread.currentThread().getStackTrace()[4];
-    }
-
-    private static StackTraceElement _getThisStackTraceElement() {
-        return Thread.currentThread().getStackTrace()[3];
-    }
-
     public static Class<?> getCallerClass() {
-        return getCallerClass(getCallerClassName());
+        final String callerClassName = getCallerClassName();
+
+        final Class<?>[] stack = CallerResolver.INSTANCE.getClassContext();
+        for (final Class<?> curr : stack)
+            if (callerClassName.equals(curr.getName()))
+                return curr;
+        throw new IllegalStateException("should never be reached.");
     }
 
+    /**
+     * @return class that called the <code>calledClassName</code>
+     */
     public static Class<?> getCallerClass(final Class<?> calledClass) {
         Args.notNull("calledClass", calledClass);
 
         return getCallerClass(calledClass.getName());
     }
 
+    /**
+     * @return class that called the <code>calledClassName</code>
+     */
     public static Class<?> getCallerClass(final String calledClassName) {
         Args.notNull("calledClassName", calledClassName);
 
         final Class<?>[] stack = CallerResolver.INSTANCE.getClassContext();
         boolean foundInStack = false;
         for (final Class<?> curr : stack)
-            if (calledClassName.equals(curr.getName()))
+            if (calledClassName.equals(curr.getName())) {
                 foundInStack = true;
-            else if (foundInStack)
+            } else if (foundInStack)
                 return curr;
         return null;
     }
 
     public static String getCallerClassName() {
-        final StackTraceElement ste = _getCallerStackTraceElement();
+        final StackTraceElement ste = getCallerStackTraceElement();
         return ste.getClassName();
     }
 
     public static String getCallerClassSimpleName() {
-        final StackTraceElement ste = _getCallerStackTraceElement();
+        final StackTraceElement ste = getCallerStackTraceElement();
         return StringUtils.substringAfterLast(ste.getClassName(), ".");
     }
 
     public static String getCallerFileName() {
-        final StackTraceElement ste = _getCallerStackTraceElement();
+        final StackTraceElement ste = getCallerStackTraceElement();
         return ste.getFileName();
     }
 
     public static int getCallerLineNumber() {
-        final StackTraceElement ste = _getCallerStackTraceElement();
+        final StackTraceElement ste = getCallerStackTraceElement();
         return ste.getLineNumber();
     }
 
     public static String getCallerMethodName() {
-        final StackTraceElement ste = _getCallerStackTraceElement();
+        final StackTraceElement ste = getCallerStackTraceElement();
         return ste.getMethodName();
     }
 
     public static StackTraceElement getCallerStackTraceElement() {
-        final StackTraceElement ste = _getCallerStackTraceElement();
-        return ste;
+        final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        boolean stackTraceClassFound = false;
+        for (int i = 0, l = stack.length; i < l; i++) {
+            final StackTraceElement elem = stack[i];
+            if (CLASSNAME.equals(elem.getClassName())) {
+                stackTraceClassFound = true;
+            } else {
+                if (stackTraceClassFound)
+                    return stack[i + 1];
+            }
+        }
+        throw new IllegalStateException("should never be reached.");
     }
 
     public static StackTraceElement getCallerStackTraceElement(final Class<?> calledClass) {
@@ -101,31 +118,40 @@ public abstract class StackTrace {
         final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
         boolean foundInStack = false;
         for (final StackTraceElement curr : stack)
-            if (calledClassName.equals(curr.getClassName()))
+            if (calledClassName.equals(curr.getClassName())) {
                 foundInStack = true;
-            else if (foundInStack)
+            } else if (foundInStack)
                 return curr;
         return null;
     }
 
     public static String getThisFileName() {
-        final StackTraceElement ste = _getThisStackTraceElement();
+        final StackTraceElement ste = getThisStackTraceElement();
         return ste.getFileName();
     }
 
     public static int getThisLineNumber() {
-        final StackTraceElement ste = _getThisStackTraceElement();
+        final StackTraceElement ste = getThisStackTraceElement();
         return ste.getLineNumber();
     }
 
     public static String getThisMethodName() {
-        final StackTraceElement ste = _getThisStackTraceElement();
+        final StackTraceElement ste = getThisStackTraceElement();
         return ste.getMethodName();
     }
 
     public static StackTraceElement getThisStackTraceElement() {
-        final StackTraceElement ste = _getThisStackTraceElement();
-        return ste;
+        final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        boolean stackTraceClassFound = false;
+        for (final StackTraceElement elem : stack) {
+            if (CLASSNAME.equals(elem.getClassName())) {
+                stackTraceClassFound = true;
+            } else {
+                if (stackTraceClassFound)
+                    return elem;
+            }
+        }
+        throw new IllegalStateException("should never be reached.");
     }
 
     public static <T extends Throwable> T removeFirstStackTraceElement(final T t) {
