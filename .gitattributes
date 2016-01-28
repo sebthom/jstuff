@@ -189,6 +189,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/collection/LRUMapTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/ObjectCacheTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/WeakIdentityHashMapTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/collection/WeakIdentityHashSetTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/collection/tuple/TupleTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/comparator/PropertyComparatorTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/concurrent/CrossThreadMethodInvokerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/concurrent/HashLockManagerTest.java -text
