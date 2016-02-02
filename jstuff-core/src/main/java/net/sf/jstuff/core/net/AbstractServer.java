@@ -69,17 +69,18 @@ public abstract class AbstractServer {
                         while (true) {
                             final Socket socket = socketListener.accept();
 
-                            if (isRunning)
+                            if (isRunning) {
                                 executor.execute(new Runnable() {
                                     public void run() {
                                         try {
                                             handleConnection(socket);
+                                            socket.close();
                                         } catch (final IOException ex) {
                                             ex.printStackTrace();
                                         }
                                     }
                                 });
-                            else {
+                            } else {
                                 socket.close();
                                 break;
                             }
@@ -95,7 +96,7 @@ public abstract class AbstractServer {
 
     /**
      * stops the server from listening to the socket
-     * 
+     *
      * @throws IOException
      */
     public synchronized void stopServer() throws IOException {
