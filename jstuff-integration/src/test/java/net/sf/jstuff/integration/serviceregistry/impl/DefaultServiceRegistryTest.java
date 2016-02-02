@@ -23,7 +23,7 @@ import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ServiceRegistryTest extends TestCase {
+public class DefaultServiceRegistryTest extends TestCase {
     private static final class CountingListener<T> implements ServiceListener<T> {
         private final AtomicInteger count;
 
@@ -38,7 +38,6 @@ public class ServiceRegistryTest extends TestCase {
         public void onServiceUnavailable(final ServiceProxy<T> service) {
             count.incrementAndGet();
         }
-
     };
 
     public static class DefaultService1 implements Service1 {
@@ -57,7 +56,6 @@ public class ServiceRegistryTest extends TestCase {
         public String getGoodbye() {
             return "Adios";
         }
-
     }
 
     public interface Service1 extends TestService {
@@ -135,7 +133,7 @@ public class ServiceRegistryTest extends TestCase {
     public void testServiceListener() {
         final ServiceProxy<Service1> srv1Proxy = registry.getService(Service1.ENDPOINT_ID, Service1.class);
         final AtomicInteger count = new AtomicInteger();
-        final CountingListener<ServiceRegistryTest.Service1> listener = new CountingListener<ServiceRegistryTest.Service1>(count);
+        final CountingListener<DefaultServiceRegistryTest.Service1> listener = new CountingListener<DefaultServiceRegistryTest.Service1>(count);
         srv1Proxy.addServiceListener(listener);
 
         final DefaultService1 srv1Impl = new DefaultService1();

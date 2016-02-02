@@ -315,6 +315,7 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/Servi
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/ServiceProxy.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/ServiceRegistry.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/ServiceUnavailableException.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/ByteBuddyServiceRegistry.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceEndpoint.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceProxyAdvice.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceRegistry.java -text
@@ -368,7 +369,9 @@ jstuff-integration/src/test/java/net/sf/jstuff/integration/example/guestbook/ser
 jstuff-integration/src/test/java/net/sf/jstuff/integration/example/guestbook/service/command/UpdateGuestBookEntryCommand.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/persistence/Entity.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/persistence/HashCodeManagerTest.java -text
-jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/ServiceRegistryTest.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/ByteBuddyServiceRegistryITest.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceRegistryTest.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/ServiceRegistryPerfITest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/support/SpringBeanAsServiceTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanInjectorTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanLocatorTest.java -text

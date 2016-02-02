@@ -97,11 +97,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.5</java.version>
+		<java.vendor>sun</java.vendor>
 		<java.version.integration-tests>1.6</java.version.integration-tests>
 		<slf4j.version>1.7.13</slf4j.version>
-		
+
 		<maven.javadoc.skip>true</maven.javadoc.skip>  <!-- we don't really need javadoc -->
-		
+
 		<!-- see http://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
 		<!-- see http://java-drobnosti.blogspot.de/2012/12/maven-slow-generating-dependencies.html -->
 		<dependency.locations.enabled>false</dependency.locations.enabled>
@@ -179,6 +180,7 @@
 						<configuration>
 							<toolchains>
 								<jdk>
+									<!-- using a higher JDK version for integration tests -->
 									<version>${java.version.integration-tests}</version>
 									<vendor>sun</vendor>
 								</jdk>
@@ -198,12 +200,16 @@
 						</goals>
 						<configuration>
 							<rules>
+								<requireJavaVersion>
+									<version>(1.6,1.7]</version>
+								</requireJavaVersion>
 								<banCircularDependencies />
 								<!-- currently broken
 									<banDuplicateClasses>
 									<findAllDuplicates>true</findAllDuplicates>
 									</banDuplicateClasses>
 								-->
+
 								<enforceBytecodeVersion>
 									<maxJdkVersion>${java.version}</maxJdkVersion>
 									<ignoredScopes>
@@ -213,6 +219,9 @@
 										<ignoreClasse>com.thoughtworks.xstream.mapper.LambdaMapper</ignoreClasse>
 										<ignoreClasse>com.thoughtworks.xstream.converters.reflection.LambdaConverter</ignoreClasse>
 									</ignoreClasses>
+									<excludes>
+										<exclude>net.bytebuddy:byte-buddy</exclude>
+									</excludes>
 								</enforceBytecodeVersion>
 							</rules>
 						</configuration>
@@ -233,13 +242,7 @@
 				********************************************************************* -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<!-- not upgrading to 3.2 -->
-				<!-- https://issues.apache.org/jira/browse/MCOMPILER-235 -->
-				<!-- https://issues.apache.org/jira/browse/MCOMPILER-236 -->
-				<!-- version 3.2 is broken:
-					[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.2:compile (default-compile) on project jstuff-core: Fatal
-					error compiling: basedir C:\workspace\jstuff-parent\jstuff-core\target\generated-sources\annotations does not exist -> [Help 1] -->
-				<version>3.1</version>
+				<version>3.5</version>
 				<configuration>
 					<!-- this configuration is actually taken care of by the toolchain plug-in, however m2eclipse does not seem to realize the correct JDK
 						if only the toolchain plug-in is configured, therefore we explicitly configure the Java version again -->
@@ -247,13 +250,13 @@
 					<target>${java.version}</target>
 					<optimize>true</optimize>
 					<compilerId>${compilerId}</compilerId>
-					<!-- using eclipse compiler since javac is buggy when compiling complex generic expressions -->
+					<!-- using eclipse compiler since javac is buggy/lazy when compiling complex generic expressions -->
 				</configuration>
 				<dependencies>
 					<dependency>
 						<groupId>org.codehaus.plexus</groupId>
 						<artifactId>plexus-compiler-${compilerId}</artifactId>
-						<version>2.6</version>
+						<version>2.7</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -305,6 +308,38 @@
 						<id>attach-sources</id>
 						<goals>
 							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--*********************************************************************
+				phase: test
+				********************************************************************* -->
+			<plugin>
+				<!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version>
+				<configuration>
+					<excludes>
+						<exclude>**/*ITest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- http://maven.apache.org/surefire/maven-failsafe-plugin/usage.html -->
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.19.1</version>
+				<configuration>
+					<includes>
+						<include>**/*ITest.java</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -363,7 +398,7 @@
 	</build>
 
 	<profiles>
-		<!-- m2eclipse has problems when the compilerId is not "javac", thus we set it to "javac" when in Eclipse but set it to "eclipse" for command 
+		<!-- m2eclipse has problems when the compilerId is not "javac", thus we set it to "javac" when in Eclipse but set it to "eclipse" for command
 			line builds -->
 		<profile>
 			<activation>
