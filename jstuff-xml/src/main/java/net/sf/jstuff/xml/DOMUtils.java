@@ -350,15 +350,22 @@ public abstract class DOMUtils {
         return result;
     }
 
-    public static <T extends Node> List<T> getChildNodes(final Node node) {
-        return nodeListToList(node.getChildNodes());
+    /**
+     * @return all direct child nodes of this node.
+     */
+    public static <T extends Node> List<T> getChildNodes(final Node parent) {
+        return nodeListToList(parent.getChildNodes());
     }
 
-    public static <T extends Node> List<T> getElementsByTagName(final Element element, final String tagName) {
-        Args.notNull("element", element);
+    /**
+     * @param tagName The name of the tag to match on. The special value "*" matches all tags.
+     * @return all child and sub-child nodes with the given tag name, in document order.
+     */
+    public static <T extends Node> List<T> getElementsByTagName(final Element parent, final String tagName) {
+        Args.notNull("element", parent);
         Args.notNull("tagName", tagName);
 
-        return nodeListToList(element.getElementsByTagName(tagName));
+        return nodeListToList(parent.getElementsByTagName(tagName));
     }
 
     public static Node getFirstChild(final Node node) throws XMLException {
