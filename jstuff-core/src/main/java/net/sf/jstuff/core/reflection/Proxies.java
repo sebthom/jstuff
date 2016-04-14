@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -36,7 +36,6 @@ public abstract class Proxies {
     public static <T> T create(final ClassLoader loader, final InvocationHandler handler, final Class<?>... interfaceTypes) {
         Args.notNull("loader", loader);
         Args.notNull("handler", handler);
-        Args.notNull("loader", loader);
         Args.notEmpty("interfaceTypes", interfaceTypes);
         Args.noNulls("interfaceTypes", interfaceTypes);
 
@@ -63,12 +62,14 @@ public abstract class Proxies {
             isGoodCL = Types.isVisible(cl, interfaceTypes);
         }
 
-        if (!isGoodCL) //
+        if (!isGoodCL) {
             for (final Class<?> iface : interfaceTypes) {
-            cl = iface.getClassLoader();
-            isGoodCL = Types.isVisible(cl, interfaceTypes);
-            if (isGoodCL)
-                break;
+                cl = iface.getClassLoader();
+                isGoodCL = Types.isVisible(cl, interfaceTypes);
+                if (isGoodCL) {
+                    break;
+                }
+            }
         }
 
         if (isGoodCL) //
