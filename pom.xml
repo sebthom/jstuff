@@ -200,9 +200,6 @@
 						</goals>
 						<configuration>
 							<rules>
-								<requireJavaVersion>
-									<version>(1.6,1.7]</version>
-								</requireJavaVersion>
 								<banCircularDependencies />
 								<!-- currently broken
 									<banDuplicateClasses>
