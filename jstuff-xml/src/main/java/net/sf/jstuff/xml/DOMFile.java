@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -40,14 +40,35 @@ public class DOMFile {
     private final Element domRoot;
     private final File xmlFile;
 
+    /**
+     * Constructs an instance based on the given XML document.
+     * When calling the {@link #save()} method, the XML structure will be written to the <code>targetFile</code>
+     */
+    public DOMFile(final Document doc, final File targetFile) {
+        Args.notNull("doc", doc);
+        Args.notNull("targetFile", targetFile);
+        domDocument = doc;
+        domRoot = doc.getDocumentElement();
+        xmlFile = targetFile;
+    }
+
+    /**
+     * Loads an existing XML file
+     */
     public DOMFile(final File xmlFile) throws IOException, XMLException {
         this(xmlFile, null, (File[]) null);
     }
 
+    /**
+     * Loads an existing XML file
+     */
     public DOMFile(final File xmlFile, final File... xmlSchemaFiles) throws IOException, XMLException {
         this(xmlFile, null, xmlSchemaFiles);
     }
 
+    /**
+     * Loads an existing XML file
+     */
     public DOMFile(final File xmlFile, final String rootNamespace) throws IOException, XMLException {
         this(xmlFile, rootNamespace, (File[]) null);
     }
