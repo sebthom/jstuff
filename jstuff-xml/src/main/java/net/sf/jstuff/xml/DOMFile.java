@@ -15,6 +15,7 @@ package net.sf.jstuff.xml;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -351,6 +352,26 @@ public class DOMFile {
         Args.notNull("filePath", filePath);
 
         DOMUtils.saveToFile(domDocument, new File(filePath));
+    }
+
+    /**
+     * @param parentNode node whose children will be sorted
+     */
+    public void sortChildNodes(final Node parentNode, final Comparator<Node> comparator) {
+        Args.notNull("parentNode", parentNode);
+        Assert.isTrue(parentNode.getOwnerDocument() == domDocument, "[parentNode] belongs to another DOM document!");
+
+        DOMUtils.sortChildNodes(parentNode, comparator);
+    }
+
+    /**
+     * @param parentNode node whose children will be sorted
+     */
+    public void sortChildNodesByAttributes(final Node parentNode, final boolean ascending, final String... attributeNames) {
+        Args.notNull("parentNode", parentNode);
+        Assert.isTrue(parentNode.getOwnerDocument() == domDocument, "[parentNode] belongs to another DOM document!");
+
+        DOMUtils.sortChildNodesByAttributes(parentNode, ascending, attributeNames);
     }
 
     public String toXML() {

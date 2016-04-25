@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -816,6 +818,63 @@ public abstract class DOMUtils {
         FileUtils.backupFile(targetFile);
 
         saveToFile(root, targetFile);
+    }
+
+    /**
+     * @param parentNode node whose children will be sorted
+     */
+    public static void sortChildNodes(final Node parentNode, final Comparator<Node> comparator) {
+        Args.notNull("parentNode", parentNode);
+        Args.notNull("comparator", comparator);
+
+        final List<Node> sortedNodes = new ArrayList<Node>();
+        for (final Node node : getChildNodes(parentNode)) {
+            // Remove empty text nodes
+            if (node instanceof Text && ((Text) node).getTextContent().trim().length() > 1) {
+                continue;
+            }
+            sortedNodes.add(node);
+        }
+
+        Collections.sort(sortedNodes, comparator);
+        for (final Node n : sortedNodes) {
+            parentNode.appendChild(n);
+        }
+    }
+
+    /**
+     * @param parentNode node whose children will be sorted
+     */
+    public static void sortChildNodesByAttributes(final Node parentNode, final boolean ascending, final String... attributeNames) {
+        Args.notNull("parentNode", parentNode);
+
+        final List<Node> sortedNodes = new ArrayList<Node>();
+        for (final Node node : getChildNodes(parentNode)) {
+            // Remove empty text nodes
+            if (node instanceof Text && ((Text) node).getTextContent().trim().length() > 1) {
+                continue;
+            }
+            sortedNodes.add(node);
+        }
+        final Comparator<Node> comparator = new Comparator<Node>() {
+            public int compare(final Node n1, final Node n2) {
+                final NamedNodeMap m1 = n1.getAttributes();
+                final NamedNodeMap m2 = n2.getAttributes();
+                for (final String attributeName : attributeNames) {
+                    final Attr a1 = (Attr) m1.getNamedItem(attributeName);
+                    final Attr a2 = (Attr) m2.getNamedItem(attributeName);
+                    final int rc = ObjectUtils.compare(a1 == null ? null : a1.getValue(), a2 == null ? null : a2.getValue());
+                    if (rc != 0)
+                        return ascending ? rc : -1 * rc;
+                }
+                return 0;
+            }
+        };
+
+        Collections.sort(sortedNodes, comparator);
+        for (final Node n : sortedNodes) {
+            parentNode.appendChild(n);
+        }
     }
 
     public static String toXML(final Node root) throws XMLException {
