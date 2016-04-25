@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2005-2015 Sebastian
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
  * Thomschke.
  *
  * All Rights Reserved. This program and the accompanying materials
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -43,12 +44,14 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -286,6 +289,78 @@ public abstract class DOMUtils {
         });
     }
 
+    public static Comment createCommentBefore(final String commentString, final Node childToCreateBefore) {
+        Args.notNull("commentString", commentString);
+        Args.notNull("childToCreateBefore", childToCreateBefore);
+
+        return (Comment) childToCreateBefore.getOwnerDocument().insertBefore(childToCreateBefore.getOwnerDocument().createComment(commentString),
+            childToCreateBefore);
+    }
+
+    /**
+     * Creates a new XML element as child of the given parentNode
+     */
+    public static Element createElement(final String xmlTagName, final Node parentNode) {
+        Args.notEmpty("xmlTagName", xmlTagName);
+        Args.notNull("parentNode", parentNode);
+
+        return createElement(xmlTagName, parentNode, null);
+    }
+
+    /**
+     * Creates a new XML element as child of the given parentNode with the given attributes
+     */
+    public static Element createElement(final String xmlTagName, final Node parentNode, final Map<String, String> elementAttributes) {
+        Args.notEmpty("xmlTagName", xmlTagName);
+        Args.notNull("parentNode", parentNode);
+
+        final Element elem = (Element) parentNode.appendChild(parentNode.getOwnerDocument().createElement(xmlTagName));
+        if (elementAttributes != null) {
+            for (final Entry<String, String> attr : elementAttributes.entrySet()) {
+                elem.setAttribute(attr.getKey(), attr.getValue());
+            }
+        }
+        return elem;
+    }
+
+    public static Element createElementBefore(final String xmlTagName, final Node childToCreateBefore) {
+        Args.notEmpty("tagName", xmlTagName);
+        Args.notNull("childToCreateBefore", childToCreateBefore);
+
+        return createElementBefore(xmlTagName, childToCreateBefore, null);
+    }
+
+    public static Element createElementBefore(final String xmlTagName, final Node childToCreateBefore, final Map<String, String> elementAttributes) {
+        Args.notEmpty("tagName", xmlTagName);
+        Args.notNull("childToCreateBefore", childToCreateBefore);
+
+        final Element elem = (Element) childToCreateBefore.getParentNode().insertBefore(childToCreateBefore.getOwnerDocument().createElement(xmlTagName),
+            childToCreateBefore);
+        if (elementAttributes != null) {
+            for (final Entry<String, String> attr : elementAttributes.entrySet()) {
+                elem.setAttribute(attr.getKey(), attr.getValue());
+            }
+        }
+        return elem;
+    }
+
+    public static Text createTextNode(final String text, final Node parentNode) {
+        Args.notNull("text", text);
+        Args.notNull("parentNode", parentNode);
+
+        final Text elem = (Text) parentNode.appendChild(parentNode.getOwnerDocument().createTextNode(text));
+        return elem;
+    }
+
+    public static Text createTextNodeBefore(final String text, final Node childToCreateBefore) {
+        Args.notNull("text", text);
+        Args.notNull("childToCreateBefore", childToCreateBefore);
+
+        final Text elem = (Text) childToCreateBefore.getParentNode().insertBefore(childToCreateBefore.getOwnerDocument().createTextNode(text),
+            childToCreateBefore);
+        return elem;
+    }
+
     public static String evaluate(final String xPathExpression, final Node searchScope) throws XMLException {
         Args.notNull("xPathExpression", xPathExpression);
         Args.notNull("searchScope", searchScope);
@@ -361,11 +436,11 @@ public abstract class DOMUtils {
      * @param tagName The name of the tag to match on. The special value "*" matches all tags.
      * @return all child and sub-child nodes with the given tag name, in document order.
      */
-    public static <T extends Node> List<T> getElementsByTagName(final Element parent, final String tagName) {
-        Args.notNull("element", parent);
+    public static <T extends Node> List<T> getElementsByTagName(final Element parentElement, final String tagName) {
+        Args.notNull("parentElement", parentElement);
         Args.notNull("tagName", tagName);
 
-        return nodeListToList(parent.getElementsByTagName(tagName));
+        return nodeListToList(parentElement.getElementsByTagName(tagName));
     }
 
     public static Node getFirstChild(final Node node) throws XMLException {
@@ -420,6 +495,15 @@ public abstract class DOMUtils {
         Args.notNull("newParentNode", newParentNode);
 
         return (T) newParentNode.appendChild(newParentNode.getOwnerDocument().importNode(nodeToImport, true));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Node> T importNodeBefore(final T nodeToImport, final Node insertBeforeNode) {
+        Args.notNull("nodeToImport", nodeToImport);
+        Args.notNull("insertBeforeNode", insertBeforeNode);
+
+        final Node importedNode = importNode(nodeToImport, insertBeforeNode.getOwnerDocument());
+        return (T) insertBeforeNode.getParentNode().insertBefore(importedNode, insertBeforeNode);
     }
 
     public static <T extends Node> List<T> importNodes(final Collection<T> nodesToImport, final Node newParentNode) {
@@ -679,6 +763,25 @@ public abstract class DOMUtils {
             return false;
         parent.removeChild(node);
         return true;
+    }
+
+    /**
+     * @return a list of the removed nodes
+     */
+    public static List<Node> removeNodes(final String xPathExpression, final Node searchScope) throws XMLException {
+        Args.notEmpty("xPathExpression", xPathExpression);
+        Args.notNull("searchScope", searchScope);
+
+        final List<Node> nodesToRemove = findNodes(xPathExpression, searchScope);
+
+        for (final Node nodeToRemove : nodesToRemove) {
+            DOMUtils.removeNode(nodeToRemove);
+        }
+        return nodesToRemove;
+    }
+
+    public static void removeWhiteSpaceNodes(final Node searchScope) {
+        removeNodes("text()[normalize-space()='']", searchScope);
     }
 
     public static void saveToFile(final Node root, final File targetFile) throws IOException, XMLException {

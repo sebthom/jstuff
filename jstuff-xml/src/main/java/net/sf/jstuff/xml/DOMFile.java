@@ -14,11 +14,13 @@ package net.sf.jstuff.xml;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -95,109 +97,89 @@ public class DOMFile {
     }
 
     public Comment createCommentBefore(final String commentString, final Node childToCreateBefore) {
-        Args.notNull("commentString", commentString);
         Args.notNull("childToCreateBefore", childToCreateBefore);
+        Assert.isTrue(childToCreateBefore.getOwnerDocument() == domDocument, "[childToCreateBefore] belongs to another DOM document!");
 
-        return (Comment) domDocument.insertBefore(domDocument.createComment(commentString), childToCreateBefore);
+        return DOMUtils.createCommentBefore(commentString, childToCreateBefore);
     }
 
     /**
      * Creates a new XML element as child of the given parentNode
      */
     public Element createElement(final String xmlTagName, final Node parentNode) {
-        Args.notEmpty("xmlTagName", xmlTagName);
         Args.notNull("parentNode", parentNode);
+        Assert.isTrue(parentNode.getOwnerDocument() == domDocument, "[parentNode] belongs to another DOM document!");
 
-        return createElement(xmlTagName, parentNode, null);
+        return DOMUtils.createElement(xmlTagName, parentNode);
     }
 
     /**
      * Creates a new XML element as child of the given parentNode with the given attributes
      */
     public Element createElement(final String xmlTagName, final Node parentNode, final Map<String, String> elementAttributes) {
-        Args.notEmpty("xmlTagName", xmlTagName);
         Args.notNull("parentNode", parentNode);
+        Assert.isTrue(parentNode.getOwnerDocument() == domDocument, "[parentNode] belongs to another DOM document!");
 
-        final Element elem = (Element) parentNode.appendChild(domDocument.createElement(xmlTagName));
-        if (elementAttributes != null) {
-            for (final Entry<String, String> attr : elementAttributes.entrySet()) {
-                elem.setAttribute(attr.getKey(), attr.getValue());
-            }
-        }
-        return elem;
+        return DOMUtils.createElement(xmlTagName, parentNode, elementAttributes);
     }
 
     public Element createElementBefore(final String xmlTagName, final Node childToCreateBefore) {
-        Args.notEmpty("tagName", xmlTagName);
         Args.notNull("childToCreateBefore", childToCreateBefore);
+        Assert.isTrue(childToCreateBefore.getOwnerDocument() == domDocument, "[childToCreateBefore] belongs to another DOM document!");
 
-        return createElementBefore(xmlTagName, childToCreateBefore, null);
+        return DOMUtils.createElementBefore(xmlTagName, childToCreateBefore);
     }
 
     public Element createElementBefore(final String xmlTagName, final Node childToCreateBefore, final Map<String, String> elementAttributes) {
-        Args.notEmpty("tagName", xmlTagName);
         Args.notNull("childToCreateBefore", childToCreateBefore);
+        Assert.isTrue(childToCreateBefore.getOwnerDocument() == domDocument, "[childToCreateBefore] belongs to another DOM document!");
 
-        final Element elem = (Element) childToCreateBefore.getParentNode().insertBefore(domDocument.createElement(xmlTagName), childToCreateBefore);
-        if (elementAttributes != null) {
-            for (final Entry<String, String> attr : elementAttributes.entrySet()) {
-                elem.setAttribute(attr.getKey(), attr.getValue());
-            }
-        }
-        return elem;
+        return DOMUtils.createElementBefore(xmlTagName, childToCreateBefore, elementAttributes);
     }
 
     public Text createTextNode(final String text, final Node parentNode) {
-        Args.notNull("text", text);
         Args.notNull("parentNode", parentNode);
+        Assert.isTrue(parentNode.getOwnerDocument() == domDocument, "[parentNode] belongs to another DOM document!");
 
-        final Text elem = (Text) parentNode.appendChild(domDocument.createTextNode(text));
-        return elem;
+        return DOMUtils.createTextNode(text, parentNode);
     }
 
     public Text createTextNodeBefore(final String text, final Node childToCreateBefore) {
-        Args.notNull("text", text);
         Args.notNull("childToCreateBefore", childToCreateBefore);
+        Assert.isTrue(childToCreateBefore.getOwnerDocument() == domDocument, "[childToCreateBefore] belongs to another DOM document!");
 
-        final Text elem = (Text) childToCreateBefore.getParentNode().insertBefore(domDocument.createTextNode(text), childToCreateBefore);
-        return elem;
+        return DOMUtils.createTextNodeBefore(text, childToCreateBefore);
     }
 
     public String evaluate(final String xPathExpression) throws XMLException {
-        Args.notNull("xPathExpression", xPathExpression);
-
         return DOMUtils.evaluate(xPathExpression, domRoot);
     }
 
     public String evaluate(final String xPathExpression, final Node searchScope) throws XMLException {
-        Args.notNull("xPathExpression", xPathExpression);
         Args.notNull("searchScope", searchScope);
+        Assert.isTrue(searchScope.getOwnerDocument() == domDocument, "[searchScope] belongs to another DOM document!");
 
         return DOMUtils.evaluate(xPathExpression, searchScope);
     }
 
     public Node findNode(final String xPathExpression) throws XMLException {
-        Args.notEmpty("xPathExpression", xPathExpression);
-
         return findNode(xPathExpression, domRoot);
     }
 
     public Node findNode(final String xPathExpression, final Node searchScope) throws XMLException {
-        Args.notEmpty("xPathExpression", xPathExpression);
         Args.notNull("searchScope", searchScope);
+        Assert.isTrue(searchScope.getOwnerDocument() == domDocument, "[searchScope] belongs to another DOM document!");
 
         return DOMUtils.findNode(xPathExpression, searchScope);
     }
 
     public List<Node> findNodes(final String xPathExpression) throws XMLException {
-        Args.notEmpty("xPathExpression", xPathExpression);
-
         return DOMUtils.findNodes(xPathExpression, domRoot);
     }
 
     public List<Node> findNodes(final String xPathExpression, final Node searchScope) throws XMLException {
-        Args.notEmpty("xPathExpression", xPathExpression);
         Args.notNull("searchScope", searchScope);
+        Assert.isTrue(searchScope.getOwnerDocument() == domDocument, "[searchScope] belongs to another DOM document!");
 
         return DOMUtils.findNodes(xPathExpression, searchScope);
     }
@@ -206,8 +188,6 @@ public class DOMFile {
      * @param recursive return text content of child nodes
      */
     public String findTextContent(final String xPathExpression, final boolean recursive) throws XMLException {
-        Args.notNull("xPathExpression", xPathExpression);
-
         return DOMUtils.findTextContent(xPathExpression, domRoot, recursive);
     }
 
@@ -215,16 +195,27 @@ public class DOMFile {
      * @param recursive return text content of child nodes
      */
     public String findTextContent(final String xPathExpression, final Node searchScope, final boolean recursive) throws XMLException {
-        Args.notNull("xPathExpression", xPathExpression);
         Args.notNull("searchScope", searchScope);
+        Assert.isTrue(searchScope.getOwnerDocument() == domDocument, "[searchScope] belongs to another DOM document!");
 
         return DOMUtils.findTextContent(xPathExpression, searchScope, recursive);
     }
 
-    public List<Node> getChildNodes(final Node node) {
+    public List<Attr> getAttributes(final Node node) {
         Args.notNull("node", node);
+        Assert.isTrue(node.getOwnerDocument() == domDocument, "[node] belongs to another DOM document!");
 
-        return DOMUtils.getChildNodes(node);
+        return DOMUtils.getAttributes(node);
+    }
+
+    /**
+     * @return all direct child nodes of this node.
+     */
+    public List<Node> getChildNodes(final Node parentNode) {
+        Args.notNull("parentNode", parentNode);
+        Assert.isTrue(parentNode.getOwnerDocument() == domDocument, "[parentNode] belongs to another DOM document!");
+
+        return DOMUtils.getChildNodes(parentNode);
     }
 
     public Document getDOMDocument() {
@@ -233,6 +224,17 @@ public class DOMFile {
 
     public Element getDOMRoot() {
         return domRoot;
+    }
+
+    /**
+     * @param tagName The name of the tag to match on. The special value "*" matches all tags.
+     * @return all child and sub-child nodes with the given tag name, in document order.
+     */
+    public <T extends Node> List<T> getElementsByTagName(final Element parentElement, final String tagName) {
+        Args.notNull("parentElement", parentElement);
+        Assert.isTrue(parentElement.getOwnerDocument() == domDocument, "[parentElement] belongs to another DOM document!");
+
+        return DOMUtils.getElementsByTagName(parentElement, tagName);
     }
 
     /**
@@ -248,25 +250,69 @@ public class DOMFile {
 
     public Node getFirstChild(final Node parentNode) {
         Args.notNull("parentNode", parentNode);
+        Assert.isTrue(parentNode.getOwnerDocument() == domDocument, "[parentNode] belongs to another DOM document!");
 
         return DOMUtils.getFirstChild(parentNode);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends Node> T importNodeBefore(final T nodeToImport, final Node childToImportBefore) {
-        Args.notNull("nodeToImport", nodeToImport);
-        Args.notNull("childToImportBefore", childToImportBefore);
+    public List<Attr> getIdAttributes(final Node node) {
+        Args.notNull("node", node);
+        Assert.isTrue(node.getOwnerDocument() == domDocument, "[node] belongs to another DOM document!");
 
-        final Node importedNode = DOMUtils.importNode(nodeToImport, domRoot);
-        return (T) childToImportBefore.getParentNode().insertBefore(importedNode, childToImportBefore);
+        return DOMUtils.getIdAttributes(node);
+    }
+
+    /**
+     * @return the imported node object
+     */
+    public <T extends Node> T importNode(final T nodeToImport, final Node newParentNode) {
+        Args.notNull("newParentNode", newParentNode);
+        Assert.isTrue(newParentNode.getOwnerDocument() == domDocument, "[newParentNode] belongs to another DOM document!");
+
+        return DOMUtils.importNode(nodeToImport, newParentNode);
+    }
+
+    public <T extends Node> T importNodeBefore(final T nodeToImport, final Node insertBeforeNode) {
+        Args.notNull("insertBeforeNode", insertBeforeNode);
+        Assert.isTrue(insertBeforeNode.getOwnerDocument() == domDocument, "[insertBeforeNode] belongs to another DOM document!");
+
+        return DOMUtils.importNodeBefore(nodeToImport, insertBeforeNode);
+    }
+
+    public <T extends Node> List<T> importNodes(final Collection<T> nodesToImport, final Node newParentNode) {
+        Args.notNull("newParentNode", newParentNode);
+        Assert.isTrue(newParentNode.getOwnerDocument() == domDocument, "[newParentNode] belongs to another DOM document!");
+
+        return DOMUtils.importNodes(nodesToImport, newParentNode);
+    }
+
+    public <T extends Node> List<T> importNodes(final Collection<T> nodesToImport, final Node newParentNode, final Node insertBeforeNode) {
+        Args.notNull("newParentNode", newParentNode);
+        Assert.isTrue(newParentNode.getOwnerDocument() == domDocument, "[newParentNode] belongs to another DOM document!");
+
+        return DOMUtils.importNodes(nodesToImport, newParentNode, insertBeforeNode);
+    }
+
+    /**
+     * @return true if the node was removed and false if the node did not have a parent node
+     * @exception DOMException
+     *                <li>NO_MODIFICATION_ALLOWED_ERR: Raised if this node is readonly.</li>
+     *                <li>NOT_FOUND_ERR: Raised if <code>oldChild</code> is not a child
+     *                of this node.</li>
+     *                <li>NOT_SUPPORTED_ERR: if this node is of type <code>Document</code>, this exception might be raised if the DOM
+     *                implementation doesn't support the removal of the <code>DocumentType</code> child or the <code>Element</code> child.</li>
+     */
+    public boolean removeNode(final Node node) throws DOMException {
+        Args.notNull("node", node);
+        Assert.isTrue(node.getOwnerDocument() == domDocument, "[node] belongs to another DOM document!");
+
+        return DOMUtils.removeNode(node);
     }
 
     /**
      * @return a list of the removed nodes
      */
     public List<Node> removeNodes(final String xPathExpression) throws XMLException {
-        Args.notEmpty("xPathExpression", xPathExpression);
-
         return removeNodes(xPathExpression, domRoot);
     }
 
@@ -274,15 +320,10 @@ public class DOMFile {
      * @return a list of the removed nodes
      */
     public List<Node> removeNodes(final String xPathExpression, final Node searchScope) throws XMLException {
-        Args.notEmpty("xPathExpression", xPathExpression);
         Args.notNull("searchScope", searchScope);
+        Assert.isTrue(searchScope.getOwnerDocument() == domDocument, "[searchScope] belongs to another DOM document!");
 
-        final List<Node> nodesToRemove = findNodes(xPathExpression, searchScope);
-
-        for (final Node nodeToRemove : nodesToRemove) {
-            DOMUtils.removeNode(nodeToRemove);
-        }
-        return nodesToRemove;
+        return DOMUtils.removeNodes(xPathExpression, searchScope);
     }
 
     public void removeWhiteSpaceNodes() {
@@ -290,7 +331,10 @@ public class DOMFile {
     }
 
     public void removeWhiteSpaceNodes(final Node searchScope) {
-        removeNodes("text()[normalize-space()='']", searchScope);
+        Args.notNull("searchScope", searchScope);
+        Assert.isTrue(searchScope.getOwnerDocument() == domDocument, "[searchScope] belongs to another DOM document!");
+
+        DOMUtils.removeWhiteSpaceNodes(searchScope);
     }
 
     public void save() throws IOException, XMLException {
