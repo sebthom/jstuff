@@ -45,6 +45,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
@@ -848,31 +849,43 @@ public abstract class DOMUtils {
     public static void sortChildNodesByAttributes(final Node parentNode, final boolean ascending, final String... attributeNames) {
         Args.notNull("parentNode", parentNode);
 
-        final List<Node> sortedNodes = new ArrayList<Node>();
+        final List<Node> children = new ArrayList<Node>();
         for (final Node node : getChildNodes(parentNode)) {
             // Remove empty text nodes
             if (node instanceof Text && ((Text) node).getTextContent().trim().length() > 1) {
                 continue;
             }
-            sortedNodes.add(node);
+            children.add(node);
         }
-        final Comparator<Node> comparator = new Comparator<Node>() {
+
+        Collections.sort(children, new Comparator<Node>() {
             public int compare(final Node n1, final Node n2) {
                 final NamedNodeMap m1 = n1.getAttributes();
                 final NamedNodeMap m2 = n2.getAttributes();
-                for (final String attributeName : attributeNames) {
-                    final Attr a1 = (Attr) m1.getNamedItem(attributeName);
-                    final Attr a2 = (Attr) m2.getNamedItem(attributeName);
-                    final int rc = ObjectUtils.compare(a1 == null ? null : a1.getValue(), a2 == null ? null : a2.getValue());
-                    if (rc != 0)
-                        return ascending ? rc : -1 * rc;
+                for (final String attrName : attributeNames) {
+                    final Attr a1 = (Attr) m1.getNamedItem(attrName);
+                    final Attr a2 = (Attr) m2.getNamedItem(attrName);
+                    final String v1 = a1 == null ? null : a1.getValue();
+                    final String v2 = a2 == null ? null : a2.getValue();
+                    final int rc;
+                    // perform numeric sort if both values are integers
+                    if (StringUtils.isNumeric(v1) && StringUtils.isNumeric(v2)) {
+                        final int i1 = Integer.parseInt(v1, 10);
+                        final int i2 = Integer.parseInt(v2, 10);
+                        rc = i1 < i2 ? -1 : i1 == i2 ? 0 : 1;
+                    } else {
+                        rc = ObjectUtils.compare(v1, v2, false);
+                    }
+
+                    if (rc == 0)
+                        return 0;
+                    return ascending ? rc : -1 * rc;
                 }
                 return 0;
             }
-        };
+        });
 
-        Collections.sort(sortedNodes, comparator);
-        for (final Node n : sortedNodes) {
+        for (final Node n : children) {
             parentNode.appendChild(n);
         }
     }

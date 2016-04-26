@@ -79,38 +79,46 @@ public class DOMUtilsTests extends TestCase {
     }
 
     public void testSortNodes() throws XMLException {
+
         {
-            final Document doc = DOMUtils.parseString("<foo><bar name='33'/><bar name='11'/><bar name='22'/></foo>", null);
+            final Document doc = DOMUtils.parseString("<foo><bar name='CC'/><bar name='AA'/><bar name='BB'/></foo>", null);
             DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true, "name");
-            assertEquals("<foo><bar name=\"11\"/><bar name=\"22\"/><bar name=\"33\"/></foo>", DOMUtils.toXML(doc, false, false));
+            assertEquals("<foo><bar name=\"AA\"/><bar name=\"BB\"/><bar name=\"CC\"/></foo>", DOMUtils.toXML(doc, false, false));
         }
 
         {
             // sort in reverse
-            final Document doc = DOMUtils.parseString("<foo><bar name='33'/><bar name='11'/><bar name='22'/></foo>", null);
+            final Document doc = DOMUtils.parseString("<foo><bar name='CC'/><bar name='AA'/><bar name='BB'/></foo>", null);
             DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), false, "name");
-            assertEquals("<foo><bar name=\"33\"/><bar name=\"22\"/><bar name=\"11\"/></foo>", DOMUtils.toXML(doc, false, false));
+            assertEquals("<foo><bar name=\"CC\"/><bar name=\"BB\"/><bar name=\"AA\"/></foo>", DOMUtils.toXML(doc, false, false));
+        }
+
+        {
+            // numeric sort
+            final Document doc = DOMUtils.parseString("<foo><bar name='9080'/><bar name='443'/><bar name='1100'/><bar name='80'/></foo>", null);
+            DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true, "name");
+            assertEquals("<foo><bar name=\"80\"/><bar name=\"443\"/><bar name=\"1100\"/><bar name=\"9080\"/></foo>", DOMUtils.toXML(doc, false, false));
         }
 
         {
             // sort on none-existing attribute
-            final Document doc = DOMUtils.parseString("<foo><bar name='33'/><bar name='11'/><bar name='22'/></foo>", null);
+            final Document doc = DOMUtils.parseString("<foo><bar name='CC'/><bar name='AA'/><bar name='BB'/></foo>", null);
             DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true, "value");
-            assertEquals("<foo><bar name=\"33\"/><bar name=\"11\"/><bar name=\"22\"/></foo>", DOMUtils.toXML(doc, false, false));
+            assertEquals("<foo><bar name=\"CC\"/><bar name=\"AA\"/><bar name=\"BB\"/></foo>", DOMUtils.toXML(doc, false, false));
         }
 
         {
             // sort while omitting attribute name
-            final Document doc = DOMUtils.parseString("<foo><bar name='33'/><bar name='11'/><bar name='22'/></foo>", null);
+            final Document doc = DOMUtils.parseString("<foo><bar name='CC'/><bar name='AA'/><bar name='BB'/></foo>", null);
             DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true);
-            assertEquals("<foo><bar name=\"33\"/><bar name=\"11\"/><bar name=\"22\"/></foo>", DOMUtils.toXML(doc, false, false));
+            assertEquals("<foo><bar name=\"CC\"/><bar name=\"AA\"/><bar name=\"BB\"/></foo>", DOMUtils.toXML(doc, false, false));
         }
 
         {
             // sort on two attribute
-            final Document doc = DOMUtils.parseString("<foo><bar name='bb' value='22'/><bar name='bb' value='11'/><bar name='aa' value='11'/></foo>", null);
+            final Document doc = DOMUtils.parseString("<foo><bar name='bb' value='BB'/><bar name='bb' value='AA'/><bar name='aa' value='AA'/></foo>", null);
             DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true, "name", "value");
-            assertEquals("<foo><bar name=\"aa\" value=\"11\"/><bar name=\"bb\" value=\"11\"/><bar name=\"bb\" value=\"22\"/></foo>", DOMUtils.toXML(doc, false,
+            assertEquals("<foo><bar name=\"aa\" value=\"AA\"/><bar name=\"bb\" value=\"AA\"/><bar name=\"bb\" value=\"BB\"/></foo>", DOMUtils.toXML(doc, false,
                 false));
         }
 
