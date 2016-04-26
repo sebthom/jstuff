@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
@@ -607,6 +608,44 @@ public abstract class CollectionUtils {
             return null;
 
         final Map<T, T> result = newHashMap();
+        boolean isKey = true;
+        T key = null;
+        for (final T item : keysAndValues)
+            if (isKey) {
+                key = item;
+                isKey = false;
+            } else {
+                result.put(key, item);
+                isKey = true;
+            }
+        return result;
+    }
+
+    /**
+     * Converts key/value pairs defined in a string into a map.
+     *
+     * E.g. toSortedMap("name1=value1,name2=value2", "\"", "=")
+     */
+    public static SortedMap<String, String> toSortedMap(final String valuePairs, final String valueSeparator, final String assignmentOperator) {
+        if (valuePairs == null)
+            return null;
+
+        Args.notNull("valueSeparator", valueSeparator);
+        Args.notNull("assignmentOperator", assignmentOperator);
+
+        final SortedMap<String, String> result = newTreeMap();
+        for (final String element : Strings.split(valuePairs, valueSeparator)) {
+            final String[] valuePairSplitted = Strings.split(element, assignmentOperator);
+            result.put(valuePairSplitted[0], valuePairSplitted[1]);
+        }
+        return result;
+    }
+
+    public static <T> SortedMap<T, T> toSortedMap(final T... keysAndValues) {
+        if (keysAndValues == null)
+            return null;
+
+        final SortedMap<T, T> result = newTreeMap();
         boolean isKey = true;
         T key = null;
         for (final T item : keysAndValues)
