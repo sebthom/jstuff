@@ -48,6 +48,20 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
             reset();
         }
 
+        public ANSIState(final ANSIState copyFrom) {
+            copyFrom(copyFrom);
+        }
+
+        public void copyFrom(final ANSIState other) {
+            if (other == null)
+                return;
+            fgcolor = other.fgcolor;
+            bgcolor = other.bgcolor;
+            bold = other.bold;
+            underline = other.underline;
+            blink = other.blink;
+        }
+
         public boolean isActive() {
             return fgcolor != null || bgcolor != null || bold || underline || blink;
         }
@@ -171,23 +185,25 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
             return txt;
         Args.notNull("initialState", initialState);
 
-        final char ESCAPE = '\u001B';
+        final char ESC = '\u001B';
 
         final StringBuilder sb = new StringBuilder(txt.length());
-        final StringBuilder lookAhead = new StringBuilder(8);
 
-        if (initialState.isActive()) {
+        if (initialState != null && initialState.isActive()) {
             sb.append("<span style=\"").append(initialState.toCSS()).append("\">");
         }
 
-        for (int i = 0, l = txt.length(); i < l; i++) {
+        ANSIState effectiveState = new ANSIState(initialState);
+        final StringBuilder lookAhead = new StringBuilder(8);
+
+        for (int i = 0, txtLen = txt.length(); i < txtLen; i++) {
             final char ch = txt.charAt(i);
-            if (ch == ESCAPE && i < l && txt.charAt(i + 1) == '[') {
+            if (ch == ESC && i < txtLen - 1 && txt.charAt(i + 1) == '[') {
                 lookAhead.setLength(0);
+                final ANSIState currentState = new ANSIState(effectiveState);
                 int currentGraphicModeParam = 0;
-                boolean done = false;
-                final boolean isActiveOld = initialState.isActive();
-                for (i = i + 2; i < l; i++) {
+                boolean isValidEscapeSequence = false;
+                for (i = i + 2; i < txtLen; i++) {
                     final char ch2 = txt.charAt(i);
                     lookAhead.append(ch2);
                     switch (ch2) {
@@ -222,38 +238,38 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
                             currentGraphicModeParam = currentGraphicModeParam * 10 + 9;
                             break;
                         case ';':
-                            initialState.setGraphicModeParameter(currentGraphicModeParam);
+                            currentState.setGraphicModeParameter(currentGraphicModeParam);
                             currentGraphicModeParam = 0;
                             break;
                         case 'm':
-                            initialState.setGraphicModeParameter(currentGraphicModeParam);
-                            currentGraphicModeParam = 0;
-                            if (isActiveOld) {
+                            currentState.setGraphicModeParameter(currentGraphicModeParam);
+                            if (effectiveState.isActive()) {
                                 sb.append("</span>");
                             }
-                            if (initialState.isActive()) {
-                                sb.append("<span style=\"").append(initialState.toCSS()).append("\">");
+                            if (currentState.isActive()) {
+                                sb.append("<span style=\"").append(currentState.toCSS()).append("\">");
                             }
-                            done = true;
+                            effectiveState = currentState;
+                            isValidEscapeSequence = true;
                             break;
                         default:
-                            // in case an unexpected value has been found we know this is not a graphic mode setting sequence
-                            sb.append(ESCAPE).append('[').append(lookAhead);
-                            done = true;
+                            // invalid character found
+                            isValidEscapeSequence = true;
                     }
-                    if (done) {
+                    if (isValidEscapeSequence) {
                         break;
                     }
                 }
-                if (!done) {
-                    sb.append(ESCAPE).append('[').append(lookAhead); // in case of unexpected ending of string
+                if (!isValidEscapeSequence) {
+                    // in case of a missing ESC sequence delimiter, we treat the whole ESC string not as an ANSI escape sequence
+                    sb.append(ESC).append('[').append(lookAhead);
                 }
             } else {
                 sb.append(ch);
             }
         }
 
-        if (initialState.isActive()) {
+        if (effectiveState.isActive()) {
             sb.append("</span>");
         }
         return sb;
@@ -355,44 +371,49 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
         if (Strings.isEmpty(globPattern))
             return globPattern;
 
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder("^");
         final char[] chars = globPattern.toCharArray();
-        char chNext = 0;
         char chPrev = 0;
         final char ESCAPE_CHAR = '\\';
         int groupDepth = 0;
         for (int idx = 0, l = chars.length; idx < l; idx++) {
             char ch = chars[idx];
-            chNext = charAt(globPattern, idx + 1, (char) 0);
-
             switch (ch) {
                 case ESCAPE_CHAR:
                     if (chPrev == ESCAPE_CHAR) {
-                        sb.append(ESCAPE_CHAR).append(ESCAPE_CHAR); // "\\" => "\\"
+                        // "\\" => "\\"
+                        sb.append(ESCAPE_CHAR).append(ESCAPE_CHAR);
                     }
                     break;
                 case '$':
-                    sb.append(ESCAPE_CHAR).append("$"); // "$" => "\$"
+                    // "$" => "\$"
+                    sb.append(ESCAPE_CHAR).append("$");
                     break;
                 case '?':
                     if (chPrev == ESCAPE_CHAR) {
-                        sb.append(ESCAPE_CHAR).append("?"); // "\?" => "\?"
+                        // "\?" => "\?"
+                        sb.append(ESCAPE_CHAR).append("?");
                     } else {
-                        sb.append("."); // "?" => "."
+                        // "?" => "[^\\^\/]"
+                        sb.append("[^\\\\^\\/]");
                     }
                     break;
                 case '.':
-                    sb.append(ESCAPE_CHAR).append("."); // "." => "\."
+                    // "." => "\."
+                    sb.append(ESCAPE_CHAR).append(".");
                     break;
                 case '(':
-                    sb.append(ESCAPE_CHAR).append("("); // "(" => "\("
+                    // "(" => "\("
+                    sb.append(ESCAPE_CHAR).append("(");
                     break;
                 case ')':
-                    sb.append(ESCAPE_CHAR).append(")"); // ")" => "\)"
+                    // ")" => "\)"
+                    sb.append(ESCAPE_CHAR).append(")");
                     break;
                 case '{':
                     if (chPrev == ESCAPE_CHAR) {
-                        sb.append(ESCAPE_CHAR).append("{"); // "\{" => "\{"
+                        // "\{" => "\{"
+                        sb.append(ESCAPE_CHAR).append("{");
                     } else {
                         groupDepth++;
                         sb.append("(");
@@ -400,7 +421,8 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
                     break;
                 case '}':
                     if (chPrev == ESCAPE_CHAR) {
-                        sb.append(ESCAPE_CHAR).append("}"); // "\}" => "\}"
+                        // "\}" => "\}"
+                        sb.append(ESCAPE_CHAR).append("}");
                     } else {
                         groupDepth--;
                         sb.append(")");
@@ -410,28 +432,32 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
                     if (chPrev == ESCAPE_CHAR) {
                         sb.append(ESCAPE_CHAR).append(",");
                     } else {
-                        sb.append(groupDepth > 0 ? '|' : ','); // "," => "|" if in group or => "," if not in group
+                        // "," => "|" if in group or => "," if not in group
+                        sb.append(groupDepth > 0 ? '|' : ',');
                     }
                     break;
                 case '*':
-                    if (charAt(globPattern, idx + 1, (char) 0) == '*') { //
-                        if (chNext == '*')
-                            if (charAt(globPattern, idx + 2, (char) 0) == '/') {
+                    if (charAt(globPattern, idx + 1, (char) 0) == '*') { // **
+                        if (charAt(globPattern, idx + 2, (char) 0) == '/') // **/
                             if (charAt(globPattern, idx + 3, (char) 0) == '*') {
-                                sb.append(".*"); // "**/*" => ".*"
+                                // "**/*" => ".*"
+                                sb.append(".*");
                                 idx = idx + 3;
                                 ch = '*';
                             } else {
-                                sb.append("(.*/)?"); // "**/" => "(.*/)?"
+                                // "**/" => "(.*/)?"
+                                sb.append("(.*/)?");
                                 idx = idx + 2;
                                 ch = '/';
                             }
-                        } else {
-                            sb.append(".*"); // "**" => ".*"
+                        else {
+                            // "**" => ".*"
+                            sb.append(".*");
                             idx++;
                         }
                     } else {
-                        sb.append("[^/]*"); // "*" => "[^/]*"
+                        // "*" => "[^\\^\/]*"
+                        sb.append("[^\\\\^\\/]*");
                     }
                     break;
 
@@ -485,41 +511,60 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     }
 
     public static CharSequence htmlEncode(final CharSequence text) {
+        if (isEmpty(text))
+            return text;
+
         final int textLen = text.length();
         final StringBuilder sb = new StringBuilder(textLen);
-
         boolean isFirstSpace = true;
-
         for (int i = 0; i < textLen; i++) {
             final char ch = text.charAt(i);
 
-            if (ch == ' ') {
-                if (isFirstSpace) {
-                    sb.append(' ');
-                    isFirstSpace = false;
-                } else {
-                    sb.append("&nbsp;");
-                }
-                continue;
+            switch (ch) {
+                case ' ':
+                    if (isFirstSpace) {
+                        sb.append(' ');
+                        isFirstSpace = false;
+                    } else {
+                        sb.append("&nbsp;");
+                    }
+                    break;
+
+                case '&':
+                    sb.append("&amp;");
+                    break;
+
+                case '"':
+                    sb.append("&quot;");
+                    break;
+
+                case '\'':
+                    // http://stackoverflow.com/a/2083770
+                    sb.append("&#039;");
+                    break;
+
+                case '<':
+                    sb.append("&lt;");
+                    break;
+
+                case '>':
+                    sb.append("&gt;");
+                    break;
+
+                case LF:
+                    sb.append("&lt;br/&gt;");
+                    break;
+
+                default:
+                    if (ch < 128) {
+                        sb.append(ch);
+                    } else {
+                        sb.append("&#").append((int) ch).append(';');
+                    }
             }
-            if (ch == '<') {
-                sb.append("&lt;");
-            } else if (ch == '>') {
-                sb.append("&gt;");
-            } else if (ch == '\'') {
-                sb.append("&apos;");
-            } else if (ch == '"') {
-                sb.append("&quot;");
-            } else if (ch == '&') {
-                sb.append("&amp;");
-            } else if (ch == LF) {
-                sb.append("&lt;br/&gt;");
-            } else if (ch < 160) {
-                sb.append(ch);
-            } else {
-                sb.append("&#").append((int) ch).append(';');
+            if (ch != ' ') {
+                isFirstSpace = true;
             }
-            isFirstSpace = true;
         }
         return sb;
     }
