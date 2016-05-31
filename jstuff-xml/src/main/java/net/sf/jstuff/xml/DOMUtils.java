@@ -191,6 +191,10 @@ public abstract class DOMUtils {
         }
     };
 
+    private static Document _getOwnerDocument(final Node node) {
+        return node instanceof Document ? (Document) node : node.getOwnerDocument();
+    }
+
     private static List<Attr> _getIdAttributes(final Element element, final XPathNodeConfiguration config) {
         Args.notNull("element", element);
 
@@ -296,8 +300,7 @@ public abstract class DOMUtils {
         Args.notNull("commentString", commentString);
         Args.notNull("childToCreateBefore", childToCreateBefore);
 
-        return (Comment) childToCreateBefore.getOwnerDocument().insertBefore(childToCreateBefore.getOwnerDocument().createComment(commentString),
-            childToCreateBefore);
+        return (Comment) childToCreateBefore.insertBefore(_getOwnerDocument(childToCreateBefore).createComment(commentString), childToCreateBefore);
     }
 
     /**
@@ -317,7 +320,7 @@ public abstract class DOMUtils {
         Args.notEmpty("xmlTagName", xmlTagName);
         Args.notNull("parentNode", parentNode);
 
-        final Element elem = (Element) parentNode.appendChild(parentNode.getOwnerDocument().createElement(xmlTagName));
+        final Element elem = (Element) parentNode.appendChild(_getOwnerDocument(parentNode).createElement(xmlTagName));
         if (elementAttributes != null) {
             for (final Entry<String, String> attr : elementAttributes.entrySet()) {
                 elem.setAttribute(attr.getKey(), attr.getValue());
@@ -337,7 +340,7 @@ public abstract class DOMUtils {
         Args.notEmpty("tagName", xmlTagName);
         Args.notNull("childToCreateBefore", childToCreateBefore);
 
-        final Element elem = (Element) childToCreateBefore.getParentNode().insertBefore(childToCreateBefore.getOwnerDocument().createElement(xmlTagName),
+        final Element elem = (Element) childToCreateBefore.getParentNode().insertBefore(_getOwnerDocument(childToCreateBefore).createElement(xmlTagName),
             childToCreateBefore);
         if (elementAttributes != null) {
             for (final Entry<String, String> attr : elementAttributes.entrySet()) {
@@ -351,7 +354,7 @@ public abstract class DOMUtils {
         Args.notNull("text", text);
         Args.notNull("parentNode", parentNode);
 
-        final Text elem = (Text) parentNode.appendChild(parentNode.getOwnerDocument().createTextNode(text));
+        final Text elem = (Text) parentNode.appendChild(_getOwnerDocument(parentNode).createTextNode(text));
         return elem;
     }
 
@@ -359,7 +362,7 @@ public abstract class DOMUtils {
         Args.notNull("text", text);
         Args.notNull("childToCreateBefore", childToCreateBefore);
 
-        final Text elem = (Text) childToCreateBefore.getParentNode().insertBefore(childToCreateBefore.getOwnerDocument().createTextNode(text),
+        final Text elem = (Text) childToCreateBefore.getParentNode().insertBefore(_getOwnerDocument(childToCreateBefore).createTextNode(text),
             childToCreateBefore);
         return elem;
     }
@@ -497,7 +500,7 @@ public abstract class DOMUtils {
         Args.notNull("nodeToImport", nodeToImport);
         Args.notNull("newParentNode", newParentNode);
 
-        return (T) newParentNode.appendChild(newParentNode.getOwnerDocument().importNode(nodeToImport, true));
+        return (T) newParentNode.appendChild(_getOwnerDocument(newParentNode).importNode(nodeToImport, true));
     }
 
     @SuppressWarnings("unchecked")
@@ -505,7 +508,7 @@ public abstract class DOMUtils {
         Args.notNull("nodeToImport", nodeToImport);
         Args.notNull("insertBeforeNode", insertBeforeNode);
 
-        final Node importedNode = importNode(nodeToImport, insertBeforeNode.getOwnerDocument());
+        final Node importedNode = importNode(nodeToImport, _getOwnerDocument(insertBeforeNode));
         return (T) insertBeforeNode.getParentNode().insertBefore(importedNode, insertBeforeNode);
     }
 
@@ -524,9 +527,10 @@ public abstract class DOMUtils {
         Args.notNull("nodesToImport", nodesToImport);
         Args.notNull("newParentNode", newParentNode);
 
+        final Document targetDoc = _getOwnerDocument(newParentNode);
         final List<T> newNodes = new ArrayList<T>(nodesToImport.size());
         for (final T nodeToImport : nodesToImport) {
-            final T importedNode = (T) newParentNode.appendChild(newParentNode.getOwnerDocument().importNode(nodeToImport, true));
+            final T importedNode = (T) newParentNode.appendChild(targetDoc.importNode(nodeToImport, true));
             newNodes.add(importedNode);
             if (insertBeforeNode != null) {
                 newParentNode.insertBefore(importedNode, insertBeforeNode);
@@ -877,8 +881,9 @@ public abstract class DOMUtils {
                         rc = ObjectUtils.compare(v1, v2, false);
                     }
 
-                    if (rc == 0)
-                        return 0;
+                    if (rc == 0) {
+                        continue;
+                    }
                     return ascending ? rc : -1 * rc;
                 }
                 return 0;

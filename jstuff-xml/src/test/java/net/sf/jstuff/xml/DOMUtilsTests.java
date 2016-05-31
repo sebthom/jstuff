@@ -118,6 +118,7 @@ public class DOMUtilsTests extends TestCase {
             // sort on two attribute
             final Document doc = DOMUtils.parseString("<foo><bar name='bb' value='BB'/><bar name='bb' value='AA'/><bar name='aa' value='AA'/></foo>", null);
             DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true, "name", "value");
+            System.out.println(DOMUtils.toXML(doc, false, false));
             assertEquals("<foo><bar name=\"aa\" value=\"AA\"/><bar name=\"bb\" value=\"AA\"/><bar name=\"bb\" value=\"BB\"/></foo>", DOMUtils.toXML(doc, false,
                 false));
         }
