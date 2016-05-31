@@ -300,7 +300,8 @@ public abstract class DOMUtils {
         Args.notNull("commentString", commentString);
         Args.notNull("childToCreateBefore", childToCreateBefore);
 
-        return (Comment) childToCreateBefore.insertBefore(_getOwnerDocument(childToCreateBefore).createComment(commentString), childToCreateBefore);
+        final Document doc = _getOwnerDocument(childToCreateBefore);
+        return (Comment) doc.insertBefore(doc.createComment(commentString), childToCreateBefore);
     }
 
     /**
@@ -508,7 +509,7 @@ public abstract class DOMUtils {
         Args.notNull("nodeToImport", nodeToImport);
         Args.notNull("insertBeforeNode", insertBeforeNode);
 
-        final Node importedNode = importNode(nodeToImport, _getOwnerDocument(insertBeforeNode));
+        final Node importedNode = _getOwnerDocument(insertBeforeNode).importNode(nodeToImport, true);
         return (T) insertBeforeNode.getParentNode().insertBefore(importedNode, insertBeforeNode);
     }
 
