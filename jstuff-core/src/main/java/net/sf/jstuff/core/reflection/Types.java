@@ -44,6 +44,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
@@ -53,8 +55,6 @@ import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.reflection.visitor.ClassVisitor;
 import net.sf.jstuff.core.reflection.visitor.ClassVisitorWithTypeArguments;
 import net.sf.jstuff.core.validation.Args;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -76,13 +76,14 @@ public abstract class Types {
 
             public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
                 Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
-                if (mixedInMethod == null)
+                if (mixedInMethod == null) {
                     for (final Object mixin : mixins) {
-                    final Method methodImpl = Methods.findRecursive(mixin.getClass(), method.getName(), method.getParameterTypes());
-                    if (methodImpl != null) {
-                        mixedInMethod = Tuple2.create(mixin, methodImpl);
-                        mappedMethodsCache.put(method, mixedInMethod);
-                        break;
+                        final Method methodImpl = Methods.findRecursive(mixin.getClass(), method.getName(), method.getParameterTypes());
+                        if (methodImpl != null) {
+                            mixedInMethod = Tuple2.create(mixin, methodImpl);
+                            mappedMethodsCache.put(method, mixedInMethod);
+                            break;
+                        }
                     }
                 }
                 if (mixedInMethod == null)
@@ -140,19 +141,21 @@ public abstract class Types {
         }
 
         final ClassLoader cl1 = Types.class.getClassLoader();
-        if (cl1 != null)
+        if (cl1 != null) {
             try {
-            return (Class<T>) Class.forName(className, false, Types.class.getClassLoader());
-        } catch (final ClassNotFoundException ex) {
-            // ignore
+                return (Class<T>) Class.forName(className, false, Types.class.getClassLoader());
+            } catch (final ClassNotFoundException ex) {
+                // ignore
+            }
         }
 
         final ClassLoader cl2 = Thread.currentThread().getContextClassLoader();
-        if (cl1 != cl2 && cl2 != null)
+        if (cl1 != cl2 && cl2 != null) {
             try {
-            return (Class<T>) Class.forName(className, false, Thread.currentThread().getContextClassLoader());
-        } catch (final ClassNotFoundException ex) {
-            // ignore
+                return (Class<T>) Class.forName(className, false, Thread.currentThread().getContextClassLoader());
+            } catch (final ClassNotFoundException ex) {
+                // ignore
+            }
         }
         return null;
     }
@@ -190,11 +193,12 @@ public abstract class Types {
             }
 
             public boolean visit(final Class<?> clazz, final ParameterizedType type) {
-                if (type != null)
+                if (type != null) {
                     CollectionUtils.putAll(genericVariableToArgumentMappings, //
                         /*generic variable*/(TypeVariable<?>[]) clazz.getTypeParameters(), //
                         /*arguments (concrete types) for generic variables*/type.getActualTypeArguments() //
-                );
+                    );
+                }
 
                 if (clazz == searchFor) {
                     searchForType[0] = type;
@@ -208,15 +212,17 @@ public abstract class Types {
          * build the result list based on the information collected in genericVariableToTypeMappings
          */
         final Type[] genericVariables;
-        if (searchForType[0] == null)
+        if (searchForType[0] == null) {
             genericVariables = searchFor.getTypeParameters();
-        else
+        } else {
             genericVariables = searchForType[0].getActualTypeArguments();
+        }
         final Class<?>[] res = new Class<?>[genericVariables.length];
         for (int i = 0, l = genericVariables.length; i < l; i++) {
             Type genericVariable = genericVariables[i];
-            while (genericVariableToArgumentMappings.containsKey(genericVariable))
+            while (genericVariableToArgumentMappings.containsKey(genericVariable)) {
                 genericVariable = genericVariableToArgumentMappings.get(genericVariable);
+            }
             res[i] = getUnderlyingClass(genericVariable);
         }
         return res;
@@ -341,13 +347,15 @@ public abstract class Types {
                 jar = new ZipFile(location);
                 for (final Enumeration<? extends ZipEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements();) {
                     final ZipEntry jarEntry = jarEntries.nextElement();
-                    if (jarEntry.isDirectory())
+                    if (jarEntry.isDirectory()) {
                         continue;
+                    }
 
                     final String jarEntryName = jarEntry.getName();
 
-                    if (jarEntryName.length() < 25 || !jarEntryName.startsWith("META-INF/maven"))
+                    if (jarEntryName.length() < 25 || !jarEntryName.startsWith("META-INF/maven")) {
                         continue;
+                    }
 
                     if (jarEntryName.endsWith("/pom.properties")) {
                         final InputStream is = jar.getInputStream(jarEntry);
@@ -404,11 +412,11 @@ public abstract class Types {
     /**
      * @return true if an object of type <code>fromType</code> can be used as value for a field or parameter of type <code>toType</code>
      */
-    public static boolean isAssignableTo(final Class<?> valueType, final Class<?> memberType) {
-        Args.notNull("valueType", valueType);
-        Args.notNull("memberType", memberType);
+    public static boolean isAssignableTo(final Class<?> fromType, final Class<?> toType) {
+        Args.notNull("fromType", fromType);
+        Args.notNull("toType", toType);
 
-        return getPrimitiveWrapper(memberType).isAssignableFrom(getPrimitiveWrapper(valueType));
+        return getPrimitiveWrapper(toType).isAssignableFrom(getPrimitiveWrapper(fromType));
     }
 
     public static boolean isAvailable(final String className) {
@@ -499,25 +507,30 @@ public abstract class Types {
 
             if (!visitor.visit(current))
                 return;
-            if (visitor.isVisitingFields(current))
+            if (visitor.isVisitingFields(current)) {
                 for (final Field f : current.getDeclaredFields())
-                if (visitor.isVisitingField(f) && !visitor.visit(f))
-                    return;
+                    if (visitor.isVisitingField(f) && !visitor.visit(f))
+                        return;
+            }
 
-            if (visitor.isVisitingMethods(current))
+            if (visitor.isVisitingMethods(current)) {
                 for (final Method m : current.getDeclaredMethods())
-                if (visitor.isVisitingMethod(m) && !visitor.visit(m))
-                    return;
+                    if (visitor.isVisitingMethod(m) && !visitor.visit(m))
+                        return;
+            }
 
             if (visitor.isVisitingSuperclass(current)) {
                 final Class<?> sclass = current.getSuperclass();
-                if (sclass != null && visitor.isVisiting(sclass))
+                if (sclass != null && visitor.isVisiting(sclass)) {
                     toVisit.add(sclass);
+                }
             }
-            if (visitor.isVisitingInterfaces(current))
+            if (visitor.isVisitingInterfaces(current)) {
                 for (final Class<?> iface : current.getInterfaces())
-                if (visitor.isVisiting(iface))
-                    toVisit.add(iface);
+                    if (visitor.isVisiting(iface)) {
+                        toVisit.add(iface);
+                    }
+            }
         }
     }
 
@@ -548,20 +561,25 @@ public abstract class Types {
                 if (sclass != null)
                     if (sclass instanceof ParameterizedType) {
                     final ParameterizedType sptype = (ParameterizedType) sclass;
-                    if (visitor.isVisiting((Class<?>) sptype.getRawType(), sptype))
-                        toVisit.add(sclass);
-                } else if (visitor.isVisiting((Class<?>) sclass, null))
+                    if (visitor.isVisiting((Class<?>) sptype.getRawType(), sptype)) {
                     toVisit.add(sclass);
+                    }
+                    } else if (visitor.isVisiting((Class<?>) sclass, null)) {
+                    toVisit.add(sclass);
+                    }
             }
 
-            if (visitor.isVisitingInterfaces(currentClass, currentType))
+            if (visitor.isVisitingInterfaces(currentClass, currentType)) {
                 for (final Type itype : currentClass.getGenericInterfaces())
-                if (itype instanceof ParameterizedType) {
-                    final ParameterizedType iptype = (ParameterizedType) itype;
-                    if (visitor.isVisiting((Class<?>) iptype.getRawType(), iptype))
+                    if (itype instanceof ParameterizedType) {
+                        final ParameterizedType iptype = (ParameterizedType) itype;
+                        if (visitor.isVisiting((Class<?>) iptype.getRawType(), iptype)) {
+                            toVisit.add(itype);
+                        }
+                    } else if (visitor.isVisiting((Class<?>) itype, null)) {
                         toVisit.add(itype);
-                } else if (visitor.isVisiting((Class<?>) itype, null))
-                    toVisit.add(itype);
+                    }
+            }
         }
     }
 
