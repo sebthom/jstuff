@@ -371,7 +371,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
         if (Strings.isEmpty(globPattern))
             return globPattern;
 
-        final StringBuilder sb = new StringBuilder("^");
+        final StringBuilder sb = new StringBuilder();
         final char[] chars = globPattern.toCharArray();
         char chPrev = 0;
         final char ESCAPE_CHAR = '\\';
@@ -385,9 +385,12 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
                         sb.append(ESCAPE_CHAR).append(ESCAPE_CHAR);
                     }
                     break;
+                case '.':
+                case '/':
                 case '$':
-                    // "$" => "\$"
-                    sb.append(ESCAPE_CHAR).append("$");
+                case '(':
+                case ')':
+                    sb.append(ESCAPE_CHAR).append(ch);
                     break;
                 case '?':
                     if (chPrev == ESCAPE_CHAR) {
@@ -397,18 +400,6 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
                         // "?" => "[^\\^\/]"
                         sb.append("[^\\\\^\\/]");
                     }
-                    break;
-                case '.':
-                    // "." => "\."
-                    sb.append(ESCAPE_CHAR).append(".");
-                    break;
-                case '(':
-                    // "(" => "\("
-                    sb.append(ESCAPE_CHAR).append("(");
-                    break;
-                case ')':
-                    // ")" => "\)"
-                    sb.append(ESCAPE_CHAR).append(")");
                     break;
                 case '{':
                     if (chPrev == ESCAPE_CHAR) {
@@ -471,6 +462,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
             chPrev = ch;
         }
         sb.append("$");
+        System.out.println(sb);
         return sb;
     }
 
