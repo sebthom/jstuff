@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rebel-remote>
+<rebel-remote xmlns="http://www.zeroturnaround.com/rebel/remote">
     <id>net.sf.jstuff:jstuff-integration</id>
 </rebel-remote>
