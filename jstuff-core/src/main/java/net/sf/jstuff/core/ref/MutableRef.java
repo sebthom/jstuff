@@ -20,6 +20,10 @@ import java.io.Serializable;
 public class MutableRef<T> implements Ref<T>, Serializable {
     private static final long serialVersionUID = 1L;
 
+    public static <T> MutableRef<T> of(final T value) {
+        return new MutableRef<T>(value);
+    }
+
     private T value;
 
     public MutableRef() {
