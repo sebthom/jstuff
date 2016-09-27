@@ -19,8 +19,15 @@ import java.lang.reflect.Method;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface ClassVisitor {
+
+    /**
+     * @return if true the class' fields shall be visited
+     */
     boolean isVisitingFields(Class<?> clazz);
 
+    /**
+     * @return true if the {@link #visit(Field)} method shall be executed on the given field
+     */
     boolean isVisitingField(Field field);
 
     /**
@@ -28,8 +35,14 @@ public interface ClassVisitor {
      */
     boolean visit(Field field);
 
+    /**
+     * @return if true the class' methods shall be visited
+     */
     boolean isVisitingMethods(Class<?> clazz);
 
+    /**
+     * @return true if the {@link #visit(Method)} method shall be executed on the given method
+     */
     boolean isVisitingMethod(Method method);
 
     /**
