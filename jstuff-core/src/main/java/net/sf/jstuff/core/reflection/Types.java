@@ -507,6 +507,7 @@ public abstract class Types {
 
             if (!visitor.visit(current))
                 return;
+
             if (visitor.isVisitingFields(current)) {
                 for (final Field f : current.getDeclaredFields())
                     if (visitor.isVisitingField(f) && !visitor.visit(f))
@@ -591,16 +592,41 @@ public abstract class Types {
         Args.notNull("propertyName", propertyName);
 
         final Class<?> clazz = obj.getClass();
+        final Class<?> valueClazz = value == null ? null : value.getClass();
 
-        final Method setter = Methods.findSetterRecursive(clazz, propertyName, value == null ? null : value.getClass());
+        final Method setter = Methods.findSetterRecursive(clazz, propertyName, valueClazz);
         if (setter != null) {
             Methods.invoke(obj, setter, value);
             return;
         }
 
-        final Field field = Fields.findRecursive(clazz, propertyName, value == null ? null : value.getClass());
+        final Field field = Fields.findRecursive(clazz, propertyName, valueClazz);
         if (field != null) {
             Fields.write(obj, field, value);
+            return;
+        }
+        throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
+    }
+
+    /**
+     * Tries to write the given value using a setter method or direct field access
+     */
+    public static void writePropertyIgnoringFinal(final Object obj, final String propertyName, final Object value) throws ReflectionException {
+        Args.notNull("obj", obj);
+        Args.notNull("propertyName", propertyName);
+
+        final Class<?> clazz = obj.getClass();
+        final Class<?> valueClazz = value == null ? null : value.getClass();
+
+        final Method setter = Methods.findSetterRecursive(clazz, propertyName, valueClazz);
+        if (setter != null) {
+            Methods.invoke(obj, setter, value);
+            return;
+        }
+
+        final Field field = Fields.findRecursive(clazz, propertyName, valueClazz);
+        if (field != null) {
+            Fields.writeIgnoringFinal(obj, field, value);
             return;
         }
         throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
