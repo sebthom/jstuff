@@ -20,7 +20,10 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class BuilderTest extends TestCase {
     public static class EntityA {
+
         public interface EntityABuilder<T extends EntityA> extends Builder<T> {
+
+            @Builder.Property(required = true)
             EntityABuilder<T> propertyA(String value);
 
             EntityABuilder<T> propertyB(int value);
@@ -51,6 +54,9 @@ public class BuilderTest extends TestCase {
             EntityBBuilder<T> propertyC(Long value);
 
             EntityBBuilder<T> propertyD(String value);
+
+            @Builder.Property(required = true, nullable = true)
+            EntityBBuilder<T> propertyE(String value);
         }
 
         @SuppressWarnings("unchecked")
@@ -60,6 +66,7 @@ public class BuilderTest extends TestCase {
 
         public long propertyC = -1;
         private String propertyD;
+        protected String propertyE;
 
         @OnPostBuild
         private void onInitialized() {
@@ -74,13 +81,22 @@ public class BuilderTest extends TestCase {
         }
     }
 
-    public void testBuilder() {
+    public void testEntityABuilder() {
         EntityA.builder().propertyA("foo").propertyB(1).build();
 
         try {
             EntityA.builder().build();
             fail();
-        } catch (final Exception ex) {}
+        } catch (final Exception ex) {
+            assertEquals("[propertyA] was not specified", ex.getMessage());
+        }
+
+        try {
+            EntityA.builder().propertyA(null).build();
+            fail();
+        } catch (final Exception ex) {
+            assertEquals(ex.getMessage(), "[propertyA] must not be null");
+        }
 
         try {
             EntityA.builder().propertyA("foo").build();
@@ -91,13 +107,24 @@ public class BuilderTest extends TestCase {
             EntityA.builder().propertyA("foo").propertyB(-1).build();
             fail();
         } catch (final Exception ex) {}
+    }
 
-        EntityB.builder().propertyA("foo").propertyB(1).propertyC(3L).propertyD("bar").build();
+    public void testEntityBBuilder() {
+        EntityB.builder().propertyA("foo").propertyB(1).propertyC(3L).propertyD("bar").propertyE("ee").build();
 
         try {
-            EntityB.builder().build();
+            EntityB.builder().propertyB(1).propertyC(3L).propertyD("bar").propertyE("ee").build();
             fail();
-        } catch (final Exception ex) {}
+        } catch (final Exception ex) {
+            assertEquals("[propertyA] was not specified", ex.getMessage());
+        }
+
+        try {
+            EntityB.builder().propertyA(null).propertyB(1).propertyC(3L).propertyD("bar").propertyE("ee").build();
+            fail();
+        } catch (final Exception ex) {
+            assertEquals(ex.getMessage(), "[propertyA] must not be null");
+        }
 
         try {
             EntityB.builder().propertyC(3L).propertyD("bar").build();
@@ -107,5 +134,14 @@ public class BuilderTest extends TestCase {
             EntityB.builder().propertyA("foo").propertyB(1).propertyC(-1L).propertyD("bar").build();
             fail();
         } catch (final Exception ex) {}
+
+        try {
+            EntityB.builder().propertyA("").propertyB(1).propertyC(1L).propertyD("foo").build();
+            fail();
+        } catch (final Exception ex) {
+            assertEquals("[propertyE] was not specified", ex.getMessage());
+        }
+
+        EntityB.builder().propertyA("").propertyB(1).propertyC(1L).propertyD("foo").propertyE(null).build();
     }
 }

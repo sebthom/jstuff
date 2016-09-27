@@ -12,8 +12,10 @@
  *******************************************************************************/
 package net.sf.jstuff.core.builder;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Marker for non-static, argument-less methods that shall be invoked after the object has been built.
@@ -21,6 +23,7 @@ import java.lang.annotation.RetentionPolicy;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface OnPostBuild {
 
 }

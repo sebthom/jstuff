@@ -30,6 +30,7 @@ import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.reflection.exception.InvokingMethodFailedException;
 import net.sf.jstuff.core.reflection.visitor.DefaultClassVisitor;
 import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -37,9 +38,7 @@ import net.sf.jstuff.core.validation.Args;
 public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? extends TARGET_CLASS>> {
 
     /**
-     * @param builderInterface
      * @param targetClass if null builder factory tries to extract the generic argument type information from the builderInterface class
-     * @param constructorArgs
      */
     public static //
     <TARGET_CLASS, BUILDER_INTERFACE extends Builder<? extends TARGET_CLASS>> //
@@ -64,72 +63,146 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
 
         if (targetClass == null)
             throw new IllegalArgumentException("Target class is not specified.");
+
         if (targetClass.isInterface())
             throw new IllegalArgumentException("Target class [" + targetClass.getName() + "] is an interface.");
+
         if (Types.isAbstract(targetClass))
             throw new IllegalArgumentException("Target class [" + targetClass.getName() + "] is abstract.");
 
         this.constructorArgs = constructorArgs;
     }
 
-    public BUILDER_INTERFACE create() {
-        return Proxies.create(new InvocationHandler() {
-            final Map<String, Object> properties = newHashMap();
+    private static final class BuilderImpl implements InvocationHandler {
+        final Map<String, Object> properties = newHashMap();
 
-            public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-                if ("build".equals(method.getName()) && method.getParameterTypes().length == 0 && method.getReturnType().isAssignableFrom(targetClass)) {
-                    final TARGET_CLASS target = Types.newInstance(targetClass, constructorArgs);
-                    for (final Entry<String, Object> property : properties.entrySet()) {
-                        Types.writeProperty(target, property.getKey(), property.getValue());
+        private final Class<?> builderInterface;
+        private final Class<?> targetClass;
+        private final Object[] constructorArgs;
+
+        private Builder.Property propertyDefaults;
+        private final Map<String, Builder.Property> propertyConfig = newHashMap(2);
+        private final List<Method> onPostBuilds = newArrayList(2);
+
+        public BuilderImpl(final Class<?> builderInterface, final Class<?> targetClass, final Object[] constructorArgs) {
+            this.builderInterface = builderInterface;
+            this.targetClass = targetClass;
+            this.constructorArgs = constructorArgs;
+
+            // collecting annotation information
+            Types.visit(builderInterface, new DefaultClassVisitor() {
+
+                @Override
+                public boolean visit(final Class<?> clazz) {
+                    if (propertyDefaults == null) {
+                        propertyDefaults = clazz.getAnnotation(Builder.Property.class);
                     }
-
-                    // collecting @OnPostBuild methods
-                    final List<Method> onPostBuilds = newArrayList(2);
-                    Types.visit(targetClass, new DefaultClassVisitor() {
-                        @Override
-                        public boolean isVisitingFields(final Class<?> clazz) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean isVisitingInterfaces(final Class<?> clazz) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean isVisitingMethod(final Method method) {
-                            return !Methods.isAbstract(method) && !Methods.isStatic(method) && Annotations.exists(method, OnPostBuild.class, false);
-                        }
-
-                        @Override
-                        public boolean visit(final Method method) {
-                            onPostBuilds.add(method);
-                            return true;
-                        }
-                    });
-
-                    // invoking @OnPostBuild methods
-                    for (int i = onPostBuilds.size() - 1; i >= 0; i--) {
-                        try {
-                            Methods.invoke(target, onPostBuilds.get(i), ArrayUtils.EMPTY_OBJECT_ARRAY);
-                        } catch (final InvokingMethodFailedException ex) {
-                            if (ex.getCause() instanceof InvocationTargetException)
-                                throw (RuntimeException) ex.getCause().getCause();
-                            throw ex;
-                        }
-                    }
-                    return target;
+                    return true;
                 }
 
-                if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0)
-                    return builderInterface.getName() + "@" + hashCode();
-
-                if (method.getParameterTypes().length == 1 && method.getReturnType().isAssignableFrom(builderInterface)) {
-                    properties.put(method.getName(), args[0]);
-                    return proxy;
+                @Override
+                public boolean isVisitingFields(final Class<?> clazz) {
+                    return false;
                 }
-                throw new UnsupportedOperationException(method.toString());
+
+                @Override
+                public boolean isVisitingMethod(final Method method) {
+                    if (Methods.isStatic(method))
+                        return false;
+
+                    if (method.getParameterTypes().length != 1)
+                        return false;
+
+                    final Builder.Property annoOverride = propertyConfig.get(method.getName());
+                    if (annoOverride == null) {
+                        propertyConfig.put(method.getName(), method.getAnnotation(Builder.Property.class));
+                    }
+                    return false;
+                }
+            });
+            if (propertyDefaults == null) {
+                propertyDefaults = Annotations.getDefaults(Builder.Property.class);
             }
-        }, builderInterface);
+
+            // collecting @OnPostBuild methods
+            Types.visit(targetClass, new DefaultClassVisitor() {
+                @Override
+                public boolean isVisitingFields(final Class<?> clazz) {
+                    return false;
+                }
+
+                @Override
+                public boolean isVisitingInterfaces(final Class<?> clazz) {
+                    return false;
+                }
+
+                @Override
+                public boolean isVisitingMethod(final Method method) {
+                    if (!Methods.isAbstract(method) && !Methods.isStatic(method) && method.isAnnotationPresent(OnPostBuild.class)) {
+                        onPostBuilds.add(method);
+                    }
+                    return false;
+                }
+            });
+        };
+
+        public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+            final boolean isBuildMethod = "build".equals(method.getName()) //
+                    && method.getParameterTypes().length == 0 //
+                    && method.getReturnType().isAssignableFrom(targetClass);
+
+            if (isBuildMethod) {
+
+                // creating target instance
+                final Object target = Types.newInstance(targetClass, constructorArgs);
+
+                // writing properties
+                for (final Entry<String, Object> property : properties.entrySet()) {
+                    Types.writePropertyIgnoringFinal(target, property.getKey(), property.getValue());
+                }
+
+                if (propertyConfig.size() > 0) {
+                    for (final Entry<String, Builder.Property> prop : propertyConfig.entrySet()) {
+                        final String propName = prop.getKey();
+                        final Builder.Property propConfig = prop.getValue();
+
+                        final boolean isRequired = propConfig != null && propConfig.required() || propertyDefaults.required();
+                        if (isRequired) {
+                            Assert.isTrue(properties.containsKey(propName), "[" + propName + "] was not specified");
+                        }
+
+                        final boolean isNullable = propConfig != null && propConfig.nullable() || propertyDefaults.nullable();
+                        if (!isNullable) {
+                            Args.notNull(propName, properties.get(propName));
+                        }
+                    }
+                }
+
+                // invoke @OnPostBuild methods of the newly instantiated object
+                for (int i = onPostBuilds.size() - 1; i >= 0; i--) {
+                    try {
+                        Methods.invoke(target, onPostBuilds.get(i), ArrayUtils.EMPTY_OBJECT_ARRAY);
+                    } catch (final InvokingMethodFailedException ex) {
+                        if (ex.getCause() instanceof InvocationTargetException)
+                            throw (RuntimeException) ex.getCause().getCause();
+                        throw ex;
+                    }
+                }
+                return target;
+            }
+
+            if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0)
+                return builderInterface.getName() + "@" + hashCode();
+
+            if (method.getParameterTypes().length == 1 && method.getReturnType().isAssignableFrom(builderInterface)) {
+                properties.put(method.getName(), args[0]);
+                return proxy;
+            }
+            throw new UnsupportedOperationException(method.toString());
+        }
+    }
+
+    public BUILDER_INTERFACE create() {
+        return Proxies.create(new BuilderImpl(builderInterface, targetClass, constructorArgs), builderInterface);
     }
 }
