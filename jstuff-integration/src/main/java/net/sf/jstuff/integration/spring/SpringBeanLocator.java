@@ -16,8 +16,6 @@ import java.util.Map;
 
 import javax.annotation.PreDestroy;
 
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +26,24 @@ import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
- * <bean name="beanLocator" class="net.sf.jstuff.integration.spring.BeanLocator" factory-method="init" destroy-method="destroy" />
+ * <pre>
+ * &lt;context:annotation-config /&gt;
  *
+ * &lt;bean class="net.sf.jstuff.integration.spring.SpringBeanLocator" /&gt;
+ * </pre>
+ *
+ * or
+ *
+ * <pre>
+ * &lt;context:annotation-config /&gt;
+ *
+ * &lt;context:component-scan base-package="net.sf.jstuff.integration.spring" /&gt;
+ * </pre>
+ * 
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @Component
-public class SpringBeanLocator implements BeanFactoryAware {
+public class SpringBeanLocator {
     private static final Logger LOG = Logger.create();
 
     private static SpringBeanLocator _INSTANCE;
@@ -103,17 +113,5 @@ public class SpringBeanLocator implements BeanFactoryAware {
     @PreDestroy
     private void onDestroy() {
         _INSTANCE = null;
-    }
-
-    /**
-     * <b>For use by Spring only!</b>
-     */
-    public void setBeanFactory(final BeanFactory beanFactory) {
-        Args.notNull("beanFactory", beanFactory);
-
-        if (!(beanFactory instanceof ListableBeanFactory))
-            throw new IllegalStateException("Argument [beanFactory] must be of type " + beanFactory.getClass().getName());
-
-        factory = (ListableBeanFactory) beanFactory;
     }
 }
