@@ -14,9 +14,10 @@ package net.sf.jstuff.integration.spring;
 
 import java.util.Map;
 
+import javax.annotation.PreDestroy;
+
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ import net.sf.jstuff.core.validation.Assert;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @Component
-public class SpringBeanLocator implements BeanFactoryAware, DisposableBean {
+public class SpringBeanLocator implements BeanFactoryAware {
     private static final Logger LOG = Logger.create();
 
     private static SpringBeanLocator _INSTANCE;
@@ -95,15 +96,13 @@ public class SpringBeanLocator implements BeanFactoryAware, DisposableBean {
         }
     }
 
-    /**
-     * <b>For use by Spring only!</b>
-     */
-    public void destroy() {
-        _INSTANCE = null;
-    }
-
     public ListableBeanFactory getBeanFactory() {
         return factory;
+    }
+
+    @PreDestroy
+    private void onDestroy() {
+        _INSTANCE = null;
     }
 
     /**
