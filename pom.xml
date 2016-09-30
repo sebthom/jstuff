@@ -7,7 +7,7 @@
 
 	<groupId>net.sf.jstuff</groupId>
 	<artifactId>jstuff-parent</artifactId>
-	<version>2.5.6</version>
+	<version>2.5.7-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.artifactId}:${project.version}</name>
@@ -46,9 +46,9 @@
 
 	<scm>
 		<!-- http://maven.apache.org/scm/subversion.html -->
-		<url>http://svn.code.sf.net/p/jstuff/svn/tags/jstuff-parent-2.5.6</url>
-		<connection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/tags/jstuff-parent-2.5.6</connection>
-		<developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/tags/jstuff-parent-2.5.6</developerConnection>
+		<url>http://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</url>
+		<connection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</connection>
+		<developerConnection>scm:svn:svn+ssh://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</developerConnection>
 	</scm>
 
 	<ciManagement>
