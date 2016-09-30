@@ -94,20 +94,20 @@ public class SpringBeanInjector {
      * Fully initializes the unmanaged bean, registers it with the spring context and enables
      * life-cycle callback methods.
      */
-    public void registerSingleton(final String beanName, final Object unmanagedBean) {
-        LOG.entry(unmanagedBean);
+    public void registerSingleton(final String beanName, final Object uninitializedBean) {
+        LOG.entry(uninitializedBean);
 
         // process @Autowired, @Inject
-        beanFactory.autowireBean(unmanagedBean);
+        beanFactory.autowireBean(uninitializedBean);
 
         // process @PostConstruct, InitializingBean#afterPropertiesSet
-        beanFactory.initializeBean(unmanagedBean, beanName);
+        beanFactory.initializeBean(uninitializedBean, beanName);
 
         // add to spring context
-        beanFactory.registerSingleton(beanName, unmanagedBean);
+        beanFactory.registerSingleton(beanName, uninitializedBean);
 
         // register for @Destroy processing
-        registeredSingletons.put(beanName, unmanagedBean);
+        registeredSingletons.put(beanName, uninitializedBean);
 
         LOG.exit();
     }
