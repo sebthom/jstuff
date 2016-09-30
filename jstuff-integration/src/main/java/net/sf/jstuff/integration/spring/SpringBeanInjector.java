@@ -12,11 +12,17 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.spring;
 
+import java.util.Map.Entry;
+
+import javax.annotation.PreDestroy;
+
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
+import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.stereotype.Component;
 
+import net.sf.jstuff.core.collection.ObjectCache;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Assert;
 
@@ -41,7 +47,7 @@ import net.sf.jstuff.core.validation.Assert;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @Component
-public class SpringBeanInjector implements DisposableBean {
+public class SpringBeanInjector {
     private static final Logger LOG = Logger.create();
 
     private static SpringBeanInjector _INSTANCE;
@@ -56,8 +62,13 @@ public class SpringBeanInjector implements DisposableBean {
         return _INSTANCE;
     }
 
+    private final ObjectCache<String, Object> registeredSingletons = new ObjectCache<String, Object>(true);
+
     @Autowired
-    private AutowiredAnnotationBeanPostProcessor processor;
+    private DefaultListableBeanFactory beanFactory;
+
+    @Autowired
+    private DestructionAwareBeanPostProcessor destructor;
 
     private SpringBeanInjector() {
         Assert.isNull(_INSTANCE, "A instance of " + getClass().getName() + " already exists.");
@@ -68,15 +79,69 @@ public class SpringBeanInjector implements DisposableBean {
     }
 
     /**
-     * <b>For use by Spring only!</b>
+     * Injects declared dependencies but does not execute any life-cycle methods.
      */
-    public void destroy() {
+    public void inject(final Object unmanagedBean) {
+        LOG.entry(unmanagedBean);
+
+        // process @Autowired, @Inject
+        beanFactory.autowireBean(unmanagedBean);
+
+        LOG.exit();
+    }
+
+    /**
+     * Fully initializes the unmanaged bean, registers it with the spring context and enables
+     * life-cycle callback methods.
+     */
+    public void registerSingleton(final String beanName, final Object unmanagedBean) {
+        LOG.entry(unmanagedBean);
+
+        // process @Autowired, @Inject
+        beanFactory.autowireBean(unmanagedBean);
+
+        // process @PostConstruct, InitializingBean#afterPropertiesSet
+        beanFactory.initializeBean(unmanagedBean, beanName);
+
+        // add to spring context
+        beanFactory.registerSingleton(beanName, unmanagedBean);
+
+        // register for @Destroy processing
+        registeredSingletons.put(beanName, unmanagedBean);
+
+        LOG.exit();
+    }
+
+    /**
+     * Executes @PreDestroy and {@link DisposableBean#destroy} life-cycle methods.
+     */
+    private void destroy(final Object unmanagedBean) throws Exception {
+        LOG.entry(unmanagedBean);
+
+        // process @PreDestroy
+        destructor.postProcessBeforeDestruction(unmanagedBean, "bean");
+
+        if (unmanagedBean instanceof DisposableBean) {
+            ((DisposableBean) unmanagedBean).destroy();
+        }
+
+        LOG.exit();
+    }
+
+    @PreDestroy
+    private void onDestroy() {
+        for (final Entry<String, Object> s : registeredSingletons.getAll().entrySet()) {
+            try {
+                // removes the bean from the context, but does not it's call destroy life-cycle methods
+                beanFactory.destroySingleton(s.getKey());
+
+                // call life-cycle methods
+                destroy(s.getValue());
+            } catch (final Exception ex) {
+                LOG.error(ex);
+            }
+        }
         _INSTANCE = null;
     }
 
-    public void inject(final Object unmanagedBean) {
-        LOG.entry(unmanagedBean);
-        processor.processInjection(unmanagedBean);
-        LOG.exit();
-    }
 }
