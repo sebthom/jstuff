@@ -15,7 +15,9 @@ package net.sf.jstuff.core.collection;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -106,11 +108,33 @@ public final class ObjectCache<K, V> {
         return ref.get() != null;
     }
 
+    public void clear() {
+        cache.clear();
+    }
+
     @SuppressWarnings("unchecked")
     private void expungeStaleEntries() {
         ValueReference<K, V> ref;
-        while ((ref = (ValueReference<K, V>) garbageCollectedRefs.poll()) != null)
+        while ((ref = (ValueReference<K, V>) garbageCollectedRefs.poll()) != null) {
             cache.remove(ref.getKey(), ref);
+        }
+    }
+
+    /**
+     * @return a new instance map with all objects currently in the cache
+     */
+    public Map<K, V> getAll() {
+        expungeStaleEntries();
+        final Map<K, V> result = new HashMap<K, V>();
+        for (final ValueReference<K, V> ref : cache.values()) {
+            final V value = ref.get();
+            if (value == null) {
+                cache.remove(ref.getKey(), ref);
+            } else {
+                result.put(ref.getKey(), value);
+            }
+        }
+        return result;
     }
 
     public V get(final K key) {
@@ -130,8 +154,9 @@ public final class ObjectCache<K, V> {
         if (maxObjectsToKeep > 0 && (mru.size() == 0 || value != mru.getFirst())) {
             mru.remove(value);
             mru.addFirst(value);
-            if (mru.size() > maxObjectsToKeep)
+            if (mru.size() > maxObjectsToKeep) {
                 mru.removeLast();
+            }
         }
         return value;
     }
@@ -142,8 +167,7 @@ public final class ObjectCache<K, V> {
 
     public void put(final K key, final V value) {
         cache.put(key, useWeakReferences ? //
-                new WeakValueReference<K, V>(key, value, garbageCollectedRefs)
-                : //
+                new WeakValueReference<K, V>(key, value, garbageCollectedRefs) : //
                 new SoftValueReference<K, V>(key, value, garbageCollectedRefs) //
         );
     }
