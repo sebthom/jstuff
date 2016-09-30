@@ -49,8 +49,9 @@ final class JULLogger extends Logger {
         final Throwable effectiveException;
         if (isLogExactSourceLocation) {
             effectiveMessage = message;
-            if (effectiveMessage == null && ex != null)
+            if (effectiveMessage == null && ex != null) {
                 effectiveMessage = "Catched ";
+            }
 
             /*
              * if the current logger's level is DEBUG or TRACE we create full-blown log records for all levels
@@ -61,14 +62,15 @@ final class JULLogger extends Logger {
                 throw new IllegalStateException("Unexpected stacktrace " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
             methodName = caller.getMethodName();
-            if (LoggerConfig.isDebugMessagePrefixEnabled)
+            if (LoggerConfig.isDebugMessagePrefixEnabled) {
                 effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
+            }
             sourceClassName = caller.getClassName();
             effectiveException = ex;
         } else {
-            if (ex == null)
+            if (ex == null) {
                 effectiveMessage = message;
-            else {
+            } else {
                 final StackTraceElement[] st = ex.getStackTrace();
                 effectiveMessage = (message == null ? "" : message + " reason: ") + ex.getClass().getName() + ": " + ex.getMessage() + (st != null
                         && st.length > 0 ? "\n\tat " + st[0] + "\n\t[StackTrace truncated - set log level of " + getName() + " to FINE for full details]" : "");
@@ -403,7 +405,7 @@ final class JULLogger extends Logger {
             return;
 
         final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.INFO, newInstance + " " + Types.getVersion(newInstance.getClass()) + " instantiated.", null, isLogExactSourceLocation);
+        _log(Level.INFO, newInstance + " v" + Types.getVersion(newInstance.getClass()) + " instantiated.", null, isLogExactSourceLocation);
     }
 
     @Override
@@ -438,8 +440,9 @@ final class JULLogger extends Logger {
 
     @Override
     protected void trace(final Method location, String msg) {
-        if (LoggerConfig.isDebugMessagePrefixEnabled)
+        if (LoggerConfig.isDebugMessagePrefixEnabled) {
             msg = location.getName() + "():" + msg;
+        }
         logger.logp(Level.FINEST, location.getDeclaringClass().getName(), location.getName(), msg);
     }
 

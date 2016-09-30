@@ -17,12 +17,12 @@ import static org.slf4j.spi.LocationAwareLogger.*;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.spi.LocationAwareLogger;
+
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.spi.LocationAwareLogger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -54,8 +54,9 @@ final class SLF4JLogger extends Logger {
         final Throwable effectiveException;
         if (isLogExactSourceLocation) {
             effectiveMessage = message;
-            if (effectiveMessage == null && ex != null)
+            if (effectiveMessage == null && ex != null) {
                 effectiveMessage = "Catched ";
+            }
 
             /*
              * if the current logger's level is DEBUG or TRACE we add the logging method name + source location to all log messages
@@ -71,9 +72,9 @@ final class SLF4JLogger extends Logger {
             }
             effectiveException = ex;
         } else {
-            if (ex == null)
+            if (ex == null) {
                 effectiveMessage = message;
-            else {
+            } else {
                 final StackTraceElement[] st = ex.getStackTrace();
                 effectiveMessage = (message == null ? "" : message + " reason: ") + ex.getClass().getName() + ": " + ex.getMessage() + (st != null
                         && st.length > 0 ? "\n\tat " + st[0] + "\n\t[StackTrace truncated - set log level of " + getName() + " to DEBUG for full details]"
@@ -82,9 +83,9 @@ final class SLF4JLogger extends Logger {
             effectiveException = null;
         }
 
-        if (isLocationAware)
+        if (isLocationAware) {
             loggerEx.log(null, DelegatingLogger.FQCN, level, effectiveMessage, null, effectiveException);
-        else
+        } else {
             switch (level) {
                 case TRACE_INT:
                     logger.trace(effectiveMessage, effectiveException);
@@ -102,6 +103,7 @@ final class SLF4JLogger extends Logger {
                     logger.info(effectiveMessage, effectiveException);
                     break;
             }
+        }
     }
 
     @Override
@@ -382,7 +384,7 @@ final class SLF4JLogger extends Logger {
             return;
 
         final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(INFO_INT, newInstance + " " + Types.getVersion(newInstance.getClass()) + " instantiated.", null, isLogExactSourceLocation);
+        _log(INFO_INT, newInstance + " v" + Types.getVersion(newInstance.getClass()) + " instantiated.", null, isLogExactSourceLocation);
     }
 
     @Override
@@ -412,8 +414,9 @@ final class SLF4JLogger extends Logger {
 
     @Override
     protected void trace(final Method location, String msg) {
-        if (LoggerConfig.isDebugMessagePrefixEnabled)
+        if (LoggerConfig.isDebugMessagePrefixEnabled) {
             msg = location.getName() + "():" + msg;
+        }
         logger.trace(msg);
     }
 
