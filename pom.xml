@@ -137,14 +137,20 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<!-- 3.2 requires Java 6 -->
+				<!-- newer verisons requires Java 6 or higher -->
 				<version>3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<!-- 2.3 requires Java 6 -->
+				<!-- newer verisons requires Java 6 or higher -->
 				<version>2.2</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<!-- newer verisons requires Java 6 or higher -->
+				<version>1.6</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

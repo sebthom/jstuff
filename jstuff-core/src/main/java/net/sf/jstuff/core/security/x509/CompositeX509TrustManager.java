@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.security;
+package net.sf.jstuff.core.security.x509;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

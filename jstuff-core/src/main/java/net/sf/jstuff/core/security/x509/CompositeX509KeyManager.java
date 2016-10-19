@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.security;
+package net.sf.jstuff.core.security.x509;
 
 import java.net.Socket;
 import java.security.Principal;

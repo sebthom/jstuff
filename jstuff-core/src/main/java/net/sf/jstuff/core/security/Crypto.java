@@ -12,23 +12,13 @@
  *******************************************************************************/
 package net.sf.jstuff.core.security;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -46,23 +36,10 @@ public abstract class Crypto {
 
     public static CharSequence createRandomDigits(final int len) {
         final StringBuilder sb = new StringBuilder(len);
-        for (final byte b : createRandomBytes(len))
+        for (final byte b : createRandomBytes(len)) {
             sb.append((char) (48 + Math.abs(b % 10)));
-        return sb;
-    }
-
-    /**
-     * Creates a X509 certificate object from a PEM encoded certificate stored in a file
-     * 
-     * @param pemFile The PEM encoded certificate file
-     */
-    public Certificate getCertificateFromPEMFile(final File pemFile) throws CertificateException, FileNotFoundException {
-        final InputStream is = new BufferedInputStream(new FileInputStream(pemFile));
-        try {
-            return CertificateFactory.getInstance("X.509").generateCertificate(is);
-        } finally {
-            IOUtils.closeQuietly(is);
         }
+        return sb;
     }
 
     /**

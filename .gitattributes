@@ -164,10 +164,13 @@ jstuff-core/src/main/java/net/sf/jstuff/core/reflection/visitor/DefaultClassVisi
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/visitor/DefaultVisitorWithTypeArguments.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/AESEncryptor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/Checksums.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/security/CompositeX509KeyManager.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/security/CompositeX509TrustManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/Crypto.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/SSLUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/CertificateAliasPreselectingX509KeyManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/CompositeX509KeyManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/CompositeX509TrustManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/DelegatingX509KeyManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/X509Utils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/validation/Args.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/validation/Assert.java -text
 jstuff-core/src/main/resources/net/sf/jstuff/core/date/Day.properties -text
