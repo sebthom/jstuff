@@ -94,7 +94,7 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
     /**
      * Associates the specified value with the specified key in this map (optional operation).
      * If the map previously contained a mapping for this key, the old value is replaced by the specified value.
-     * 
+     *
      * @param key key with which the specified value is to be associated
      * @param values value to be associated with the specified key.
      * @return previous value associated with specified key, or null if there was no mapping for key.
@@ -107,7 +107,7 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
         return put(key, coll);
     }
 
-    public boolean remove(final K key, final V value) {
+    public boolean removeValue(final K key, final V value) {
         final C values = get(key);
         return values == null ? false : values.remove(value);
     }
