@@ -46,9 +46,9 @@
 
 	<scm>
 		<!-- http://maven.apache.org/scm/subversion.html -->
-		<url>https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent/trunk</url>
-		<connection>scm:svn:https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent/trunk</connection>
-		<developerConnection>scm:svn:https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent/trunk</developerConnection>
+		<url>https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</url>
+		<connection>scm:svn:https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</connection>
+		<developerConnection>scm:svn:https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</developerConnection>
 	</scm>
 
 	<ciManagement>
