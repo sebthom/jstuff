@@ -166,12 +166,12 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
                         final String propName = prop.getKey();
                         final Builder.Property propConfig = prop.getValue();
 
-                        final boolean isRequired = propConfig != null && propConfig.required() || propertyDefaults.required();
+                        final boolean isRequired = propConfig == null ? propertyDefaults.required() : propConfig.required();
                         if (isRequired) {
                             Assert.isTrue(properties.containsKey(propName), "[" + propName + "] was not specified");
                         }
 
-                        final boolean isNullable = propConfig != null && propConfig.nullable() || propertyDefaults.nullable();
+                        final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
                         if (!isNullable) {
                             Args.notNull(propName, properties.get(propName));
                         }
