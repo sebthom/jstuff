@@ -85,6 +85,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/event/EventManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/EventManagerWithHistory.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/Events.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/event/FilteringEventListener.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/exception/Exceptions.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/exception/FastException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/exception/FastRuntimeException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Accept.java -text
@@ -165,7 +166,12 @@ jstuff-core/src/main/java/net/sf/jstuff/core/reflection/visitor/DefaultVisitorWi
 jstuff-core/src/main/java/net/sf/jstuff/core/security/AESEncryptor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/Checksums.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/Crypto.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/KeyTool.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/SSLUtils.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/acl/DelegatingSecurityManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/acl/DelegatingSecurityManagerWithThreadLocalControl.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/acl/NoExitSecurityManager.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/security/acl/NoOpSecurityManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/CertificateAliasPreselectingX509KeyManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/CompositeX509KeyManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/CompositeX509TrustManager.java -text
@@ -219,6 +225,8 @@ jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesGenericsTest.java -
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesMixinTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/security/AESEncryptorTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/security/KeyToolTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/security/x509/X509UtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/validation/AssertTest.java -text
 jstuff-core/src/test/resources/rootfolder/folder1/fileA.txt -text
 jstuff-core/src/test/resources/rootfolder/folder1/fileB.txt -text
