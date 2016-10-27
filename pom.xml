@@ -76,11 +76,11 @@
 		<downloadUrl>https://sourceforge.net/downloads/jstuff/</downloadUrl>
 		<repository>
 			<id>jstuff-release</id>
-			<url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/release</url>
+			<url>scp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/release</url>
 		</repository>
 		<snapshotRepository>
 			<id>jstuff-snapshot</id>
-			<url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/snapshot</url>
+			<url>scp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/snapshot</url>
 		</snapshotRepository>
 		<!--
 			Temporarily disabled because of MSITE-681
