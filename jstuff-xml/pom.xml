@@ -42,5 +42,12 @@
 			<version>2.1.12</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<!-- for XSD JAXB code generation -->
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-xjc</artifactId>
+			<version>2.2.11</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 </project>

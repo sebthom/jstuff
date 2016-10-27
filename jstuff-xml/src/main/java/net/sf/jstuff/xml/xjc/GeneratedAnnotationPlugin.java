@@ -1,0 +1,74 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2016 Sebastian
+ * Thomschke.
+ *
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
+package net.sf.jstuff.xml.xjc;
+
+import org.xml.sax.ErrorHandler;
+
+import com.sun.codemodel.JAnnotatable;
+import com.sun.codemodel.JClass;
+import com.sun.tools.xjc.Driver;
+import com.sun.tools.xjc.Options;
+import com.sun.tools.xjc.outline.ClassOutline;
+import com.sun.tools.xjc.outline.EnumOutline;
+import com.sun.tools.xjc.outline.Outline;
+import com.sun.tools.xjc.outline.PackageOutline;
+
+/**
+ * {@link com.sun.tools.xjc.Plugin} that marks the generated code by using JSR-250's '@Generated'.
+ *
+ * Simplified version of {@link com.sun.tools.xjc.addon.at_generated.PluginImpl} only annotating classes and not methods and fields.
+ *
+ * Additionally also annotates package-info.java.
+ *
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
+public class GeneratedAnnotationPlugin extends AbstractPlugin {
+
+    public static final String OPTION_NAME = "Xmark-generated";
+
+    @Override
+    public String getOptionName() {
+        return OPTION_NAME;
+    }
+
+    @Override
+    public String getUsage() {
+        return "  -" + OPTION_NAME + "    :  mark the generated types as @javax.annotation.Generated";
+    }
+
+    private JClass generatedAnnotation;
+
+    @Override
+    public boolean run(final Outline model, final Options options, final ErrorHandler errorHandler) {
+        // we want this to work without requiring JSR-250 jar.
+        generatedAnnotation = model.getCodeModel().ref("javax.annotation.Generated");
+
+        for (final PackageOutline pkgDef : model.getAllPackageContexts()) {
+            annotate(pkgDef._package());
+        }
+        for (final ClassOutline classDef : model.getClasses()) {
+            annotate(classDef.implClass);
+        }
+        for (final EnumOutline enumDef : model.getEnums()) {
+            annotate(enumDef.clazz);
+        }
+
+        return true;
+    }
+
+    private void annotate(final JAnnotatable m) {
+        m.annotate(generatedAnnotation) //
+            .param("value", Driver.class.getName())//
+            .param("comments", "JAXB RI v" + Options.getBuildID());
+    }
+}

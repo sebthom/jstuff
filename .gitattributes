@@ -401,6 +401,12 @@ jstuff-xml/src/main/java/net/sf/jstuff/xml/MapBasedNamespaceContext.java -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/StAXUtils.java -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/XMLException.java -text
 jstuff-xml/src/main/java/net/sf/jstuff/xml/XPathExpressions.java -text
+jstuff-xml/src/main/java/net/sf/jstuff/xml/xjc/AbstractPlugin.java -text
+jstuff-xml/src/main/java/net/sf/jstuff/xml/xjc/FieldInstantiatingPlugin.java -text
+jstuff-xml/src/main/java/net/sf/jstuff/xml/xjc/GeneratedAnnotationPlugin.java -text
+jstuff-xml/src/main/java/net/sf/jstuff/xml/xjc/MakeJAXB21CompatiblePlugin.java -text
+jstuff-xml/src/main/java/net/sf/jstuff/xml/xjc/PrivateFieldsPlugin.java -text
+jstuff-xml/src/main/resources/META-INF/services/com.sun.tools.xjc.Plugin -text
 jstuff-xml/src/main/resources/rebel-remote.xml -text
 jstuff-xml/src/test/java/net/sf/jstuff/xml/DOMUtilsTests.java -text
 jstuff-xml/src/test/java/net/sf/jstuff/xml/JAXBUtilsTest.java -text

@@ -1,0 +1,4 @@
+net.sf.jstuff.xml.xjc.FieldInstantiatingPlugin
+net.sf.jstuff.xml.xjc.GeneratedAnnotationPlugin
+net.sf.jstuff.xml.xjc.MakeJAXB21CompatiblePlugin
+net.sf.jstuff.xml.xjc.PrivateFieldsPlugin
