@@ -137,7 +137,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<!-- newer verisons requires Java 6 or higher -->
+				<!-- newer versions requires Java 6 or higher -->
 				<version>3.1</version>
 			</dependency>
 			<dependency>
