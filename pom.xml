@@ -225,6 +225,7 @@
 									</ignoreClasses>
 									<excludes>
 										<exclude>net.bytebuddy:byte-buddy</exclude>
+										<exclude>com.sun.xml.bind:jaxb-xjc</exclude>
 									</excludes>
 								</enforceBytecodeVersion>
 							</rules>
