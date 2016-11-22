@@ -54,7 +54,7 @@ public class HashLockManagerTest extends TestCase {
 
                 public void run() {
                     for (int i = 0; i < ITERATIONS_PER_THREAD; i++)
-                        lockManager.doWriteLocked(NAMED_LOCK, calculation);
+                        lockManager.executeWriteLocked(NAMED_LOCK, calculation);
                 }
             });
         Thread.sleep(50);

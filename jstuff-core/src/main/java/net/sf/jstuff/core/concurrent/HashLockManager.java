@@ -44,7 +44,7 @@ public class HashLockManager<KeyType> {
         private static final Logger LOG = Logger.create();
 
         private final WeakReference<HashLockManager<T>> ref;
-        public ScheduledFuture<?> future;
+        private ScheduledFuture<?> future;
 
         public CleanUpTask(final HashLockManager<T> mgr) {
             ref = new WeakReference<HashLockManager<T>>(mgr);
@@ -89,13 +89,13 @@ public class HashLockManager<KeyType> {
     public HashLockManager(final int intervalMS, final ScheduledExecutorService executor) {
         Args.notNull("executor", executor);
         final CleanUpTask<KeyType> cleanup = new CleanUpTask<KeyType>(this);
-        executor.scheduleWithFixedDelay(cleanup, intervalMS, intervalMS, TimeUnit.MILLISECONDS);
+        cleanup.future = executor.scheduleWithFixedDelay(cleanup, intervalMS, intervalMS, TimeUnit.MILLISECONDS);
     }
 
     /**
      * @param key the lock name/identifier
      */
-    public <V> V doReadLocked(final KeyType key, final Callable<V> callable) throws Exception {
+    public <V> V executeReadLocked(final KeyType key, final Callable<V> callable) throws Exception {
         Args.notNull("key", key);
         Args.notNull("callable", callable);
 
@@ -110,7 +110,7 @@ public class HashLockManager<KeyType> {
     /**
      * @param key the lock name/identifier
      */
-    public <R, A, E extends Exception> R doReadLocked(final KeyType key, final Invocable<R, A, E> invocable, final A arguments) throws E {
+    public <R, A, E extends Exception> R executeReadLocked(final KeyType key, final Invocable<R, A, E> invocable, final A arguments) throws E {
         Args.notNull("key", key);
         Args.notNull("invocable", invocable);
 
@@ -125,7 +125,7 @@ public class HashLockManager<KeyType> {
     /**
      * @param key the lock name/identifier
      */
-    public void doReadLocked(final KeyType key, final Runnable runnable) {
+    public void executeReadLocked(final KeyType key, final Runnable runnable) {
         Args.notNull("key", key);
         Args.notNull("runnable", runnable);
 
@@ -140,7 +140,7 @@ public class HashLockManager<KeyType> {
     /**
      * @param key the lock name/identifier
      */
-    public <V> V doWriteLocked(final KeyType key, final Callable<V> callable) throws Exception {
+    public <V> V executeWriteLocked(final KeyType key, final Callable<V> callable) throws Exception {
         Args.notNull("key", key);
         Args.notNull("callable", callable);
 
@@ -155,13 +155,13 @@ public class HashLockManager<KeyType> {
     /**
      * @param key the lock name/identifier
      */
-    public <R, A, E extends Exception> R doWriteLocked(final KeyType key, final Invocable<R, A, E> invocable, final A arguments) throws E {
+    public <R, A, E extends Exception> R executeWriteLocked(final KeyType key, final Invocable<R, A, E> invocable, final A args) throws E {
         Args.notNull("key", key);
         Args.notNull("invocable", invocable);
 
         lockWrite(key);
         try {
-            return invocable.invoke(arguments);
+            return invocable.invoke(args);
         } finally {
             unlockWrite(key);
         }
@@ -170,7 +170,7 @@ public class HashLockManager<KeyType> {
     /**
      * @param key the lock name/identifier
      */
-    public void doWriteLocked(final KeyType key, final Runnable runnable) {
+    public void executeWriteLocked(final KeyType key, final Runnable runnable) {
         Args.notNull("key", key);
         Args.notNull("runnable", runnable);
 

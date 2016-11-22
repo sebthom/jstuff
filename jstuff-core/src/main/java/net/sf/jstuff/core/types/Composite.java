@@ -15,6 +15,7 @@ package net.sf.jstuff.core.types;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.validation.Args;
@@ -27,7 +28,7 @@ public interface Composite<Component> {
     public abstract class Default<Component> implements Composite<Component>, Serializable {
         private static final long serialVersionUID = 1L;
 
-        protected final ArrayList<Component> components = new ArrayList<Component>();
+        protected final List<Component> components = new ArrayList<Component>();
 
         public Default() {
             super();

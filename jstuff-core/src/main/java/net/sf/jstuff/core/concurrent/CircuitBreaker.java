@@ -15,6 +15,7 @@ package net.sf.jstuff.core.concurrent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import net.sf.jstuff.core.builder.Builder;
@@ -23,120 +24,100 @@ import net.sf.jstuff.core.concurrent.CircuitBreaker.State;
 import net.sf.jstuff.core.event.EventDispatcher;
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
-import net.sf.jstuff.core.event.SyncEventDispatcher;
+import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
- * Basic circuit breaker implementation.
- * <p>
- * Basic usage:
- *
- * <pre>
- * {
- *     CircuitBreaker cb = CircuitBreaker.builder() //
- *         .name("ldap-access") //
- *         .failureThreshold(2) //
- *         .failureExpiryPeriod(2, TimeUnit.SECONDS) //
- *         .resetPeriod(2, TimeUnit.SECONDS) //
- *         .build();
- *
- *     AccessPermit permit = cb.tryAcquire();
- *     if (permit == null) {
- *         throw new IllegaStateException("LDAP service is not available");
- *     }
- *     try {
- *         // query LDAP here
- *
- *         permit.reportSuccess();
- *     } catch (Exception ex) {
- *         permit.reportError(ex);
- *     } finally {
- *         permit.release();
- *     }
- * }
- * </pre>
- * <p>
  * See:
  * <ul>
  * <li><a href="http://martinfowler.com/bliki/CircuitBreaker.html">http://martinfowler.com/bliki/CircuitBreaker.html</a>.
  * <li><a href="http://doc.akka.io/docs/akka/current/common/circuitbreaker.html">http://doc.akka.io/docs/akka/current/common/circuitbreaker.html</a>
  * </ul>
  *
+ * <p>
+ * Example:
+ *
+ * <pre>
+ * CircuitBreaker cb = CircuitBreaker.builder() //
+ *     .name("ldap-access") //
+ *     .failureThreshold(3) //
+ *     .failureExpiryPeriod(10, TimeUnit.SECONDS) //
+ *     .resetPeriod(30, TimeUnit.SECONDS) //
+ *     .fatalExceptions(java.net.UnknownHostException.class) //
+ *     .maxConcurrent(20) //
+ *     .build();
+ *
+ * // OPTION 1:
+ * Assert.isTrue(cb.tryAcquire(), "LDAP service is not available");
+ * try {
+ *     // query LDAP here
+ *
+ *     cb.reportSuccess();
+ * } catch (Exception ex) {
+ *     cb.reportError(ex);
+ * } finally {
+ *     cb.release(); // important!! always release after acquire
+ * }
+ *
+ * // OPTION 2:
+ * Runnable ldapQuery = new Runnable() {
+ *     public void run() {
+ *         // query LDAP here
+ *     }
+ * };
+ * Assert.isTrue(cb.tryExecute(ldapQuery), "LDAP service is not available");
+ * </pre>
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @ThreadSafe
 public class CircuitBreaker implements EventListenable<State> {
 
-    @NotThreadSafe
-    public static final class AccessPermit {
-        private Boolean isAccessFailed = null;
-        private CircuitBreaker cb;
-
-        private AccessPermit(final CircuitBreaker cb) {
-            this.cb = cb;
-        }
-
-        /**
-         * @throws IllegalStateException if the {@link #release()} was called already
-         */
-        public void release() {
-            Assert.notNull(cb, "This permit was already released!");
-            cb.release(this);
-            cb = null;
-        }
-
-        /**
-         * @throws IllegalStateException if the {@link #release()} was called already
-         */
-        public void reportFailure() {
-            reportFailure(null);
-        }
-
-        /**
-         * @throws IllegalStateException if the {@link #release()} was called already
-         */
-        public void reportFailure(final Throwable ex) {
-            Assert.notNull(cb, "This permit was already released!");
-            isAccessFailed = true;
-            cb.reportFailure(ex);
-        }
-
-        public void reportSuccess() {
-            Assert.notNull(cb, "This permit was already released!");
-            isAccessFailed = false;
-        }
-    }
-
     @Builder.Property(required = true)
     public interface CircuitBreakerBuilder extends Builder<CircuitBreaker> {
 
         /**
-         * Event dispatcher instance that shall be used. Default is a {@link SyncEventDispatcher} instance.
+         * Amount of time the circuit breaker stays in {@link State#OPEN} before switching to {@link State#HALF_OPEN}
+         */
+        CircuitBreakerBuilder blockingPeriod(int value, final TimeUnit timeUnit);
+
+        /**
+         * Event dispatcher instance that shall be used.
          */
         @Builder.Property(required = false)
         CircuitBreakerBuilder eventDisptacher(EventDispatcher<State> value);
 
         /**
-         * time frame in which the subsequent errors must occur
+         * Time span in which the subsequent errors must occur.
          */
         CircuitBreakerBuilder failureExpiryPeriod(int value, final TimeUnit timeUnit);
 
         /**
-         * number of subsequent errors that result into switching to {@link State#OPEN}
+         * Number of subsequent errors that result into switching to {@link State#OPEN}.
          */
         CircuitBreakerBuilder failureThreshold(int value);
 
         /**
-         * This circuit breaker's name used for logging purposes.
+         * Exception types that result in an instant switch to {@link State#OPEN} even if the the failure threshold hasn't been reached yet.
          */
-        CircuitBreakerBuilder name(String value);
+        //@SafeVarargs
+        @Builder.Property(required = false)
+        CircuitBreakerBuilder fatalExceptions(Class<? extends Throwable>... value);
 
         /**
-         * amount of time the circuit breaker stays in {@link State#OPEN} before switching to {@link State#HALF_OPEN}
+         * Maximum number of issued permits at the same time while in {@link State#CLOSE}.
+         * <p>
+         * Default is 0 which indicates no limitation.
          */
-        CircuitBreakerBuilder resetPeriod(int value, final TimeUnit timeUnit);
+        @Builder.Property(required = false)
+        CircuitBreakerBuilder maxConcurrent(int value);
 
+        /**
+         * The circuit breaker's name used for logging purposes.
+         */
+        CircuitBreakerBuilder name(String value);
     }
 
     public enum State {
@@ -168,51 +149,74 @@ public class CircuitBreaker implements EventListenable<State> {
 
     protected long failureExpiryPeriodMS;
     protected int failureThreshold;
+    protected Class<? extends Throwable>[] fatalExceptions;
+    protected int maxConcurrent = 0;
     protected final List<Long> failureTimestamps = new ArrayList<Long>();
     protected long resetPeriodMS;
 
     /**
-     * date in MS until when throttling is active
+     * date in MS until {@link State#OPEN} is active
      */
-    protected long denyUntil = 0;
+    protected long openStateUntil = 0;
 
-    protected final List<AccessPermit> issuedPermits = new ArrayList<AccessPermit>();
+    protected int issuedPermits = 0;
 
-    private final EventDispatcher<State> eventDispatcher = new SyncEventDispatcher<State>();
+    protected EventDispatcher<State> eventDispatcher;
 
     private State state = State.CLOSE;
 
     public State getState() {
         synchronized (synchronizer) {
-            if (state == State.OPEN && System.currentTimeMillis() > denyUntil) {
+            if (state == State.OPEN && System.currentTimeMillis() > openStateUntil) {
                 switchTo(State.HALF_OPEN);
             }
             return state;
         }
     }
 
-    /**
-     * Determines if the given exception shall result in an instant switch to {@link State#OPEN} ignoring the failure threshold.
-     */
     protected boolean isFatalException(final Throwable ex) {
-        final boolean rc = ex instanceof java.net.UnknownHostException || ex instanceof java.rmi.UnknownHostException;
-        return rc;
+        if (fatalExceptions == null || fatalExceptions.length == 0)
+            return false;
+
+        for (final Class<? extends Throwable> fex : fatalExceptions) {
+            if (fex.isInstance(ex))
+                return true;
+        }
+        return false;
     }
 
-    protected void release(final AccessPermit permit) {
+    /**
+     * releases 1 permit
+     */
+    public void release() {
         synchronized (synchronizer) {
-            issuedPermits.remove(permit);
-
-            if (permit.isAccessFailed == Boolean.FALSE) {
-                switchTo(State.CLOSE);
+            if (issuedPermits > 0) {
+                issuedPermits--;
+            } else {
+                LOG.warn("An attempt was made to release a permit but no permits have been issued.");
             }
         }
     }
 
-    protected void reportFailure(final Throwable ex) {
+    /**
+     * increments the subsequent failures counter
+     */
+    public void reportFailure() {
+        reportFailure(null);
+    }
+
+    /**
+     * increments the subsequent failures counter
+     */
+    public void reportFailure(final Throwable ex) {
         final long now = System.currentTimeMillis();
 
         synchronized (synchronizer) {
+
+            if (issuedPermits < 1) {
+                LOG.warn("An attempt was made to report a failure but no permits have been issued.");
+                return;
+            }
 
             /*
              * ignore expired failures
@@ -229,14 +233,43 @@ public class CircuitBreaker implements EventListenable<State> {
 
             failureTimestamps.add(now);
 
+            /*
+             * failure threshold reached?
+             */
             if (failureTimestamps.size() >= failureThreshold) {
                 LOG.warn("[%s] Switching to [%s] because failure threshold [%s] was reached...", name, State.OPEN, failureThreshold);
-                denyUntil = now + resetPeriodMS;
+                openStateUntil = now + resetPeriodMS;
                 switchTo(State.OPEN);
-            } else if (ex != null && isFatalException(ex)) {
+                return;
+            }
+
+            /*
+             * fatal exception?
+             */
+            if (ex != null && isFatalException(ex)) {
                 LOG.warn("[%s] Switching to [%s] because of fatal exception [%s]...", name, State.OPEN, ex);
-                denyUntil = now + resetPeriodMS;
+                openStateUntil = now + resetPeriodMS;
                 switchTo(State.OPEN);
+                return;
+            }
+        }
+    }
+
+    /**
+     * resets the subsequent failures counter
+     */
+    public void reportSuccess() {
+        synchronized (synchronizer) {
+            if (issuedPermits > 0) {
+                final State state = getState();
+                if (state == State.HALF_OPEN) {
+                    switchTo(State.CLOSE);
+                } else {
+                    // forget all previous failures
+                    failureTimestamps.clear();
+                }
+            } else {
+                LOG.warn("An attempt was made to report success but no permits have been issued.");
             }
         }
     }
@@ -256,6 +289,8 @@ public class CircuitBreaker implements EventListenable<State> {
     }
 
     public boolean subscribe(final EventListener<State> listener) {
+        Assert.notNull(eventDispatcher, "No eventDispatcher configured.");
+
         return eventDispatcher.subscribe(listener);
     }
 
@@ -263,51 +298,129 @@ public class CircuitBreaker implements EventListenable<State> {
         if (state == this.state)
             return;
 
-        LOG.info("[%s] Switching to [%s]...", name, state);
+        LOG.debug("[%s] Switching from [%s] to [%s]...", name, this.state, state);
         this.state = state;
         switch (state) {
             case OPEN:
                 break;
             case HALF_OPEN:
-                denyUntil = 0;
+                LOG.info("[%s] Switching to [HALF_OPEN]...", name);
+                openStateUntil = 0;
                 break;
             case CLOSE:
+                LOG.info("[%s] Switching to [CLOSE]...", name);
                 failureTimestamps.clear();
-                denyUntil = 0;
+                openStateUntil = 0;
                 break;
         }
-        eventDispatcher.fire(state);
+
+        if (eventDispatcher != null) {
+            eventDispatcher.fire(state);
+        }
     }
 
     /**
-     * <b>IMPORTANT:</b> Do not forget to call the {@link AccessPermit#release()} once you are done accessing the resource.
+     * Acquires 1 permit.
      *
-     * @return null if no permits are currently available
+     * <b>IMPORTANT:</b> Do not forget to call the {@link #release()} when done.
+     *
+     * @return <code>false</code> if no permit was issued.
      */
-    public AccessPermit tryAcquire() {
+    public boolean tryAcquire() {
         synchronized (synchronizer) {
+            final State state = getState();
             switch (state) {
                 case OPEN:
-                    if (System.currentTimeMillis() < denyUntil)
-                        return null;
-                    switchTo(State.HALF_OPEN);
-                    // now fall through "case HALF_OPEN:"
+                    return false;
                 case HALF_OPEN:
-                    if (issuedPermits.size() > 0)
-                        return null;
+                    if (issuedPermits > 0)
+                        return false;
                 case CLOSE:
-                    // nothing
-                    break;
+                    if (maxConcurrent > 0 && maxConcurrent >= issuedPermits)
+                        return false;
             }
-
-            final AccessPermit permit = new AccessPermit(this);
-            issuedPermits.add(permit);
-            return permit;
+            issuedPermits++;
         }
+        return true;
+    }
 
+    /**
+     * Tries to execute the given runnable after acquiring a permit.
+     *
+     * @return <code>true</true> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+     */
+    public boolean tryExecute(final Callable<Void> callable) throws Exception {
+        Args.notNull("callable", callable);
+
+        if (!tryAcquire())
+            return false;
+
+        try {
+            callable.call();
+            reportSuccess();
+            return true;
+        } catch (final Exception ex) {
+            reportFailure(ex);
+            throw ex;
+        } finally {
+            release();
+        }
+    }
+
+    /**
+     * Tries to execute the given runnable after acquiring a permit.
+     *
+     * @return <code>true</true> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+     */
+    @SuppressWarnings("unchecked")
+    public <A, E extends Exception> boolean tryExecute(final Invocable<?, A, E> invocable, final A args) throws E {
+        Args.notNull("invocable", invocable);
+
+        if (!tryAcquire())
+            return false;
+
+        try {
+            invocable.invoke(args);
+            reportSuccess();
+            return true;
+        } catch (final RuntimeException ex) {
+            reportFailure(ex);
+            throw ex;
+        } catch (final Exception ex) {
+            reportFailure(ex);
+            throw (E) ex;
+        } finally {
+            release();
+        }
+    }
+
+    /**
+     * Tries to execute the given runnable after acquiring a permit.
+     *
+     * @return <code>true</true> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+     */
+    public boolean tryExecute(final Runnable runnable) {
+        Args.notNull("runnable", runnable);
+
+        if (!tryAcquire())
+            return false;
+
+        try {
+            runnable.run();
+            reportSuccess();
+            return true;
+        } catch (final RuntimeException ex) {
+            reportFailure(ex);
+            throw ex;
+        } finally {
+            release();
+        }
     }
 
     public boolean unsubscribe(final EventListener<State> listener) {
+        if (eventDispatcher == null)
+            return false;
+
         return eventDispatcher.unsubscribe(listener);
     }
 }

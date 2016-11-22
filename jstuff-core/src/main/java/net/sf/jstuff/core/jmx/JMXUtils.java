@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.jmx;
+package net.sf.jstuff.core.jmx;
 
 import java.lang.reflect.Method;
 
@@ -25,50 +25,51 @@ import net.sf.jstuff.core.logging.Logger;
 public abstract class JMXUtils {
     private static Logger LOG = Logger.create();
 
-    public static MBeanServer getMBeanServer() {
+    private static MBeanServer mbeanServer;
+
+    public static synchronized MBeanServer getMBeanServer() {
+        if (mbeanServer != null)
+            return mbeanServer;
+
         final ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-        // try JBoss way
         try {
             // http://wiki.jboss.org/wiki/FindMBeanServer
             final Class<?> clazz = cl.loadClass("org.jboss.mx.util.MBeanServerLocator");
             final Method method = clazz.getMethod("locateJBoss", (Class[]) null);
-            final MBeanServer server = (MBeanServer) method.invoke((Object[]) null, (Object[]) null);
-            if (server != null) {
-                LOG.info("Found MBeanServer via org.jboss.mx.util.MBeanServerLocator.locateJBoss()");
-                return server;
+            mbeanServer = (MBeanServer) method.invoke((Object[]) null, (Object[]) null);
+            if (mbeanServer != null) {
+                LOG.info("Located MBeanServer via org.jboss.mx.util.MBeanServerLocator#locateJBoss()");
+                return mbeanServer;
             }
         } catch (final Exception ex) {
-            LOG.debug("Locating MBeanServer the JBoss way failed.", ex);
+            LOG.debug("Locating MBeanServer via org.jboss.mx.util.MBeanServerLocator#locateJBoss() way failed.", ex);
         }
 
-        // try the JDK 1.5 way
         try {
             final Class<?> clazz = cl.loadClass("java.lang.management.ManagementFactory");
             final Method method = clazz.getMethod("getPlatformMBeanServer", (Class[]) null);
-            final MBeanServer server = (MBeanServer) method.invoke((Object[]) null, (Object[]) null);
-            if (server != null) {
-                LOG.info("Found MBeanServer via java.lang.management.ManagementFactory.getPlatformMBeanServer()");
-                return server;
+            mbeanServer = (MBeanServer) method.invoke((Object[]) null, (Object[]) null);
+            if (mbeanServer != null) {
+                LOG.info("Located MBeanServer via java.lang.management.ManagementFactory#getPlatformMBeanServer()");
+                return mbeanServer;
             }
         } catch (final Exception ex) {
-            LOG.debug("Locating MBeanServer the brute force way failed.", ex);
+            LOG.debug("Locating MBeanServer via java.lang.management.ManagementFactory#getPlatformMBeanServer() failed.", ex);
         }
 
-        // try MBeanServerFactory.findMBeanServer(null).get(0) way
         try {
-            final MBeanServer server = (MBeanServer) MBeanServerFactory.findMBeanServer(null).get(0);
-            if (server != null) {
-                LOG.info("Found MBeanServer via MBeanServerFactory.findMBeanServer(null).get(0)");
-                return server;
+            mbeanServer = (MBeanServer) MBeanServerFactory.findMBeanServer(null).get(0);
+            if (mbeanServer != null) {
+                LOG.info("Located MBeanServer via MBeanServerFactory#findMBeanServer(null).get(0)");
+                return mbeanServer;
             }
         } catch (final Exception ex) {
-            LOG.debug("Locating MBeanServer via MBeanServerFactory.findMBeanServer(null).get(0) failed.", ex);
+            LOG.debug("Locating MBeanServer via MBeanServerFactory#findMBeanServer(null).get(0) failed.", ex);
         }
 
-        // create a new MBeanServer
-        final MBeanServer server = MBeanServerFactory.createMBeanServer();
-        LOG.info("Created new MBeanServer");
-        return server;
+        LOG.info("Creating new MBeanServer...");
+        mbeanServer = MBeanServerFactory.createMBeanServer();
+        return mbeanServer;
     }
 }

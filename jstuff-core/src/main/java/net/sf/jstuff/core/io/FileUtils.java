@@ -29,15 +29,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.DirectoryWalker;
+import org.apache.commons.io.FileSystemUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
-
-import org.apache.commons.io.DirectoryWalker;
-import org.apache.commons.io.FileSystemUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -53,21 +53,23 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
         Runtime.getRuntime().addShutdownHook(new java.lang.Thread() {
             @Override
             public void run() {
-                for (final File file : _filesToDeleteOnShutdown)
+                for (final File file : _filesToDeleteOnShutdown) {
                     try {
                         LOG.debug("Deleting %s...", file);
                         forceDelete(file);
                     } catch (final IOException ex) {
                         LOG.error(ex);
                     }
+                }
 
-                for (final File directory : _directoriesToCleanOnShutdown)
+                for (final File directory : _directoriesToCleanOnShutdown) {
                     try {
                         LOG.debug("Cleaning %s...", directory);
                         cleanDirectory(directory);
                     } catch (final IOException ex) {
                         LOG.error(ex);
                     }
+                }
 
             }
         });
@@ -121,12 +123,17 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
         if (!directory.isDirectory())
             return;
 
-        for (final File currFile : directory.listFiles(filenameFilter))
-            if (currFile.isFile()) {
-                if (currFile.lastModified() < deleteFilesOlderThan.getTime())
-                    currFile.delete();
-            } else if (recursive && currFile.isDirectory())
-                cleanDirectory(currFile, deleteFilesOlderThan, true, filenameFilter);
+        final File[] files = directory.listFiles(filenameFilter);
+        if (files != null) {
+            for (final File currFile : files)
+                if (currFile.isFile()) {
+                    if (currFile.lastModified() < deleteFilesOlderThan.getTime()) {
+                        currFile.delete();
+                    }
+                } else if (recursive && currFile.isDirectory()) {
+                    cleanDirectory(currFile, deleteFilesOlderThan, true, filenameFilter);
+                }
+        }
     }
 
     public static void cleanDirectory(final File directory, final int deleteFilesOlderThanXDays, final boolean recursive) {
@@ -187,10 +194,12 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
         final Collection<File> result = new ArrayList<File>();
         find(searchRootPath, globPattern, new EventListener<File>() {
             public void onEvent(final File file) {
-                if (file.isDirectory() && includeDirectories)
+                if (file.isDirectory() && includeDirectories) {
                     result.add(file);
-                if (file.isFile() && includeFiles)
+                }
+                if (file.isFile() && includeFiles) {
                     result.add(file);
+                }
             }
         });
         return result;
@@ -204,11 +213,12 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
         Args.notNull("globPattern", globPattern);
         Args.notNull("onMatch", onMatch);
 
-        if (Strings.isEmpty(searchRootPath))
+        if (Strings.isEmpty(searchRootPath)) {
             searchRootPath = ".";
+        }
 
-        final String searchRoot = new File(FilenameUtils.concat(searchRootPath, Strings.substringBeforeLast(Strings.substringBefore(globPattern, "*"),
-            "/"))).getAbsolutePath();
+        final String searchRoot = new File(FilenameUtils.concat(searchRootPath, Strings.substringBeforeLast(Strings.substringBefore(globPattern, "*"), "/")))
+            .getAbsolutePath();
 
         final String searchRegEx = Strings.globToRegex(globPattern).toString();
         LOG.debug("\n  glob:  %s\n  regex: %s\n  searchRoot: %s", globPattern, searchRegEx, searchRoot);
@@ -222,8 +232,9 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
             protected boolean handleDirectory(final File directory, final int depth, final Collection<File> results) throws IOException {
                 final String filePath = directory.getCanonicalPath().replace('\\', '/');
                 final boolean isMatch = filePattern.matcher(filePath).find();
-                if (isMatch)
+                if (isMatch) {
                     onMatch.onEvent(directory);
+                }
                 return true;
             }
 
@@ -231,8 +242,9 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
             protected void handleFile(final File file, final int depth, final java.util.Collection<File> results) throws IOException {
                 final String filePath = file.getCanonicalPath().replace('\\', '/');
                 final boolean isMatch = filePattern.matcher(filePath).find();
-                if (isMatch)
+                if (isMatch) {
                     onMatch.onEvent(file);
+                }
             }
         };
     }
@@ -290,15 +302,17 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
         Args.notNull("filePaths", filePaths);
 
         final File[] result = new File[filePaths.length];
-        for (int i = 0, l = filePaths.length; i < l; i++)
+        for (int i = 0, l = filePaths.length; i < l; i++) {
             result[i] = new File(filePaths[i]);
+        }
         return result;
     }
 
     @SuppressWarnings("resource")
     public static void writeAndClose(final File file, InputStream is) throws IOException {
-        if (!(is instanceof BufferedInputStream))
+        if (!(is instanceof BufferedInputStream)) {
             is = new BufferedInputStream(is);
+        }
         IOUtils.copyAndClose(is, new BufferedOutputStream(new FileOutputStream(file)));
     }
 
