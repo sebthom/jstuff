@@ -28,9 +28,9 @@ public class CircuitBreakerTest extends TestCase {
         final CircuitBreaker cb = CircuitBreaker.builder() //
             .name("test") //
             .failureThreshold(2) //
-            .failureExpiryPeriod(2, TimeUnit.SECONDS) //
-            .blockingPeriod(2, TimeUnit.SECONDS) //
-            .fatalExceptions(UnknownHostException.class) //
+            .failureTrackingPeriod(2, TimeUnit.SECONDS) //
+            .resetPeriod(2, TimeUnit.SECONDS) //
+            .hardTrippingExceptionTypes(UnknownHostException.class) //
             .build();
 
         /*
@@ -58,31 +58,31 @@ public class CircuitBreakerTest extends TestCase {
         cb.reportFailure(new IllegalArgumentException()); // 2nd error
         cb.release();
 
-        assertTrue(cb.getState() == State.OPEN);
+        assertEquals(cb.getState(), State.OPEN);
         assertFalse(cb.tryAcquire());
         assertFalse(cb.tryExecute(new Runnable() {
             public void run() {
             }
         }));
-        assertTrue(cb.getState() == State.OPEN);
+        assertEquals(cb.getState(), State.OPEN);
 
         /*
          * testing half-open state
          */
         Threads.sleep(3 * 1000);
-        assertTrue(cb.getState() == State.HALF_OPEN);
+        assertEquals(cb.getState(), State.HALF_OPEN);
 
         assertTrue(cb.tryAcquire());
-        assertTrue(cb.getState() == State.HALF_OPEN);
+        assertEquals(cb.getState(), State.HALF_OPEN);
         assertFalse(cb.tryAcquire());
         // not reporting success or failure, thus releasing the permit does not change the circuit breaker's state
         cb.release();
-        assertTrue(cb.getState() == State.HALF_OPEN);
+        assertEquals(cb.getState(), State.HALF_OPEN);
 
         assertTrue(cb.tryAcquire());
         cb.reportSuccess();
         cb.release();
-        assertTrue(cb.getState() == State.CLOSE);
+        assertEquals(cb.getState(), State.CLOSE);
 
         /*
          * testing instant state switch
@@ -90,6 +90,6 @@ public class CircuitBreakerTest extends TestCase {
         assertTrue(cb.tryAcquire());
         cb.reportFailure(new UnknownHostException("foo.bar"));
         cb.release();
-        assertTrue(cb.getState() == State.OPEN);
+        assertEquals(cb.getState(), State.OPEN);
     }
 }

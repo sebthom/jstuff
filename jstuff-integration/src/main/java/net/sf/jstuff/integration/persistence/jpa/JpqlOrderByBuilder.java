@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.jstuff.core.comparator.SortBy;
+import net.sf.jstuff.core.fluent.Fluent;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -28,6 +29,7 @@ public class JpqlOrderByBuilder {
         this.defaultSortBy = defaultSortBy;
     }
 
+    @Fluent
     public JpqlOrderByBuilder addMapping(final String sortField, final String jpqlExpression) {
         mappings.put(sortField, jpqlExpression);
         return this;

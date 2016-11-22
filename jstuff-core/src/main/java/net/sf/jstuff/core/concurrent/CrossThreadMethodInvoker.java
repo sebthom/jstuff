@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import net.sf.jstuff.core.fluent.Fluent;
 import net.sf.jstuff.core.functional.Function;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.Proxies;
@@ -155,9 +156,7 @@ public class CrossThreadMethodInvoker {
         return m.result;
     }
 
-    /**
-     * @return this
-     */
+    @Fluent
     public CrossThreadMethodInvoker start(final int numberOfBackgroundThreads) {
         synchronized (synchronizer) {
             backgroundThreadCount = new AtomicInteger(numberOfBackgroundThreads);
@@ -167,11 +166,13 @@ public class CrossThreadMethodInvoker {
         return this;
     }
 
-    public void stop() {
+    @Fluent
+    public CrossThreadMethodInvoker stop() {
         synchronized (synchronizer) {
             owner = null;
             invocations.clear();
         }
+        return this;
     }
 
     /**

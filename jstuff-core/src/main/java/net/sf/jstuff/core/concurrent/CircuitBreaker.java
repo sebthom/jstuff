@@ -24,6 +24,7 @@ import net.sf.jstuff.core.concurrent.CircuitBreaker.State;
 import net.sf.jstuff.core.event.EventDispatcher;
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
+import net.sf.jstuff.core.fluent.Fluent;
 import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -32,8 +33,9 @@ import net.sf.jstuff.core.validation.Assert;
 /**
  * See:
  * <ul>
- * <li><a href="http://martinfowler.com/bliki/CircuitBreaker.html">http://martinfowler.com/bliki/CircuitBreaker.html</a>.
+ * <li><a href="http://martinfowler.com/bliki/CircuitBreaker.html">http://martinfowler.com/bliki/CircuitBreaker.html</a>
  * <li><a href="http://doc.akka.io/docs/akka/current/common/circuitbreaker.html">http://doc.akka.io/docs/akka/current/common/circuitbreaker.html</a>
+ * <li><a href="https://docs.wso2.com/display/MSF4J200/Implementing+a+Circuit+Breaker">https://docs.wso2.com/display/MSF4J200/Implementing+a+Circuit+Breaker</a>
  * </ul>
  *
  * <p>
@@ -43,23 +45,25 @@ import net.sf.jstuff.core.validation.Assert;
  * CircuitBreaker cb = CircuitBreaker.builder() //
  *     .name("ldap-access") //
  *     .failureThreshold(3) //
- *     .failureExpiryPeriod(10, TimeUnit.SECONDS) //
+ *     .failureTrackingPeriod(10, TimeUnit.SECONDS) //
  *     .resetPeriod(30, TimeUnit.SECONDS) //
- *     .fatalExceptions(java.net.UnknownHostException.class) //
+ *     .hardTrippingExceptionTypes(java.net.UnknownHostException.class) //
  *     .maxConcurrent(20) //
  *     .build();
  *
  * // OPTION 1:
- * Assert.isTrue(cb.tryAcquire(), "LDAP service is not available");
- * try {
- *     // query LDAP here
+ * if (cb.tryAcquire()) {
+ *     try {
+ *         // query LDAP here
  *
- *     cb.reportSuccess();
- * } catch (Exception ex) {
- *     cb.reportError(ex);
- * } finally {
- *     cb.release(); // important!! always release after acquire
- * }
+ *         cb.reportSuccess();
+ *     } catch (Exception ex) {
+ *         cb.reportError(ex);
+ *     } finally {
+ *         cb.release(); // IMPORTANT: always release after acquire was successfull
+ *     }
+ * } else
+ *     throw new IllegalStateException("LDAP service is not available");
  *
  * // OPTION 2:
  * Runnable ldapQuery = new Runnable() {
@@ -67,7 +71,8 @@ import net.sf.jstuff.core.validation.Assert;
  *         // query LDAP here
  *     }
  * };
- * Assert.isTrue(cb.tryExecute(ldapQuery), "LDAP service is not available");
+ * if (!cb.tryExecute(ldapQuery))
+ *     throw new IllegalStateException("LDAP service is not available");
  * </pre>
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -79,62 +84,69 @@ public class CircuitBreaker implements EventListenable<State> {
     public interface CircuitBreakerBuilder extends Builder<CircuitBreaker> {
 
         /**
-         * Amount of time the circuit breaker stays in {@link State#OPEN} before switching to {@link State#HALF_OPEN}
-         */
-        CircuitBreakerBuilder blockingPeriod(int value, final TimeUnit timeUnit);
-
-        /**
          * Event dispatcher instance that shall be used.
          */
+        @Fluent
         @Builder.Property(required = false)
         CircuitBreakerBuilder eventDisptacher(EventDispatcher<State> value);
 
         /**
-         * Time span in which the subsequent errors must occur.
+         * Number of subsequent errors that trip {@link State#OPEN}.
          */
-        CircuitBreakerBuilder failureExpiryPeriod(int value, final TimeUnit timeUnit);
-
-        /**
-         * Number of subsequent errors that result into switching to {@link State#OPEN}.
-         */
+        @Fluent
         CircuitBreakerBuilder failureThreshold(int value);
 
         /**
-         * Exception types that result in an instant switch to {@link State#OPEN} even if the the failure threshold hasn't been reached yet.
+         * Time span in which the subsequent errors must occur.
          */
+        @Fluent
+        CircuitBreakerBuilder failureTrackingPeriod(int value, final TimeUnit timeUnit);
+
+        /**
+         * Types of exceptions that trip {@link State#OPEN} instantly ignoring the failure threshold.
+         */
+        @Fluent
         //@SafeVarargs
         @Builder.Property(required = false)
-        CircuitBreakerBuilder fatalExceptions(Class<? extends Throwable>... value);
+        CircuitBreakerBuilder hardTrippingExceptionTypes(Class<? extends Throwable>... value);
 
         /**
          * Maximum number of issued permits at the same time while in {@link State#CLOSE}.
          * <p>
-         * Default is 0 which indicates no limitation.
+         * Default is {@link Integer#MAX_VALUE} indicating no limitation.
          */
+        @Fluent
         @Builder.Property(required = false)
         CircuitBreakerBuilder maxConcurrent(int value);
 
         /**
          * The circuit breaker's name used for logging purposes.
          */
+        @Fluent
         CircuitBreakerBuilder name(String value);
+
+        /**
+         * Amount of time the circuit breaker stays in {@link State#OPEN} before switching to {@link State#HALF_OPEN}
+         */
+        @Fluent
+        CircuitBreakerBuilder resetPeriod(int value, final TimeUnit timeUnit);
     }
 
     public enum State {
         /**
-         * all requests are denied
+         * Permits are issued as long {@link CircuitBreaker#getMaxConcurrent()} is not reached.
          */
-        OPEN,
+        CLOSE,
 
         /**
-         * only one request at a time is permitted
+         * Only one permit at a time is issued.
          */
         HALF_OPEN,
 
         /**
-         * all requests are allowed
+         * No permits are issued.
          */
-        CLOSE;
+        OPEN;
     }
 
     private static final Logger LOG = Logger.create();
@@ -146,39 +158,44 @@ public class CircuitBreaker implements EventListenable<State> {
     protected final Object synchronizer = new Object();
 
     protected String name;
-
-    protected long failureExpiryPeriodMS;
-    protected int failureThreshold;
-    protected Class<? extends Throwable>[] fatalExceptions;
-    protected int maxConcurrent = 0;
-    protected final List<Long> failureTimestamps = new ArrayList<Long>();
-    protected long blockingPeriodMS;
-
-    /**
-     * date in MS until {@link State#OPEN} is active
-     */
-    protected long openStateUntil = 0;
-
-    protected int issuedPermits = 0;
-
+    protected int activePermits = 0;
     protected EventDispatcher<State> eventDispatcher;
+    protected int failureThreshold;
+    protected long failureTrackingPeriodMS;
+    protected final List<Long> failureTimestamps = new ArrayList<Long>();
+    protected Class<? extends Throwable>[] hardTrippingExceptionTypes;
+    protected int maxConcurrent = Integer.MAX_VALUE;
+    protected long inOpenStateUntil = -1;
+    protected long resetPeriodMS;
+    protected State state = State.CLOSE;
+    protected int tripCount = 0;
 
-    private State state = State.CLOSE;
+    public int getActivePermits() {
+        return activePermits;
+    }
+
+    public int getMaxConcurrent() {
+        return maxConcurrent;
+    }
 
     public State getState() {
         synchronized (synchronizer) {
-            if (state == State.OPEN && System.currentTimeMillis() > openStateUntil) {
-                switchTo(State.HALF_OPEN);
+            if (state == State.OPEN && System.currentTimeMillis() > inOpenStateUntil) {
+                switchToHALF_OPEN();
             }
             return state;
         }
     }
 
+    public int getTripCount() {
+        return tripCount;
+    }
+
     protected boolean isFatalException(final Throwable ex) {
-        if (fatalExceptions == null || fatalExceptions.length == 0)
+        if (hardTrippingExceptionTypes == null || hardTrippingExceptionTypes.length == 0)
             return false;
 
-        for (final Class<? extends Throwable> fex : fatalExceptions) {
+        for (final Class<? extends Throwable> fex : hardTrippingExceptionTypes) {
             if (fex.isInstance(ex))
                 return true;
         }
@@ -186,12 +203,12 @@ public class CircuitBreaker implements EventListenable<State> {
     }
 
     /**
-     * releases 1 permit
+     * Releases 1 permit. Call this method after {@link #tryAcquire()} returned <code>true</code>.
      */
     public void release() {
         synchronized (synchronizer) {
-            if (issuedPermits > 0) {
-                issuedPermits--;
+            if (activePermits > 0) {
+                activePermits--;
             } else {
                 LOG.warn("An attempt was made to release a permit but no permits have been issued.");
             }
@@ -199,30 +216,30 @@ public class CircuitBreaker implements EventListenable<State> {
     }
 
     /**
-     * increments the subsequent failures counter
+     * Increments the subsequent failures counter.
      */
     public void reportFailure() {
         reportFailure(null);
     }
 
     /**
-     * increments the subsequent failures counter
+     * Increments the subsequent failures counter.
      */
     public void reportFailure(final Throwable ex) {
         final long now = System.currentTimeMillis();
 
         synchronized (synchronizer) {
 
-            if (issuedPermits < 1) {
+            if (activePermits < 1) {
                 LOG.warn("An attempt was made to report a failure but no permits have been issued.");
                 return;
             }
 
             /*
-             * ignore expired failures
+             * dropping recorded failures outside the tracking time window
              */
             if (!failureTimestamps.isEmpty()) {
-                final long expireFailuresBefore = now - failureExpiryPeriodMS;
+                final long expireFailuresBefore = now - failureTrackingPeriodMS;
                 for (final Iterator<Long> it = failureTimestamps.iterator(); it.hasNext();) {
                     final Long failureTimestamp = it.next();
                     if (failureTimestamp.longValue() < expireFailuresBefore) {
@@ -237,9 +254,8 @@ public class CircuitBreaker implements EventListenable<State> {
              * failure threshold reached?
              */
             if (failureTimestamps.size() >= failureThreshold) {
-                LOG.warn("[%s] Switching to [%s] because failure threshold [%s] was reached...", name, State.OPEN, failureThreshold);
-                openStateUntil = now + blockingPeriodMS;
-                switchTo(State.OPEN);
+                LOG.warn("[%s] Tripping [%s] because failure threshold [%s] was reached...", name, State.OPEN, failureThreshold);
+                switchToOPEN(now);
                 return;
             }
 
@@ -247,23 +263,22 @@ public class CircuitBreaker implements EventListenable<State> {
              * fatal exception?
              */
             if (ex != null && isFatalException(ex)) {
-                LOG.warn("[%s] Switching to [%s] because of fatal exception [%s]...", name, State.OPEN, ex);
-                openStateUntil = now + blockingPeriodMS;
-                switchTo(State.OPEN);
+                LOG.warn("[%s] Hard tripping [%s] because of fatal exception [%s]...", name, State.OPEN, ex);
+                switchToOPEN(now);
                 return;
             }
         }
     }
 
     /**
-     * resets the subsequent failures counter
+     * Resets the subsequent failures counter.
      */
     public void reportSuccess() {
         synchronized (synchronizer) {
-            if (issuedPermits > 0) {
+            if (activePermits > 0) {
                 final State state = getState();
                 if (state == State.HALF_OPEN) {
-                    switchTo(State.CLOSE);
+                    switchToCLOSE();
                 } else {
                     // forget all previous failures
                     failureTimestamps.clear();
@@ -277,15 +292,15 @@ public class CircuitBreaker implements EventListenable<State> {
     /**
      * used by {@link CircuitBreakerBuilder}
      */
-    protected void setBlockingPeriod(final int time, final TimeUnit timeUnit) {
-        blockingPeriodMS = timeUnit.toMillis(time);
+    protected void setFailureTrackingPeriod(final int time, final TimeUnit timeUnit) {
+        failureTrackingPeriodMS = timeUnit.toMillis(time);
     }
 
     /**
      * used by {@link CircuitBreakerBuilder}
      */
-    protected void setFailureExpiryPeriod(final int time, final TimeUnit timeUnit) {
-        failureExpiryPeriodMS = timeUnit.toMillis(time);
+    protected void setResetPeriod(final int time, final TimeUnit timeUnit) {
+        resetPeriodMS = timeUnit.toMillis(time);
     }
 
     public boolean subscribe(final EventListener<State> listener) {
@@ -294,25 +309,39 @@ public class CircuitBreaker implements EventListenable<State> {
         return eventDispatcher.subscribe(listener);
     }
 
-    protected void switchTo(final State state) {
-        if (state == this.state)
+    protected void switchToCLOSE() {
+        if (state == State.CLOSE)
             return;
 
-        LOG.debug("[%s] Switching from [%s] to [%s]...", name, this.state, state);
-        this.state = state;
-        switch (state) {
-            case OPEN:
-                break;
-            case HALF_OPEN:
-                LOG.info("[%s] Switching to [HALF_OPEN]...", name);
-                openStateUntil = 0;
-                break;
-            case CLOSE:
-                LOG.info("[%s] Switching to [CLOSE]...", name);
-                failureTimestamps.clear();
-                openStateUntil = 0;
-                break;
+        LOG.info("[%s] Switching from [%s] to [%s]...", name, state, State.CLOSE);
+        state = State.CLOSE;
+        tripCount++;
+        failureTimestamps.clear();
+
+        if (eventDispatcher != null) {
+            eventDispatcher.fire(state);
         }
+    }
+
+    protected void switchToHALF_OPEN() {
+        if (state == State.HALF_OPEN)
+            return;
+
+        LOG.info("[%s] Switching from [%s] to [%s]...", name, state, State.HALF_OPEN);
+        state = State.HALF_OPEN;
+
+        if (eventDispatcher != null) {
+            eventDispatcher.fire(state);
+        }
+    }
+
+    protected void switchToOPEN(final long trippedAt) {
+        if (state == State.OPEN)
+            return;
+
+        LOG.debug("[%s] Switching from [%s] to [%s]...", name, state, State.HALF_OPEN);
+        state = State.OPEN;
+        inOpenStateUntil = trippedAt + resetPeriodMS;
 
         if (eventDispatcher != null) {
             eventDispatcher.fire(state);
@@ -333,13 +362,13 @@ public class CircuitBreaker implements EventListenable<State> {
                 case OPEN:
                     return false;
                 case HALF_OPEN:
-                    if (issuedPermits > 0)
+                    if (activePermits > 0)
                         return false;
                 case CLOSE:
-                    if (maxConcurrent > 0 && maxConcurrent >= issuedPermits)
+                    if (activePermits >= maxConcurrent)
                         return false;
             }
-            issuedPermits++;
+            activePermits++;
         }
         return true;
     }

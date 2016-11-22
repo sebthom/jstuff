@@ -91,6 +91,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/event/SyncEventDispatcher.java -tex
 jstuff-core/src/main/java/net/sf/jstuff/core/exception/Exceptions.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/exception/FastException.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/exception/FastRuntimeException.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/fluent/Fluent.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Accept.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/Accepts.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/functional/ChainableAccept.java -text
