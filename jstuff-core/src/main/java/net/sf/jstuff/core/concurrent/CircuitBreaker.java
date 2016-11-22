@@ -152,7 +152,7 @@ public class CircuitBreaker implements EventListenable<State> {
     protected Class<? extends Throwable>[] fatalExceptions;
     protected int maxConcurrent = 0;
     protected final List<Long> failureTimestamps = new ArrayList<Long>();
-    protected long resetPeriodMS;
+    protected long blockingPeriodMS;
 
     /**
      * date in MS until {@link State#OPEN} is active
@@ -238,7 +238,7 @@ public class CircuitBreaker implements EventListenable<State> {
              */
             if (failureTimestamps.size() >= failureThreshold) {
                 LOG.warn("[%s] Switching to [%s] because failure threshold [%s] was reached...", name, State.OPEN, failureThreshold);
-                openStateUntil = now + resetPeriodMS;
+                openStateUntil = now + blockingPeriodMS;
                 switchTo(State.OPEN);
                 return;
             }
@@ -248,7 +248,7 @@ public class CircuitBreaker implements EventListenable<State> {
              */
             if (ex != null && isFatalException(ex)) {
                 LOG.warn("[%s] Switching to [%s] because of fatal exception [%s]...", name, State.OPEN, ex);
-                openStateUntil = now + resetPeriodMS;
+                openStateUntil = now + blockingPeriodMS;
                 switchTo(State.OPEN);
                 return;
             }
@@ -277,15 +277,15 @@ public class CircuitBreaker implements EventListenable<State> {
     /**
      * used by {@link CircuitBreakerBuilder}
      */
-    protected void setFailureExpiryPeriod(final int time, final TimeUnit timeUnit) {
-        failureExpiryPeriodMS = timeUnit.toMillis(time);
+    protected void setBlockingPeriod(final int time, final TimeUnit timeUnit) {
+        blockingPeriodMS = timeUnit.toMillis(time);
     }
 
     /**
      * used by {@link CircuitBreakerBuilder}
      */
-    protected void setResetPeriod(final int time, final TimeUnit timeUnit) {
-        resetPeriodMS = timeUnit.toMillis(time);
+    protected void setFailureExpiryPeriod(final int time, final TimeUnit timeUnit) {
+        failureExpiryPeriodMS = timeUnit.toMillis(time);
     }
 
     public boolean subscribe(final EventListener<State> listener) {
