@@ -14,7 +14,7 @@ package net.sf.jstuff.integration.atom.feed;
 
 import java.util.Date;
 
-import net.sf.jstuff.core.Identifiable;
+import net.sf.jstuff.core.types.Identifiable;
 
 public class SimpleEntry<T> extends Identifiable.Default<T> {
     private static final long serialVersionUID = 1L;

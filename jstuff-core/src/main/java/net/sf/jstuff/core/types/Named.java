@@ -10,13 +10,11 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.event;
+package net.sf.jstuff.core.types;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface EventListenable<EVENT> {
-    boolean subscribe(EventListener<EVENT> listener);
-
-    boolean unsubscribe(EventListener<EVENT> listener);
+public interface Named {
+    String getName();
 }

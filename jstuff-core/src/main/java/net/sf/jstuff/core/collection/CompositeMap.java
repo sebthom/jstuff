@@ -18,8 +18,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.jstuff.core.Composite;
 import net.sf.jstuff.core.reflection.Types;
+import net.sf.jstuff.core.types.Composite;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

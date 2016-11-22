@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@ThreadSafe
 public class ScalingThreadPoolExecutor extends ThreadPoolExecutor {
     private static final class ScalingQueue extends LinkedBlockingQueue<Runnable> {
         private static final long serialVersionUID = 1L;

@@ -10,10 +10,11 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.types;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.io.SerializationUtils;
+import net.sf.jstuff.core.types.TypeSafeEnum;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

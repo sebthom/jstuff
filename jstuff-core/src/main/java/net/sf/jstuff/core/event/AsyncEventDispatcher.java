@@ -20,39 +20,37 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
-import net.sf.jstuff.core.validation.Args;
-
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+
+import net.sf.jstuff.core.concurrent.ThreadSafe;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EventManager<Event> implements EventListenable<Event> {
+@ThreadSafe
+public class AsyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
     private static final class LazyInitialized {
         private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder()
             .daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("EventManager-thread").build());
     }
 
-    private final Set<EventListener<Event>> eventListeners = new CopyOnWriteArraySet<EventListener<Event>>();
+    private final Set<EventListener<EVENT>> eventListeners = new CopyOnWriteArraySet<EventListener<EVENT>>();
 
     private ExecutorService executor;
 
-    public EventManager() {
+    public AsyncEventDispatcher() {
         this(LazyInitialized.DEFAULT_NOTIFICATION_THREAD);
     }
 
-    public EventManager(final ExecutorService executor) {
+    public AsyncEventDispatcher(final ExecutorService executor) {
         Args.notNull("executor", executor);
         this.executor = executor;
     }
 
-    public int fire(final Event type) {
-        return Events.fire(type, eventListeners);
-    }
-
-    public Future<Integer> fireAsync(final Event type) {
+    public Future<Integer> fire(final EVENT type) {
         @SuppressWarnings("unchecked")
-        final EventListener<Event>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
+        final EventListener<EVENT>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
 
         return executor.submit(new Callable<Integer>() {
             public Integer call() throws Exception {
@@ -61,13 +59,12 @@ public class EventManager<Event> implements EventListenable<Event> {
         });
     }
 
-    @SuppressWarnings("unchecked")
-    public <EventType extends Event> boolean subscribe(final EventListener<EventType> listener) {
+    public boolean subscribe(final EventListener<EVENT> listener) {
         Args.notNull("listener", listener);
-        return eventListeners.add((EventListener<Event>) listener);
+        return eventListeners.add(listener);
     }
 
-    public <EventType extends Event> boolean unsubscribe(final EventListener<EventType> listener) {
+    public boolean unsubscribe(final EventListener<EVENT> listener) {
         Args.notNull("listener", listener);
         return eventListeners.remove(listener);
     }

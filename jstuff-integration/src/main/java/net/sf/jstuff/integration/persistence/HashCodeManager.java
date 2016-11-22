@@ -18,8 +18,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import net.sf.jstuff.core.GCTracker;
-import net.sf.jstuff.core.Identifiable;
 import net.sf.jstuff.core.collection.WeakIdentityHashSet;
+import net.sf.jstuff.core.types.Identifiable;
 import net.sf.jstuff.core.validation.Args;
 
 /**

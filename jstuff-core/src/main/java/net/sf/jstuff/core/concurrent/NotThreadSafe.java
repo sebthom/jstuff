@@ -10,12 +10,17 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.concurrent;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Disposable {
-
-    void dispose();
+@Retention(RetentionPolicy.CLASS)
+@Target(ElementType.TYPE)
+public @interface NotThreadSafe {
 }

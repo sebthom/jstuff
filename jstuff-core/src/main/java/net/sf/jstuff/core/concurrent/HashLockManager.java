@@ -24,11 +24,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+
 import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
-
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 /**
  * A lock manager that allows to issue thread-owned read-write locks on objects based on
@@ -38,6 +38,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@ThreadSafe
 public class HashLockManager<KeyType> {
     private static class CleanUpTask<T> implements Runnable {
         private static final Logger LOG = Logger.create();
@@ -63,8 +64,9 @@ public class HashLockManager<KeyType> {
                     synchronized (lock) // exclusive access to the lock object
                     {
                         final boolean isLockInUse = lock.isWriteLocked() || lock.getReadLockCount() > 0 || lock.hasQueuedThreads();
-                        if (!isLockInUse)
+                        if (!isLockInUse) {
                             it.remove();
+                        }
                     }
                 }
             } catch (final Exception ex) {
@@ -186,7 +188,7 @@ public class HashLockManager<KeyType> {
 
     /**
      * Acquires a non-exclusive read lock with a key equal to <code>key</code> for the current thread
-     * 
+     *
      * @param key the lock name/identifier
      */
     public void lockRead(final KeyType key) {
@@ -197,8 +199,9 @@ public class HashLockManager<KeyType> {
         while (true) {
             ReentrantReadWriteLock lockCandidate = locksByKey.get(key);
             if (lockCandidate == null) {
-                if (newLock == null)
+                if (newLock == null) {
                     newLock = new ReentrantReadWriteLock(true); // lazy instantiation of a new lock object
+                }
                 lockCandidate = newLock;
             }
 
@@ -215,7 +218,7 @@ public class HashLockManager<KeyType> {
 
     /**
      * Acquires an exclusive read-write lock with a key equal to <code>key</code> for the current thread
-     * 
+     *
      * @param key the lock name/identifier
      */
     public void lockWrite(final KeyType key) {
@@ -226,8 +229,9 @@ public class HashLockManager<KeyType> {
         while (true) {
             ReentrantReadWriteLock lockCandidate = locksByKey.get(key);
             if (lockCandidate == null) {
-                if (newLock == null)
+                if (newLock == null) {
                     newLock = new ReentrantReadWriteLock(true); // lazy instantiation of a new lock object
+                }
                 lockCandidate = newLock;
             }
 
@@ -244,7 +248,7 @@ public class HashLockManager<KeyType> {
 
     /**
      * Releases a non-exclusive read lock with a key equal <code>key</code> for the current thread
-     * 
+     *
      * @param key the lock name/identifier
      */
     public void unlockRead(final KeyType key) {
@@ -255,7 +259,7 @@ public class HashLockManager<KeyType> {
 
     /**
      * Releases an exclusive read-write lock with a key equal to <code>key</code> for the current thread
-     * 
+     *
      * @param key the lock name/identifier
      */
     public void unlockWrite(final KeyType key) {

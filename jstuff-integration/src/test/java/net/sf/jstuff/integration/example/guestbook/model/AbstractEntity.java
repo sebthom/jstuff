@@ -14,10 +14,8 @@ package net.sf.jstuff.integration.example.guestbook.model;
 
 import java.util.Date;
 
-import net.sf.jstuff.core.Identifiable;
+import net.sf.jstuff.core.types.Identifiable;
 import net.sf.jstuff.core.validation.Args;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -60,10 +58,5 @@ public abstract class AbstractEntity extends Identifiable.Default<Integer> {
 
     public Date getCreatedOn() {
         return createdOn;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
     }
 }

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.atom.blog;
 
-import net.sf.jstuff.core.Identifiable;
+import net.sf.jstuff.core.types.Identifiable;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

@@ -19,15 +19,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.sf.jstuff.core.functional.Function;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.Proxies;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@ThreadSafe
 public class CrossThreadMethodInvoker {
     public interface CrossThreadProxy<T> {
         CrossThreadMethodInvoker getCrossThreadMethodInvoker();
@@ -59,6 +60,8 @@ public class CrossThreadMethodInvoker {
             }
         }
     }
+
+    private final Object synchronizer = new Object();
 
     /**
      * queue of method invocations that shall be executed in another thread
@@ -155,16 +158,20 @@ public class CrossThreadMethodInvoker {
     /**
      * @return this
      */
-    public synchronized CrossThreadMethodInvoker start(final int numberOfBackgroundThreads) {
-        backgroundThreadCount = new AtomicInteger(numberOfBackgroundThreads);
-        owner = Thread.currentThread();
-        invocations.clear();
+    public CrossThreadMethodInvoker start(final int numberOfBackgroundThreads) {
+        synchronized (synchronizer) {
+            backgroundThreadCount = new AtomicInteger(numberOfBackgroundThreads);
+            owner = Thread.currentThread();
+            invocations.clear();
+        }
         return this;
     }
 
-    public synchronized void stop() {
-        owner = null;
-        invocations.clear();
+    public void stop() {
+        synchronized (synchronizer) {
+            owner = null;
+            invocations.clear();
+        }
     }
 
     /**
@@ -174,26 +181,26 @@ public class CrossThreadMethodInvoker {
      *
      * @return <code>true</code> if all background threads finished within time, <code>false</code> if a timeout occured
      */
-    public synchronized boolean waitForBackgroundThreads() {
-        ensureStarted();
+    public boolean waitForBackgroundThreads() {
+        synchronized (synchronizer) {
+            if (Thread.currentThread() != owner)
+                throw new IllegalStateException("Can only be invoked by owning thread " + owner);
 
-        if (owner != Thread.currentThread())
-            throw new IllegalStateException("Can only be invoked by owning thread " + owner);
-
-        try {
-            final long startedAt = System.currentTimeMillis();
-            while (backgroundThreadCount.get() > 0 // still background threads alive?
-                    && System.currentTimeMillis() - startedAt < timeout) // timeout not yet reached?
-            {
-                final MethodInvocation m = invocations.poll();
-                if (m != null) {
-                    m.invoke();
+            try {
+                final long startedAt = System.currentTimeMillis();
+                while (backgroundThreadCount.get() > 0 // still background threads alive?
+                        && System.currentTimeMillis() - startedAt < timeout) // timeout not yet reached?
+                {
+                    final MethodInvocation m = invocations.poll();
+                    if (m != null) {
+                        m.invoke();
+                    }
+                    Thread.yield();
                 }
-                Thread.yield();
+                return backgroundThreadCount.get() < 1;
+            } finally {
+                stop();
             }
-            return backgroundThreadCount.get() < 1;
-        } finally {
-            stop();
         }
     }
 }

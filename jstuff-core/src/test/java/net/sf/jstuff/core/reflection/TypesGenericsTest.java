@@ -27,12 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.time.StopWatch;
+
 import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.validation.Args;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.time.StopWatch;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -101,41 +101,47 @@ public class TypesGenericsTest extends TestCase {
         final Map<TypeVariable<?>, Type> genericVariableToArgumentMappings = newHashMap();
         Type currentType = searchIn;
         outer: while (true) {
-            if (currentType == Object.class)
+            if (currentType == Object.class) {
                 break;
+            }
 
-            final Class<?> currentClass = getUnderlyingClass(currentType);
+            final Class<?> currentClass = resolveUnderlyingClass(currentType);
 
             // populate the mappings with info from generic class
-            if (currentType instanceof ParameterizedType) //
+            if (currentType instanceof ParameterizedType) {
                 CollectionUtils.putAll(genericVariableToArgumentMappings, //
                     /*generic variable*/(TypeVariable<?>[]) currentClass.getTypeParameters(), //
                     /*arguments (concrete types) of generic variables*/((ParameterizedType) currentType).getActualTypeArguments() //
-            );
+                );
+            }
 
-            if (currentClass == searchFor)
+            if (currentClass == searchFor) {
                 break;
+            }
 
             if (isSearchForInterface) {
                 for (final Type ifaceType : currentClass.getGenericInterfaces()) {
-                    if (!isAssignableTo(getUnderlyingClass(ifaceType), searchFor))
+                    if (!isAssignableTo(resolveUnderlyingClass(ifaceType), searchFor)) {
                         continue;
+                    }
                     interfacesToCheck.add(ifaceType);
                 }
 
                 while (!interfacesToCheck.isEmpty()) {
                     final Type currentInterfaceType = interfacesToCheck.poll();
-                    if (currentInterfaceType == Object.class)
+                    if (currentInterfaceType == Object.class) {
                         continue;
+                    }
 
-                    final Class<?> currentInterfaceClass = getUnderlyingClass(currentInterfaceType);
+                    final Class<?> currentInterfaceClass = resolveUnderlyingClass(currentInterfaceType);
 
                     // populate the mappings with info from generic interfaces
-                    if (currentInterfaceType instanceof ParameterizedType)
+                    if (currentInterfaceType instanceof ParameterizedType) {
                         CollectionUtils.putAll(genericVariableToArgumentMappings, //
                             /*generic variable*/(TypeVariable<?>[]) currentInterfaceClass.getTypeParameters(), //
                             /*arguments (concrete types) of generic variables*/((ParameterizedType) currentInterfaceType).getActualTypeArguments() //
-                    );
+                        );
+                    }
 
                     if (currentInterfaceClass == searchFor) {
                         currentType = currentInterfaceType;
@@ -143,8 +149,9 @@ public class TypesGenericsTest extends TestCase {
                     }
 
                     for (final Type ifaceType : currentInterfaceClass.getGenericInterfaces()) {
-                        if (!isAssignableTo(getUnderlyingClass(ifaceType), searchFor))
+                        if (!isAssignableTo(resolveUnderlyingClass(ifaceType), searchFor)) {
                             continue;
+                        }
                         interfacesToCheck.add(ifaceType);
                     }
                 }
@@ -156,16 +163,18 @@ public class TypesGenericsTest extends TestCase {
          * build the result list based on the information collected in genericVariableToTypeMappings
          */
         final Type[] genericVariables;
-        if (currentType instanceof Class)
+        if (currentType instanceof Class) {
             genericVariables = ((Class<?>) currentType).getTypeParameters();
-        else
+        } else {
             genericVariables = ((ParameterizedType) currentType).getActualTypeArguments();
+        }
         final Class<?>[] res = new Class<?>[genericVariables.length];
         for (int i = 0, l = genericVariables.length; i < l; i++) {
             Type genericVariable = genericVariables[i];
-            while (genericVariableToArgumentMappings.containsKey(genericVariable))
+            while (genericVariableToArgumentMappings.containsKey(genericVariable)) {
                 genericVariable = genericVariableToArgumentMappings.get(genericVariable);
-            res[i] = getUnderlyingClass(genericVariable);
+            }
+            res[i] = resolveUnderlyingClass(genericVariable);
         }
         return res;
     }
@@ -264,29 +273,33 @@ public class TypesGenericsTest extends TestCase {
         final int iterations = 10000;
         final StopWatch sw = new StopWatch();
         sw.start();
-        for (int i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++) {
             _findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
+        }
         sw.stop();
         System.out.println(sw.toString());
 
         sw.reset();
         sw.start();
-        for (int i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++) {
             findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
+        }
         sw.stop();
         System.out.println(sw.toString());
 
         sw.reset();
         sw.start();
-        for (int i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++) {
             _findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
+        }
         sw.stop();
         System.out.println(sw.toString());
 
         sw.reset();
         sw.start();
-        for (int i = 0; i < iterations; i++)
+        for (int i = 0; i < iterations; i++) {
             findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
+        }
         sw.stop();
 
         System.out.println(sw.toString());

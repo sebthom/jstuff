@@ -223,7 +223,7 @@ public abstract class Types {
             while (genericVariableToArgumentMappings.containsKey(genericVariable)) {
                 genericVariable = genericVariableToArgumentMappings.get(genericVariable);
             }
-            res[i] = getUnderlyingClass(genericVariable);
+            res[i] = resolveUnderlyingClass(genericVariable);
         }
         return res;
     }
@@ -306,18 +306,33 @@ public abstract class Types {
         throw new RuntimeException("Unknown primitive type [" + primitive + "]");
     }
 
-    public static Class<?> getUnderlyingClass(final Type type) {
+    public static Type resolveBound(final TypeVariable<?> typeVariable) {
+        final Type[] bounds = typeVariable.getBounds();
+        if (bounds.length == 0)
+            return null;
+
+        Type bound = bounds[0];
+        if (bound instanceof TypeVariable) {
+            bound = resolveBound((TypeVariable<?>) bound);
+        }
+
+        return bound == Object.class ? null : bound;
+    }
+
+    public static Class<?> resolveUnderlyingClass(final Type type) {
         if (type instanceof Class)
             return (Class<?>) type;
         if (type instanceof ParameterizedType)
-            return getUnderlyingClass(((ParameterizedType) type).getRawType());
+            return resolveUnderlyingClass(((ParameterizedType) type).getRawType());
         if (type instanceof GenericArrayType) {
             final Type ctype = ((GenericArrayType) type).getGenericComponentType();
-            final Class<?> cclass = getUnderlyingClass(ctype);
+            final Class<?> cclass = resolveUnderlyingClass(ctype);
             if (cclass != null)
                 return Array.newInstance(cclass, 0).getClass();
         }
-        // type has no underlying class, e.g. TypeVariable
+        if (type instanceof TypeVariable)
+            return (Class<?>) resolveBound((TypeVariable<?>) type);
+
         return null;
     }
 
@@ -629,6 +644,6 @@ public abstract class Types {
             Fields.writeIgnoringFinal(obj, field, value);
             return;
         }
-        throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
+        throw new ReflectionException("No corresponding setter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
     }
 }

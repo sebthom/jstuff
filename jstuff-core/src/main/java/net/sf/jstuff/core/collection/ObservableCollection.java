@@ -18,7 +18,7 @@ import java.util.Iterator;
 import net.sf.jstuff.core.collection.ObservableCollection.ItemAction;
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
-import net.sf.jstuff.core.event.EventManager;
+import net.sf.jstuff.core.event.SyncEventDispatcher;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -58,7 +58,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
 
     protected BulkAction currentBulkAction;
 
-    private final EventManager<ItemAction<E>> events = new EventManager<ItemAction<E>>();
+    private final SyncEventDispatcher<ItemAction<E>> events = new SyncEventDispatcher<ItemAction<E>>();
 
     protected final C wrapped;
 
@@ -83,8 +83,9 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
         try {
             boolean anyAdded = false;
             for (final E item : itemsToAdd)
-                if (add(item))
+                if (add(item)) {
                     anyAdded = true;
+                }
             return anyAdded;
         } finally {
             currentBulkAction = null;
@@ -95,8 +96,9 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
     public void clear() {
         currentBulkAction = BulkAction.CLEAR;
         try {
-            for (final Iterator<E> it = iterator(); it.hasNext();)
+            for (final Iterator<E> it = iterator(); it.hasNext();) {
                 it.remove();
+            }
         } finally {
             currentBulkAction = null;
         }
@@ -162,8 +164,9 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
     @SuppressWarnings("unchecked")
     public boolean remove(final Object item) {
         final boolean removed = wrapped.remove(item);
-        if (removed)
+        if (removed) {
             onRemoved((E) item, -1);
+        }
         return removed;
     }
 
@@ -175,8 +178,9 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
         try {
             boolean removedAny = false;
             for (final Object item : itemsToRemove)
-                if (remove(item))
+                if (remove(item)) {
                     removedAny = true;
+                }
             return removedAny;
         } finally {
             currentBulkAction = null;
@@ -212,11 +216,11 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
         return wrapped.toArray(a);
     }
 
-    public <EventType extends ItemAction<E>> boolean subscribe(final EventListener<EventType> listener) {
+    public boolean subscribe(final EventListener<ItemAction<E>> listener) {
         return events.subscribe(listener);
     }
 
-    public <EventType extends ItemAction<E>> boolean unsubscribe(final EventListener<EventType> listener) {
+    public boolean unsubscribe(final EventListener<ItemAction<E>> listener) {
         return events.unsubscribe(listener);
     }
 }

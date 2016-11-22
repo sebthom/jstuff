@@ -15,7 +15,7 @@ package net.sf.jstuff.core.jbean;
 import java.io.Serializable;
 
 import net.sf.jstuff.core.event.EventListener;
-import net.sf.jstuff.core.event.EventManager;
+import net.sf.jstuff.core.event.SyncEventDispatcher;
 import net.sf.jstuff.core.jbean.changelog.AddItemEvent;
 import net.sf.jstuff.core.jbean.changelog.PropertyChangeEvent;
 import net.sf.jstuff.core.jbean.changelog.RemoveItemEvent;
@@ -32,7 +32,7 @@ public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializabl
     /* ******************************************************************************
      * Property Change Event Support
      * ******************************************************************************/
-    private volatile EventManager<PropertyChangeEvent> events;
+    private volatile SyncEventDispatcher<PropertyChangeEvent> events;
 
     public <T> T _get(final PropertyDescriptor<T> property) {
         throw new UnsupportedOperationException("Unknown property [" + property + "]");
@@ -52,14 +52,14 @@ public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializabl
         getEvents().unsubscribe(listener);
     }
 
-    private EventManager<PropertyChangeEvent> getEvents() {
+    private SyncEventDispatcher<PropertyChangeEvent> getEvents() {
         //http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
-        EventManager<PropertyChangeEvent> result = events;
+        SyncEventDispatcher<PropertyChangeEvent> result = events;
         if (result == null)
             synchronized (this) {
             result = events;
             if (result == null)
-                events = result = new EventManager<PropertyChangeEvent>();
+                events = result = new SyncEventDispatcher<PropertyChangeEvent>();
         }
         return result;
     }

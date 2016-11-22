@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
-import net.sf.jstuff.core.Identifiable;
 import net.sf.jstuff.core.date.Dates;
+import net.sf.jstuff.core.types.Identifiable;
 
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 

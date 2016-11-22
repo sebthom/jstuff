@@ -18,6 +18,7 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.concurrent.ThreadSafe;
 import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.StackTrace;
@@ -33,6 +34,7 @@ import net.sf.jstuff.core.validation.Args;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@ThreadSafe
 public abstract class Logger {
     private static final class ParanamerParamNamesResolver implements Invocable<String[], Method, RuntimeException> {
         final com.thoughtworks.paranamer.Paranamer paranamer = new com.thoughtworks.paranamer.CachingParanamer(
@@ -99,9 +101,9 @@ public abstract class Logger {
         Args.notNull("primaryInterface", primaryInterface);
 
         final Class<?>[] interfaces;
-        if (secondaryInterfaces == null || secondaryInterfaces.length == 0)
+        if (secondaryInterfaces == null || secondaryInterfaces.length == 0) {
             interfaces = new Class<?>[] { primaryInterface };
-        else {
+        } else {
             interfaces = new Class<?>[secondaryInterfaces.length + 1];
             interfaces[0] = primaryInterface;
             System.arraycopy(secondaryInterfaces, 0, interfaces, 1, secondaryInterfaces.length);
@@ -117,10 +119,11 @@ public abstract class Logger {
                     log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
                     final Object returnValue = interfaceMethod.invoke(object, args);
                     final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
-                    if (Methods.isReturningVoid(interfaceMethod))
+                    if (Methods.isReturningVoid(interfaceMethod)) {
                         log.trace(methodWithParameterNames, formatTraceExit() + " " + elapsed + "ms");
-                    else
+                    } else {
                         log.trace(methodWithParameterNames, formatTraceExit(returnValue) + " " + elapsed + "ms");
+                    }
                     return returnValue;
                 }
                 return interfaceMethod.invoke(object, args);
@@ -138,12 +141,14 @@ public abstract class Logger {
         final int paramNamesLen = paramNames.length;
         if (paramNamesLen == 0) {
             sb.append(argToString(args[0]));
-            for (int i = 1; i < args.length; i++)
+            for (int i = 1; i < args.length; i++) {
                 sb.append(", ").append(argToString(args[i]));
+            }
         } else {
             sb.append(paramNames[0]).append(": ").append(argToString(args[0]));
-            for (int i = 1; i < paramNamesLen; i++)
+            for (int i = 1; i < paramNamesLen; i++) {
                 sb.append(", ").append(paramNames[i]).append(": ").append(argToString(args[i]));
+            }
         }
         return sb.append(")").toString();
     }

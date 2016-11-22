@@ -22,9 +22,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
+import net.sf.jstuff.core.concurrent.ThreadSafe;
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
-import net.sf.jstuff.core.event.EventManager;
+import net.sf.jstuff.core.event.SyncEventDispatcher;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
@@ -33,16 +34,17 @@ import net.sf.jstuff.core.validation.Args;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class GCTracker<Event> implements EventListenable<Event> {
+@ThreadSafe
+public class GCTracker<EVENT> implements EventListenable<EVENT> {
     /**
      * http://mindprod.com/jgloss/phantom.html
      * http://blog.yohanliyanage.com/2010/10/ktjs-3-soft-weak-phantom-references/
      */
     private final class GCReference extends PhantomReference<Object> {
-        private final Event eventToFireOnGC;
-        private final GCTracker<Event> tracker;
+        private final EVENT eventToFireOnGC;
+        private final GCTracker<EVENT> tracker;
 
-        protected GCReference(final Object trackedObject, final Event eventToFireOnGC, final GCTracker<Event> tracker) {
+        protected GCReference(final Object trackedObject, final EVENT eventToFireOnGC, final GCTracker<EVENT> tracker) {
             super(trackedObject, garbageCollectedRefs);
             this.eventToFireOnGC = eventToFireOnGC;
             this.tracker = tracker;
@@ -56,7 +58,7 @@ public class GCTracker<Event> implements EventListenable<Event> {
 
     private static final Logger LOG = Logger.create();
 
-    private final EventManager<Event> events = new EventManager<Event>();
+    private final SyncEventDispatcher<EVENT> events = new SyncEventDispatcher<EVENT>();
 
     /**
      * synchronized list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage collected
@@ -98,11 +100,11 @@ public class GCTracker<Event> implements EventListenable<Event> {
         }, intervalMS, intervalMS, TimeUnit.MILLISECONDS);
     }
 
-    protected void onGCEvent(final Event event) {
+    protected void onGCEvent(final EVENT event) {
         events.fire(event);
     }
 
-    public <EventType extends Event> boolean subscribe(final EventListener<EventType> listener) {
+    public boolean subscribe(final EventListener<EVENT> listener) {
         return events.subscribe(listener);
     }
 
@@ -113,7 +115,7 @@ public class GCTracker<Event> implements EventListenable<Event> {
      * @param subject the object whose garbage collection should be tracked
      * @param eventToFireOnGC an event that is fired on garbage collection of <code>target</code>
      */
-    public void track(final Object subject, final Event eventToFireOnGC) {
+    public void track(final Object subject, final EVENT eventToFireOnGC) {
         Args.notNull("target", subject);
 
         if (subject == eventToFireOnGC)
@@ -122,7 +124,7 @@ public class GCTracker<Event> implements EventListenable<Event> {
         monitoredReferences.add(new GCReference(subject, eventToFireOnGC, this));
     }
 
-    public <EventType extends Event> boolean unsubscribe(final EventListener<EventType> listener) {
+    public boolean unsubscribe(final EventListener<EVENT> listener) {
         return events.unsubscribe(listener);
     }
 }

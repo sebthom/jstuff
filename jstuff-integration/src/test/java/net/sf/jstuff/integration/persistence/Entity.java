@@ -12,7 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.persistence;
 
-import net.sf.jstuff.core.Identifiable;
+import net.sf.jstuff.core.types.Identifiable;
 
 @javax.persistence.Entity
 public class Entity extends Identifiable.Default<Integer> {

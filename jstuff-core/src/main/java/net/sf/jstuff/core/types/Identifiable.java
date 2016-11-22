@@ -10,9 +10,11 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.types;
 
 import java.io.Serializable;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -36,6 +38,11 @@ public interface Identifiable<IdType> {
 
         public Object getIdRealm() {
             return getClass();
+        }
+
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this);
         }
     }
 

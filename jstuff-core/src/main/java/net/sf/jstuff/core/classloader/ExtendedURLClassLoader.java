@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core;
+package net.sf.jstuff.core.classloader;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,34 +24,34 @@ import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
- * Extended {@link URLClassLoader} that supports parent last classloading strategy and
+ * Extended {@link URLClassLoader} that supports parent-last class-loading strategy and
  * the recursive loading of JARs from directories.
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class URLClassLoaderExt extends URLClassLoader {
+public class ExtendedURLClassLoader extends URLClassLoader {
 
     private static final Logger LOG = Logger.create();
 
     private boolean parentLast = false;
 
-    public URLClassLoaderExt() {
+    public ExtendedURLClassLoader() {
         super(new URL[0]);
     }
 
-    public URLClassLoaderExt(final ClassLoader parent) {
+    public ExtendedURLClassLoader(final ClassLoader parent) {
         super(new URL[0], parent);
     }
 
-    public URLClassLoaderExt(final URL[] urls) {
+    public ExtendedURLClassLoader(final URL[] urls) {
         super(urls);
     }
 
-    public URLClassLoaderExt(final URL[] urls, final ClassLoader parent) {
+    public ExtendedURLClassLoader(final URL[] urls, final ClassLoader parent) {
         super(urls, parent);
     }
 
-    public URLClassLoaderExt(final URL[] urls, final ClassLoader parent, final URLStreamHandlerFactory factory) {
+    public ExtendedURLClassLoader(final URL[] urls, final ClassLoader parent, final URLStreamHandlerFactory factory) {
         super(urls, parent, factory);
     }
 

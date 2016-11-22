@@ -16,8 +16,8 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.sf.jstuff.core.Composite;
 import net.sf.jstuff.core.collection.iterator.CompositeIterator;
+import net.sf.jstuff.core.types.Composite;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

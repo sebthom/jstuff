@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.jstuff.core.Composite;
+import net.sf.jstuff.core.types.Composite;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

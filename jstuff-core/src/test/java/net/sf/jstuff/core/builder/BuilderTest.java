@@ -31,7 +31,7 @@ public class BuilderTest extends TestCase {
 
         @SuppressWarnings("unchecked")
         public static EntityABuilder<? extends EntityA> builder() {
-            return (EntityABuilder<? extends EntityA>) BuilderFactory.of(EntityABuilder.class, EntityA.class).create();
+            return (EntityABuilder<? extends EntityA>) BuilderFactory.of(EntityABuilder.class).create();
         }
 
         private String propertyA;
@@ -61,7 +61,7 @@ public class BuilderTest extends TestCase {
 
         @SuppressWarnings("unchecked")
         public static EntityBBuilder<? extends EntityB> builder() {
-            return (EntityBBuilder<? extends EntityB>) BuilderFactory.of(EntityBBuilder.class, EntityB.class).create();
+            return (EntityBBuilder<? extends EntityB>) BuilderFactory.of(EntityBBuilder.class).create();
         }
 
         public long propertyC = -1;

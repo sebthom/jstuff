@@ -27,10 +27,12 @@ public abstract class Events {
      */
     public static <Event> int fire(final Event type, final Collection<EventListener<Event>> listeners) {
         int count = 0;
-        if (listeners != null)
+        if (listeners != null && listeners.size() > 0) {
             for (final EventListener<Event> listener : listeners)
-            if (fire(type, listener))
-                count++;
+                if (fire(type, listener)) {
+                    count++;
+                }
+        }
         return count;
     }
 
@@ -38,19 +40,21 @@ public abstract class Events {
      * @return true if the listener was notified successfully
      */
     public static <Event> boolean fire(final Event event, final EventListener<Event> listener) {
-        if (listener != null)
+        if (listener != null) {
             try {
-            if (listener instanceof FilteringEventListener) {
-                final FilteringEventListener<Event> flistener = (FilteringEventListener<Event>) listener;
-                if (flistener.accept(event))
-                    flistener.onEvent(event);
-                else
-                    return false;
-            } else
-                listener.onEvent(event);
-            return true;
-        } catch (final RuntimeException ex) {
-            LOG.error(ex, "Failed to notify event listener %s", listener);
+                if (listener instanceof FilteringEventListener) {
+                    final FilteringEventListener<Event> flistener = (FilteringEventListener<Event>) listener;
+                    if (flistener.accept(event)) {
+                        flistener.onEvent(event);
+                    } else
+                        return false;
+                } else {
+                    listener.onEvent(event);
+                }
+                return true;
+            } catch (final RuntimeException ex) {
+                LOG.error(ex, "Failed to notify event listener %s", listener);
+            }
         }
         return false;
     }
@@ -60,10 +64,12 @@ public abstract class Events {
      */
     public static <Event> int fire(final Event type, final EventListener<Event>... listeners) {
         int count = 0;
-        if (listeners != null)
+        if (listeners != null && listeners.length > 0) {
             for (final EventListener<Event> listener : listeners)
-            if (fire(type, listener))
-                count++;
+                if (fire(type, listener)) {
+                    count++;
+                }
+        }
         return count;
     }
 }

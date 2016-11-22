@@ -28,10 +28,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
-import net.sf.jstuff.core.Identifiable;
 import net.sf.jstuff.core.date.ImmutableDate;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Fields;
+import net.sf.jstuff.core.types.Identifiable;
 import net.sf.jstuff.integration.persistence.HashCodeManager;
 
 /**

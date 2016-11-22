@@ -12,11 +12,14 @@
  *******************************************************************************/
 package net.sf.jstuff.core.event;
 
+import java.util.concurrent.Future;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface EventListenable<EVENT> {
-    boolean subscribe(EventListener<EVENT> listener);
+public interface EventDispatcher<EVENT> extends EventListenable<EVENT> {
 
-    boolean unsubscribe(EventListener<EVENT> listener);
+    Future<Integer> fire(final EVENT type);
+
+    void unsubscribeAll();
 }

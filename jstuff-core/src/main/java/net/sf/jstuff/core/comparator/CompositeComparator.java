@@ -18,7 +18,7 @@ import java.util.Comparator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeComparator<T> extends net.sf.jstuff.core.Composite.Default<Comparator<T>> implements Comparator<T> {
+public class CompositeComparator<T> extends net.sf.jstuff.core.types.Composite.Default<Comparator<T>> implements Comparator<T> {
     private static final long serialVersionUID = 1L;
 
     public static <T> CompositeComparator<T> of(final Comparator<T>... comparators) {

@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.reflection.Annotations;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.Proxies;
@@ -37,8 +38,14 @@ import net.sf.jstuff.core.validation.Assert;
  */
 public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? extends TARGET_CLASS>> {
 
+    public static //
+    <TARGET_CLASS, BUILDER_INTERFACE extends Builder<? extends TARGET_CLASS>> //
+    BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE> of(final Class<BUILDER_INTERFACE> builderInterface, final Object... constructorArgs) {
+        return new BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE>(builderInterface, null, constructorArgs);
+    }
+
     /**
-     * @param targetClass if null builder factory tries to extract the generic argument type information from the builderInterface class
+     * @param targetClass if <code>null</code> the builder factory tries to extract the generic argument type information from the builderInterface class
      */
     public static //
     <TARGET_CLASS, BUILDER_INTERFACE extends Builder<? extends TARGET_CLASS>> //
@@ -61,20 +68,20 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
 
         this.targetClass = targetClass == null ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0] : targetClass;
 
-        if (targetClass == null)
+        if (this.targetClass == null)
             throw new IllegalArgumentException("Target class is not specified.");
 
-        if (targetClass.isInterface())
-            throw new IllegalArgumentException("Target class [" + targetClass.getName() + "] is an interface.");
+        if (this.targetClass.isInterface())
+            throw new IllegalArgumentException("Target class [" + this.targetClass.getName() + "] is an interface.");
 
-        if (Types.isAbstract(targetClass))
-            throw new IllegalArgumentException("Target class [" + targetClass.getName() + "] is abstract.");
+        if (Types.isAbstract(this.targetClass))
+            throw new IllegalArgumentException("Target class [" + this.targetClass.getName() + "] is abstract.");
 
         this.constructorArgs = constructorArgs;
     }
 
     private static final class BuilderImpl implements InvocationHandler {
-        final Map<String, Object> properties = newHashMap();
+        final Map<String, Object[]> properties = newHashMap();
 
         private final Class<?> builderInterface;
         private final Class<?> targetClass;
@@ -157,8 +164,16 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
                 final Object target = Types.newInstance(targetClass, constructorArgs);
 
                 // writing properties
-                for (final Entry<String, Object> property : properties.entrySet()) {
-                    Types.writePropertyIgnoringFinal(target, property.getKey(), property.getValue());
+                for (final Entry<String, Object[]> property : properties.entrySet()) {
+                    final Object[] propArgs = property.getValue();
+                    if (propArgs.length == 1) {
+                        Types.writePropertyIgnoringFinal(target, property.getKey(), propArgs[0]);
+                    } else {
+                        final String mName = "set" + Strings.upperCaseFirstChar(property.getKey());
+                        final Method m = Methods.findMatching(targetClass, mName, propArgs);
+                        Assert.notNull(m, "Method [%s#%s()] not found.", targetClass.getName(), mName);
+                        Methods.invoke(target, m, propArgs);
+                    }
                 }
 
                 if (propertyConfig.size() > 0) {
@@ -166,14 +181,16 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
                         final String propName = prop.getKey();
                         final Builder.Property propConfig = prop.getValue();
 
-                        final boolean isRequired = propConfig == null ? propertyDefaults.required() : propConfig.required();
-                        if (isRequired) {
-                            Assert.isTrue(properties.containsKey(propName), "[" + propName + "] was not specified");
-                        }
-
-                        final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
-                        if (!isNullable) {
-                            Args.notNull(propName, properties.get(propName));
+                        final boolean propertyValueIsSet = properties.containsKey(propName);
+                        if (propertyValueIsSet) {
+                            final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
+                            if (!isNullable) {
+                                Args.notNull(propName, properties.get(propName));
+                            }
+                        } else {
+                            final boolean isRequired = propConfig == null ? propertyDefaults.required() : propConfig.required();
+                            if (isRequired)
+                                throw new IllegalStateException("[" + propName + "] was not specified");
                         }
                     }
                 }
@@ -194,8 +211,8 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
             if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0)
                 return builderInterface.getName() + "@" + hashCode();
 
-            if (method.getParameterTypes().length == 1 && method.getReturnType().isAssignableFrom(builderInterface)) {
-                properties.put(method.getName(), args[0]);
+            if (method.getReturnType().isAssignableFrom(builderInterface)) {
+                properties.put(method.getName(), args);
                 return proxy;
             }
             throw new UnsupportedOperationException(method.toString());

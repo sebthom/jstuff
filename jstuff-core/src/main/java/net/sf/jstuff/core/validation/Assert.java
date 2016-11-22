@@ -212,4 +212,13 @@ public abstract class Assert {
             throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
         return value;
     }
+
+    /**
+     * @throws IllegalStateException if <code>value</value> is <code>null</code>
+     */
+    public static <T> T notNull(final T value, final String errorMessage, final Object... errorMessageArgs) {
+        if (value == null)
+            throw removeFirstStackTraceElement(new IllegalStateException(String.format(errorMessage, errorMessageArgs)));
+        return value;
+    }
 }
