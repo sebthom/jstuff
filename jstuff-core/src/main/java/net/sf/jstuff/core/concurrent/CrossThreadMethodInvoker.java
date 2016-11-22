@@ -31,9 +31,9 @@ import net.sf.jstuff.core.reflection.Proxies;
 @ThreadSafe
 public class CrossThreadMethodInvoker {
     public interface CrossThreadProxy<T> {
-        CrossThreadMethodInvoker getCrossThreadMethodInvoker();
-
         T get();
+
+        CrossThreadMethodInvoker getCrossThreadMethodInvoker();
     }
 
     private static final class MethodInvocation {
@@ -183,6 +183,8 @@ public class CrossThreadMethodInvoker {
      */
     public boolean waitForBackgroundThreads() {
         synchronized (synchronizer) {
+            ensureStarted();
+
             if (Thread.currentThread() != owner)
                 throw new IllegalStateException("Can only be invoked by owning thread " + owner);
 
