@@ -422,7 +422,8 @@ jstuff-xml/src/main/resources/rebel-remote.xml -text
 jstuff-xml/src/test/java/net/sf/jstuff/xml/DOMUtilsTests.java -text
 jstuff-xml/src/test/java/net/sf/jstuff/xml/JAXBUtilsTest.java -text
 jstuff-xml/src/test/resources/net/sf/jstuff/xml/wrong-dtd-location.xml -text
-/mvn-install-no-tests.sh -text
+/mvn-release-no-tests.cmd -text
 /mvn-release-no-tests.sh -text
+/mvn-release.cmd -text
 /mvn-release.sh -text
 /pom.xml -text
