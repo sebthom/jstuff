@@ -140,19 +140,18 @@ public class CircuitBreaker implements EventListenable<State> {
     }
 
     public enum State {
-
         /**
          * all requests are denied
          */
         OPEN,
 
         /**
-         * only a limited number of requests at a time is allowed
+         * only one request at a time is permitted
          */
         HALF_OPEN,
 
         /**
-         * circuit breaker "CLOSE" state: all requests are allowed
+         * all requests are allowed
          */
         CLOSE;
     }
