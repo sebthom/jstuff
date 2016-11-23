@@ -15,6 +15,7 @@ package net.sf.jstuff.core.collection.iterator;
 import java.util.Collection;
 import java.util.Iterator;
 
+import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.types.Composite;
 
 /**
@@ -34,14 +35,14 @@ public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V
     public CompositeIterator(final Collection<? extends Iterator<V>> components) {
         super(components);
         if (this.components.size() > 0) {
-            nextItemIterator = this.components.remove(0);
+            nextItemIterator = CollectionUtils.remove(this.components, 0);
         }
     }
 
     public CompositeIterator(final Iterator<V>... components) {
         super(components);
         if (this.components.size() > 0) {
-            nextItemIterator = this.components.remove(0);
+            nextItemIterator = CollectionUtils.remove(this.components, 0);
         }
     }
 
@@ -61,7 +62,7 @@ public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V
         if (nextItemIterator.hasNext())
             return;
         if (components.size() > 0) {
-            nextItemIterator = components.remove(0);
+            nextItemIterator = CollectionUtils.remove(components, 0);
             prepareNextItemIterator();
         }
     }

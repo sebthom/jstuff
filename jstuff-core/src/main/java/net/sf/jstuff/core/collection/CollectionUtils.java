@@ -541,6 +541,25 @@ public abstract class CollectionUtils {
         return map;
     }
 
+    public static <T> T remove(final Collection<T> coll, final int index) {
+        Args.notNull("coll", coll);
+        if (coll instanceof List)
+            return ((List<T>) coll).remove(index);
+        if (index >= coll.size())
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + coll.size());
+
+        int i = 0;
+        for (final Iterator<T> it = coll.iterator(); it.hasNext();) {
+            final T item = it.next();
+            if (i == index) {
+                it.remove();
+                return item;
+            }
+            i++;
+        }
+        throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + coll.size());
+    }
+
     /**
      * @param n last n elements to return
      * @return a new list with the last n elements of the input list
