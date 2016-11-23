@@ -29,29 +29,29 @@ import net.sf.jstuff.core.validation.Assert;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ExtendedURLClassLoader extends URLClassLoader {
+public class URLClassLoaderExt extends URLClassLoader {
 
     private static final Logger LOG = Logger.create();
 
     private boolean parentLast = false;
 
-    public ExtendedURLClassLoader() {
+    public URLClassLoaderExt() {
         super(new URL[0]);
     }
 
-    public ExtendedURLClassLoader(final ClassLoader parent) {
+    public URLClassLoaderExt(final ClassLoader parent) {
         super(new URL[0], parent);
     }
 
-    public ExtendedURLClassLoader(final URL[] urls) {
+    public URLClassLoaderExt(final URL[] urls) {
         super(urls);
     }
 
-    public ExtendedURLClassLoader(final URL[] urls, final ClassLoader parent) {
+    public URLClassLoaderExt(final URL[] urls, final ClassLoader parent) {
         super(urls, parent);
     }
 
-    public ExtendedURLClassLoader(final URL[] urls, final ClassLoader parent, final URLStreamHandlerFactory factory) {
+    public URLClassLoaderExt(final URL[] urls, final ClassLoader parent, final URLStreamHandlerFactory factory) {
         super(urls, parent, factory);
     }
 

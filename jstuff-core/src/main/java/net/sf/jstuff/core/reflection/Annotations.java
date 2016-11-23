@@ -62,7 +62,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
             }
         }
         if (attributes != null && count != attributes.size())
-            throw new IllegalArgumentException("Parameter [attributes] contains attributes not present in annotation  " + annotationType);
+            throw new IllegalArgumentException("[attributes] contains attributes not present in annotation  " + annotationType);
 
         /*
          * try to create the dynamic annotation instance
@@ -108,13 +108,14 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
         final String methodName = method.getName();
         final Class<?>[] methodParameterTypes = method.getParameterTypes();
 
-        for (final Class<?> next : getInterfacesRecursive(method.getDeclaringClass()))
+        for (final Class<?> next : getInterfacesRecursive(method.getDeclaringClass())) {
             try {
                 if (next.getDeclaredMethod(methodName, methodParameterTypes).isAnnotationPresent(annotationClass))
                     return true;
             } catch (final NoSuchMethodException e) {
                 // ignore
             }
+        }
         return false;
     }
 
@@ -154,22 +155,25 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
         final Class<?> clazz = method.getDeclaringClass();
         final Set<Class<?>> classes = getInterfacesRecursive(clazz);
         classes.add(clazz);
-        for (final Class<?> nextClass : classes)
+        for (final Class<?> nextClass : classes) {
             try {
                 final Method nextMethod = nextClass.getDeclaredMethod(methodName, methodParameterTypes);
                 for (int i = 0; i < methodParameterTypesCount; i++) {
                     final Annotation[] paramAnnos = nextMethod.getParameterAnnotations()[i];
                     if (paramAnnos.length > 0) {
                         HashSet<Annotation> cummulatedParamAnnos = methodParameterAnnotations[i];
-                        if (cummulatedParamAnnos == null)
+                        if (cummulatedParamAnnos == null) {
                             methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<Annotation>();
-                        for (final Annotation anno : paramAnnos)
+                        }
+                        for (final Annotation anno : paramAnnos) {
                             cummulatedParamAnnos.add(anno);
+                        }
                     }
                 }
             } catch (final NoSuchMethodException e) {
                 // ignore
             }
+        }
 
         final Annotation[][] result = new Annotation[methodParameterTypesCount][];
         for (int i = 0; i < methodParameterTypesCount; i++) {
@@ -185,18 +189,19 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 
         final Method[] methods = annotation.annotationType().getDeclaredMethods();
         final Map<String, Object> parameters = new HashMap<String, Object>(methods.length);
-        for (final Method m : methods)
+        for (final Method m : methods) {
             try {
                 parameters.put(m.getName(), m.invoke(annotation));
             } catch (final Exception ex) {
                 throw new InvokingMethodFailedException(m, annotation, ex);
             }
+        }
         return parameters;
     }
 
     /**
      * Returns all annotations present on this class.
-     * 
+     *
      * @param clazz the class to inspect
      * @param inspectInterfaces whether to also return annotations declared on interface declaration
      * @return all annotations present on this class.
@@ -217,7 +222,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 
     /**
      * Returns all annotations present on this method.
-     * 
+     *
      * @param method the method to inspect
      * @param inspectInterfaces whether to also return annotations declared on interface method declaration
      * @return all annotations present on this method.
@@ -232,12 +237,13 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
         final Class<?>[] methodParameterTypes = method.getParameterTypes();
 
         final List<Annotation> annotations = Arrays.asList(method.getAnnotations());
-        for (final Class<?> nextClass : getInterfacesRecursive(method.getDeclaringClass()))
+        for (final Class<?> nextClass : getInterfacesRecursive(method.getDeclaringClass())) {
             try {
                 CollectionUtils.addAll(annotations, nextClass.getDeclaredMethod(methodName, methodParameterTypes).getDeclaredAnnotations());
             } catch (final NoSuchMethodException e) {
                 // ignore
             }
+        }
         return annotations.toArray(new Annotation[annotations.size()]);
     }
 }

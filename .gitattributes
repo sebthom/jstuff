@@ -8,7 +8,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/SystemUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/builder/Builder.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/builder/BuilderFactory.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/builder/OnPostBuild.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/classloader/ExtendedURLClassLoader.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/classloader/URLClassLoaderExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/ArrayUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CollectionUtils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/collection/CompositeCollection.java -text

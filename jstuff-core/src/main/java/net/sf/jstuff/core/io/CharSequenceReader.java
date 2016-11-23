@@ -15,6 +15,8 @@ package net.sf.jstuff.core.io;
 import java.io.IOException;
 import java.io.Reader;
 
+import net.sf.jstuff.core.validation.Args;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -61,8 +63,7 @@ public class CharSequenceReader extends Reader {
      */
     @Override
     public void mark(final int readAheadLimit) throws IOException {
-        if (readAheadLimit < 0)
-            throw new IllegalArgumentException("Read-ahead limit < 0");
+        Args.notNegative("readAheadLimit", readAheadLimit);
         synchronized (lock) {
             ensureOpen();
             mark = next;
@@ -122,15 +123,17 @@ public class CharSequenceReader extends Reader {
 
             final int n = Math.min(text.length() - next, len);
 
-            if (text instanceof String)
+            if (text instanceof String) {
                 ((String) text).getChars(next, next + n, cbuf, off);
-            else if (text instanceof StringBuilder)
+            } else if (text instanceof StringBuilder) {
                 ((StringBuilder) text).getChars(next, next + n, cbuf, off);
-            else if (text instanceof StringBuffer)
+            } else if (text instanceof StringBuffer) {
                 ((StringBuffer) text).getChars(next, next + n, cbuf, off);
-            else
-                for (int i = next, l = next + n; i < l; i++)
+            } else {
+                for (int i = next, l = next + n; i < l; i++) {
                     cbuf[off + i] = text.charAt(i);
+                }
+            }
             next += n;
             return n;
         }

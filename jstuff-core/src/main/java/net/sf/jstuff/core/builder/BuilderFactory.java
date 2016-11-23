@@ -68,8 +68,7 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
 
         this.targetClass = targetClass == null ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0] : targetClass;
 
-        if (this.targetClass == null)
-            throw new IllegalArgumentException("Target class is not specified.");
+        Args.notNull("targetClass", this.targetClass);
 
         if (this.targetClass.isInterface())
             throw new IllegalArgumentException("Target class [" + this.targetClass.getName() + "] is an interface.");
