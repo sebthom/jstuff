@@ -20,8 +20,6 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class StackTrace {
 
-    private static final String CLASSNAME = StackTrace.class.getName();
-
     private static final class CallerResolver extends SecurityManager {
         private static final CallerResolver INSTANCE = new CallerResolver();
 
@@ -31,6 +29,8 @@ public abstract class StackTrace {
         }
     }
 
+    private static final String CLASSNAME = StackTrace.class.getName();
+
     public static Class<?> getCallerClass() {
         final String callerClassName = getCallerClassName();
 
@@ -38,7 +38,7 @@ public abstract class StackTrace {
         for (final Class<?> curr : stack)
             if (callerClassName.equals(curr.getName()))
                 return curr;
-        throw new IllegalStateException("should never be reached.");
+        throw new AssertionError("should never be reached.");
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class StackTrace {
                     return stack[i + 1];
             }
         }
-        throw new IllegalStateException("should never be reached.");
+        throw new AssertionError("should never be reached.");
     }
 
     public static StackTraceElement getCallerStackTraceElement(final Class<?> calledClass) {
@@ -151,7 +151,7 @@ public abstract class StackTrace {
                     return elem;
             }
         }
-        throw new IllegalStateException("should never be reached.");
+        throw new AssertionError("should never be reached.");
     }
 
     public static <T extends Throwable> T removeFirstStackTraceElement(final T t) {
