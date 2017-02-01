@@ -106,7 +106,7 @@ public abstract class KeyTool {
         }
     }
 
-    private synchronized static void installNoExitSecurityManager() {
+    private static void installNoExitSecurityManager() {
         final SecurityManager current = System.getSecurityManager();
 
         SEC_MAN.setEnabledForCurrentThread(true);
@@ -149,17 +149,21 @@ public abstract class KeyTool {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Executing %s.run(\"%s\")...", keyToolClass.getName(), Strings.join(args, "\", \""));
         }
-        installNoExitSecurityManager();
-        final FastByteArrayOutputStream result = new FastByteArrayOutputStream();
-        try {
-            Methods.invoke(kt, keyToolRunMethod, args, new PrintStream(result));
-            return result.toString();
-        } catch (final InvokingMethodFailedException ex) {
-            if (Exceptions.getCauseOfType(ex, ExitNotAllowedException.class) != null)
-                throw new IllegalArgumentException("An unexpected error occured while processing input arguments.");
-            throw ex;
-        } finally {
-            SEC_MAN.setEnabledForCurrentThread(false);
+
+        synchronized (SEC_MAN) {
+            try {
+                installNoExitSecurityManager();
+                final FastByteArrayOutputStream result = new FastByteArrayOutputStream();
+                Methods.invoke(kt, keyToolRunMethod, args, new PrintStream(result));
+                return result.toString();
+            } catch (final InvokingMethodFailedException ex) {
+                if (Exceptions.getCauseOfType(ex, ExitNotAllowedException.class) != null)
+                    throw new IllegalArgumentException("An unexpected error occured while processing input arguments.");
+                throw ex;
+            } finally {
+                SEC_MAN.setEnabledForCurrentThread(false);
+                SEC_MAN.uninstall();
+            }
         }
     }
 }
