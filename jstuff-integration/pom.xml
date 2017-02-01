@@ -31,9 +31,10 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<!-- only for ServiceRegistry -->
 			<groupId>net.bytebuddy</groupId>
 			<artifactId>byte-buddy</artifactId>
-			<version>1.6.2</version>
+			<version>1.6.7</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
