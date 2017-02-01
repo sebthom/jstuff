@@ -64,10 +64,12 @@ public abstract class NetUtils {
             return;
         try {
             if (!socket.isClosed()) {
-                if (!socket.isOutputShutdown())
+                if (!socket.isOutputShutdown()) {
                     socket.shutdownOutput();
-                if (!socket.isClosed())
+                }
+                if (!socket.isClosed()) {
                     socket.close();
+                }
             }
         } catch (final IOException ex) {
             LOG.debug(ex, "Exception occured while closing socket.");
@@ -97,7 +99,7 @@ public abstract class NetUtils {
     /**
      * returns the modification date of the given resource.
      * Get the resource url via this.getClass().getResource("....").
-     * 
+     *
      * @param resourceURL
      * @throws IOException
      */
@@ -137,10 +139,12 @@ public abstract class NetUtils {
     public static List<String> getLocalIPAddresses() {
         try {
             final ArrayList<String> ipAddresses = new ArrayList<String>();
-            for (final NetworkInterface nic : Enumerations.toIterable(NetworkInterface.getNetworkInterfaces()))
+            for (final NetworkInterface nic : Enumerations.toIterable(NetworkInterface.getNetworkInterfaces())) {
                 for (final InetAddress ia : Enumerations.toIterable(nic.getInetAddresses()))
-                    if (!ia.isLoopbackAddress())
+                    if (!ia.isLoopbackAddress()) {
                         ipAddresses.add(ia.getHostAddress());
+                    }
+            }
             return ipAddresses;
         } catch (final SocketException ex) {
             throw new RuntimeException(ex);
@@ -159,8 +163,9 @@ public abstract class NetUtils {
 
     public static String getTopLevelDomain(final String url) {
         CharSequence target = url;
-        if (!url.endsWith("/"))
+        if (!url.endsWith("/")) {
             target = new StringBuilder(url).append('/');
+        }
         final Matcher m = TOPLEVEL_DOMAIN.matcher(target);
         m.find();
         return m.group(1);
@@ -179,8 +184,7 @@ public abstract class NetUtils {
     public static boolean isKnownHost(final String hostname) {
         Args.notNull("hostname", hostname);
         try {
-            InetAddress.getByName(hostname);
-            return true;
+            return InetAddress.getByName(hostname) != null;
         } catch (final UnknownHostException ex) {
             LOG.trace("Host [%s] is unknown.", hostname);
             return false;
