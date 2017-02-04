@@ -20,10 +20,10 @@ import javax.servlet.http.HttpServletResponseWrapper;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class HttpServletResponseWrapperWithStatus extends HttpServletResponseWrapper {
+public class StatusCapturingHttpServletResponseWrapper extends HttpServletResponseWrapper {
     private int httpStatus = SC_OK;
 
-    public HttpServletResponseWrapperWithStatus(final HttpServletResponse response) {
+    public StatusCapturingHttpServletResponseWrapper(final HttpServletResponse response) {
         super(response);
     }
 

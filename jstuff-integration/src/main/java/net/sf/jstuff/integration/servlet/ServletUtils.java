@@ -19,16 +19,18 @@ import javax.servlet.http.HttpServletResponse;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class ServletUtils {
+
     public static String getContextURL(final HttpServletRequest request) {
-        final StringBuilder url = new StringBuilder();
+
         final String scheme = request.getScheme();
         final int port = request.getServerPort();
         final String urlPath = request.getContextPath();
 
+        final StringBuilder url = new StringBuilder();
         url.append(scheme); // http, https
         url.append("://");
         url.append(request.getServerName());
-        if (("http".equals(scheme) && port != 80) || ("https".equals(scheme) && port != 443)) {
+        if ("http".equals(scheme) && port != 80 || "https".equals(scheme) && port != 443) {
             url.append(':');
             url.append(request.getServerPort());
         }

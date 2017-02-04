@@ -32,7 +32,7 @@ import net.sf.jstuff.core.logging.Logger;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ResponseHeaderSettingFilter implements Filter {
+public class HttpServletResponseHeaderSettingFilter implements Filter {
     private static final Logger LOG = Logger.create();
 
     private final Map<String, String> parameter = new LinkedHashMap<String, String>();

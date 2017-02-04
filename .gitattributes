@@ -351,14 +351,14 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/suppo
 jstuff-integration/src/main/java/net/sf/jstuff/integration/serviceregistry/support/SpringBeanAsService.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ClassPathResourcesFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ClassPathResourcesServletContext.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ContentCapturingHttpServletResponseWrapper.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/DummyPrincipalInjectingFilter.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/HttpServletResponseStringWrapper.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/HttpServletResponseWrapperWithStatus.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/HttpServletResponseHeaderSettingFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/RequestAttributeSettingFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/RequestResponseHoldingFilter.java -text
-jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ResponseHeaderSettingFilter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ServletContextWrapper.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/ServletUtils.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/StatusCapturingHttpServletResponseWrapper.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/session/CountingHttpSessionListener.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/session/HttpSessionMap.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/servlet/session/SessionMap.java -text

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -20,6 +20,8 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -27,6 +29,20 @@ import javax.servlet.ServletResponse;
 public class RequestResponseHoldingFilter implements Filter {
     private static final ThreadLocal<ServletRequest> REQ = new ThreadLocal<ServletRequest>();
     private static final ThreadLocal<ServletResponse> RESP = new ThreadLocal<ServletResponse>();
+
+    public static HttpServletRequest getHttpServletRequest() {
+        final ServletRequest req = REQ.get();
+        if (req instanceof HttpServletRequest)
+            return (HttpServletRequest) req;
+        return null;
+    }
+
+    public static HttpServletResponse getHttpServletResponse() {
+        final ServletResponse resp = RESP.get();
+        if (resp instanceof HttpServletResponse)
+            return (HttpServletResponse) resp;
+        return null;
+    }
 
     public static ServletRequest getServletRequest() {
         return REQ.get();
