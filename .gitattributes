@@ -222,6 +222,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/exception/ExceptionsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/AcceptsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/functional/FunctionsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/CharSequenceReaderTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/io/FastByteArrayOutputStreamTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/FileUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/IOUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/io/ZippedBlockStreamTest.java -text

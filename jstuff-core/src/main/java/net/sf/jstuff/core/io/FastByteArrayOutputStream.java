@@ -12,18 +12,19 @@
  *******************************************************************************/
 package net.sf.jstuff.core.io;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 import net.sf.jstuff.core.validation.Args;
 
 /**
- * An unsynchronized implementation of {@link ByteArrayOutputStream}.
+ * An unsynchronized implementation of {@link java.io.ByteArrayOutputStream}.
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class FastByteArrayOutputStream extends OutputStream {
+
     private byte[] data;
     private int count;
 
@@ -33,22 +34,38 @@ public class FastByteArrayOutputStream extends OutputStream {
 
     public FastByteArrayOutputStream(final int size) {
         Args.notNegative("size", size);
-
         data = new byte[size];
     }
 
     /**
-     * Closing a {@link FastByteArrayOutputStream} has no effect. The methods in
-     * this class can be called after the stream has been closed without
-     * generating an {@link IOException}.
+     * Closing a {@link FastByteArrayOutputStream} has no effect.
      */
     @Override
-    public void close() throws IOException {
+    public void close() {
         // nothing to do
+    }
+
+    private void ensureCapacity(final int minCapacity) {
+        // resizing needed?
+        if (minCapacity <= data.length)
+            return;
+
+        // integer overflow?
+        if (minCapacity < 0)
+            throw new OutOfMemoryError("Cannot allocate array larger than " + Integer.MAX_VALUE);
+
+        final int newCapacity = Math.max(data.length + (data.length >> 2) /* == data.length x 1.5 */, minCapacity);
+        final byte copy[] = new byte[newCapacity];
+        System.arraycopy(data, 0, copy, 0, count);
+        data = copy;
     }
 
     public void reset() {
         count = 0;
+    }
+
+    public int size() {
+        return count;
     }
 
     public byte[] toByteArray() {
@@ -62,9 +79,13 @@ public class FastByteArrayOutputStream extends OutputStream {
         return new String(data, 0, count);
     }
 
+    public String toString(final String charsetName) throws UnsupportedEncodingException {
+        return new String(data, 0, count, charsetName);
+    }
+
     @Override
-    public void write(final byte[] buf, final int offset, final int length) throws IOException {
-        Args.notNull("data", data);
+    public void write(final byte[] buf, final int offset, final int length) {
+        Args.notNull("buf", buf);
         Args.notNegative("offset", offset);
         Args.notNegative("length", length);
 
@@ -75,23 +96,15 @@ public class FastByteArrayOutputStream extends OutputStream {
             return;
 
         final int newcount = count + length;
-        if (newcount > data.length) {
-            final byte copy[] = new byte[Math.max(data.length << 1, newcount)];
-            System.arraycopy(data, 0, copy, 0, count);
-            data = copy;
-        }
+        ensureCapacity(newcount);
         System.arraycopy(buf, offset, data, count, length);
         count = newcount;
     }
 
     @Override
-    public void write(final int b) throws IOException {
+    public void write(final int b) {
         final int newcount = count + 1;
-        if (newcount > data.length) {
-            final byte copy[] = new byte[Math.max(data.length << 1, newcount)];
-            System.arraycopy(data, 0, copy, 0, count);
-            data = copy;
-        }
+        ensureCapacity(newcount);
         data[count] = (byte) b;
         count = newcount;
     }
