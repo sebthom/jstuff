@@ -61,11 +61,5 @@ public class FastByteArrayOutputStreamTest extends TestCase {
         os.write("äÄüÜöÖß!€".getBytes("ISO-8859-15"));
         assertFalse("äÄüÜöÖß!€".equals(os.toString("UTF-8")));
         assertEquals("äÄüÜöÖß!€", os.toString("ISO-8859-15"));
-
-        System.out.println(Integer.MAX_VALUE >> 2);
-        os.reset();
-        final byte[] b = new byte[Integer.MAX_VALUE >> 2];
-        os.write(b);
-        os.write(b);
     }
 }

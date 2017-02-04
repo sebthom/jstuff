@@ -15,6 +15,8 @@ package net.sf.jstuff.core.reflection;
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -30,249 +32,459 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Methods extends Members {
     private static final Logger LOG = Logger.create();
 
-    public static boolean exists(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
-        return find(clazz, methodName, parameterTypes) != null;
+    /**
+     * Searches for public or non-public method with the exact signature
+     */
+    public static boolean existsAny(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
+        return findAny(clazz, methodName, parameterTypes) != null;
     }
 
     /**
-     * @return the method or null if the method does not exist
+     * Searches for public or non-public method with type compatible signature
      */
-    public static Method find(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
+    public static boolean existsAnyCompatible(final Class<?> clazz, final String methodName, final Class<?>... argTypes) {
+        return findAnyCompatible(clazz, methodName, argTypes) != null;
+    }
+
+    /**
+     * Searches for public method with the exact signature
+     */
+    public static boolean existsPublic(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
+        return findPublic(clazz, methodName, parameterTypes) != null;
+    }
+
+    /**
+     * Searches for public method with type compatible signature
+     */
+    public static boolean existsPublicCompatible(final Class<?> clazz, final String methodName, final Class<?>... argTypes) {
+        return findPublicCompatible(clazz, methodName, argTypes) != null;
+    }
+
+    /**
+     * Searches for public or non-public method with the exact signature
+     */
+    public static Method findAny(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
         Args.notNull("clazz", clazz);
         Args.notNull("methodName", methodName);
-        try {
-            return clazz.getDeclaredMethod(methodName, parameterTypes);
-        } catch (final NoSuchMethodException e) {
-            return null;
-        }
-    }
 
-    public static Method findGetter(final Class<?> clazz, final String propertyName) {
-        return findGetter(clazz, propertyName, null);
-    }
-
-    public static Method findGetter(final Class<?> clazz, final String propertyName, final Class<?> compatibleTo) {
-        Args.notNull("clazz", clazz);
-        Args.notNull("propertyName", propertyName);
-
-        final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
-
-        if (compatibleTo == Boolean.class || compatibleTo == boolean.class)
+        Class<?> currentClass = clazz;
+        while (currentClass != null) {
             try {
-            final Method getter = clazz.getDeclaredMethod("is" + appendix);
-            if (Types.isAssignableTo(getter.getReturnType(), compatibleTo))
-                return getter;
-        } catch (final NoSuchMethodException ex) {
-            // ignore
-        }
-
-        try {
-            final Method getter = clazz.getDeclaredMethod("get" + appendix);
-            if (getter != null) {
-                if (compatibleTo == null)
-                    return getter;
-                if (Types.isAssignableTo(getter.getReturnType(), compatibleTo))
-                    return getter;
+                return currentClass.getDeclaredMethod(methodName, parameterTypes);
+            } catch (final NoSuchMethodException e) {
+                // ignore
             }
-        } catch (final NoSuchMethodException ex) {
-            // ignore
+            currentClass = currentClass.getSuperclass();
         }
-
-        LOG.trace("No getter for [%s] found in class [%s] compatible to [%s].", propertyName, clazz, compatibleTo);
         return null;
     }
 
-    public static Method findGetterRecursive(final Class<?> clazz, final String propertyName) {
-        return findGetterRecursive(clazz, propertyName, null);
-    }
-
-    public static Method findGetterRecursive(final Class<?> clazz, final String propertyName, final Class<?> compatibleTo) {
-        Args.notNull("clazz", clazz);
-        Args.notNull("methodName", propertyName);
-
-        final Method m = findGetter(clazz, propertyName, compatibleTo);
-        if (m != null)
-            return m;
-
-        final Class<?> superclazz = clazz.getSuperclass();
-        if (superclazz == null)
-            return null;
-
-        return findGetterRecursive(superclazz, propertyName, compatibleTo);
-    }
-
-    public static Method findMatching(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
+    /**
+     * Searches for public or non-public method with type compatible signature
+     */
+    public static Method findAnyCompatible(final Class<?> clazz, final String methodName, final Class<?>... argTypes) {
         Args.notNull("clazz", clazz);
         Args.notNull("methodName", methodName);
 
         // find exact match first
-        final Method m = find(clazz, methodName, parameterTypes);
+        final Method m = findAny(clazz, methodName, argTypes);
         if (m != null)
             return m;
 
         // if the exact match search found nothing for zero-argument method, then we can abort the search
-        if (parameterTypes == null || parameterTypes.length == 0)
+        if (argTypes == null || argTypes.length == 0)
             return null;
 
         final Method[] declaredMethods = clazz.getDeclaredMethods();
         for (final Method candidate : declaredMethods) {
-            if (isStatic(candidate))
+            if (isStatic(candidate)) {
                 continue;
-            if (!methodName.equals(candidate.getName()))
+            }
+            if (!methodName.equals(candidate.getName())) {
                 continue;
+            }
 
             final Class<?>[] candidateParameterTypes = candidate.getParameterTypes();
 
-            if (candidateParameterTypes.length != parameterTypes.length)
+            if (candidateParameterTypes.length != argTypes.length) {
                 continue;
+            }
 
-            for (int i = 0; i < parameterTypes.length; i++) {
-                if (parameterTypes[i] == null)
+            for (int i = 0; i < argTypes.length; i++) {
+                if (argTypes[i] == null) {
                     continue;
-                if (!Types.isAssignableTo(parameterTypes[i], candidateParameterTypes[i]))
+                }
+                if (!Types.isAssignableTo(argTypes[i], candidateParameterTypes[i])) {
                     break;
+                }
             }
             return candidate;
         }
         return null;
     }
 
-    public static Method findMatching(final Class<?> clazz, final String methodName, final Object... args) {
+    /**
+     * Searches for public or non-public method with type compatible signature
+     */
+    public static Method findAnyCompatible(final Class<?> clazz, final String methodName, final Object... args) {
         Args.notNull("clazz", clazz);
         Args.notNull("methodName", methodName);
 
         if (args == null || args.length == 0)
-            return find(clazz, methodName);
+            return findAny(clazz, methodName);
 
-        final Class<?>[] parameterTypes = new Class<?>[args.length];
-        for (int i = 0; i < args.length; i++)
-            parameterTypes[i] = args[i] == null ? null : args[i].getClass();
+        final Class<?>[] argTypes = new Class<?>[args.length];
+        for (int i = 0; i < args.length; i++) {
+            argTypes[i] = args[i] == null ? null : args[i].getClass();
+        }
 
-        return findMatching(clazz, methodName, parameterTypes);
+        return findAnyCompatible(clazz, methodName, argTypes);
     }
 
-    public static Method findMatchingRecursive(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
+    /**
+     * Searches for public or non-public getter
+     */
+    public static Method findAnyGetter(final Class<?> clazz, final String propertyName) {
+        return findAnyGetter(clazz, propertyName, null);
+    }
+
+    /**
+     * Searches for public or non-public getter with type compatible signature
+     */
+    public static Method findAnyGetter(final Class<?> clazz, final String propertyName, final Class<?> compatibleTo) {
+        Args.notNull("clazz", clazz);
+        Args.notNull("methodName", propertyName);
+
+        final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
+
+        Class<?> currentClass = clazz;
+
+        while (currentClass != null) {
+
+            if (compatibleTo == Boolean.class || compatibleTo == boolean.class) {
+                try {
+                    final Method getter = currentClass.getDeclaredMethod("is" + appendix);
+                    if (Types.isAssignableTo(getter.getReturnType(), Boolean.class))
+                        return getter;
+                } catch (final NoSuchMethodException ex) {
+                    // ignore
+                }
+            }
+
+            try {
+                final Method getter = currentClass.getDeclaredMethod("get" + appendix);
+                if (compatibleTo == null)
+                    return getter;
+                if (Types.isAssignableTo(getter.getReturnType(), compatibleTo))
+                    return getter;
+            } catch (final NoSuchMethodException ex) {
+                // ignore
+            }
+
+            if (compatibleTo == null) {
+                try {
+                    final Method getter = currentClass.getDeclaredMethod("is" + appendix);
+                    if (Types.isAssignableTo(getter.getReturnType(), Boolean.class))
+                        return getter;
+                } catch (final NoSuchMethodException ex) {
+                    // ignore
+                }
+            }
+
+            currentClass = currentClass.getSuperclass();
+        }
+
+        return null;
+    }
+
+    /**
+     * Searches for public or non-public setter
+     */
+    public static Method findAnySetter(final Class<?> clazz, final String propertyName) {
+        return findAnySetter(clazz, propertyName, null);
+    }
+
+    /**
+     * Searches for public or non-public setter with type compatible signature
+     */
+    public static Method findAnySetter(final Class<?> clazz, final String propertyName, final Class<?> compatibleTo) {
+        Args.notNull("clazz", clazz);
+        Args.notNull("methodName", propertyName);
+
+        final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
+
+        Class<?> currentClass = clazz;
+        while (currentClass != null) {
+            final Method[] declaredMethods = currentClass.getDeclaredMethods();
+            for (final Method method : declaredMethods) {
+                if (isStatic(method)) {
+                    continue;
+                }
+
+                if (!methodName.equals(method.getName())) {
+                    continue;
+                }
+
+                final Class<?>[] paramTypes = method.getParameterTypes();
+                if (paramTypes.length != 1) {
+                    continue;
+                }
+
+                if (compatibleTo == null)
+                    return method;
+
+                if (Types.isAssignableTo(compatibleTo, paramTypes[0]))
+                    return method;
+            }
+
+            currentClass = currentClass.getSuperclass();
+        }
+
+        return null;
+    }
+
+    /**
+     * Searches for public method with the exact signature
+     */
+    public static Method findPublic(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
+        Args.notNull("clazz", clazz);
+        Args.notNull("methodName", methodName);
+        try {
+            return clazz.getMethod(methodName, parameterTypes);
+        } catch (final NoSuchMethodException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Searches for public method with type compatible signature
+     */
+    public static Method findPublicCompatible(final Class<?> clazz, final String methodName, final Class<?>... argTypes) {
         Args.notNull("clazz", clazz);
         Args.notNull("methodName", methodName);
 
-        final Method m = findMatching(clazz, methodName, parameterTypes);
+        // find exact match first
+        final Method m = findPublic(clazz, methodName, argTypes);
         if (m != null)
             return m;
 
-        final Class<?> superclazz = clazz.getSuperclass();
-        if (superclazz == null)
+        // if the exact match search found nothing for zero-argument method, then we can abort the search
+        if (argTypes == null || argTypes.length == 0)
             return null;
 
-        return findMatchingRecursive(superclazz, methodName, parameterTypes);
+        final Method[] publicMethods = clazz.getMethods();
+        for (final Method candidate : publicMethods) {
+            if (isStatic(candidate)) {
+                continue;
+            }
+            if (!methodName.equals(candidate.getName())) {
+                continue;
+            }
+
+            final Class<?>[] candidateParameterTypes = candidate.getParameterTypes();
+
+            if (candidateParameterTypes.length != argTypes.length) {
+                continue;
+            }
+
+            for (int i = 0; i < argTypes.length; i++) {
+                if (argTypes[i] == null) {
+                    continue;
+                }
+                if (!Types.isAssignableTo(argTypes[i], candidateParameterTypes[i])) {
+                    break;
+                }
+            }
+            return candidate;
+        }
+        return null;
     }
 
-    public static Method findMatchingRecursive(final Class<?> clazz, final String methodName, final Object... args) {
+    /**
+     * Searches for public method with type compatible signature
+     */
+    public static Method findPublicCompatible(final Class<?> clazz, final String methodName, final Object... args) {
         Args.notNull("clazz", clazz);
         Args.notNull("methodName", methodName);
 
         if (args == null || args.length == 0)
-            return find(clazz, methodName);
+            return findPublic(clazz, methodName);
 
-        final Class<?>[] parameterTypes = new Class<?>[args.length];
-        for (int i = 0; i < args.length; i++)
-            parameterTypes[i] = args[i] == null ? null : args[i].getClass();
+        final Class<?>[] argTypes = new Class<?>[args.length];
+        for (int i = 0; i < args.length; i++) {
+            argTypes[i] = args[i] == null ? null : args[i].getClass();
+        }
 
-        return findMatchingRecursive(clazz, methodName, parameterTypes);
+        return findPublicCompatible(clazz, methodName, argTypes);
     }
 
     /**
-     * @return the method or null if the method does not exist
+     * Searches for public getter
      */
-    public static Method findRecursive(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
+    public static Method findPublicGetter(final Class<?> clazz, final String propertyName) {
+        return findPublicGetter(clazz, propertyName, null);
+    }
+
+    /**
+     * Searches for public getter with type compatible signature
+     */
+    public static Method findPublicGetter(final Class<?> clazz, final String propertyName, final Class<?> compatibleTo) {
         Args.notNull("clazz", clazz);
-        Args.notNull("methodName", methodName);
+        Args.notNull("propertyName", propertyName);
 
-        final Method m = find(clazz, methodName, parameterTypes);
-        if (m != null)
-            return m;
+        final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
-        final Class<?> superclazz = clazz.getSuperclass();
-        if (superclazz == null)
-            return null;
+        if (compatibleTo == Boolean.class || compatibleTo == boolean.class) {
+            try {
+                final Method getter = clazz.getMethod("is" + appendix);
+                if (Types.isAssignableTo(getter.getReturnType(), Boolean.class))
+                    return getter;
+            } catch (final NoSuchMethodException ex) {
+                // ignore
+            }
+        }
 
-        return findRecursive(superclazz, methodName, parameterTypes);
+        try {
+            final Method getter = clazz.getMethod("get" + appendix);
+            if (compatibleTo == null)
+                return getter;
+            if (Types.isAssignableTo(getter.getReturnType(), compatibleTo))
+                return getter;
+        } catch (final NoSuchMethodException ex) {
+            // ignore
+        }
+
+        if (compatibleTo == null) {
+            try {
+                final Method getter = clazz.getMethod("is" + appendix);
+                if (Types.isAssignableTo(getter.getReturnType(), Boolean.class))
+                    return getter;
+            } catch (final NoSuchMethodException ex) {
+                // ignore
+            }
+        }
+
+        LOG.trace("No public getter for [%s] found in class [%s] compatible to [%s].", propertyName, clazz, compatibleTo);
+        return null;
     }
 
     /**
-     * @return the first found setter method or null if does not exist
+     * Searches for public setter
      */
-    public static Method findSetter(final Class<?> clazz, final String propertyName) {
-        return findSetter(clazz, propertyName, null);
+    public static Method findPublicSetter(final Class<?> clazz, final String propertyName) {
+        return findPublicSetter(clazz, propertyName, null);
     }
 
     /**
-     * @return the first found compatible setter method or null if does not exist
+     * Searches for public setter with type compatible signature
      */
-    public static Method findSetter(final Class<?> clazz, final String propertyName, final Class<?> compatibleTo) {
+    public static Method findPublicSetter(final Class<?> clazz, final String propertyName, final Class<?> compatibleTo) {
         Args.notNull("clazz", clazz);
         Args.notNull("propertyName", propertyName);
 
         final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
-        final Method[] declaredMethods = clazz.getDeclaredMethods();
-        for (final Method method : declaredMethods) {
-            if (isStatic(method))
+        final Method[] publicMethods = clazz.getMethods();
+        for (final Method method : publicMethods) {
+            if (isStatic(method)) {
                 continue;
-            if (!methodName.equals(method.getName()))
+            }
+
+            if (!methodName.equals(method.getName())) {
                 continue;
-            if (method.getParameterTypes().length != 1)
+            }
+
+            final Class<?>[] paramTypes = method.getParameterTypes();
+            if (paramTypes.length != 1) {
                 continue;
+            }
 
             if (compatibleTo == null)
                 return method;
-            if (Types.isAssignableTo(compatibleTo, method.getParameterTypes()[0]))
+
+            if (Types.isAssignableTo(compatibleTo, paramTypes[0]))
                 return method;
         }
-        LOG.trace("No setter for [%s] found in class [%s] comaptible to [%s].", propertyName, clazz, compatibleTo);
+        LOG.trace("No public setter for [%s] found in class [%s] comaptible to [%s].", propertyName, clazz, compatibleTo);
+        return null;
+    }
+
+    public static Method findSuper(final Method method) {
+        Args.notNull("method", method);
+
+        // static methods cannot be overridden
+        if (isStatic(method))
+            return null;
+
+        final String methodName = method.getName();
+        final Class<?>[] parameterTypes = method.getParameterTypes();
+
+        Class<?> currentClass = method.getDeclaringClass().getSuperclass();
+        while (currentClass != null) {
+            final Method m = findAny(currentClass, methodName, parameterTypes);
+            if (m != null && !isPrivate(m))
+                return m;
+            currentClass = currentClass.getSuperclass();
+        }
         return null;
     }
 
     /**
-     * @return the first found setter method or null if does not exist
+     * Recursively collects all getters (public and non-public), excluding references to overridden methods.
      */
-    public static Method findSetterRecursive(final Class<?> clazz, final String propertyName) {
-        return findSetterRecursive(clazz, propertyName, null);
-    }
-
-    /**
-     * @return the first found compatible setter method or null if does not exist
-     */
-    public static Method findSetterRecursive(final Class<?> clazz, final String propertyName, final Class<?> compatibleTo) {
-        final Method m = findSetter(clazz, propertyName, compatibleTo);
-        if (m != null)
-            return m;
-
-        final Class<?> superclazz = clazz.getSuperclass();
-        if (superclazz == null)
-            return null;
-
-        return findSetterRecursive(superclazz, propertyName, compatibleTo);
-    }
-
-    public static List<Method> getGetters(final Class<?> clazz) {
+    public static List<Method> getAllGetters(final Class<?> clazz) {
+        final Set<String> overridableGetterNames = CollectionUtils.newHashSet();
         final List<Method> result = CollectionUtils.newArrayList();
 
-        for (final Method m : clazz.getMethods())
-            if (isGetter(m))
-                result.add(m);
+        Class<?> currentClass = clazz;
+        while (currentClass != null) {
+            for (final Method m : currentClass.getDeclaredMethods()) {
+                if (!isGetter(m)) {
+                    continue;
+                }
+
+                if (isPrivate(m)) {
+                    result.add(m);
+                    continue;
+                }
+
+                final String name = m.getName();
+                if (!overridableGetterNames.contains(name)) {
+                    overridableGetterNames.add(name);
+                    result.add(m);
+                }
+            }
+            currentClass = currentClass.getSuperclass();
+        }
         return result;
     }
 
-    public static List<Method> getGettersRecursive(final Class<?> clazz) {
+    /**
+     * Recursively collects all setters (public and non-public), excluding references to overridden methods.
+     */
+    public static List<Method> getAllSetters(final Class<?> clazz) {
+        final Set<String> overridableSetterNames = CollectionUtils.newHashSet();
         final List<Method> result = CollectionUtils.newArrayList();
+
         Class<?> currentClass = clazz;
+        while (currentClass != null) {
+            for (final Method m : currentClass.getDeclaredMethods()) {
+                if (!isSetter(m)) {
+                    continue;
+                }
 
-        while (currentClass != null && currentClass != Object.class) {
-            currentClass = currentClass.getSuperclass();
-
-            for (final Method m : clazz.getMethods())
-                if (isGetter(m))
+                if (isPrivate(m)) {
                     result.add(m);
+                    continue;
+                }
+
+                final String name = m.getName();
+                if (!overridableSetterNames.contains(name)) {
+                    overridableSetterNames.add(name);
+                    result.add(m);
+                }
+            }
+            currentClass = currentClass.getSuperclass();
         }
         return result;
     }
@@ -285,44 +497,99 @@ public abstract class Methods extends Members {
 
         // static methods cannot be overridden
         if (isStatic(method))
-            return null;
+            return Collections.emptyList();
 
         final Set<Class<?>> interfaces = Types.getInterfacesRecursive(method.getDeclaringClass());
         if (interfaces.size() == 0)
-            return null;
+            return Collections.emptyList();
 
         final String methodName = method.getName();
         final Class<?>[] parameterTypes = method.getParameterTypes();
 
         final List<Method> methods = newArrayList();
         for (final Class<?> iface : interfaces) {
-            final Method m = find(iface, methodName, parameterTypes);
-            if (m != null)
+            final Method m = findPublic(iface, methodName, parameterTypes);
+            if (m != null) {
                 methods.add(m);
+            }
         }
         return methods;
     }
 
-    public static Method getSuper(final Method method) {
-        Args.notNull("method", method);
+    public static List<Method> getPublic(final Class<?> clazz) {
+        return Arrays.asList(clazz.getMethods());
+    }
 
-        // static methods cannot be overridden
-        if (isStatic(method))
-            return null;
+    public static List<Method> getPublicGetters(final Class<?> clazz) {
+        final List<Method> result = CollectionUtils.newArrayList();
+        for (final Method m : clazz.getMethods())
+            if (isGetter(m)) {
+                result.add(m);
+            }
+        return result;
+    }
 
-        final String methodName = method.getName();
-        final Class<?>[] parameterTypes = method.getParameterTypes();
+    /**
+     * Searches for public getters with type compatible signature
+     */
+    public static List<Method> getPublicGetters(final Class<?> clazz, final Class<?> compatibleTo) {
+        Args.notNull("clazz", clazz);
 
-        Class<?> currentClass = method.getDeclaringClass();
+        final List<Method> result = CollectionUtils.newArrayList();
 
-        while (currentClass != null && currentClass != Object.class) {
-            currentClass = currentClass.getSuperclass();
+        final Method[] publicMethods = clazz.getMethods();
+        for (final Method method : publicMethods) {
+            if (isStatic(method)) {
+                continue;
+            }
 
-            final Method m = find(currentClass, methodName, parameterTypes);
-            if (m != null && !isPrivate(m))
-                return m;
+            if (!isGetter(method)) {
+                continue;
+            }
+
+            if (compatibleTo == null || Types.isAssignableTo(compatibleTo, method.getReturnType())) {
+                result.add(method);
+            }
         }
-        return null;
+
+        return result;
+    }
+
+    public static List<Method> getPublicSetters(final Class<?> clazz) {
+        final List<Method> result = CollectionUtils.newArrayList();
+        for (final Method m : clazz.getMethods())
+            if (isSetter(m)) {
+                result.add(m);
+            }
+        return result;
+    }
+
+    /**
+     * Searches for public setters with type compatible signature
+     */
+    public static List<Method> getPublicSetters(final Class<?> clazz, final Class<?> compatibleTo) {
+        Args.notNull("clazz", clazz);
+
+        final List<Method> result = CollectionUtils.newArrayList();
+
+        final Method[] publicMethods = clazz.getMethods();
+        for (final Method method : publicMethods) {
+            if (isStatic(method)) {
+                continue;
+            }
+
+            if (!isSetter(method)) {
+                continue;
+            }
+
+            final Class<?>[] paramTypes = method.getParameterTypes();
+
+            if (compatibleTo == null || Types.isAssignableTo(compatibleTo, paramTypes[0])) {
+                result.add(method);
+            }
+        }
+
+        return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -389,7 +656,9 @@ public abstract class Methods extends Members {
         if (methodParameterTypes.length != 1)
             return false;
 
-        if (!isReturningVoid(method) && !Types.isAssignableTo(method.getReturnType(), method.getDeclaringClass()))
+        if (!isReturningVoid(method) && //
+                !Types.isAssignableTo(method.getReturnType(), method.getDeclaringClass()) // in case of fluent-api
+        )
             return false;
 
         final String methodName = method.getName();

@@ -78,7 +78,7 @@ public abstract class Types {
                 Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
                 if (mixedInMethod == null) {
                     for (final Object mixin : mixins) {
-                        final Method methodImpl = Methods.findRecursive(mixin.getClass(), method.getName(), method.getParameterTypes());
+                        final Method methodImpl = Methods.findAny(mixin.getClass(), method.getName(), method.getParameterTypes());
                         if (methodImpl != null) {
                             mixedInMethod = Tuple2.create(mixin, methodImpl);
                             mappedMethodsCache.put(method, mixedInMethod);
@@ -306,36 +306,6 @@ public abstract class Types {
         throw new RuntimeException("Unknown primitive type [" + primitive + "]");
     }
 
-    public static Type resolveBound(final TypeVariable<?> typeVariable) {
-        final Type[] bounds = typeVariable.getBounds();
-        if (bounds.length == 0)
-            return null;
-
-        Type bound = bounds[0];
-        if (bound instanceof TypeVariable) {
-            bound = resolveBound((TypeVariable<?>) bound);
-        }
-
-        return bound == Object.class ? null : bound;
-    }
-
-    public static Class<?> resolveUnderlyingClass(final Type type) {
-        if (type instanceof Class)
-            return (Class<?>) type;
-        if (type instanceof ParameterizedType)
-            return resolveUnderlyingClass(((ParameterizedType) type).getRawType());
-        if (type instanceof GenericArrayType) {
-            final Type ctype = ((GenericArrayType) type).getGenericComponentType();
-            final Class<?> cclass = resolveUnderlyingClass(ctype);
-            if (cclass != null)
-                return Array.newInstance(cclass, 0).getClass();
-        }
-        if (type instanceof TypeVariable)
-            return (Class<?>) resolveBound((TypeVariable<?>) type);
-
-        return null;
-    }
-
     /**
      * @return the implementation version of the archive containing the class
      */
@@ -494,13 +464,13 @@ public abstract class Types {
     /**
      * Tries to read the given value using a getter method or direct field access
      */
-    public static <T> T readPropety(final Object obj, final String propertyName, final Class<? extends T> compatibleTo) throws ReflectionException {
+    public static <T> T readProperty(final Object obj, final String propertyName, final Class<? extends T> compatibleTo) throws ReflectionException {
         Args.notNull("obj", obj);
         Args.notNull("propertyName", propertyName);
 
         final Class<?> clazz = obj.getClass();
 
-        final Method getter = Methods.findGetterRecursive(clazz, propertyName, compatibleTo);
+        final Method getter = Methods.findAnyGetter(clazz, propertyName, compatibleTo);
         if (getter != null)
             return Methods.invoke(obj, getter);
 
@@ -509,6 +479,36 @@ public abstract class Types {
             return Fields.read(obj, field);
 
         throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
+    }
+
+    public static Type resolveBound(final TypeVariable<?> typeVariable) {
+        final Type[] bounds = typeVariable.getBounds();
+        if (bounds.length == 0)
+            return null;
+
+        Type bound = bounds[0];
+        if (bound instanceof TypeVariable) {
+            bound = resolveBound((TypeVariable<?>) bound);
+        }
+
+        return bound == Object.class ? null : bound;
+    }
+
+    public static Class<?> resolveUnderlyingClass(final Type type) {
+        if (type instanceof Class)
+            return (Class<?>) type;
+        if (type instanceof ParameterizedType)
+            return resolveUnderlyingClass(((ParameterizedType) type).getRawType());
+        if (type instanceof GenericArrayType) {
+            final Type ctype = ((GenericArrayType) type).getGenericComponentType();
+            final Class<?> cclass = resolveUnderlyingClass(ctype);
+            if (cclass != null)
+                return Array.newInstance(cclass, 0).getClass();
+        }
+        if (type instanceof TypeVariable)
+            return (Class<?>) resolveBound((TypeVariable<?>) type);
+
+        return null;
     }
 
     public static void visit(final Class<?> clazz, final ClassVisitor visitor) {
@@ -609,7 +609,7 @@ public abstract class Types {
         final Class<?> clazz = obj.getClass();
         final Class<?> valueClazz = value == null ? null : value.getClass();
 
-        final Method setter = Methods.findSetterRecursive(clazz, propertyName, valueClazz);
+        final Method setter = Methods.findAnySetter(clazz, propertyName, valueClazz);
         if (setter != null) {
             Methods.invoke(obj, setter, value);
             return;
@@ -633,7 +633,7 @@ public abstract class Types {
         final Class<?> clazz = obj.getClass();
         final Class<?> valueClazz = value == null ? null : value.getClass();
 
-        final Method setter = Methods.findSetterRecursive(clazz, propertyName, valueClazz);
+        final Method setter = Methods.findAnySetter(clazz, propertyName, valueClazz);
         if (setter != null) {
             Methods.invoke(obj, setter, value);
             return;

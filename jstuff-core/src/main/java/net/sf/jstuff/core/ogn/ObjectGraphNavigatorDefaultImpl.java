@@ -50,7 +50,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
             if (parent == null)
                 return null;
 
-            final Method getter = Methods.findGetterRecursive(parent.getClass(), chunk);
+            final Method getter = Methods.findAnyGetter(parent.getClass(), chunk);
             if (getter == null) {
                 final Field field = Fields.findRecursive(parent.getClass(), chunk);
                 if (field == null) {
@@ -60,8 +60,9 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
                     return null;
                 }
                 target = Fields.read(parent, field);
-            } else
+            } else {
                 target = Methods.invoke(parent, getter);
+            }
         }
         return (T) target;
     }
@@ -82,7 +83,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
             if (parent == null)
                 return null;
 
-            final Method getter = Methods.findGetterRecursive(parent.getClass(), chunk);
+            final Method getter = Methods.findAnyGetter(parent.getClass(), chunk);
             if (getter == null) {
                 final Field field = Fields.findRecursive(parent.getClass(), chunk);
                 if (field == null) {

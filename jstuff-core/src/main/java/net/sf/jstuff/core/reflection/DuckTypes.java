@@ -29,7 +29,7 @@ public abstract class DuckTypes {
      * Creates a dynamic proxy object of type <code>duckInterface</code> forwarding all method invocations
      * to methods with the same signature on <code>duckLikeObject</code>.
      *
-     * @return <code>duckLikeObject</code> if instanceof <code>duckInterface</code> or a dynamic proxy object.
+     * @return <code>duckLikeObject</code> if instance of <code>duckInterface</code> or a dynamic proxy object.
      */
     @SuppressWarnings("unchecked")
     public static <T> T duckType(final Object duckLikeObject, final Class<T> duckInterface) {
@@ -44,7 +44,7 @@ public abstract class DuckTypes {
 
         return Proxies.create(new InvocationHandler() {
             public Object invoke(final Object duckProxy, final Method duckMethod, final Object[] args) throws Throwable {
-                final Method duckLikeMethod = Methods.findMatchingRecursive(duckLikeClass, duckMethod.getName(), duckMethod.getParameterTypes());
+                final Method duckLikeMethod = Methods.findPublicCompatible(duckLikeClass, duckMethod.getName(), duckMethod.getParameterTypes());
                 if (duckLikeMethod == null || Methods.isAbstract(duckLikeMethod) || !Methods.isPublic(duckLikeMethod))
                     throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method " + duckLikeMethod + ".");
 
@@ -68,7 +68,7 @@ public abstract class DuckTypes {
         if (duckType.isAssignableFrom(duckLikeClass))
             return true;
         for (final Method method : duckType.getMethods()) {
-            final Method m = Methods.findMatchingRecursive(duckLikeClass, method.getName(), method.getParameterTypes());
+            final Method m = Methods.findPublicCompatible(duckLikeClass, method.getName(), method.getParameterTypes());
             if (m == null || Methods.isAbstract(m) || !Methods.isPublic(m))
                 return false;
         }

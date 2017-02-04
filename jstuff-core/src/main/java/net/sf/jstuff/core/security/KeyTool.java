@@ -64,7 +64,7 @@ public abstract class KeyTool {
         }
 
         if (keyToolClass != null) {
-            keyToolRunMethod = Methods.find(keyToolClass, "run", String[].class, PrintStream.class);
+            keyToolRunMethod = Methods.findPublic(keyToolClass, "run", String[].class, PrintStream.class);
         }
 
         SEC_MAN.setEnabledByDefault(false);

@@ -60,7 +60,7 @@ import net.sf.jstuff.core.validation.Assert;
  *     } catch (Exception ex) {
  *         cb.reportError(ex);
  *     } finally {
- *         cb.release(); // IMPORTANT: always release after acquire was successfull
+ *         cb.release(); // IMPORTANT: always release after acquire was successful
  *     }
  * } else
  *     throw new IllegalStateException("LDAP service is not available");

@@ -234,6 +234,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/meta/MetaSerializationTest.java -te
 jstuff-core/src/test/java/net/sf/jstuff/core/net/NetUtilsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/AnnotationsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/DuckTypesTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/reflection/MethodsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/StackTraceTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesGenericsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesMixinTest.java -text

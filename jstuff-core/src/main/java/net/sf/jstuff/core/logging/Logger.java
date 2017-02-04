@@ -115,7 +115,8 @@ public abstract class Logger {
             public Object invoke(final Object proxy, final Method interfaceMethod, final Object[] args) throws Throwable {
                 if (log.isTraceEnabled()) {
                     final long start = System.currentTimeMillis();
-                    final Method methodWithParameterNames = Methods.find(object.getClass(), interfaceMethod.getName(), interfaceMethod.getParameterTypes());
+                    final Method methodWithParameterNames = Methods.findPublic(object.getClass(), interfaceMethod.getName(), interfaceMethod
+                        .getParameterTypes());
                     log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
                     final Object returnValue = interfaceMethod.invoke(object, args);
                     final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
@@ -159,7 +160,7 @@ public abstract class Logger {
 
         final Class<?> loggedClass = StackTrace.getCallerClass(DelegatingLogger.FQCN);
         final StackTraceElement loggedSTE = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
-        final Method method = Methods.findMatchingRecursive(loggedClass, loggedSTE.getMethodName(), args);
+        final Method method = Methods.findAnyCompatible(loggedClass, loggedSTE.getMethodName(), args);
         return formatTraceEntry(method, args);
     }
 

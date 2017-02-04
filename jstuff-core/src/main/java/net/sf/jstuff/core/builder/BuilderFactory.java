@@ -169,7 +169,7 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
                         Types.writePropertyIgnoringFinal(target, property.getKey(), propArgs[0]);
                     } else {
                         final String mName = "set" + Strings.upperCaseFirstChar(property.getKey());
-                        final Method m = Methods.findMatching(targetClass, mName, propArgs);
+                        final Method m = Methods.findAnyCompatible(targetClass, mName, propArgs);
                         Assert.notNull(m, "Method [%s#%s()] not found.", targetClass.getName(), mName);
                         Methods.invoke(target, m, propArgs);
                     }
