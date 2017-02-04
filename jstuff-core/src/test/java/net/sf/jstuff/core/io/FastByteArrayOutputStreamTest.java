@@ -22,11 +22,11 @@ import net.sf.jstuff.core.collection.ArrayUtils;
  */
 public class FastByteArrayOutputStreamTest extends TestCase {
 
-    @SuppressWarnings("resource")
+    @SuppressWarnings({ "resource", "unused" })
     public void testFastByteArrayOutputStream() throws IOException {
 
         try {
-            final FastByteArrayOutputStream os = new FastByteArrayOutputStream(-1);
+            new FastByteArrayOutputStream(-1);
             fail();
         } catch (final IllegalArgumentException expected) {
             //expected
