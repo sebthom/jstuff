@@ -12,14 +12,13 @@
  *******************************************************************************/
 package net.sf.jstuff.core.io;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jstuff.core.validation.Args;
 
 /**
- * An unsynchronized implementation of {@link ByteArrayInputStream}.
+ * An unsynchronized implementation of {@link java.io.ByteArrayInputStream}.
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -45,14 +44,12 @@ public class FastByteArrayInputStream extends InputStream {
     }
 
     @Override
-    public int available() throws IOException {
+    public int available() {
         return count - pos;
     }
 
     /**
-     * Closing a {@link FastByteArrayInputStream} has no effect. The methods in
-     * this class can be called after the stream has been closed without
-     * generating an {@link IOException}.
+     * Closing a {@link FastByteArrayInputStream} has no effect.
      */
     @Override
     public void close() {
@@ -70,7 +67,7 @@ public class FastByteArrayInputStream extends InputStream {
     }
 
     @Override
-    public int read() throws IOException {
+    public int read() {
         return pos < count ? data[pos++] & 0xff : IOUtils.EOF;
     }
 
@@ -86,8 +83,9 @@ public class FastByteArrayInputStream extends InputStream {
         if (count < pos)
             return IOUtils.EOF;
 
-        if (pos + length > count)
+        if (pos + length > count) {
             length = count - pos;
+        }
         if (length <= 0)
             return 0;
 
@@ -97,14 +95,15 @@ public class FastByteArrayInputStream extends InputStream {
     }
 
     @Override
-    public void reset() throws IOException {
+    public void reset() {
         pos = mark;
     }
 
     @Override
-    public long skip(long n) throws IOException {
-        if (pos + n > count)
+    public long skip(long n) {
+        if (pos + n > count) {
             n = count - pos;
+        }
         if (n < 0)
             return 0;
         pos += n;
