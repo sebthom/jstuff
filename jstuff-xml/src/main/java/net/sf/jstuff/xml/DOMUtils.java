@@ -63,6 +63,7 @@ import org.xml.sax.SAXParseException;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.MapWithLists;
+import net.sf.jstuff.core.io.CharSequenceReader;
 import net.sf.jstuff.core.io.FastByteArrayOutputStream;
 import net.sf.jstuff.core.io.FileUtils;
 import net.sf.jstuff.core.logging.Logger;
@@ -725,10 +726,11 @@ public abstract class DOMUtils {
      * @param input the input to parse
      * @param inputId an identifier / label for the input source, e.g. a file name
      */
-    public static Document parseString(final String input, final String inputId) throws XMLException {
+    @SuppressWarnings("resource")
+    public static Document parseString(final CharSequence input, final String inputId) throws XMLException {
         Args.notNull("input", input);
 
-        return parseInputSource(new InputSource(new StringReader(input)), inputId, null, (File[]) null);
+        return parseInputSource(new InputSource(new CharSequenceReader(input)), inputId, null, (File[]) null);
     }
 
     /**
@@ -739,11 +741,12 @@ public abstract class DOMUtils {
      * @param defaultNamespace optional, may be null
      * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
      */
-    public static Document parseString(final String input, final String inputId, final String defaultNamespace, final File... xmlSchemaFiles)
+    @SuppressWarnings("resource")
+    public static Document parseString(final CharSequence input, final String inputId, final String defaultNamespace, final File... xmlSchemaFiles)
             throws XMLException {
         Args.notNull("input", input);
 
-        return parseInputSource(new InputSource(new StringReader(input)), inputId, defaultNamespace, xmlSchemaFiles);
+        return parseInputSource(new InputSource(new CharSequenceReader(input)), inputId, defaultNamespace, xmlSchemaFiles);
     }
 
     /**
