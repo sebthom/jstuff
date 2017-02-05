@@ -323,6 +323,8 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/jpa/JpqlO
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/spring/BeanResultSetExtractor.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/spring/BeanRowMapper.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/persistence/spring/NestedDataAccessException.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/portlet/ContentCapturingRenderResponseWrapper.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/portlet/ContentCapturingResourceResponseWrapper.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/AbstractRestServiceExporter.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/HttpRequestMethod.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/JsonRestServiceExporter.java -text
@@ -395,6 +397,8 @@ jstuff-integration/src/test/java/net/sf/jstuff/integration/example/guestbook/ser
 jstuff-integration/src/test/java/net/sf/jstuff/integration/example/guestbook/service/command/UpdateGuestBookEntryCommand.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/persistence/Entity.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/persistence/HashCodeManagerTest.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/portlet/ContentCapturingRenderResponseWrapperTest.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/portlet/ContentCapturingResourceResponseWrapperTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/ByteBuddyServiceRegistryITest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceRegistryTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/ServiceRegistryPerfITest.java -text

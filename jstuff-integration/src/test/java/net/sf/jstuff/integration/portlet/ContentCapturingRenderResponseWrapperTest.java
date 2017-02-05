@@ -10,11 +10,11 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.integration.servlet;
+package net.sf.jstuff.integration.portlet;
 
 import java.io.UnsupportedEncodingException;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.portlet.RenderResponse;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.logging.Logger;
@@ -23,16 +23,16 @@ import net.sf.jstuff.core.reflection.Types;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ContentCapturingHttpServletResponseWrapperTest extends TestCase {
+public class ContentCapturingRenderResponseWrapperTest extends TestCase {
 
     private static final Logger LOG = Logger.create();
 
     @SuppressWarnings("unused")
-    public void testContentCapturingHttpServletResponseWrapper() throws UnsupportedEncodingException {
+    public void testContentCapturingRenderResponseWrapper() throws UnsupportedEncodingException {
 
         final String[] encoding = new String[] { "ISO-8859-1" };
 
-        final HttpServletResponse mock = Types.createMixin(HttpServletResponse.class, new Object() {
+        final RenderResponse mock = Types.createMixin(RenderResponse.class, new Object() {
 
             public String getCharacterEncoding() {
                 return encoding[0];
@@ -40,14 +40,14 @@ public class ContentCapturingHttpServletResponseWrapperTest extends TestCase {
         });
 
         {
-            final ContentCapturingHttpServletResponseWrapper wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
+            final ContentCapturingRenderResponseWrapper wrapper = new ContentCapturingRenderResponseWrapper(mock);
             wrapper.getWriter().print("Hello");
             assertEquals("Hello", wrapper.toString());
             wrapper.clear();
             assertEquals("", wrapper.toString());
 
             try {
-                wrapper.getOutputStream();
+                wrapper.getPortletOutputStream();
                 fail();
             } catch (final IllegalStateException ex) {
                 // expected
@@ -59,7 +59,7 @@ public class ContentCapturingHttpServletResponseWrapperTest extends TestCase {
         final String strISO_8859_15 = new String(strUTF.getBytes("ISO-8859-15"), "ISO-8859-15");
 
         {
-            final ContentCapturingHttpServletResponseWrapper wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
+            final ContentCapturingRenderResponseWrapper wrapper = new ContentCapturingRenderResponseWrapper(mock);
             encoding[0] = "UTF-8";
             wrapper.getWriter().write(strUTF);
             LOG.info(encoding[0] + ": " + strUTF + " = " + wrapper.toString());
@@ -69,7 +69,7 @@ public class ContentCapturingHttpServletResponseWrapperTest extends TestCase {
         }
 
         {
-            final ContentCapturingHttpServletResponseWrapper wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
+            final ContentCapturingRenderResponseWrapper wrapper = new ContentCapturingRenderResponseWrapper(mock);
             encoding[0] = "ISO-8859-1";
             wrapper.getWriter().write(strISO_8859_1);
             LOG.info(encoding[0] + ": " + strISO_8859_1 + " = " + wrapper.toString());
@@ -79,7 +79,7 @@ public class ContentCapturingHttpServletResponseWrapperTest extends TestCase {
         }
 
         {
-            final ContentCapturingHttpServletResponseWrapper wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
+            final ContentCapturingRenderResponseWrapper wrapper = new ContentCapturingRenderResponseWrapper(mock);
             encoding[0] = "ISO-8859-15";
             wrapper.getWriter().write(strISO_8859_15);
             LOG.info(encoding[0] + ": " + strISO_8859_15 + " = " + wrapper.toString());
