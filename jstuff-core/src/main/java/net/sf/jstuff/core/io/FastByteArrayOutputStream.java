@@ -60,6 +60,11 @@ public class FastByteArrayOutputStream extends OutputStream {
         data = copy;
     }
 
+    @Override
+    public void flush() {
+        // nothing to do
+    }
+
     public void reset() {
         count = 0;
     }
@@ -81,6 +86,11 @@ public class FastByteArrayOutputStream extends OutputStream {
 
     public String toString(final String charsetName) throws UnsupportedEncodingException {
         return new String(data, 0, count, charsetName);
+    }
+
+    @Override
+    public void write(final byte b[]) {
+        write(b, 0, b.length);
     }
 
     @Override
