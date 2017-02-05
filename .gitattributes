@@ -399,6 +399,7 @@ jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/
 jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceRegistryTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/ServiceRegistryPerfITest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/support/SpringBeanAsServiceTest.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/servlet/ContentCapturingHttpServletResponseWrapperTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanInjectorTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanLocatorTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/spring/SpringBeanRefTest.java -text
