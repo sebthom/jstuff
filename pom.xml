@@ -312,7 +312,11 @@
 					<execution>
 						<id>attach-sources</id>
 						<goals>
-							<goal>jar</goal>
+							<!-- 
+								http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
+								using jar-no-for instead of jar to prevent execution of maven lifecycle twice
+							-->
+							<goal>jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>
