@@ -192,10 +192,6 @@ public abstract class DOMUtils {
         }
     };
 
-    private static Document _getOwnerDocument(final Node node) {
-        return node instanceof Document ? (Document) node : node.getOwnerDocument();
-    }
-
     private static List<Attr> _getIdAttributes(final Element element, final XPathNodeConfiguration config) {
         Args.notNull("element", element);
 
@@ -224,6 +220,10 @@ public abstract class DOMUtils {
             }
         }
         return result;
+    }
+
+    private static Document _getOwnerDocument(final Node node) {
+        return node instanceof Document ? (Document) node : node.getOwnerDocument();
     }
 
     private static void _getXPathNodes(final Element element, final XPathNodeConfiguration config, final CharSequence parentXPath,
@@ -615,6 +615,16 @@ public abstract class DOMUtils {
         Assert.isFileReadable(xmlFile);
 
         return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), defaultNamespace, xmlSchemaFiles);
+    }
+
+    /**
+     * Parses the content of given input source and returns a org.w3c.dom.Document.
+     *
+     * @param input the input to parse
+     * @param inputId an identifier / label for the input source, e.g. a file name
+     */
+    public static Document parseInputSource(final InputSource input, final String inputId) throws XMLException {
+        return parseInputSource(input, inputId, null);
     }
 
     /**
