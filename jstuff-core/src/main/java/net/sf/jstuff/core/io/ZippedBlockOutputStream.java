@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
 
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -25,6 +26,9 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ZippedBlockOutputStream extends FilterOutputStream {
+
+    private static final Logger LOG = Logger.create();
+
     private final Deflater compressor;
 
     private final boolean isUseDefaultCompressor;
@@ -97,8 +101,9 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
     public void close() throws IOException {
         if (!isClosed) {
             flush();
-            if (isUseDefaultCompressor)
+            if (isUseDefaultCompressor) {
                 compressor.end();
+            }
             out.close();
             isClosed = true;
         }
@@ -115,7 +120,9 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
             compressor.setInput(block, 0, blockSize);
             compressor.finish();
             final int compressedSize = compressor.deflate(blockCompressed);
-            System.out.println(block.length + " - " + blockSize + " / " + blockCompressed.length + " - " + compressedSize);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(block.length + " - " + blockSize + " / " + blockCompressed.length + " - " + compressedSize);
+            }
             // write the size of the compressed data
             IOUtils.writeInt(out, compressedSize);
 
@@ -178,8 +185,9 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
         blockSize += remainingSize;
 
         // if the block array is full process it
-        if (blockSize == block.length)
+        if (blockSize == block.length) {
             compressBlockAndWrite();
+        }
     }
 
     @Override
@@ -191,7 +199,8 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
         blockSize++;
 
         // if the input data buffer is full compress
-        if (blockSize == block.length)
+        if (blockSize == block.length) {
             compressBlockAndWrite();
+        }
     }
 }

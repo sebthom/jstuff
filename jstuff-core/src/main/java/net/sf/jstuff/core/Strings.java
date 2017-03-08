@@ -462,7 +462,6 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
             chPrev = ch;
         }
         sb.append("$");
-        System.out.println(sb);
         return sb;
     }
 
