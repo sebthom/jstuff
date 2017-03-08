@@ -10,7 +10,6 @@
 	<version>2.10.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>${project.artifactId}:${project.version}</name>
 	<url>http://jstuff.sf.net</url>
 
 	<organization>
@@ -312,11 +311,7 @@
 					<execution>
 						<id>attach-sources</id>
 						<goals>
-							<!-- 
-								http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
-								using jar-no-for instead of jar to prevent execution of maven lifecycle twice
-							-->
-							<goal>jar-no-fork</goal>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
