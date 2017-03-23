@@ -20,7 +20,7 @@ import net.sf.jstuff.core.collection.CollectionUtils;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class StringUtilsTest extends TestCase {
+public class StringsTest extends TestCase {
 
     public void testAnsiToHTML() {
         assertEquals(

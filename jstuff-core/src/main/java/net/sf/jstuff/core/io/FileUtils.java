@@ -214,24 +214,27 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
         Args.notNull("onMatch", onMatch);
 
         if (Strings.isEmpty(searchRootPath)) {
-            searchRootPath = ".";
+            searchRootPath = "."; // current directory
         }
-
-        final String searchRoot = new File(FilenameUtils.concat(searchRootPath, Strings.substringBeforeLast(Strings.substringBefore(globPattern, "*"), "/")))
-            .getAbsolutePath();
+        final File searchRoot = new File(new File(searchRootPath).getCanonicalPath());
+        searchRootPath = searchRoot.getAbsolutePath();
+        final int searchRootLen = searchRootPath.length();
 
         final String searchRegEx = Strings.globToRegex(globPattern).toString();
-        LOG.debug("\n  glob:  %s\n  regex: %s\n  searchRoot: %s", globPattern, searchRegEx, searchRoot);
-        final Pattern filePattern = Pattern.compile(searchRegEx);
+        LOG.debug("\n  glob:  %s\n  regex: %s\n  searchRoot: %s", globPattern, searchRegEx, searchRootPath);
+        final Pattern filePattern = Pattern.compile("^" + searchRegEx);
         new DirectoryWalker<File>() {
             {
-                walk(new File(searchRoot), null);
+                walk(searchRoot, null);
             }
 
             @Override
             protected boolean handleDirectory(final File directory, final int depth, final Collection<File> results) throws IOException {
-                final String filePath = directory.getCanonicalPath().replace('\\', '/');
-                final boolean isMatch = filePattern.matcher(filePath).find();
+                if (depth == 0)
+                    return true;
+                String folderPath = directory.getAbsolutePath().replace('\\', '/');
+                folderPath = folderPath.substring(searchRootLen + 1);
+                final boolean isMatch = filePattern.matcher(folderPath).find();
                 if (isMatch) {
                     onMatch.onEvent(directory);
                 }
@@ -240,7 +243,8 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
 
             @Override
             protected void handleFile(final File file, final int depth, final java.util.Collection<File> results) throws IOException {
-                final String filePath = file.getCanonicalPath().replace('\\', '/');
+                String filePath = file.getAbsolutePath().replace('\\', '/');
+                filePath = filePath.substring(searchRootLen + 1);
                 final boolean isMatch = filePattern.matcher(filePath).find();
                 if (isMatch) {
                     onMatch.onEvent(file);

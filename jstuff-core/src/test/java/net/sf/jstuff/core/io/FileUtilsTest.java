@@ -32,9 +32,26 @@ public class FileUtilsTest extends TestCase {
         _testFind("", "**/FileUtils.java", 1, 0);
         _testFind(".", "**/FileUtils.java", 1, 0);
         _testFind("./", "**/FileUtils.java", 1, 0);
-        _testFind("", "src/test/resources/rootfolder/*", 0, 2); // match children of rootfolder
-        _testFind("", "src/test/resources/rootfolder/folder1/*", 3, 3); // match children of folder1
-        _testFind("", "src/test/resources/rootfolder/*/", 0, 0); // ends with "/", thus matches nothing
+
+        // match children of rootfolder
+        _testFind("", "src/test/resources/rootfolder/*", 0, 2);
+        _testFind("src/test", "resources/rootfolder/*", 0, 2);
+        _testFind("src/test/resources/rootfolder", "*", 0, 2);
+
+        // match children of folder1
+        _testFind("", "src/test/resources/rootfolder/folder1/*", 3, 3);
+        _testFind("src/test", "resources/rootfolder/folder1/*", 3, 3);
+        _testFind("src/test/resources/rootfolder/folder1", "*", 3, 3);
+
+        _testFind("", "src/test/resources/rootfolder/folder1/file*.txt", 2, 0);
+        _testFind("src/test", "resources/rootfolder/folder1/file*.txt", 2, 0);
+        _testFind("src/test/resources/rootfolder/folder1", "file*.txt", 2, 0);
+
+        // ends with "/", thus matches nothing
+        _testFind("", "src/test/resources/rootfolder/*/", 0, 0);
+        _testFind("src/test", "resources/rootfolder/*/", 0, 0);
+        _testFind("src/test/resources/rootfolder", "*/", 0, 0);
+
         _testFind("", "src/test/resources/rootfolder/**", 24, 8); // match (sub-)children of current folder
         _testFind("", "src/test/resources/rootfolder/**/", 0, 0); // ends with "/", thus matches nothing
         _testFind("", "src/test/resources/rootfolder/**/*", 24, 8); // match (sub-)children of rootfolder

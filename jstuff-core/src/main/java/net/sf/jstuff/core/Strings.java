@@ -163,11 +163,6 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
         }
     }
 
-    private static final class LazyInitialized {
-
-        private static final Pattern PATTERN_GLOB_GROUPS = Pattern.compile("[^\\\\](\\{[^{]*[^\\\\]\\})");
-    }
-
     public static final char CR = 13;
     public static final char LF = 10;
     public static final String CR_LF = "" + CR + LF;
@@ -469,42 +464,6 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
         }
         sb.append("$");
         return sb;
-    }
-
-    /**
-     * original implementation, about 3 times slower than {@link #globToRegex(String)}
-     */
-    @SuppressWarnings("unused")
-    private static CharSequence globToRegex2(final String globPattern) {
-        if (Strings.isEmpty(globPattern))
-            return globPattern;
-        CharSequence regex = Strings.replaceEach(globPattern, //
-            "?", ".", //
-            ".", "\\.", //
-            "|", "\\|", //
-            "(", "\\(", //
-            ")", "\\)", //
-            "**/*", ".*", //
-            "**/", "(.*/)?", //
-            "**", ".*", //
-            "*", "[^/]*") + "$";
-        if (globPattern.contains("{")) {
-            // perform group transformation  {foo,bar} => (foo|bar)
-            final Matcher m = LazyInitialized.PATTERN_GLOB_GROUPS.matcher(regex);
-            final StringBuilder sb = new StringBuilder(regex);
-            while (m.find()) {
-                final int groupStart = m.start(1);
-                final int groupEnd = m.end(1);
-                sb.replace(groupStart, groupStart + 1, "(");
-                sb.replace(groupEnd - 1, groupEnd, ")");
-                for (int i = groupStart + 1, l = groupEnd - 1; i < l; i++)
-                    if (sb.charAt(i) == ',') {
-                        sb.setCharAt(i, '|');
-                    }
-            }
-            regex = sb;
-        }
-        return regex;
     }
 
     public static CharSequence htmlEncode(final CharSequence text) {
