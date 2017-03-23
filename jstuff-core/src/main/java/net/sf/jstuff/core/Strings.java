@@ -385,9 +385,9 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
                         sb.append(ESCAPE_CHAR).append(ESCAPE_CHAR);
                     }
                     break;
-                case '.':
                 case '/':
                 case '$':
+                case '.':
                 case '(':
                 case ')':
                     sb.append(ESCAPE_CHAR).append(ch);
@@ -427,6 +427,13 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
                         sb.append(groupDepth > 0 ? '|' : ',');
                     }
                     break;
+                case '!':
+                    if (chPrev == '[') {
+                        sb.append("^"); // "[!" => "[^"
+                    } else {
+                        sb.append('!');
+                    }
+                    break;
                 case '*':
                     if (charAt(globPattern, idx + 1, (char) 0) == '*') { // **
                         if (charAt(globPattern, idx + 2, (char) 0) == '/') // **/
@@ -434,7 +441,6 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
                                 // "**/*" => ".*"
                                 sb.append(".*");
                                 idx = idx + 3;
-                                ch = '*';
                             } else {
                                 // "**/" => "(.*/)?"
                                 sb.append("(.*/)?");
