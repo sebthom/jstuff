@@ -12,6 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core;
 
+import java.util.regex.Pattern;
+
 import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.CollectionUtils;
 
@@ -52,6 +54,18 @@ public class StringUtilsTest extends TestCase {
         assertEquals(0, Strings.countMatches("1234512345", "1", -100));
         assertEquals(0, Strings.countMatches(null, "1", 1));
         assertEquals(0, Strings.countMatches("1", null, 1));
+    }
+
+    public void testGlobToRegEx() {
+        assertTrue(Pattern.compile(Strings.globToRegex("**/file?.txt").toString()).matcher("aa/bb/file1.txt").matches());
+        assertTrue(Pattern.compile(Strings.globToRegex("*.txt").toString()).matcher("file.txt").matches());
+        assertFalse(Pattern.compile(Strings.globToRegex("*.txt").toString()).matcher("file.pdf").matches());
+        assertTrue(Pattern.compile(Strings.globToRegex("*.{pdf,txt}").toString()).matcher("file.txt").matches());
+        assertTrue(Pattern.compile(Strings.globToRegex("*.{pdf,txt}").toString()).matcher("file.pdf").matches());
+        assertFalse(Pattern.compile(Strings.globToRegex("*.{pdf,txt}").toString()).matcher("file.xml").matches());
+        assertTrue(Pattern.compile(Strings.globToRegex("file[0-9].txt").toString()).matcher("file1.txt").matches());
+        assertFalse(Pattern.compile(Strings.globToRegex("file[!0-9].txt").toString()).matcher("file1.txt").matches());
+        assertTrue(Pattern.compile(Strings.globToRegex("file[!0-9].txt").toString()).matcher("fileA.txt").matches());
     }
 
     /**
@@ -678,7 +692,7 @@ public class StringUtilsTest extends TestCase {
                 "man", "woman", //
                 "seven", "three", //
                 "kids", "cats" //
-        ) //
+            ) //
         );
     }
 
