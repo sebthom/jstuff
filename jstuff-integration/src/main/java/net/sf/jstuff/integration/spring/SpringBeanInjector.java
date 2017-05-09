@@ -12,6 +12,7 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.spring;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.annotation.PreDestroy;
@@ -68,7 +69,7 @@ public class SpringBeanInjector {
     private DefaultListableBeanFactory beanFactory;
 
     @Autowired
-    private DestructionAwareBeanPostProcessor destructor;
+    private List<DestructionAwareBeanPostProcessor> destructors;
 
     private SpringBeanInjector() {
         Assert.isNull(_INSTANCE, "A instance of " + getClass().getName() + " already exists.");
@@ -119,7 +120,9 @@ public class SpringBeanInjector {
         LOG.entry(unmanagedBean);
 
         // process @PreDestroy
-        destructor.postProcessBeforeDestruction(unmanagedBean, "bean");
+        for (final DestructionAwareBeanPostProcessor destructor : destructors) {
+            destructor.postProcessBeforeDestruction(unmanagedBean, "bean");
+        }
 
         if (unmanagedBean instanceof DisposableBean) {
             ((DisposableBean) unmanagedBean).destroy();
