@@ -57,7 +57,7 @@ public class SpringBeanInjector {
      * @return the default instance (the last instantiated one by any spring context)
      */
     public static SpringBeanInjector get() {
-        Assert.notNull(_INSTANCE, "No SpringBeanInjector instance created yet. Add  <bean class=\"" + SpringBeanInjector.class.getName()
+        Assert.notNull(_INSTANCE, "No SpringBeanInjector instance created yet. Add <bean class=\"" + SpringBeanInjector.class.getName()
                 + "\" /> to your spring configuration!");
 
         return _INSTANCE;
