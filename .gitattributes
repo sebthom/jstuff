@@ -399,6 +399,7 @@ jstuff-integration/src/test/java/net/sf/jstuff/integration/persistence/Entity.ja
 jstuff-integration/src/test/java/net/sf/jstuff/integration/persistence/HashCodeManagerTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/portlet/ContentCapturingRenderResponseWrapperTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/portlet/ContentCapturingResourceResponseWrapperTest.java -text
+jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/AbstractServiceRegistryTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/ByteBuddyServiceRegistryITest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/DefaultServiceRegistryTest.java -text
 jstuff-integration/src/test/java/net/sf/jstuff/integration/serviceregistry/impl/ServiceRegistryPerfITest.java -text

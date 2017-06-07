@@ -15,6 +15,7 @@ package net.sf.jstuff.integration.serviceregistry.impl;
 import java.lang.reflect.Method;
 
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.DynamicType.Loaded;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy;
@@ -49,21 +50,25 @@ public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointState serviceEndpointState,
             final Class<SERVICE_INTERFACE> serviceInterface) {
 
-        @SuppressWarnings("rawtypes")
-        final Loaded<DefaultServiceProxyAdvice> clazz = new ByteBuddy() //
+        final MethodDelegation interceptor = MethodDelegation.to(new ByteBuddyServiceInterceptor<SERVICE_INTERFACE>(serviceEndpointState, serviceInterface));
 
+        DynamicType.Builder builder = new ByteBuddy() //
             .subclass(DefaultServiceProxyAdvice.class, ConstructorStrategy.Default.IMITATE_SUPER_CLASS_PUBLIC) //
-
             .implement(serviceInterface) //
+            .method(ElementMatchers.isDeclaredBy(serviceInterface)).intercept(interceptor);
 
-            .method(ElementMatchers.isDeclaredBy(serviceInterface)) //
-            .intercept(MethodDelegation.to(new ByteBuddyServiceInterceptor(serviceEndpointState, serviceInterface))) //
+        for (final Class<?> iface : Types.getInterfacesRecursive(serviceInterface)) {
+            builder = builder.implement(iface) //
+                .method(ElementMatchers.isDeclaredBy(iface)).intercept(interceptor);
+        }
 
-            .make().load(DefaultServiceRegistry.class.getClassLoader(), ClassLoadingStrategy.Default.WRAPPER);
+        final Loaded<DefaultServiceProxyAdvice<SERVICE_INTERFACE>> clazz = builder.make().load(DefaultServiceRegistry.class.getClassLoader(),
+            ClassLoadingStrategy.Default.WRAPPER);
+
         /*try {
             clazz.saveIn(new java.io.File("F:\\out"));
         } catch (final java.io.IOException ex) {

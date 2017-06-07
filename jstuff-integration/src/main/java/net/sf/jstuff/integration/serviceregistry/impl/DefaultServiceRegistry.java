@@ -330,7 +330,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
     /**
      * for testing garbage collection
      */
-    protected int getServieEndpointsCount() {
+    protected int getServiceEndpointsCount() {
         return serviceEndpoints.size();
     }
 
