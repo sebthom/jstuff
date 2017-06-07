@@ -221,6 +221,7 @@
 									<ignoreClasses>
 										<ignoreClasse>com.thoughtworks.xstream.mapper.LambdaMapper</ignoreClasse>
 										<ignoreClasse>com.thoughtworks.xstream.converters.reflection.LambdaConverter</ignoreClasse>
+                                        <ignoreClasse>com.thoughtworks.xstream.converters.time.MonthDayConverter</ignoreClasse>
 									</ignoreClasses>
 									<excludes>
 										<exclude>net.bytebuddy:byte-buddy</exclude>
