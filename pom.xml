@@ -222,6 +222,7 @@
 										<ignoreClasse>com.thoughtworks.xstream.mapper.LambdaMapper</ignoreClasse>
 										<ignoreClasse>com.thoughtworks.xstream.converters.reflection.LambdaConverter</ignoreClasse>
                                         <ignoreClasse>com.thoughtworks.xstream.converters.time.*</ignoreClasse>
+                                        <ignoreClasse>com.thoughtworks.xstream.core.util.ISO8601JavaTimeConverter</ignoreClasse>
 									</ignoreClasses>
 									<excludes>
 										<exclude>net.bytebuddy:byte-buddy</exclude>
