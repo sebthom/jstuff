@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
  */
 public interface EventDispatcher<EVENT> extends EventListenable<EVENT> {
 
-    Future<Integer> fire(final EVENT type);
+    Future<Integer> fire(final EVENT event);
 
     void unsubscribeAll();
 }

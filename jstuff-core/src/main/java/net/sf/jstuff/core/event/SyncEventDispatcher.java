@@ -30,8 +30,8 @@ public class SyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
     /**
      * @return the number of listeners notified successfully
      */
-    public ConstantFuture<Integer> fire(final EVENT type) {
-        return ConstantFuture.of(Events.fire(type, eventListeners));
+    public ConstantFuture<Integer> fire(final EVENT event) {
+        return ConstantFuture.of(Events.fire(event, eventListeners));
     }
 
     public boolean subscribe(final EventListener<EVENT> listener) {
