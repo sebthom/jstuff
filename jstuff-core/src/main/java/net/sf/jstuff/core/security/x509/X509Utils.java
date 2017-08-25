@@ -65,18 +65,6 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class X509Utils {
 
-    public static final class PublicKeyEntry {
-        public final PublicKey publicKey;
-        public final String subjectDN;
-        public final String issuerDN;
-
-        public PublicKeyEntry(final String subjectDN, final String issuerDN, final PublicKey publicKey) {
-            this.subjectDN = subjectDN;
-            this.issuerDN = issuerDN;
-            this.publicKey = publicKey;
-        }
-    }
-
     private static final Logger LOG = Logger.create();
 
     private static final Base64 BASE64 = new Base64();
