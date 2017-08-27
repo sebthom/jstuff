@@ -122,7 +122,8 @@ public abstract class Base64 {
         for (int i = 0; i < bytes.length; i++) {
             final byte ch = bytes[i];
             // test a-z, A-Z
-            if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '+' || ch == '-' || ch == '_' || ch == '.' || ch == '\n') {
+            if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '+' || ch == '-' || ch == '_' || ch == '.' || ch == '/'
+                    || ch == '\n') {
                 continue;
             }
             // may end with =
