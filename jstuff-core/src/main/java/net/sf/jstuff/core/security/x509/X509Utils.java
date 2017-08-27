@@ -51,13 +51,12 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
-
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.io.FileUtils;
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.security.Base64;
+import net.sf.jstuff.core.security.Checksums;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -67,8 +66,8 @@ public abstract class X509Utils {
 
     private static final Logger LOG = Logger.create();
 
-    private static final Base64 BASE64 = new Base64();
     public static final CertificateFactory CERTIFICATE_FACTORY;
+    
     private static final Pattern CRL_PATTERN = Pattern.compile("BEGIN X509 CRL-+\r?\n?(.*[^-])\r?\n?-+END X509 CRL", Pattern.DOTALL);
     private static final Pattern CERTIFICATE_PATTERN = Pattern.compile("BEGIN CERTIFICATE-+\r?\n?(.*[^-])\r?\n?-+END CERTIFICATE", Pattern.DOTALL);
     private static final Pattern PRIVATE_KEY_PATTERN = Pattern.compile("BEGIN PRIVATE KEY-+\r?\n?(.*[^-])\r?\n?-+END PRIVATE KEY", Pattern.DOTALL);
@@ -114,7 +113,6 @@ public abstract class X509Utils {
         } else {
             certBytes = ("-----BEGIN CERTIFICATE-----\n" + pemContent + "\n-----END CERTIFICATE-----").getBytes();
         }
-
         final Certificate cert = CERTIFICATE_FACTORY.generateCertificate(new ByteArrayInputStream(certBytes));
 
         if ("X.509".equals(cert.getType()))
@@ -276,7 +274,7 @@ public abstract class X509Utils {
 
     public static String getFingerprint(final X509Certificate cert) throws GeneralSecurityException {
         Args.notNull("cert", cert);
-        return DigestUtils.shaHex(cert.getEncoded());
+        return Checksums.sha1(cert.getEncoded());
     }
 
     /**
@@ -340,9 +338,9 @@ public abstract class X509Utils {
         final Matcher keyMatcher = PRIVATE_KEY_PATTERN.matcher(pemContent);
         final byte[] privateKey;
         if (keyMatcher.find()) {
-            privateKey = BASE64.decode(keyMatcher.group(1).getBytes());
+            privateKey = Base64.decode(keyMatcher.group(1));
         } else {
-            privateKey = BASE64.decode(pemContent.getBytes());
+            privateKey = Base64.decode(pemContent);
         }
         return toPrivateKey(privateKey, algorithm);
     }
@@ -378,9 +376,9 @@ public abstract class X509Utils {
         final Matcher keyMatcher = PUBLIC_KEY_PATTERN.matcher(pemContent);
         final byte[] publicKey;
         if (keyMatcher.find()) {
-            publicKey = BASE64.decode(keyMatcher.group(1).getBytes());
+            publicKey = Base64.decode(keyMatcher.group(1));
         } else {
-            publicKey = BASE64.decode(pemContent.getBytes());
+            publicKey = Base64.decode(pemContent);
         }
         return toPublicKey(publicKey, algorithm);
     }
@@ -451,7 +449,7 @@ public abstract class X509Utils {
     }
 
     private static String toPEM(final byte[] data, final String type, final int charsPerLine) {
-        final char[] encoded = BASE64.encodeAsString(data).toCharArray();
+        final char[] encoded = Base64.encode(data).toCharArray();
         final StringBuilder sb = new StringBuilder(encoded.length + 70);
         sb.append("-----BEGIN ");
         sb.append(type);

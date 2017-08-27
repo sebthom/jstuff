@@ -56,6 +56,7 @@ public class X509UtilsTest extends TestCase {
         final PrivateKey selfSignedPrivateKey = X509Utils.getPrivateKeyFromPEM(selfSignedPrivateKeyPEM, selfSigned.get2().getAlgorithm());
         assertEquals(selfSigned.get2(), selfSignedPrivateKey);
 
+        System.out.println(X509Utils.getFingerprint(selfSignedCert));
         assertEquals(40, X509Utils.getFingerprint(selfSignedCert).length());
 
     }

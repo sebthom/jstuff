@@ -1,86 +1,88 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 	@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.sf.jstuff</groupId>
-	<artifactId>jstuff-parent</artifactId>
-	<version>2.10.4-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
 
-	<url>http://jstuff.sf.net</url>
+    <groupId>net.sf.jstuff</groupId>
+    <artifactId>jstuff-parent</artifactId>
+    <version>2.10.4-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<organization>
-		<name>The jstuff Development Team</name>
-		<url>http://jstuff.sf.net/</url>
-	</organization>
+    <url>http://jstuff.sf.net</url>
 
-	<licenses>
-		<license>
-			<name>Eclipse Public License 1.0</name>
-			<url>http://www.spdx.org/licenses/EPL-1.0</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <organization>
+        <name>The jstuff Development Team</name>
+        <url>http://jstuff.sf.net/</url>
+    </organization>
 
-	<developers>
-		<developer>
-			<id>sebthom</id>
-			<name>Sebastian Thomschke</name>
-			<email>sebthom at users.sourceforge.net</email>
-			<url>http://sebthom.de/</url>
-			<roles>
-				<role>lead</role>
-				<role>developer</role>
-			</roles>
-			<timezone>Europe/Berlin</timezone>
-		</developer>
-	</developers>
+    <licenses>
+        <license>
+            <name>Eclipse Public License 1.0</name>
+            <distribution>repo</distribution>
+            <url>http://www.spdx.org/licenses/EPL-1.0</url>
+        </license>
+    </licenses>
 
-	<prerequisites>
-		<maven>3.0.5</maven>
-	</prerequisites>
+    <developers>
+        <developer>
+            <id>sebthom</id>
+            <name>Sebastian Thomschke</name>
+            <email>sebthom at users.sourceforge.net</email>
+            <url>http://sebthom.de/</url>
+            <roles>
+                <role>lead</role>
+                <role>developer</role>
+            </roles>
+            <timezone>Europe/Berlin</timezone>
+        </developer>
+    </developers>
 
-	<scm>
+    <inceptionYear>2010</inceptionYear>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.5</java.version>
+        <java.vendor>sun</java.vendor>
+        <java.version.integration-tests>1.6</java.version.integration-tests>
+
+		<!-- requiring 3.2.2 because of https://issues.apache.org/jira/browse/MNG-4565 -->
+		<maven.minimum.version>3.2.2</maven.minimum.version>
+
+        <maven.scm.version>1.9.5</maven.scm.version>
+        <maven.scm.svnjava.version>2.1.2</maven.scm.svnjava.version>
+        <maven.wagon.version>3.0.0</maven.wagon.version>
+
+        <maven.javadoc.skip>true</maven.javadoc.skip>  <!-- we don't really need javadoc -->
+
+        <slf4j.version>1.7.13</slf4j.version>
+
+		<!-- see http://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
+		<!-- see http://java-drobnosti.blogspot.de/2012/12/maven-slow-generating-dependencies.html -->
+        <dependency.locations.enabled>false</dependency.locations.enabled>
+        <dependency.details.enabled>false</dependency.details.enabled>
+    </properties>
+
+    <scm>
 		<!-- http://maven.apache.org/scm/subversion.html -->
-		<url>https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</url>
-		<connection>scm:svn:https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</connection>
-		<developerConnection>scm:svn:https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</developerConnection>
-	</scm>
+        <url>https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</url>
+        <connection>scm:svn:https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</connection>
+        <developerConnection>scm:svn:https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</developerConnection>
+    </scm>
 
-	<ciManagement>
-		<system>jenkins</system>
-		<url>https://ci.vegardit.com/job/net.sf.jstuff</url>
-	</ciManagement>
-
-	<mailingLists>
-		<mailingList>
-			<name>Discussion</name>
-			<archive>http://sourceforge.net/p/jstuff/discussion/</archive>
-		</mailingList>
-	</mailingLists>
-
-	<repositories>
-		<repository>
-			<id>net.sf.jstuff-repo</id>
-			<name>jstuff Repository for Maven</name>
-			<url>http://jstuff.sourceforge.net/mvn-repo/release</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
-
-	<distributionManagement>
-		<downloadUrl>https://sourceforge.net/downloads/jstuff/</downloadUrl>
-		<repository>
-			<id>jstuff-release</id>
-			<url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/release</url>
-		</repository>
-		<snapshotRepository>
-			<id>jstuff-snapshot</id>
-			<url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/snapshot</url>
-		</snapshotRepository>
+    <distributionManagement>
+        <downloadUrl>https://sourceforge.net/downloads/jstuff/</downloadUrl>
+        <repository>
+            <id>jstuff-release</id>
+            <url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/release</url>
+        </repository>
+        <snapshotRepository>
+            <id>jstuff-snapshot</id>
+            <url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/snapshot</url>
+        </snapshotRepository>
 		<!--
 			Temporarily disabled because of MSITE-681
 			<site>
@@ -88,500 +90,743 @@
 			<url>sftp://web.sourceforge.net/home/groups/j/js/jstuff/htdocs/site</url>
 			</site>
 		-->
-	</distributionManagement>
+    </distributionManagement>
 
-	<inceptionYear>2010</inceptionYear>
+    <ciManagement>
+        <system>jenkins</system>
+        <url>https://ci.vegardit.com/job/net.sf.jstuff</url>
+    </ciManagement>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.5</java.version>
-		<java.vendor>sun</java.vendor>
-		<java.version.integration-tests>1.6</java.version.integration-tests>
-		<slf4j.version>1.7.13</slf4j.version>
+    <issueManagement>
+        <system>sourceforge.net</system>
+        <url>https://sourceforge.net/p/jstuff/tickets/</url>
+    </issueManagement>
 
-		<maven.javadoc.skip>true</maven.javadoc.skip>  <!-- we don't really need javadoc -->
+    <prerequisites>
+		<!-- minimum version for toolchain support -->
+		<maven>${maven.minimum.version}</maven>
+    </prerequisites>
 
-		<!-- see http://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
-		<!-- see http://java-drobnosti.blogspot.de/2012/12/maven-slow-generating-dependencies.html -->
-		<dependency.locations.enabled>false</dependency.locations.enabled>
-		<dependency.details.enabled>false</dependency.details.enabled>
-	</properties>
+    <repositories>
+        <repository>
+            <id>net.sf.jstuff-repo</id>
+            <name>jstuff Repository for Maven</name>
+            <url>http://jstuff.sourceforge.net/mvn-repo/release</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 
-	<modules>
-		<module>jstuff-core</module>
-		<module>jstuff-integration</module>
-		<module>jstuff-xml</module>
-	</modules>
+    <modules>
+        <module>jstuff-core</module>
+        <module>jstuff-integration</module>
+        <module>jstuff-xml</module>
+    </modules>
 
-	<!-- global dependencies -->
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
+    <build>
+        <plugins>
 
-	</dependencies>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.thoughtworks.paranamer</groupId>
-				<artifactId>paranamer</artifactId>
-				<version>2.8</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<!-- newer versions requires Java 6 or higher -->
-				<version>3.1</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<!-- newer versions requires Java 6 or higher -->
-				<version>2.2</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<!-- newer versions requires Java 6 or higher -->
-				<version>1.6</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
-	<build>
-
-		<plugins>
-			<plugin>
+            <plugin>
 				<!-- http://maven.apache.org/guides/mini/guide-using-toolchains.html -->
-				<artifactId>maven-toolchains-plugin</artifactId>
-				<version>1.1</version>
-				<executions>
-					<execution>
-						<id>toolchain@validate</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>toolchain</goal>
-						</goals>
-						<configuration>
-							<toolchains>
-								<jdk>
-									<version>${java.version}</version>
-									<vendor>sun</vendor>
-								</jdk>
-							</toolchains>
-						</configuration>
-					</execution>
-					<execution>
-						<id>toolchain@verify</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>toolchain</goal>
-						</goals>
-						<configuration>
-							<toolchains>
-								<jdk>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>toolchain@validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>toolchain@verify</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                        <configuration>
+                            <toolchains>
+                                <jdk>
 									<!-- using a higher JDK version for integration tests -->
-									<version>${java.version.integration-tests}</version>
-									<vendor>sun</vendor>
-								</jdk>
-							</toolchains>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+                                    <version>${java.version.integration-tests}</version>
+                                </jdk>
+                            </toolchains>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>${java.version}</version>
+                            <vendor>${java.vendor}</vendor>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.4.1</version>
-				<executions>
+            <plugin>
+	            <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/usage.html -->
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+						<id>check-base-requirements</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <banCircularDependencies />
+
+								<!-- extra enforcer rules -->
+                                <enforceBytecodeVersion>
+                                    <maxJdkVersion>${java.version}</maxJdkVersion>
+                                    <ignoredScopes>
+                                        <ignoredScope>test</ignoredScope>
+                                    </ignoredScopes>
+                                    <ignoreClasses>
+                                        <ignoreClasse>com.thoughtworks.xstream.mapper.LambdaMapper</ignoreClasse>
+                                        <ignoreClasse>com.thoughtworks.xstream.converters.reflection.LambdaConverter</ignoreClasse>
+                                        <ignoreClasse>com.thoughtworks.xstream.converters.time.*</ignoreClasse>
+                                        <ignoreClasse>com.thoughtworks.xstream.core.util.ISO8601JavaTimeConverter</ignoreClasse>
+                                    </ignoreClasses>
+                                    <excludes>
+                                        <exclude>net.bytebuddy:byte-buddy</exclude>
+                                        <exclude>com.sun.xml.bind:jaxb-xjc</exclude>
+                                    </excludes>
+                                </enforceBytecodeVersion>
+
+								<!-- does currently report duplicate classes if same artifact is transitively referenced in different versions, e.g.
+									[WARNING] Rule 2: org.apache.maven.plugins.enforcer.BanDuplicateClasses failed with message:
+									Duplicate classes found:
+
+									Found in:
+									org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.0.Beta1:provided
+									org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.1.Final:provided
+									Duplicate classes:
+									javax/interceptor/Interceptor.class
+
+									http://mojo.codehaus.org/extra-enforcer-rules/banDuplicateClasses.html
+									<banDuplicateClasses>
+										<findAllDuplicates>true</findAllDuplicates>
+									</banDuplicateClasses> -->
+                            </rules>
+							<fail>true</fail>
+                        </configuration>
+                    </execution>
 					<execution>
+						<id>check-dependency-convergence</id>
 						<goals>
 							<goal>enforce</goal>
 						</goals>
 						<configuration>
+							<fail>false</fail>
 							<rules>
-								<banCircularDependencies />
-								<!-- currently broken
-									<banDuplicateClasses>
-									<findAllDuplicates>true</findAllDuplicates>
-									</banDuplicateClasses>
-								-->
-
-								<enforceBytecodeVersion>
-									<maxJdkVersion>${java.version}</maxJdkVersion>
-									<ignoredScopes>
-										<ignoredScope>test</ignoredScope>
-									</ignoredScopes>
-									<ignoreClasses>
-										<ignoreClasse>com.thoughtworks.xstream.mapper.LambdaMapper</ignoreClasse>
-										<ignoreClasse>com.thoughtworks.xstream.converters.reflection.LambdaConverter</ignoreClasse>
-                                        <ignoreClasse>com.thoughtworks.xstream.converters.time.*</ignoreClasse>
-                                        <ignoreClasse>com.thoughtworks.xstream.core.util.ISO8601JavaTimeConverter</ignoreClasse>
-									</ignoreClasses>
-									<excludes>
-										<exclude>net.bytebuddy:byte-buddy</exclude>
-										<exclude>com.sun.xml.bind:jaxb-xjc</exclude>
-									</excludes>
-								</enforceBytecodeVersion>
+								<!-- http://maven.apache.org/enforcer/enforcer-rules/dependencyConvergence.html -->
+								<DependencyConvergence />
 							</rules>
 						</configuration>
 					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
+                </executions>
+                <dependencies>
+                    <dependency>
 						<!-- http://www.mojohaus.org/extra-enforcer-rules/ -->
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>extra-enforcer-rules</artifactId>
-						<version>1.0-beta-6</version>
-					</dependency>
-				</dependencies>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>extra-enforcer-rules</artifactId>
+                        <version>1.0-beta-6</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.12.1</version>
+                <executions>
+                    <execution>
+                        <id>check-changes</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>changes-check</goal>
+                        </goals>
+                        <configuration>
+                            <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                            <skipSnapshots>true</skipSnapshots>
+		                    <xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>add-license-file-to-jar</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>../</directory>
+                                    <targetPath>META-INF</targetPath>
+                                    <includes>
+                                        <include>LICENSE.txt</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+            <!--
+            ================================================================
+            globally defined plug-in configurations and versions
+            ================================================================
+            -->
+            <plugins>
+
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.6.2</version>
+                    <configuration>
+                    <!-- this configuration is actually taken care of by the toolchain plug-in, however m2eclipse does not seem to realize the correct JDK
+                        if only the toolchain plug-in is configured, therefore we explicitly configure the Java version again -->
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <compilerVersion>${java.version}</compilerVersion>
+                        <optimize>true</optimize>
+						<!-- using eclipse compiler instead of javac:
+							a) to avoid notorious "schema change not supported" message when debugging via eclipse
+							b) javac is buggy when compiling complex generic expressions
+						-->
+                        <compilerId>${compilerId}</compilerId>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.codehaus.plexus</groupId>
+                            <artifactId>plexus-compiler-${compilerId}</artifactId>
+                            <version>2.8.2</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                            	<!-- to support http://stackoverflow.com/questions/2712970/how-to-get-maven-artifact-version-at-runtime -->
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.0.2</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-eclipse-plugin</artifactId>
+                    <version>2.10</version>
+                    <configuration>
+                        <downloadSources>true</downloadSources>
+						<downloadJavadocs>false</downloadJavadocs>
+                        <classpathContainers>
+                            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-${java.version}</classpathContainer>
+                        </classpathContainers>
+                    </configuration>
+                </plugin>
+
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.2</version>
+				</plugin>
+
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+						<!-- we are using a pure Java based SVN implementation to allow easy cross platform builds -->
+                        <providerImplementations>
+                            <svn>javasvn</svn>
+                        </providerImplementations>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+                            <artifactId>maven-scm-provider-svnjava</artifactId>
+                            <version>${maven.scm.svnjava.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>${maven.scm.version}</version>
+                    <configuration>
+						<!-- we are using a pure Java based SVN implementation to allow easy cross platform builds -->
+                        <providerImplementations>
+                            <svn>javasvn</svn>
+                        </providerImplementations>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+                            <artifactId>maven-scm-provider-svnjava</artifactId>
+                            <version>${maven.scm.svnjava.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+				<plugin>
+					<artifactId>maven-changelog-plugin</artifactId>
+					<version>2.3</version>
+					<configuration>
+						<providerImplementations>
+							<svn>javasvn</svn>
+						</providerImplementations>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+							<artifactId>maven-scm-provider-svnjava</artifactId>
+							<version>${maven.scm.svnjava.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.apache.maven.scm</groupId>
+							<artifactId>maven-scm-api</artifactId>
+							<version>${maven.scm.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.apache.maven.scm</groupId>
+							<artifactId>maven-scm-provider-svn-commons</artifactId>
+							<version>${maven.scm.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.6</version>
+					<executions>
+						<execution>
+							<id>attach-descriptor</id>
+							<goals>
+								<goal>attach-descriptor</goal>
+							</goals>
+						</execution>
+					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.doxia</groupId>
+							<artifactId>doxia-module-confluence</artifactId>
+							<version>1.7</version>
+						</dependency>
+						<dependency>
+							<groupId>org.apache.maven.wagon</groupId>
+							<artifactId>wagon-webdav-jackrabbit</artifactId>
+							<version>${maven.wagon.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.pegdown</groupId>
+							<artifactId>pegdown</artifactId>
+							<!-- newer version than the one that is referenced by doxia-module-markdown:1.7 -->
+							<version>1.6.0</version>
+						</dependency>
+					</dependencies>
+                </plugin>
+
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.10.4</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.8</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.0.1</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<phase>verify</phase>
+							<goals>
+								<!--
+									http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
+									using jar-no-for instead of jar to prevent execution of maven lifecycle twice
+								-->
+                                <goal>jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+                <plugin>
+                	<!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <!-- newer versions crash when running JDK 5 tests -->
+                    <version>2.19.1</version>
+                    <configuration>
+	                    <argLine>-Duser.language=en -Duser.region=US</argLine>
+                        <excludes>
+                            <exclude>**/*ITest.java</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+	                <!-- http://maven.apache.org/surefire/maven-failsafe-plugin/usage.html -->
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>2.20</version>
+                    <configuration>
+	                    <argLine>-Duser.language=en -Duser.region=US</argLine>
+                        <includes>
+                            <include>**/*ITest.java</include>
+                        </includes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>3.3.0</version>
+                    <extensions>true</extensions>
+                    <executions>
+                        <execution>
+                            <id>bundle-manifest</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>manifest</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <obrRepository>NONE</obrRepository>
+                        <excludeDependencies>true</excludeDependencies>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+        <extensions>
+            <extension>
+				<!-- measure and report time used by each plugin/goal -->
+                <groupId>co.leantechniques</groupId>
+                <artifactId>maven-buildtime-extension</artifactId>
+                <version>3.0.1</version>
+            </extension>
+
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>${maven.wagon.version}</version>
+            </extension>
+
+            <extension>
+				<!-- sftp support -->
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>${maven.wagon.version}</version>
+            </extension>
+        </extensions>
+    </build>
+
+	<!-- global dependencies -->
+    <dependencies>
+		<!-- test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.thoughtworks.paranamer</groupId>
+                <artifactId>paranamer</artifactId>
+                <version>2.8</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+				<!-- newer versions requires Java 6 or higher -->
+                <version>3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+				<!-- newer versions requires Java 6 or higher -->
+                <version>2.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<!-- Generate a report based on the results of unit tests. -->
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.20</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>report-only</report>
+						</reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
 
-			<!--*********************************************************************
-				phase: compile
-				********************************************************************* -->
 			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.9</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>dependencies</report>
+							<report>project-team</report>
+							<report>summary</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.12.1</version>
 				<configuration>
-					<!-- this configuration is actually taken care of by the toolchain plug-in, however m2eclipse does not seem to realize the correct JDK
-						if only the toolchain plug-in is configured, therefore we explicitly configure the Java version again -->
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<optimize>true</optimize>
-					<compilerId>${compilerId}</compilerId>
-					<!-- using eclipse compiler since javac is buggy/lazy when compiling complex generic expressions -->
+					<issueLinkTemplate />
+					<xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.codehaus.plexus</groupId>
-						<artifactId>plexus-compiler-${compilerId}</artifactId>
-						<version>2.8.1</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-
-
-			<!--*********************************************************************
-				phase: package
-				********************************************************************* -->
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<!-- to support http://stackoverflow.com/questions/2712970/how-to-get-maven-artifact-version-at-runtime -->
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>3.2.0</version>
-				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<obrRepository>NONE</obrRepository>
-					<excludeDependencies>true</excludeDependencies>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!--*********************************************************************
-				phase: test
-				********************************************************************* -->
-			<plugin>
-				<!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
-				<configuration>
-					<excludes>
-						<exclude>**/*ITest.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<!-- http://maven.apache.org/surefire/maven-failsafe-plugin/usage.html -->
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.19.1</version>
-				<configuration>
-					<includes>
-						<include>**/*ITest.java</include>
-					</includes>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-
-			<!--*********************************************************************
-				phase: release
-				********************************************************************* -->
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
-				<configuration>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<providerImplementations>
-						<svn>javasvn</svn>
-					</providerImplementations>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>com.google.code.maven-scm-provider-svnjava</groupId>
-						<artifactId>maven-scm-provider-svnjava</artifactId>
-						<version>2.1.2</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-
-
-			<!--*********************************************************************
-				phase: manual execution
-				********************************************************************* -->
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.10</version>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<classpathContainers>
-						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-${java.version}</classpathContainer>
-					</classpathContainers>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.5.1</version>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<id>add-license-file-to-jar</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>add-resource</goal>
-						</goals>
-						<configuration>
-							<resources>
-								<resource>
-									<directory>../</directory>
-									<targetPath>META-INF</targetPath>
-									<includes>
-										<include>LICENSE.txt</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
 		</plugins>
+	</reporting>
 
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>2.10</version>
-			</extension>
-		</extensions>
-	</build>
 
-	<profiles>
-		<!-- m2eclipse has problems when the compilerId is not "javac", thus we set it to "javac" when in Eclipse but set it to "eclipse" for command
-			line builds -->
-		<profile>
-			<activation>
-				<property>
-					<name>!eclipse.application</name>
-				</property>
-			</activation>
-			<properties>
-				<compilerId>eclipse</compilerId>
-			</properties>
-		</profile>
-		<profile>
-			<id>m2eclipse</id>
-			<activation>
-				<property>
-					<name>eclipse.application</name>
-				</property>
-			</activation>
-			<properties>
-				<compilerId>javac</compilerId>
-			</properties>
-			<build>
-				<pluginManagement>
-					<plugins>
+    <profiles>
+        <profile>
+            <id>jrebel-config</id>
+			<!-- only activated if executed within Eclipse and if rebel-remote.xml is present, requires Maven 3.2.2 or higher, see https://issues.apache.org/jira/browse/MNG-4565 -->
+            <activation>
+                <property>
+                    <name>eclipse.application</name>
+                </property>
+                <file>
+                    <exists>src/main/resources/rebel-remote.xml</exists>
+                </file>
+            </activation>
+
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.zeroturnaround</groupId>
+                        <artifactId>jrebel-maven-plugin</artifactId>
+                        <version>1.1.7</version>
+                        <executions>
+                            <execution>
+                                <id>generate-rebel-xml</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <addResourcesDirToRebelXml>true</addResourcesDirToRebelXml>
+                            <alwaysGenerate>false</alwaysGenerate>
+                            <showGenerated>true</showGenerated>
+                            <generateDefaultElements>true</generateDefaultElements>
+                        </configuration>
+                    </plugin>
+                </plugins>
+
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-war-plugin</artifactId>
+                            <configuration>
+                                <packagingExcludes>**/rebel.xml</packagingExcludes>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <artifactId>maven-jar-plugin</artifactId>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/rebel.xml</exclude>
+                                </excludes>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+		<!-- m2eclipse has problems when the compilerId is not "javac" (however Eclipse still uses the internal compiler and not javac), thus we set
+			it to "javac" when in Eclipse but set it to "eclipse" for command line builds -->
+        <profile>
+            <activation>
+                <property>
+                    <name>!eclipse.application</name>
+                </property>
+            </activation>
+            <properties>
+                <compilerId>eclipse</compilerId>
+				<webClassifier>classes</webClassifier>
+            </properties>
+        </profile>
+        <profile>
+            <id>m2eclipse</id>
+            <activation>
+                <property>
+                    <name>eclipse.application</name>
+                </property>
+            </activation>
+            <properties>
+                <compilerId>javac</compilerId>
+
+				<!-- http://wiki.eclipse.org/M2E-WTP_FAQ#How_do_I_add_my_web_project_classes_to_another_project.27s_classpath.3F -->
+				<webClassifier />
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
 						<!-- http://stackoverflow.com/questions/7905501/get-rid-of-pom-not-found-warning-for-org-eclipse-m2elifecycle-mapping -->
 						<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
-						<plugin>
-							<groupId>org.eclipse.m2e</groupId>
-							<artifactId>lifecycle-mapping</artifactId>
-							<version>1.0.0</version>
-							<configuration>
-								<lifecycleMappingMetadata>
-									<pluginExecutions>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.apache.maven.plugins</groupId>
-												<artifactId>maven-enforcer-plugin</artifactId>
-												<versionRange>[1.0,)</versionRange>
-												<goals>
-													<goal>enforce</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.apache.felix</groupId>
-												<artifactId>maven-bundle-plugin</artifactId>
-												<versionRange>[2.4.0,)</versionRange>
-												<goals>
-													<goal>manifest</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.apache.maven.plugins</groupId>
-												<artifactId>maven-toolchains-plugin</artifactId>
-												<versionRange>[1.0,)</versionRange>
-												<goals>
-													<goal>toolchain</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
-										</pluginExecution>
-
-										<pluginExecution>
-											<pluginExecutionFilter>
-												<groupId>org.zeroturnaround</groupId>
-												<artifactId>jrebel-maven-plugin</artifactId>
-												<versionRange>[1.1.5,)</versionRange>
-												<goals>
-													<goal>generate</goal>
-												</goals>
-											</pluginExecutionFilter>
-											<action>
-												<execute>
+                        <plugin>
+                            <groupId>org.eclipse.m2e</groupId>
+                            <artifactId>lifecycle-mapping</artifactId>
+                            <version>1.0.0</version>
+                            <configuration>
+                                <lifecycleMappingMetadata>
+                                    <pluginExecutions>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.zeroturnaround</groupId>
+                                                <artifactId>jrebel-maven-plugin</artifactId>
+                                                <versionRange>[1.1.5,)</versionRange>
+                                                <goals>
+                                                    <goal>generate</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <execute>
 													<!-- https://wiki.eclipse.org/M2E_compatible_maven_plugins -->
-													<runOnConfiguration>true</runOnConfiguration>
-													<runOnIncremental>true</runOnIncremental>
-												</execute>
-											</action>
-										</pluginExecution>
-									</pluginExecutions>
-								</lifecycleMappingMetadata>
-							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
+                                                    <runOnConfiguration>true</runOnConfiguration>
+                                                    <runOnIncremental>true</runOnIncremental>
+                                                </execute>
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-enforcer-plugin</artifactId>
+                                                <versionRange>[1.0,)</versionRange>
+                                                <goals>
+                                                    <goal>enforce</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-toolchains-plugin</artifactId>
+                                                <versionRange>[1.0,)</versionRange>
+                                                <goals>
+                                                    <goal>toolchain</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-antrun-plugin</artifactId>
+                                                <versionRange>[1.7,)</versionRange>
+                                                <goals>
+                                                    <goal>run</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.apache.felix</groupId>
+                                                <artifactId>maven-bundle-plugin</artifactId>
+                                                <versionRange>[2.4.0,)</versionRange>
+                                                <goals>
+                                                    <goal>manifest</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                    </pluginExecutions>
+                                </lifecycleMappingMetadata>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
 
-		<profile>
-			<id>jrebel-config</id>
-			<activation>
-				<file>
-					<exists>src/main/resources/rebel-remote.xml</exists>
-				</file>
-			</activation>
-
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.zeroturnaround</groupId>
-						<artifactId>jrebel-maven-plugin</artifactId>
-						<version>1.1.6</version>
-						<executions>
-							<execution>
-								<id>generate-rebel-xml</id>
-								<phase>process-resources</phase>
-								<goals>
-									<goal>generate</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<addResourcesDirToRebelXml>true</addResourcesDirToRebelXml>
-							<alwaysGenerate>false</alwaysGenerate>
-							<showGenerated>true</showGenerated>
-							<generateDefaultElements>true</generateDefaultElements>
-						</configuration>
-					</plugin>
-				</plugins>
-
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<artifactId>maven-war-plugin</artifactId>
-							<configuration>
-								<packagingExcludes>WEB-INF/classes/rebel.xml</packagingExcludes>
-							</configuration>
-						</plugin>
-						<plugin>
-							<artifactId>maven-jar-plugin</artifactId>
-							<configuration>
-								<excludes>
-									<exclude>rebel.xml</exclude>
-								</excludes>
-							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
-	</profiles>
+    </profiles>
 
 </project>

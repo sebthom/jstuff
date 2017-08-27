@@ -163,8 +163,16 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
         }
     }
 
+    /**
+     * \r 13 Carriage Return
+     */
     public static final char CR = 13;
+
+    /**
+     * \n 10 Line Feed
+     */
     public static final char LF = 10;
+
     public static final String CR_LF = "" + CR + LF;
 
     public static final String NEW_LINE = System.getProperty("line.separator");

@@ -3,62 +3,105 @@
 	@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<artifactId>jstuff-parent</artifactId>
-		<groupId>net.sf.jstuff</groupId>
-		<version>2.10.4-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <artifactId>jstuff-parent</artifactId>
+        <groupId>net.sf.jstuff</groupId>
+        <version>2.10.4-SNAPSHOT</version>
+    </parent>
 
-	<artifactId>jstuff-core</artifactId>
+    <artifactId>jstuff-core</artifactId>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>Delete javax.xml.bind stubs</id>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <target>
+                                <!-- delete the javax.xml.bind stubs after compilation, before testing -->
+                                <delete dir="${project.build.directory}/classes/javax" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <!-- exclude javax.xml.bind stubs -->
+                            <excludePackageNames>javax.xml.bind</excludePackageNames>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <!-- exclude javax.xml.bind stubs -->
+                        <exclude>javax/**/*</exclude>
+                        <exclude>javax</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
 
-		<dependency>
+        <dependency>
 			<!-- for parameter names in Logger.traceEntry() -->
-			<groupId>com.thoughtworks.paranamer</groupId>
-			<artifactId>paranamer</artifactId>
-			<optional>true</optional>
-		</dependency>
+            <groupId>com.thoughtworks.paranamer</groupId>
+            <artifactId>paranamer</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <optional>true</optional>
+        </dependency>
 
 		<!--==================================================================
 			Test dependencies
 			================================================================== -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
 			<!-- added for test case TypesTest.testGetVersion() -->
-			<groupId>commons-jxpath</groupId>
-			<artifactId>commons-jxpath</artifactId>
-			<version>1.3</version>
-			<scope>test</scope>
-		</dependency>
+            <groupId>commons-jxpath</groupId>
+            <artifactId>commons-jxpath</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 </project>
