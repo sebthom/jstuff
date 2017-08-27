@@ -99,7 +99,7 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
      * @since 1.8
      */
     public V putIfAbsent(final K key, final V value) {
-        if (containsKey(value))
+        if (!containsKey(key))
             return map.put(key, value);
         return map.get(key);
     }
