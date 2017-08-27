@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
-import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -90,18 +89,6 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    public static <K, V> WeakIdentityHashMap<K, V> create() {
-        return new WeakIdentityHashMap<K, V>();
-    }
-
-    public static <K, V> WeakIdentityHashMap<K, V> create(final int initialCapacity) {
-        return new WeakIdentityHashMap<K, V>(initialCapacity);
-    }
-
-    public static <K, V> WeakIdentityHashMap<K, V> create(final int initialCapacity, final float growthFactor) {
-        return new WeakIdentityHashMap<K, V>(initialCapacity, growthFactor);
-    }
-
     private static final KeyWrapper<Object> NULL_KEY_WRAPPER = new KeyWrapper<Object>() {
         private final int identityHashCode = System.identityHashCode(null);
 
@@ -124,6 +111,18 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
             return identityHashCode;
         }
     };
+
+    public static <K, V> WeakIdentityHashMap<K, V> create() {
+        return new WeakIdentityHashMap<K, V>();
+    }
+
+    public static <K, V> WeakIdentityHashMap<K, V> create(final int initialCapacity) {
+        return new WeakIdentityHashMap<K, V>(initialCapacity);
+    }
+
+    public static <K, V> WeakIdentityHashMap<K, V> create(final int initialCapacity, final float growthFactor) {
+        return new WeakIdentityHashMap<K, V>(initialCapacity, growthFactor);
+    }
 
     private final ReferenceQueue<K> garbageCollectedRefs = new ReferenceQueue<K>();
     private final Map<KeyWrapper<K>, V> map;
@@ -206,10 +205,12 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     private void expungeStaleEntries() {
-        Reference<? extends K> weakKey;
-        while ((weakKey = garbageCollectedRefs.poll()) != null)
+        WeakKeyWrapper<K> weakKey;
+        while ((weakKey = (WeakKeyWrapper<K>) garbageCollectedRefs.poll()) != null) {
             map.remove(weakKey);
+        }
     }
 
     public V get(final Object key) {
@@ -234,8 +235,9 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
     public Set<K> keySet() {
         expungeStaleEntries();
         final Set<K> keySet = new IdentityHashSet<K>();
-        for (final KeyWrapper<K> ref : map.keySet())
+        for (final KeyWrapper<K> ref : map.keySet()) {
             keySet.add(ref.get());
+        }
         return Collections.unmodifiableSet(keySet);
     }
 
@@ -249,8 +251,9 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
 
     public void putAll(final Map<? extends K, ? extends V> m) {
         expungeStaleEntries();
-        for (final Entry<? extends K, ? extends V> e : m.entrySet())
+        for (final Entry<? extends K, ? extends V> e : m.entrySet()) {
             put(e.getKey(), e.getValue());
+        }
     }
 
     public V remove(final Object key) {
