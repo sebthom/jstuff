@@ -13,6 +13,7 @@
 package net.sf.jstuff.core.security;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -28,6 +29,10 @@ public class Base64Test extends TestCase {
         assertEquals("Hell", new String(Base64.decode("SGVsbA"), "UTF-8"));
         assertEquals(null, Base64.decode(null));
         assertEquals(0, Base64.decode("").length);
+        assertTrue(Arrays.equals(Base64.decode("A_"), Base64.decode("A/")));
+        assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+")));
+        assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+=")));
+        assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+==")));
         try {
             System.out.println(new String(Base64.decode("ÖÄÜ")));
             fail();

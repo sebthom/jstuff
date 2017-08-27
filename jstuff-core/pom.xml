@@ -23,7 +23,8 @@
                         <phase>process-classes</phase>
                         <configuration>
                             <target>
-                                <!-- delete the javax.xml.bind stubs after compilation, before testing -->
+                                <!-- delete the java.util/javax.xml.bind stubs after compilation, before testing -->
+                                <delete dir="${project.build.directory}/classes/java" />
                                 <delete dir="${project.build.directory}/classes/javax" />
                             </target>
                         </configuration>
@@ -42,7 +43,8 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <!-- exclude javax.xml.bind stubs -->
+                            <!-- exclude java.util/javax.xml.bind stubs -->
+                            <excludePackageNames>java.util</excludePackageNames>
                             <excludePackageNames>javax.xml.bind</excludePackageNames>
                         </configuration>
                     </execution>
@@ -52,7 +54,9 @@
                 <artifactId>maven-source-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <!-- exclude javax.xml.bind stubs -->
+                        <!-- exclude java.util and javax.xml.bind stubs -->
+                        <exclude>java/**/*</exclude>
+                        <exclude>java</exclude>
                         <exclude>javax/**/*</exclude>
                         <exclude>javax</exclude>
                     </excludes>

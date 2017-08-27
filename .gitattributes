@@ -2,6 +2,7 @@
 /LICENSE.txt -text
 /coding-conventions.txt -text
 jstuff-core/pom.xml -text
+jstuff-core/src/main/java/java/util/Base64.java -text
 jstuff-core/src/main/java/javax/xml/bind/DatatypeConverter.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/GCTracker.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/Strings.java -text
