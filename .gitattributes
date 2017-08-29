@@ -144,6 +144,10 @@ jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockSocket.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigationResult.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigatorDefaultImpl.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/profiler/CallTree.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/profiler/CodeLocation.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/profiler/Sampler.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/profiler/SamplingMethodProfiler.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ref/FinalRef.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ref/LazyInitializedRef.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ref/MutableRef.java -text
@@ -235,6 +239,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/localization/NumberHelperTest.java 
 jstuff-core/src/test/java/net/sf/jstuff/core/logging/LoggingTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/meta/MetaSerializationTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/net/NetUtilsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/profiler/SamplingMethodProfilerTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/AnnotationsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/DuckTypesTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/MethodsTest.java -text
