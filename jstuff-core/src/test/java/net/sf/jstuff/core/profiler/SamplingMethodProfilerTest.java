@@ -40,7 +40,7 @@ public class SamplingMethodProfilerTest extends TestCase {
             slowMethod();
         } finally {
             final CallTree ct = profiler.stop();
-            ct.toString(System.out, 3);
+            ct.toString(System.out, 100, 10);
         }
     }
 }

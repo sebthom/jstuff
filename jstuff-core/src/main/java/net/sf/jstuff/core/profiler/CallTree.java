@@ -45,12 +45,13 @@ public final class CallTree {
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         try {
-            toString(sb, -1);
+            toString(sb, -1, 0);
         } catch (final IOException ex) {}
         return sb.toString();
     }
 
-    private void toString(final Appendable out, final CallTree tree, final int indent, final long percent, int maxDepth) throws IOException {
+    private void toString(final Appendable out, final CallTree tree, final int indent, final long percent, int maxDepth, final int minPercent)
+            throws IOException {
         if (maxDepth == 0)
             return;
         maxDepth--;
@@ -70,19 +71,24 @@ public final class CallTree {
                 for (int i = 0; i < indent; i++) {
                     out.append(' ');
                 }
+                final long percentage = childTree.executingSeen * percent / totalSeen;
+                if (percentage < minPercent) {
+                    continue;
+                }
                 out.append(String.valueOf(childPercentage));
                 out.append("% (");
-                out.append(String.valueOf(childTree.executingSeen * percent / totalSeen));
+                out.append(String.valueOf(percentage));
                 out.append("% cpu) ");
                 out.append(childEntry.getKey().toString());
                 out.append(IOUtils.LINE_SEPARATOR);
-                toString(out, childTree, indent + INDENT, childPercentage, maxDepth);
+
+                toString(out, childTree, indent + INDENT, childPercentage, maxDepth, minPercent);
             }
         }
     }
 
-    public void toString(final Appendable out, final int maxDepth) throws IOException {
-        toString(out, this, 0, 100, maxDepth == 0 ? -1 : maxDepth);
+    public void toString(final Appendable out, final int maxDepth, final int minPercent) throws IOException {
+        toString(out, this, 0, 100, maxDepth == 0 ? -1 : maxDepth, minPercent);
     }
 
 }
