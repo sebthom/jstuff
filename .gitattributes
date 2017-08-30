@@ -106,6 +106,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/graphic/Images.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedInputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/BufferedOutputStreamExt.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/CharSequenceReader.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/io/EmptyInputStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/FastByteArrayInputStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/FastByteArrayOutputStream.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/io/FileModificationMonitor.java -text

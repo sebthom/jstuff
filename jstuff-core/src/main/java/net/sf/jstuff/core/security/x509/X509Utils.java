@@ -67,7 +67,7 @@ public abstract class X509Utils {
     private static final Logger LOG = Logger.create();
 
     public static final CertificateFactory CERTIFICATE_FACTORY;
-    
+
     private static final Pattern CRL_PATTERN = Pattern.compile("BEGIN X509 CRL-+\r?\n?(.*[^-])\r?\n?-+END X509 CRL", Pattern.DOTALL);
     private static final Pattern CERTIFICATE_PATTERN = Pattern.compile("BEGIN CERTIFICATE-+\r?\n?(.*[^-])\r?\n?-+END CERTIFICATE", Pattern.DOTALL);
     private static final Pattern PRIVATE_KEY_PATTERN = Pattern.compile("BEGIN PRIVATE KEY-+\r?\n?(.*[^-])\r?\n?-+END PRIVATE KEY", Pattern.DOTALL);
@@ -415,6 +415,28 @@ public abstract class X509Utils {
         return (RSAPublicKey) getPublicKeyFromPEM(pemContent, "RSA");
     }
 
+    /**
+     * Performs a case-insensitive comparison of the issuer DNs.
+     */
+    public static boolean isIssuerDN(final X509Certificate cert, String issuerDN) {
+        if (cert == null || issuerDN == null)
+            return false;
+
+        final String certDN = cert.getIssuerX500Principal().getName();
+        if (certDN.equalsIgnoreCase(issuerDN))
+            return true;
+
+        if (issuerDN.contains(", ")) {
+            final String[] parts = Strings.splitPreserveAllTokens(issuerDN, ',');
+            for (int i = 0; i < parts.length; i++) {
+                parts[i] = parts[i].trim();
+            }
+            issuerDN = Strings.join(parts);
+            return certDN.equalsIgnoreCase(issuerDN);
+        }
+        return false;
+    }
+
     public static boolean isSelfSignedCertificate(final X509Certificate cert) {
         Args.notNull("cert", cert);
         try {
@@ -424,6 +446,28 @@ public abstract class X509Utils {
         } catch (final GeneralSecurityException ex) {
             return false;
         }
+    }
+
+    /**
+     * Performs a case-insensitive comparison of the subject DNs.
+     */
+    public static boolean isSubjectDN(final X509Certificate cert, String subjectDN) {
+        if (cert == null || subjectDN == null)
+            return false;
+
+        final String certDN = cert.getSubjectX500Principal().getName();
+        if (certDN.equalsIgnoreCase(subjectDN))
+            return true;
+        
+        if (subjectDN.contains(", ")) {
+            final String[] parts = Strings.splitPreserveAllTokens(subjectDN, ',');
+            for (int i = 0; i < parts.length; i++) {
+                parts[i] = parts[i].trim();
+            }
+            subjectDN = Strings.join(parts);
+            return certDN.equalsIgnoreCase(subjectDN);
+        }
+        return false;
     }
 
     /**

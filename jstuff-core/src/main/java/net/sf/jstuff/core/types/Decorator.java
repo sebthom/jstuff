@@ -48,8 +48,9 @@ public interface Decorator<T> {
         }
 
         public void setWrapped(final T wrapped) {
+            Assert.isTrue(isWrappedSettable(), "Changing the wrapped object is not allowed.");
             Args.notNull("wrapped", wrapped);
-            Assert.isTrue(isWrappedSettable(), "Exchanging the wrapped object is not allowed.");
+            Assert.isFalse(wrapped == this, "[wrapped] must not be a self-reference.");
             this.wrapped = wrapped;
         }
     }
