@@ -190,6 +190,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/CompositeX509TrustMan
 jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/DelegatingX509KeyManager.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/security/x509/X509Utils.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/types/Composite.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/types/Decorator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/types/Disposable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/types/Identifiable.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/types/Named.java -text
