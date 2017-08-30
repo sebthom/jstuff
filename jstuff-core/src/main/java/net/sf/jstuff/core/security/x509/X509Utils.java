@@ -416,25 +416,43 @@ public abstract class X509Utils {
     }
 
     /**
-     * Performs a case-insensitive comparison of the issuer DNs.
+     * Performs a case-insensitive comparison of the DNs ignoring whitespaces between name components.
      */
-    public static boolean isIssuerDN(final X509Certificate cert, String issuerDN) {
-        if (cert == null || issuerDN == null)
+    @SuppressWarnings("null")
+    public static boolean isEqualDN(String dn1, String dn2) {
+        if (dn1 == dn2)
+            return true;
+        if (dn1 == null && dn2 != null || dn1 != null && dn2 == null)
             return false;
-
-        final String certDN = cert.getIssuerX500Principal().getName();
-        if (certDN.equalsIgnoreCase(issuerDN))
+        if (dn1.equalsIgnoreCase(dn2))
             return true;
 
-        if (issuerDN.contains(", ")) {
-            final String[] parts = Strings.splitPreserveAllTokens(issuerDN, ',');
+        if (dn1.contains(", ")) {
+            final String[] parts = Strings.splitPreserveAllTokens(dn1, ',');
             for (int i = 0; i < parts.length; i++) {
                 parts[i] = parts[i].trim();
             }
-            issuerDN = Strings.join(parts);
-            return certDN.equalsIgnoreCase(issuerDN);
+            dn1 = Strings.join(parts, ',');
         }
-        return false;
+
+        if (dn2.contains(", ")) {
+            final String[] parts = Strings.splitPreserveAllTokens(dn2, ',');
+            for (int i = 0; i < parts.length; i++) {
+                parts[i] = parts[i].trim();
+            }
+            dn2 = Strings.join(parts, ',');
+        }
+        return dn1.equalsIgnoreCase(dn2);
+    }
+
+    /**
+     * Performs a case-insensitive comparison of the issuer DNs.
+     */
+    public static boolean isIssuerDN(final X509Certificate cert, final String issuerDN) {
+        if (cert == null || issuerDN == null)
+            return false;
+
+        return isEqualDN(cert.getIssuerX500Principal().getName(), issuerDN);
     }
 
     public static boolean isSelfSignedCertificate(final X509Certificate cert) {
@@ -451,23 +469,11 @@ public abstract class X509Utils {
     /**
      * Performs a case-insensitive comparison of the subject DNs.
      */
-    public static boolean isSubjectDN(final X509Certificate cert, String subjectDN) {
+    public static boolean isSubjectDN(final X509Certificate cert, final String subjectDN) {
         if (cert == null || subjectDN == null)
             return false;
 
-        final String certDN = cert.getSubjectX500Principal().getName();
-        if (certDN.equalsIgnoreCase(subjectDN))
-            return true;
-        
-        if (subjectDN.contains(", ")) {
-            final String[] parts = Strings.splitPreserveAllTokens(subjectDN, ',');
-            for (int i = 0; i < parts.length; i++) {
-                parts[i] = parts[i].trim();
-            }
-            subjectDN = Strings.join(parts);
-            return certDN.equalsIgnoreCase(subjectDN);
-        }
-        return false;
+        return isEqualDN(cert.getSubjectX500Principal().getName(), subjectDN);
     }
 
     /**

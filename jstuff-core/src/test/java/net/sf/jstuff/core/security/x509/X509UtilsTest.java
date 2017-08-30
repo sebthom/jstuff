@@ -58,6 +58,14 @@ public class X509UtilsTest extends TestCase {
 
         System.out.println(X509Utils.getFingerprint(selfSignedCert));
         assertEquals(40, X509Utils.getFingerprint(selfSignedCert).length());
+    }
 
+    public void testIsEqualDN() {
+        assertTrue(X509Utils.isEqualDN("cn=Foo, o=BAR", "CN=foo,o=bar"));
+
+        assertFalse(X509Utils.isEqualDN("cn=Foo, o=BAR", null));
+        assertFalse(X509Utils.isEqualDN("cn=Foo, o=BAR", ""));
+        assertFalse(X509Utils.isEqualDN(null, "cn=Foo, o=BAR"));
+        assertFalse(X509Utils.isEqualDN("", "cn=Foo, o=BAR"));
     }
 }
