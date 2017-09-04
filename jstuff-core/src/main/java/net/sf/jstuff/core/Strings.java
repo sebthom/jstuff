@@ -812,8 +812,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
      *            right.
      * @return The leftmost characters in searchIn.
      *         The number of characters returned is determined by searchFor.
-     *         Returns "" if searchFor is not part of searchIn.
-     *         Returns "" if searchIn is null.
+     *         Returns searchIn if searchFor is not part of searchIn.
      */
     public static String substringBefore(final String searchIn, final char searchFor) {
         if (isEmpty(searchIn))
@@ -821,7 +820,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
         final int pos = searchIn.indexOf(searchFor);
         if (pos < 0)
-            return "";
+            return searchIn;
 
         return searchIn.substring(0, pos);
     }
