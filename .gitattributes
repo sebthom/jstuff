@@ -145,9 +145,9 @@ jstuff-core/src/main/java/net/sf/jstuff/core/net/ZippedBlockSocket.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigationResult.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigator.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ogn/ObjectGraphNavigatorDefaultImpl.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/profiler/AbstractThreadMXSampler.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/profiler/CallTree.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/profiler/CodeLocation.java -text
-jstuff-core/src/main/java/net/sf/jstuff/core/profiler/Sampler.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/profiler/SamplingMethodProfiler.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ref/FinalRef.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/ref/LazyInitializedRef.java -text

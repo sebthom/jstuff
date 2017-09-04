@@ -30,6 +30,8 @@ public class CodeLocation {
 
     @Override
     public boolean equals(final Object obj) {
+        if (obj == null || !(obj instanceof CodeLocation))
+            return false;
         final CodeLocation other = (CodeLocation) obj;
         return clazz.equals(other.clazz) && method.equals(other.method) && lineNumber == other.lineNumber;
     }
@@ -46,7 +48,7 @@ public class CodeLocation {
 
     @Override
     public String toString() {
-        final String typeFile = Strings.substringBefore(Strings.substringAfterLast(clazz, "."), "$") + ".java";
-        return clazz + "." + method + "(" + typeFile + ":" + lineNumber + ")";
+        final String typeFile = Strings.substringBefore(Strings.substringAfterLast(clazz, "."), '$') + ".java";
+        return clazz + '.' + method + '(' + typeFile + ':' + lineNumber + ')';
     }
 }

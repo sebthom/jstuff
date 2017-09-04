@@ -30,7 +30,7 @@ import net.sf.jstuff.core.validation.Assert;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Sampler {
+public abstract class AbstractThreadMXSampler {
     private static final Logger LOG = Logger.create();
 
     private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
@@ -61,20 +61,19 @@ public abstract class Sampler {
             final long startAt = System.currentTimeMillis();
             samples.add(threadMBean.getThreadInfo(threadMBean.getAllThreadIds(), Integer.MAX_VALUE));
             final long elapsed = System.currentTimeMillis() - startAt;
-            if (elapsed > samplingInterval)
-                if (!isWarningLogged) {
+            if (elapsed > samplingInterval && !isWarningLogged) {
                 isWarningLogged = true;
                 LOG.warn("Sampling interval of %s ms is too low. Sampling takes %s ms", samplingInterval, elapsed);
             }
         }
     };
 
-    public Sampler(final int samplingIntervalInMS) {
+    public AbstractThreadMXSampler(final int samplingIntervalInMS) {
         samplingInterval = samplingIntervalInMS;
         threadMBean = TMX;
     }
 
-    public Sampler(final int samplingIntervalInMS, final ThreadMXBean mbean) {
+    public AbstractThreadMXSampler(final int samplingIntervalInMS, final ThreadMXBean mbean) {
         samplingInterval = samplingIntervalInMS;
         threadMBean = mbean;
     }

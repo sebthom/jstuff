@@ -16,13 +16,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.jstuff.core.io.IOUtils;
+import net.sf.jstuff.core.Strings;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public final class CallTree {
     private static final int INDENT = 2;
+
     private long idleSeen = 0;
     private long executingSeen = 0;
     private final Map<CodeLocation, CallTree> children = new HashMap<CodeLocation, CallTree>(32);
@@ -52,8 +53,9 @@ public final class CallTree {
 
     private void toString(final Appendable out, final CallTree tree, final int indent, final long percent, int maxDepth, final int minPercent)
             throws IOException {
-        if (maxDepth == 0)
+        if (maxDepth == 0 || tree.children.isEmpty())
             return;
+
         maxDepth--;
 
         long totalSeen = 0;
@@ -61,33 +63,32 @@ public final class CallTree {
             totalSeen += ch.idleSeen;
             totalSeen += ch.executingSeen;
         }
-        if (totalSeen == 0)
-            return;
 
         for (final Map.Entry<CodeLocation, CallTree> childEntry : tree.children.entrySet()) {
+
             final CallTree childTree = childEntry.getValue();
             final long childPercentage = (childTree.idleSeen + childTree.executingSeen) * percent / totalSeen;
-            if (childPercentage > 0) {
+            if (childPercentage > 0 && childPercentage > minPercent) {
+                out.append(String.format("%3d%% | %3d%% | %3d%% | ", //
+                    childPercentage, //
+                    childTree.executingSeen * percent / totalSeen, //
+                    childTree.idleSeen * percent / totalSeen //
+                ));
                 for (int i = 0; i < indent; i++) {
                     out.append(' ');
                 }
-                final long percentage = childTree.executingSeen * percent / totalSeen;
-                if (percentage < minPercent) {
-                    continue;
-                }
-                out.append(String.valueOf(childPercentage));
-                out.append("% (");
-                out.append(String.valueOf(percentage));
-                out.append("% cpu) ");
                 out.append(childEntry.getKey().toString());
-                out.append(IOUtils.LINE_SEPARATOR);
+                out.append(Strings.NEW_LINE);
 
                 toString(out, childTree, indent + INDENT, childPercentage, maxDepth, minPercent);
             }
+
         }
     }
 
     public void toString(final Appendable out, final int maxDepth, final int minPercent) throws IOException {
+        out.append("total| cpu  | wait | location").append(Strings.NEW_LINE);
+        out.append("---------------------------------------").append(Strings.NEW_LINE);
         toString(out, this, 0, 100, maxDepth == 0 ? -1 : maxDepth, minPercent);
     }
 

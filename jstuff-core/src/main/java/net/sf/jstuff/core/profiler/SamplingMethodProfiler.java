@@ -26,14 +26,14 @@ import net.sf.jstuff.core.validation.Assert;
 public class SamplingMethodProfiler {
     private static final Logger LOG = Logger.create();
 
-    private final Sampler sampler;
+    private final AbstractThreadMXSampler sampler;
 
     private String profiledClassName;
     private String profiledMethod;
     private CallTree root;
 
     public SamplingMethodProfiler(final int samplingIntervalInMS) {
-        sampler = new Sampler(samplingIntervalInMS) {
+        sampler = new AbstractThreadMXSampler(samplingIntervalInMS) {
             @Override
             protected void onSample(final ThreadInfo[] sample) {
                 processSample(sample);
@@ -42,7 +42,7 @@ public class SamplingMethodProfiler {
     }
 
     public SamplingMethodProfiler(final int samplingIntervalInMS, final ThreadMXBean mbean) {
-        sampler = new Sampler(samplingIntervalInMS, mbean) {
+        sampler = new AbstractThreadMXSampler(samplingIntervalInMS, mbean) {
             @Override
             protected void onSample(final ThreadInfo[] sample) {
                 processSample(sample);
@@ -50,21 +50,20 @@ public class SamplingMethodProfiler {
         };
     }
 
-    protected void processSample(final ThreadInfo[] sample) {
-        for (final ThreadInfo ti : sample) {
-            if (ti.getLockName() != null) {
-                continue;
-            }
-            final boolean isThreadExecuting = ti.getThreadState() == State.RUNNABLE;
-            final StackTraceElement[] stack = ti.getStackTrace();
+    protected void processSample(final ThreadInfo[] threadsState) {
+        for (final ThreadInfo threadInfo : threadsState) {
+            final boolean isThreadExecuting = threadInfo.getThreadState() == State.RUNNABLE && threadInfo.getLockName() == null;
+
             CallTree child = null;
+
+            final StackTraceElement[] stack = threadInfo.getStackTrace();
             for (int i = stack.length - 1; i >= 0; i--) {
                 final StackTraceElement ste = stack[i];
-                if (child == null && ste.getClassName().equals(profiledClassName) && ste.getMethodName().equals(profiledMethod)) {
-                    child = root.markSeen(ste.getClassName(), ste.getMethodName(), 0, isThreadExecuting);
-                }
-
-                if (child != null) {
+                if (child == null) {
+                    if (ste.getClassName().equals(profiledClassName) && ste.getMethodName().equals(profiledMethod)) {
+                        child = root.markSeen(profiledClassName, profiledMethod, ste.getLineNumber(), isThreadExecuting);
+                    }
+                } else {
                     child = child.markSeen(ste.getClassName(), ste.getMethodName(), ste.getLineNumber(), isThreadExecuting);
                 }
             }
