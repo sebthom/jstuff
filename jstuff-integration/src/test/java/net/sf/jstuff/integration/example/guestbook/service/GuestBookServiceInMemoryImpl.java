@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.PagedListWithSortBy;
 import net.sf.jstuff.core.comparator.SortBy;
 import net.sf.jstuff.core.comparator.SortByPropertyComparator;
@@ -43,8 +42,9 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
 
     private static List<GuestBookEntry> toEntries(final Collection<GuestBookEntryEntity> entities) {
         final List<GuestBookEntry> list = newArrayList(entities.size());
-        for (final GuestBookEntryEntity e : entities)
+        for (final GuestBookEntryEntity e : entities) {
             list.add(GuestBookEntry.of(e));
+        }
         return list;
     }
 
@@ -111,8 +111,7 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
 
         return new PagedListWithSortBy<GuestBookEntry, String>(//
             GuestBookEntry.class, //
-            slice(sortInPlace(toEntries(CollectionUtils.filter(store.values(), property(GuestBookEntryEntity.class, "createdBy", equalTo(createdBy))))), start
-                    - 1, max), //
+            slice(sortInPlace(toEntries(filter(store.values(), property(GuestBookEntryEntity.class, "createdBy", equalTo(createdBy))))), start - 1, max), //
             start, //
             store.size() //
         );
@@ -123,8 +122,9 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
 
         int count = 0;
         for (final GuestBookEntryEntity e : store.values())
-            if (createdBy.equals(e.getCreatedBy()))
+            if (createdBy.equals(e.getCreatedBy())) {
                 count++;
+            }
         return count;
     }
 
@@ -140,8 +140,9 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
             return Collections.emptyList();
 
         int toIndex = fromIndex + maxElements;
-        if (toIndex >= elements.size())
+        if (toIndex >= elements.size()) {
             toIndex = elements.size();
+        }
         return elements.subList(fromIndex, toIndex);
     }
 
@@ -185,21 +186,23 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         store.remove(entity.getId());
 
         // remove from parent
-        if (entity.getParent() != null)
+        if (entity.getParent() != null) {
             entity.getParent().getResponses().remove(entity);
+        }
 
         // trigger child removal
-        for (final GuestBookEntryEntity response : entity.getResponses())
+        for (final GuestBookEntryEntity response : entity.getResponses()) {
             remove(response);
+        }
     }
 
     public int removeEntriesOfAuthor(final String createdBy) throws PermissionDeniedException {
         Args.notNull("createdBy", createdBy);
 
-        final List<GuestBookEntryEntity> entities = CollectionUtils.filter(store.values(), property(GuestBookEntryEntity.class, "createdBy", equalTo(
-            createdBy)));
-        for (final GuestBookEntryEntity e : entities)
+        final Collection<GuestBookEntryEntity> entities = filter(store.values(), property(GuestBookEntryEntity.class, "createdBy", equalTo(createdBy)));
+        for (final GuestBookEntryEntity e : entities) {
             remove(e);
+        }
         return entities.size();
     }
 
