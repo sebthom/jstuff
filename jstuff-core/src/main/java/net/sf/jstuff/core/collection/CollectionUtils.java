@@ -193,17 +193,55 @@ public abstract class CollectionUtils {
     }
 
     /**
-     * Returns a new list with all items accepted by the filter
+     * Returns a new list or set with all items accepted by the filter
      *
      * @throws IllegalArgumentException if <code>accept == null</code>
      */
-    public static <T> List<T> filter(final Collection<T> collection, final Accept<T> accept) throws IllegalArgumentException {
+    public static <T> Collection<T> filter(final Collection<T> collection, final Accept<T> accept) throws IllegalArgumentException {
         if (collection == null)
             return null;
 
         Args.notNull("accept", accept);
 
-        final List<T> result = newArrayList();
+        final Collection<T> result = collection instanceof Set ? new HashSet<T>() : new ArrayList<T>();
+        for (final T item : collection)
+            if (accept.accept(item)) {
+                result.add(item);
+            }
+        return result;
+    }
+
+    /**
+     * Returns a new list with all items accepted by the filter
+     *
+     * @throws IllegalArgumentException if <code>accept == null</code>
+     */
+    public static <T> List<T> filter(final List<T> collection, final Accept<T> accept) throws IllegalArgumentException {
+        if (collection == null)
+            return null;
+
+        Args.notNull("accept", accept);
+
+        final List<T> result = new ArrayList<T>();
+        for (final T item : collection)
+            if (accept.accept(item)) {
+                result.add(item);
+            }
+        return result;
+    }
+
+    /**
+     * Returns a new set with all items accepted by the filter
+     *
+     * @throws IllegalArgumentException if <code>accept == null</code>
+     */
+    public static <T> Set<T> filter(final Set<T> collection, final Accept<T> accept) throws IllegalArgumentException {
+        if (collection == null)
+            return null;
+
+        Args.notNull("accept", accept);
+
+        final Set<T> result = new HashSet<T>();
         for (final T item : collection)
             if (accept.accept(item)) {
                 result.add(item);
