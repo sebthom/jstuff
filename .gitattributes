@@ -161,6 +161,7 @@ jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Fields.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Members.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Methods.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Proxies.java -text
+jstuff-core/src/main/java/net/sf/jstuff/core/reflection/Resources.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableConstructor.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableField.java -text
 jstuff-core/src/main/java/net/sf/jstuff/core/reflection/SerializableMethod.java -text
@@ -245,6 +246,7 @@ jstuff-core/src/test/java/net/sf/jstuff/core/profiler/SamplingMethodProfilerTest
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/AnnotationsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/DuckTypesTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/MethodsTest.java -text
+jstuff-core/src/test/java/net/sf/jstuff/core/reflection/ResourcesTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/StackTraceTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesGenericsTest.java -text
 jstuff-core/src/test/java/net/sf/jstuff/core/reflection/TypesMixinTest.java -text
