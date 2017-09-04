@@ -143,7 +143,7 @@ public abstract class Types {
         final ClassLoader cl1 = Types.class.getClassLoader();
         if (cl1 != null) {
             try {
-                return (Class<T>) Class.forName(className, false, Types.class.getClassLoader());
+                return (Class<T>) Class.forName(className, false, cl1);
             } catch (final ClassNotFoundException ex) {
                 // ignore
             }
@@ -152,7 +152,7 @@ public abstract class Types {
         final ClassLoader cl2 = Thread.currentThread().getContextClassLoader();
         if (cl1 != cl2 && cl2 != null) {
             try {
-                return (Class<T>) Class.forName(className, false, Thread.currentThread().getContextClassLoader());
+                return (Class<T>) Class.forName(className, false, cl2);
             } catch (final ClassNotFoundException ex) {
                 // ignore
             }
