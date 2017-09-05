@@ -492,6 +492,9 @@
                     <version>2.19.1</version>
                     <configuration>
 	                    <argLine>-Duser.language=en -Duser.region=US</argLine>
+                        <useManifestOnlyJar>true</useManifestOnlyJar>
+                        <useSystemClassLoader>true</useSystemClassLoader>
+                        <forkCount>0</forkCount>
                         <excludes>
                             <exclude>**/*ITest.java</exclude>
                         </excludes>

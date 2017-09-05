@@ -23,7 +23,7 @@ public class ResourcesTest extends TestCase {
     public void testResources() {
         {
             boolean foundStringsClass = false;
-            for (final Resource r : Resources.findResourcesByGlobPattern("**/*.class")) {
+            for (final Resource r : Resources.findResourcesByGlobPattern("**/*.class", ClassLoader.getSystemClassLoader())) {
                 if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
                     foundStringsClass = true;
                 }

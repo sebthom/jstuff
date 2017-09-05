@@ -593,6 +593,23 @@ public abstract class Methods extends Members {
     }
 
     @SuppressWarnings("unchecked")
+    public static <T> T invoke(final Object obj, final String methodName, final Object... args) throws InvokingMethodFailedException {
+        Args.notNull("obj", obj);
+        Args.notNull("methodName", methodName);
+
+        final Method method = Methods.findAnyCompatible(obj.getClass(), methodName, args);
+        if (method == null)
+            throw new IllegalArgumentException("No method [" + methodName + "] with compatible signature found.");
+
+        try {
+            ensureAccessible(method);
+            return (T) method.invoke(obj, args);
+        } catch (final Exception ex) {
+            throw new InvokingMethodFailedException(method, obj, ex);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     public static <T> T invoke(final Object obj, final Method method, final Object... args) throws InvokingMethodFailedException {
         Args.notNull("obj", obj);
         Args.notNull("method", method);

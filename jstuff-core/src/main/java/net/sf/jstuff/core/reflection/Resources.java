@@ -14,24 +14,30 @@ package net.sf.jstuff.core.reflection;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.functional.Accept;
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
@@ -41,6 +47,10 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Resources {
+
+    private interface ClassLoaderHandler {
+        boolean handle(Accept<String> nameFilter, ClassLoader cl, Set<Resource> result);
+    }
 
     private static enum ClassPathEntryType {
         UNSUPPORTED,
@@ -76,12 +86,12 @@ public abstract class Resources {
          * the same exact same JAR or folder is referenced by two classloaders.
          */
         @Override
-        public boolean equals(final Object obj) {
-            if (this == obj)
+        public boolean equals(final Object o) {
+            if (this == o)
                 return true;
-            if (obj == null || !(obj instanceof Resource))
+            if (o == null || !(o instanceof Resource))
                 return false;
-            final Resource other = (Resource) obj;
+            final Resource other = (Resource) o;
             return name.equals(other.name) && uri.equals(other.uri);
         }
 
@@ -100,6 +110,62 @@ public abstract class Resources {
         }
     }
 
+    private static final List<ClassLoaderHandler> CLASS_LOADER_HANDLERS = new ArrayList<ClassLoaderHandler>();
+
+    static {
+        // URL ClassLoader
+        CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
+            public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
+                if (!(cl instanceof URLClassLoader))
+                    return false;
+
+                final URL[] urls = ((URLClassLoader) cl).getURLs();
+                if (urls != null) {
+                    for (final URL url : urls) {
+                        try {
+                            _scanClassPathEntry(url, nameFilter, cl, result);
+                        } catch (final Exception ex) {
+                            LOG.error(ex);
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+
+        // IBM ClassLoader
+        if (Types.isAvailable("com.ibm.ws.classloader.CompoundClassLoader") || //
+                Types.isAvailable("com.ibm.ws.classloader.ProtectionClassLoader") || //
+                Types.isAvailable("com.ibm.ws.bootstrap.ExtClassLoader")//
+        ) {
+            CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
+                public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
+                    boolean isIbmCl = false;
+                    for (final Class<?> iface : Types.getInterfacesRecursive(cl.getClass())) {
+                        if (iface.getName().equals("com.ibm.ws.classloader.WsClassLoader")) {
+                            isIbmCl = true;
+                        }
+                    }
+                    if (!isIbmCl)
+                        return false;
+
+                    final String cp = Methods.invoke(cl, "getClassPath");
+                    if (cp != null) {
+                        for (final String path : Strings.split(cp, File.pathSeparatorChar)) {
+                            try {
+                                _scanClassPathEntry(new File(path).toURI().toURL(), nameFilter, cl, result);
+                            } catch (final Exception ex) {
+                                LOG.error(ex);
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+            });
+        }
+    }
+
     private static Method eclipseBundleResolveMethod;
 
     static {
@@ -113,8 +179,10 @@ public abstract class Resources {
 
     private static Logger LOG = Logger.create();
 
-    private static void _scanClassPathEntry(final URL url, final SortedSet<Resource> result, final ClassLoader cl, final Accept<String> nameFilter)
+    private static void _scanClassPathEntry(final URL url, final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result)
             throws URISyntaxException, IOException {
+        LOG.debug("Scanning classpath entry [%s] of classloader [%s]...", url, cl);
+
         ClassPathEntryType type = ClassPathEntryType.UNSUPPORTED;
         if ("jar".equals(url.getProtocol())) {
             type = ClassPathEntryType.JAR;
@@ -146,7 +214,7 @@ public abstract class Resources {
                     break;
                 }
                 final URL resolvedURL = (URL) Methods.invoke(null, eclipseBundleResolveMethod, url.getPath());
-                _scanClassPathEntry(resolvedURL, result, cl, nameFilter);
+                _scanClassPathEntry(resolvedURL, nameFilter, cl, result);
                 break;
             }
             case DIRECTORY: {
@@ -176,6 +244,55 @@ public abstract class Resources {
         }
     }
 
+    /**
+     * Handling Maven Surefire classpaths
+     *
+     * http://maven.apache.org/plugins-archives/maven-surefire-plugin-2.11/examples/class-loading.html
+     */
+    private static void _scanSurefireClasspath(final Accept<String> nameFilter, final Set<Resource> result) {
+
+        /*
+         * when forkCount > 0 and useSystemClassLoader = true and useManifestOnlyJar=true (which is the default)
+         */
+        final String surefireRealCP = System.getProperty("surefire.real.class.path");
+        if (surefireRealCP != null) {
+            LOG.debug("Maven Surefire run (forked + manifest-only-jar) detected.");
+            JarFile surefirebooterJar = null;
+            InputStream manifestIS = null;
+            try {
+                surefirebooterJar = new JarFile(surefireRealCP);
+                manifestIS = surefirebooterJar.getInputStream(surefirebooterJar.getEntry("META-INF/MANIFEST.MF"));
+                final String[] classPath = Strings.split(new Manifest(manifestIS).getMainAttributes().getValue("Class-Path"), ' ');
+                for (final String classPathEntry : classPath) {
+                    _scanClassPathEntry(new URL(classPathEntry), nameFilter, ClassLoader.getSystemClassLoader(), result);
+                }
+                surefirebooterJar.close();
+            } catch (final Exception ex) {
+                LOG.error(ex);
+            } finally {
+                IOUtils.closeQuietly(manifestIS);
+                IOUtils.closeQuietly(surefirebooterJar);
+            }
+            return;
+        }
+
+        /*
+         * when forkCount = 0
+         */
+        final String surefireTestCP = System.getProperty("surefire.test.class.path");
+        if (surefireTestCP != null && System.getProperty("maven.home") != null) {
+            LOG.debug("Maven Surefire run (non-forked) detected.");
+            final String[] classPath = Strings.split(surefireTestCP, File.pathSeparatorChar);
+            for (final String classPathEntry : classPath) {
+                try {
+                    _scanClassPathEntry(new File(classPathEntry).toURI().toURL(), nameFilter, ClassLoader.getSystemClassLoader(), result);
+                } catch (final Exception ex) {
+                    LOG.error(ex);
+                }
+            }
+        }
+    }
+
     public static SortedSet<Resource> findResources(final Accept<String> nameFilter) {
         return findResources(nameFilter, Thread.currentThread().getContextClassLoader());
     }
@@ -185,20 +302,27 @@ public abstract class Resources {
         Args.notNull("nameFilter", nameFilter);
 
         final SortedSet<Resource> result = new TreeSet<Resource>();
+
+        _scanSurefireClasspath(nameFilter, result);
+
+        /*
+         * regular classloader scan
+         */
         while (searchScope != null) {
-            if (searchScope instanceof URLClassLoader) {
-                final URLClassLoader cl = (URLClassLoader) searchScope;
-                final URL[] urls = cl.getURLs();
-                if (urls != null) {
-                    for (final URL url : urls) {
-                        try {
-                            _scanClassPathEntry(url, result, cl, nameFilter);
-                        } catch (final Exception ex) {
-                            LOG.error(ex);
-                        }
+
+            boolean handled = false;
+            for (final ClassLoaderHandler clHandler : CLASS_LOADER_HANDLERS) {
+                try {
+                    if (clHandler.handle(nameFilter, searchScope, result)) {
+                        handled = true;
+                        break;
                     }
+                } catch (final Exception ex) {
+                    LOG.error(ex);
                 }
-            } else {
+            }
+
+            if (!handled) {
                 LOG.warn("Unsupported classloader type [%s]", searchScope);
             }
 
@@ -206,6 +330,7 @@ public abstract class Resources {
         }
 
         return result;
+
     }
 
     public static Collection<Resource> findResources(final Pattern namePattern) {
