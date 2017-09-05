@@ -49,7 +49,7 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Resources {
 
     private interface ClassLoaderHandler {
-        boolean handle(Accept<String> nameFilter, ClassLoader cl, Set<Resource> result);
+        boolean handle(Accept<String> nameFilter, ClassLoader cl, Set<Resource> result) throws Exception;
     }
 
     private static enum ClassPathEntryType {
@@ -111,10 +111,13 @@ public abstract class Resources {
         }
     }
 
-    private static final List<ClassLoaderHandler> CLASS_LOADER_HANDLERS = new ArrayList<ClassLoaderHandler>();
+    private static Logger LOG = Logger.create();
 
+    private static final List<ClassLoaderHandler> CLASS_LOADER_HANDLERS = new ArrayList<ClassLoaderHandler>();
     static {
-        // URL ClassLoader
+        /*
+         * URL Classloader
+         */
         CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
             public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
                 if (!(cl instanceof URLClassLoader))
@@ -134,30 +137,65 @@ public abstract class Resources {
             }
         });
 
-        // IBM ClassLoader
-        if (Types.isAvailable("com.ibm.ws.classloader.CompoundClassLoader") || //
-                Types.isAvailable("com.ibm.ws.classloader.ProtectionClassLoader") || //
-                Types.isAvailable("com.ibm.ws.bootstrap.ExtClassLoader")//
-        ) {
+        /*
+         * IBM WebSphere Classloader
+         */
+        final Class<?> websphereClassLoader = Types.find("com.ibm.ws.classloader.WsClassLoader");
+        if (websphereClassLoader != null) {
+            LOG.info("IBM WebSphere Classloaders detected.");
             CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
                 public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
-                    boolean isIbmCl = false;
-                    for (final Class<?> iface : Types.getInterfacesRecursive(cl.getClass())) {
-                        if (iface.getName().equals("com.ibm.ws.classloader.WsClassLoader")) {
-                            isIbmCl = true;
-                        }
-                    }
-                    if (!isIbmCl)
+                    if (!Types.isAssignableTo(cl.getClass(), websphereClassLoader))
                         return false;
 
                     final String cp = Methods.invoke(cl, "getClassPath");
-                    if (cp != null) {
-                        for (final String path : Strings.split(cp, File.pathSeparatorChar)) {
-                            try {
-                                _scanClassPathEntry(new File(path).toURI().toURL(), nameFilter, cl, result);
-                            } catch (final Exception ex) {
-                                LOG.error(ex);
-                            }
+                    if (cp == null)
+                        return true;
+
+                    for (final String path : Strings.split(cp, File.pathSeparatorChar)) {
+                        try {
+                            _scanClassPathEntry(new File(path).toURI().toURL(), nameFilter, cl, result);
+                        } catch (final Exception ex) {
+                            LOG.error(ex);
+                        }
+                    }
+
+                    return true;
+                }
+            });
+        }
+
+        /*
+         * Eclipse Classloader
+         */
+        final Class<?> eclipseClassLoader = Types.find("org.eclipse.osgi.baseadaptor.loader.BaseClassLoader");
+        if (eclipseClassLoader != null) {
+            CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
+                public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
+                    if (!Types.isAssignableTo(cl.getClass(), eclipseClassLoader))
+                        return false;
+
+                    final Object cpMgr = Methods.invoke(cl, "getClasspathManager");
+                    final /*ClasspathEntry*/Object[] cp = (Object[]) Methods.invoke(cpMgr, "getHostClasspathEntries");
+                    if (cp == null)
+                        return true;
+
+                    for (final /*ClasspathEntry*/Object entry : cp) {
+
+                        final /*BundleFile*/Object bundleFile = Methods.invoke(entry, "getBundleFile");
+                        if (bundleFile == null) {
+                            continue;
+                        }
+
+                        final File baseFile = Methods.invoke(bundleFile, "getBaseFile");
+                        if (baseFile == null) {
+                            continue;
+                        }
+
+                        try {
+                            _scanClassPathEntry(baseFile.toURI().toURL(), nameFilter, cl, result);
+                        } catch (final Exception ex) {
+                            LOG.error(ex);
                         }
                     }
 
@@ -167,18 +205,17 @@ public abstract class Resources {
         }
     }
 
-    private static Method eclipseBundleResolveMethod;
-
+    private static final Method ECLIPSE_BUNDLE_RESOLVER;
     static {
+        Method eclipseBundleResolve = null;
         try {
             final Class<?> fileLocatorClass = Types.find("org.eclipse.core.runtime.FileLocator");
-            eclipseBundleResolveMethod = fileLocatorClass.getMethod("resolve", URL.class);
+            eclipseBundleResolve = fileLocatorClass.getMethod("resolve", URL.class);
         } catch (final Throwable ex) {
-            eclipseBundleResolveMethod = null;
+            LOG.debug(ex);
         }
+        ECLIPSE_BUNDLE_RESOLVER = eclipseBundleResolve;
     }
-
-    private static Logger LOG = Logger.create();
 
     private static void _scanClassPathEntry(final URL url, final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result)
             throws URISyntaxException, IOException {
@@ -198,8 +235,8 @@ public abstract class Resources {
             }
         } else if (url.getProtocol().startsWith("bundle")) {
             // bundle://         --> Felix, Knopflerfish
-            // bundleresource:// --> Equinox
             // bundleentry://    --> Equinox
+            // bundleresource:// --> Equinox
             type = ClassPathEntryType.BUNDLE;
         }
 
@@ -213,11 +250,11 @@ public abstract class Resources {
                 break;
             }
             case BUNDLE: {
-                if (eclipseBundleResolveMethod == null) {
+                if (ECLIPSE_BUNDLE_RESOLVER == null) {
                     LOG.warn("Unsupported classpath entry type [%s]", url);
                     break;
                 }
-                final URL resolvedURL = (URL) Methods.invoke(null, eclipseBundleResolveMethod, url.getPath());
+                final URL resolvedURL = (URL) Methods.invoke(null, ECLIPSE_BUNDLE_RESOLVER, url.getPath());
                 _scanClassPathEntry(resolvedURL, nameFilter, cl, result);
                 break;
             }
