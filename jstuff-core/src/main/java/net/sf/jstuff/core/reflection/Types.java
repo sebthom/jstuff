@@ -138,6 +138,8 @@ public abstract class Types {
             return (Class<T>) Class.forName(className, false, null);
         } catch (final ClassNotFoundException ex) {
             // ignore
+        } catch (final LinkageError ex) {
+            LOG.debug(ex);
         }
 
         final ClassLoader cl1 = Types.class.getClassLoader();
@@ -146,6 +148,8 @@ public abstract class Types {
                 return (Class<T>) Class.forName(className, false, cl1);
             } catch (final ClassNotFoundException ex) {
                 // ignore
+            } catch (final LinkageError ex) {
+                LOG.debug(ex);
             }
         }
 
@@ -155,6 +159,8 @@ public abstract class Types {
                 return (Class<T>) Class.forName(className, false, cl2);
             } catch (final ClassNotFoundException ex) {
                 // ignore
+            } catch (final LinkageError ex) {
+                LOG.debug(ex);
             }
         }
         return null;
