@@ -53,10 +53,11 @@ public abstract class Resources {
     }
 
     private static enum ClassPathEntryType {
-        UNSUPPORTED,
-        JAR,
         BUNDLE,
-        DIRECTORY;
+        DIRECTORY,
+        JAR,
+        NOT_SUPPORTED,
+        NOT_EXISTING;
     }
 
     /**
@@ -183,11 +184,14 @@ public abstract class Resources {
             throws URISyntaxException, IOException {
         LOG.debug("Scanning classpath entry [%s] of classloader [%s]...", url, cl);
 
-        ClassPathEntryType type = ClassPathEntryType.UNSUPPORTED;
+        ClassPathEntryType type = ClassPathEntryType.NOT_SUPPORTED;
         if ("jar".equals(url.getProtocol())) {
             type = ClassPathEntryType.JAR;
         } else if ("file".equals(url.getProtocol())) {
-            if (new File(url.getPath()).isDirectory()) {
+            final File file = new File(url.getPath());
+            if (!file.exists()) {
+                type = ClassPathEntryType.NOT_EXISTING;
+            } else if (file.isDirectory()) {
                 type = ClassPathEntryType.DIRECTORY;
             } else if (url.getPath().endsWith(".jar")) {
                 type = ClassPathEntryType.JAR;
@@ -237,6 +241,10 @@ public abstract class Resources {
                         }
                     }
                 }
+                break;
+            }
+            case NOT_EXISTING: {
+                LOG.debug("Not existing classpath entry [%s]", url);
                 break;
             }
             default:
