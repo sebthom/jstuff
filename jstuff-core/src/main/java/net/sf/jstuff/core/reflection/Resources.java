@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -242,7 +243,13 @@ public abstract class Resources {
 
         switch (type) {
             case JAR: {
-                final String filePath = Strings.substringBefore(url.getPath(), "!/");
+                String filePath;
+                if ("jar".equals(url.getProtocol())) {
+                    filePath = ((JarURLConnection) url.openConnection()).getJarFileURL().getFile();
+                } else {
+                    filePath = url.getPath();
+                }
+
                 for (final JarEntry entry : Enumerations.toIterable(new JarFile(filePath).entries())) {
                     if (!entry.isDirectory() && nameFilter.accept(entry.getName())) {
                         result.add(new Resource(entry.getName(), new URL("jar", "", url.toURI() + "!/" + entry.getName()), cl));
