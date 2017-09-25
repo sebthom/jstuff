@@ -242,7 +242,8 @@ public abstract class Resources {
 
         switch (type) {
             case JAR: {
-                for (final JarEntry entry : Enumerations.toIterable(new JarFile(url.getPath()).entries())) {
+                final String filePath = Strings.substringBefore(url.getPath(), "!/");
+                for (final JarEntry entry : Enumerations.toIterable(new JarFile(filePath).entries())) {
                     if (!entry.isDirectory() && nameFilter.accept(entry.getName())) {
                         result.add(new Resource(entry.getName(), new URL("jar", "", url.toURI() + "!/" + entry.getName()), cl));
                     }
