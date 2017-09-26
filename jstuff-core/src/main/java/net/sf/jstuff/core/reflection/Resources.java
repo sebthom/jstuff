@@ -243,9 +243,22 @@ public abstract class Resources {
 
         switch (type) {
             case JAR: {
-                String filePath;
+                String filePath = null;
                 if ("jar".equals(url.getProtocol())) {
-                    filePath = ((JarURLConnection) url.openConnection()).getJarFileURL().getFile();
+                    try {
+                        filePath = ((JarURLConnection) url.openConnection()).getJarFileURL().getFile();
+                    } catch (final Exception ex) {
+                        LOG.debug(ex);
+                        filePath = url.getPath();
+                        if (filePath.startsWith("file:///")) {
+                            filePath = filePath.substring(7);
+                        } else if (filePath.startsWith("file://")) {
+                            filePath = filePath.substring(6);
+                        } else if (filePath.startsWith("file:/")) {
+                            filePath = filePath.substring(5);
+                        }
+                        filePath = Strings.substringBefore(filePath, "!/");
+                    }
                 } else {
                     filePath = url.getPath();
                 }
