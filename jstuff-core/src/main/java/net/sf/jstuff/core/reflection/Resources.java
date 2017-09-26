@@ -169,11 +169,11 @@ public abstract class Resources {
         /*
          * Eclipse Classloader
          */
-        final Class<?> eclipseClassLoader = Types.find("org.eclipse.osgi.baseadaptor.loader.BaseClassLoader");
-        if (eclipseClassLoader != null) {
+        final Class<?> eclipseBaseClassLoaderClass = Types.find("org.eclipse.osgi.baseadaptor.loader.BaseClassLoader");
+        if (eclipseBaseClassLoaderClass != null) {
             CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
                 public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
-                    if (!Types.isAssignableTo(cl.getClass(), eclipseClassLoader))
+                    if (!Types.isAssignableTo(cl.getClass(), eclipseBaseClassLoaderClass))
                         return false;
 
                     final Object cpMgr = Methods.invoke(cl, "getClasspathManager");
@@ -211,7 +211,9 @@ public abstract class Resources {
         Method eclipseBundleResolve = null;
         try {
             final Class<?> fileLocatorClass = Types.find("org.eclipse.core.runtime.FileLocator");
-            eclipseBundleResolve = fileLocatorClass.getMethod("resolve", URL.class);
+            if (fileLocatorClass != null) {
+                eclipseBundleResolve = fileLocatorClass.getMethod("resolve", URL.class);
+            }
         } catch (final Throwable ex) {
             LOG.debug(ex);
         }
