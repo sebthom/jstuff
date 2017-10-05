@@ -102,6 +102,27 @@ public abstract class Fields extends Members {
 
     /**
      * @param obj specify <code>null</code> for static fields
+     * @return null if field not found
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T read(final Object obj, final String fieldName) throws AccessingFieldValueFailedException {
+        Args.notNull("obj", obj);
+        Args.notNull("field", fieldName);
+
+        final Field field = findRecursive(obj.getClass(), fieldName);
+        if (field == null)
+            return null;
+
+        try {
+            ensureAccessible(field);
+            return (T) field.get(obj);
+        } catch (final Exception ex) {
+            throw new AccessingFieldValueFailedException(field, obj, ex);
+        }
+    }
+
+    /**
+     * @param obj specify <code>null</code> for static fields
      */
     public static void write(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException {
         Args.notNull("field", field);
