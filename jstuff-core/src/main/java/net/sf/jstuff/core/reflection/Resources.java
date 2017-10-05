@@ -40,6 +40,7 @@ import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.functional.Accept;
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.ogn.ObjectGraphNavigatorDefaultImpl;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -153,14 +154,60 @@ public abstract class Resources {
                     if (cp == null)
                         return true;
 
-                    for (final String path : Strings.split(cp, File.pathSeparatorChar)) {
+                    for (final String classPathEntry : Strings.split(cp, File.pathSeparatorChar)) {
                         try {
-                            _scanClassPathEntry(new File(path).toURI().toURL(), nameFilter, cl, result);
+                            _scanClassPathEntry(new File(classPathEntry).toURI().toURL(), nameFilter, cl, result);
                         } catch (final Exception ex) {
                             LOG.error(ex);
                         }
                     }
+                    return true;
+                }
+            });
+        }
 
+        /*
+         * IBM WebSphere Liberty Classloader
+         */
+        final Class<?> websphereLibertyClassLoader;
+        {
+            Class<?> cl = null;
+            try {
+                cl = Thread.currentThread().getContextClassLoader().getClass().getClassLoader().loadClass(
+                    "com.ibm.ws.classloading.internal.ContainerClassLoader");
+            } catch (final ClassNotFoundException ex) {
+                // ignore
+            } catch (final NoClassDefFoundError ex) {
+                LOG.debug(ex);
+            }
+            websphereLibertyClassLoader = cl;
+        }
+
+        if (websphereLibertyClassLoader != null) {
+            LOG.info("IBM WebSphere Liberty Classloaders detected.");
+            CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
+                public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
+                    if (!Types.isAssignableTo(cl.getClass(), websphereLibertyClassLoader))
+                        return false;
+
+                    final List<?/*ContainerClassLoader.UniversalContainer*/> classPathEntries = (List<?>) ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(
+                        cl, "smartClassPath.classPath");
+                    if (classPathEntries != null) {
+                        for (final Object classPathEntry : classPathEntries) {
+                            final Collection<URL> urls = ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(classPathEntry,
+                                "container.URLs" /*com.ibm.wsspi.adaptable.module.Container#getURLs()*/);
+
+                            if (urls != null) {
+                                for (final URL url : urls) {
+                                    try {
+                                        _scanClassPathEntry(url, nameFilter, cl, result);
+                                    } catch (final Exception ex) {
+                                        LOG.error(ex);
+                                    }
+                                }
+                            }
+                        }
+                    }
                     return true;
                 }
             });
@@ -176,30 +223,21 @@ public abstract class Resources {
                     if (!Types.isAssignableTo(cl.getClass(), eclipseBaseClassLoaderClass))
                         return false;
 
-                    final Object cpMgr = Methods.invoke(cl, "getClasspathManager");
-                    final /*ClasspathEntry*/Object[] cp = (Object[]) Methods.invoke(cpMgr, "getHostClasspathEntries");
-                    if (cp == null)
-                        return true;
+                    final Object/*ClasspathEntry*/[] classPathEntry = (Object[]) ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(cl,
+                        "classpathManager.hostClasspathEntries");
 
-                    for (final /*ClasspathEntry*/Object entry : cp) {
-
-                        final /*BundleFile*/Object bundleFile = Methods.invoke(entry, "getBundleFile");
-                        if (bundleFile == null) {
-                            continue;
-                        }
-
-                        final File baseFile = Methods.invoke(bundleFile, "getBaseFile");
-                        if (baseFile == null) {
-                            continue;
-                        }
-
-                        try {
-                            _scanClassPathEntry(baseFile.toURI().toURL(), nameFilter, cl, result);
-                        } catch (final Exception ex) {
-                            LOG.error(ex);
+                    if (classPathEntry != null) {
+                        for (final Object/*ClasspathEntry*/ entry : classPathEntry) {
+                            final Object baseFile = ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(entry, "bundleFile.baseFile");
+                            if (baseFile instanceof File) {
+                                try {
+                                    _scanClassPathEntry(((File) baseFile).toURI().toURL(), nameFilter, cl, result);
+                                } catch (final Exception ex) {
+                                    LOG.error(ex);
+                                }
+                            }
                         }
                     }
-
                     return true;
                 }
             });
