@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
+ * Thomschke.
+ *
+ * All Rights Reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Sebastian Thomschke - initial implementation.
+ *******************************************************************************/
 package net.sf.jstuff.integration.rest;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
@@ -10,6 +22,9 @@ import net.sf.jstuff.core.collection.MapWith;
 import net.sf.jstuff.core.collection.MapWithLists;
 import net.sf.jstuff.integration.spring.SpringBeanParanamer;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public class RestResourceActionRegistry {
     private final MapWith<HttpRequestMethod, MapWithLists<String, RestResourceAction>> actions = new MapWith<HttpRequestMethod, MapWithLists<String, RestResourceAction>>() {
         private static final long serialVersionUID = 1L;
@@ -50,9 +65,11 @@ public class RestResourceActionRegistry {
 
     public List<RestResourceAction> getAllResourceActions() {
         final List<RestResourceAction> coll = newArrayList();
-        for (final MapWithLists<String, RestResourceAction> actionsByMethod : actions.values())
-            for (final List<RestResourceAction> actionsByResourceId : actionsByMethod.values())
+        for (final MapWithLists<String, RestResourceAction> actionsByMethod : actions.values()) {
+            for (final List<RestResourceAction> actionsByResourceId : actionsByMethod.values()) {
                 coll.addAll(actionsByResourceId);
+            }
+        }
         return coll;
     }
 

@@ -12,42 +12,28 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.rest;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
- * http://www.restapitutorial.com/lessons/httpmethods.html
- *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public enum HttpRequestMethod {
+@Target({ ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+public @interface REST_PATCH {
+    /**
+     * POST resource id for clients not supporting PATCH
+     */
+    String fallback() default "";
 
     /**
-     * CRUD: Delete
+     * resource name
      */
-    DELETE,
-
-    /**
-     * CRUD: Read
-     */
-    GET,
-
-    HEAD,
-
-    /**
-     * CRUD: Create
-     */
-    POST,
-
-    /**
-     * CRUD: Update/Replace
-     */
-    PUT,
-
-    /**
-     * CRUD: Update/Modify
-     */
-    PATCH
-    
-    /*,
-    TRACE,
-    CONNECT,
-    OPTIONS*/
+    String value();
 }

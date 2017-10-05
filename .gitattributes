@@ -344,6 +344,7 @@ jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/JsonRestServiceE
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/REST_DELETE.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/REST_GET.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/REST_HEAD.java -text
+jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/REST_PATCH.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/REST_POST.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/REST_PUT.java -text
 jstuff-integration/src/main/java/net/sf/jstuff/integration/rest/RestResourceAction.java -text

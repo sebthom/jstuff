@@ -15,11 +15,11 @@ package net.sf.jstuff.integration.rest;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.reflection.SerializableMethod;
 import net.sf.jstuff.core.validation.Args;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -40,10 +40,6 @@ public class RestResourceAction implements Serializable {
         this(resource, httpRequestMethod, serviceMethod, parameterNames, null);
     }
 
-    public String[] getParameterNames() {
-        return parameterNames;
-    }
-
     public RestResourceAction(final String resourceName, final HttpRequestMethod httpRequestMethod, final Method serviceMethod, final String[] parameterNames,
             final RestResourceAction fallbackFor) {
         Args.notNull("resource", resourceName);
@@ -59,40 +55,32 @@ public class RestResourceAction implements Serializable {
 
         final int paramCount = serviceMethod.getParameterTypes().length;
 
-        final boolean isPOST = httpRequestMethod == HttpRequestMethod.POST;
-        final boolean isPUT = httpRequestMethod == HttpRequestMethod.PUT;
-
-        if (isPUT || isPOST) {
+        if (httpRequestMethod == HttpRequestMethod.PUT || httpRequestMethod == HttpRequestMethod.POST) {
             if (paramCount == 0)
                 throw new IllegalArgumentException("HTTP Request Method [" + httpRequestMethod
                         + "] requires a service method with at least one parameter. ResourceId= " + resourceName + ", Service Method=" + serviceMethod);
 
-            if (paramCount < 2)
+            if (paramCount < 2) {
                 requestURITemplate = resourceName;
-            else
-                requestURITemplate = resourceName + "/${" + StringUtils.join(ArrayUtils.remove(parameterNames, paramCount - 1), "}/${") + "}";
+            } else {
+                requestURITemplate = resourceName + "/${" + Strings.join(ArrayUtils.remove(parameterNames, paramCount - 1), "}/${") + "}";
+            }
 
             // for POST and PUT the last parameter is supposed to be submitted as HTTP Body Message
             requiredURLParameterCount = paramCount - 1 - (serviceMethod.isVarArgs() ? 1 : 0);
             httpRequestBodyType = serviceMethod.getParameterTypes()[paramCount - 1];
         } else {
-            if (paramCount < 1)
+            if (paramCount < 1) {
                 requestURITemplate = resourceName;
-            else
-                requestURITemplate = resourceName + "/${" + StringUtils.join(parameterNames, "}/${") + "}";
+            } else {
+                requestURITemplate = resourceName + "/${" + Strings.join(parameterNames, "}/${") + "}";
+            }
 
             requiredURLParameterCount = paramCount - (serviceMethod.isVarArgs() ? 1 : 0);
             httpRequestBodyType = null;
         }
     }
 
-    public String getRequestURITemplate() {
-        return requestURITemplate;
-    }
-
-    /**
-     * @return the fallbackFor
-     */
     public RestResourceAction getFallbackFor() {
         return fallbackFor;
     }
@@ -101,20 +89,30 @@ public class RestResourceAction implements Serializable {
         return httpRequestBodyType;
     }
 
-    public Class<?> getHttpResponseBodyType() {
-        return serviceMethod.getMethod().getReturnType();
-    }
-
-    /**
-     * @return the httpMethod
-     */
     public HttpRequestMethod getHttpRequestMethod() {
         return httpRequestMethod;
     }
 
-    /**
-     * @return the method
-     */
+    public Class<?> getHttpResponseBodyType() {
+        return serviceMethod.getMethod().getReturnType();
+    }
+
+    public String[] getParameterNames() {
+        return parameterNames;
+    }
+
+    public String getRequestURITemplate() {
+        return requestURITemplate;
+    }
+
+    public int getRequiredURLParameterCount() {
+        return requiredURLParameterCount;
+    }
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
     public Method getServiceMethod() {
         return serviceMethod.getMethod();
     }
@@ -122,15 +120,7 @@ public class RestResourceAction implements Serializable {
     public String getServiceMethodSignature() {
         if (parameterNames.length == 0)
             return serviceMethod.getDeclaringClass().getSimpleName() + "." + serviceMethod.getName() + "()";
-        return serviceMethod.getDeclaringClass().getSimpleName() + "." + serviceMethod.getName() + "(" + StringUtils.join(parameterNames, ",") + ")";
-    }
-
-    public String getResourceName() {
-        return resourceName;
-    }
-
-    public int getRequiredURLParameterCount() {
-        return requiredURLParameterCount;
+        return serviceMethod.getDeclaringClass().getSimpleName() + "." + serviceMethod.getName() + "(" + Strings.join(parameterNames, ",") + ")";
     }
 
     public boolean isFallback() {

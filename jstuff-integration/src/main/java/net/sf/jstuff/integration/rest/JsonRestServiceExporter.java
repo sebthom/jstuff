@@ -16,8 +16,6 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.jstuff.core.logging.Logger;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,13 +23,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class JsonRestServiceExporter extends AbstractRestServiceExporter {
-    private static final Logger LOG = Logger.create();
-
     private static final ObjectMapper JSON = new ObjectMapper();
 
     public JsonRestServiceExporter() {
         super("UTF-8", "application/json;charset=UTF-8");
-        LOG.infoNew(this);
     }
 
     @Override
