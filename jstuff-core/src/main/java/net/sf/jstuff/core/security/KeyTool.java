@@ -55,16 +55,19 @@ public abstract class KeyTool {
     private static final NoExitSecurityManager SEC_MAN = new NoExitSecurityManager();
 
     static {
-        keyToolClass = Types.find("sun.security.tools.KeyTool");
+        keyToolClass = Types.find("sun.security.tools.KeyTool"); // Oracle JDK <= 7
         if (keyToolClass == null) {
-            keyToolClass = Types.find("sun.security.tools.keytool.Main");
+            keyToolClass = Types.find("sun.security.tools.keytool.Main"); // Oracle JDK 8+
         }
         if (keyToolClass == null) {
             keyToolClass = Types.find("com.ibm.crypto.tools.KeyTool");
         }
 
         if (keyToolClass != null) {
-            keyToolRunMethod = Methods.findPublic(keyToolClass, "run", String[].class, PrintStream.class);
+            keyToolRunMethod = Methods.findAny(keyToolClass, "run", String[].class, PrintStream.class);
+            if (keyToolRunMethod == null) {
+                keyToolRunMethod = Methods.findAny(keyToolClass, "a", String[].class, PrintStream.class); // obfuscated name on IBM JDK
+            }
         }
 
         SEC_MAN.setEnabledByDefault(false);
