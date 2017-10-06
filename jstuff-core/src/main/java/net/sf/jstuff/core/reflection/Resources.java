@@ -142,7 +142,7 @@ public abstract class Resources {
         /*
          * IBM WebSphere Classloader
          */
-        final Class<?> websphereClassLoader = Types.find("com.ibm.ws.classloader.WsClassLoader");
+        final Class<?> websphereClassLoader = Types.find("com.ibm.ws.classloader.WsClassLoader", false);
         if (websphereClassLoader != null) {
             LOG.info("IBM WebSphere Classloaders detected.");
             CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
@@ -171,16 +171,23 @@ public abstract class Resources {
          */
         final Class<?> websphereLibertyClassLoader;
         {
-            Class<?> cl = null;
-            try {
-                cl = Thread.currentThread().getContextClassLoader().getClass().getClassLoader().loadClass(
-                    "com.ibm.ws.classloading.internal.ContainerClassLoader");
-            } catch (final ClassNotFoundException ex) {
-                // ignore
-            } catch (final NoClassDefFoundError ex) {
-                LOG.debug(ex);
+            Class<?> clazz = Types.find("com.ibm.ws.classloading.internal.ContainerClassLoader", false);
+            if (clazz == null) {
+                ClassLoader cl = Thread.currentThread().getContextClassLoader();
+                if (cl != null) {
+                    cl = cl.getClass().getClassLoader();
+                    if (cl != null) {
+                        try {
+                            clazz = Class.forName("com.ibm.ws.classloading.internal.ContainerClassLoader", false, cl);
+                        } catch (final ClassNotFoundException ex) {
+                            // ignore
+                        } catch (final NoClassDefFoundError ex) {
+                            LOG.debug(ex);
+                        }
+                    }
+                }
             }
-            websphereLibertyClassLoader = cl;
+            websphereLibertyClassLoader = clazz;
         }
 
         if (websphereLibertyClassLoader != null) {
@@ -216,7 +223,7 @@ public abstract class Resources {
         /*
          * Eclipse Classloader
          */
-        final Class<?> eclipseBaseClassLoaderClass = Types.find("org.eclipse.osgi.baseadaptor.loader.BaseClassLoader");
+        final Class<?> eclipseBaseClassLoaderClass = Types.find("org.eclipse.osgi.baseadaptor.loader.BaseClassLoader", false);
         if (eclipseBaseClassLoaderClass != null) {
             CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
                 public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
@@ -248,7 +255,7 @@ public abstract class Resources {
     static {
         Method eclipseBundleResolve = null;
         try {
-            final Class<?> fileLocatorClass = Types.find("org.eclipse.core.runtime.FileLocator");
+            final Class<?> fileLocatorClass = Types.find("org.eclipse.core.runtime.FileLocator", true);
             if (fileLocatorClass != null) {
                 eclipseBundleResolve = fileLocatorClass.getMethod("resolve", URL.class);
             }

@@ -125,17 +125,22 @@ public abstract class Types {
     }
 
     /**
-     * <b>Important:</b> Does not initialize the class.
-     *
+     * @return null if class not found
+     */
+    public static <T> Class<T> find(final String className) {
+        return find(className, true);
+    }
+
+    /**
      * @return null if class not found
      */
     @SuppressWarnings("unchecked")
-    public static <T> Class<T> find(final String className) {
+    public static <T> Class<T> find(final String className, final boolean initialize) {
         Args.notNull("className", className);
 
         LOG.trace("Trying to load class [%s]...", className);
         try {
-            return (Class<T>) Class.forName(className, false, null);
+            return (Class<T>) Class.forName(className, initialize, null);
         } catch (final ClassNotFoundException ex) {
             // ignore
         } catch (final NoClassDefFoundError ex) {
@@ -145,7 +150,7 @@ public abstract class Types {
         final ClassLoader cl1 = Types.class.getClassLoader();
         if (cl1 != null) {
             try {
-                return (Class<T>) Class.forName(className, false, cl1);
+                return (Class<T>) Class.forName(className, initialize, cl1);
             } catch (final ClassNotFoundException ex) {
                 // ignore
             } catch (final NoClassDefFoundError ex) {
@@ -156,7 +161,7 @@ public abstract class Types {
         final ClassLoader cl2 = Thread.currentThread().getContextClassLoader();
         if (cl1 != cl2 && cl2 != null) {
             try {
-                return (Class<T>) Class.forName(className, false, cl2);
+                return (Class<T>) Class.forName(className, initialize, cl2);
             } catch (final ClassNotFoundException ex) {
                 // ignore
             } catch (final NoClassDefFoundError ex) {
@@ -411,7 +416,7 @@ public abstract class Types {
     }
 
     public static boolean isAvailable(final String className) {
-        return find(className) != null;
+        return find(className, false) != null;
     }
 
     public static boolean isInnerClass(final Class<?> type) {
