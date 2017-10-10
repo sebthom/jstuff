@@ -35,9 +35,12 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.functional.Accept;
+import net.sf.jstuff.core.io.FileUtils;
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.ogn.ObjectGraphNavigatorDefaultImpl;
@@ -289,34 +292,6 @@ public abstract class Resources {
         }
 
         switch (type) {
-            case JAR: {
-                String filePath = null;
-                if ("jar".equals(url.getProtocol())) {
-                    try {
-                        filePath = ((JarURLConnection) url.openConnection()).getJarFileURL().getFile();
-                    } catch (final Exception ex) {
-                        LOG.debug(ex);
-                        filePath = url.getPath();
-                        if (filePath.startsWith("file:///")) {
-                            filePath = filePath.substring(7);
-                        } else if (filePath.startsWith("file://")) {
-                            filePath = filePath.substring(6);
-                        } else if (filePath.startsWith("file:/")) {
-                            filePath = filePath.substring(5);
-                        }
-                        filePath = Strings.substringBefore(filePath, "!/");
-                    }
-                } else {
-                    filePath = url.getPath();
-                }
-
-                for (final JarEntry entry : Enumerations.toIterable(new JarFile(filePath).entries())) {
-                    if (!entry.isDirectory() && nameFilter.accept(entry.getName())) {
-                        result.add(new Resource(entry.getName(), new URL("jar", "", url.toURI() + "!/" + entry.getName()), cl));
-                    }
-                }
-                break;
-            }
             case BUNDLE: {
                 if (ECLIPSE_BUNDLE_RESOLVER == null) {
                     LOG.warn("Unsupported classpath entry type [%s]", url);
@@ -326,6 +301,7 @@ public abstract class Resources {
                 _scanClassPathEntry(resolvedURL, nameFilter, cl, result);
                 break;
             }
+
             case DIRECTORY: {
                 final File rootDir = new File(url.getPath());
                 final URI rootDirURI = rootDir.toURI();
@@ -348,10 +324,88 @@ public abstract class Resources {
                 }
                 break;
             }
+
+            case JAR: {
+                if ("file".equals(url.getProtocol())) {
+                    final File jarFile = new File(url.getPath());
+                    final JarFile jar = new JarFile(jarFile);
+                    final String jarFileURI = jarFile.toURI().toString();
+                    try {
+                        for (final JarEntry entry : Enumerations.toIterable(jar.entries())) {
+                            if (!entry.isDirectory() && nameFilter.accept(entry.getName())) {
+                                result.add(new Resource(entry.getName(), new URL("jar", "", jarFileURI + "!/" + entry.getName()), cl));
+                            }
+                        }
+                    } finally {
+                        jar.close();
+                    }
+                } else {
+                    try {
+                        JarURLConnection jarConn = (JarURLConnection) url.openConnection();
+                        final String[] jarURLParts = Strings.splitByWholeSeparator(jarConn.getURL().toExternalForm(), "!/");
+                        if (jarURLParts[1].length() == 0) {
+                            // handle: jar:file:/C:/apps/myapp.jar!/
+                            _scanClassPathEntry(jarConn.getJarFileURL(), nameFilter, cl, result);
+                        } else {
+                            // handle:
+                            //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/classes"
+                            //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/classes/"
+                            //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/classes!/"
+                            //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/classes/!/"
+                            //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/lib/azde-security-token-validation-3.0.1.jar"
+                            //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/lib/azde-security-token-validation-3.0.1.jar!/"
+
+                            String entryToExtract = jarURLParts[1];
+
+                            // open the URL connection without trailing entry, i.e. instead of "jar:file:c:/apps/myapp.jar!/BOOT-INF/classes!/" use "jar:file:c:/apps/myapp.jar!"
+                            jarConn = (JarURLConnection) new URL(jarURLParts[0] + "!/").openConnection();
+
+                            final JarFile jarFile = jarConn.getJarFile();
+                            try {
+                                JarEntry jarEntry = jarFile.getJarEntry(entryToExtract);
+
+                                if (!jarEntry.isDirectory()) { // not reliable, we test again by adding / to the entry name
+                                    final String entryNameTmp = entryToExtract + "/";
+                                    final JarEntry jarEntryTmp = jarFile.getJarEntry(entryNameTmp);
+                                    if (jarEntryTmp != null) {
+                                        entryToExtract = entryNameTmp;
+                                        jarEntry = jarEntryTmp;
+                                    }
+                                }
+
+                                final File tmpDir = FileUtils.createTempDirectory("jstuff-", ".tmp");
+                                if (jarEntry.isDirectory()) {
+                                    // extract the referenced directory
+                                    for (final JarEntry entry : Enumerations.toIterable(jarFile.entries())) {
+                                        if (!entry.isDirectory() && entry.getName().startsWith(jarEntry.getName())) {
+                                            final File tmpFile = new java.io.File(tmpDir, entry.getName());
+                                            tmpFile.getParentFile().mkdirs();
+                                            FileUtils.writeAndClose(tmpFile, jarFile.getInputStream(entry));
+                                        }
+                                    }
+                                    _scanClassPathEntry(new File(tmpDir, jarEntry.getName()).toURI().toURL(), nameFilter, cl, result);
+                                } else {
+                                    // extract the referenced file
+                                    final File tmpFile = new File(tmpDir, StringUtils.replaceChars(jarEntry.getName(), "/", "_"));
+                                    FileUtils.writeAndClose(tmpFile, jarFile.getInputStream(jarEntry));
+                                    _scanClassPathEntry(tmpFile.toURI().toURL(), nameFilter, cl, result);
+                                }
+                            } finally {
+                                jarFile.close();
+                            }
+                        }
+                    } catch (final Exception ex) {
+                        LOG.warn(ex);
+                    }
+                }
+                break;
+            }
+
             case NOT_EXISTING: {
                 LOG.debug("Not existing classpath entry [%s]", url);
                 break;
             }
+
             default:
                 LOG.warn("Unsupported classpath entry type [%s]", url);
         }

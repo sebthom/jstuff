@@ -901,7 +901,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
         if (text.length() <= maxLength)
             return text;
 
-        return text.substring(0, maxLength - 1);
+        return text.substring(0, maxLength);
     }
 
     /**

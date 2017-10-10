@@ -157,6 +157,15 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
 
     /**
      * Creates a temp directory that will be automatically deleted on JVM exit.
+     */
+    public static File createTempDirectory(final String prefix, final String extension) {
+        final File tmpDir = createUniqueDirectory(getTempDirectory(), prefix, extension);
+        forceDeleteOnExit(tmpDir);
+        return tmpDir;
+    }
+
+    /**
+     * Creates a temp directory that will be automatically deleted on JVM exit.
      *
      * @param parentDirectory if null, then create in system temp directory
      */
