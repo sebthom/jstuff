@@ -290,8 +290,7 @@ final class JULLogger extends Logger {
                 return level.intValue();
             current = current.getParent();
         }
-        // should never be reached
-        throw new IllegalStateException("Cannot determine logger level!");
+        return Level.INFO.intValue();
     }
 
     /**
