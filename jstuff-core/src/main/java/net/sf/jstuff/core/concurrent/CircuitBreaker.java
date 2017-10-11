@@ -271,7 +271,7 @@ public class CircuitBreaker implements EventListenable<State> {
     }
 
     /**
-     * Resets the subsequent failures counter.
+     * Resets the subsequent failures counter and switches the circuit breaker to {@link State#CLOSE} when currently in {@link State#HALF_OPEN}
      */
     public void reportSuccess() {
         synchronized (synchronizer) {
