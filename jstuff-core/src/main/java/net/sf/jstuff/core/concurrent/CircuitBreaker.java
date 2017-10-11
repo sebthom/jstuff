@@ -155,19 +155,19 @@ public class CircuitBreaker implements EventListenable<State> {
         return BuilderFactory.of(CircuitBreakerBuilder.class).create();
     }
 
-    protected final Object synchronizer = new Object();
-
-    protected String name;
     protected int activePermits = 0;
+
     protected EventDispatcher<State> eventDispatcher;
     protected int failureThreshold;
-    protected long failureTrackingPeriodMS;
     protected final List<Long> failureTimestamps = new ArrayList<Long>();
+    protected long failureTrackingPeriodMS;
     protected Class<? extends Throwable>[] hardTrippingExceptionTypes;
-    protected int maxConcurrent = Integer.MAX_VALUE;
     protected long inOpenStateUntil = -1;
+    protected int maxConcurrent = Integer.MAX_VALUE;
+    protected String name;
     protected long resetPeriodMS;
     protected State state = State.CLOSE;
+    protected final Object synchronizer = new Object();
     protected int tripCount = 0;
 
     public int getActivePermits() {
@@ -378,7 +378,7 @@ public class CircuitBreaker implements EventListenable<State> {
      *
      * @return <code>true</true> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
      */
-    public boolean tryExecute(final Callable<Void> callable) throws Exception {
+    public boolean tryExecute(final Callable<?> callable) throws Exception {
         Args.notNull("callable", callable);
 
         if (!tryAcquire())
@@ -398,6 +398,37 @@ public class CircuitBreaker implements EventListenable<State> {
 
     /**
      * Tries to execute the given runnable after acquiring a permit.
+     *
+     * @param errorTimeout if the execution of the code takes longer than <code>errorTimeout</code> and error is reported
+     *
+     * @return <code>true</true> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+     */
+    public boolean tryExecute(final Callable<?> callable, final int errorTimeout, final TimeUnit timeUnit) throws Exception {
+        Args.notNull("callable", callable);
+        Args.notNull("timeUnit", timeUnit);
+
+        if (!tryAcquire())
+            return false;
+
+        try {
+            final long start = System.currentTimeMillis();
+            callable.call();
+            if (System.currentTimeMillis() - start > timeUnit.toMillis(errorTimeout)) {
+                reportFailure();
+            } else {
+                reportSuccess();
+            }
+            return true;
+        } catch (final Exception ex) {
+            reportFailure(ex);
+            throw ex;
+        } finally {
+            release();
+        }
+    }
+
+    /**
+     * Tries to execute the given invocable after acquiring a permit.
      *
      * @return <code>true</true> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
      */
@@ -424,6 +455,38 @@ public class CircuitBreaker implements EventListenable<State> {
     }
 
     /**
+     * Tries to execute the given invocable after acquiring a permit.
+     *
+     * @param errorTimeout if the execution of the code takes longer than <code>errorTimeout</code> and error is reported
+     *
+     * @return <code>true</true> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+     */
+    public <A, E extends Exception> boolean tryExecute(final Invocable<?, A, E> invocable, final A args, final int errorTimeout, final TimeUnit timeUnit)
+            throws Exception {
+        Args.notNull("invocable", invocable);
+        Args.notNull("timeUnit", timeUnit);
+
+        if (!tryAcquire())
+            return false;
+
+        try {
+            final long start = System.currentTimeMillis();
+            invocable.invoke(args);
+            if (System.currentTimeMillis() - start > timeUnit.toMillis(errorTimeout)) {
+                reportFailure();
+            } else {
+                reportSuccess();
+            }
+            return true;
+        } catch (final RuntimeException ex) {
+            reportFailure(ex);
+            throw ex;
+        } finally {
+            release();
+        }
+    }
+
+    /**
      * Tries to execute the given runnable after acquiring a permit.
      *
      * @return <code>true</true> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
@@ -437,6 +500,37 @@ public class CircuitBreaker implements EventListenable<State> {
         try {
             runnable.run();
             reportSuccess();
+            return true;
+        } catch (final RuntimeException ex) {
+            reportFailure(ex);
+            throw ex;
+        } finally {
+            release();
+        }
+    }
+
+    /**
+     * Tries to execute the given runnable after acquiring a permit.
+     *
+     * @param errorTimeout if the execution of the code takes longer than <code>errorTimeout</code> and error is reported
+     *
+     * @return <code>true</true> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+     */
+    public boolean tryExecute(final Runnable runnable, final int errorTimeout, final TimeUnit timeUnit) throws Exception {
+        Args.notNull("runnable", runnable);
+        Args.notNull("timeUnit", timeUnit);
+
+        if (!tryAcquire())
+            return false;
+
+        try {
+            final long start = System.currentTimeMillis();
+            runnable.run();
+            if (System.currentTimeMillis() - start > timeUnit.toMillis(errorTimeout)) {
+                reportFailure();
+            } else {
+                reportSuccess();
+            }
             return true;
         } catch (final RuntimeException ex) {
             reportFailure(ex);
