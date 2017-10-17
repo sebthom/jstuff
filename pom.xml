@@ -11,7 +11,7 @@
     <version>2.15.10-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>jstuff</name>
-    
+
     <url>http://jstuff.sf.net</url>
 
     <licenses>
@@ -41,7 +41,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-	
+
         <java.version>1.5</java.version>
         <java.vendor>sun</java.vendor>
         <java.version.integration-tests>1.6</java.version.integration-tests>
@@ -71,7 +71,7 @@
     </scm>
 
     <distributionManagement>
-        <downloadUrl>https://sourceforge.net/projects/jstuff/files/</downloadUrl>
+        <downloadUrl>https://github.com/sebthom/jstuff/releases/</downloadUrl>
         <repository>
             <id>jstuff-release</id>
             <url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/release</url>
