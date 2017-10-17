@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	@author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+    @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -10,13 +10,9 @@
     <artifactId>jstuff-parent</artifactId>
     <version>2.15.10-SNAPSHOT</version>
     <packaging>pom</packaging>
-
+    <name>jstuff</name>
+    
     <url>http://jstuff.sf.net</url>
-
-    <organization>
-        <name>The jstuff Development Team</name>
-        <url>http://jstuff.sf.net/</url>
-    </organization>
 
     <licenses>
         <license>
@@ -45,12 +41,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	
         <java.version>1.5</java.version>
         <java.vendor>sun</java.vendor>
         <java.version.integration-tests>1.6</java.version.integration-tests>
 
-		<!-- requiring 3.2.2 because of https://issues.apache.org/jira/browse/MNG-4565 -->
-		<maven.minimum.version>3.2.2</maven.minimum.version>
+        <!-- requiring 3.2.2 because of https://issues.apache.org/jira/browse/MNG-4565 -->
+        <maven.minimum.version>3.2.2</maven.minimum.version>
 
         <maven.scm.version>1.9.5</maven.scm.version>
         <maven.scm.svnjava.version>2.1.2</maven.scm.svnjava.version>
@@ -58,23 +55,23 @@
 
         <maven.javadoc.skip>true</maven.javadoc.skip>  <!-- we don't really need javadoc -->
 
-        <slf4j.version>1.7.13</slf4j.version>
+        <slf4j.version>1.7.25</slf4j.version>
 
-		<!-- see http://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
-		<!-- see http://java-drobnosti.blogspot.de/2012/12/maven-slow-generating-dependencies.html -->
+        <!-- see http://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
+        <!-- see http://java-drobnosti.blogspot.de/2012/12/maven-slow-generating-dependencies.html -->
         <dependency.locations.enabled>false</dependency.locations.enabled>
         <dependency.details.enabled>false</dependency.details.enabled>
     </properties>
 
     <scm>
-		<!-- http://maven.apache.org/scm/subversion.html -->
-        <url>https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</url>
-        <connection>scm:svn:https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</connection>
-        <developerConnection>scm:svn:https://svn.code.sf.net/p/jstuff/svn/trunk/jstuff-parent</developerConnection>
+        <!-- http://maven.apache.org/scm/subversion.html -->
+        <url>https://github.com/sebthom/jstuff/</url>
+        <connection>scm:svn:https://github.com/sebthom/jstuff/trunk</connection>
+        <developerConnection>scm:svn:https://github.com/sebthom/jstuff/trunk</developerConnection>
     </scm>
 
     <distributionManagement>
-        <downloadUrl>https://sourceforge.net/downloads/jstuff/</downloadUrl>
+        <downloadUrl>https://sourceforge.net/projects/jstuff/files/</downloadUrl>
         <repository>
             <id>jstuff-release</id>
             <url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/release</url>
@@ -83,13 +80,10 @@
             <id>jstuff-snapshot</id>
             <url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/snapshot</url>
         </snapshotRepository>
-		<!--
-			Temporarily disabled because of MSITE-681
-			<site>
-			<id>jstuff-site</id>
-			<url>sftp://web.sourceforge.net/home/groups/j/js/jstuff/htdocs/site</url>
-			</site>
-		-->
+        <site>
+            <id>jstuff-site</id>
+            <url>sftp://web.sourceforge.net/home/groups/j/js/jstuff/htdocs/site</url>
+        </site>
     </distributionManagement>
 
     <ciManagement>
@@ -98,23 +92,14 @@
     </ciManagement>
 
     <issueManagement>
-        <system>sourceforge.net</system>
-        <url>https://sourceforge.net/p/jstuff/tickets/</url>
+        <system>github.com</system>
+        <url>https://github.com/sebthom/jstuff/issues/</url>
     </issueManagement>
 
     <prerequisites>
-		<!-- minimum version for toolchain support -->
-		<maven>${maven.minimum.version}</maven>
+        <!-- minimum version for toolchain support -->
+        <maven>${maven.minimum.version}</maven>
     </prerequisites>
-
-    <repositories>
-        <repository>
-            <id>net.sf.jstuff-repo</id>
-            <name>jstuff Repository for Maven</name>
-            <url>http://jstuff.sourceforge.net/mvn-repo/release</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
 
     <modules>
         <module>jstuff-core</module>
@@ -126,7 +111,7 @@
         <plugins>
 
             <plugin>
-				<!-- http://maven.apache.org/guides/mini/guide-using-toolchains.html -->
+                <!-- http://maven.apache.org/guides/mini/guide-using-toolchains.html -->
                 <artifactId>maven-toolchains-plugin</artifactId>
                 <version>1.1</version>
                 <executions>
@@ -146,7 +131,7 @@
                         <configuration>
                             <toolchains>
                                 <jdk>
-									<!-- using a higher JDK version for integration tests -->
+                                    <!-- using a higher JDK version for integration tests -->
                                     <version>${java.version.integration-tests}</version>
                                 </jdk>
                             </toolchains>
@@ -164,12 +149,12 @@
             </plugin>
 
             <plugin>
-	            <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/usage.html -->
+                <!-- https://maven.apache.org/enforcer/maven-enforcer-plugin/usage.html -->
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M1</version>
                 <executions>
                     <execution>
-						<id>check-base-requirements</id>
+                        <id>check-base-requirements</id>
                         <goals>
                             <goal>enforce</goal>
                         </goals>
@@ -177,7 +162,7 @@
                             <rules>
                                 <banCircularDependencies />
 
-								<!-- extra enforcer rules -->
+                                <!-- extra enforcer rules -->
                                 <enforceBytecodeVersion>
                                     <maxJdkVersion>${java.version}</maxJdkVersion>
                                     <ignoredScopes>
@@ -195,41 +180,41 @@
                                     </excludes>
                                 </enforceBytecodeVersion>
 
-								<!-- does currently report duplicate classes if same artifact is transitively referenced in different versions, e.g.
-									[WARNING] Rule 2: org.apache.maven.plugins.enforcer.BanDuplicateClasses failed with message:
-									Duplicate classes found:
+                                <!-- does currently report duplicate classes if same artifact is transitively referenced in different versions, e.g.
+                                    [WARNING] Rule 2: org.apache.maven.plugins.enforcer.BanDuplicateClasses failed with message:
+                                    Duplicate classes found:
 
-									Found in:
-									org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.0.Beta1:provided
-									org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.1.Final:provided
-									Duplicate classes:
-									javax/interceptor/Interceptor.class
+                                    Found in:
+                                    org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.0.Beta1:provided
+                                    org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.1.Final:provided
+                                    Duplicate classes:
+                                    javax/interceptor/Interceptor.class
 
-									http://mojo.codehaus.org/extra-enforcer-rules/banDuplicateClasses.html
-									<banDuplicateClasses>
-										<findAllDuplicates>true</findAllDuplicates>
-									</banDuplicateClasses> -->
+                                    http://mojo.codehaus.org/extra-enforcer-rules/banDuplicateClasses.html
+                                    <banDuplicateClasses>
+                                        <findAllDuplicates>true</findAllDuplicates>
+                                    </banDuplicateClasses> -->
                             </rules>
-							<fail>true</fail>
+                            <fail>true</fail>
                         </configuration>
                     </execution>
-					<execution>
-						<id>check-dependency-convergence</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<fail>false</fail>
-							<rules>
-								<!-- http://maven.apache.org/enforcer/enforcer-rules/dependencyConvergence.html -->
-								<DependencyConvergence />
-							</rules>
-						</configuration>
-					</execution>
+                    <execution>
+                        <id>check-dependency-convergence</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <fail>false</fail>
+                            <rules>
+                                <!-- http://maven.apache.org/enforcer/enforcer-rules/dependencyConvergence.html -->
+                                <DependencyConvergence />
+                            </rules>
+                        </configuration>
+                    </execution>
                 </executions>
                 <dependencies>
                     <dependency>
-						<!-- http://www.mojohaus.org/extra-enforcer-rules/ -->
+                        <!-- http://www.mojohaus.org/extra-enforcer-rules/ -->
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>extra-enforcer-rules</artifactId>
                         <version>1.0-beta-6</version>
@@ -250,7 +235,7 @@
                         <configuration>
                             <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
                             <skipSnapshots>true</skipSnapshots>
-		                    <xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
+                            <xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
                         </configuration>
                     </execution>
                 </executions>
@@ -293,7 +278,7 @@
 
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.7.0</version>
                     <configuration>
                     <!-- this configuration is actually taken care of by the toolchain plug-in, however m2eclipse does not seem to realize the correct JDK
                         if only the toolchain plug-in is configured, therefore we explicitly configure the Java version again -->
@@ -301,10 +286,10 @@
                         <target>${java.version}</target>
                         <compilerVersion>${java.version}</compilerVersion>
                         <optimize>true</optimize>
-						<!-- using eclipse compiler instead of javac:
-							a) to avoid notorious "schema change not supported" message when debugging via eclipse
-							b) javac is buggy when compiling complex generic expressions
-						-->
+                        <!-- using eclipse compiler instead of javac:
+                            a) to avoid notorious "schema change not supported" message when debugging via eclipse
+                            b) javac is buggy when compiling complex generic expressions
+                        -->
                         <compilerId>${compilerId}</compilerId>
                     </configuration>
                     <dependencies>
@@ -322,11 +307,14 @@
                     <configuration>
                         <archive>
                             <manifest>
-                            	<!-- to support http://stackoverflow.com/questions/2712970/how-to-get-maven-artifact-version-at-runtime -->
+                                <!-- to support http://stackoverflow.com/questions/2712970/how-to-get-maven-artifact-version-at-runtime -->
                                 <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                                 <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             </manifest>
                         </archive>
+                        <excludes>
+                            <exclude>builddef.lst</exclude>
+                        </excludes>
                     </configuration>
                 </plugin>
 
@@ -345,24 +333,24 @@
                     <version>2.10</version>
                     <configuration>
                         <downloadSources>true</downloadSources>
-						<downloadJavadocs>false</downloadJavadocs>
+                        <downloadJavadocs>false</downloadJavadocs>
                         <classpathContainers>
                             <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-${java.version}</classpathContainer>
                         </classpathContainers>
                     </configuration>
                 </plugin>
 
-				<plugin>
-					<artifactId>maven-deploy-plugin</artifactId>
-					<version>2.8.2</version>
-				</plugin>
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
+                </plugin>
 
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.5.3</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
-						<!-- we are using a pure Java based SVN implementation to allow easy cross platform builds -->
+                        <!-- we are using a pure Java based SVN implementation to allow easy cross platform builds -->
                         <providerImplementations>
                             <svn>javasvn</svn>
                         </providerImplementations>
@@ -380,7 +368,7 @@
                     <artifactId>maven-scm-plugin</artifactId>
                     <version>${maven.scm.version}</version>
                     <configuration>
-						<!-- we are using a pure Java based SVN implementation to allow easy cross platform builds -->
+                        <!-- we are using a pure Java based SVN implementation to allow easy cross platform builds -->
                         <providerImplementations>
                             <svn>javasvn</svn>
                         </providerImplementations>
@@ -394,104 +382,129 @@
                     </dependencies>
                 </plugin>
 
-				<plugin>
-					<artifactId>maven-changelog-plugin</artifactId>
-					<version>2.3</version>
-					<configuration>
-						<providerImplementations>
-							<svn>javasvn</svn>
-						</providerImplementations>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>com.google.code.maven-scm-provider-svnjava</groupId>
-							<artifactId>maven-scm-provider-svnjava</artifactId>
-							<version>${maven.scm.svnjava.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.apache.maven.scm</groupId>
-							<artifactId>maven-scm-api</artifactId>
-							<version>${maven.scm.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.apache.maven.scm</groupId>
-							<artifactId>maven-scm-provider-svn-commons</artifactId>
-							<version>${maven.scm.version}</version>
-						</dependency>
-					</dependencies>
-				</plugin>
+                <plugin>
+                    <artifactId>maven-changelog-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <providerImplementations>
+                            <svn>javasvn</svn>
+                        </providerImplementations>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+                            <artifactId>maven-scm-provider-svnjava</artifactId>
+                            <version>${maven.scm.svnjava.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.maven.scm</groupId>
+                            <artifactId>maven-scm-api</artifactId>
+                            <version>${maven.scm.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.maven.scm</groupId>
+                            <artifactId>maven-scm-provider-svn-commons</artifactId>
+                            <version>${maven.scm.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
 
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.6</version>
-					<executions>
-						<execution>
-							<id>attach-descriptor</id>
-							<goals>
-								<goal>attach-descriptor</goal>
-							</goals>
-						</execution>
-					</executions>
-					<dependencies>
-						<dependency>
-							<groupId>org.apache.maven.doxia</groupId>
-							<artifactId>doxia-module-confluence</artifactId>
-							<version>1.7</version>
-						</dependency>
-						<dependency>
-							<groupId>org.apache.maven.wagon</groupId>
-							<artifactId>wagon-webdav-jackrabbit</artifactId>
-							<version>${maven.wagon.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.pegdown</groupId>
-							<artifactId>pegdown</artifactId>
-							<!-- newer version than the one that is referenced by doxia-module-markdown:1.7 -->
-							<version>1.6.0</version>
-						</dependency>
-					</dependencies>
+                    <configuration>
+                        <!-- https://jira.codehaus.org/browse/WAGON-354 -->
+                        <chmod>false</chmod>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>attach-descriptor</id>
+                            <goals>
+                                <goal>attach-descriptor</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.doxia</groupId>
+                            <artifactId>doxia-module-confluence</artifactId>
+                            <version>1.7</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.maven.wagon</groupId>
+                            <artifactId>wagon-webdav-jackrabbit</artifactId>
+                            <version>${maven.wagon.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.pegdown</groupId>
+                            <artifactId>pegdown</artifactId>
+                            <!-- newer version than the one that is referenced by doxia-module-markdown:1.7 -->
+                            <version>1.6.0</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
 
-				<plugin>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.10.4</version>
-				</plugin>
-
-				<plugin>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.8</version>
-				</plugin>
-
-				<plugin>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>3.1.0</version>
-				</plugin>
-
-				<plugin>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>3.0.1</version>
-					<executions>
-						<execution>
-							<id>attach-sources</id>
-							<phase>verify</phase>
-							<goals>
-								<!--
-									http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
-									using jar-no-for instead of jar to prevent execution of maven lifecycle twice
-								-->
-                                <goal>jar-no-fork</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.4</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                            <configuration>
+                                <!-- exclude java.util, javax.xml.bind stubs -->
+                                <excludePackageNames>java.*:javax.*</excludePackageNames>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
 
                 <plugin>
-                	<!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.8</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <!--
+                                    http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
+                                    using jar-no-for instead of jar to prevent execution of maven lifecycle twice
+                                -->
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <excludes>
+                            <!-- exclude java.util, javax.xml.bind stubs -->
+                            <exclude>java/**/*</exclude>
+                            <exclude>java</exclude>
+                            <exclude>javax/**/*</exclude>
+                            <exclude>javax</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <!-- exclude unit tests ending with ITest (= integration tests) from unit-test phase -->
                     <artifactId>maven-surefire-plugin</artifactId>
                     <!-- newer versions crash when running JDK 5 tests -->
                     <version>2.19.1</version>
                     <configuration>
-	                    <argLine>-Duser.language=en -Duser.region=US</argLine>
+                        <argLine>-Duser.language=en -Duser.region=US</argLine>
                         <useManifestOnlyJar>true</useManifestOnlyJar>
                         <useSystemClassLoader>true</useSystemClassLoader>
                         <forkCount>0</forkCount>
@@ -501,11 +514,11 @@
                     </configuration>
                 </plugin>
                 <plugin>
-	                <!-- http://maven.apache.org/surefire/maven-failsafe-plugin/usage.html -->
+                    <!-- http://maven.apache.org/surefire/maven-failsafe-plugin/usage.html -->
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.20</version>
                     <configuration>
-	                    <argLine>-Duser.language=en -Duser.region=US</argLine>
+                        <argLine>-Duser.language=en -Duser.region=US</argLine>
                         <includes>
                             <include>**/*ITest.java</include>
                         </includes>
@@ -545,7 +558,7 @@
 
         <extensions>
             <extension>
-				<!-- measure and report time used by each plugin/goal -->
+                <!-- measure and report time used by each plugin/goal -->
                 <groupId>co.leantechniques</groupId>
                 <artifactId>maven-buildtime-extension</artifactId>
                 <version>3.0.1</version>
@@ -558,7 +571,7 @@
             </extension>
 
             <extension>
-				<!-- sftp support -->
+                <!-- sftp support -->
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh</artifactId>
                 <version>${maven.wagon.version}</version>
@@ -566,9 +579,9 @@
         </extensions>
     </build>
 
-	<!-- global dependencies -->
+    <!-- global dependencies -->
     <dependencies>
-		<!-- test dependencies -->
+        <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -588,71 +601,71 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-				<!-- newer versions requires Java 6 or higher -->
+                <!-- newer versions requires Java 6 or higher -->
                 <version>3.1</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-				<!-- newer versions requires Java 6 or higher -->
+                <!-- newer versions requires Java 6 or higher -->
                 <version>2.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
 
-	<reporting>
-		<plugins>
-			<plugin>
-				<!-- Generate a report based on the results of unit tests. -->
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.20</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>report-only</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
+    <reporting>
+        <plugins>
+            <plugin>
+                <!-- Generate a report based on the results of unit tests. -->
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.20</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report-only</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
 
-			<plugin>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.9</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>dependencies</report>
-							<report>project-team</report>
-							<report>summary</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
+            <plugin>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependencies</report>
+                            <report>project-team</report>
+                            <report>summary</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
 
-			<plugin>
-				<artifactId>maven-changes-plugin</artifactId>
-				<version>2.12.1</version>
-				<configuration>
-					<issueLinkTemplate />
-					<xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
-				</configuration>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>changes-report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-		</plugins>
-	</reporting>
+            <plugin>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.12.1</version>
+                <configuration>
+                    <issueLinkTemplate />
+                    <xmlPath>${project.basedir}/src/site/changes.xml</xmlPath>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>changes-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 
 
     <profiles>
         <profile>
             <id>jrebel-config</id>
-			<!-- only activated if executed within Eclipse and if rebel-remote.xml is present, requires Maven 3.2.2 or higher, see https://issues.apache.org/jira/browse/MNG-4565 -->
+            <!-- only activated if executed within Eclipse and if rebel-remote.xml is present, requires Maven 3.2.2 or higher, see https://issues.apache.org/jira/browse/MNG-4565 -->
             <activation>
                 <property>
                     <name>eclipse.application</name>
@@ -714,8 +727,8 @@
             </build>
         </profile>
 
-		<!-- m2eclipse has problems when the compilerId is not "javac" (however Eclipse still uses the internal compiler and not javac), thus we set
-			it to "javac" when in Eclipse but set it to "eclipse" for command line builds -->
+        <!-- m2eclipse has problems when the compilerId is not "javac" (however Eclipse still uses the internal compiler and not javac), thus we set
+            it to "javac" when in Eclipse but set it to "eclipse" for command line builds -->
         <profile>
             <activation>
                 <property>
@@ -724,7 +737,7 @@
             </activation>
             <properties>
                 <compilerId>eclipse</compilerId>
-				<webClassifier>classes</webClassifier>
+                <webClassifier>classes</webClassifier>
             </properties>
         </profile>
         <profile>
@@ -737,14 +750,14 @@
             <properties>
                 <compilerId>javac</compilerId>
 
-				<!-- http://wiki.eclipse.org/M2E-WTP_FAQ#How_do_I_add_my_web_project_classes_to_another_project.27s_classpath.3F -->
-				<webClassifier />
+                <!-- http://wiki.eclipse.org/M2E-WTP_FAQ#How_do_I_add_my_web_project_classes_to_another_project.27s_classpath.3F -->
+                <webClassifier />
             </properties>
             <build>
                 <pluginManagement>
                     <plugins>
-						<!-- http://stackoverflow.com/questions/7905501/get-rid-of-pom-not-found-warning-for-org-eclipse-m2elifecycle-mapping -->
-						<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
+                        <!-- http://stackoverflow.com/questions/7905501/get-rid-of-pom-not-found-warning-for-org-eclipse-m2elifecycle-mapping -->
+                        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
                         <plugin>
                             <groupId>org.eclipse.m2e</groupId>
                             <artifactId>lifecycle-mapping</artifactId>
@@ -763,7 +776,7 @@
                                             </pluginExecutionFilter>
                                             <action>
                                                 <execute>
-													<!-- https://wiki.eclipse.org/M2E_compatible_maven_plugins -->
+                                                    <!-- https://wiki.eclipse.org/M2E_compatible_maven_plugins -->
                                                     <runOnConfiguration>true</runOnConfiguration>
                                                     <runOnIncremental>true</runOnIncremental>
                                                 </execute>
