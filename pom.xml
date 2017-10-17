@@ -73,9 +73,15 @@
     <distributionManagement>
         <downloadUrl>https://github.com/sebthom/jstuff/releases/</downloadUrl>
         <repository>
+            <id>jstuff-releases-bintray</id>
+            <url>https://api.bintray.com/maven/sebthom/maven/jstuff/;publish=1</url>
+        </repository>
+        <!--
+        <repository>
             <id>jstuff-release</id>
             <url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/release</url>
         </repository>
+        -->
         <snapshotRepository>
             <id>jstuff-snapshot</id>
             <url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/mvn-repo/snapshot</url>
@@ -220,6 +226,33 @@
                         <version>1.0-beta-6</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <!--
+                                http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
+                                using jar-no-for instead of jar to prevent execution of maven lifecycle twice
+                            -->
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                            <!-- exclude java.util, javax.xml.bind stubs -->
+                        <exclude>java/**/*</exclude>
+                        <exclude>java</exclude>
+                        <exclude>javax/**/*</exclude>
+                        <exclude>javax</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -469,33 +502,6 @@
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.1.0</version>
-                </plugin>
-
-                <plugin>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.0.1</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <!--
-                                    http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
-                                    using jar-no-for instead of jar to prevent execution of maven lifecycle twice
-                                -->
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <excludes>
-                            <!-- exclude java.util, javax.xml.bind stubs -->
-                            <exclude>java/**/*</exclude>
-                            <exclude>java</exclude>
-                            <exclude>javax/**/*</exclude>
-                            <exclude>javax</exclude>
-                        </excludes>
-                    </configuration>
                 </plugin>
 
                 <plugin>
