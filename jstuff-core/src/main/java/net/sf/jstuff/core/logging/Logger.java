@@ -226,32 +226,32 @@ public abstract class Logger {
     public abstract void debug(final Throwable ex, final String messageTemplate, final Object... args);
 
     /**
-     * Logs a method entry
+     * Logs a method entry at TRACE level.
      */
     public abstract void entry();
 
     /**
-     * Logs a method entry
+     * Logs a method entry at TRACE level.
      */
     public abstract void entry(final Object arg1);
 
     /**
-     * Logs a method entry
+     * Logs a method entry at TRACE level.
      */
     public abstract void entry(final Object arg1, final Object arg2);
 
     /**
-     * Logs a method entry
+     * Logs a method entry at TRACE level.
      */
     public abstract void entry(final Object arg1, final Object arg2, final Object arg3);
 
     /**
-     * Logs a method entry
+     * Logs a method entry at TRACE level.
      */
     public abstract void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4);
 
     /**
-     * Logs a method entry
+     * Logs a method entry at TRACE level.
      */
     public abstract void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5);
 
@@ -309,12 +309,12 @@ public abstract class Logger {
     public abstract void error(final Throwable ex, final String messageTemplate, final Object... args);
 
     /**
-     * Logs a method exit
+     * Logs a method exit at TRACE level.
      */
     public abstract void exit();
 
     /**
-     * Logs a method exit
+     * Logs a method exit at TRACE level.
      *
      * @param returnValue the returnValue of the given method
      */
