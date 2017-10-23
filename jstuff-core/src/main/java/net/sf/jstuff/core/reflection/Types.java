@@ -28,6 +28,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -246,9 +247,11 @@ public abstract class Types {
         try {
             final CodeSource cs = clazz.getProtectionDomain().getCodeSource();
             if (cs != null && cs.getLocation() != null)
-                return new File(cs.getLocation().getFile());
+                return new File(cs.getLocation().toURI());
         } catch (final SecurityException ex) {
             // ignore
+        } catch (final URISyntaxException ex) {
+            throw new RuntimeException(ex);
         }
 
         /*
