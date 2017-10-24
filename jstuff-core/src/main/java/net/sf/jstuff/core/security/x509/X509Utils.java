@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -308,7 +309,9 @@ public abstract class X509Utils {
     }
 
     /**
-     * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
+     * Constructs a private key instance from PKCS#8 PEM encoded private key
+     *
+     * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
      */
     public static PrivateKey getPrivateKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
         Args.notNull("pemFile", pemFile);
@@ -317,7 +320,9 @@ public abstract class X509Utils {
     }
 
     /**
-     * Constructs a public key instance from PEM encoded public key, NOT from a PEM encoded certificate
+     * Constructs a private key instance from PKCS#8 PEM encoded private key
+     *
+     * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
      */
     public static PrivateKey getPrivateKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException, IOException {
         Args.notNull("pemStream", pemStream);
@@ -330,11 +335,19 @@ public abstract class X509Utils {
     }
 
     /**
-     * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
+     * Constructs a private key instance from PKCS#8 PEM encoded private key
+     *
+     * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
      */
     public static PrivateKey getPrivateKeyFromPEM(final String pemContent, final String algorithm) throws GeneralSecurityException {
         Args.notNull("pemContent", pemContent);
         Args.notNull("algorithm", algorithm);
+
+        // https://stackoverflow.com/questions/15344125/load-a-rsa-private-key-in-java-algid-parse-error-not-a-sequence
+        // https://stackoverflow.com/questions/20065304/what-is-the-differences-between-begin-rsa-private-key-and-begin-private-key
+        if (pemContent.contains("BEGIN RSA PRIVATE KEY"))
+            throw new InvalidKeyException("PKCS#1 PEM encoded private keys are not supported.");
+
         final Matcher keyMatcher = PRIVATE_KEY_PATTERN.matcher(pemContent);
         final byte[] privateKey;
         if (keyMatcher.find()) {
@@ -384,7 +397,7 @@ public abstract class X509Utils {
     }
 
     /**
-     * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
+     * Constructs a private key instance from PEM encoded X509 private key
      */
     public static RSAPrivateKey getRSAPrivateKeyFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
         Args.notNull("pemStream", pemStream);
@@ -392,7 +405,7 @@ public abstract class X509Utils {
     }
 
     /**
-     * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
+     * Constructs a private key instance from PEM encoded X509 private key
      */
     public static RSAPrivateKey getRSAPrivateKeyFromPEM(final String pemContent) throws GeneralSecurityException {
         Args.notNull("pemContent", pemContent);
@@ -521,7 +534,7 @@ public abstract class X509Utils {
     }
 
     public static String toPEM(final PrivateKey key) {
-        return key == null ? null : toPEM(key.getEncoded(), key.getAlgorithm() + " PRIVATE KEY", 64);
+        return key == null ? null : toPEM(key.getEncoded(), "PRIVATE KEY", 64);
     }
 
     public static String toPEM(final PublicKey key) {
