@@ -51,8 +51,8 @@ public class X509UtilsTest extends TestCase {
         assertEquals(selfSignedCert.getPublicKey(), selfSignedPublicKey);
 
         final String selfSignedPrivateKeyPEM = X509Utils.toPEM(selfSigned.get2());
-        assertTrue(selfSignedPrivateKeyPEM.startsWith("-----BEGIN RSA PRIVATE KEY-----" + Strings.NEW_LINE));
-        assertTrue(selfSignedPrivateKeyPEM.endsWith(Strings.NEW_LINE + "-----END RSA PRIVATE KEY-----" + Strings.NEW_LINE));
+        assertTrue(selfSignedPrivateKeyPEM.startsWith("-----BEGIN PRIVATE KEY-----" + Strings.NEW_LINE));
+        assertTrue(selfSignedPrivateKeyPEM.endsWith(Strings.NEW_LINE + "-----END PRIVATE KEY-----" + Strings.NEW_LINE));
         final PrivateKey selfSignedPrivateKey = X509Utils.getPrivateKeyFromPEM(selfSignedPrivateKeyPEM, selfSigned.get2().getAlgorithm());
         assertEquals(selfSigned.get2(), selfSignedPrivateKey);
 
