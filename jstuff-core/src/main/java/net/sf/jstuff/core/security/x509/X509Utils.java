@@ -69,9 +69,9 @@ public abstract class X509Utils {
     public static final CertificateFactory CERTIFICATE_FACTORY;
 
     private static final Pattern CRL_PATTERN = Pattern.compile("BEGIN X509 CRL-+\r?\n?(.*[^-])\r?\n?-+END X509 CRL", Pattern.DOTALL);
-    private static final Pattern CERTIFICATE_PATTERN = Pattern.compile("BEGIN CERTIFICATE-+\r?\n?(.*[^-])\r?\n?-+END CERTIFICATE", Pattern.DOTALL);
-    private static final Pattern PRIVATE_KEY_PATTERN = Pattern.compile("BEGIN PRIVATE KEY-+\r?\n?(.*[^-])\r?\n?-+END PRIVATE KEY", Pattern.DOTALL);
-    private static final Pattern PUBLIC_KEY_PATTERN = Pattern.compile("BEGIN PUBLIC KEY-+\r?\n?(.*[^-])\r?\n?-+END PUBLIC KEY", Pattern.DOTALL);
+    private static final Pattern CERTIFICATE_PATTERN = Pattern.compile("BEGIN .*CERTIFICATE-+\r?\n?(.*[^-])\r?\n?-+END .*CERTIFICATE", Pattern.DOTALL);
+    private static final Pattern PRIVATE_KEY_PATTERN = Pattern.compile("BEGIN .*PRIVATE KEY-+\r?\n?(.*[^-])\r?\n?-+END .*PRIVATE KEY", Pattern.DOTALL);
+    private static final Pattern PUBLIC_KEY_PATTERN = Pattern.compile("BEGIN .*PUBLIC KEY-+\r?\n?(.*[^-])\r?\n?-+END .*PUBLIC KEY", Pattern.DOTALL);
 
     static {
         try {
@@ -521,7 +521,7 @@ public abstract class X509Utils {
     }
 
     public static String toPEM(final PrivateKey key) {
-        return key == null ? null : toPEM(key.getEncoded(), "PRIVATE KEY", 64);
+        return key == null ? null : toPEM(key.getEncoded(), key.getAlgorithm() + " PRIVATE KEY", 64);
     }
 
     public static String toPEM(final PublicKey key) {
