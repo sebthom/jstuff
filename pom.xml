@@ -88,7 +88,7 @@
         </snapshotRepository>
         <site>
             <id>jstuff-site</id>
-            <url>sftp://web.sourceforge.net/home/groups/j/js/jstuff/htdocs/site</url>
+            <url>sftp://web.sourceforge.net/home/project-web/j/js/jstuff/htdocs/site/</url>
         </site>
     </distributionManagement>
 
@@ -137,7 +137,7 @@
                         <configuration>
                             <toolchains>
                                 <jdk>
-                                    <!-- potentially using a higher JDK version for integration tests -->
+                                    <!-- using a higher JDK version for integration tests -->
                                     <version>${java.version.integration-tests}</version>
                                 </jdk>
                             </toolchains>
@@ -491,7 +491,7 @@
                                 <goal>jar</goal>
                             </goals>
                             <configuration>
-                                <!-- exclude java.*, javax.xml.* stubs -->
+                                <!-- exclude java.*, javax.* stubs -->
                                 <excludePackageNames>java.*:javax.*</excludePackageNames>
                             </configuration>
                         </execution>
