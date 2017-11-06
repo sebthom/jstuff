@@ -37,8 +37,7 @@ import net.sf.jstuff.core.reflection.Types;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class TypeSafeEnum<VALUE_TYPE> implements Serializable
-{
+public abstract class TypeSafeEnum<ID> implements Serializable {
     private static final Comparator<TypeSafeEnum<?>> ORDINAL_COMPARATOR = new Comparator<TypeSafeEnum<?>>() {
         public int compare(final TypeSafeEnum<?> o1, final TypeSafeEnum<?> o2) {
             return o1.ordinal == o2.ordinal ? 0 : o1.ordinal < o2.ordinal ? -1 : 1;
@@ -52,45 +51,46 @@ public abstract class TypeSafeEnum<VALUE_TYPE> implements Serializable
      */
     private static final ConcurrentMap<Class<? extends TypeSafeEnum<?>>, ConcurrentMap<?, ? extends TypeSafeEnum<?>>> ENUMS_BY_TYPE = new ConcurrentHashMap<Class<? extends TypeSafeEnum<?>>, ConcurrentMap<?, ? extends TypeSafeEnum<?>>>();
 
-    private static final AtomicInteger ORDINAL_COUNTER = new AtomicInteger();;
+    private static final AtomicInteger ORDINAL_COUNTER = new AtomicInteger();
 
-    public static <V, T extends TypeSafeEnum<V>> T getItem(final Class<T> enumType, final V value) {
+    public static <V, T extends TypeSafeEnum<V>> T getEnum(final Class<T> enumType, final V id) {
         @SuppressWarnings("unchecked")
-        final Map<V, T> enumsByValue = (Map<V, T>) ENUMS_BY_TYPE.get(enumType);
-        if (enumsByValue == null)
+        final Map<V, T> enumsById = (Map<V, T>) ENUMS_BY_TYPE.get(enumType);
+        if (enumsById == null)
             return null;
-        return enumsByValue.get(value);
+        return enumsById.get(id);
     }
 
     @SuppressWarnings("unchecked")
-    public static <V, T extends TypeSafeEnum<V>> List<T> getItems(final Class<T> enumType) {
-        Map<V, T> enumsByValue = (Map<V, T>) ENUMS_BY_TYPE.get(enumType);
-        if (enumsByValue == null) {
+    public static <ID, T extends TypeSafeEnum<ID>> List<T> getEnums(final Class<T> enumType) {
+        Map<ID, T> enumsById = (Map<ID, T>) ENUMS_BY_TYPE.get(enumType);
+        if (enumsById == null) {
             // ensure the static fields containing the enum items are initialized
             Types.initialize(enumType);
 
-            enumsByValue = (Map<V, T>) ENUMS_BY_TYPE.get(enumType);
-            if (enumsByValue == null)
+            enumsById = (Map<ID, T>) ENUMS_BY_TYPE.get(enumType);
+            if (enumsById == null)
                 return Collections.emptyList();
         }
 
-        final List<T> result = new ArrayList<T>(enumsByValue.values());
+        final List<T> result = new ArrayList<T>(enumsById.values());
         Collections.sort(result, ORDINAL_COMPARATOR);
         return result;
     }
 
     /**
-     * the enum's value.
+     * the enum's identifier.
      */
-    protected final VALUE_TYPE value;
+    public final ID id;
 
     /**
-     * the enum's JVM instance unique ordinal.
+     * The ordinal is unique in this JVM instance across all instances of sub classes of TypeSafeEnum.
+     * It can be used in switch statements.
      */
-    protected final transient int ordinal;
+    public final transient int ordinal;
 
-    protected TypeSafeEnum(final VALUE_TYPE value) {
-        this.value = value;
+    protected TypeSafeEnum(final ID id) {
+        this.id = id;
         ordinal = ORDINAL_COUNTER.getAndIncrement();
         registerEnum();
     }
@@ -101,22 +101,19 @@ public abstract class TypeSafeEnum<VALUE_TYPE> implements Serializable
     }
 
     /**
-     * The ordinal is unique in this JVM instance across all instances of sub classes of TypeSafeEnum.
-     * It can be used in switch statements.
      *
-     * @return the ordinal
+     * For bean-style access.
      */
     public final int getOrdinal() {
         return ordinal;
     }
 
     /**
-     * Gets the enum's value.
      *
-     * @return the value of the enum
+     * For bean-style access.
      */
-    public final VALUE_TYPE getValue() {
-        return value;
+    public final ID getId() {
+        return id;
     }
 
     @Override
@@ -129,12 +126,12 @@ public abstract class TypeSafeEnum<VALUE_TYPE> implements Serializable
      * @see Serializable
      */
     protected final Object readResolve() {
-        if (value == null)
-            throw new IllegalStateException("Field [value] must not be null.");
+        if (id == null)
+            throw new IllegalStateException("Field [id] must not be null.");
         @SuppressWarnings("unchecked")
-        final Object obj = getItem(getClass(), value);
+        final Object obj = getEnum(getClass(), id);
         if (obj == null)
-            throw new IllegalStateException("Unknown enum with value=" + value);
+            throw new IllegalStateException("Unknown enum with id=" + id);
         return obj;
     }
 
@@ -142,15 +139,15 @@ public abstract class TypeSafeEnum<VALUE_TYPE> implements Serializable
      * registers this instance in the global map.
      */
     private void registerEnum() {
-        ConcurrentMap<VALUE_TYPE, TypeSafeEnum<?>> enumItems = new ConcurrentHashMap<VALUE_TYPE, TypeSafeEnum<?>>(2);
+        ConcurrentMap<ID, TypeSafeEnum<?>> enumItems = new ConcurrentHashMap<ID, TypeSafeEnum<?>>(2);
         @SuppressWarnings("unchecked")
-        final ConcurrentMap<VALUE_TYPE, TypeSafeEnum<?>> existingEnumItems = (ConcurrentMap<VALUE_TYPE, TypeSafeEnum<?>>) ENUMS_BY_TYPE.putIfAbsent(
+        final ConcurrentMap<ID, TypeSafeEnum<?>> existingEnumItems = (ConcurrentMap<ID, TypeSafeEnum<?>>) ENUMS_BY_TYPE.putIfAbsent(
             (Class<? extends TypeSafeEnum<?>>) getClass(), enumItems);
         if (existingEnumItems != null) {
             enumItems = existingEnumItems;
         }
 
-        final TypeSafeEnum<?> existingItem = enumItems.putIfAbsent(getValue(), this);
+        final TypeSafeEnum<?> existingItem = enumItems.putIfAbsent(id, this);
         if (existingItem != null)
             throw new IllegalStateException("The value of " + this + " is not unique.");
     }
