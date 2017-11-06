@@ -12,9 +12,10 @@
  *******************************************************************************/
 package net.sf.jstuff.core.types;
 
+import static org.junit.Assert.*;
+
 import junit.framework.TestCase;
 import net.sf.jstuff.core.io.SerializationUtils;
-import net.sf.jstuff.core.types.TypeSafeEnum;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -32,12 +33,14 @@ public class TypeSafeEnumTest extends TestCase {
     }
 
     public void testItemOrder() {
-        assertTrue(MyEnum.getItems(MyEnum.class).get(1) == MyEnum.ITEM2);
-        assertTrue(MyEnum.getItems(MyEnum.class).get(0) == MyEnum.ITEM1);
+        assertEquals(2, TypeSafeEnum.getEnums(MyEnum.class).size());
+        assertSame(MyEnum.ITEM1, TypeSafeEnum.getEnums(MyEnum.class).get(0));
+        assertSame(MyEnum.ITEM2, TypeSafeEnum.getEnums(MyEnum.class).get(1));
+
     }
 
     public void testSerialization() {
-        assertFalse(MyEnum.ITEM1.getOrdinal() == MyEnum.ITEM2.getOrdinal());
+        assertNotEquals(MyEnum.ITEM1.ordinal, MyEnum.ITEM2.ordinal);
         final MyEnum deserializedItem = (MyEnum) SerializationUtils.deserialize(SerializationUtils.serialize(MyEnum.ITEM1));
         assertSame(deserializedItem, MyEnum.ITEM1);
     }
