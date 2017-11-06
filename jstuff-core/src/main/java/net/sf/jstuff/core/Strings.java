@@ -803,13 +803,35 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     }
 
     /**
+     * Searches a string from left to right and returns the rightmost characters of the string.
+     *
+     * substringBefore("this is a test", "s") -> "thi"
+     *
+     * @param searchIn The string whose leftmost characters you want to find.
+     * @param searchFor A substring of searchIn.
+     *            right.
+     * @return The rightmost characters in searchIn.
+     *         The number of characters returned is determined by searchFor.
+     *         Returns an empty string if searchFor is not part of searchIn.
+     */
+    public static String substringAfter(final String searchIn, final char searchFor) {
+        if (isEmpty(searchIn))
+            return searchIn;
+
+        final int pos = searchIn.indexOf(searchFor);
+        if (pos < 0)
+            return EMPTY;
+
+        return searchIn.substring(pos + 1);
+    }
+
+    /**
      * Searches a string from left to right and returns the leftmost characters of the string.
      *
      * substringBefore("this is a test", "s") -> "thi"
      *
      * @param searchIn The string whose leftmost characters you want to find.
-     * @param searchFor A substring of searchIn. Left returns the characters to the left of searchFor. It finds searchFor by searching searchIn from left to
-     *            right.
+     * @param searchFor A substring of searchIn.
      * @return The leftmost characters in searchIn.
      *         The number of characters returned is determined by searchFor.
      *         Returns searchIn if searchFor is not part of searchIn.
