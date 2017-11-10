@@ -45,6 +45,7 @@
         <java.version>1.5</java.version>
         <java.vendor>sun</java.vendor>
         <java.version.integration-tests>1.6</java.version.integration-tests>
+        <java.vendor.integration-tests>${java.vendor}</java.vendor.integration-tests>
 
         <!-- requiring 3.2.2 because of https://issues.apache.org/jira/browse/MNG-4565 -->
         <maven.minimum.version>3.2.2</maven.minimum.version>
@@ -103,7 +104,6 @@
     </issueManagement>
 
     <prerequisites>
-        <!-- minimum version for toolchain support -->
         <maven>${maven.minimum.version}</maven>
     </prerequisites>
 
@@ -127,6 +127,14 @@
                         <goals>
                             <goal>toolchain</goal>
                         </goals>
+                        <configuration>
+                            <toolchains>
+                                <jdk>
+                                    <version>${java.version}</version>
+                                    <vendor>${java.vendor}</vendor>
+                                </jdk>
+                            </toolchains>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>toolchain@verify</id>
@@ -137,21 +145,14 @@
                         <configuration>
                             <toolchains>
                                 <jdk>
-                                    <!-- using a higher JDK version for integration tests -->
+                                    <!-- potentially using a different/higher JDK version for integration tests -->
                                     <version>${java.version.integration-tests}</version>
+                                    <vendor>${java.vendor.integration-tests}</vendor>
                                 </jdk>
                             </toolchains>
                         </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <toolchains>
-                        <jdk>
-                            <version>${java.version}</version>
-                            <vendor>${java.vendor}</vendor>
-                        </jdk>
-                    </toolchains>
-                </configuration>
             </plugin>
 
             <plugin>
@@ -167,11 +168,35 @@
                         <configuration>
                             <rules>
                                 <banCircularDependencies />
+                                <banDuplicatePomDependencyVersions />
+
+                                <requirePluginVersions>
+                                    <message>Always use fixed plug-in versions to ensure repeatable builds.</message>
+                                    <banLatest>true</banLatest>
+                                    <banRelease>true</banRelease>
+                                    <banSnapshots>true</banSnapshots>
+                                    <banTimestamps>false</banTimestamps>
+                                    <phases>clean,deploy,site</phases>
+                                </requirePluginVersions>
+
+                                <requireReleaseDeps>
+                                    <failWhenParentIsSnapshot>true</failWhenParentIsSnapshot>
+                                    <onlyWhenRelease>true</onlyWhenRelease>
+                                </requireReleaseDeps>
+
+                                <requireSameVersions>
+                                    <plugins>
+                                        <plugin>org.apache.maven.plugins:maven-surefire-plugin</plugin>
+                                        <plugin>org.apache.maven.plugins:maven-failsafe-plugin</plugin>
+                                        <plugin>org.apache.maven.plugins:maven-surefire-report-plugin</plugin>
+                                    </plugins>
+                                </requireSameVersions>
 
                                 <!-- extra enforcer rules -->
                                 <enforceBytecodeVersion>
                                     <maxJdkVersion>${java.version}</maxJdkVersion>
                                     <ignoredScopes>
+                                        <ignoredScope>provided</ignoredScope>
                                         <ignoredScope>test</ignoredScope>
                                     </ignoredScopes>
                                     <ignoreClasses>
@@ -213,7 +238,7 @@
                             <fail>false</fail>
                             <rules>
                                 <!-- http://maven.apache.org/enforcer/enforcer-rules/dependencyConvergence.html -->
-                                <DependencyConvergence />
+                                <dependencyConvergence />
                             </rules>
                         </configuration>
                     </execution>
@@ -366,18 +391,6 @@
                 </plugin>
 
                 <plugin>
-                    <artifactId>maven-eclipse-plugin</artifactId>
-                    <version>2.10</version>
-                    <configuration>
-                        <downloadSources>true</downloadSources>
-                        <downloadJavadocs>false</downloadJavadocs>
-                        <classpathContainers>
-                            <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-${java.version}</classpathContainer>
-                        </classpathContainers>
-                    </configuration>
-                </plugin>
-
-                <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.8.2</version>
                 </plugin>
@@ -506,6 +519,10 @@
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.1.0</version>
+                    <configuration>
+                        <!-- faster builds -->
+                        <recompressZippedFiles>false</recompressZippedFiles>
+                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -514,21 +531,27 @@
                     <!-- newer versions crash when running JDK 5 tests: org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
                     <version>2.19.1</version>
                     <configuration>
-                        <argLine>-Duser.language=en -Duser.region=US -Xmx768m -noverify</argLine>
+                        <argLine>-Xmx768m -Duser.language=en -Duser.region=US -noverify</argLine>
                         <excludes>
                             <exclude>**/*ITest.java</exclude>
                         </excludes>
+                        <systemPropertyVariables>
+                            <java.awt.headless>true</java.awt.headless>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
                 <plugin>
                     <!-- http://maven.apache.org/surefire/maven-failsafe-plugin/usage.html -->
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.20.1</version>
+                    <version>2.19.1</version>
                     <configuration>
-                        <argLine>-Duser.language=en -Duser.region=US</argLine>
+                        <argLine>-Xmx768m -Duser.language=en -Duser.region=US -noverify</argLine>
                         <includes>
                             <include>**/*ITest.java</include>
                         </includes>
+                        <systemPropertyVariables>
+                            <java.awt.headless>true</java.awt.headless>
+                        </systemPropertyVariables>
                     </configuration>
                     <executions>
                         <execution>
@@ -626,7 +649,7 @@
             <plugin>
                 <!-- Generate a report based on the results of unit tests. -->
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.20.1</version>
+                <version>2.19.1</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -757,7 +780,7 @@
             <properties>
                 <compilerId>javac</compilerId>
 
-                <!-- http://wiki.eclipse.org/M2E-WTP_FAQ#How_do_I_add_my_web_project_classes_to_another_project.27s_classpath.3F -->
+                <!-- see "How do I add my web project classes to another project's classpath" http://wiki.eclipse.org/M2E-WTP_FAQ#How_do_I_add_my_web_project_classes_to_another_project.27s_classpath.3F -->
                 <webClassifier />
             </properties>
             <build>
@@ -776,7 +799,7 @@
                                             <pluginExecutionFilter>
                                                 <groupId>org.zeroturnaround</groupId>
                                                 <artifactId>jrebel-maven-plugin</artifactId>
-                                                <versionRange>[1.1.5,)</versionRange>
+                                                <versionRange>[1.0,)</versionRange>
                                                 <goals>
                                                     <goal>generate</goal>
                                                 </goals>
@@ -819,7 +842,7 @@
                                             <pluginExecutionFilter>
                                                 <groupId>org.apache.maven.plugins</groupId>
                                                 <artifactId>maven-antrun-plugin</artifactId>
-                                                <versionRange>[1.7,)</versionRange>
+                                                <versionRange>[1.0,)</versionRange>
                                                 <goals>
                                                     <goal>run</goal>
                                                 </goals>
