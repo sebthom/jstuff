@@ -1,6 +1,7 @@
 # jstuff - toolbox for Java
 
-[ ![Download](https://api.bintray.com/packages/sebthom/maven/jstuff/images/download.svg) ](https://bintray.com/sebthom/maven/jstuff/_latestVersion)
+[![License](https://img.shields.io/github/license/sebthom/jstuff.svg?label=License)](LICENSE.txt)
+[![Download](https://api.bintray.com/packages/sebthom/maven/jstuff/images/download.svg)](https://bintray.com/sebthom/maven/jstuff/_latestVersion)
 
 1. [What is it?](#what-is-it)
 1. [License](#license)
