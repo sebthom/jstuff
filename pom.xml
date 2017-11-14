@@ -170,6 +170,10 @@
                                 <banCircularDependencies />
                                 <banDuplicatePomDependencyVersions />
 
+                                <requireMavenVersion>
+                                    <version>[${maven.minimum.version},)</version>
+                                </requireMavenVersion>
+
                                 <requirePluginVersions>
                                     <message>Always use fixed plug-in versions to ensure repeatable builds.</message>
                                     <banLatest>true</banLatest>
@@ -352,12 +356,12 @@
                             a) to avoid notorious "schema change not supported" message when debugging via eclipse
                             b) javac is buggy when compiling complex generic expressions
                         -->
-                        <compilerId>${compilerId}</compilerId>
+                        <compilerId>eclipse</compilerId>
                     </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>org.codehaus.plexus</groupId>
-                            <artifactId>plexus-compiler-${compilerId}</artifactId>
+                            <artifactId>plexus-compiler-eclipse</artifactId>
                             <version>2.8.2</version>
                         </dependency>
                     </dependencies>
@@ -762,16 +766,14 @@
             </build>
         </profile>
 
-        <!-- m2eclipse has problems when the compilerId is not "javac" (however Eclipse still uses the internal compiler and not javac), thus we set
-            it to "javac" when in Eclipse but set it to "eclipse" for command line builds -->
         <profile>
+            <id>web-classifier-classes</id>
             <activation>
                 <property>
                     <name>!eclipse.application</name>
                 </property>
             </activation>
             <properties>
-                <compilerId>eclipse</compilerId>
                 <webClassifier>classes</webClassifier>
             </properties>
         </profile>
@@ -783,8 +785,6 @@
                 </property>
             </activation>
             <properties>
-                <compilerId>javac</compilerId>
-
                 <!-- see "How do I add my web project classes to another project's classpath" http://wiki.eclipse.org/M2E-WTP_FAQ#How_do_I_add_my_web_project_classes_to_another_project.27s_classpath.3F -->
                 <webClassifier />
             </properties>
