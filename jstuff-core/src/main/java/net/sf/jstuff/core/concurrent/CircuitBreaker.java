@@ -88,7 +88,7 @@ public class CircuitBreaker implements EventListenable<State> {
          */
         @Fluent
         @Builder.Property(required = false)
-        CircuitBreakerBuilder eventDisptacher(EventDispatcher<State> value);
+        CircuitBreakerBuilder eventDispatcher(EventDispatcher<State> value);
 
         /**
          * Number of subsequent errors that trip {@link State#OPEN}.
