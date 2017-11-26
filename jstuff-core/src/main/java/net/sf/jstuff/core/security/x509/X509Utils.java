@@ -83,6 +83,33 @@ public abstract class X509Utils {
     }
 
     /**
+     * Converts a javax.security.cert.X509Certificate to java.security.cert.X509Certificate
+     */
+    public static X509Certificate convert(final javax.security.cert.X509Certificate cert) {
+        if(cert == null)
+            return null;
+        try {
+            final ByteArrayInputStream bis = new ByteArrayInputStream(cert.getEncoded());
+            return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(bis);
+        } catch (final Exception ex) {
+            throw new IllegalArgumentException("[cert] " + cert + " is not convertable!", ex);
+        }
+    }
+
+    /**
+     * Converts a java.security.cert.X509Certificate to javax.security.cert.X509Certificate
+     */
+    public static javax.security.cert.X509Certificate convert(final X509Certificate cert) {
+        if(cert == null)
+            return null;
+        try {
+            return javax.security.cert.X509Certificate.getInstance(cert.getEncoded());
+        } catch (final Exception ex) {
+            throw new IllegalArgumentException("[cert] " + cert + " is not convertable!", ex);
+        }
+    }
+
+    /**
      * Constructs a X509Certificate instance from a PEM encoded certificate
      */
     public static X509Certificate getCertificateFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
