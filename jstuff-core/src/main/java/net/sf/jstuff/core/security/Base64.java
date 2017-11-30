@@ -20,6 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 
 /**
@@ -173,12 +174,34 @@ public abstract class Base64 {
         return b64.encode(plain);
     }
 
+    public static String urlencode(final byte[] plain) {
+        return Strings.replaceChars(b64.encode(plain), "+/", "-_");
+    }
+
     public static boolean isBase64(final byte[] bytes) {
         for (int i = 0; i < bytes.length; i++) {
             final byte ch = bytes[i];
             // test a-z, A-Z
-            if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '+' || ch == '-' || ch == '_' || ch == '/' || ch == '\r'
-                    || ch == '\n') {
+            if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '+' || ch == '/' || ch == '\r' || ch == '\n') {
+                continue;
+            }
+            // may end with =
+            if (ch == '=') {
+                if (bytes.length - i < 4) {
+                    continue;
+                }
+            }
+            return false;
+
+        }
+        return true;
+    }
+
+    public static boolean isBase64Url(final byte[] bytes) {
+        for (int i = 0; i < bytes.length; i++) {
+            final byte ch = bytes[i];
+            // test a-z, A-Z
+            if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '-' || ch == '_' || ch == '\r' || ch == '\n') {
                 continue;
             }
             // may end with =

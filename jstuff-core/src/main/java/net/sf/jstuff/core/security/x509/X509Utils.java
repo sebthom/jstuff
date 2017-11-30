@@ -86,7 +86,7 @@ public abstract class X509Utils {
      * Converts a javax.security.cert.X509Certificate to java.security.cert.X509Certificate
      */
     public static X509Certificate convert(final javax.security.cert.X509Certificate cert) {
-        if(cert == null)
+        if (cert == null)
             return null;
         try {
             final ByteArrayInputStream bis = new ByteArrayInputStream(cert.getEncoded());
@@ -100,7 +100,7 @@ public abstract class X509Utils {
      * Converts a java.security.cert.X509Certificate to javax.security.cert.X509Certificate
      */
     public static javax.security.cert.X509Certificate convert(final X509Certificate cert) {
-        if(cert == null)
+        if (cert == null)
             return null;
         try {
             return javax.security.cert.X509Certificate.getInstance(cert.getEncoded());
@@ -300,7 +300,7 @@ public abstract class X509Utils {
         }
     }
 
-    public static String getFingerprint(final X509Certificate cert) throws GeneralSecurityException {
+    public static String getFingerprint(final X509Certificate cert) throws CertificateEncodingException {
         Args.notNull("cert", cert);
         return Checksums.sha1(cert.getEncoded());
     }

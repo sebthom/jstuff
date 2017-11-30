@@ -21,7 +21,7 @@ import java.io.Writer;
 import javax.portlet.RenderResponse;
 import javax.portlet.filter.RenderResponseWrapper;
 
-import net.sf.jstuff.core.io.FastByteArrayOutputStream;
+import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 
 /**
  * Use {{@link #toString()} to get the response as string.

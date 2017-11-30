@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.io;
+package net.sf.jstuff.core.io.stream;
 
 import static net.sf.jstuff.core.Strings.NEW_LINE;
 

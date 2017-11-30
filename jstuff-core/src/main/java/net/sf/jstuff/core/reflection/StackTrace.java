@@ -154,13 +154,19 @@ public abstract class StackTrace {
         throw new AssertionError("should never be reached.");
     }
 
-    public static <T extends Throwable> T removeFirstStackTraceElement(final T t) {
-        Args.notNull("t", t);
+    /**
+     * @return the given exception
+     */
+    public static <T extends Throwable> T removeFirstStackTraceElement(final T exception) {
+        Args.notNull("exception", exception);
 
-        final StackTraceElement[] stack = t.getStackTrace();
-        final StackTraceElement[] newStack = new StackTraceElement[stack.length - 1];
-        System.arraycopy(stack, 1, newStack, 0, stack.length - 1);
-        t.setStackTrace(newStack);
-        return t;
+        final StackTraceElement[] stack = exception.getStackTrace();
+        if (stack != null && stack.length > 0) {
+            final StackTraceElement[] newStack = new StackTraceElement[stack.length - 1];
+            System.arraycopy(stack, 1, newStack, 0, stack.length - 1);
+            exception.setStackTrace(newStack);
+        }
+        return exception;
     }
+
 }

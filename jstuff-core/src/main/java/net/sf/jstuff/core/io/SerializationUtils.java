@@ -20,6 +20,8 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
+import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.lang3.SerializationException;

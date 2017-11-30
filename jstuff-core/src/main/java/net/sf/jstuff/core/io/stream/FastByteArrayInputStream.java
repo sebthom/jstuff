@@ -10,11 +10,12 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.io;
+package net.sf.jstuff.core.io.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.validation.Args;
 
 /**

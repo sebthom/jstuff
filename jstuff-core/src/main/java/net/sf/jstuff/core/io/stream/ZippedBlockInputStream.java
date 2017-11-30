@@ -10,7 +10,7 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.io;
+package net.sf.jstuff.core.io.stream;
 
 import java.io.EOFException;
 import java.io.FilterInputStream;
@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.validation.Args;
 
 import org.apache.commons.io.IOExceptionWithCause;

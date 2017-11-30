@@ -26,7 +26,7 @@ import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
-import net.sf.jstuff.core.io.FastByteArrayOutputStream;
+import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**

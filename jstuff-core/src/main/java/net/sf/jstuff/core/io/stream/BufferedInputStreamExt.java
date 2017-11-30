@@ -10,13 +10,15 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.io;
+package net.sf.jstuff.core.io.stream;
 
 import static net.sf.jstuff.core.Strings.*;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import net.sf.jstuff.core.io.IOUtils;
 
 /**
  * Extended BufferInputStream with readString and readLine methods.

@@ -16,6 +16,10 @@ import java.io.IOException;
 import java.util.zip.Deflater;
 
 import junit.framework.TestCase;
+import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
+import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
+import net.sf.jstuff.core.io.stream.ZippedBlockInputStream;
+import net.sf.jstuff.core.io.stream.ZippedBlockOutputStream;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
