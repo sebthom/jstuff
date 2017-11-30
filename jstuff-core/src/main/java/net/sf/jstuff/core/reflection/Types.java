@@ -418,6 +418,14 @@ public abstract class Types {
         return getPrimitiveWrapper(toType).isAssignableFrom(getPrimitiveWrapper(fromType));
     }
 
+    public static boolean isInstanceOf(final Object obj, final Class<?> type) {
+        Args.notNull("type", type);
+        if (obj == null)
+            return false;
+
+        return isAssignableTo(obj.getClass(), type);
+    }
+
     public static boolean isAvailable(final String className) {
         return find(className, false) != null;
     }

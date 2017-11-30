@@ -27,6 +27,7 @@ import java.util.zip.ZipFile;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.concurrent.Threads;
+import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 

@@ -22,7 +22,7 @@ import junit.framework.TestCase;
  */
 public class Base64Test extends TestCase {
 
-    public void testBase64() throws UnsupportedEncodingException {
+    public void testDecode() throws UnsupportedEncodingException {
         assertEquals("Hello World!", new String(Base64.decode("SGVsbG8gV29ybGQh"), "UTF-8"));
         assertEquals("Hell", new String(Base64.decode("SGVsbA=="), "UTF-8"));
         assertEquals("Hell", new String(Base64.decode("SGVsbA="), "UTF-8"));

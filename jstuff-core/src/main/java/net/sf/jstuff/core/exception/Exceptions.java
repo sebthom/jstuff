@@ -14,6 +14,8 @@ package net.sf.jstuff.core.exception;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import net.sf.jstuff.core.reflection.StackTrace;
+import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -62,5 +64,32 @@ public abstract class Exceptions extends ExceptionUtils {
         Exceptions.<RuntimeException> throwsUnchecked(ex);
 
         throw new AssertionError("should never be reached.");
+    }
+
+    /**
+     * Wraps the given exception if not of the given type already.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Throwable> T wrapAs(final Throwable t, final Class<T> type) {
+        if (t == null)
+            return null;
+        if (Types.isInstanceOf(t, type))
+            return (T) t;
+        final T exception = Types.newInstance(type, t);
+
+        if (exception.getStackTrace() != null) {
+            final StackTraceElement caller = StackTrace.getCallerStackTraceElement();
+            final StackTraceElement[] stack = exception.getStackTrace();
+            for (int i = 0; i < stack.length; i++) {
+                if (stack[i].equals(caller)) {
+                    final StackTraceElement[] newStack = new StackTraceElement[stack.length - i];
+                    System.arraycopy(stack, i, newStack, 0, stack.length - i);
+                    exception.setStackTrace(newStack);
+                    break;
+                }
+            }
+        }
+
+        return exception;
     }
 }

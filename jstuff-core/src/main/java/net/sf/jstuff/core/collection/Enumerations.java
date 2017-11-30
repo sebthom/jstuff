@@ -12,8 +12,10 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -71,4 +73,15 @@ public abstract class Enumerations {
             }
         };
     }
+
+    public static <T> List<T> toList(final Enumeration<T> en) {
+        if (en == null)
+            return null;
+        final List<T> result = new ArrayList<T>();
+        while (en.hasMoreElements()) {
+            result.add(en.nextElement());
+        }
+        return result;
+    }
+
 }

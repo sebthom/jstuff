@@ -24,6 +24,7 @@ import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 import javax.swing.text.html.parser.ParserDelegator;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.lang3.text.WordUtils;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
@@ -898,7 +899,39 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     public static String toString(final Object object) {
         if (object == null)
             return "null";
-        return ToStringBuilder.reflectionToString(object);
+        return ToStringBuilder.reflectionToString(object, ToStringStyle.DEFAULT_STYLE);
+    }
+
+    /**
+     * @return "{SimpleClassName}@{HexIdentityHashCode}[{fieldName}={fieldValue},...]"
+     */
+    public static String toString(final Object object, final Object... fieldAndValues) {
+        if (object == null)
+            return "null";
+        final StringBuilder sb = new StringBuilder(object.getClass().getSimpleName());
+        sb.append('@');
+        sb.append(Long.toHexString(System.identityHashCode(object)));
+        sb.append('[');
+        boolean isFieldName = true;
+        for (final Object item : fieldAndValues) {
+            if (isFieldName) {
+                sb.append(item).append('=');
+            } else {
+                if (item instanceof String) {
+                    sb.append('"').append(item).append('"');
+                } else {
+                    sb.append(item);
+                }
+                sb.append(',');
+            }
+            isFieldName = !isFieldName;
+        }
+        if (isFieldName) {
+            // remove last ','
+            sb.setLength(sb.length() - 1);
+        }
+        sb.append(']');
+        return sb.toString();
     }
 
     /**

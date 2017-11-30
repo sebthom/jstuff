@@ -19,6 +19,7 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class BuilderTest extends TestCase {
+
     public static class EntityA {
 
         public interface EntityABuilder<T extends EntityA> extends Builder<T> {
@@ -38,7 +39,7 @@ public class BuilderTest extends TestCase {
         protected Integer propertyB = -1;
 
         @OnPostBuild
-        private void onInitialized() {
+        protected void onInitialized() {
             Args.notNull("propertyA", propertyA);
             Args.notNull("propertyB", propertyB);
             Args.notNegative("propertyB", propertyB);
@@ -46,6 +47,7 @@ public class BuilderTest extends TestCase {
     }
 
     public static class EntityB extends EntityA {
+
         public interface EntityBBuilder<T extends EntityB> extends EntityABuilder<T> {
             EntityBBuilder<T> propertyA(String value);
 
@@ -68,8 +70,9 @@ public class BuilderTest extends TestCase {
         private String propertyD;
         protected String propertyE;
 
-        @OnPostBuild
-        private void onInitialized() {
+        @Override
+        protected void onInitialized() {
+            super.onInitialized();
             Args.notNegative("propertyC", propertyC);
             Args.notNull("propertyD", propertyD);
             if (!propertyD.endsWith("_setWithSetter"))

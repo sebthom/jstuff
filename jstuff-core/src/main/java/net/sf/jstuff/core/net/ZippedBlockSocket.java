@@ -18,8 +18,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.zip.Deflater;
 
-import net.sf.jstuff.core.io.ZippedBlockInputStream;
-import net.sf.jstuff.core.io.ZippedBlockOutputStream;
+import net.sf.jstuff.core.io.stream.ZippedBlockInputStream;
+import net.sf.jstuff.core.io.stream.ZippedBlockOutputStream;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
