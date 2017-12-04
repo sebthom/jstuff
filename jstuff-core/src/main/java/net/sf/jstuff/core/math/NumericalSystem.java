@@ -116,7 +116,7 @@ public class NumericalSystem {
         final BigInteger base = BigInteger.valueOf(digitsArray.length);
         BigInteger remainder = value;
         final StringBuilder sb = new StringBuilder();
-        while (value.compareTo(BigInteger.ZERO) > 0) {
+        while (remainder.compareTo(BigInteger.ZERO) > 0) {
             sb.append(digitsArray[remainder.mod(base).intValue()]);
             remainder = remainder.divide(base);
         }
