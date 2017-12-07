@@ -17,7 +17,6 @@ import static net.sf.jstuff.core.collection.CollectionUtils.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -28,7 +27,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.net.URISyntaxException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -241,17 +240,24 @@ public abstract class Types {
     }
 
     /**
-     * @return the local JAR or root directory containing the given class
+     * @return the local JAR or root directory containing the given class or null if not detectable
      */
     public static File findLibrary(final Class<?> clazz) {
-        try {
-            final CodeSource cs = clazz.getProtectionDomain().getCodeSource();
-            if (cs != null && cs.getLocation() != null)
-                return new File(cs.getLocation().toURI());
-        } catch (final SecurityException ex) {
-            // ignore
-        } catch (final URISyntaxException ex) {
-            throw new RuntimeException(ex);
+        {
+            URI uri = null;
+            try {
+                final CodeSource cs = clazz.getProtectionDomain().getCodeSource();
+                if (cs != null && cs.getLocation() != null) {
+                    uri = cs.getLocation().toURI();
+                    return new File(uri);
+                }
+            } catch (final Exception ex) {
+                if (uri == null) {
+                    LOG.warn("URI: " + uri, ex);
+                } else {
+                    LOG.warn(ex);
+                }
+            }
         }
 
         /*
@@ -264,8 +270,9 @@ public abstract class Types {
         try {
             // extract the jar path from: jar:file:/F:/allianz/apps/dev/java/sun_jdk1.5.0_22/jre/lib/rt.jar!/java/lang/String.class
             return new File(URLDecoder.decode(Strings.substringBetween(location.getPath(), "file:", "!"), Charset.defaultCharset().name()));
-        } catch (final UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
+        } catch (final Exception ex) {
+            LOG.warn(ex);
+            return null;
         }
     }
 
