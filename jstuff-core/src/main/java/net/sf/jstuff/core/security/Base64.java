@@ -22,6 +22,8 @@ import org.apache.commons.lang3.SystemUtils;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
+import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.reflection.Types;
 
 /**
  * Delegates to java.util.Base64 (Java 8+), javax.xml.bind.DatatypeConverter (Java 6+) or sun.misc.BASE64Decoder (Java 5)
@@ -31,6 +33,8 @@ import net.sf.jstuff.core.collection.tuple.Tuple2;
  */
 @SuppressWarnings("restriction")
 public abstract class Base64 {
+
+    private static final Logger LOG = Logger.create();
 
     private static interface Base64Adapter {
         byte[] decode(final String encoded);
@@ -68,6 +72,10 @@ public abstract class Base64 {
     }
 
     private static final class Base64Adapter_Java6 implements Base64Adapter {
+        {
+            Types.initialize(javax.xml.bind.DatatypeConverter.class);
+        }
+
         public byte[] decode(final String encoded) {
             return javax.xml.bind.DatatypeConverter.parseBase64Binary(encoded);
         }
@@ -78,8 +86,8 @@ public abstract class Base64 {
     }
 
     private static final class Base64Adapter_Java8 implements Base64Adapter {
-        static final java.util.Base64.Decoder decoder = java.util.Base64.getDecoder();
-        static final java.util.Base64.Encoder encoder = java.util.Base64.getEncoder();
+        private static final java.util.Base64.Decoder decoder = java.util.Base64.getDecoder();
+        private static final java.util.Base64.Encoder encoder = java.util.Base64.getEncoder();
 
         public byte[] decode(final String encoded) {
             return decoder.decode(encoded);
@@ -95,14 +103,16 @@ public abstract class Base64 {
         if (SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_8)) {
             try {
                 b64 = new Base64Adapter_Java8();
-            } catch (final LinkageError ex) {}
+            } catch (final LinkageError ex) {
+                LOG.debug(ex);
+            }
         }
 
         if (SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_6)) {
-            if (b64 == null) {
-                try {
-                    b64 = new Base64Adapter_Java6();
-                } catch (final LinkageError ex) {}
+            try {
+                b64 = new Base64Adapter_Java6();
+            } catch (final LinkageError ex) {
+                LOG.debug(ex);
             }
         }
 

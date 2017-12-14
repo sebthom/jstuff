@@ -1,6 +1,11 @@
 package java.util;
 
+import net.sf.jstuff.core.exception.Exceptions;
+
 public abstract class Base64 {
+    static {
+        Exceptions.throwUnchecked(new LinkageError("This is a mock"));
+    }
 
     public static abstract class Decoder {
         public abstract byte[] decode(String src);
