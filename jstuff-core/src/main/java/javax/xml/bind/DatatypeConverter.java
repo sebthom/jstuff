@@ -1,13 +1,17 @@
 package javax.xml.bind;
 
-@SuppressWarnings("unused")
-public final class DatatypeConverter {
+import net.sf.jstuff.core.exception.Exceptions;
 
-    public static byte[] parseBase64Binary(final String lexicalXSDBase64Binary) {
+public final class DatatypeConverter {
+    static {
+        Exceptions.throwUnchecked(new LinkageError("This is a mock"));
+    }
+
+    public static byte[] parseBase64Binary(@SuppressWarnings("unused") final String lexicalXSDBase64Binary) {
         throw new UnsupportedOperationException();
     }
 
-    public static String printBase64Binary(final byte[] val) {
+    public static String printBase64Binary(@SuppressWarnings("unused") final byte[] val) {
         throw new UnsupportedOperationException();
     }
 }
