@@ -305,6 +305,66 @@ public abstract class CollectionUtils {
         return result;
     }
 
+    /**
+     * @return all items that are contained in all lists.
+     */
+    public static <T> List<T> intersect(final List<T>... lists) {
+        if (lists == null)
+            return Collections.emptyList();
+
+        for (final List<T> list : lists) {
+            if (list == null || list.size() == 0)
+                return Collections.emptyList();
+        }
+
+        final List<T> commonItems = new ArrayList<T>();
+
+        for (final T candidate : lists[0]) {
+            boolean isCommon = true;
+            for (int i = 1; i < lists.length; i++) {
+
+                if (!lists[i].contains(candidate)) {
+                    isCommon = false;
+                    break;
+                }
+            }
+            if (isCommon) {
+                commonItems.add(candidate);
+            }
+        }
+        return commonItems;
+    }
+
+    /**
+     * @return all items that are contained in all sets.
+     */
+    public static <T> Set<T> intersect(final Set<T>... sets) {
+        if (sets == null)
+            return Collections.emptySet();
+
+        for (final Set<T> set : sets) {
+            if (set == null || set.size() == 0)
+                return Collections.emptySet();
+        }
+
+        final Set<T> commonItems = new LinkedHashSet<T>();
+
+        for (final T candidate : sets[0]) {
+            boolean isCommon = true;
+            for (int i = 1; i < sets.length; i++) {
+
+                if (!sets[i].contains(candidate)) {
+                    isCommon = false;
+                    break;
+                }
+            }
+            if (isCommon) {
+                commonItems.add(candidate);
+            }
+        }
+        return commonItems;
+    }
+
     public static boolean isEmpty(final Collection<?> coll) {
         return coll == null || coll.isEmpty();
     }
@@ -434,6 +494,21 @@ public abstract class CollectionUtils {
 
     public static <V> LinkedHashSet<V> newLinkedHashSet() {
         return new LinkedHashSet<V>();
+    }
+
+    public static <K> HashSet<K> newLinkedHashSet(final int initialSize) {
+        return new LinkedHashSet<K>(initialSize);
+    }
+
+    public static <K> HashSet<K> newLinkedHashSet(final K... values) {
+        if (values == null || values.length == 0)
+            return new LinkedHashSet<K>();
+
+        final HashSet<K> s = new LinkedHashSet<K>(values.length);
+        for (final K v : values) {
+            s.add(v);
+        }
+        return s;
     }
 
     public static <T> ThreadLocal<ArrayList<T>> newThreadLocalArrayList() {
