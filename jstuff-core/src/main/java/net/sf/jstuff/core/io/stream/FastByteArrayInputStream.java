@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.io.stream;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jstuff.core.io.IOUtils;
@@ -37,7 +36,7 @@ public class FastByteArrayInputStream extends InputStream {
         Args.notNull("data", data);
         Args.notNegative("offset", offset);
         Args.notNegative("length", length);
-
+        
         this.data = data;
         pos = offset;
         count = Math.min(offset + length, data.length);
@@ -73,20 +72,18 @@ public class FastByteArrayInputStream extends InputStream {
     }
 
     @Override
-    public int read(final byte buf[], final int offset, int length) throws IOException {
-        Args.notNull("buf", buf);
-        Args.notNegative("offset", offset);
-        Args.notNegative("length", length);
-
-        if (offset > buf.length || offset + length > buf.length)
+    public int read(final byte buf[], final int offset, int length) {
+        if (offset < 0 || length < 0 || offset + length > buf.length)
             throw new IndexOutOfBoundsException();
 
-        if (count < pos)
+        if (pos >= count)
             return IOUtils.EOF;
 
-        if (pos + length > count) {
-            length = count - pos;
+        final int avail = count - pos;
+        if (length > avail) {
+            length = avail;
         }
+
         if (length <= 0)
             return 0;
 
@@ -101,13 +98,14 @@ public class FastByteArrayInputStream extends InputStream {
     }
 
     @Override
-    public long skip(long n) {
-        if (pos + n > count) {
-            n = count - pos;
-        }
+    public long skip(final long n) {
         if (n < 0)
             return 0;
-        pos += n;
-        return n;
+
+        final long avail = count - pos;
+        final long skipped = n < avail ? n : avail;
+
+        pos += skipped;
+        return skipped;
     }
 }

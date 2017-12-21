@@ -29,7 +29,7 @@ public class FastByteArrayOutputStream extends OutputStream {
     private int count;
 
     public FastByteArrayOutputStream() {
-        this(32);
+        data = new byte[32];
     }
 
     public FastByteArrayOutputStream(final int size) {
@@ -95,11 +95,7 @@ public class FastByteArrayOutputStream extends OutputStream {
 
     @Override
     public void write(final byte[] buf, final int offset, final int length) {
-        Args.notNull("buf", buf);
-        Args.notNegative("offset", offset);
-        Args.notNegative("length", length);
-
-        if (offset > buf.length || offset + length > buf.length)
+        if (offset < 0 || length < 0 || offset + length > buf.length)
             throw new IndexOutOfBoundsException();
 
         if (length == 0)
