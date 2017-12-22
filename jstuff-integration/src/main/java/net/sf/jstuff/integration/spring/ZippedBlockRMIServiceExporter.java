@@ -12,11 +12,11 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.spring;
 
-import net.sf.jstuff.core.logging.Logger;
-
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.rmi.RmiServiceExporter;
+
+import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -34,15 +34,18 @@ public class ZippedBlockRMIServiceExporter implements InitializingBean, Disposab
         LOG.infoNew(this);
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
-        if (!serviceNameSet)
+        if (!serviceNameSet) {
             setServiceName(normalExporter.getServiceInterface().getSimpleName());
+        }
 
         compressedExporter.setRegistryClientSocketFactory(new ZippedBlockRMISocketFactory());
         compressedExporter.afterPropertiesSet();
         normalExporter.afterPropertiesSet();
     }
 
+    @Override
     public void destroy() throws Exception {
         compressedExporter.destroy();
         normalExporter.destroy();

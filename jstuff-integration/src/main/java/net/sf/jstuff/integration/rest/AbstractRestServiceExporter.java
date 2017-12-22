@@ -107,6 +107,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 
         final List<RestResourceAction> actions = serviceActions.getAllResourceActions();
         Collections.sort(actions, new Comparator<RestResourceAction>() {
+            @Override
             public int compare(final RestResourceAction o1, final RestResourceAction o2) {
                 return ObjectUtils.compare(o1.getRequestURITemplate(), o2.getRequestURITemplate());
             }
@@ -203,6 +204,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 
+    @Override
     public void handleRequest(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding(characterEncoding);
         resp.setCharacterEncoding(characterEncoding);

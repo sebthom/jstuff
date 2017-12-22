@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.security;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -22,6 +21,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
+import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Types;
 
@@ -54,12 +54,13 @@ public abstract class Base64 {
             }
         };
 
+        @SuppressWarnings("resource")
         public byte[] decode(final String encoded) {
             try {
                 final byte[] bytes = encoded.getBytes("UTF-8");
                 if (!isBase64(bytes))
                     throw new IllegalArgumentException("[encoded] is not a valid Base64 encoded string.");
-                final ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+                final FastByteArrayInputStream is = new FastByteArrayInputStream(bytes);
                 return codec.get().get2().decodeBuffer(is);
             } catch (final IOException ex) {
                 throw new IllegalArgumentException("[encoded] is not a valid Base64 encoded string.", ex);

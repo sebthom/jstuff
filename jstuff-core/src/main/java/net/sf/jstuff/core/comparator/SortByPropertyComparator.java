@@ -12,16 +12,16 @@
  *******************************************************************************/
 package net.sf.jstuff.core.comparator;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-
 import java.util.Comparator;
 import java.util.Map;
+
+import net.sf.jstuff.core.collection.Maps;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class SortByPropertyComparator<T> extends SortByComparator<T, String> {
-    private final Map<String, Comparator<T>> comparators = newHashMap();
+    private final Map<String, Comparator<T>> comparators = Maps.newHashMap();
 
     public SortByPropertyComparator(final SortBy<String>... sortBy) {
         super(sortBy);

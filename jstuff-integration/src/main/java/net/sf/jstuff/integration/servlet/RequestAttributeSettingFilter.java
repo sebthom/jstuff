@@ -30,7 +30,7 @@ import net.sf.jstuff.core.logging.Logger;
 
 /**
  * <b>Example:</b>
- * 
+ *
  * <pre>
  * {@code
 <filter>
@@ -51,22 +51,25 @@ import net.sf.jstuff.core.logging.Logger;
 </filter-mapping>
 }
  * </pre>
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class RequestAttributeSettingFilter implements Filter {
     private static final Logger LOG = Logger.create();
     private final Map<String, String> attributes = new LinkedHashMap<String, String>();
 
+    @Override
     public void destroy() {
     }
 
+    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         if (!attributes.isEmpty()) {
             LOG.debug("For request [%s] setting request attributes: %s", request, attributes);
 
-            for (final Entry<String, String> entry : attributes.entrySet())
+            for (final Entry<String, String> entry : attributes.entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
+            }
         }
 
         chain.doFilter(request, response);
@@ -76,9 +79,11 @@ public class RequestAttributeSettingFilter implements Filter {
         return attributes;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void init(final FilterConfig filterConfig) throws ServletException {
-        for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames()))
+        for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames())) {
             attributes.put(param, filterConfig.getInitParameter(param));
+        }
     }
 }

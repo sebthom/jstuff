@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.reflection.Annotations;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.Proxies;
@@ -80,14 +81,14 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
     }
 
     private static final class BuilderImpl implements InvocationHandler {
-        final Map<String, Object[]> properties = newHashMap();
+        final Map<String, Object[]> properties = Maps.newHashMap();
 
         private final Class<?> builderInterface;
         private final Class<?> targetClass;
         private final Object[] constructorArgs;
 
         private Builder.Property propertyDefaults;
-        private final Map<String, Builder.Property> propertyConfig = newHashMap(2);
+        private final Map<String, Builder.Property> propertyConfig = Maps.newHashMap(2);
         private final List<Method> onPostBuilds = newArrayList(2);
 
         public BuilderImpl(final Class<?> builderInterface, final Class<?> targetClass, final Object[] constructorArgs) {

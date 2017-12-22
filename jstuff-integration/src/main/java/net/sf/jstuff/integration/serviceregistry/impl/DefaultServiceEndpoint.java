@@ -12,9 +12,9 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.serviceregistry.impl;
 
-import net.sf.jstuff.integration.serviceregistry.ServiceEndpoint;
-
 import org.apache.commons.lang3.ObjectUtils;
+
+import net.sf.jstuff.integration.serviceregistry.ServiceEndpoint;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -28,6 +28,7 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
         this.serviceInterface = serviceInterface;
     }
 
+    @Override
     public int compareTo(final DefaultServiceEndpoint other) {
         if (other == null)
             return 1;
@@ -37,10 +38,12 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
         return ObjectUtils.compare(serviceInterface.getName(), other.serviceInterface.getName());
     }
 
+    @Override
     public String getServiceEndpointId() {
         return serviceEndpointId;
     }
 
+    @Override
     public Class<?> getServiceInterface() {
         return serviceInterface;
     }

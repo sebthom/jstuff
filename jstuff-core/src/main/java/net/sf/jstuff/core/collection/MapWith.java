@@ -50,7 +50,7 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
     protected abstract V create(final K key);
 
     protected Map<K, V> createBackingMap(final int initialCapacity) {
-        return CollectionUtils.newHashMap(initialCapacity);
+        return Maps.newHashMap(initialCapacity);
     }
 
     protected V createNullSafe(final K key) {

@@ -119,6 +119,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
         return true;
     }
 
+    @Override
     public Object getIdRealm() {
         return getClass();
     }
@@ -156,17 +157,18 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
                     if (!Fields.isStatic(field) && !field.getName().startsWith("class$")) {
                         final Object fieldValue = Fields.read(this, field);
                         if (field.getType().isAssignableFrom(AbstractJPAEntity.class)) {
-                            if (fieldValue == null)
+                            if (fieldValue == null) {
                                 sb.append(intend).append("[").append(field.getName()).append("] ").append(fieldValue).append(" | ").append(field.getType()
                                     .getName()).append(NEW_LINE);
-                            else {
+                            } else {
                                 final AbstractJPAEntity<?> referencedEntity = (AbstractJPAEntity<?>) fieldValue;
                                 sb.append(intend).append("[").append(field.getName()).append("] id=").append(referencedEntity.getId()).append(" | ").append(
                                     referencedEntity.getClass().getName()).append(NEW_LINE);
                             }
-                        } else
+                        } else {
                             sb.append(intend).append("[").append(field.getName()).append("] ").append(fieldValue).append(" | ").append(field.getType()
                                 .getName()).append(NEW_LINE);
+                        }
                     }
                 sb.append(NEW_LINE);
 

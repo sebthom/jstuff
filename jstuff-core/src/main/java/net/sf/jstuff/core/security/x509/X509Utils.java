@@ -55,6 +55,7 @@ import javax.security.auth.x500.X500Principal;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.io.FileUtils;
 import net.sf.jstuff.core.io.IOUtils;
+import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.security.Base64;
 import net.sf.jstuff.core.security.Checksums;
@@ -85,11 +86,12 @@ public abstract class X509Utils {
     /**
      * Converts a javax.security.cert.X509Certificate to java.security.cert.X509Certificate
      */
+    @SuppressWarnings("resource")
     public static X509Certificate convert(final javax.security.cert.X509Certificate cert) {
         if (cert == null)
             return null;
         try {
-            final ByteArrayInputStream bis = new ByteArrayInputStream(cert.getEncoded());
+            final FastByteArrayInputStream bis = new FastByteArrayInputStream(cert.getEncoded());
             return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(bis);
         } catch (final Exception ex) {
             throw new IllegalArgumentException("[cert] " + cert + " is not convertable!", ex);
@@ -132,6 +134,7 @@ public abstract class X509Utils {
     /**
      * Constructs a X509Certificate instance from a PEM encoded certificate
      */
+    @SuppressWarnings("resource")
     public static X509Certificate getCertificateFromPEM(final String pemContent) throws GeneralSecurityException {
         Args.notNull("pemContent", pemContent);
         final Matcher m = CERTIFICATE_PATTERN.matcher(pemContent);
@@ -141,7 +144,7 @@ public abstract class X509Utils {
         } else {
             certBytes = ("-----BEGIN CERTIFICATE-----\n" + pemContent + "\n-----END CERTIFICATE-----").getBytes();
         }
-        final Certificate cert = CERTIFICATE_FACTORY.generateCertificate(new ByteArrayInputStream(certBytes));
+        final Certificate cert = CERTIFICATE_FACTORY.generateCertificate(new FastByteArrayInputStream(certBytes));
 
         if ("X.509".equals(cert.getType()))
             return (X509Certificate) cert;

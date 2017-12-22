@@ -12,8 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.xml;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,14 +20,15 @@ import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 
+import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class MapBasedNamespaceContext implements NamespaceContext {
-    protected final Map<String, List<String>> namespaceURIsByPrefix = newHashMap(2);
-    protected final Map<String, List<String>> prefixesByNamespaceURI = newHashMap(2);
+    protected final Map<String, List<String>> namespaceURIsByPrefix = Maps.newHashMap(2);
+    protected final Map<String, List<String>> prefixesByNamespaceURI = Maps.newHashMap(2);
     private String defaultNamespaceURI = XMLConstants.NULL_NS_URI;
 
     public void bindDefaultNameSpace(final String namespaceURI) {
@@ -40,15 +39,18 @@ public class MapBasedNamespaceContext implements NamespaceContext {
         Args.notNull("namespaceURI", namespaceURI);
         Args.notNull("prefix", prefix);
 
-        if (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))
+        if (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX)) {
             defaultNamespaceURI = namespaceURI;
+        }
 
-        if (!namespaceURIsByPrefix.containsKey(prefix))
+        if (!namespaceURIsByPrefix.containsKey(prefix)) {
             namespaceURIsByPrefix.put(prefix, new ArrayList<String>(2));
+        }
         namespaceURIsByPrefix.get(prefix).add(namespaceURI);
 
-        if (!prefixesByNamespaceURI.containsKey(namespaceURI))
+        if (!prefixesByNamespaceURI.containsKey(namespaceURI)) {
             prefixesByNamespaceURI.put(namespaceURI, new ArrayList<String>(2));
+        }
         prefixesByNamespaceURI.get(namespaceURI).add(prefix);
     }
 

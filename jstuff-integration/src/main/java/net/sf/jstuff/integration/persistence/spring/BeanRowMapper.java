@@ -24,15 +24,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.validation.Args;
-
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.ResultSetDynaClass;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.springframework.jdbc.core.RowMapper;
+
+import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * Class represent a mapper that map column values of rows to bean properties
@@ -83,6 +83,7 @@ public class BeanRowMapper<T> implements RowMapper<T> {
         return beanClass;
     }
 
+    @Override
     public T mapRow(final ResultSet rs, final int rowNum) throws SQLException {
         ResultSetDynaClass rsDynaClass = rsDynaClassesCache.get(rs);
         if (rsDynaClass == null) {

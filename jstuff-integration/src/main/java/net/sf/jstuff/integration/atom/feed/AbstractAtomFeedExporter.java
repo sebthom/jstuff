@@ -23,14 +23,14 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.date.Dates;
-
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.remoting.support.RemotingSupport;
 import org.springframework.web.HttpRequestHandler;
 
 import com.thoughtworks.xstream.XStream;
+
+import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.date.Dates;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -121,6 +121,7 @@ public abstract class AbstractAtomFeedExporter extends RemotingSupport implement
 
     protected abstract List<SimpleEntry<?>> getSimpleEntries(final HttpServletRequest request);
 
+    @Override
     public void handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         final AtomFeed atomFeed = new AtomFeed("tag:" + request.getServerName() + "," + Dates.getCurrentYear() + ":" + feedId);
         atomFeed.setLogo(getLogoURL(request));

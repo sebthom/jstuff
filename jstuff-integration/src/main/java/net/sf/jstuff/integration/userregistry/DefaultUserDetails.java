@@ -34,22 +34,27 @@ public class DefaultUserDetails implements UserDetails {
         eMailAddress = mailAddress;
     }
 
+    @Override
     public String getDisplayName() {
         return displayName;
     }
 
+    @Override
     public String getDistingueshedName() {
         return distingueshedName;
     }
 
+    @Override
     public String getEMailAddress() {
         return eMailAddress;
     }
 
+    @Override
     public String getLogonName() {
         return logonName;
     }
 
+    @Override
     public String getUserId() {
         return userId;
     }

@@ -14,18 +14,18 @@ package net.sf.jstuff.core.reflection;
 
 import java.util.Map;
 
-import junit.framework.TestCase;
-import net.sf.jstuff.core.collection.CollectionUtils;
-
 import org.junit.Ignore;
+
+import junit.framework.TestCase;
+import net.sf.jstuff.core.collection.Maps;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class AnnotationsTest extends TestCase {
     public void testCreate() {
-        final Map<String, Object> m1 = CollectionUtils.newHashMap("value", "hello!");
-        final Map<String, Object> m2 = CollectionUtils.newHashMap("value", "hi!");
+        final Map<String, Object> m1 = Maps.newHashMap("value", "hello!");
+        final Map<String, Object> m2 = Maps.newHashMap("value", "hi!");
 
         final Ignore a1a = Annotations.create(Ignore.class, m1);
         final Ignore a1b = Annotations.create(Ignore.class, m1);

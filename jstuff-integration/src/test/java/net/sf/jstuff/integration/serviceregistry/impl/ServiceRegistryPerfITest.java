@@ -29,6 +29,7 @@ public class ServiceRegistryPerfITest extends TestCase {
         @SuppressWarnings("unused")
         private long counter = 0;
 
+        @Override
         public String getGreeting() {
             counter++;
             return "Hello";

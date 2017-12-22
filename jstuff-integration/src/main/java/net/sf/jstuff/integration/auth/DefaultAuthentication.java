@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2005-2017 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -16,8 +16,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.jstuff.integration.userregistry.UserDetails;
 import net.sf.jstuff.integration.userregistry.DefaultUserDetails;
+import net.sf.jstuff.integration.userregistry.UserDetails;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -29,10 +29,6 @@ class DefaultAuthentication implements Authentication {
     private final Map<String, Serializable> properties = new HashMap<String, Serializable>(2);
     private UserDetails userDetails;
 
-    /**
-     * @param userDetails
-     * @param password
-     */
     public DefaultAuthentication(final UserDetails userDetails, final String password) {
         this.userDetails = userDetails;
         this.password = password;
@@ -41,24 +37,29 @@ class DefaultAuthentication implements Authentication {
     /**
      * @return the password
      */
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public Serializable getProperty(final String name) {
         return properties.get(name);
     }
 
+    @Override
     public UserDetails getUserDetails() {
         return userDetails;
     }
 
+    @Override
     public void invalidate() {
         userDetails = UNBOUND.getUserDetails();
         properties.clear();
         password = null;
     }
 
+    @Override
     public boolean isAuthenticated() {
         return userDetails != null && userDetails.getDistingueshedName() != null;
     }
@@ -70,6 +71,7 @@ class DefaultAuthentication implements Authentication {
         this.password = password;
     }
 
+    @Override
     public void setProperty(final String name, final Serializable value) {
         properties.put(name, value);
     }

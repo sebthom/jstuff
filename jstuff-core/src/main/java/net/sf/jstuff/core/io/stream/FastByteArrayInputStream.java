@@ -23,10 +23,10 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class FastByteArrayInputStream extends InputStream {
-    private final byte[] data;
-    private int pos;
-    private final int count;
-    private int mark;
+    protected byte[] data;
+    protected int pos;
+    protected int count;
+    protected int mark;
 
     public FastByteArrayInputStream(final byte[] data) {
         this(data, 0, data.length);
@@ -36,7 +36,7 @@ public class FastByteArrayInputStream extends InputStream {
         Args.notNull("data", data);
         Args.notNegative("offset", offset);
         Args.notNegative("length", length);
-        
+
         this.data = data;
         pos = offset;
         count = Math.min(offset + length, data.length);
@@ -95,6 +95,26 @@ public class FastByteArrayInputStream extends InputStream {
     @Override
     public void reset() {
         pos = mark;
+    }
+
+    public void setData(final byte[] data) {
+        Args.notNull("data", data);
+
+        this.data = data;
+        pos = 0;
+        count = data.length;
+        mark = 0;
+    }
+
+    public void setData(final byte[] data, final int offset, final int length) {
+        Args.notNull("data", data);
+        Args.notNegative("offset", offset);
+        Args.notNegative("length", length);
+
+        this.data = data;
+        pos = offset;
+        count = Math.min(offset + length, data.length);
+        mark = offset;
     }
 
     @Override

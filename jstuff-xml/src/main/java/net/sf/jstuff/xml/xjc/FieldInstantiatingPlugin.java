@@ -44,7 +44,7 @@ import net.sf.jstuff.core.reflection.Fields;
  * ...
  * </pre>
  *
- * @author <a href="mailto:st@vegardit.com">Sebastian Thomschke</a>, <a href="http://vegardit.com/">Vegard IT GmbH</a>
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class FieldInstantiatingPlugin extends AbstractPlugin {
 

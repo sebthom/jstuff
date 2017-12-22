@@ -12,11 +12,10 @@
  *******************************************************************************/
 package net.sf.jstuff.core.meta;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-
 import java.io.Serializable;
 
 import junit.framework.TestCase;
+import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.io.SerializationUtils;
 import net.sf.jstuff.core.jbean.meta.ClassDescriptor;
 import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
@@ -47,8 +46,9 @@ public class MetaSerializationTest extends TestCase {
         public <T> SELF_TYPE _set(final PropertyDescriptor<T> property, final T value) {
             Args.notNull("property", property);
 
-            if (property.equals(EntityMeta.PROP_comment))
+            if (property.equals(EntityMeta.PROP_comment)) {
                 setComment((String) value);
+            }
             throw new UnsupportedOperationException();
         }
 
@@ -66,9 +66,9 @@ public class MetaSerializationTest extends TestCase {
 
         public static final PropertyDescriptor<String> PROP_comment = PropertyDescriptor.create(META_CLASS, //
             "comment", String.class, 0, 1, false, false, true, //
-            "", newHashMap( //
+            "", Maps.newHashMap( //
                 "descr", (Serializable) "this entity's comment" //
-        ));
+            ));
     }
 
     public void testSerialization() {

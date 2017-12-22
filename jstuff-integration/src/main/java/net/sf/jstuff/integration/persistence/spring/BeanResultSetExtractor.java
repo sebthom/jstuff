@@ -24,16 +24,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.validation.Assert;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.ResultSetDynaClass;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
+
+import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -48,6 +48,7 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
         setBeanClass(beanClass);
     }
 
+    @Override
     public List<T> extractData(final ResultSet resultSet) throws SQLException, DataAccessException {
         Assert.notNull(beanClass, "Property beanClass must be set.");
 
@@ -67,8 +68,8 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
                 }
                 extractedBeans.add(bean);
             } catch (final Exception ex) {
-                LOG.error(ex, "Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass, Strings.toString(
-                    bean), Strings.toString(dynaBean));
+                LOG.error(ex, "Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass, Strings.toString(bean),
+                    Strings.toString(dynaBean));
             }
         }
         return extractedBeans;
