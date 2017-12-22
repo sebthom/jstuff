@@ -20,4 +20,4 @@ jstuff is a collection of utility libraries
 
 ## <a name="license"></a>License
 
-All files are released under the [Eclipse Public License 1.0](LICENSE.txt).
+All files are released under the [Eclipse Public License 2.0](LICENSE.txt).
