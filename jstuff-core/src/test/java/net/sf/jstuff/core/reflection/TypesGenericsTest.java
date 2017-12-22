@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.reflection;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
 import static net.sf.jstuff.core.reflection.Types.*;
 import static org.apache.commons.lang3.ArrayUtils.*;
 import static org.junit.Assert.*;
@@ -31,7 +30,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -98,7 +97,7 @@ public class TypesGenericsTest extends TestCase {
         /*
          * traverse the class hierarchy and collect generic variable => concrete variable argument (type) mappings
          */
-        final Map<TypeVariable<?>, Type> genericVariableToArgumentMappings = newHashMap();
+        final Map<TypeVariable<?>, Type> genericVariableToArgumentMappings = Maps.newHashMap();
         Type currentType = searchIn;
         outer: while (true) {
             if (currentType == Object.class) {
@@ -109,7 +108,7 @@ public class TypesGenericsTest extends TestCase {
 
             // populate the mappings with info from generic class
             if (currentType instanceof ParameterizedType) {
-                CollectionUtils.putAll(genericVariableToArgumentMappings, //
+                Maps.putAll(genericVariableToArgumentMappings, //
                     /*generic variable*/(TypeVariable<?>[]) currentClass.getTypeParameters(), //
                     /*arguments (concrete types) of generic variables*/((ParameterizedType) currentType).getActualTypeArguments() //
                 );
@@ -137,7 +136,7 @@ public class TypesGenericsTest extends TestCase {
 
                     // populate the mappings with info from generic interfaces
                     if (currentInterfaceType instanceof ParameterizedType) {
-                        CollectionUtils.putAll(genericVariableToArgumentMappings, //
+                        Maps.putAll(genericVariableToArgumentMappings, //
                             /*generic variable*/(TypeVariable<?>[]) currentInterfaceClass.getTypeParameters(), //
                             /*arguments (concrete types) of generic variables*/((ParameterizedType) currentInterfaceType).getActualTypeArguments() //
                         );

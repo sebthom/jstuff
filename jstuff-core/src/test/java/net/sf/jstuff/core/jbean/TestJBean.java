@@ -12,15 +12,15 @@
  *******************************************************************************/
 package net.sf.jstuff.core.jbean;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
+import org.apache.commons.lang3.ObjectUtils;
+
 import junit.framework.TestCase;
+import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.jbean.changelog.PropertyChangelog;
 import net.sf.jstuff.core.jbean.changelog.UndoMarker;
 import net.sf.jstuff.core.jbean.meta.ClassDescriptor;
 import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 import net.sf.jstuff.core.validation.Args;
-
-import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -33,10 +33,10 @@ public class TestJBean extends TestCase {
 
         public static final PropertyDescriptor<String> PROP_comment = PropertyDescriptor.create(META, //
             "comment", String.class, 0, 1, false, false, true, //
-            "the entity's comment", newHashMap( //
+            "the entity's comment", Maps.newHashMap( //
                 "length", 64, //
                 "min-length", 0 //
-        ));
+            ));
 
         private String comment;
 
@@ -57,10 +57,11 @@ public class TestJBean extends TestCase {
         @Override
         public <T> MyEntity _set(final PropertyDescriptor<T> property, final T value) {
             Args.notNull("property", property);
-            if (property == PROP_comment)
+            if (property == PROP_comment) {
                 setComment((String) value);
-            else
+            } else {
                 super._set(property, value);
+            }
             return this;
         }
 

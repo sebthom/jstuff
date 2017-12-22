@@ -24,10 +24,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.reflection.Methods;
-import net.sf.jstuff.integration.spring.SpringBeanParanamer;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.support.RemoteExporter;
 import org.springframework.web.HttpRequestHandler;
@@ -39,6 +35,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
 
+import net.sf.jstuff.core.collection.Maps;
+import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.reflection.Methods;
+import net.sf.jstuff.integration.spring.SpringBeanParanamer;
+
 /**
  * JSON-RPC Standard Method Definition
  *
@@ -47,6 +48,7 @@ import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("deprecation")
 public class SMDServiceExporter extends RemoteExporter implements HttpRequestHandler, InitializingBean {
     private static final Logger LOG = Logger.create();
 
@@ -54,8 +56,8 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
     private static final ObjectWriter JSON_PRETTY_WRITER = JSON.writerWithDefaultPrettyPrinter();
 
     public static Map<String, Method> buildExportedMethodsByName(final Class<?> serviceInterface) {
-        final Map<String, Method> methodsByMethodName = newTreeMap();
-        final Map<String, Class<?>[]> parameterTypesByMethodName = newHashMap();
+        final Map<String, Method> methodsByMethodName = Maps.newTreeMap();
+        final Map<String, Class<?>[]> parameterTypesByMethodName = Maps.newHashMap();
 
         // loop through the service interface and all super interfaces to collect the public methods
         Class<?> clazz = serviceInterface;
@@ -87,9 +89,9 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
     public static String buildSMDTemplate(final Class<?> serviceInterface, final Object service, final Map<String, Method> exportedMethodsByName,
             final boolean pretty) throws JsonProcessingException {
         // build the method descriptors
-        final Map<String, Object> methodDescriptions = newLinkedHashMap();
+        final Map<String, Object> methodDescriptions = Maps.newLinkedHashMap();
         for (final Method method : exportedMethodsByName.values()) {
-            final Map<String, Object> methodDescriptor = newLinkedHashMap();
+            final Map<String, Object> methodDescriptor = Maps.newLinkedHashMap();
             if (method.getParameterTypes().length > 0) {
                 // for some reason parameter names are not preserved in interfaces, therefore we look them up in the service implementing class instead
                 final String[] names = SpringBeanParanamer.getParameterNames(method, service);
@@ -112,7 +114,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
         }
 
         // build the final SMD definition object
-        final Map<String, Object> result = newLinkedHashMap(2);
+        final Map<String, Object> result = Maps.newLinkedHashMap(2);
         result.put("SMDVersion", "2.0");
         result.put("id", serviceInterface.getClass().getName());
         result.put("description", "");
@@ -142,6 +144,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
         LOG.infoNew(this);
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         exportedMethodsByName = buildExportedMethodsByName(getServiceInterface());
         smdTemplate = buildSMDTemplate(getServiceInterface(), getService(), exportedMethodsByName, false);
@@ -150,6 +153,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
     /**
      * Processes the incoming JSON request and creates a JSON response..
      */
+    @Override
     public void handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         // on POST requests we invoke a method and return the method value as a JSON string
         if ("POST".equals(request.getMethod())) {
@@ -190,7 +194,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
             final Object methodReturnValue = method.invoke(getProxyForService(), methodArguments);
 
             // creating a JSON object containing the method return value
-            final Map<String, Object> result = newLinkedHashMap(2);
+            final Map<String, Object> result = Maps.newLinkedHashMap(2);
             result.put("id", requestObject.get("id").asText());
             result.put("result", methodReturnValue);
             JSON.writeValue(response.getWriter(), result);

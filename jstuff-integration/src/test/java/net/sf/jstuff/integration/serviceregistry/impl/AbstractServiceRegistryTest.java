@@ -30,10 +30,12 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
             this.count = count;
         }
 
+        @Override
         public void onServiceAvailable(final ServiceProxy<T> service) {
             count.incrementAndGet();
         }
 
+        @Override
         public void onServiceUnavailable(final ServiceProxy<T> service) {
             count.incrementAndGet();
         }
@@ -60,26 +62,31 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
     }
 
     public static class DefaultService1 implements Service1 {
+        @Override
         public String getGreeting() {
             return "Hello";
         }
 
+        @Override
         public boolean validate() {
             return true;
         }
     }
 
     public static class DefaultService2 implements Service2 {
+        @Override
         public String getGreeting() {
             return "Hola";
         }
 
+        @Override
         public boolean validate() {
             return true;
         }
     }
 
     public static class DefaultService2Extended extends DefaultService2 implements Service2Extended {
+        @Override
         public String getGoodbye() {
             return "Adios";
         }
@@ -156,6 +163,7 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
         Thread.sleep(500);
 
         final Runnable service = new Runnable() {
+            @Override
             public void run() {
             }
         };

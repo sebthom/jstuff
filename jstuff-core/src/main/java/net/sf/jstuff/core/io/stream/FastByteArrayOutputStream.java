@@ -25,16 +25,16 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class FastByteArrayOutputStream extends OutputStream {
 
-    private byte[] data;
-    private int count;
+    protected byte[] data;
+    protected int count;
 
     public FastByteArrayOutputStream() {
         data = new byte[32];
     }
 
-    public FastByteArrayOutputStream(final int size) {
-        Args.notNegative("size", size);
-        data = new byte[size];
+    public FastByteArrayOutputStream(final int initialSize) {
+        Args.notNegative("initialSize", initialSize);
+        data = new byte[initialSize];
     }
 
     /**
@@ -60,6 +60,9 @@ public class FastByteArrayOutputStream extends OutputStream {
         data = copy;
     }
 
+    /**
+     * Flushing a {@link FastByteArrayOutputStream} has no effect.
+     */
     @Override
     public void flush() {
         // nothing to do

@@ -22,8 +22,8 @@ import junit.framework.TestCase;
 public class CompositeMapTest extends TestCase {
 
     public void testCompositeList() {
-        final Map<String, String> m1 = CollectionUtils.toMap("a=1;b=2;c=3", ";", "=");
-        final Map<String, String> m2 = CollectionUtils.toMap("c=4;d=5;e=6", ";", "=");
+        final Map<String, String> m1 = Maps.toMap("a=1;b=2;c=3", ";", "=");
+        final Map<String, String> m2 = Maps.toMap("c=4;d=5;e=6", ";", "=");
         @SuppressWarnings("unchecked")
         final CompositeMap<String, String> cm = CompositeMap.of(m1, m2);
         assertEquals(5, cm.size());

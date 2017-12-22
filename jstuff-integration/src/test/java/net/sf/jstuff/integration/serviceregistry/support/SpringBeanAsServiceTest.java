@@ -12,10 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.serviceregistry.support;
 
-import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
-import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
-import net.sf.jstuff.integration.serviceregistry.impl.DefaultServiceRegistry;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.AfterClass;
@@ -28,6 +24,10 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
+import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
+import net.sf.jstuff.integration.serviceregistry.impl.DefaultServiceRegistry;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -38,12 +38,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class SpringBeanAsServiceTest extends Assert {
     public static class AlternativeGreetingInterceptor implements MethodInterceptor {
+        @Override
         public Object invoke(final MethodInvocation invocation) throws Throwable {
             return "Hi!";
         }
     }
 
     public static class DefaultTestService implements TestService {
+        @Override
         public String getGreeting() {
             return "Hello!";
         }

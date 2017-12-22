@@ -37,22 +37,27 @@ public class HttpServletResponseHeaderSettingFilter implements Filter {
 
     private final Map<String, String> parameter = new LinkedHashMap<String, String>();
 
+    @Override
     public void destroy() {
     }
 
+    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         LOG.trace("For request %s setting HTTP response headers: %s", request, parameter);
 
         final HttpServletResponse res = (HttpServletResponse) response;
-        for (final Entry<String, String> entry : parameter.entrySet())
+        for (final Entry<String, String> entry : parameter.entrySet()) {
             res.setHeader(entry.getKey(), entry.getValue());
+        }
 
         chain.doFilter(request, response);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void init(final FilterConfig filterConfig) throws ServletException {
-        for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames()))
+        for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames())) {
             parameter.put(param, filterConfig.getInitParameter(param));
+        }
     }
 }

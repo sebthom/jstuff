@@ -31,7 +31,7 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
 /**
  * Class filter requests and fetch auth object from session and
  * authenticate users session against container.
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class SecurityFilter implements Filter {
@@ -47,10 +47,12 @@ public class SecurityFilter implements Filter {
         LOG.infoNew(this);
     }
 
+    @Override
     public void destroy() {
         // do nothing
     }
 
+    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest req = (HttpServletRequest) request;
         HTTP_SERVLET_REQUEST_HOLDER.set(req);
@@ -69,30 +71,33 @@ public class SecurityFilter implements Filter {
                 auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(req.getRemoteUser()), (String) sess.getAttribute("j_password"));
                 sess.removeAttribute("j_password");
                 sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, auth);
-            } else
+                } else {
                 auth = DefaultAuthentication.UNBOUND;
+                }
             AuthenticationHolder.setAuthentication(auth);
 
             wasLoggedInBeforeChain = auth.isAuthenticated();
             authService.assertURIAccess(req.getRequestURI().substring(req.getContextPath().length()));
             chain.doFilter(request, response);
         } catch (final PermissionDeniedException ex) {
-            if (!response.isCommitted())
+            if (!response.isCommitted()) {
                 ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, ex.getMessage());
-            else
+            } else
                 throw ex;
         } finally {
             auth = AuthenticationHolder.getAuthentication();
-            if (wasLoggedInBeforeChain && !auth.isAuthenticated())
+            if (wasLoggedInBeforeChain && !auth.isAuthenticated()) {
                 sess.invalidate();
-            else if (!wasLoggedInBeforeChain && auth.isAuthenticated())
+            } else if (!wasLoggedInBeforeChain && auth.isAuthenticated()) {
                 sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, AuthenticationHolder.getAuthentication());
+            }
             AuthenticationHolder.setAuthentication(DefaultAuthentication.UNBOUND);
             HTTP_SERVLET_REQUEST_HOLDER.remove();
         }
 
     }
 
+    @Override
     public void init(final FilterConfig cfg) throws ServletException {
         // do nothing
     }

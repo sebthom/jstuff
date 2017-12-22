@@ -12,8 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.reflection;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +45,7 @@ import java.util.zip.ZipFile;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.logging.Logger;
@@ -187,7 +185,7 @@ public abstract class Types {
         /*
          * traverse the class hierarchy and collect generic variable => concrete variable argument (type) mappings
          */
-        final Map<TypeVariable<?>, Type> genericVariableToArgumentMappings = newHashMap();
+        final Map<TypeVariable<?>, Type> genericVariableToArgumentMappings = Maps.newHashMap();
         final ParameterizedType[] searchForType = { null };
 
         visit(searchIn, new ClassVisitorWithTypeArguments() {
@@ -205,7 +203,7 @@ public abstract class Types {
 
             public boolean visit(final Class<?> clazz, final ParameterizedType type) {
                 if (type != null) {
-                    CollectionUtils.putAll(genericVariableToArgumentMappings, //
+                    Maps.putAll(genericVariableToArgumentMappings, //
                         /*generic variable*/(TypeVariable<?>[]) clazz.getTypeParameters(), //
                         /*arguments (concrete types) for generic variables*/type.getActualTypeArguments() //
                     );

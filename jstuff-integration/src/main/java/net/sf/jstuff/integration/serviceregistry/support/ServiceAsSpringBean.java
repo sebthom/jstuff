@@ -12,12 +12,12 @@
  *******************************************************************************/
 package net.sf.jstuff.integration.serviceregistry.support;
 
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
+
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
-
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Helper class to expose services registered with the {@link ServiceRegistry} as Spring beans.
@@ -49,6 +49,7 @@ public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean 
     private Class<T> serviceInterface;
     private T service;
 
+    @Override
     public synchronized void afterPropertiesSet() throws Exception {
         Assert.isFalse(isInitialized, "Already initialized!");
         Assert.notNull(serviceRegistry, "[serviceRegistry] must not be null!");
@@ -60,14 +61,17 @@ public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean 
         service = serviceRegistry.getService(serviceEndpointId, serviceInterface).get();
     }
 
+    @Override
     public T getObject() throws Exception {
         return service;
     }
 
+    @Override
     public Class<T> getObjectType() {
         return serviceInterface;
     }
 
+    @Override
     public boolean isSingleton() {
         return true;
     }

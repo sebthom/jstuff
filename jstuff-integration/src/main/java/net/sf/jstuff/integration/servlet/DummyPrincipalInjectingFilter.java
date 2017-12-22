@@ -33,7 +33,7 @@ import net.sf.jstuff.core.reflection.Types;
 
 /**
  * <b>Example:</b>
- * 
+ *
  * <pre>
  * {@code
 <filter>
@@ -92,6 +92,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
     };
 
     private final Principal user = new Principal() {
+        @Override
         public String getName() {
             return username;
         }
@@ -108,17 +109,20 @@ public class DummyPrincipalInjectingFilter implements Filter {
         LOG.infoNew(this);
     }
 
+    @Override
     public void destroy() {
     }
 
+    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         if (username != null && request instanceof HttpServletRequest) {
             LOG.debug("Injecting dummy user [%s]...", username);
             final HttpServletRequestWrapper wrapper = requestWrapper.get();
             wrapper.setRequest(request);
             chain.doFilter(wrapper, response);
-        } else
+        } else {
             chain.doFilter(request, response);
+        }
     }
 
     public String getUsername() {
@@ -129,35 +133,42 @@ public class DummyPrincipalInjectingFilter implements Filter {
         return userRoles;
     }
 
+    @Override
     public void init(final FilterConfig config) throws ServletException {
         // configure based on system properties
         {
             final String uname = System.getProperty(USER_NAME_SYSTEM_PROPERTY);
-            if (uname != null)
+            if (uname != null) {
                 setUsername(uname);
+            }
 
             final String userRoles = System.getProperty(USER_ROLES_SYSTEM_PROPERTY);
-            if (userRoles != null)
+            if (userRoles != null) {
                 setUserRoles(userRoles.split(USER_ROLES_SEPARATOR));
+            }
         }
 
         // configure based on servlet parameters
         if (user.getName() == null) {
             final String uname = config.getInitParameter("username");
-            if (uname != null)
+            if (uname != null) {
                 setUsername(uname);
+            }
         }
         if (userRoles.size() == 0) {
             final String userRoles = config.getInitParameter("user-roles");
-            if (userRoles != null)
+            if (userRoles != null) {
                 setUserRoles(userRoles.split(USER_ROLES_SEPARATOR));
+            }
         }
 
         // configure based on static default values
-        if (user.getName() == null && DEFAULT_USER_NAME != null)
+        if (user.getName() == null && DEFAULT_USER_NAME != null) {
             setUsername(DEFAULT_USER_NAME);
-        if (userRoles.size() == 0 && DEFAULT_USER_ROLES != null)
+        }
+        if (userRoles.size() == 0 && DEFAULT_USER_ROLES != null) {
             setUserRoles(DEFAULT_USER_ROLES);
+        }
 
     }
 
@@ -167,13 +178,15 @@ public class DummyPrincipalInjectingFilter implements Filter {
 
     public void setUserRoles(final Collection<String> userRoles) {
         this.userRoles.clear();
-        if (userRoles != null)
+        if (userRoles != null) {
             this.userRoles.addAll(userRoles);
+        }
     }
 
     public void setUserRoles(final String... userRoles) {
         this.userRoles.clear();
-        if (userRoles != null)
+        if (userRoles != null) {
             CollectionUtils.addAll(this.userRoles, userRoles);
+        }
     }
 }

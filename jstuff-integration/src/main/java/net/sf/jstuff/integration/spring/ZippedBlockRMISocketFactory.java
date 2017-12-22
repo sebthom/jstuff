@@ -25,10 +25,12 @@ import net.sf.jstuff.core.net.ZippedBlockSocket;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ZippedBlockRMISocketFactory implements RMIServerSocketFactory, RMIClientSocketFactory {
+    @Override
     public ServerSocket createServerSocket(final int port) throws IOException {
         return new ZippedBlockServerSocket(port);
     }
 
+    @Override
     public Socket createSocket(final String host, final int port) throws IOException {
         return new ZippedBlockSocket(host, port);
     }

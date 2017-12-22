@@ -12,7 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.xml;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -55,19 +54,21 @@ public abstract class JAXBUtils {
             final Marshaller m = ctx.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-            if (ctx.createJAXBIntrospector().getElementName(obj) == null)
+            if (ctx.createJAXBIntrospector().getElementName(obj) == null) {
                 m.marshal(new JAXBElement(new QName(Strings.lowerCaseFirstChar(obj.getClass().getSimpleName())), obj.getClass(), obj), out);
-            else
+            } else {
                 m.marshal(obj, out);
+            }
         } catch (final JAXBException ex) {
             throw new XMLException(ex);
         }
     }
 
+    @SuppressWarnings("resource")
     public static String toXSD(final Class<?>... xmlRootClasses) throws XMLException {
-        Args.notNull("rootClasses", xmlRootClasses);
+        Args.notNull("xmlRootClasses", xmlRootClasses);
 
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
         try {
             toXSD(out, xmlRootClasses);
         } catch (final IOException ex) {

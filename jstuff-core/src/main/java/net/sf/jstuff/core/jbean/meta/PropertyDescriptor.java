@@ -13,11 +13,11 @@
 package net.sf.jstuff.core.jbean.meta;
 
 import static java.util.Collections.*;
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
 import java.io.Serializable;
 import java.util.Map;
 
+import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.reflection.Types;
 
 /**
@@ -40,7 +40,7 @@ public final class PropertyDescriptor<P> implements Serializable {
             p.unique = unique;
             p.container = container;
             p.description = description == null ? "" : description;
-            p.properties = newHashMap(properties);
+            p.properties = Maps.newHashMap(properties);
             p.propertiesReadOnly = unmodifiableMap(p.properties);
             metaClass.addProperty(p);
             return p;

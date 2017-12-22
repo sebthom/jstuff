@@ -27,6 +27,11 @@ public class DelegatingOutputStream extends OutputStream {
         this.delegate = delegate;
     }
 
+    public DelegatingOutputStream(final OutputStream delegate, final boolean ignoreClose) {
+        this.delegate = delegate;
+        this.ignoreClose = ignoreClose;
+    }
+
     @Override
     public void close() throws IOException {
         if (!ignoreClose) {

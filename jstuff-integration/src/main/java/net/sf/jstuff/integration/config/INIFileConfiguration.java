@@ -98,6 +98,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
      */
     public String[] getComments(final String key) {
         return ArrayUtils.toArray(transform(comments.get(key), new Function<String, String>() {
+            @Override
             public String apply(final String source) {
                 // strip the comment character
                 return source.startsWith("#") || source.startsWith(";") ? "" : source.substring(1);
@@ -154,6 +155,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
         return Strings.startsWith(line, '[') && Strings.endsWith(line, ']');
     }
 
+    @Override
     public void load(final Reader in) throws ConfigurationException {
         final BufferedReader input = new BufferedReader(in);
 
@@ -257,6 +259,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
         return Tuple2.create(isQuoted ? result.toString() : result.toString().trim(), inlineComment);
     }
 
+    @Override
     public void save(final Writer out) throws ConfigurationException {
         final BufferedWriter bw = new BufferedWriter(out);
 

@@ -20,14 +20,14 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.springframework.util.PatternMatchUtils;
+
 import net.sf.jstuff.core.collection.MapWithSets;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.userregistry.GroupDetailsService;
 import net.sf.jstuff.integration.userregistry.UserDetails;
 import net.sf.jstuff.integration.userregistry.UserDetailsService;
-
-import org.springframework.util.PatternMatchUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -47,21 +47,25 @@ public class DefaultAuthService implements AuthService {
         LOG.infoNew(this);
     }
 
+    @Override
     public void assertAuthenticated() throws PermissionDeniedException {
         if (!isAuthenticated())
             throw new PermissionDeniedException("You are not authorized to perform that operation. You need to authenticate first.");
     }
 
+    @Override
     public void assertIdentity(final String userId) throws PermissionDeniedException {
         if (!isIdentity(userId))
             throw new PermissionDeniedException("You are not authorized to perform that operation. Identity mismatch.");
     }
 
+    @Override
     public void assertRole(final String applicationRole) throws PermissionDeniedException {
         if (!hasRole(applicationRole))
             throw new PermissionDeniedException("You are not authorized to perform that operation.");
     }
 
+    @Override
     public void assertURIAccess(final String uri) throws PermissionDeniedException {
         for (final Entry<String, Set<String>> entry : uriPatternsToApplicationRoleMappings.entrySet()) {
             final String uriPattern = entry.getKey();
@@ -70,8 +74,9 @@ public class DefaultAuthService implements AuthService {
                 LOG.trace("%s matches %s", uri, uriPattern);
 
                 final Collection<String> roles = entry.getValue();
-                if (roles.size() == 0)
+                if (roles.size() == 0) {
                     continue;
+                }
 
                 boolean hasAnyRequiredRole = false;
                 for (final String requiredRole : roles)
@@ -81,15 +86,18 @@ public class DefaultAuthService implements AuthService {
                     }
                 if (!hasAnyRequiredRole)
                     throw new PermissionDeniedException("You are not authorized to perform that operation.");
-            } else
+            } else {
                 LOG.trace("%s does NOT match %s", uri, uriPattern);
+            }
         }
     }
 
+    @Override
     public Authentication getAuthentication() {
         return AuthenticationHolder.getAuthentication();
     }
 
+    @Override
     public Set<String> getGrantedRoles() {
         final Authentication auth = AuthenticationHolder.getAuthentication();
         if (!auth.isAuthenticated()) {
@@ -107,12 +115,14 @@ public class DefaultAuthService implements AuthService {
 
         for (final String groupId : groupIds) {
             final Collection<String> coll = groupIdToApplicationRoleMappings.get(groupId);
-            if (coll != null)
+            if (coll != null) {
                 roles.addAll(coll);
+            }
         }
         return roles;
     }
 
+    @Override
     public Set<String> getGroupIds() {
         final Authentication auth = AuthenticationHolder.getAuthentication();
         if (!auth.isAuthenticated()) {
@@ -122,6 +132,7 @@ public class DefaultAuthService implements AuthService {
         return groupDetailsService.getGroupIdsByUserDN(auth.getUserDetails().getDistingueshedName());
     }
 
+    @Override
     public boolean hasRole(final String applicationRole) {
         final Set<String> roles = getGrantedRoles();
         if (roles == null)
@@ -129,22 +140,26 @@ public class DefaultAuthService implements AuthService {
         return roles.contains(applicationRole);
     }
 
+    @Override
     public boolean isAuthenticated() {
         return AuthenticationHolder.getAuthentication().isAuthenticated();
     }
 
+    @Override
     public boolean isIdentity(final String userId) throws PermissionDeniedException {
         final Authentication auth = AuthenticationHolder.getAuthentication();
 
         return auth.isAuthenticated() && auth.getUserDetails().getUserId().equals(userId);
     }
 
+    @Override
     public void login(final String logonName, final String password) throws AuthenticationFailedException, AlreadyAuthenticatedException {
         if (isAuthenticated())
             throw new AlreadyAuthenticatedException("An authentication for the active session already exists.");
 
-        if (isAuthenticated())
+        if (isAuthenticated()) {
             logout();
+        }
 
         if (!authenticator.authenticate(logonName, password))
             throw new AuthenticationFailedException("Incorrect username or password.");
@@ -152,15 +167,18 @@ public class DefaultAuthService implements AuthService {
         final Authentication auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(logonName), password);
         AuthenticationHolder.setAuthentication(auth);
 
-        if (listener != null)
+        if (listener != null) {
             listener.afterLogin(auth);
+        }
     }
 
+    @Override
     public void logout() {
         final UserDetails details = AuthenticationHolder.getAuthentication().getUserDetails();
         AuthenticationHolder.getAuthentication().invalidate();
-        if (listener != null)
+        if (listener != null) {
             listener.afterLogout(details);
+        }
     }
 
     /**
@@ -224,8 +242,9 @@ public class DefaultAuthService implements AuthService {
             pair[0] = pair[0].trim();
             pair[1] = pair[1].trim();
 
-            if (pair[0].length() == 0 || pair[1].length() == 0)
+            if (pair[0].length() == 0 || pair[1].length() == 0) {
                 continue;
+            }
 
             LOG.trace("Registering groupId -> application role mapping: %s => %s", pair[0], pair[1]);
 
@@ -236,6 +255,7 @@ public class DefaultAuthService implements AuthService {
         }
     }
 
+    @Override
     public void setListener(final AuthListener listener) {
         this.listener = listener;
     }
@@ -251,8 +271,9 @@ public class DefaultAuthService implements AuthService {
             pair[0] = pair[0].trim();
             pair[1] = pair[1].trim();
 
-            if (pair[0].length() == 0 || pair[1].length() == 0)
+            if (pair[0].length() == 0 || pair[1].length() == 0) {
                 continue;
+            }
 
             LOG.trace("Registering URI pattern -> application role mapping: %s => %s", pair[0], pair[1]);
 

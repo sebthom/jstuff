@@ -12,8 +12,6 @@
  *******************************************************************************/
 package net.sf.jstuff.core.jbean.meta;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-
 import java.io.InvalidObjectException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
@@ -22,6 +20,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.sf.jstuff.core.collection.CompositeMap;
+import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
@@ -54,7 +53,7 @@ public final class ClassDescriptor<T> implements Serializable {
     private final transient String name;
     private final transient String description;
 
-    private final transient Map<String, PropertyDescriptor<?>> properties = newLinkedHashMap();
+    private final transient Map<String, PropertyDescriptor<?>> properties = Maps.newLinkedHashMap();
     private final transient Map<String, PropertyDescriptor<?>> propertiesReadOnly = Collections.unmodifiableMap(properties);
     private final transient Map<String, PropertyDescriptor<?>> propertiesRecursivelyReadOnly;
 

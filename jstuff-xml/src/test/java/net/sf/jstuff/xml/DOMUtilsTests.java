@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.xml.DOMUtils.XPathNode;
 import net.sf.jstuff.xml.DOMUtils.XPathNodeConfiguration;
 
@@ -71,7 +71,7 @@ public class DOMUtilsTests extends TestCase {
         final Map<String, XPathNode> attrs2 = DOMUtils.getXPathNodes(elem2, cfg);
         assertEquals(
             "MapDiff [entryValueDiffs=[EntryValueDiff [key=/top/child[@name='foo']/@weight, leftValue=1, rightValue=2], EntryValueDiff [key=/top/child[@name='foo']/text(), leftValue=1234, rightValue=ABCD]], leftOnlyEntries={}, rightOnlyEntries={/top/child[@name='bar']/@name=bar, /top/child[@name='bar']/text()=ABCD, /top/child[@name='bar']/@weight=2}]",
-            CollectionUtils.diff(attrs1, attrs2).toString());
+            Maps.diff(attrs1, attrs2).toString());
     }
 
     public void testParseFile() throws XMLException {

@@ -910,27 +910,29 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
             return "null";
         final StringBuilder sb = new StringBuilder(object.getClass().getSimpleName());
         sb.append('@');
-        sb.append(Long.toHexString(System.identityHashCode(object)));
-        sb.append('[');
-        boolean isFieldName = true;
-        for (final Object item : fieldAndValues) {
-            if (isFieldName) {
-                sb.append(item).append('=');
-            } else {
-                if (item instanceof String) {
-                    sb.append('"').append(item).append('"');
+        sb.append(Integer.toHexString(System.identityHashCode(object)));
+        if (fieldAndValues != null && fieldAndValues.length > 0) {
+            sb.append('[');
+            boolean isFieldName = true;
+            for (final Object item : fieldAndValues) {
+                if (isFieldName) {
+                    sb.append(item).append('=');
                 } else {
-                    sb.append(item);
+                    if (item instanceof String) {
+                        sb.append('"').append(item).append('"');
+                    } else {
+                        sb.append(item);
+                    }
+                    sb.append(',');
                 }
-                sb.append(',');
+                isFieldName = !isFieldName;
             }
-            isFieldName = !isFieldName;
+            if (isFieldName) {
+                // remove last ','
+                sb.setLength(sb.length() - 1);
+            }
+            sb.append(']');
         }
-        if (isFieldName) {
-            // remove last ','
-            sb.setLength(sb.length() - 1);
-        }
-        sb.append(']');
         return sb.toString();
     }
 

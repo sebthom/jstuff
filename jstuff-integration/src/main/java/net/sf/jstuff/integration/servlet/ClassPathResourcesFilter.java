@@ -32,7 +32,7 @@ import net.sf.jstuff.core.net.NetUtils;
 
 /**
  * <b>Example:</b>
- * 
+ *
  * <pre>
  * {@code
 <filter>
@@ -60,8 +60,9 @@ public class ClassPathResourcesFilter implements Filter {
     public static URL findResourceInClassPath(final String path) {
         final ClassLoader cl = Thread.currentThread().getContextClassLoader();
         URL resource = cl.getResource(path);
-        if (resource == null && path.startsWith("/"))
+        if (resource == null && path.startsWith("/")) {
             resource = cl.getResource(path.substring(1));
+        }
         return resource;
     }
 
@@ -73,9 +74,11 @@ public class ClassPathResourcesFilter implements Filter {
         LOG.infoNew(this);
     }
 
+    @Override
     public void destroy() {
     }
 
+    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         if (!(request instanceof HttpServletRequest && response instanceof HttpServletResponse)) {
             chain.doFilter(request, response);
@@ -86,8 +89,9 @@ public class ClassPathResourcesFilter implements Filter {
         final HttpServletResponse resp = (HttpServletResponse) response;
 
         String resourcePath = req.getServletPath();
-        if (resourcePath == null)
+        if (resourcePath == null) {
             resourcePath = req.getPathInfo();
+        }
 
         URL resource = ctx.getResource(resourcePath);
         // if resource was found on file system simply continue
@@ -145,14 +149,16 @@ public class ClassPathResourcesFilter implements Filter {
         return maxAgeInSeconds;
     }
 
+    @Override
     public void init(final FilterConfig cfg) throws ServletException {
         ctx = cfg.getServletContext();
 
         maxAgeInSeconds = DEFAULT_CACHE_TIME_IN_SEC;
 
         final String maxAge = cfg.getInitParameter("max-age-in-seconds");
-        if (maxAge != null)
+        if (maxAge != null) {
             maxAgeInSeconds = Integer.parseInt(maxAge);
+        }
     }
 
     public void setMaxAgeInSeconds(final int maxAgeInSeconds) {
