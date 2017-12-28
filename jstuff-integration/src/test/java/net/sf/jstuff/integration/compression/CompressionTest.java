@@ -25,7 +25,7 @@ public class CompressionTest extends TestCase {
     static {
         final StringBuilder sb = new StringBuilder();
         final Faker faker = new Faker(Locale.ENGLISH);
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < 500; i++) {
             sb.append(//
                 faker.firstName() + ", " + //
                         faker.lastName() + ", " + //

@@ -63,7 +63,7 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
 
         final FastByteArrayOutputStream baos = new FastByteArrayOutputStream();
         final LzoOutputStream compOS = new LzoOutputStream(baos, compressor, uncompressed.length);
-        IOUtils.copy(new FastByteArrayInputStream(uncompressed), compOS);
+        IOUtils.copyLarge(new FastByteArrayInputStream(uncompressed), compOS);
         compOS.flush();
 
         return baos.toByteArray();
@@ -92,7 +92,7 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
         try {
             @SuppressWarnings("resource")
             final LzoOutputStream compOS = new LzoOutputStream(output, compressor, 32 * 1024);
-            IOUtils.copy(input, compOS);
+            IOUtils.copyLarge(input, compOS);
             compOS.flush();
         } finally {
             IOUtils.closeQuietly(input);
@@ -109,7 +109,7 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
 
         final FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
         final LzoInputStream compIS = new LzoInputStream(new FastByteArrayInputStream(compressed), decompressor);
-        IOUtils.copy(compIS, baos);
+        IOUtils.copyLarge(compIS, baos);
         return baos.toByteArray();
     }
 
@@ -121,7 +121,7 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
         // doesn't work: return decompressor.decompress(compressed, 0, compressed.length, output, 0, new lzo_uintp(output.length));
         final FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
         final LzoInputStream compIS = new LzoInputStream(new FastByteArrayInputStream(compressed), decompressor);
-        IOUtils.copy(compIS, baos);
+        IOUtils.copyLarge(compIS, baos);
         if (baos.size() > output.length)
             throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
         baos.writeTo(output);
@@ -135,7 +135,7 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
         try {
             @SuppressWarnings("resource")
             final LzoInputStream compIS = new LzoInputStream(new FastByteArrayInputStream(compressed), decompressor);
-            IOUtils.copy(compIS, output);
+            IOUtils.copyLarge(compIS, output);
         } finally {
             if (closeOutput) {
                 IOUtils.closeQuietly(output);
@@ -150,7 +150,7 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
         try {
             @SuppressWarnings("resource")
             final LzoInputStream compIS = new LzoInputStream(input, decompressor);
-            IOUtils.copy(compIS, output);
+            IOUtils.copyLarge(compIS, output);
         } finally {
             IOUtils.closeQuietly(input);
             if (closeOutput) {

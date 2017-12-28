@@ -127,7 +127,7 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
         try {
             @SuppressWarnings("resource")
             final DeflaterOutputStream compOS = new DeflaterOutputStream(output, deflater.get());
-            IOUtils.copy(input, compOS);
+            IOUtils.copyLarge(input, compOS);
             compOS.finish();
         } finally {
             IOUtils.closeQuietly(input);
@@ -143,7 +143,7 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
 
         final InflaterInputStream compIS = new InflaterInputStream(new FastByteArrayInputStream(compressed), inflater.get());
         final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
-        IOUtils.copy(compIS, bytesOS);
+        IOUtils.copyLarge(compIS, bytesOS);
         return bytesOS.toByteArray();
     }
 
@@ -170,7 +170,7 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
         try {
             @SuppressWarnings("resource")
             final InflaterInputStream compIS = new InflaterInputStream(new FastByteArrayInputStream(compressed), inflater.get());
-            IOUtils.copy(compIS, output);
+            IOUtils.copyLarge(compIS, output);
         } finally {
             if (closeOutput) {
                 IOUtils.closeQuietly(output);
@@ -185,7 +185,7 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
         try {
             @SuppressWarnings("resource")
             final InflaterInputStream compIS = new InflaterInputStream(input, inflater.get());
-            IOUtils.copy(compIS, output);
+            IOUtils.copyLarge(compIS, output);
         } finally {
             IOUtils.closeQuietly(input);
             if (closeOutput) {

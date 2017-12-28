@@ -30,6 +30,9 @@ import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**
+ * https://gregoryszorc.com/blog/2017/03/07/better-compression-with-zstandard/
+ * https://code.facebook.com/posts/1658392934479273/smaller-and-faster-data-compression-with-zstandard/
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ZStdCompression implements ByteArrayCompression, InputStreamCompression {
@@ -37,6 +40,10 @@ public class ZStdCompression implements ByteArrayCompression, InputStreamCompres
     public static final ZStdCompression INSTANCE = new ZStdCompression();
 
     private int compressionLevel = 3;
+
+    public static int LEVEL_SMALL_AS_DEFLATE_4 = 2;
+    public static int LEVEL_SMALL_AS_DEFLATE_6 = 5;
+    public static int LEVEL_SMALL_AS_DEFLATE_9 = 5;
 
     public ZStdCompression() {
     }
@@ -86,7 +93,7 @@ public class ZStdCompression implements ByteArrayCompression, InputStreamCompres
         try {
             @SuppressWarnings("resource")
             final ZstdOutputStream compOS = new ZstdOutputStream(output, compressionLevel, true);
-            IOUtils.copy(input, compOS);
+            IOUtils.copyLarge(input, compOS);
             compOS.flush();
         } finally {
             IOUtils.closeQuietly(input);
@@ -102,7 +109,7 @@ public class ZStdCompression implements ByteArrayCompression, InputStreamCompres
 
         final FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
         final ZstdInputStream compIS = new ZstdInputStream(new FastByteArrayInputStream(compressed));
-        IOUtils.copy(compIS, baos);
+        IOUtils.copyLarge(compIS, baos);
         return baos.toByteArray();
     }
 
@@ -126,7 +133,7 @@ public class ZStdCompression implements ByteArrayCompression, InputStreamCompres
         try {
             @SuppressWarnings("resource")
             final ZstdInputStream compIS = new ZstdInputStream(new FastByteArrayInputStream(compressed));
-            IOUtils.copy(compIS, output);
+            IOUtils.copyLarge(compIS, output);
         } finally {
             if (closeOutput) {
                 IOUtils.closeQuietly(output);
@@ -141,7 +148,7 @@ public class ZStdCompression implements ByteArrayCompression, InputStreamCompres
         try {
             @SuppressWarnings("resource")
             final ZstdInputStream compIS = new ZstdInputStream(input);
-            IOUtils.copy(compIS, output);
+            IOUtils.copyLarge(compIS, output);
         } finally {
             IOUtils.closeQuietly(input);
             if (closeOutput) {
