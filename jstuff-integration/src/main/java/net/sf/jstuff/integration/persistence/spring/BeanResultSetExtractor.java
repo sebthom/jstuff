@@ -48,7 +48,6 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
         setBeanClass(beanClass);
     }
 
-    @Override
     public List<T> extractData(final ResultSet resultSet) throws SQLException, DataAccessException {
         Assert.notNull(beanClass, "Property beanClass must be set.");
 

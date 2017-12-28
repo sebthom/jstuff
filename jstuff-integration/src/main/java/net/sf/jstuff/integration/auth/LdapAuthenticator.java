@@ -37,12 +37,10 @@ public class LdapAuthenticator implements Authenticator {
         LOG.infoNew(this);
     }
 
-    @Override
     public boolean authenticate(final String logonName, final String password) {
         LOG.trace("Trying to authenticate user %s", logonName);
         try {
             ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
-                @Override
                 public Object invoke(final LdapContext ctx) throws NamingException {
                     final UserDetails userDetails = userDetailsService.getUserDetailsByLogonName(logonName);
                     ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, "simple");

@@ -38,14 +38,14 @@ import net.sf.jstuff.integration.serviceregistry.impl.DefaultServiceRegistry;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class SpringBeanAsServiceTest extends Assert {
     public static class AlternativeGreetingInterceptor implements MethodInterceptor {
-        @Override
+
         public Object invoke(final MethodInvocation invocation) throws Throwable {
             return "Hi!";
         }
     }
 
     public static class DefaultTestService implements TestService {
-        @Override
+
         public String getGreeting() {
             return "Hello!";
         }

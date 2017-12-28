@@ -47,25 +47,21 @@ public class DefaultAuthService implements AuthService {
         LOG.infoNew(this);
     }
 
-    @Override
     public void assertAuthenticated() throws PermissionDeniedException {
         if (!isAuthenticated())
             throw new PermissionDeniedException("You are not authorized to perform that operation. You need to authenticate first.");
     }
 
-    @Override
     public void assertIdentity(final String userId) throws PermissionDeniedException {
         if (!isIdentity(userId))
             throw new PermissionDeniedException("You are not authorized to perform that operation. Identity mismatch.");
     }
 
-    @Override
     public void assertRole(final String applicationRole) throws PermissionDeniedException {
         if (!hasRole(applicationRole))
             throw new PermissionDeniedException("You are not authorized to perform that operation.");
     }
 
-    @Override
     public void assertURIAccess(final String uri) throws PermissionDeniedException {
         for (final Entry<String, Set<String>> entry : uriPatternsToApplicationRoleMappings.entrySet()) {
             final String uriPattern = entry.getKey();
@@ -92,12 +88,10 @@ public class DefaultAuthService implements AuthService {
         }
     }
 
-    @Override
     public Authentication getAuthentication() {
         return AuthenticationHolder.getAuthentication();
     }
 
-    @Override
     public Set<String> getGrantedRoles() {
         final Authentication auth = AuthenticationHolder.getAuthentication();
         if (!auth.isAuthenticated()) {
@@ -122,7 +116,6 @@ public class DefaultAuthService implements AuthService {
         return roles;
     }
 
-    @Override
     public Set<String> getGroupIds() {
         final Authentication auth = AuthenticationHolder.getAuthentication();
         if (!auth.isAuthenticated()) {
@@ -132,7 +125,6 @@ public class DefaultAuthService implements AuthService {
         return groupDetailsService.getGroupIdsByUserDN(auth.getUserDetails().getDistingueshedName());
     }
 
-    @Override
     public boolean hasRole(final String applicationRole) {
         final Set<String> roles = getGrantedRoles();
         if (roles == null)
@@ -140,19 +132,16 @@ public class DefaultAuthService implements AuthService {
         return roles.contains(applicationRole);
     }
 
-    @Override
     public boolean isAuthenticated() {
         return AuthenticationHolder.getAuthentication().isAuthenticated();
     }
 
-    @Override
     public boolean isIdentity(final String userId) throws PermissionDeniedException {
         final Authentication auth = AuthenticationHolder.getAuthentication();
 
         return auth.isAuthenticated() && auth.getUserDetails().getUserId().equals(userId);
     }
 
-    @Override
     public void login(final String logonName, final String password) throws AuthenticationFailedException, AlreadyAuthenticatedException {
         if (isAuthenticated())
             throw new AlreadyAuthenticatedException("An authentication for the active session already exists.");
@@ -172,7 +161,6 @@ public class DefaultAuthService implements AuthService {
         }
     }
 
-    @Override
     public void logout() {
         final UserDetails details = AuthenticationHolder.getAuthentication().getUserDetails();
         AuthenticationHolder.getAuthentication().invalidate();
@@ -255,7 +243,6 @@ public class DefaultAuthService implements AuthService {
         }
     }
 
-    @Override
     public void setListener(final AuthListener listener) {
         this.listener = listener;
     }

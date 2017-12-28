@@ -42,9 +42,12 @@ public class SpringBeanInjectorTest extends TestCase {
         boolean destroyCalled;
         boolean afterPropertiesSetCalled;
 
-        @PreDestroy
-        void onPreDestroy() {
-            preDestroyCalled = true;
+        public void afterPropertiesSet() throws Exception {
+            afterPropertiesSetCalled = true;
+        }
+
+        public void destroy() throws Exception {
+            destroyCalled = true;
         }
 
         @PostConstruct
@@ -52,14 +55,9 @@ public class SpringBeanInjectorTest extends TestCase {
             postConstructCalled = true;
         }
 
-        @Override
-        public void destroy() throws Exception {
-            destroyCalled = true;
-        }
-
-        @Override
-        public void afterPropertiesSet() throws Exception {
-            afterPropertiesSetCalled = true;
+        @PreDestroy
+        void onPreDestroy() {
+            preDestroyCalled = true;
         }
     }
 

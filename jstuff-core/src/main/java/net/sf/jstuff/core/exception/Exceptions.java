@@ -75,7 +75,8 @@ public abstract class Exceptions extends ExceptionUtils {
             return null;
         if (Types.isInstanceOf(t, type))
             return (T) t;
-        final T exception = Types.newInstance(type, t);
+        final T exception = t.getMessage() == null ? Types.newInstance(type) : Types.newInstance(type, t.getMessage());
+        exception.initCause(t);
 
         if (exception.getStackTrace() != null) {
             final StackTraceElement caller = StackTrace.getCallerStackTraceElement();

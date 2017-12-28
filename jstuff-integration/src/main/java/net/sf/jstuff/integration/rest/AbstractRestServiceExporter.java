@@ -51,70 +51,6 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
         this.contentType = contentType;
     }
 
-    @Override
-    public synchronized void setService(final Object service) {
-
-        super.setService(service);
-
-        serviceActions = new RestResourceActionRegistry();
-        serviceDescriptor = new RestServiceDescriptor();
-
-        if (service == null)
-            return;
-
-        // initialize resourceActions map
-        for (final Method m : getServiceInterface().getMethods()) {
-            if (m.isAnnotationPresent(REST_GET.class)) {
-                serviceActions.registerResourceAction(m.getAnnotation(REST_GET.class).value(), HttpRequestMethod.GET, m, getService());
-            }
-
-            if (m.isAnnotationPresent(REST_POST.class)) {
-                serviceActions.registerResourceAction(m.getAnnotation(REST_POST.class).value(), HttpRequestMethod.POST, m, getService());
-            }
-
-            if (m.isAnnotationPresent(REST_PUT.class)) {
-                final REST_PUT annotation = m.getAnnotation(REST_PUT.class);
-                final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.PUT, m, getService());
-                if (Strings.isNotEmpty(annotation.fallback())) {
-                    serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
-                }
-            }
-
-            if (m.isAnnotationPresent(REST_PATCH.class)) {
-                final REST_PATCH annotation = m.getAnnotation(REST_PATCH.class);
-                final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.PATCH, m, getService());
-                if (Strings.isNotEmpty(annotation.fallback())) {
-                    serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
-                }
-            }
-
-            if (m.isAnnotationPresent(REST_DELETE.class)) {
-                final REST_DELETE annotation = m.getAnnotation(REST_DELETE.class);
-                final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.DELETE, m, getService());
-                if (Strings.isNotEmpty(annotation.fallback())) {
-                    serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
-                }
-            }
-
-            if (m.isAnnotationPresent(REST_HEAD.class)) {
-                final REST_HEAD annotation = m.getAnnotation(REST_HEAD.class);
-                final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.HEAD, m, getService());
-                if (Strings.isNotEmpty(annotation.fallback())) {
-                    serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
-                }
-            }
-        }
-
-        final List<RestResourceAction> actions = serviceActions.getAllResourceActions();
-        Collections.sort(actions, new Comparator<RestResourceAction>() {
-            @Override
-            public int compare(final RestResourceAction o1, final RestResourceAction o2) {
-                return ObjectUtils.compare(o1.getRequestURITemplate(), o2.getRequestURITemplate());
-            }
-        });
-        serviceDescriptor.setActions(actions);
-    }
-
     protected abstract <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException;
 
     protected void explainActionsAsHTML(final PrintWriter pw, final boolean fallbackMethods, final String baseRequestURL) {
@@ -204,7 +140,6 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 
-    @Override
     public void handleRequest(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding(characterEncoding);
         resp.setCharacterEncoding(characterEncoding);
@@ -287,4 +222,67 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
     }
 
     protected abstract String serializeResponse(final Object resultObject) throws IOException;
+
+    @Override
+    public synchronized void setService(final Object service) {
+
+        super.setService(service);
+
+        serviceActions = new RestResourceActionRegistry();
+        serviceDescriptor = new RestServiceDescriptor();
+
+        if (service == null)
+            return;
+
+        // initialize resourceActions map
+        for (final Method m : getServiceInterface().getMethods()) {
+            if (m.isAnnotationPresent(REST_GET.class)) {
+                serviceActions.registerResourceAction(m.getAnnotation(REST_GET.class).value(), HttpRequestMethod.GET, m, getService());
+            }
+
+            if (m.isAnnotationPresent(REST_POST.class)) {
+                serviceActions.registerResourceAction(m.getAnnotation(REST_POST.class).value(), HttpRequestMethod.POST, m, getService());
+            }
+
+            if (m.isAnnotationPresent(REST_PUT.class)) {
+                final REST_PUT annotation = m.getAnnotation(REST_PUT.class);
+                final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.PUT, m, getService());
+                if (Strings.isNotEmpty(annotation.fallback())) {
+                    serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+                }
+            }
+
+            if (m.isAnnotationPresent(REST_PATCH.class)) {
+                final REST_PATCH annotation = m.getAnnotation(REST_PATCH.class);
+                final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.PATCH, m, getService());
+                if (Strings.isNotEmpty(annotation.fallback())) {
+                    serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+                }
+            }
+
+            if (m.isAnnotationPresent(REST_DELETE.class)) {
+                final REST_DELETE annotation = m.getAnnotation(REST_DELETE.class);
+                final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.DELETE, m, getService());
+                if (Strings.isNotEmpty(annotation.fallback())) {
+                    serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+                }
+            }
+
+            if (m.isAnnotationPresent(REST_HEAD.class)) {
+                final REST_HEAD annotation = m.getAnnotation(REST_HEAD.class);
+                final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.HEAD, m, getService());
+                if (Strings.isNotEmpty(annotation.fallback())) {
+                    serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
+                }
+            }
+        }
+
+        final List<RestResourceAction> actions = serviceActions.getAllResourceActions();
+        Collections.sort(actions, new Comparator<RestResourceAction>() {
+            public int compare(final RestResourceAction o1, final RestResourceAction o2) {
+                return ObjectUtils.compare(o1.getRequestURITemplate(), o2.getRequestURITemplate());
+            }
+        });
+        serviceDescriptor.setActions(actions);
+    }
 }

@@ -53,7 +53,6 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
         listeners_WRITE = lock.writeLock();
     }
 
-    @Override
     public boolean addServiceListener(final ServiceListener<SERVICE_INTERFACE> listener) {
         Args.notNull("listener", listener);
 
@@ -67,13 +66,11 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public SERVICE_INTERFACE get() {
         return (SERVICE_INTERFACE) proxy;
     }
 
-    @Override
     public int getListenerCount() {
         listeners_READ.lock();
         try {
@@ -83,28 +80,23 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
         }
     }
 
-    @Override
     public String getServiceEndpointId() {
         return serviceEndpointId;
     }
 
-    @Override
     public Class<?> getServiceImplementationClass() {
         final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
         return service == null ? null : service.getClass();
     }
 
-    @Override
     public Class<SERVICE_INTERFACE> getServiceInterface() {
         return serviceInterface;
     }
 
-    @Override
     public boolean isServiceAvailable() {
         return serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public void onServiceAvailable() {
         if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null) {
@@ -128,7 +120,6 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public void onServiceUnavailable() {
         if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) == null) {
@@ -152,7 +143,6 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
         }
     }
 
-    @Override
     public boolean removeServiceListener(final ServiceListener<SERVICE_INTERFACE> listener) {
         Args.notNull("listener", listener);
 

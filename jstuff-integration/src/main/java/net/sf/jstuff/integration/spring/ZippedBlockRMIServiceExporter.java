@@ -34,7 +34,6 @@ public class ZippedBlockRMIServiceExporter implements InitializingBean, Disposab
         LOG.infoNew(this);
     }
 
-    @Override
     public void afterPropertiesSet() throws Exception {
         if (!serviceNameSet) {
             setServiceName(normalExporter.getServiceInterface().getSimpleName());
@@ -45,7 +44,6 @@ public class ZippedBlockRMIServiceExporter implements InitializingBean, Disposab
         normalExporter.afterPropertiesSet();
     }
 
-    @Override
     public void destroy() throws Exception {
         compressedExporter.destroy();
         normalExporter.destroy();

@@ -10,56 +10,57 @@
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
-package net.sf.jstuff.core.compression;
+package net.sf.jstuff.integration.compression;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+
+import org.apache.commons.io.IOUtils;
+
+import com.github.luben.zstd.Zstd;
+import com.github.luben.zstd.ZstdInputStream;
+import com.github.luben.zstd.ZstdOutputStream;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.io.IOUtils;
+import net.sf.jstuff.core.compression.ByteArrayCompression;
+import net.sf.jstuff.core.compression.InputStreamCompression;
 import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**
- * Compress/decompress using "gzip" compression format.
- *
- * GZip is deflate plus CRC32 checksum
- *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class GZipCompression implements ByteArrayCompression, InputStreamCompression {
+public class ZStdCompression implements ByteArrayCompression, InputStreamCompression {
 
-    public static final GZipCompression INSTANCE = new GZipCompression();
+    public static final ZStdCompression INSTANCE = new ZStdCompression();
 
-    /**
-     * https://www.rootusers.com/gzip-vs-bzip2-vs-xz-performance-comparison/
-     */
-    private int compressionLevel = 4;
+    private int compressionLevel = 3;
 
-    public GZipCompression() {
+    public ZStdCompression() {
     }
 
-    public GZipCompression(final int compressionLevel) {
+    public ZStdCompression(final int compressionLevel) {
         this.compressionLevel = compressionLevel;
     }
 
-    @SuppressWarnings("resource")
     public byte[] compress(final byte[] uncompressed) throws IOException {
         Args.notNull("uncompressed", uncompressed);
 
-        final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
-        final GZIPOutputStream compOS = new GZIPOutputStream(bytesOS) {
-            {
-                def.setLevel(compressionLevel);
-            }
-        };
-        compOS.write(uncompressed);
-        compOS.close();
-        return bytesOS.toByteArray();
+        final long maxSize = Zstd.compressBound(uncompressed.length);
+        if (maxSize > Integer.MAX_VALUE)
+            throw new IOException("Max output size is greater than Integer.MAX_VALUE!");
+        final byte[] dst = new byte[(int) maxSize];
+
+        final long rc = Zstd.compress(dst, uncompressed, compressionLevel);
+        if (Zstd.isError(rc))
+            throw new IOException(Zstd.getErrorName(rc));
+
+        final int size = (int) rc;
+        final byte[] out = new byte[size];
+        System.arraycopy(dst, 0, out, 0, size);
+        return out;
     }
 
     public void compress(final byte[] uncompressed, final OutputStream output, final boolean closeOutput) throws IOException {
@@ -67,13 +68,10 @@ public class GZipCompression implements ByteArrayCompression, InputStreamCompres
         Args.notNull("output", output);
 
         try {
-            final GZIPOutputStream compOS = new GZIPOutputStream(output) {
-                {
-                    def.setLevel(compressionLevel);
-                }
-            };
+            @SuppressWarnings("resource")
+            final ZstdOutputStream compOS = new ZstdOutputStream(output, compressionLevel, true);
             compOS.write(uncompressed);
-            compOS.finish();
+            compOS.flush();
         } finally {
             if (closeOutput) {
                 IOUtils.closeQuietly(output);
@@ -87,13 +85,9 @@ public class GZipCompression implements ByteArrayCompression, InputStreamCompres
 
         try {
             @SuppressWarnings("resource")
-            final GZIPOutputStream compOS = new GZIPOutputStream(output) {
-                {
-                    def.setLevel(compressionLevel);
-                }
-            };
+            final ZstdOutputStream compOS = new ZstdOutputStream(output, compressionLevel, true);
             IOUtils.copy(input, compOS);
-            compOS.finish();
+            compOS.flush();
         } finally {
             IOUtils.closeQuietly(input);
             if (closeOutput) {
@@ -106,24 +100,23 @@ public class GZipCompression implements ByteArrayCompression, InputStreamCompres
     public byte[] decompress(final byte[] compressed) throws IOException {
         Args.notNull("compressed", compressed);
 
-        final GZIPInputStream compIS = new GZIPInputStream(new FastByteArrayInputStream(compressed));
-        final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
-        IOUtils.copy(compIS, bytesOS);
-        return bytesOS.toByteArray();
+        final FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
+        final ZstdInputStream compIS = new ZstdInputStream(new FastByteArrayInputStream(compressed));
+        IOUtils.copy(compIS, baos);
+        return baos.toByteArray();
     }
 
-    @SuppressWarnings("resource")
     public int decompress(final byte[] compressed, final byte[] output) throws IOException {
         Args.notNull("compressed", compressed);
         Args.notNull("output", output);
 
-        final GZIPInputStream compIS = new GZIPInputStream(new FastByteArrayInputStream(compressed));
-        final int bytesRead = IOUtils.read(compIS, output);
-
-        if (compIS.read() != IOUtils.EOF)
-            throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
-
-        return bytesRead;
+        final long rc = Zstd.decompress(output, compressed);
+        if (Zstd.isError(rc)) {
+            if (rc == -70)
+                throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
+            throw new IOException(Zstd.getErrorName(rc));
+        }
+        return (int) rc;
     }
 
     public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
@@ -132,7 +125,7 @@ public class GZipCompression implements ByteArrayCompression, InputStreamCompres
 
         try {
             @SuppressWarnings("resource")
-            final GZIPInputStream compIS = new GZIPInputStream(new FastByteArrayInputStream(compressed));
+            final ZstdInputStream compIS = new ZstdInputStream(new FastByteArrayInputStream(compressed));
             IOUtils.copy(compIS, output);
         } finally {
             if (closeOutput) {
@@ -147,7 +140,7 @@ public class GZipCompression implements ByteArrayCompression, InputStreamCompres
 
         try {
             @SuppressWarnings("resource")
-            final GZIPInputStream compIS = new GZIPInputStream(input);
+            final ZstdInputStream compIS = new ZstdInputStream(input);
             IOUtils.copy(compIS, output);
         } finally {
             IOUtils.closeQuietly(input);

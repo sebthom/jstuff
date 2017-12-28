@@ -186,7 +186,6 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
         }
     }
 
-    @Override
     public <SERVICE_INTERFACE> boolean addService(final Class<SERVICE_INTERFACE> serviceInterface, final SERVICE_INTERFACE serviceInstance)
             throws IllegalArgumentException, IllegalStateException {
         Args.notNull("serviceInterface", serviceInterface);
@@ -195,7 +194,6 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
         return addService(serviceInterface.getName(), serviceInterface, serviceInstance);
     }
 
-    @Override
     public <SERVICE_INTERFACE> boolean addService(final String serviceEndpointId, final Class<SERVICE_INTERFACE> serviceInterface,
             final SERVICE_INTERFACE serviceInstance) throws IllegalArgumentException, IllegalStateException {
         Args.notNull("serviceEndpointId", serviceEndpointId);
@@ -237,7 +235,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
             final Class<SERVICE_INTERFACE> serviceInterface) {
         final DefaultServiceProxyAdvice<SERVICE_INTERFACE> advice = new DefaultServiceProxyAdvice<SERVICE_INTERFACE>(serviceEndpointState, serviceInterface);
         final ServiceProxyInternal<SERVICE_INTERFACE> proxy = Proxies.create(new InvocationHandler() {
-            @Override
+
             public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
                 final String methodName = method.getName();
                 if (method.getDeclaringClass() == ServiceProxy.class)
@@ -270,7 +268,6 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
         return proxy;
     }
 
-    @Override
     public List<ServiceEndpoint> getActiveServiceEndpoints() {
         serviceEndpoints_READ.lock();
         try {
@@ -286,7 +283,6 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
         }
     }
 
-    @Override
     public <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(final String serviceEndpointId, final Class<SERVICE_INTERFACE> serviceInterface) {
         Args.notNull("serviceEndpointId", serviceEndpointId);
         Args.notNull("serviceInterface", serviceInterface);
@@ -317,7 +313,6 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
         }
     }
 
-    @Override
     public Set<String> getServiceEndpointIds() {
         serviceEndpoints_READ.lock();
         try {
@@ -360,7 +355,6 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
         }
     }
 
-    @Override
     public boolean removeService(final String serviceEndpointId, final Object serviceInstance) throws IllegalArgumentException {
         Args.notNull("serviceEndpointId", serviceEndpointId);
         Args.notNull("serviceInstance", serviceInstance);

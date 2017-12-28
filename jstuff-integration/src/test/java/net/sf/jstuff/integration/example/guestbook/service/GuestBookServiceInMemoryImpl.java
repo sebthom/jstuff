@@ -36,6 +36,17 @@ import net.sf.jstuff.integration.example.guestbook.service.command.UpdateGuestBo
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class GuestBookServiceInMemoryImpl implements GuestBookService {
+    public static <T> List<T> slice(final List<T> elements, final int fromIndex, final int maxElements) {
+        if (fromIndex >= elements.size())
+            return Collections.emptyList();
+
+        int toIndex = fromIndex + maxElements;
+        if (toIndex >= elements.size()) {
+            toIndex = elements.size();
+        }
+        return elements.subList(fromIndex, toIndex);
+    }
+
     private static List<GuestBookEntry> sortInPlace(final List<GuestBookEntry> entries, final SortBy<String>... sortBy) {
         Collections.sort(entries, new SortByPropertyComparator<GuestBookEntry>(sortBy));
         return entries;
@@ -64,7 +75,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         addEntry(entry2);
     }
 
-    @Override
     public int addEntry(final AddGuestBookEntryCommand entry) throws PermissionDeniedException {
         final GuestBookEntryEntity entity = new GuestBookEntryEntity(getCurrentUser());
         entity.setId(counter.incrementAndGet());
@@ -78,7 +88,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         return entity.getId();
     }
 
-    @Override
     public boolean existsEntry(final int entryId) {
         return store.containsKey(entryId);
     }
@@ -88,7 +97,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         return "anonymous";
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public PagedListWithSortBy<GuestBookEntry, String> getEntries(final int start, final int max, final SortBy<String>... sortBy) {
         Args.inRange("start", start, 1, Integer.MAX_VALUE);
@@ -102,12 +110,10 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         );
     }
 
-    @Override
     public int getEntriesCount() {
         return store.size();
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public PagedListWithSortBy<GuestBookEntry, String> getEntriesOfAuthor(final String createdBy, final int start, final int max,
             final SortBy<String>... sortBy) {
@@ -123,7 +129,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         );
     }
 
-    @Override
     public int getEntriesOfAuthorCount(final String createdBy) {
         Args.notNull("createdBy", createdBy);
 
@@ -135,7 +140,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         return count;
     }
 
-    @Override
     public GuestBookEntry getEntry(final int entryId) throws PermissionDeniedException {
         final GuestBookEntryEntity entity = store.get(entryId);
         if (entity == null)
@@ -143,18 +147,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         return GuestBookEntry.of(entity);
     }
 
-    public static <T> List<T> slice(final List<T> elements, final int fromIndex, final int maxElements) {
-        if (fromIndex >= elements.size())
-            return Collections.emptyList();
-
-        int toIndex = fromIndex + maxElements;
-        if (toIndex >= elements.size()) {
-            toIndex = elements.size();
-        }
-        return elements.subList(fromIndex, toIndex);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public PagedListWithSortBy<GuestBookEntry, String> getResponses(final int entryId, final int start, final int max, final SortBy<String>... sortBy)
             throws PermissionDeniedException {
@@ -172,7 +164,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         );
     }
 
-    @Override
     public int getResponsesCount(final int entryId) throws PermissionDeniedException {
         final GuestBookEntryEntity entity = store.get(entryId);
         if (entity == null)
@@ -180,12 +171,10 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         return entity.getResponses().size();
     }
 
-    @Override
     public String getVersion() {
         return "0.5";
     }
 
-    @Override
     public void rateEntry(final int entryId, final boolean isGoodEntry) throws PermissionDeniedException {
         final GuestBookEntryEntity entity = store.get(entryId);
         if (entity == null)
@@ -208,7 +197,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         }
     }
 
-    @Override
     public int removeEntriesOfAuthor(final String createdBy) throws PermissionDeniedException {
         Args.notNull("createdBy", createdBy);
 
@@ -219,7 +207,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         return entities.size();
     }
 
-    @Override
     public void removeEntry(final int entryId) throws PermissionDeniedException {
         Args.notNull("entryId", entryId);
 
@@ -230,7 +217,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
         remove(entity);
     }
 
-    @Override
     public void updateEntry(final int entryId, final UpdateGuestBookEntryCommand entry) throws PermissionDeniedException {
         Args.notNull("entryId", entryId);
         Args.notNull("entry", entry);

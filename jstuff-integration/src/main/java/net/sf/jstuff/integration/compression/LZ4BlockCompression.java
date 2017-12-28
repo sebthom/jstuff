@@ -44,6 +44,7 @@ public class LZ4BlockCompression implements ByteArrayCompression, InputStreamCom
     private static final LZ4Compressor COMP = LZ4Factory.fastestInstance().fastCompressor();
     private static final LZ4FastDecompressor DECOMP = LZ4Factory.fastestInstance().fastDecompressor();
     private static final ThreadLocal<Checksum> CHECKSUM = new ThreadLocal<Checksum>() {
+
         @Override
         protected Checksum initialValue() {
             return XXHashFactory.fastestInstance().newStreamingHash32(0x9747b28c).asChecksum();
@@ -51,7 +52,7 @@ public class LZ4BlockCompression implements ByteArrayCompression, InputStreamCom
     };
 
     @SuppressWarnings("resource")
-    @Override
+
     public byte[] compress(final byte[] uncompressed) throws IOException {
         Args.notNull("uncompressed", uncompressed);
 
@@ -65,7 +66,6 @@ public class LZ4BlockCompression implements ByteArrayCompression, InputStreamCom
         return baos.toByteArray();
     }
 
-    @Override
     public void compress(final byte[] uncompressed, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("uncompressed", uncompressed);
         Args.notNull("output", output);
@@ -84,7 +84,6 @@ public class LZ4BlockCompression implements ByteArrayCompression, InputStreamCom
         }
     }
 
-    @Override
     public void compress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("input", input);
         Args.notNull("output", output);
@@ -103,7 +102,6 @@ public class LZ4BlockCompression implements ByteArrayCompression, InputStreamCom
     }
 
     @SuppressWarnings("resource")
-    @Override
     public byte[] decompress(final byte[] compressed) throws IOException {
         Args.notNull("compressed", compressed);
 
@@ -113,7 +111,20 @@ public class LZ4BlockCompression implements ByteArrayCompression, InputStreamCom
         return baos.toByteArray();
     }
 
-    @Override
+    @SuppressWarnings("resource")
+    public int decompress(final byte[] compressed, final byte[] output) throws IOException {
+        Args.notNull("compressed", compressed);
+        Args.notNull("output", output);
+
+        final FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
+        final LZ4BlockInputStream compIS = new LZ4BlockInputStream(new FastByteArrayInputStream(compressed), DECOMP, CHECKSUM.get());
+        IOUtils.copy(compIS, baos);
+        if (baos.size() > output.length)
+            throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
+        baos.writeTo(output);
+        return baos.size();
+    }
+
     public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("compressed", compressed);
         Args.notNull("output", output);
@@ -129,7 +140,6 @@ public class LZ4BlockCompression implements ByteArrayCompression, InputStreamCom
         }
     }
 
-    @Override
     public void decompress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("input", input);
         Args.notNull("output", output);

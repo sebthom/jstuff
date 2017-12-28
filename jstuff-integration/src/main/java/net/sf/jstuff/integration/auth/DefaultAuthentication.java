@@ -37,29 +37,24 @@ class DefaultAuthentication implements Authentication {
     /**
      * @return the password
      */
-    @Override
     public String getPassword() {
         return password;
     }
 
-    @Override
     public Serializable getProperty(final String name) {
         return properties.get(name);
     }
 
-    @Override
     public UserDetails getUserDetails() {
         return userDetails;
     }
 
-    @Override
     public void invalidate() {
         userDetails = UNBOUND.getUserDetails();
         properties.clear();
         password = null;
     }
 
-    @Override
     public boolean isAuthenticated() {
         return userDetails != null && userDetails.getDistingueshedName() != null;
     }
@@ -71,7 +66,6 @@ class DefaultAuthentication implements Authentication {
         this.password = password;
     }
 
-    @Override
     public void setProperty(final String name, final Serializable value) {
         properties.put(name, value);
     }

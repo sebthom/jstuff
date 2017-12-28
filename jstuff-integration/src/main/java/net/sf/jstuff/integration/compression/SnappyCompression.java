@@ -34,14 +34,12 @@ public class SnappyCompression implements ByteArrayCompression, InputStreamCompr
 
     public static final SnappyCompression INSTANCE = new SnappyCompression();
 
-    @Override
     public byte[] compress(final byte[] uncompressed) throws IOException {
         Args.notNull("uncompressed", uncompressed);
 
         return Snappy.rawCompress(uncompressed, uncompressed.length);
     }
 
-    @Override
     public void compress(final byte[] uncompressed, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("uncompressed", uncompressed);
         Args.notNull("output", output);
@@ -58,7 +56,6 @@ public class SnappyCompression implements ByteArrayCompression, InputStreamCompr
         }
     }
 
-    @Override
     public void compress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("input", input);
         Args.notNull("output", output);
@@ -76,14 +73,24 @@ public class SnappyCompression implements ByteArrayCompression, InputStreamCompr
         }
     }
 
-    @Override
     public byte[] decompress(final byte[] compressed) throws IOException {
         Args.notNull("compressed", compressed);
 
         return Snappy.uncompress(compressed);
     }
 
-    @Override
+    public int decompress(final byte[] compressed, final byte[] output) throws IOException {
+        Args.notNull("compressed", compressed);
+        Args.notNull("output", output);
+
+        final int uncompressedSize = Snappy.rawUncompress(compressed, 0, compressed.length, output, 0);
+
+        if (uncompressedSize != output.length)
+            throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
+
+        return uncompressedSize;
+    }
+
     public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("compressed", compressed);
         Args.notNull("output", output);
@@ -99,7 +106,6 @@ public class SnappyCompression implements ByteArrayCompression, InputStreamCompr
         }
     }
 
-    @Override
     public void decompress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("input", input);
         Args.notNull("output", output);

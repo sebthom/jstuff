@@ -118,7 +118,27 @@ public class FastByteArrayOutputStream extends OutputStream {
         count = newcount;
     }
 
+    /**
+     * IndexOutOfBoundsException if copying would cause access of data outside array bounds.
+     */
+    public void writeTo(final byte[] out) {
+        Args.notNull("out", out);
+
+        System.arraycopy(data, 0, out, 0, count);
+    }
+
+    /**
+     * IndexOutOfBoundsException if copying would cause access of data outside array bounds.
+     */
+    public void writeTo(final byte[] out, final int offset) {
+        Args.notNull("out", out);
+
+        System.arraycopy(data, 0, out, offset, count);
+    }
+
     public void writeTo(final OutputStream out) throws IOException {
+        Args.notNull("out", out);
+
         out.write(data, 0, count);
     }
 }

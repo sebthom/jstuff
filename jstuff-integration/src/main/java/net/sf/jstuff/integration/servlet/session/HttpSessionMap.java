@@ -50,12 +50,10 @@ public class HttpSessionMap implements SessionMap {
         this.request = request;
     }
 
-    @Override
     public void clear() {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public boolean containsKey(final Object key) {
         final HttpSession sess = request.getSession(false);
         if (sess == null)
@@ -63,7 +61,6 @@ public class HttpSessionMap implements SessionMap {
         return Enumerations.contains(sess.getAttributeNames(), key);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public boolean containsValue(final Object value) {
         final HttpSession sess = request.getSession(false);
@@ -75,7 +72,6 @@ public class HttpSessionMap implements SessionMap {
         return false;
     }
 
-    @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet() {
         final HttpSession sess = request.getSession(false);
         if (sess == null)
@@ -88,12 +84,10 @@ public class HttpSessionMap implements SessionMap {
         return result.entrySet();
     }
 
-    @Override
     public boolean exists() {
         return request.getSession(false) != null;
     }
 
-    @Override
     public Object get(final Object key) {
         final HttpSession sess = request.getSession(false);
         if (sess == null)
@@ -101,7 +95,6 @@ public class HttpSessionMap implements SessionMap {
         return sess.getAttribute(key == null ? null : key.toString());
     }
 
-    @Override
     public Object get(final String key, final Object defaultValueIfNull) {
         final Object val = get(key);
         if (val == null)
@@ -109,13 +102,11 @@ public class HttpSessionMap implements SessionMap {
         return val;
     }
 
-    @Override
     public Object getId() {
         final HttpSession sess = request.getSession(true);
         return sess.getId();
     }
 
-    @Override
     public void invalidate() {
         final HttpSession sess = request.getSession(false);
         if (sess == null)
@@ -123,7 +114,6 @@ public class HttpSessionMap implements SessionMap {
         sess.invalidate();
     }
 
-    @Override
     public boolean isEmpty() {
         final HttpSession sess = request.getSession(false);
         if (sess == null)
@@ -131,7 +121,6 @@ public class HttpSessionMap implements SessionMap {
         return !sess.getAttributeNames().hasMoreElements();
     }
 
-    @Override
     public Set<String> keySet() {
         final HttpSession sess = request.getSession(false);
         if (sess == null)
@@ -141,7 +130,6 @@ public class HttpSessionMap implements SessionMap {
         return result;
     }
 
-    @Override
     public Object put(final String key, final Object value) {
         final HttpSession sess = request.getSession(true);
         final Object oldValue = sess.getAttribute(key);
@@ -149,7 +137,6 @@ public class HttpSessionMap implements SessionMap {
         return oldValue;
     }
 
-    @Override
     public void putAll(final Map<? extends String, ? extends Object> map) {
         final HttpSession sess = request.getSession(true);
         for (final Entry<? extends String, ? extends Object> e : map.entrySet()) {
@@ -157,7 +144,6 @@ public class HttpSessionMap implements SessionMap {
         }
     }
 
-    @Override
     public Object remove(final Object key) {
         final HttpSession sess = request.getSession(false);
         if (sess == null)
@@ -168,7 +154,6 @@ public class HttpSessionMap implements SessionMap {
         return oldValue;
     }
 
-    @Override
     public int size() {
         final HttpSession sess = request.getSession(false);
         if (sess == null)
@@ -177,7 +162,6 @@ public class HttpSessionMap implements SessionMap {
         return getValueNames(sess).length;
     }
 
-    @Override
     public Collection<Object> values() {
         final HttpSession sess = request.getSession(false);
         if (sess == null)

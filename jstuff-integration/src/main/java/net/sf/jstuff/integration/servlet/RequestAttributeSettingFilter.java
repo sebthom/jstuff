@@ -58,11 +58,9 @@ public class RequestAttributeSettingFilter implements Filter {
     private static final Logger LOG = Logger.create();
     private final Map<String, String> attributes = new LinkedHashMap<String, String>();
 
-    @Override
     public void destroy() {
     }
 
-    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         if (!attributes.isEmpty()) {
             LOG.debug("For request [%s] setting request attributes: %s", request, attributes);
@@ -79,7 +77,6 @@ public class RequestAttributeSettingFilter implements Filter {
         return attributes;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public void init(final FilterConfig filterConfig) throws ServletException {
         for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames())) {

@@ -15,12 +15,16 @@ package net.sf.jstuff.core.compression;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import org.apache.commons.io.IOExceptionWithCause;
+
 import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
@@ -39,6 +43,7 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
      * https://www.rootusers.com/gzip-vs-bzip2-vs-xz-performance-comparison/
      */
     private int compressionLevel = 4;
+    private byte[] dictionary = ArrayUtils.EMPTY_BYTE_ARRAY;
 
     private final ThreadLocal<Deflater> deflater = new ThreadLocal<Deflater>() {
         @Override
@@ -50,7 +55,11 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
 
         @Override
         protected Deflater initialValue() {
-            return new Deflater(compressionLevel);
+            final Deflater def = new Deflater(compressionLevel);
+            if (dictionary.length > 0) {
+                def.setDictionary(dictionary);
+            }
+            return def;
         };
     };
     private final ThreadLocal<Inflater> inflater = new ThreadLocal<Inflater>() {
@@ -63,7 +72,11 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
 
         @Override
         protected Inflater initialValue() {
-            return new Inflater(false);
+            final Inflater inf = new Inflater(false);
+            if (dictionary.length > 0) {
+                inf.setDictionary(dictionary);
+            }
+            return inf;
         };
     };
 
@@ -72,6 +85,13 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
 
     public DeflateCompression(final int compressionLevel) {
         this.compressionLevel = compressionLevel;
+    }
+
+    public DeflateCompression(final int compressionLevel, final byte[] dictionary) {
+        this.compressionLevel = compressionLevel;
+        if (dictionary != null && dictionary.length > 0) {
+            this.dictionary = dictionary.clone();
+        }
     }
 
     public byte[] compress(final byte[] uncompressed) throws IOException {
@@ -125,6 +145,22 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
         final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
         IOUtils.copy(compIS, bytesOS);
         return bytesOS.toByteArray();
+    }
+
+    public int decompress(final byte[] compressed, final byte[] output) throws IOException {
+        Args.notNull("compressed", compressed);
+        Args.notNull("output", output);
+
+        final Inflater inf = inflater.get();
+        inf.setInput(compressed);
+        try {
+            final int bytesRead = inf.inflate(output);
+            if (inf.getRemaining() > 0)
+                throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
+            return bytesRead;
+        } catch (final DataFormatException ex) {
+            throw new IOExceptionWithCause(ex);
+        }
     }
 
     public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {

@@ -51,12 +51,11 @@ public class LdapGroupDetailsService implements GroupDetailsService {
         LOG.infoNew(this);
     }
 
-    @Override
     public GroupDetails getGroupDetailsByGroupDN(final String groupDN) {
         Args.notNull("groupDN", groupDN);
 
         return (GroupDetails) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
-            @Override
+
             public Object invoke(final LdapContext ctx) throws NamingException {
                 final Attributes attr = ctx.getAttributes(groupDN, new String[] { groupAttributeDisplayName, groupAttributeGroupId, groupAttributeMember });
 
@@ -75,13 +74,12 @@ public class LdapGroupDetailsService implements GroupDetailsService {
         });
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public Set<String> getGroupIdsByUserDN(final String userDN) {
         Args.notNull("userDN", userDN);
 
         return (Set<String>) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
-            @Override
+
             public Object invoke(final LdapContext ctx) throws NamingException {
                 final Set<String> groupIds = new HashSet<String>();
 
