@@ -31,7 +31,6 @@ public class Tomcat6Authenticator implements Authenticator {
     /*
      * based on http://wiki.apache.org/tomcat/HowTo#head-42e95596753a1fa4a4aa396d53010680e3d509b5
      */
-    @Override
     public boolean authenticate(final String logonName, final String password) {
         //Note: this assumes the Container is "Catalina"
         final Engine engine = (Engine) ServerFactory.getServer().findService("Catalina").getContainer();

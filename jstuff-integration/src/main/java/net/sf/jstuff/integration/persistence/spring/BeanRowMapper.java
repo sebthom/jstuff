@@ -43,8 +43,6 @@ import net.sf.jstuff.core.validation.Args;
 public class BeanRowMapper<T> implements RowMapper<T> {
     private static final Logger LOG = Logger.create();
 
-    private Class<T> beanClass;
-
     private static final BeanUtilsBean BUB;
 
     static {
@@ -62,6 +60,8 @@ public class BeanRowMapper<T> implements RowMapper<T> {
         converter.register(new DateConverter(null), Date.class);
         BUB = new BeanUtilsBean(converter);
     }
+
+    private Class<T> beanClass;
 
     /**
      * propertyNameLowerCase => propertyName
@@ -83,7 +83,6 @@ public class BeanRowMapper<T> implements RowMapper<T> {
         return beanClass;
     }
 
-    @Override
     public T mapRow(final ResultSet rs, final int rowNum) throws SQLException {
         ResultSetDynaClass rsDynaClass = rsDynaClassesCache.get(rs);
         if (rsDynaClass == null) {

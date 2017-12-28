@@ -14,10 +14,50 @@
     <artifactId>jstuff-integration</artifactId>
 
     <properties>
-        <java.version>1.6</java.version>
+        <!-- use JDK8 for compilation and integration tests to be able to compile and run integration tests against some libraries that require Java 6 or higher -->
+        <java.version>1.8</java.version>
         <jetty.version>7.6.21.v20160908</jetty.version>
-        <spring.version>4.3.13.RELEASE</spring.version>
+        
+        <!-- Java 5: <= 3.x-->
+        <!-- Java 6: <= 4.x-->
+        <!-- Java 8: <= 5.x-->
+        <spring.version>3.2.18.RELEASE</spring.version>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <!-- generate JDK5 binary compatible code -->
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>toolchain@process-test-classes</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                        <configuration>
+                            <toolchains>
+                                <jdk>
+                                    <!-- run unit tests with JDK 5 (but integration tests still with JDK8) -->
+                                    <version>1.5</version>
+                                    <vendor>${java.vendor}</vendor>
+                                </jdk>
+                            </toolchains>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 
     <dependencies>
         <dependency>
@@ -121,13 +161,13 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <!-- Java 5: <= 1.9.2 -->
-            <version>1.9.3</version>
+            <version>1.9.2</version>
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <version>2.2</version>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.1.Final</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -136,7 +176,7 @@
             <artifactId>h2</artifactId>
             <!-- Java 5: <= 1.3.168 -->
             <!-- Java 6: <= 1.4.190 -->
-            <version>1.4.190</version>
+            <version>1.3.168</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -159,7 +199,7 @@
             <artifactId>jackson-databind</artifactId>
             <!-- Java 5: <= 2.1.5 -->
             <!-- Java 6: <= 2.6.x -->
-            <version>2.6.7.1</version>
+            <version>2.1.5</version>
             <optional>true</optional>
         </dependency>
 
@@ -186,12 +226,18 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.luben</groupId>
+            <artifactId>zstd-jni</artifactId>
+            <version>1.3.3-1</version>
+        </dependency>
+
+        <dependency>
             <!-- compression https://github.com/xerial/snappy-java -->
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
             <!-- Java 5: <= 1.0.5.4 -->
             <!-- Java 6: <= 1.1.2.6 -->
-            <version>1.1.2.6</version>
+            <version>1.0.5.4</version>
             <optional>true</optional>
         </dependency>
 
@@ -208,15 +254,36 @@
             ================================================================== -->
         <dependency>
             <!-- Generate test data https://github.com/andygibson/datafactory -->
-            <groupId>org.fluttercode.datafactory</groupId>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>0.2</version>
+            <!-- <groupId>org.fluttercode.datafactory</groupId>
             <artifactId>datafactory</artifactId>
-            <version>0.8</version>
+            <version>0.8</version> -->
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty.aggregate</groupId>
             <artifactId>jetty-all-server</artifactId>
             <version>${jetty.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.orbit</groupId>
+                    <artifactId>javax.servlet</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.orbit</groupId>
+                    <artifactId>javax.activation</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.orbit</groupId>
+                    <artifactId>javax.mail.glassfish</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.orbit</groupId>
+                    <artifactId>javax.annotation</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -74,11 +74,9 @@ public class ClassPathResourcesFilter implements Filter {
         LOG.infoNew(this);
     }
 
-    @Override
     public void destroy() {
     }
 
-    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         if (!(request instanceof HttpServletRequest && response instanceof HttpServletResponse)) {
             chain.doFilter(request, response);
@@ -149,7 +147,6 @@ public class ClassPathResourcesFilter implements Filter {
         return maxAgeInSeconds;
     }
 
-    @Override
     public void init(final FilterConfig cfg) throws ServletException {
         ctx = cfg.getServletContext();
 

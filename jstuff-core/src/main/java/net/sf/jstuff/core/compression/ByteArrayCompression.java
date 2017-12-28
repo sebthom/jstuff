@@ -30,6 +30,11 @@ public interface ByteArrayCompression {
     byte[] decompress(byte[] compressed) throws IOException;
 
     /**
+     * @throws IndexOutOfBoundsException if uncompressed is too small
+     */
+    int decompress(byte[] compressed, byte[] output) throws IOException;
+
+    /**
      * @param closeOutput if output shall be closed, if false output may also not be flushed automatically
      */
     void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException;

@@ -43,8 +43,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <java.version>1.5</java.version>
-        <java.vendor>sun</java.vendor>
-        <java.version.integration-tests>1.6</java.version.integration-tests>
+        <java.vendor>default</java.vendor>
+        <java.version.integration-tests>${java.version}</java.version.integration-tests>
         <java.vendor.integration-tests>${java.vendor}</java.vendor.integration-tests>
 
         <!-- requiring 3.2.2 because of https://issues.apache.org/jira/browse/MNG-4565 -->
@@ -54,7 +54,7 @@
         <maven.scm.svnjava.version>2.1.2</maven.scm.svnjava.version>
         <maven.wagon.version>3.0.0</maven.wagon.version>
 
-        <maven.javadoc.skip>true</maven.javadoc.skip>  <!-- we don't really need javadoc -->
+        <maven.javadoc.skip>false</maven.javadoc.skip>  <!-- required for publishing to maven repo -->
 
         <slf4j.version>1.7.25</slf4j.version>
 
@@ -137,7 +137,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>toolchain@verify</id>
+                        <id>toolchain@pre-integration-test</id>
                         <phase>pre-integration-test</phase>
                         <goals>
                             <goal>toolchain</goal>
@@ -203,32 +203,17 @@
                                         <ignoredScope>provided</ignoredScope>
                                         <ignoredScope>test</ignoredScope>
                                     </ignoredScopes>
-                                    <ignoreClasses>
-                                        <ignoreClasse>com.thoughtworks.xstream.mapper.LambdaMapper</ignoreClasse>
-                                        <ignoreClasse>com.thoughtworks.xstream.converters.reflection.LambdaConverter</ignoreClasse>
-                                        <ignoreClasse>com.thoughtworks.xstream.converters.time.*</ignoreClasse>
-                                        <ignoreClasse>com.thoughtworks.xstream.core.util.ISO8601JavaTimeConverter</ignoreClasse>
-                                    </ignoreClasses>
                                     <excludes>
-                                        <exclude>net.bytebuddy:byte-buddy</exclude>
                                         <exclude>com.sun.xml.bind:jaxb-xjc</exclude>
                                     </excludes>
                                 </enforceBytecodeVersion>
-
-                                <!-- does currently report duplicate classes if same artifact is transitively referenced in different versions, e.g.
-                                    [WARNING] Rule 2: org.apache.maven.plugins.enforcer.BanDuplicateClasses failed with message:
-                                    Duplicate classes found:
-
-                                    Found in:
-                                    org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.0.Beta1:provided
-                                    org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar:1.0.1.Final:provided
-                                    Duplicate classes:
-                                    javax/interceptor/Interceptor.class
-
-                                    http://mojo.codehaus.org/extra-enforcer-rules/banDuplicateClasses.html
-                                    <banDuplicateClasses>
-                                        <findAllDuplicates>true</findAllDuplicates>
-                                    </banDuplicateClasses> -->
+                                <banDuplicateClasses>
+                                    <findAllDuplicates>true</findAllDuplicates>
+                                    <ignoreClasses>
+                                        <ignoreClass>org.aspectj.*</ignoreClass>
+                                        <ignoreClass>org.xmlpull.v1.*</ignoreClass>
+                                    </ignoreClasses>
+                                </banDuplicateClasses>
                             </rules>
                             <fail>true</fail>
                         </configuration>
@@ -263,11 +248,7 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
-                        <phase>DISABLED</phase>
-                    </execution>
-                    <execution>
-                        <id>attach-sources-no-fork</id>
-                        <phase>verify</phase>
+                        <phase>package</phase>
                         <goals>
                             <!--
                                 http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
@@ -413,6 +394,9 @@
                         <providerImplementations>
                             <svn>javasvn</svn>
                         </providerImplementations>
+                        
+                        <!-- the release profile will be removed from future versions of the super POM so better not rely on it -->
+                        <useReleaseProfile>false</useReleaseProfile>
                     </configuration>
                     <dependencies>
                         <dependency>
@@ -506,18 +490,20 @@
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.10.4</version>
+                    <inherited>false</inherited>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
                             <goals>
-                                <goal>jar</goal>
+                                <goal>javadoc-no-fork</goal>
                             </goals>
-                            <configuration>
-                                <!-- exclude java.*, javax.* stubs -->
-                                <excludePackageNames>java.*:javax.*</excludePackageNames>
-                            </configuration>
+                            <phase>package</phase>
                         </execution>
                     </executions>
+                    <configuration>
+                        <!-- exclude internal package and java.*, javax.* stubs -->
+                        <excludePackageNames>*.internal:*.internal.*:java:java.*:javax:javax.*</excludePackageNames>
+                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -540,13 +526,10 @@
                     <!-- newer versions crash when running JDK 5 tests: org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
                     <version>2.19.1</version>
                     <configuration>
-                        <argLine>-Xmx768m -Duser.language=en -Duser.region=US -noverify</argLine>
+                        <argLine>-Xmx768m -Djava.awt.headless=true -Duser.language=en -Duser.region=US -noverify</argLine>
                         <excludes>
                             <exclude>**/*ITest.java</exclude>
                         </excludes>
-                        <systemPropertyVariables>
-                            <java.awt.headless>true</java.awt.headless>
-                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -554,13 +537,10 @@
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.19.1</version>
                     <configuration>
-                        <argLine>-Xmx768m -Duser.language=en -Duser.region=US -noverify</argLine>
+                        <argLine>-Xmx768m -Djava.awt.headless=true -Duser.language=en -Duser.region=US -noverify</argLine>
                         <includes>
                             <include>**/*ITest.java</include>
                         </includes>
-                        <systemPropertyVariables>
-                            <java.awt.headless>true</java.awt.headless>
-                        </systemPropertyVariables>
                     </configuration>
                     <executions>
                         <execution>
@@ -702,6 +682,29 @@
 
 
     <profiles>
+        <profile>
+            <id>release-config</id>
+
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <inherited>true</inherited>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <updateReleaseInfo>true</updateReleaseInfo>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>jrebel-config</id>
             <!-- only activated if executed within Eclipse and if rebel-remote.xml is present, requires Maven 3.2.2 or higher, see https://issues.apache.org/jira/browse/MNG-4565 -->

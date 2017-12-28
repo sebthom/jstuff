@@ -144,7 +144,6 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
         LOG.infoNew(this);
     }
 
-    @Override
     public void afterPropertiesSet() throws Exception {
         exportedMethodsByName = buildExportedMethodsByName(getServiceInterface());
         smdTemplate = buildSMDTemplate(getServiceInterface(), getService(), exportedMethodsByName, false);
@@ -153,7 +152,6 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
     /**
      * Processes the incoming JSON request and creates a JSON response..
      */
-    @Override
     public void handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         // on POST requests we invoke a method and return the method value as a JSON string
         if ("POST".equals(request.getMethod())) {

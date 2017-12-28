@@ -17,7 +17,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.logging.Logger;
+import org.apache.commons.io.IOExceptionWithCause;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -27,8 +28,6 @@ import net.sf.jstuff.core.validation.Args;
  */
 public final class SerializableField implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    private static final Logger LOG = Logger.create();
 
     private static final WeakHashMap<Field, SerializableField> CACHE = new WeakHashMap<Field, SerializableField>();
 
@@ -82,8 +81,7 @@ public final class SerializableField implements Serializable {
         try {
             field = declaringClass.getDeclaredField(name);
         } catch (final NoSuchFieldException ex) {
-            LOG.debug("Unexpected NoSuchFieldException occured", ex);
-            throw new IOException(ex.getMessage());
+            throw new IOExceptionWithCause(ex);
         }
     }
 }

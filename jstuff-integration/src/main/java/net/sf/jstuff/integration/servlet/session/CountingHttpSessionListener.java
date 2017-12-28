@@ -29,12 +29,10 @@ public class CountingHttpSessionListener implements HttpSessionListener {
     private static final class HttpSessionBindingListenerImpl implements HttpSessionBindingListener, Serializable {
         private static final long serialVersionUID = 1L;
 
-        @Override
         public void valueBound(final HttpSessionBindingEvent ev) {
             // nothing to do
         }
 
-        @Override
         public void valueUnbound(final HttpSessionBindingEvent ev) {
             SESSION_COUNT.decrementAndGet();
         }
@@ -53,7 +51,6 @@ public class CountingHttpSessionListener implements HttpSessionListener {
         LOG.infoNew(this);
     }
 
-    @Override
     public void sessionCreated(final HttpSessionEvent se) {
         SESSION_COUNT.incrementAndGet();
         se.getSession().setAttribute(CountingHttpSessionListener.class.getName(), LISTENER);
@@ -65,7 +62,7 @@ public class CountingHttpSessionListener implements HttpSessionListener {
      * others invoke it multiple times.
      * Instead we use {@link HttpSessionBindingListener#valueUnbound} which seems to work reliable
      */
-    @Override
+
     public void sessionDestroyed(final HttpSessionEvent se) {
         //do nothing
     }

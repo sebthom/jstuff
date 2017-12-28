@@ -119,7 +119,6 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
         return true;
     }
 
-    @Override
     public Object getIdRealm() {
         return getClass();
     }

@@ -36,7 +36,6 @@ public abstract class AbstractConverter implements ConditionalGenericConverter {
         return conversionService;
     }
 
-    @Override
     public boolean matches(final TypeDescriptor sourceType, final TypeDescriptor targetType) {
         if (!conversionService.canConvert(sourceType, targetType.getMapKeyTypeDescriptor()))
             return false;

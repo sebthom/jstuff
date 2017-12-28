@@ -17,7 +17,8 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.WeakHashMap;
 
-import net.sf.jstuff.core.logging.Logger;
+import org.apache.commons.io.IOExceptionWithCause;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -27,8 +28,6 @@ import net.sf.jstuff.core.validation.Args;
  */
 public final class SerializableConstructor implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    private static final Logger LOG = Logger.create();
 
     private static final WeakHashMap<Constructor<?>, SerializableConstructor> CACHE = new WeakHashMap<Constructor<?>, SerializableConstructor>();
 
@@ -82,8 +81,7 @@ public final class SerializableConstructor implements Serializable {
         try {
             constructor = declaringClass.getDeclaredConstructor(parameterTypes);
         } catch (final NoSuchMethodException ex) {
-            LOG.debug("Unexpected NoSuchMethodException occured", ex);
-            throw new IOException(ex.getMessage());
+            throw new IOExceptionWithCause(ex);
         }
     }
 }

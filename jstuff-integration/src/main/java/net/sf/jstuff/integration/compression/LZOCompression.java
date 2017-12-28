@@ -57,7 +57,7 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
     }
 
     @SuppressWarnings("resource")
-    @Override
+
     public byte[] compress(final byte[] uncompressed) throws IOException {
         Args.notNull("uncompressed", uncompressed);
 
@@ -69,7 +69,6 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
         return baos.toByteArray();
     }
 
-    @Override
     public void compress(final byte[] uncompressed, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("uncompressed", uncompressed);
         Args.notNull("output", output);
@@ -86,7 +85,6 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
         }
     }
 
-    @Override
     public void compress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("input", input);
         Args.notNull("output", output);
@@ -105,7 +103,7 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
     }
 
     @SuppressWarnings("resource")
-    @Override
+
     public byte[] decompress(final byte[] compressed) throws IOException {
         Args.notNull("compressed", compressed);
 
@@ -115,7 +113,21 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
         return baos.toByteArray();
     }
 
-    @Override
+    @SuppressWarnings("resource")
+    public int decompress(final byte[] compressed, final byte[] output) throws IOException {
+        Args.notNull("compressed", compressed);
+        Args.notNull("output", output);
+
+        // doesn't work: return decompressor.decompress(compressed, 0, compressed.length, output, 0, new lzo_uintp(output.length));
+        final FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
+        final LzoInputStream compIS = new LzoInputStream(new FastByteArrayInputStream(compressed), decompressor);
+        IOUtils.copy(compIS, baos);
+        if (baos.size() > output.length)
+            throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
+        baos.writeTo(output);
+        return baos.size();
+    }
+
     public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("compressed", compressed);
         Args.notNull("output", output);
@@ -131,7 +143,6 @@ public class LZOCompression implements ByteArrayCompression, InputStreamCompress
         }
     }
 
-    @Override
     public void decompress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("input", input);
         Args.notNull("output", output);

@@ -39,18 +39,6 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class CompressionBenchmark {
 
-    public static class CompressSpeedComparator implements Comparator<BenchmarkResult> {
-        public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
-            return o1.compressTimeMS < o2.compressTimeMS ? -1 : o1.compressTimeMS == o2.compressTimeMS ? 0 : 1;
-        }
-    }
-
-    public static class DecompressSpeedComparator implements Comparator<BenchmarkResult> {
-        public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
-            return o1.decompressTimeMS < o2.decompressTimeMS ? -1 : o1.decompressTimeMS == o2.decompressTimeMS ? 0 : 1;
-        }
-    }
-
     public static class BenchmarkResult {
         public InputStreamCompression compression;
         public int iterations;
@@ -70,6 +58,18 @@ public class CompressionBenchmark {
                 DurationFormatUtils.formatDurationHMS(decompressTimeMS), //
                 DurationFormatUtils.formatDurationHMS(compressTimeMS + decompressTimeMS), //
                 compression);
+        }
+    }
+
+    public static class CompressSpeedComparator implements Comparator<BenchmarkResult> {
+        public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
+            return o1.compressTimeMS < o2.compressTimeMS ? -1 : o1.compressTimeMS == o2.compressTimeMS ? 0 : 1;
+        }
+    }
+
+    public static class DecompressSpeedComparator implements Comparator<BenchmarkResult> {
+        public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
+            return o1.decompressTimeMS < o2.decompressTimeMS ? -1 : o1.decompressTimeMS == o2.decompressTimeMS ? 0 : 1;
         }
     }
 
@@ -126,8 +126,8 @@ public class CompressionBenchmark {
         /*
          * warmup
          */
-        LOG.info("Warmup...");
         for (final InputStreamCompression cmp : compressions) {
+            LOG.info("Warmup [%s]...", cmp.getClass().getSimpleName());
             for (int i = 0; i < 50; i++) {
                 uncompressedIS.reset();
                 compressedOS.reset();

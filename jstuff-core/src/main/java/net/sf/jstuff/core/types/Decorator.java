@@ -56,7 +56,7 @@ public interface Decorator<T> {
     }
 
     /**
-     * @throw {@link IllegalStateException} if getting the wrapped object is disallowed
+     * @throws {@link IllegalStateException} if getting the wrapped object is disallowed
      */
     T getWrapped();
 
@@ -65,7 +65,7 @@ public interface Decorator<T> {
     boolean isWrappedSettable();
 
     /**
-     * @throw {@link IllegalStateException} if setting the wrapped object is disallowed
+     * @throws {@link IllegalStateException} if setting the wrapped object is disallowed
      */
     void setWrapped(T wrapped);
 }

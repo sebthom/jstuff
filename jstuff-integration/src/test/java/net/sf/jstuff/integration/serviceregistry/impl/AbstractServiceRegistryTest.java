@@ -30,19 +30,42 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
             this.count = count;
         }
 
-        @Override
         public void onServiceAvailable(final ServiceProxy<T> service) {
             count.incrementAndGet();
         }
 
-        @Override
         public void onServiceUnavailable(final ServiceProxy<T> service) {
             count.incrementAndGet();
         }
     };
 
-    public interface TestService {
-        boolean validate();
+    public static class DefaultService1 implements Service1 {
+
+        public String getGreeting() {
+            return "Hello";
+        }
+
+        public boolean validate() {
+            return true;
+        }
+    }
+
+    public static class DefaultService2 implements Service2 {
+
+        public String getGreeting() {
+            return "Hola";
+        }
+
+        public boolean validate() {
+            return true;
+        }
+    }
+
+    public static class DefaultService2Extended extends DefaultService2 implements Service2Extended {
+
+        public String getGoodbye() {
+            return "Adios";
+        }
     }
 
     public interface Service1 extends TestService {
@@ -61,35 +84,8 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
         String getGoodbye();
     }
 
-    public static class DefaultService1 implements Service1 {
-        @Override
-        public String getGreeting() {
-            return "Hello";
-        }
-
-        @Override
-        public boolean validate() {
-            return true;
-        }
-    }
-
-    public static class DefaultService2 implements Service2 {
-        @Override
-        public String getGreeting() {
-            return "Hola";
-        }
-
-        @Override
-        public boolean validate() {
-            return true;
-        }
-    }
-
-    public static class DefaultService2Extended extends DefaultService2 implements Service2Extended {
-        @Override
-        public String getGoodbye() {
-            return "Adios";
-        }
+    public interface TestService {
+        boolean validate();
     }
 
     protected R registry;
@@ -163,7 +159,7 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
         Thread.sleep(500);
 
         final Runnable service = new Runnable() {
-            @Override
+
             public void run() {
             }
         };

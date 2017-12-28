@@ -28,7 +28,6 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
         this.serviceInterface = serviceInterface;
     }
 
-    @Override
     public int compareTo(final DefaultServiceEndpoint other) {
         if (other == null)
             return 1;
@@ -38,12 +37,10 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
         return ObjectUtils.compare(serviceInterface.getName(), other.serviceInterface.getName());
     }
 
-    @Override
     public String getServiceEndpointId() {
         return serviceEndpointId;
     }
 
-    @Override
     public Class<?> getServiceInterface() {
         return serviceInterface;
     }

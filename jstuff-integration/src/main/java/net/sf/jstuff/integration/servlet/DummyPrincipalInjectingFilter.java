@@ -73,6 +73,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
         @Override
         protected synchronized HttpServletRequestWrapper initialValue() {
             return new HttpServletRequestWrapper(init) {
+
                 @Override
                 public String getRemoteUser() {
                     return user.getName();
@@ -92,7 +93,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
     };
 
     private final Principal user = new Principal() {
-        @Override
+
         public String getName() {
             return username;
         }
@@ -109,11 +110,9 @@ public class DummyPrincipalInjectingFilter implements Filter {
         LOG.infoNew(this);
     }
 
-    @Override
     public void destroy() {
     }
 
-    @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
         if (username != null && request instanceof HttpServletRequest) {
             LOG.debug("Injecting dummy user [%s]...", username);
@@ -133,7 +132,6 @@ public class DummyPrincipalInjectingFilter implements Filter {
         return userRoles;
     }
 
-    @Override
     public void init(final FilterConfig config) throws ServletException {
         // configure based on system properties
         {
