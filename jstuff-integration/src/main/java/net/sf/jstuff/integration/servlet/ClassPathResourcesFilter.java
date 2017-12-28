@@ -136,7 +136,7 @@ public class ClassPathResourcesFilter implements Filter {
             try {
                 resp.setHeader("Content-Length", String.valueOf(in.available()));
 
-                IOUtils.copy(in, response.getOutputStream());
+                IOUtils.copyLarge(in, response.getOutputStream());
             } finally {
                 IOUtils.closeQuietly(in);
             }

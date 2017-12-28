@@ -19,6 +19,11 @@ public class CompressionITest extends CompressionTest {
         testIOStreamCompression(LZ4BlockCompression.INSTANCE);
     }
 
+    public void testLZ4Frame() throws IOException {
+        testByteArrayCompression(LZ4FrameCompression.INSTANCE);
+        testIOStreamCompression(LZ4FrameCompression.INSTANCE);
+    }
+
     public void testLZO() throws IOException {
         testByteArrayCompression(LZOCompression.INSTANCE);
         testIOStreamCompression(LZOCompression.INSTANCE);
@@ -27,16 +32,20 @@ public class CompressionITest extends CompressionTest {
     public void testPerformance() throws IOException {
         final Map<InputStreamCompression, BenchmarkResult> result = new CompressionBenchmark() //
             .setTestData(TEST_TEXT_BYTES) //
-            .setIterations(1000) //
+            .setIterations(500) //
             .addCompression(DeflateCompression.INSTANCE) //
             .addCompression(GZipCompression.INSTANCE) //
             .addCompression(LZ4BlockCompression.INSTANCE) //
+            .addCompression(LZ4FrameCompression.INSTANCE) //
+            .addCompression(LZOCompression.INSTANCE) //
             .addCompression(SnappyCompression.INSTANCE) //
-            //.addCompression(LZOCompression.INSTANCE) // buggy - throws random exceptions
             .addCompression(ZStdCompression.INSTANCE) //
+            .addCompression(new ZStdCompression(ZStdCompression.LEVEL_SMALL_AS_DEFLATE_4)) //
             .execute();
 
+        System.out.println("Benchmark results:");
         for (final BenchmarkResult r : result.values()) {
+            System.out.print(" ");
             System.out.println(r);
         }
     }

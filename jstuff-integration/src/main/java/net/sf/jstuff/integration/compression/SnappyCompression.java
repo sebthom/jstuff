@@ -63,7 +63,7 @@ public class SnappyCompression implements ByteArrayCompression, InputStreamCompr
         try {
             @SuppressWarnings("resource")
             final SnappyOutputStream compOS = new SnappyOutputStream(output);
-            IOUtils.copy(input, compOS);
+            IOUtils.copyLarge(input, compOS);
             compOS.flush();
         } finally {
             IOUtils.closeQuietly(input);
@@ -98,7 +98,7 @@ public class SnappyCompression implements ByteArrayCompression, InputStreamCompr
         try {
             @SuppressWarnings("resource")
             final SnappyInputStream compIS = new SnappyInputStream(new FastByteArrayInputStream(compressed));
-            IOUtils.copy(compIS, output);
+            IOUtils.copyLarge(compIS, output);
         } finally {
             if (closeOutput) {
                 IOUtils.closeQuietly(output);
@@ -113,7 +113,7 @@ public class SnappyCompression implements ByteArrayCompression, InputStreamCompr
         try {
             @SuppressWarnings("resource")
             final SnappyInputStream compIS = new SnappyInputStream(input);
-            IOUtils.copy(compIS, output);
+            IOUtils.copyLarge(compIS, output);
         } finally {
             IOUtils.closeQuietly(input);
             if (closeOutput) {

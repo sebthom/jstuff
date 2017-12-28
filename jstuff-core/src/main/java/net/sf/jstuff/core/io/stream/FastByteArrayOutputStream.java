@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
+import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -77,6 +78,8 @@ public class FastByteArrayOutputStream extends OutputStream {
     }
 
     public byte[] toByteArray() {
+        if (count == 0)
+            return ArrayUtils.EMPTY_BYTE_ARRAY;
         final byte copy[] = new byte[count];
         System.arraycopy(data, 0, copy, 0, count);
         return copy;
@@ -100,11 +103,11 @@ public class FastByteArrayOutputStream extends OutputStream {
     public void write(final byte[] buf, final int offset, final int length) {
         if (offset < 0 || length < 0 || offset + length > buf.length)
             throw new IndexOutOfBoundsException();
-
         if (length == 0)
             return;
 
         final int newcount = count + length;
+
         ensureCapacity(newcount);
         System.arraycopy(buf, offset, data, count, length);
         count = newcount;

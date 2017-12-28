@@ -92,7 +92,7 @@ public class GZipCompression implements ByteArrayCompression, InputStreamCompres
                     def.setLevel(compressionLevel);
                 }
             };
-            IOUtils.copy(input, compOS);
+            IOUtils.copyLarge(input, compOS);
             compOS.finish();
         } finally {
             IOUtils.closeQuietly(input);
@@ -108,7 +108,7 @@ public class GZipCompression implements ByteArrayCompression, InputStreamCompres
 
         final GZIPInputStream compIS = new GZIPInputStream(new FastByteArrayInputStream(compressed));
         final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
-        IOUtils.copy(compIS, bytesOS);
+        IOUtils.copyLarge(compIS, bytesOS);
         return bytesOS.toByteArray();
     }
 
@@ -133,7 +133,7 @@ public class GZipCompression implements ByteArrayCompression, InputStreamCompres
         try {
             @SuppressWarnings("resource")
             final GZIPInputStream compIS = new GZIPInputStream(new FastByteArrayInputStream(compressed));
-            IOUtils.copy(compIS, output);
+            IOUtils.copyLarge(compIS, output);
         } finally {
             if (closeOutput) {
                 IOUtils.closeQuietly(output);
@@ -148,7 +148,7 @@ public class GZipCompression implements ByteArrayCompression, InputStreamCompres
         try {
             @SuppressWarnings("resource")
             final GZIPInputStream compIS = new GZIPInputStream(input);
-            IOUtils.copy(compIS, output);
+            IOUtils.copyLarge(compIS, output);
         } finally {
             IOUtils.closeQuietly(input);
             if (closeOutput) {
