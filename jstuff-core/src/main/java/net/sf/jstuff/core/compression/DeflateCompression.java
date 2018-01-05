@@ -26,8 +26,8 @@ import org.apache.commons.io.IOExceptionWithCause;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.IOUtils;
+import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
-import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -35,7 +35,7 @@ import net.sf.jstuff.core.validation.Args;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DeflateCompression implements ByteArrayCompression, InputStreamCompression {
+public class DeflateCompression extends AbstractCompression {
 
     public static final DeflateCompression INSTANCE = new DeflateCompression();
 
@@ -45,7 +45,7 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
     private int compressionLevel = 4;
     private byte[] dictionary = ArrayUtils.EMPTY_BYTE_ARRAY;
 
-    private final ThreadLocal<Deflater> deflater = new ThreadLocal<Deflater>() {
+    private final ThreadLocal<Deflater> compressor = new ThreadLocal<Deflater>() {
         @Override
         public Deflater get() {
             final Deflater result = super.get();
@@ -62,7 +62,7 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
             return def;
         };
     };
-    private final ThreadLocal<Inflater> inflater = new ThreadLocal<Inflater>() {
+    private final ThreadLocal<Inflater> decompressor = new ThreadLocal<Inflater>() {
         @Override
         public Inflater get() {
             final Inflater result = super.get();
@@ -94,23 +94,17 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
         }
     }
 
-    public byte[] compress(final byte[] uncompressed) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
-
-        final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
-        final DeflaterOutputStream compOS = new DeflaterOutputStream(bytesOS, deflater.get());
-        compOS.write(uncompressed);
-        compOS.close();
-        return bytesOS.toByteArray();
-
-    }
-
-    public void compress(final byte[] uncompressed, final OutputStream output, final boolean closeOutput) throws IOException {
+    @SuppressWarnings("resource")
+    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("uncompressed", uncompressed);
         Args.notNull("output", output);
 
+        if (!closeOutput) {
+            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+            output = new DelegatingOutputStream(output, true);
+        }
         try {
-            final DeflaterOutputStream compOS = new DeflaterOutputStream(output, deflater.get());
+            final DeflaterOutputStream compOS = new DeflaterOutputStream(output, compressor.get());
             compOS.write(uncompressed);
             compOS.finish();
         } finally {
@@ -120,38 +114,60 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
         }
     }
 
-    public void compress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("input", input);
+    @SuppressWarnings("resource")
+    public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
+        Args.notNull("uncompressed", uncompressed);
         Args.notNull("output", output);
 
+        if (!closeOutput) {
+            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+            output = new DelegatingOutputStream(output, true);
+        }
+
         try {
-            @SuppressWarnings("resource")
-            final DeflaterOutputStream compOS = new DeflaterOutputStream(output, deflater.get());
-            IOUtils.copyLarge(input, compOS);
+            final DeflaterOutputStream compOS = new DeflaterOutputStream(output, compressor.get());
+            IOUtils.copyLarge(uncompressed, compOS);
             compOS.finish();
         } finally {
-            IOUtils.closeQuietly(input);
+            IOUtils.closeQuietly(uncompressed);
             if (closeOutput) {
                 IOUtils.closeQuietly(output);
             }
         }
     }
 
-    @SuppressWarnings("resource")
-    public byte[] decompress(final byte[] compressed) throws IOException {
-        Args.notNull("compressed", compressed);
-
-        final InflaterInputStream compIS = new InflaterInputStream(new FastByteArrayInputStream(compressed), inflater.get());
-        final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
-        IOUtils.copyLarge(compIS, bytesOS);
-        return bytesOS.toByteArray();
+    @Override
+    public InputStream createCompressingInputStream(final InputStream uncompressed) throws IOException {
+        final Deflater compressor = new Deflater(compressionLevel);
+        if (dictionary.length > 0) {
+            compressor.setDictionary(dictionary);
+        }
+        return new DeflaterInputStream(uncompressed, compressor);
     }
 
+    public OutputStream createCompressingOutputStream(final OutputStream output) {
+        final Deflater compressor = new Deflater(compressionLevel);
+        if (dictionary.length > 0) {
+            compressor.setDictionary(dictionary);
+        }
+        return new DeflaterOutputStream(output, compressor);
+    }
+
+    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+        Args.notNull("compressed", compressed);
+        final Inflater decompressor = new Inflater(false);
+        if (dictionary.length > 0) {
+            decompressor.setDictionary(dictionary);
+        }
+        return new InflaterInputStream(compressed, decompressor);
+    }
+
+    @Override
     public int decompress(final byte[] compressed, final byte[] output) throws IOException {
         Args.notNull("compressed", compressed);
         Args.notNull("output", output);
 
-        final Inflater inf = inflater.get();
+        final Inflater inf = decompressor.get();
         inf.setInput(compressed);
         try {
             final int bytesRead = inf.inflate(output);
@@ -163,13 +179,14 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
         }
     }
 
+    @Override
     public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("compressed", compressed);
         Args.notNull("output", output);
 
         try {
             @SuppressWarnings("resource")
-            final InflaterInputStream compIS = new InflaterInputStream(new FastByteArrayInputStream(compressed), inflater.get());
+            final InflaterInputStream compIS = new InflaterInputStream(new FastByteArrayInputStream(compressed), decompressor.get());
             IOUtils.copyLarge(compIS, output);
         } finally {
             if (closeOutput) {
@@ -178,16 +195,17 @@ public class DeflateCompression implements ByteArrayCompression, InputStreamComp
         }
     }
 
-    public void decompress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("input", input);
+    @Override
+    public void decompress(final InputStream compressed, final OutputStream output, final boolean closeOutput) throws IOException {
+        Args.notNull("compressed", compressed);
         Args.notNull("output", output);
 
         try {
             @SuppressWarnings("resource")
-            final InflaterInputStream compIS = new InflaterInputStream(input, inflater.get());
+            final InflaterInputStream compIS = new InflaterInputStream(compressed, decompressor.get());
             IOUtils.copyLarge(compIS, output);
         } finally {
-            IOUtils.closeQuietly(input);
+            IOUtils.closeQuietly(compressed);
             if (closeOutput) {
                 IOUtils.closeQuietly(output);
             }

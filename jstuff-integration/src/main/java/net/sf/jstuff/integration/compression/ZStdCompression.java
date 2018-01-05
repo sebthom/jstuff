@@ -23,10 +23,8 @@ import com.github.luben.zstd.ZstdInputStream;
 import com.github.luben.zstd.ZstdOutputStream;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.compression.ByteArrayCompression;
-import net.sf.jstuff.core.compression.InputStreamCompression;
-import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
-import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
+import net.sf.jstuff.core.compression.AbstractCompression;
+import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -35,15 +33,16 @@ import net.sf.jstuff.core.validation.Args;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ZStdCompression implements ByteArrayCompression, InputStreamCompression {
+public class ZStdCompression extends AbstractCompression {
 
     public static final ZStdCompression INSTANCE = new ZStdCompression();
 
-    private int compressionLevel = 3;
-
     public static int LEVEL_SMALL_AS_DEFLATE_4 = 2;
+
     public static int LEVEL_SMALL_AS_DEFLATE_6 = 5;
     public static int LEVEL_SMALL_AS_DEFLATE_9 = 5;
+    private boolean useChecksum = false;
+    private int compressionLevel = 3;
 
     public ZStdCompression() {
     }
@@ -52,6 +51,12 @@ public class ZStdCompression implements ByteArrayCompression, InputStreamCompres
         this.compressionLevel = compressionLevel;
     }
 
+    public ZStdCompression(final int compressionLevel, final boolean useChecksum) {
+        this.compressionLevel = compressionLevel;
+        this.useChecksum = useChecksum;
+    }
+
+    @Override
     public byte[] compress(final byte[] uncompressed) throws IOException {
         Args.notNull("uncompressed", uncompressed);
 
@@ -70,13 +75,18 @@ public class ZStdCompression implements ByteArrayCompression, InputStreamCompres
         return out;
     }
 
-    public void compress(final byte[] uncompressed, final OutputStream output, final boolean closeOutput) throws IOException {
+    @SuppressWarnings("resource")
+    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("uncompressed", uncompressed);
         Args.notNull("output", output);
 
+        if (!closeOutput) {
+            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+            output = new DelegatingOutputStream(output, true);
+        }
+
         try {
-            @SuppressWarnings("resource")
-            final ZstdOutputStream compOS = new ZstdOutputStream(output, compressionLevel, true);
+            final OutputStream compOS = createCompressingOutputStream(output);
             compOS.write(uncompressed);
             compOS.flush();
         } finally {
@@ -86,13 +96,18 @@ public class ZStdCompression implements ByteArrayCompression, InputStreamCompres
         }
     }
 
-    public void compress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
+    @SuppressWarnings("resource")
+    public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
         Args.notNull("input", input);
         Args.notNull("output", output);
 
+        if (!closeOutput) {
+            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+            output = new DelegatingOutputStream(output, true);
+        }
+
         try {
-            @SuppressWarnings("resource")
-            final ZstdOutputStream compOS = new ZstdOutputStream(output, compressionLevel, true);
+            final OutputStream compOS = createCompressingOutputStream(output);
             IOUtils.copyLarge(input, compOS);
             compOS.flush();
         } finally {
@@ -103,16 +118,15 @@ public class ZStdCompression implements ByteArrayCompression, InputStreamCompres
         }
     }
 
-    @SuppressWarnings("resource")
-    public byte[] decompress(final byte[] compressed) throws IOException {
-        Args.notNull("compressed", compressed);
-
-        final FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
-        final ZstdInputStream compIS = new ZstdInputStream(new FastByteArrayInputStream(compressed));
-        IOUtils.copyLarge(compIS, baos);
-        return baos.toByteArray();
+    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
+        return new ZstdOutputStream(output, compressionLevel, true, useChecksum);
     }
 
+    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+        return new ZstdInputStream(compressed);
+    }
+
+    @Override
     public int decompress(final byte[] compressed, final byte[] output) throws IOException {
         Args.notNull("compressed", compressed);
         Args.notNull("output", output);
@@ -126,39 +140,9 @@ public class ZStdCompression implements ByteArrayCompression, InputStreamCompres
         return (int) rc;
     }
 
-    public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("compressed", compressed);
-        Args.notNull("output", output);
-
-        try {
-            @SuppressWarnings("resource")
-            final ZstdInputStream compIS = new ZstdInputStream(new FastByteArrayInputStream(compressed));
-            IOUtils.copyLarge(compIS, output);
-        } finally {
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
-
-    public void decompress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("input", input);
-        Args.notNull("output", output);
-
-        try {
-            @SuppressWarnings("resource")
-            final ZstdInputStream compIS = new ZstdInputStream(input);
-            IOUtils.copyLarge(compIS, output);
-        } finally {
-            IOUtils.closeQuietly(input);
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
-
     @Override
     public String toString() {
         return Strings.toString(this, "compressionLevel", compressionLevel);
     }
+
 }

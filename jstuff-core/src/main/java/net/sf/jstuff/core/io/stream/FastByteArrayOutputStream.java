@@ -13,6 +13,7 @@
 package net.sf.jstuff.core.io.stream;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
@@ -26,16 +27,17 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class FastByteArrayOutputStream extends OutputStream {
 
-    protected byte[] data;
+    protected byte[] data = ArrayUtils.EMPTY_BYTE_ARRAY;
     protected int count;
+    protected int initialSize;
 
     public FastByteArrayOutputStream() {
-        data = new byte[32];
+        this(32);
     }
 
     public FastByteArrayOutputStream(final int initialSize) {
         Args.notNegative("initialSize", initialSize);
-        data = new byte[initialSize];
+        this.initialSize = initialSize;
     }
 
     /**
@@ -47,15 +49,20 @@ public class FastByteArrayOutputStream extends OutputStream {
     }
 
     private void ensureCapacity(final int minCapacity) {
+        final int dataSize = data.length;
+
         // resizing needed?
-        if (minCapacity <= data.length)
+        if (minCapacity <= dataSize)
             return;
 
         // integer overflow?
         if (minCapacity < 0)
             throw new OutOfMemoryError("Cannot allocate array larger than " + Integer.MAX_VALUE);
 
-        final int newCapacity = Math.max(data.length + (data.length >> 2) /* == data.length x 1.5 */, minCapacity);
+        final int newCapacity = Math.max( //
+            dataSize + (dataSize >> 2) /* == dataSize x 1.5 */, //
+            minCapacity < initialSize ? initialSize : minCapacity //
+        );
         final byte copy[] = new byte[newCapacity];
         System.arraycopy(data, 0, copy, 0, count);
         data = copy;
@@ -77,12 +84,27 @@ public class FastByteArrayOutputStream extends OutputStream {
         return count;
     }
 
+    /**
+     * @return a copy of the internal buffer
+     */
     public byte[] toByteArray() {
         if (count == 0)
             return ArrayUtils.EMPTY_BYTE_ARRAY;
         final byte copy[] = new byte[count];
         System.arraycopy(data, 0, copy, 0, count);
         return copy;
+    }
+
+    /**
+     * This will reset the internal buffer.
+     *
+     * @return an {@link FastByteArrayInputStream} with this stream's internal buffer.
+     */
+    public InputStream toInputStream() {
+        final FastByteArrayInputStream in = new FastByteArrayInputStream(data, 0, count);
+        data = ArrayUtils.EMPTY_BYTE_ARRAY;
+        count = 0;
+        return in;
     }
 
     @Override

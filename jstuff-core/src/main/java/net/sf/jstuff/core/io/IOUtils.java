@@ -35,21 +35,23 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class IOUtils extends org.apache.commons.io.IOUtils {
+
     private static final Logger LOG = Logger.create();
 
     public static final int EOF = -1;
 
     public static void closeQuietly(final ZipFile file) {
-        if (file != null)
+        if (file != null) {
             try {
-            file.close();
-        } catch (final IOException ex) {
-            // ignore
+                file.close();
+            } catch (final IOException ex) {
+                // ignore
+            }
         }
     }
 
     /**
-     * @return number of bytes copied
+     * @return number of bytes copied, or -1 if &gt; Integer.MAX_VALUE
      */
     public static int copyAndClose(final InputStream is, final OutputStream os) throws IOException {
         try {
@@ -60,17 +62,29 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
         }
     }
 
+    /**
+     * @return number of bytes copied
+     */
+    public static long copyLargeAndClose(final InputStream is, final OutputStream os) throws IOException {
+        try {
+            return copyLarge(is, os);
+        } finally {
+            closeQuietly(is);
+            closeQuietly(os);
+        }
+    }
+
     @SuppressWarnings("resource")
     public static byte[] readBytes(final InputStream is) throws IOException {
         final FastByteArrayOutputStream os = new FastByteArrayOutputStream();
-        copy(is, os);
+        copyLarge(is, os);
         return os.toByteArray();
     }
 
     /**
      * Reads <code>len</code> bytes of data from the input stream into
      * an array of bytes. This method blocks until the given number of bytes could be read.
-     * 
+     *
      * @param b the buffer into which the data is read.
      * @param off the start offset in array <code>b</code> at which the data is written.
      * @param len the exact number of bytes to read.
@@ -94,7 +108,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
     /**
      * Reads <code>len</code> bytes of data from the input stream into
      * an array of bytes. This method blocks until the given number of bytes could be read.
-     * 
+     *
      * @param len the exact number of bytes to read.
      */
     public static byte[] readBytes(final InputStream is, final int len) throws IOException {
@@ -107,7 +121,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
     public static byte[] readBytesAndClose(final InputStream is) throws IOException {
         final FastByteArrayOutputStream os = new FastByteArrayOutputStream();
         try {
-            copy(is, os);
+            copyLarge(is, os);
             return os.toByteArray();
         } finally {
             closeQuietly(is);
