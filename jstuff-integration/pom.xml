@@ -24,6 +24,17 @@
         <spring.version>3.2.18.RELEASE</spring.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>bintray-nitram509-jbrotli</id>
+            <name>bintray</name>
+            <url>http://dl.bintray.com/nitram509/jbrotli</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
@@ -208,7 +219,7 @@
             <!-- Java 6: <groupId>net.jpountz.lz4</groupId><artifactId>lz4</artifactId><version>1.3.0</version>-->
             <groupId>org.lz4</groupId>
             <artifactId>lz4-java</artifactId>
-            <version>1.4.0</version>
+            <version>1.4.1</version>
             <optional>true</optional>
         </dependency>
 
@@ -238,12 +249,13 @@
         </dependency>
 
         <dependency>
-            <!-- compression https://github.com/google/brotli -->
-            <groupId>org.brotli</groupId>
-            <artifactId>dec</artifactId>
-            <version>0.1.2</version>
+            <!-- compression https://github.com/MeteoGroup/jbrotli -->
+            <groupId>org.meteogroup.jbrotli</groupId>
+            <artifactId>jbrotli</artifactId>
+            <version>0.5.0</version>
             <optional>true</optional>
         </dependency>
+
 
         <!--==================================================================
             Test dependencies

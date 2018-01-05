@@ -41,7 +41,7 @@ import net.sf.jstuff.core.validation.Args;
 public class CompressionBenchmark {
 
     public static class BenchmarkResult {
-        public InputStreamCompression compression;
+        public Compression compression;
         public int iterations;
         public long compressTimeMS;
         public long decompressTimeMS;
@@ -89,20 +89,20 @@ public class CompressionBenchmark {
 
     private static final Logger LOG = Logger.create();
 
-    private final Set<InputStreamCompression> compressions = new HashSet<InputStreamCompression>();
+    private final Set<Compression> compressions = new HashSet<Compression>();
     private byte[] uncompressed = ArrayUtils.EMPTY_BYTE_ARRAY;
     private int iterations = 0;
 
-    public CompressionBenchmark addCompression(final InputStreamCompression compression) {
+    public CompressionBenchmark addCompression(final Compression compression) {
         Args.notNull("compression", compression);
         compressions.add(compression);
         return this;
     }
 
     @SuppressWarnings("resource")
-    public Map<InputStreamCompression, BenchmarkResult> execute() throws IOException {
-        final Map<InputStreamCompression, BenchmarkResult> result = new HashMap<InputStreamCompression, BenchmarkResult>();
-        for (final InputStreamCompression cmp : compressions) {
+    public Map<Compression, BenchmarkResult> execute() throws IOException {
+        final Map<Compression, BenchmarkResult> result = new HashMap<Compression, BenchmarkResult>();
+        for (final Compression cmp : compressions) {
             final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
             final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
             cmp.compress(uncompressedIS, compressedOS, true);
@@ -121,7 +121,7 @@ public class CompressionBenchmark {
         /*
          * warmup
          */
-        for (final InputStreamCompression cmp : compressions) {
+        for (final Compression cmp : compressions) {
             LOG.info("Warmup [%s]...", cmp);
             for (int i = 0; i < 50; i++) {
                 final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
@@ -145,7 +145,7 @@ public class CompressionBenchmark {
          * micro benchmark
          */
         final StopWatch sw = new StopWatch();
-        for (final InputStreamCompression cmp : compressions) {
+        for (final Compression cmp : compressions) {
             LOG.info("Benchmarking compression [%s]...", cmp);
 
             System.gc();
@@ -166,7 +166,7 @@ public class CompressionBenchmark {
             sw.stop();
             result.get(cmp).compressTimeMS = sw.getTime();
         }
-        for (final InputStreamCompression cmp : compressions) {
+        for (final Compression cmp : compressions) {
             LOG.info("Benchmarking decompression [%s]...", cmp);
 
             System.gc();

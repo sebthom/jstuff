@@ -10,10 +10,10 @@ import com.github.javafaker.Faker;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.ArrayUtils;
-import net.sf.jstuff.core.compression.ByteArrayCompression;
+import net.sf.jstuff.core.compression.Compression;
 import net.sf.jstuff.core.compression.DeflateCompression;
 import net.sf.jstuff.core.compression.GZipCompression;
-import net.sf.jstuff.core.compression.InputStreamCompression;
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 
 /**
@@ -39,11 +39,14 @@ public class CompressionTest extends TestCase {
     }
 
     @SuppressWarnings("resource")
-    public static void testByteArrayCompression(final ByteArrayCompression cmp) throws IOException {
+    public static void testByteArrayCompression(final Compression cmp) throws IOException {
         for (int i = 0; i < 4; i++) { // testing instance re-use
+
             final byte[] compressed = cmp.compress(TEST_TEXT_BYTES);
 
             {
+                assertTrue(ArrayUtils.isEquals(compressed, cmp.compress(TEST_TEXT_BYTES))); // test for reproducable results
+
                 assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, cmp.decompress(compressed)));
             }
 
@@ -72,11 +75,19 @@ public class CompressionTest extends TestCase {
 
                 assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, uncompressedOS.toByteArray()));
             }
+
+            {
+                assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, IOUtils.readBytes(cmp.createDecompressingInputStream(compressed))));
+
+                final byte[] compressed2 = IOUtils.readBytes(cmp.createCompressingInputStream(TEST_TEXT_BYTES));
+                assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, IOUtils.readBytes(cmp.createDecompressingInputStream(compressed2))));
+            }
+
         }
     }
 
     @SuppressWarnings("resource")
-    public static void testIOStreamCompression(final InputStreamCompression cmp) throws IOException {
+    public static void testInputStreamCompression(final Compression cmp) throws IOException {
         for (int i = 0; i < 4; i++) { // testing instance re-use
             final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
             final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
@@ -84,21 +95,31 @@ public class CompressionTest extends TestCase {
             cmp.decompress(new ByteArrayInputStream(compressedOS.toByteArray()), uncompressedOS, true);
 
             assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, uncompressedOS.toByteArray()));
+
+            assertTrue(ArrayUtils.isEquals( //
+                TEST_TEXT_BYTES, //
+                IOUtils.readBytes(cmp.createDecompressingInputStream(new ByteArrayInputStream(compressedOS.toByteArray()))) //
+            ));
+
+            assertTrue(ArrayUtils.isEquals( //
+                TEST_TEXT_BYTES, //
+                cmp.decompress(IOUtils.readBytes(cmp.createCompressingInputStream(new ByteArrayInputStream(TEST_TEXT_BYTES)))) ///
+            ));
         }
     }
 
     public void testDeflate() throws IOException {
         testByteArrayCompression(DeflateCompression.INSTANCE);
-        testIOStreamCompression(DeflateCompression.INSTANCE);
+        testInputStreamCompression(DeflateCompression.INSTANCE);
     }
 
     public void testGZip() throws IOException {
         testByteArrayCompression(GZipCompression.INSTANCE);
-        testIOStreamCompression(GZipCompression.INSTANCE);
+        testInputStreamCompression(GZipCompression.INSTANCE);
     }
 
     public void testSnappy() throws IOException {
         testByteArrayCompression(SnappyCompression.INSTANCE);
-        testIOStreamCompression(SnappyCompression.INSTANCE);
+        testInputStreamCompression(SnappyCompression.INSTANCE);
     }
 }

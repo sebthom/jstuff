@@ -16,31 +16,37 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOExceptionWithCause;
 import org.apache.commons.io.IOUtils;
+import org.meteogroup.jbrotli.BrotliDeCompressor;
+import org.meteogroup.jbrotli.BrotliException;
+import org.meteogroup.jbrotli.io.BrotliInputStream;
+import org.meteogroup.jbrotli.io.BrotliOutputStream;
+import org.meteogroup.jbrotli.libloader.BrotliLibraryLoader;
 
-import net.jpountz.lz4.LZ4Factory;
-import net.jpountz.lz4.LZ4FrameInputStream;
-import net.jpountz.lz4.LZ4FrameOutputStream;
-import net.jpountz.lz4.LZ4SafeDecompressor;
-import net.jpountz.xxhash.XXHash32;
-import net.jpountz.xxhash.XXHashFactory;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.compression.AbstractCompression;
 import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**
+ * Or: https://github.com/google/brotli/blob/master/java/org/brotli/wrapper/enc/BrotliOutputStream.java
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-class LZ4FrameCompression extends AbstractCompression {
+public class BrotliCompression extends AbstractCompression {
 
-    public static final LZ4FrameCompression INSTANCE = new LZ4FrameCompression();
+    static {
+        BrotliLibraryLoader.loadBrotli();
+    }
 
-    private static final LZ4FrameOutputStream.BLOCKSIZE DEFAULT_BLOCK_SIZE = LZ4FrameOutputStream.BLOCKSIZE.SIZE_64KB;
+    public static final BrotliCompression INSTANCE = new BrotliCompression();
 
-    // TODO private static final LZ4Compressor COMP = LZ4Factory.fastestInstance().fastCompressor(); // requires https://github.com/lz4/lz4-java/pull/113
-    private static final LZ4SafeDecompressor DECOMP = LZ4Factory.fastestInstance().safeDecompressor();
-    private static final XXHash32 CHECKSUM = XXHashFactory.fastestInstance().hash32();
+    private final BrotliDeCompressor decompressor;
+
+    public BrotliCompression() {
+        decompressor = new BrotliDeCompressor();
+    }
 
     @SuppressWarnings("resource")
     public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
@@ -48,13 +54,14 @@ class LZ4FrameCompression extends AbstractCompression {
         Args.notNull("output", output);
 
         if (!closeOutput) {
+            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
             output = new DelegatingOutputStream(output, true);
         }
 
         try {
             final OutputStream compOS = createCompressingOutputStream(output);
             compOS.write(uncompressed);
-            compOS.close(); // writes end-mark
+            compOS.flush();
         } finally {
             if (closeOutput) {
                 IOUtils.closeQuietly(output);
@@ -63,20 +70,21 @@ class LZ4FrameCompression extends AbstractCompression {
     }
 
     @SuppressWarnings("resource")
-    public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
+    public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
+        Args.notNull("input", input);
         Args.notNull("output", output);
 
         if (!closeOutput) {
+            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
             output = new DelegatingOutputStream(output, true);
         }
 
         try {
             final OutputStream compOS = createCompressingOutputStream(output);
-            IOUtils.copyLarge(uncompressed, compOS);
-            compOS.close(); // writes end-mark
+            IOUtils.copyLarge(input, compOS);
+            compOS.flush();
         } finally {
-            IOUtils.closeQuietly(uncompressed);
+            IOUtils.closeQuietly(input);
             if (closeOutput) {
                 IOUtils.closeQuietly(output);
             }
@@ -84,17 +92,30 @@ class LZ4FrameCompression extends AbstractCompression {
     }
 
     public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
-        return new LZ4FrameOutputStream(output, DEFAULT_BLOCK_SIZE, -1L, /* TODO: COMP, CHECKSUM, */
-            LZ4FrameOutputStream.FLG.Bits.BLOCK_INDEPENDENCE);
+        return new BrotliOutputStream(output);
     }
 
     public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
-        return new LZ4FrameInputStream(compressed, DECOMP, CHECKSUM);
+        return new BrotliInputStream(compressed);
+    }
+
+    @Override
+    public int decompress(final byte[] compressed, final byte[] output) throws IOException {
+        Args.notNull("compressed", compressed);
+        Args.notNull("output", output);
+
+        try {
+            return decompressor.deCompress(compressed, output);
+        } catch (final BrotliException ex) {
+            if (ex.getMessage().contains("Error code: -14"))
+                throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
+            throw new IOExceptionWithCause(ex);
+        }
     }
 
     @Override
     public String toString() {
-        return Strings.toString(this, new Object[0]);
+        return Strings.toString(this);
     }
 
 }
