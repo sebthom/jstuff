@@ -18,20 +18,18 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
-import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
@@ -133,21 +131,12 @@ public abstract class NetUtils {
         }
     }
 
-    /**
-     * TODO should return all the bound IP addresses, but returns currently all local IP addresses
-     */
-    public static List<String> getLocalIPAddresses() {
+    public static List<InetAddress> getLocalInetAddresses() {
         try {
-            final ArrayList<String> ipAddresses = new ArrayList<String>();
-            for (final NetworkInterface nic : Enumerations.toIterable(NetworkInterface.getNetworkInterfaces())) {
-                for (final InetAddress ia : Enumerations.toIterable(nic.getInetAddresses()))
-                    if (!ia.isLoopbackAddress()) {
-                        ipAddresses.add(ia.getHostAddress());
-                    }
-            }
-            return ipAddresses;
-        } catch (final SocketException ex) {
-            throw new RuntimeException(ex);
+            return Arrays.asList(InetAddress.getAllByName(InetAddress.getLocalHost().getCanonicalHostName()));
+        } catch (final UnknownHostException ex) {
+            LOG.warn(ex, "Cannot determine local IP Addresses.");
+            return Collections.emptyList();
         }
     }
 
