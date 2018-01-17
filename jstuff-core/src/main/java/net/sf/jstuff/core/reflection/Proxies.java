@@ -21,16 +21,6 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Proxies {
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    public static <T> T create(final Class<T> interfaceType, final ClassLoader loader, final InvocationHandler handler) {
-        return (T) create(loader, handler, interfaceType);
-    }
-
-    @Deprecated
-    public static <T> T create(final Class<T> interfaceType, final InvocationHandler handler) {
-        return create(handler, interfaceType);
-    }
 
     @SuppressWarnings("unchecked")
     public static <T> T create(final ClassLoader loader, final InvocationHandler handler, final Class<?>... interfaceTypes) {
