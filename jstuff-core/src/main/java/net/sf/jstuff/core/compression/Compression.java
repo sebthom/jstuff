@@ -54,7 +54,7 @@ public interface Compression {
     void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException;
 
     /**
-     * @param input will be closed
+     * @param compressed will be closed
      * @param closeOutput if output shall be closed, if false output may also not be flushed automatically
      */
     void decompress(InputStream compressed, OutputStream output, boolean closeOutput) throws IOException;
