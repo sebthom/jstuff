@@ -32,6 +32,8 @@ public final class LoggerConfig {
 
     private static boolean isPreferSLF4J = false;
 
+    static boolean isSanitizeStrackTracesEnabled = true;
+
     private static boolean isUseSFL4J = false;
 
     /**
@@ -41,7 +43,7 @@ public final class LoggerConfig {
      */
     static boolean isDebugMessagePrefixEnabled = false;
 
-    static boolean isCompactExceptionLoggingDisabled = false;
+    static boolean isCompactExceptionLoggingEnabled = true;
 
     static {
         LinkageError slf4jLinkageError = null;
@@ -54,8 +56,9 @@ public final class LoggerConfig {
         isSLF4JAvailable = slf4jLinkageError == null;
 
         LOG = create(LoggerConfig.class.getName());
-        if (slf4jLinkageError != null)
+        if (slf4jLinkageError != null) {
             LOG.debug(slf4jLinkageError);
+        }
 
         setPreferSLF4J("true".equals(System.getProperty(Logger.class.getName() + ".preferSLF4J", "true")));
     }
@@ -71,7 +74,7 @@ public final class LoggerConfig {
     }
 
     public static boolean isCompactExceptionLoggingEnabled() {
-        return !isCompactExceptionLoggingDisabled;
+        return isCompactExceptionLoggingEnabled;
     }
 
     public static boolean isDebugMessagePrefixEnabled() {
@@ -82,12 +85,20 @@ public final class LoggerConfig {
         return isPreferSLF4J;
     }
 
+    public static boolean isSanitizeStrackTracesEnabled() {
+        return isSanitizeStrackTracesEnabled;
+    }
+
     public static void setCompactExceptionLogging(final boolean enabled) {
-        isCompactExceptionLoggingDisabled = !enabled;
+        isCompactExceptionLoggingEnabled = enabled;
     }
 
     public static void setDebugMessagePrefixEnabled(final boolean enabled) {
         LoggerConfig.isDebugMessagePrefixEnabled = enabled;
+    }
+
+    public static void setSanitizeStackTraces(final boolean enabled) {
+        isSanitizeStrackTracesEnabled = enabled;
     }
 
     public static synchronized void setPreferSLF4J(final boolean value) {
@@ -104,10 +115,11 @@ public final class LoggerConfig {
                 logger.setDelegate(isUseSFL4J ? new SLF4JLogger(name) : new JULLogger(name));
             }
 
-            if (isUseSFL4J)
+            if (isUseSFL4J) {
                 LOG.debug("Using SLF4J as logging infrastructure.");
-            else
+            } else {
                 LOG.debug("Using java.util.logging as logging infrastructure.");
+            }
         }
     }
 
