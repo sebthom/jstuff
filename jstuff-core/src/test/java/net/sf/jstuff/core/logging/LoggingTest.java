@@ -60,12 +60,14 @@ public class LoggingTest extends TestCase {
             sb.append(record.getLevel().getName().charAt(0)).append(" ");
             {
                 sb.append("[");
-                if (record.getSourceClassName() != null)
+                if (record.getSourceClassName() != null) {
                     sb.append(record.getSourceClassName());
-                else
+                } else {
                     sb.append(record.getLoggerName());
-                if (record.getSourceMethodName() != null)
+                }
+                if (record.getSourceMethodName() != null) {
                     sb.append("#").append(record.getSourceMethodName()).append("()");
+                }
                 sb.append("] ");
             }
             sb.append(formatMessage(record));
@@ -78,65 +80,6 @@ public class LoggingTest extends TestCase {
             return sb.toString();
         }
     };
-
-    public void atest1LoggingJUL() {
-        LoggerConfig.setPreferSLF4J(false);
-        LoggerConfig.setCompactExceptionLogging(true);
-        LoggerConfig.setDebugMessagePrefixEnabled(true);
-
-        assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof JULLogger);
-
-        genericLoggerTest();
-    }
-
-    public void atestCreateLogged() {
-        LoggerConfig.setPreferSLF4J(false);
-        LoggerConfig.setCompactExceptionLogging(false);
-        LoggerConfig.setDebugMessagePrefixEnabled(true);
-
-        for (final Handler handler : ROOT_LOGGER.getHandlers())
-            handler.setLevel(java.util.logging.Level.ALL);
-        java.util.logging.Logger.getLogger(Entity.class.getName()).setLevel(java.util.logging.Level.FINEST);
-        final int[] count = new int[1];
-        final Handler h = new Handler() {
-            @Override
-            public void close() throws SecurityException {
-            }
-
-            @Override
-            public void flush() {
-            }
-
-            @Override
-            public void publish(final LogRecord record) {
-                count[0]++;
-                switch (count[0]) {
-                    case 1:
-                        assertEquals("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])", record.getMessage());
-                        break;
-                    case 2:
-                        assertTrue(record.getMessage().startsWith("methodA():EXIT  << [foo, [bar]] "));
-                        break;
-                    case 3:
-                        assertEquals("methodB():ENTRY >> ()", record.getMessage());
-                        break;
-                    case 4:
-                        assertTrue(record.getMessage().startsWith("methodB():EXIT  << *void* "));
-                        break;
-                }
-            }
-        };
-        ROOT_LOGGER.addHandler(h);
-        try {
-            final Entity entity = new Entity();
-            final InterfaceA wrapped = Logger.createLogged(entity, InterfaceA.class, InterfaceB.class);
-            wrapped.methodA(1, "foo", "bar");
-
-            ((InterfaceB) wrapped).methodB();
-        } finally {
-            ROOT_LOGGER.removeHandler(h);
-        }
-    }
 
     private void coolMethod(final String label, final int number, final boolean flag, final Class<?> clazz, final Object obj) {
         LOG.entry();
@@ -165,8 +108,9 @@ public class LoggingTest extends TestCase {
         assertNotNull(LOG);
         assertEquals(LoggingTest.class.getName(), LOG.getName());
 
-        for (final Handler handler : ROOT_LOGGER.getHandlers())
+        for (final Handler handler : ROOT_LOGGER.getHandlers()) {
             handler.setLevel(java.util.logging.Level.ALL);
+        }
 
         final int[] count = { 0 };
         final Handler h = new Handler() {
@@ -234,12 +178,23 @@ public class LoggingTest extends TestCase {
         ROOT_LOGGER.setLevel(java.util.logging.Level.INFO);
         for (final Handler handler : ROOT_LOGGER.getHandlers()) {
             handler.setLevel(java.util.logging.Level.INFO);
-            if (handler instanceof ConsoleHandler)
+            if (handler instanceof ConsoleHandler) {
                 ((ConsoleHandler) handler).setFormatter(ROOT_LOGGER_FORMATTER);
+            }
         }
 
         java.util.logging.Logger.getLogger(LoggingTest.class.getName()).setLevel(null);
         Threads.sleep(50);
+    }
+
+    public void test1LoggingJUL() {
+        LoggerConfig.setPreferSLF4J(false);
+        LoggerConfig.setCompactExceptionLogging(true);
+        LoggerConfig.setDebugMessagePrefixEnabled(true);
+
+        assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof JULLogger);
+
+        genericLoggerTest();
     }
 
     public void test2LoggingSLF4J() {
@@ -252,5 +207,55 @@ public class LoggingTest extends TestCase {
         assertTrue(((DelegatingLogger) LOG).getDelegate() instanceof SLF4JLogger);
 
         genericLoggerTest();
+    }
+
+    public void testCreateLogged() {
+        LoggerConfig.setPreferSLF4J(false);
+        LoggerConfig.setCompactExceptionLogging(false);
+        LoggerConfig.setDebugMessagePrefixEnabled(true);
+
+        for (final Handler handler : ROOT_LOGGER.getHandlers()) {
+            handler.setLevel(java.util.logging.Level.ALL);
+        }
+        java.util.logging.Logger.getLogger(Entity.class.getName()).setLevel(java.util.logging.Level.FINEST);
+        final int[] count = new int[1];
+        final Handler h = new Handler() {
+            @Override
+            public void close() throws SecurityException {
+            }
+
+            @Override
+            public void flush() {
+            }
+
+            @Override
+            public void publish(final LogRecord record) {
+                count[0]++;
+                switch (count[0]) {
+                    case 1:
+                        assertEquals("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])", record.getMessage());
+                        break;
+                    case 2:
+                        assertTrue(record.getMessage().startsWith("methodA():EXIT  << [foo, [bar]] "));
+                        break;
+                    case 3:
+                        assertEquals("methodB():ENTRY >> ()", record.getMessage());
+                        break;
+                    case 4:
+                        assertTrue(record.getMessage().startsWith("methodB():EXIT  << *void* "));
+                        break;
+                }
+            }
+        };
+        ROOT_LOGGER.addHandler(h);
+        try {
+            final Entity entity = new Entity();
+            final InterfaceA wrapped = Logger.createLogged(entity, InterfaceA.class, InterfaceB.class);
+            wrapped.methodA(1, "foo", "bar");
+
+            ((InterfaceB) wrapped).methodB();
+        } finally {
+            ROOT_LOGGER.removeHandler(h);
+        }
     }
 }
