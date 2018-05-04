@@ -15,11 +15,11 @@ package net.sf.jstuff.core.logging;
 import static org.slf4j.spi.LocationAwareLogger.*;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
@@ -28,6 +28,9 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 final class SLF4JLogger extends Logger {
+
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(SLF4JLogger.class);
+
     private final org.slf4j.Logger logger;
     private final LocationAwareLogger loggerEx;
     private final boolean isLocationAware;
@@ -45,42 +48,54 @@ final class SLF4JLogger extends Logger {
         }
     }
 
-    /**
-     * @param isLogExactSourceLocation if true the source location of the current log message will be determined and logged (should be only done
-     *            if logger is at least in DEBUG because it is a more expensive operation)
-     */
-    private void _log(final int level, final String message, final Throwable ex, final boolean isLogExactSourceLocation) {
+    private void _log(final int level, final String message, final Throwable ex) {
+        if (ex == null) {
+            _log(level, message);
+            return;
+        }
+
+        if (LoggerConfig.isSanitizeStrackTracesEnabled) {
+            sanitizeStackTraces(ex);
+        }
+
         String effectiveMessage;
         final Throwable effectiveException;
-        if (isLogExactSourceLocation) {
-            effectiveMessage = message;
-            if (effectiveMessage == null && ex != null) {
-                effectiveMessage = "Catched ";
-            }
-
-            /*
-             * if the current logger's level is DEBUG or TRACE we add the logging method name + source location to all log messages
-             */
+        if (logger.isDebugEnabled()) {
+            effectiveMessage = message == null || message.length() == 0 ? "Catched " : message;
+            effectiveException = ex;
             if (LoggerConfig.isDebugMessagePrefixEnabled) {
                 final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
-
-                if (caller == null) // should never happen
-                    throw new IllegalStateException("Unexpected stacktrace " + Arrays.toString(Thread.currentThread().getStackTrace()));
-
-                final String methodName = caller.getMethodName();
-                effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
+                if (caller == null) { // should never happen
+                    LOG.error("Unexpected stacktrace " + Strings.join(Thread.currentThread().getStackTrace(), "\n"));
+                } else {
+                    effectiveMessage = caller.getMethodName() + "():" + caller.getLineNumber() + " " + effectiveMessage;
+                }
             }
-            effectiveException = ex;
         } else {
-            if (ex == null) {
-                effectiveMessage = message;
-            } else {
+            if (LoggerConfig.isCompactExceptionLoggingEnabled) {
                 final StackTraceElement[] st = ex.getStackTrace();
-                effectiveMessage = (message == null ? "" : message + " reason: ") + ex.getClass().getName() + ": " + ex.getMessage() + (st != null
-                        && st.length > 0 ? "\n\tat " + st[0] + "\n\t[StackTrace truncated - set log level of " + getName() + " to DEBUG for full details]"
-                                : "");
+                final StringBuilder sb = new StringBuilder();
+                if (message == null || message.length() == 0) {
+                    sb.append("Catched ");
+                } else {
+                    sb.append(message).append(" reason: ");
+                }
+                sb.append(ex.getClass().getName()).append(": ").append(ex.getMessage()).append("\n");
+                if (st != null && st.length > 0) {
+                    sb.append("\tat ").append(st[0]).append("\n");
+                    if (st.length > 1) {
+                        sb.append("\tat ").append(st[1]).append("\n");
+                    }
+                    if (st.length > 2) {
+                        sb.append("\t[StackTrace truncated - set log level of ").append(loggerName).append(" to FINE for full details]");
+                    }
+                }
+                effectiveMessage = sb.toString();
+                effectiveException = null;
+            } else {
+                effectiveMessage = message == null || message.length() == 0 ? "Catched " : message;
+                effectiveException = ex;
             }
-            effectiveException = null;
         }
 
         if (isLocationAware) {
@@ -106,12 +121,50 @@ final class SLF4JLogger extends Logger {
         }
     }
 
+    private void _log(final int level, final String message) {
+        final String effectiveMessage;
+        if (LoggerConfig.isDebugMessagePrefixEnabled && logger.isDebugEnabled()) {
+            final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
+            if (caller == null) { // should never happen
+                LOG.error("Unexpected stacktrace " + Strings.join(Thread.currentThread().getStackTrace(), "\n"));
+                effectiveMessage = message;
+            } else {
+                final String methodName = caller.getMethodName();
+                effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + message;
+            }
+        } else {
+            effectiveMessage = message;
+        }
+
+        if (isLocationAware) {
+            loggerEx.log(null, DelegatingLogger.FQCN, level, effectiveMessage, null, null);
+        } else {
+            switch (level) {
+                case TRACE_INT:
+                    logger.trace(effectiveMessage);
+                    break;
+                case DEBUG_INT:
+                    logger.debug(effectiveMessage);
+                    break;
+                case INFO_INT:
+                    logger.info(effectiveMessage);
+                    break;
+                case WARN_INT:
+                    logger.info(effectiveMessage);
+                    break;
+                case ERROR_INT:
+                    logger.info(effectiveMessage);
+                    break;
+            }
+        }
+    }
+
     @Override
     public void debug(final String msg) {
         if (!logger.isDebugEnabled())
             return;
 
-        _log(DEBUG_INT, msg, null, true);
+        _log(DEBUG_INT, msg);
     }
 
     @Override
@@ -119,7 +172,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isDebugEnabled())
             return;
 
-        _log(DEBUG_INT, String.format(messageTemplate, arg), null, true);
+        _log(DEBUG_INT, String.format(messageTemplate, arg));
     }
 
     @Override
@@ -127,7 +180,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isDebugEnabled())
             return;
 
-        _log(DEBUG_INT, String.format(messageTemplate, arg1, arg2), null, true);
+        _log(DEBUG_INT, String.format(messageTemplate, arg1, arg2));
     }
 
     @Override
@@ -135,7 +188,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isDebugEnabled())
             return;
 
-        _log(DEBUG_INT, String.format(messageTemplate, arg1, arg2, arg3), null, true);
+        _log(DEBUG_INT, String.format(messageTemplate, arg1, arg2, arg3));
     }
 
     @Override
@@ -143,7 +196,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isDebugEnabled())
             return;
 
-        _log(DEBUG_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4), null, true);
+        _log(DEBUG_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4));
     }
 
     @Override
@@ -151,7 +204,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isDebugEnabled())
             return;
 
-        _log(DEBUG_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), null, true);
+        _log(DEBUG_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5));
     }
 
     @Override
@@ -159,7 +212,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isDebugEnabled())
             return;
 
-        _log(DEBUG_INT, "Unexpected exception occured: " + ex.getMessage(), ex, true);
+        _log(DEBUG_INT, "Unexpected exception occured: " + ex.getMessage(), ex);
     }
 
     @Override
@@ -167,7 +220,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isDebugEnabled())
             return;
 
-        _log(DEBUG_INT, msg, ex, true);
+        _log(DEBUG_INT, msg, ex);
     }
 
     @Override
@@ -175,7 +228,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isDebugEnabled())
             return;
 
-        _log(DEBUG_INT, String.format(messageTemplate, args), ex, true);
+        _log(DEBUG_INT, String.format(messageTemplate, args), ex);
     }
 
     @Override
@@ -183,8 +236,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(ERROR_INT, msg, null, isLogExactSourceLocation);
+        _log(ERROR_INT, msg);
     }
 
     @Override
@@ -192,8 +244,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(ERROR_INT, String.format(messageTemplate, arg), null, isLogExactSourceLocation);
+        _log(ERROR_INT, String.format(messageTemplate, arg));
     }
 
     @Override
@@ -201,8 +252,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(ERROR_INT, String.format(messageTemplate, arg1, arg2), null, isLogExactSourceLocation);
+        _log(ERROR_INT, String.format(messageTemplate, arg1, arg2));
     }
 
     @Override
@@ -210,8 +260,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(ERROR_INT, String.format(messageTemplate, arg1, arg2, arg3), null, isLogExactSourceLocation);
+        _log(ERROR_INT, String.format(messageTemplate, arg1, arg2, arg3));
     }
 
     @Override
@@ -219,8 +268,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(ERROR_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4), null, isLogExactSourceLocation);
+        _log(ERROR_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4));
     }
 
     @Override
@@ -228,8 +276,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(ERROR_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), null, isLogExactSourceLocation);
+        _log(ERROR_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5));
     }
 
     @Override
@@ -237,8 +284,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(ERROR_INT, null, ex, isLogExactSourceLocation);
+        _log(ERROR_INT, null, ex);
     }
 
     @Override
@@ -246,8 +292,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(ERROR_INT, msg, ex, isLogExactSourceLocation);
+        _log(ERROR_INT, msg, ex);
     }
 
     @Override
@@ -255,8 +300,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(ERROR_INT, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
+        _log(ERROR_INT, String.format(messageTemplate, args), ex);
     }
 
     @Override
@@ -264,7 +308,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        _log(ERROR_INT, null, ex, true);
+        _log(ERROR_INT, null, ex);
     }
 
     @Override
@@ -272,7 +316,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        _log(ERROR_INT, msg, ex, true);
+        _log(ERROR_INT, msg, ex);
     }
 
     @Override
@@ -280,18 +324,18 @@ final class SLF4JLogger extends Logger {
         if (!logger.isErrorEnabled())
             return;
 
-        _log(ERROR_INT, String.format(messageTemplate, args), ex, true);
+        _log(ERROR_INT, String.format(messageTemplate, args), ex);
     }
 
     /**
-     * @return the underlying java.util.Logger
+     * @return the underlying org.slf4j.Logger
      */
     org.slf4j.Logger getLogger() {
         return logger;
     }
 
     @Override
-    public String getName() {
+    public final String getName() {
         return loggerName;
     }
 
@@ -300,8 +344,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(INFO_INT, msg, null, isLogExactSourceLocation);
+        _log(INFO_INT, msg);
     }
 
     @Override
@@ -309,8 +352,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(INFO_INT, String.format(messageTemplate, arg), null, isLogExactSourceLocation);
+        _log(INFO_INT, String.format(messageTemplate, arg));
     }
 
     @Override
@@ -318,8 +360,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(INFO_INT, String.format(messageTemplate, arg1, arg2), null, isLogExactSourceLocation);
+        _log(INFO_INT, String.format(messageTemplate, arg1, arg2));
     }
 
     @Override
@@ -327,8 +368,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(INFO_INT, String.format(messageTemplate, arg1, arg2, arg3), null, isLogExactSourceLocation);
+        _log(INFO_INT, String.format(messageTemplate, arg1, arg2, arg3));
     }
 
     @Override
@@ -336,8 +376,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(INFO_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4), null, isLogExactSourceLocation);
+        _log(INFO_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4));
     }
 
     @Override
@@ -345,8 +384,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(INFO_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), null, isLogExactSourceLocation);
+        _log(INFO_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5));
     }
 
     @Override
@@ -354,8 +392,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(INFO_INT, null, ex, isLogExactSourceLocation);
+        _log(INFO_INT, null, ex);
     }
 
     @Override
@@ -363,8 +400,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(INFO_INT, msg, ex, isLogExactSourceLocation);
+        _log(INFO_INT, msg, ex);
     }
 
     @Override
@@ -372,8 +408,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(INFO_INT, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
+        _log(INFO_INT, String.format(messageTemplate, args), ex);
     }
 
     @Override
@@ -383,8 +418,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(INFO_INT, newInstance + " v" + Types.getVersion(newInstance.getClass()) + " instantiated.", null, isLogExactSourceLocation);
+        _log(INFO_INT, newInstance + " v" + Types.getVersion(newInstance.getClass()) + " instantiated.");
     }
 
     @Override
@@ -425,7 +459,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, msg, null, true);
+        _log(TRACE_INT, msg);
     }
 
     @Override
@@ -433,7 +467,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, String.format(messageTemplate, arg), null, true);
+        _log(TRACE_INT, String.format(messageTemplate, arg));
     }
 
     @Override
@@ -441,7 +475,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, String.format(messageTemplate, arg1, arg2), null, true);
+        _log(TRACE_INT, String.format(messageTemplate, arg1, arg2));
     }
 
     @Override
@@ -449,7 +483,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, String.format(messageTemplate, arg1, arg2, arg3), null, true);
+        _log(TRACE_INT, String.format(messageTemplate, arg1, arg2, arg3));
     }
 
     @Override
@@ -457,7 +491,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4), null, true);
+        _log(TRACE_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4));
     }
 
     @Override
@@ -465,7 +499,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), null, true);
+        _log(TRACE_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5));
     }
 
     @Override
@@ -473,7 +507,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, "Unexpected exception occured: " + ex.getMessage(), ex, true);
+        _log(TRACE_INT, "Unexpected exception occured: " + ex.getMessage(), ex);
     }
 
     @Override
@@ -481,7 +515,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, msg, ex, true);
+        _log(TRACE_INT, msg, ex);
     }
 
     @Override
@@ -489,7 +523,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, String.format(messageTemplate, args), ex, true);
+        _log(TRACE_INT, String.format(messageTemplate, args), ex);
     }
 
     @Override
@@ -497,7 +531,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, formatTraceEntry(), null, true);
+        _log(TRACE_INT, formatTraceEntry());
     }
 
     @Override
@@ -505,7 +539,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, formatTraceEntry(arg1), null, true);
+        _log(TRACE_INT, formatTraceEntry(arg1));
     }
 
     @Override
@@ -513,7 +547,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, formatTraceEntry(arg1, arg2), null, true);
+        _log(TRACE_INT, formatTraceEntry(arg1, arg2));
     }
 
     @Override
@@ -521,7 +555,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, formatTraceEntry(arg1, arg2, arg3), null, true);
+        _log(TRACE_INT, formatTraceEntry(arg1, arg2, arg3));
     }
 
     @Override
@@ -529,7 +563,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, formatTraceEntry(arg1, arg2, arg3, arg4), null, true);
+        _log(TRACE_INT, formatTraceEntry(arg1, arg2, arg3, arg4));
     }
 
     @Override
@@ -537,7 +571,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, formatTraceEntry(arg1, arg2, arg3, arg4, arg5), null, true);
+        _log(TRACE_INT, formatTraceEntry(arg1, arg2, arg3, arg4, arg5));
     }
 
     @Override
@@ -545,7 +579,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return;
 
-        _log(TRACE_INT, formatTraceExit(), null, true);
+        _log(TRACE_INT, formatTraceExit());
     }
 
     @Override
@@ -553,7 +587,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isTraceEnabled())
             return returnValue;
 
-        _log(TRACE_INT, formatTraceExit(returnValue), null, true);
+        _log(TRACE_INT, formatTraceExit(returnValue));
         return returnValue;
     }
 
@@ -562,8 +596,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isWarnEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(WARN_INT, msg, null, isLogExactSourceLocation);
+        _log(WARN_INT, msg);
     }
 
     @Override
@@ -571,8 +604,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isWarnEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(WARN_INT, String.format(messageTemplate, arg), null, isLogExactSourceLocation);
+        _log(WARN_INT, String.format(messageTemplate, arg));
     }
 
     @Override
@@ -580,8 +612,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isWarnEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(WARN_INT, String.format(messageTemplate, arg1, arg2), null, isLogExactSourceLocation);
+        _log(WARN_INT, String.format(messageTemplate, arg1, arg2));
     }
 
     @Override
@@ -589,8 +620,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isWarnEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(WARN_INT, String.format(messageTemplate, arg1, arg2, arg3), null, isLogExactSourceLocation);
+        _log(WARN_INT, String.format(messageTemplate, arg1, arg2, arg3));
     }
 
     @Override
@@ -598,8 +628,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isWarnEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(WARN_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4), null, isLogExactSourceLocation);
+        _log(WARN_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4));
     }
 
     @Override
@@ -607,8 +636,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isWarnEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled();
-        _log(WARN_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), null, isLogExactSourceLocation);
+        _log(WARN_INT, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5));
     }
 
     @Override
@@ -616,8 +644,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isWarnEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(WARN_INT, null, ex, isLogExactSourceLocation);
+        _log(WARN_INT, null, ex);
     }
 
     @Override
@@ -625,8 +652,7 @@ final class SLF4JLogger extends Logger {
         if (!logger.isWarnEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(WARN_INT, msg, ex, isLogExactSourceLocation);
+        _log(WARN_INT, msg, ex);
     }
 
     @Override
@@ -634,7 +660,6 @@ final class SLF4JLogger extends Logger {
         if (!logger.isWarnEnabled())
             return;
 
-        final boolean isLogExactSourceLocation = logger.isDebugEnabled() || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(WARN_INT, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
+        _log(WARN_INT, String.format(messageTemplate, args), ex);
     }
 }

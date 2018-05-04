@@ -13,9 +13,9 @@
 package net.sf.jstuff.core.logging;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.logging.Level;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
@@ -24,6 +24,9 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 final class JULLogger extends Logger {
+
+    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(JULLogger.class.getName());
+
     private final java.util.logging.Logger logger;
     private final String loggerName;
 
@@ -39,47 +42,88 @@ final class JULLogger extends Logger {
     }
 
     /**
-     * @param isLogExactSourceLocation if true the source location of the current log message will be determined and logged (should be only done
+     * @param isDebugLevelEnabled if true the source location of the current log message will be determined and logged (should be only done
      *            if logger is at least in DEBUG because it is a more expensive operation)
      */
-    private void _log(final Level level, final String message, final Throwable ex, final boolean isLogExactSourceLocation) {
-        final String sourceClassName;
-        final String methodName;
+    private void _log(final Level level, final String message, final Throwable ex, final boolean isDebugLevelEnabled) {
+        if (ex == null) {
+            _log(level, message, isDebugLevelEnabled);
+            return;
+        }
+
+        if (LoggerConfig.isSanitizeStrackTracesEnabled) {
+            sanitizeStackTraces(ex);
+        }
+
         String effectiveMessage;
-        final Throwable effectiveException;
-        if (isLogExactSourceLocation) {
-            effectiveMessage = message;
-            if (effectiveMessage == null && ex != null) {
-                effectiveMessage = "Catched ";
+        if (isDebugLevelEnabled) {
+            effectiveMessage = message == null || message.length() == 0 ? "Catched " : message;
+
+            final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
+            if (caller == null) { // should never happen
+                logger.log(level, message);
+                LOG.severe("Unexpected stacktrace " + Strings.join(Thread.currentThread().getStackTrace(), "\n"));
+                return;
+            }
+            final String sourceClassName = caller.getClassName();
+            final String sourceMethodName = caller.getMethodName();
+
+            if (LoggerConfig.isDebugMessagePrefixEnabled) {
+                effectiveMessage = sourceMethodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
+            }
+            logger.logp(level, sourceClassName, sourceMethodName, effectiveMessage, ex);
+        } else {
+            final Throwable effectiveException;
+            if (LoggerConfig.isCompactExceptionLoggingEnabled) {
+                final StackTraceElement[] st = ex.getStackTrace();
+                final StringBuilder sb = new StringBuilder();
+                if (message == null || message.length() == 0) {
+                    sb.append("Catched ");
+                } else {
+                    sb.append(message).append(" reason: ");
+                }
+                sb.append(ex.getClass().getName()).append(": ").append(ex.getMessage()).append("\n");
+                if (st != null && st.length > 0) {
+                    sb.append("\tat ").append(st[0]).append("\n");
+                    if (st.length > 1) {
+                        sb.append("\tat ").append(st[1]).append("\n");
+                    }
+                    if (st.length > 2) {
+                        sb.append("\t[StackTrace truncated - set log level of ").append(loggerName).append(" to FINE for full details]");
+                    }
+                }
+                effectiveMessage = sb.toString();
+                effectiveException = null;
+            } else {
+                effectiveMessage = message == null || message.length() == 0 ? "Catched " : message;
+                effectiveException = ex;
             }
 
-            /*
-             * if the current logger's level is DEBUG or TRACE we create full-blown log records for all levels
-             */
+            logger.log(level, effectiveMessage, effectiveException);
+        }
+    }
+
+    /**
+     * @param isDebugEnabled if true the source location of the current log message will be determined and logged (should be only done
+     *            if logger is at least in DEBUG because it is a more expensive operation)
+     */
+    private void _log(final Level level, final String message, final boolean isDebugEnabled) {
+        if (isDebugEnabled) {
             final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
-
-            if (caller == null) // should never happen
-                throw new IllegalStateException("Unexpected stacktrace " + Arrays.toString(Thread.currentThread().getStackTrace()));
-
-            methodName = caller.getMethodName();
+            if (caller == null) { // should never happen
+                logger.log(level, message);
+                LOG.severe("Unexpected stacktrace " + Strings.join(Thread.currentThread().getStackTrace(), "\n"));
+                return;
+            }
+            final String methodName = caller.getMethodName();
+            String effectiveMessage = message;
             if (LoggerConfig.isDebugMessagePrefixEnabled) {
                 effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
             }
-            sourceClassName = caller.getClassName();
-            effectiveException = ex;
+            logger.logp(level, caller.getClassName(), methodName, effectiveMessage);
         } else {
-            if (ex == null) {
-                effectiveMessage = message;
-            } else {
-                final StackTraceElement[] st = ex.getStackTrace();
-                effectiveMessage = (message == null ? "" : message + " reason: ") + ex.getClass().getName() + ": " + ex.getMessage() + (st != null
-                        && st.length > 0 ? "\n\tat " + st[0] + "\n\t[StackTrace truncated - set log level of " + getName() + " to FINE for full details]" : "");
-            }
-            sourceClassName = loggerName;
-            methodName = null;
-            effectiveException = null;
+            logger.log(level, message);
         }
-        logger.logp(level, sourceClassName, methodName, effectiveMessage, effectiveException);
     }
 
     @Override
@@ -88,7 +132,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_DEBUG)
             return;
 
-        _log(Level.FINE, msg, null, true);
+        _log(Level.FINE, msg, true);
     }
 
     @Override
@@ -97,7 +141,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_DEBUG)
             return;
 
-        _log(Level.FINE, String.format(messageTemplate, arg), null, true);
+        _log(Level.FINE, String.format(messageTemplate, arg), true);
     }
 
     @Override
@@ -106,7 +150,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_DEBUG)
             return;
 
-        _log(Level.FINE, String.format(messageTemplate, arg1, arg2), null, true);
+        _log(Level.FINE, String.format(messageTemplate, arg1, arg2), true);
     }
 
     @Override
@@ -115,7 +159,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_DEBUG)
             return;
 
-        _log(Level.FINE, String.format(messageTemplate, arg1, arg2, arg3), null, true);
+        _log(Level.FINE, String.format(messageTemplate, arg1, arg2, arg3), true);
     }
 
     @Override
@@ -124,7 +168,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_DEBUG)
             return;
 
-        _log(Level.FINE, String.format(messageTemplate, arg1, arg2, arg3, arg4), null, true);
+        _log(Level.FINE, String.format(messageTemplate, arg1, arg2, arg3, arg4), true);
     }
 
     @Override
@@ -133,7 +177,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_DEBUG)
             return;
 
-        _log(Level.FINE, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), null, true);
+        _log(Level.FINE, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), true);
     }
 
     @Override
@@ -169,8 +213,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_ERROR)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.SEVERE, msg, null, isLogExactSourceLocation);
+        _log(Level.SEVERE, msg, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -179,8 +222,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_ERROR)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.SEVERE, String.format(messageTemplate, arg), null, isLogExactSourceLocation);
+        _log(Level.SEVERE, String.format(messageTemplate, arg), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -189,8 +231,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_ERROR)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.SEVERE, String.format(messageTemplate, arg1, arg2), null, isLogExactSourceLocation);
+        _log(Level.SEVERE, String.format(messageTemplate, arg1, arg2), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -199,8 +240,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_ERROR)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.SEVERE, String.format(messageTemplate, arg1, arg2, arg3), null, isLogExactSourceLocation);
+        _log(Level.SEVERE, String.format(messageTemplate, arg1, arg2, arg3), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -209,8 +249,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_ERROR)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.SEVERE, String.format(messageTemplate, arg1, arg2, arg3, arg4), null, isLogExactSourceLocation);
+        _log(Level.SEVERE, String.format(messageTemplate, arg1, arg2, arg3, arg4), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -219,8 +258,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_ERROR)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.SEVERE, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), null, isLogExactSourceLocation);
+        _log(Level.SEVERE, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -229,8 +267,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_ERROR)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(Level.SEVERE, null, ex, isLogExactSourceLocation);
+        _log(Level.SEVERE, null, ex, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -239,8 +276,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_ERROR)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(Level.SEVERE, msg, ex, isLogExactSourceLocation);
+        _log(Level.SEVERE, msg, ex, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -249,8 +285,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_ERROR)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(Level.SEVERE, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
+        _log(Level.SEVERE, String.format(messageTemplate, args), ex, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -301,7 +336,7 @@ final class JULLogger extends Logger {
     }
 
     @Override
-    public String getName() {
+    public final String getName() {
         return loggerName;
     }
 
@@ -311,8 +346,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_INFO)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.INFO, msg, null, isLogExactSourceLocation);
+        _log(Level.INFO, msg, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -321,8 +355,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_INFO)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.INFO, String.format(messageTemplate, arg), null, isLogExactSourceLocation);
+        _log(Level.INFO, String.format(messageTemplate, arg), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -331,8 +364,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_INFO)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.INFO, String.format(messageTemplate, arg1, arg2), null, isLogExactSourceLocation);
+        _log(Level.INFO, String.format(messageTemplate, arg1, arg2), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -341,8 +373,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_INFO)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.INFO, String.format(messageTemplate, arg1, arg2, arg3), null, isLogExactSourceLocation);
+        _log(Level.INFO, String.format(messageTemplate, arg1, arg2, arg3), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -351,8 +382,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_INFO)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.INFO, String.format(messageTemplate, arg1, arg2, arg3, arg4), null, isLogExactSourceLocation);
+        _log(Level.INFO, String.format(messageTemplate, arg1, arg2, arg3, arg4), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -361,8 +391,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_INFO)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.INFO, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), null, isLogExactSourceLocation);
+        _log(Level.INFO, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -371,8 +400,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_INFO)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(Level.INFO, null, ex, isLogExactSourceLocation);
+        _log(Level.INFO, null, ex, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -381,8 +409,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_INFO)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(Level.INFO, msg, ex, isLogExactSourceLocation);
+        _log(Level.INFO, msg, ex, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -391,8 +418,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_INFO)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(Level.INFO, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
+        _log(Level.INFO, String.format(messageTemplate, args), ex, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -403,8 +429,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_INFO)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.INFO, newInstance + " v" + Types.getVersion(newInstance.getClass()) + " instantiated.", null, isLogExactSourceLocation);
+        _log(Level.INFO, newInstance + " v" + Types.getVersion(newInstance.getClass()) + " instantiated.", effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -451,7 +476,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, msg, null, true);
+        _log(Level.FINEST, msg, true);
     }
 
     @Override
@@ -460,7 +485,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, String.format(messageTemplate, arg), null, true);
+        _log(Level.FINEST, String.format(messageTemplate, arg), true);
     }
 
     @Override
@@ -469,7 +494,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, String.format(messageTemplate, arg1, arg2), null, true);
+        _log(Level.FINEST, String.format(messageTemplate, arg1, arg2), true);
     }
 
     @Override
@@ -478,7 +503,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, String.format(messageTemplate, arg1, arg2, arg3), null, true);
+        _log(Level.FINEST, String.format(messageTemplate, arg1, arg2, arg3), true);
     }
 
     @Override
@@ -487,7 +512,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, String.format(messageTemplate, arg1, arg2, arg3, arg4), null, true);
+        _log(Level.FINEST, String.format(messageTemplate, arg1, arg2, arg3, arg4), true);
     }
 
     @Override
@@ -496,7 +521,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), null, true);
+        _log(Level.FINEST, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), true);
     }
 
     @Override
@@ -532,7 +557,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, formatTraceEntry(), null, true);
+        _log(Level.FINEST, formatTraceEntry(), true);
     }
 
     @Override
@@ -541,7 +566,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, formatTraceEntry(arg1), null, true);
+        _log(Level.FINEST, formatTraceEntry(arg1), true);
     }
 
     @Override
@@ -550,7 +575,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, formatTraceEntry(arg1, arg2), null, true);
+        _log(Level.FINEST, formatTraceEntry(arg1, arg2), true);
     }
 
     @Override
@@ -559,7 +584,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, formatTraceEntry(arg1, arg2, arg3), null, true);
+        _log(Level.FINEST, formatTraceEntry(arg1, arg2, arg3), true);
     }
 
     @Override
@@ -568,7 +593,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, formatTraceEntry(arg1, arg2, arg3, arg4), null, true);
+        _log(Level.FINEST, formatTraceEntry(arg1, arg2, arg3, arg4), true);
     }
 
     @Override
@@ -577,7 +602,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, formatTraceEntry(arg1, arg2, arg3, arg4, arg5), null, true);
+        _log(Level.FINEST, formatTraceEntry(arg1, arg2, arg3, arg4, arg5), true);
     }
 
     @Override
@@ -586,7 +611,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return;
 
-        _log(Level.FINEST, formatTraceExit(), null, true);
+        _log(Level.FINEST, formatTraceExit(), true);
     }
 
     @Override
@@ -595,7 +620,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_TRACE)
             return returnValue;
 
-        _log(Level.FINEST, formatTraceExit(returnValue), null, true);
+        _log(Level.FINEST, formatTraceExit(returnValue), true);
         return returnValue;
     }
 
@@ -605,8 +630,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_WARN)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.WARNING, msg, null, isLogExactSourceLocation);
+        _log(Level.WARNING, msg, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -615,8 +639,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_WARN)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.WARNING, String.format(messageTemplate, arg), null, isLogExactSourceLocation);
+        _log(Level.WARNING, String.format(messageTemplate, arg), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -625,8 +648,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_WARN)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.WARNING, String.format(messageTemplate, arg1, arg2), null, isLogExactSourceLocation);
+        _log(Level.WARNING, String.format(messageTemplate, arg1, arg2), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -635,8 +657,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_WARN)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.WARNING, String.format(messageTemplate, arg1, arg2, arg3), null, isLogExactSourceLocation);
+        _log(Level.WARNING, String.format(messageTemplate, arg1, arg2, arg3), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -645,8 +666,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_WARN)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.WARNING, String.format(messageTemplate, arg1, arg2, arg3, arg4), null, isLogExactSourceLocation);
+        _log(Level.WARNING, String.format(messageTemplate, arg1, arg2, arg3, arg4), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -655,8 +675,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_WARN)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG;
-        _log(Level.WARNING, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), null, isLogExactSourceLocation);
+        _log(Level.WARNING, String.format(messageTemplate, arg1, arg2, arg3, arg4, arg5), effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -665,8 +684,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_WARN)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(Level.WARNING, null, ex, isLogExactSourceLocation);
+        _log(Level.WARNING, null, ex, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -675,8 +693,7 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_WARN)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(Level.WARNING, msg, ex, isLogExactSourceLocation);
+        _log(Level.WARNING, msg, ex, effectiveLevel <= L_DEBUG);
     }
 
     @Override
@@ -685,7 +702,6 @@ final class JULLogger extends Logger {
         if (effectiveLevel > L_WARN)
             return;
 
-        final boolean isLogExactSourceLocation = effectiveLevel <= L_DEBUG || LoggerConfig.isCompactExceptionLoggingDisabled;
-        _log(Level.WARNING, String.format(messageTemplate, args), ex, isLogExactSourceLocation);
+        _log(Level.WARNING, String.format(messageTemplate, args), ex, effectiveLevel <= L_DEBUG);
     }
 }

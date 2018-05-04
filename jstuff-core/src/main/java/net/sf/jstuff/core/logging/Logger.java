@@ -15,7 +15,9 @@ package net.sf.jstuff.core.logging;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.concurrent.ThreadSafe;
@@ -170,6 +172,72 @@ public abstract class Logger {
 
     protected static String formatTraceExit(final Object returnValue) {
         return METHOD_EXIT_MARKER + argToString(returnValue);
+    }
+
+    /**
+     * Recursively sanitizes removes irrelevant elements from the stacktraces of the given exception and it's causes.
+     */
+    public static void sanitizeStackTraces(final Throwable ex) {
+        if (ex == null)
+            return;
+
+        final StackTraceElement[] stacktrace = ex.getStackTrace();
+        if (stacktrace == null || stacktrace.length < 3)
+            return;
+
+        final List<StackTraceElement> sanitized = new ArrayList<StackTraceElement>(stacktrace.length - 2);
+        // we leave the first two elements untouched to keep the context
+        sanitized.add(stacktrace[0]);
+        sanitized.add(stacktrace[1]);
+        for (int i = 2, l = stacktrace.length; i < l; i++) {
+            final StackTraceElement ste = stacktrace[i];
+            final String className = ste.getClassName();
+            if (className.equals("java.lang.reflect.Method")) {
+                continue;
+            } else if (className.startsWith("org.springframework.aop.")) {
+                continue;
+            } else if (className.startsWith("sun.reflect.")) {
+                continue;
+            } else if (className.startsWith("com.")) {
+                if (className.startsWith("sun.proxy.$Proxy", 4)) { // com.sun.proxy.$Proxy
+                    continue;
+                } else if (className.startsWith("ibm.", 4)) { // com.ibm.
+                    if (className.startsWith("io.async.", 8)) { // com.ibm.io.async.
+                        continue;
+                    } else if (className.startsWith("wps.", 8)) { // com.ibm.wps.
+                        continue;
+                    } else if (className.startsWith("ws.", 8)) { // com.ibm.ws.
+                        continue;
+                    } else if (className.startsWith("_jsp.", 8)) { // com.ibm._jsp.
+                        continue;
+                    } else if (className.startsWith("jsse2.", 8)) { // com.ibm.jsse2.
+                        if (className.startsWith(".", 15)) { // com.ibm.jsse2.b. || com.ibm.jsse2.f. || ...
+                            continue;
+                        }
+                    }
+                }
+            } else if (className.startsWith("org.codehaus.groovy.")) {
+                if (className.startsWith("runtime.", 20)) { // org.codehaus.groovy.runtime.
+                    continue;
+                } else if (className.startsWith("reflection.", 20)) { // org.codehaus.groovy.runtime.reflection.
+                    continue;
+                }
+            } else if (className.startsWith("groovy.lang.")) {
+                if (className.startsWith("Meta", 12)) { // groovy.lang.Meta
+                    continue;
+                } else if (className.startsWith("Closure", 12)) { // groovy.lang.Closure
+                    continue;
+                }
+            }
+
+            sanitized.add(ste);
+        }
+
+        ex.setStackTrace(sanitized.toArray(new StackTraceElement[sanitized.size()]));
+
+        if (ex.getCause() != null) {
+            sanitizeStackTraces(ex.getCause());
+        }
     }
 
     public abstract void debug(final String msg);
