@@ -1,0 +1,27 @@
+sudo: required
+dist: trusty
+
+language: java
+  
+os:
+  - linux
+  
+jdk:
+  - oraclejdk8 # used by maven runtime
+
+cache:
+  directories:
+  - $HOME/.m2/repository
+before_cache:
+  - rm -rf $HOME/.m2/repository/net/sf/jstuff
+
+install:
+  - ls -l /usr/lib/jvm/
+  # installing java 5 used for compilation and tests
+  - wget --no-cookies -O /tmp/jdk-1_5_0_22-linux-amd64.bin http://monalisa.cern.ch/MONALISA/download/java/jdk-1_5_0_22-linux-amd64.bin
+  - unzip -d /tmp /tmp/jdk-1_5_0_22-linux-amd64.bin || true
+  - rm /tmp/jdk-1_5_0_22-linux-amd64.bin
+  - find /tmp/jdk1.5.0_22 -type f -name \*.pack -exec bash -c 'archive="{}"; echo "Extracting $archive..."; unpack200 $archive ${archive/.pack/.jar}' \;
+  - /tmp/jdk1.5.0_22/bin/java -version
+
+script: mvn clean verify -t .travis_toolchains.xml
