@@ -1,5 +1,6 @@
 # jstuff - toolbox for Java
 
+[![Build Status](https://travis-ci.org/sebthom/jstuff.svg?branch=master)](https://travis-ci.org/sebthom/jstuff)
 [![License](https://img.shields.io/badge/License-Eclipse%20Public%20License%202.0-blue.svg)](LICENSE.txt)
 [![Download](https://api.bintray.com/packages/sebthom/maven/jstuff/images/download.svg)](https://bintray.com/sebthom/maven/jstuff/_latestVersion)
 
