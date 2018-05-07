@@ -327,7 +327,7 @@
                     <artifactId>maven-toolchains-plugin</artifactId>
                     <version>1.1</version>
                 </plugin>
-                
+
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.7.0</version>
@@ -348,7 +348,8 @@
                         <dependency>
                             <groupId>org.codehaus.plexus</groupId>
                             <artifactId>plexus-compiler-eclipse</artifactId>
-                            <version>2.8.4</version>
+                            <!-- newer version require JDK 7 -->
+                            <version>2.8.2</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -399,7 +400,7 @@
                         <providerImplementations>
                             <svn>javasvn</svn>
                         </providerImplementations>
-                        
+
                         <!-- the release profile will be removed from future versions of the super POM so better not rely on it -->
                         <useReleaseProfile>false</useReleaseProfile>
                     </configuration>
