@@ -19,7 +19,7 @@
         <license>
             <name>Eclipse Public License 2.0</name>
             <distribution>repo</distribution>
-            <url>http://www.eclipse.org/legal/epl-v20.html</url>
+            <url>https://spdx.org/licenses/EPL-2.0</url>
         </license>
     </licenses>
 
@@ -73,7 +73,7 @@
     </scm>
 
     <distributionManagement>
-        <downloadUrl>https://github.com/sebthom/jstuff/releases/</downloadUrl>
+        <downloadUrl>http://central.maven.org/maven2/</downloadUrl>
         <repository>
             <id>jstuff-releases-bintray</id>
             <url>https://api.bintray.com/maven/sebthom/maven/jstuff/;publish=1</url>
@@ -248,7 +248,11 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
-                        <phase>package</phase>
+                        <phase>DISABLED</phase>
+                    </execution>
+                    <execution>
+                        <id>attach-sources-no-fork</id>
+                        <phase>verify</phase>
                         <goals>
                             <!--
                                 http://stackoverflow.com/questions/4253700/maven-phase-executing-twice
@@ -342,12 +346,12 @@
                             a) to avoid notorious "schema change not supported" message when debugging via eclipse
                             b) javac is buggy when compiling complex generic expressions
                         -->
-                        <compilerId>eclipse</compilerId>
+                        <compilerId>${compilerId}</compilerId>
                     </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>org.codehaus.plexus</groupId>
-                            <artifactId>plexus-compiler-eclipse</artifactId>
+                            <artifactId>plexus-compiler-${compilerId}</artifactId>
                             <!-- newer version require JDK 7 -->
                             <version>2.8.2</version>
                         </dependency>
@@ -775,14 +779,16 @@
             </build>
         </profile>
 
+        <!-- m2eclipse has problems when the compilerId is not "javac" (however Eclipse still uses the internal compiler and not javac), thus we set
+            it to "javac" when in Eclipse but set it to "eclipse" for command line builds -->
         <profile>
-            <id>web-classifier-classes</id>
             <activation>
                 <property>
                     <name>!eclipse.application</name>
                 </property>
             </activation>
             <properties>
+                <compilerId>eclipse</compilerId>
                 <webClassifier>classes</webClassifier>
             </properties>
         </profile>
@@ -794,6 +800,8 @@
                 </property>
             </activation>
             <properties>
+                <compilerId>javac</compilerId>
+
                 <!-- see "How do I add my web project classes to another project's classpath" http://wiki.eclipse.org/M2E-WTP_FAQ#How_do_I_add_my_web_project_classes_to_another_project.27s_classpath.3F -->
                 <webClassifier />
             </properties>
