@@ -13,9 +13,10 @@
 
     <artifactId>jstuff-integration</artifactId>
 
+
     <properties>
-        <!-- use JDK8 for compilation and integration tests to be able to compile and run integration tests against some libraries that require Java 6 or higher -->
-        <java.version>1.8</java.version>
+        <!-- use JDK8 for compilation and integration tests to be able to compile and run integration tests against some libraries that require Java 7 or higher -->
+        <java.version>1.7</java.version>
         <jetty.version>7.6.21.v20160908</jetty.version>
 
         <!-- Java 5: <= 3.x-->
@@ -23,6 +24,7 @@
         <!-- Java 8: <= 5.x-->
         <spring.version>3.2.18.RELEASE</spring.version>
     </properties>
+
 
     <repositories>
         <repository>
@@ -35,6 +37,7 @@
         </repository>
     </repositories>
 
+
     <build>
         <plugins>
             <plugin>
@@ -44,27 +47,6 @@
                     <!-- generate JDK5 binary compatible code -->
                     <target>1.5</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-toolchains-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>toolchain@process-test-classes</id>
-                        <phase>process-test-classes</phase>
-                        <goals>
-                            <goal>toolchain</goal>
-                        </goals>
-                        <configuration>
-                            <toolchains>
-                                <jdk>
-                                    <!-- run unit tests with JDK 5 (but integration tests still with JDK8) -->
-                                    <version>1.5</version>
-                                    <vendor>${java.vendor}</vendor>
-                                </jdk>
-                            </toolchains>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -261,13 +243,13 @@
             Test dependencies
             ================================================================== -->
         <dependency>
-            <!-- Generate test data https://github.com/andygibson/datafactory -->
+            <!-- to generate test data -->
+            <!-- https://github.com/andygibson/datafactory -->
+            <!-- https://github.com/DiUS/java-faker -->
+            <!-- https://github.com/Devskiller/jfairy -->
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>0.2</version>
-            <!-- <groupId>org.fluttercode.datafactory</groupId>
-            <artifactId>datafactory</artifactId>
-            <version>0.8</version> -->
             <scope>test</scope>
             <exclusions>
                 <exclusion>
