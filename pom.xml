@@ -43,14 +43,6 @@
     <inceptionYear>2010</inceptionYear>
 
 
-    <scm>
-        <!-- http://maven.apache.org/scm/subversion.html -->
-        <url>https://github.com/sebthom/jstuff/</url>
-        <connection>scm:svn:https://github.com/sebthom/jstuff/trunk</connection>
-        <developerConnection>scm:svn:https://github.com/sebthom/jstuff/trunk</developerConnection>
-    </scm>
-
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -76,6 +68,14 @@
         <dependency.locations.enabled>false</dependency.locations.enabled>
         <dependency.details.enabled>false</dependency.details.enabled>
     </properties>
+    
+    
+    <scm>
+        <!-- http://maven.apache.org/scm/subversion.html -->
+        <url>https://github.com/sebthom/jstuff/</url>
+        <connection>scm:svn:https://github.com/sebthom/jstuff/trunk</connection>
+        <developerConnection>scm:svn:https://github.com/sebthom/jstuff/trunk</developerConnection>
+    </scm>
 
 
     <distributionManagement>
@@ -450,13 +450,14 @@
                     <version>2.5.3</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
+                        
+                        <!-- the release profile will be removed from future versions of the super POM so better not rely on it -->
+                        <useReleaseProfile>false</useReleaseProfile>
+                        
                         <!-- we are using a pure Java based SVN implementation to allow easy cross platform builds -->
                         <providerImplementations>
                             <svn>javasvn</svn>
                         </providerImplementations>
-
-                        <!-- the release profile will be removed from future versions of the super POM so better not rely on it -->
-                        <useReleaseProfile>false</useReleaseProfile>
                     </configuration>
                     <dependencies>
                         <dependency>
