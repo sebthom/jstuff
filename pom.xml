@@ -68,8 +68,8 @@
         <dependency.locations.enabled>false</dependency.locations.enabled>
         <dependency.details.enabled>false</dependency.details.enabled>
     </properties>
-    
-    
+
+
     <scm>
         <!-- http://maven.apache.org/scm/subversion.html -->
         <url>https://github.com/sebthom/jstuff/</url>
@@ -253,6 +253,12 @@
                                         <ignoredScope>provided</ignoredScope>
                                         <ignoredScope>test</ignoredScope>
                                     </ignoredScopes>
+                                    <ignoreClasses>
+                                        <ignoreClass>com.thoughtworks.xstream.converters.reflection.Lambda*</ignoreClass>
+                                        <ignoreClass>com.thoughtworks.xstream.converters.time.*</ignoreClass>
+                                        <ignoreClass>com.thoughtworks.xstream.core.util.ISO8601JavaTimeConverter</ignoreClass>
+                                        <ignoreClass>com.thoughtworks.xstream.mapper.Lambda*</ignoreClass>
+                                    </ignoreClasses>
                                     <excludes>
                                         <exclude>com.sun.xml.bind:jaxb-xjc</exclude>
                                     </excludes>
