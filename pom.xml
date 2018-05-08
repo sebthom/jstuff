@@ -15,6 +15,7 @@
 
     <url>http://jstuff.sf.net</url>
 
+
     <licenses>
         <license>
             <name>Eclipse Public License 2.0</name>
@@ -22,6 +23,7 @@
             <url>https://spdx.org/licenses/EPL-2.0</url>
         </license>
     </licenses>
+
 
     <developers>
         <developer>
@@ -37,7 +39,17 @@
         </developer>
     </developers>
 
+
     <inceptionYear>2010</inceptionYear>
+
+
+    <scm>
+        <!-- http://maven.apache.org/scm/subversion.html -->
+        <url>https://github.com/sebthom/jstuff/</url>
+        <connection>scm:svn:https://github.com/sebthom/jstuff/trunk</connection>
+        <developerConnection>scm:svn:https://github.com/sebthom/jstuff/trunk</developerConnection>
+    </scm>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -65,12 +77,6 @@
         <dependency.details.enabled>false</dependency.details.enabled>
     </properties>
 
-    <scm>
-        <!-- http://maven.apache.org/scm/subversion.html -->
-        <url>https://github.com/sebthom/jstuff/</url>
-        <connection>scm:svn:https://github.com/sebthom/jstuff/trunk</connection>
-        <developerConnection>scm:svn:https://github.com/sebthom/jstuff/trunk</developerConnection>
-    </scm>
 
     <distributionManagement>
         <downloadUrl>http://central.maven.org/maven2/</downloadUrl>
@@ -94,19 +100,23 @@
         </site>
     </distributionManagement>
 
+
     <ciManagement>
         <system>jenkins</system>
         <url>https://ci.vegardit.com/job/net.sf.jstuff</url>
     </ciManagement>
 
+
     <issueManagement>
         <system>github.com</system>
-        <url>https://github.com/sebthom/jstuff/issues/</url>
+        <url>https://github.com/sebthom/jstuff/issues</url>
     </issueManagement>
+
 
     <prerequisites>
         <maven>${maven.minimum.version}</maven>
     </prerequisites>
+
 
     <modules>
         <module>jstuff-core</module>
@@ -114,9 +124,49 @@
         <module>jstuff-xml</module>
     </modules>
 
-    <build>
-        <plugins>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.cfg</include>
+                    <include>**/*.ini</include>
+                    <include>**/*.html</include>
+                    <include>**/*.md</include>
+                    <include>**/*.props</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.txt</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.yaml</include>
+                    <include>**/*.yml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/*.cfg</exclude>
+                    <exclude>**/*.ini</exclude>
+                    <exclude>**/*.html</exclude>
+                    <exclude>**/*.md</exclude>
+                    <exclude>**/*.props</exclude>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/*.txt</exclude>
+                    <exclude>**/*.xml</exclude>
+                    <exclude>**/*.yaml</exclude>
+                    <exclude>**/*.yml</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!--
+            ================================================================
+            globally enabled plug-ins
+            ================================================================
+            -->
             <plugin>
                 <!-- http://maven.apache.org/guides/mini/guide-using-toolchains.html -->
                 <artifactId>maven-toolchains-plugin</artifactId>
@@ -319,6 +369,7 @@
             </plugin>
         </plugins>
 
+
         <pluginManagement>
             <!--
             ================================================================
@@ -326,7 +377,6 @@
             ================================================================
             -->
             <plugins>
-
                 <plugin>
                     <artifactId>maven-toolchains-plugin</artifactId>
                     <version>1.1</version>
@@ -346,12 +396,12 @@
                             a) to avoid notorious "schema change not supported" message when debugging via eclipse
                             b) javac is buggy when compiling complex generic expressions
                         -->
-                        <compilerId>${compilerId}</compilerId>
+                        <compilerId>eclipse</compilerId>
                     </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>org.codehaus.plexus</groupId>
-                            <artifactId>plexus-compiler-${compilerId}</artifactId>
+                            <artifactId>plexus-compiler-eclipse</artifactId>
                             <!-- newer version require JDK 7 -->
                             <version>2.8.2</version>
                         </dependency>
@@ -585,6 +635,7 @@
             </plugins>
         </pluginManagement>
 
+
         <extensions>
             <extension>
                 <!-- measure and report time used by each plugin/goal -->
@@ -608,6 +659,7 @@
         </extensions>
     </build>
 
+
     <!-- global dependencies -->
     <dependencies>
         <!-- test dependencies -->
@@ -618,6 +670,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 
     <dependencyManagement>
         <dependencies>
@@ -715,6 +768,7 @@
             </build>
         </profile>
 
+
         <profile>
             <id>jrebel-config</id>
             <!-- only activated if executed within Eclipse and if rebel-remote.xml is present, requires Maven 3.2.2 or higher, see https://issues.apache.org/jira/browse/MNG-4565 -->
@@ -728,13 +782,6 @@
             </activation>
 
             <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <filtering>true</filtering>
-                    </resource>
-                </resources>
-
                 <plugins>
                     <plugin>
                         <groupId>org.zeroturnaround</groupId>
@@ -779,29 +826,28 @@
             </build>
         </profile>
 
-        <!-- m2eclipse has problems when the compilerId is not "javac" (however Eclipse still uses the internal compiler and not javac), thus we set
-            it to "javac" when in Eclipse but set it to "eclipse" for command line builds -->
+
         <profile>
+            <id>outside-eclipse</id>
             <activation>
                 <property>
                     <name>!eclipse.application</name>
                 </property>
             </activation>
             <properties>
-                <compilerId>eclipse</compilerId>
                 <webClassifier>classes</webClassifier>
             </properties>
         </profile>
+
+
         <profile>
-            <id>m2eclipse</id>
+            <id>inside-eclipse</id>
             <activation>
                 <property>
                     <name>eclipse.application</name>
                 </property>
             </activation>
             <properties>
-                <compilerId>javac</compilerId>
-
                 <!-- see "How do I add my web project classes to another project's classpath" http://wiki.eclipse.org/M2E-WTP_FAQ#How_do_I_add_my_web_project_classes_to_another_project.27s_classpath.3F -->
                 <webClassifier />
             </properties>
@@ -871,6 +917,23 @@
                                             </pluginExecutionFilter>
                                             <action>
                                                 <ignore />
+                                            </action>
+                                        </pluginExecution>
+                                        <pluginExecution>
+                                            <pluginExecutionFilter>
+                                                <groupId>org.codehaus.mojo</groupId>
+                                                <artifactId>build-helper-maven-plugin</artifactId>
+                                                <versionRange>[1.0,)</versionRange>
+                                                <goals>
+                                                    <goal>regex-property</goal>
+                                                </goals>
+                                            </pluginExecutionFilter>
+                                            <action>
+                                                <execute>
+                                                    <!-- https://wiki.eclipse.org/M2E_compatible_maven_plugins -->
+                                                    <runOnConfiguration>true</runOnConfiguration>
+                                                    <runOnIncremental>true</runOnIncremental>
+                                                </execute>
                                             </action>
                                         </pluginExecution>
                                         <pluginExecution>
