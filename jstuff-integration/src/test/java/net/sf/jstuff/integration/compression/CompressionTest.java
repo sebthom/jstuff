@@ -24,15 +24,15 @@ public class CompressionTest extends TestCase {
     protected static final byte[] TEST_TEXT_BYTES;
     static {
         final StringBuilder sb = new StringBuilder();
-        final Faker faker = new Faker(Locale.ENGLISH);
         for (int i = 0; i < 500; i++) {
+            final Faker faker = new Faker(Locale.ENGLISH);
             sb.append(//
-                faker.firstName() + ", " + //
-                        faker.lastName() + ", " + //
-                        faker.streetAddress(true) + ", " + //
-                        faker.cityPrefix() + faker.citySuffix() + ", " + //
-                        faker.country() + ", " + //
-                        faker.paragraph() + "\n" //
+                faker.address().firstName() + ", " + //
+                        faker.address().lastName() + ", " + //
+                        faker.address().streetAddress(true) + ", " + //
+                        faker.address().cityPrefix() + faker.address().citySuffix() + ", " + //
+                        faker.address().country() + ", " + //
+                        faker.chuckNorris().fact() + "\n" //
             );
         }
         TEST_TEXT_BYTES = sb.toString().getBytes();
