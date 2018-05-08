@@ -102,8 +102,8 @@
 
 
     <ciManagement>
-        <system>jenkins</system>
-        <url>https://ci.vegardit.com/job/net.sf.jstuff</url>
+        <system>travis-ci.org</system>
+        <url>https://travis-ci.org/sebthom/jstuff</url>
     </ciManagement>
 
 
