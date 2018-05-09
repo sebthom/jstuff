@@ -21,6 +21,7 @@ import org.xml.sax.InputSource;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.Maps;
+import net.sf.jstuff.core.collection.Maps.MapDiff;
 import net.sf.jstuff.xml.DOMUtils.XPathNode;
 import net.sf.jstuff.xml.DOMUtils.XPathNodeConfiguration;
 
@@ -69,9 +70,24 @@ public class DOMUtilsTests extends TestCase {
         cfg.idAttributesByXMLTagName.put("*", "name");
         final Map<String, XPathNode> attrs1 = DOMUtils.getXPathNodes(elem1, cfg);
         final Map<String, XPathNode> attrs2 = DOMUtils.getXPathNodes(elem2, cfg);
-        assertEquals(
-            "MapDiff [entryValueDiffs=[EntryValueDiff [key=/top/child[@name='foo']/@weight, leftValue=1, rightValue=2], EntryValueDiff [key=/top/child[@name='foo']/text(), leftValue=1234, rightValue=ABCD]], leftOnlyEntries={}, rightOnlyEntries={/top/child[@name='bar']/@name=bar, /top/child[@name='bar']/text()=ABCD, /top/child[@name='bar']/@weight=2}]",
-            Maps.diff(attrs1, attrs2).toString());
+
+        final MapDiff<String, XPathNode> diff = Maps.diff(attrs1, attrs2);
+        assertTrue(diff.isDifferent());
+        assertEquals(0, diff.leftOnlyEntries.size());
+        assertEquals(3, diff.rightOnlyEntries.size());
+        assertTrue(diff.rightOnlyEntries.containsKey("/top/child[@name='bar']/text()"));
+        assertTrue(diff.rightOnlyEntries.containsKey("/top/child[@name='bar']/@name"));
+        assertTrue(diff.rightOnlyEntries.containsKey("/top/child[@name='bar']/@weight"));
+        assertEquals(diff.rightOnlyEntries.get("/top/child[@name='bar']/text()").value, "ABCD");
+        assertEquals(diff.rightOnlyEntries.get("/top/child[@name='bar']/@name").value, "bar");
+        assertEquals(diff.rightOnlyEntries.get("/top/child[@name='bar']/@weight").value, "2");
+
+        assertEquals(diff.entryValueDiffs.get(0).key, "/top/child[@name='foo']/@weight");
+        assertEquals(diff.entryValueDiffs.get(0).leftValue.value, "1");
+        assertEquals(diff.entryValueDiffs.get(0).rightValue.value, "2");
+        assertEquals(diff.entryValueDiffs.get(1).key, "/top/child[@name='foo']/text()");
+        assertEquals(diff.entryValueDiffs.get(1).leftValue.value, "1234");
+        assertEquals(diff.entryValueDiffs.get(1).rightValue.value, "ABCD");
     }
 
     public void testParseFile() throws XMLException {
