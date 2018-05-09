@@ -18,23 +18,27 @@ import java.security.cert.X509Certificate;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
+import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class KeyToolTest extends TestCase {
 
+    private static final Logger LOG = Logger.create();
+
     public void testCreateSelfSignedCertificate() throws GeneralSecurityException {
 
-        // illegal subject DN
+        LOG.info("Testing illegal subject DN...");
         try {
-            KeyTool.createSelfSignedCertificate("sdfdsf", "RSA", 512, 14);
+            KeyTool.createSelfSignedCertificate("sdfdsf", "RSA", 1024, 14);
             fail();
         } catch (final Exception ex) {
+            System.out.println(ex);
             assertEquals(IllegalArgumentException.class, ex.getClass());
         }
 
-        // illegal key size
+        LOG.info("Testing illegal key size...");
         try {
             KeyTool.createSelfSignedCertificate("CN=foo", "RSA", 20, 14);
             fail();
@@ -42,23 +46,23 @@ public class KeyToolTest extends TestCase {
             assertEquals(IllegalArgumentException.class, ex.getClass());
         }
 
-        // illegal algorithm
+        LOG.info("Testing illegal algorithm...");
         try {
-            KeyTool.createSelfSignedCertificate("CN=foo", "BLABLA", 512, 14);
+            KeyTool.createSelfSignedCertificate("CN=foo", "BLABLA", 1024, 14);
             fail();
         } catch (final Exception ex) {
             assertEquals(IllegalArgumentException.class, ex.getClass());
         }
 
-        // illegal validity
+        LOG.info("Testing illegal validity...");
         try {
-            KeyTool.createSelfSignedCertificate("CN=foo", "RSA", 512, -1);
+            KeyTool.createSelfSignedCertificate("CN=foo", "RSA", 1024, -1);
             fail();
         } catch (final Exception ex) {
             assertEquals(IllegalArgumentException.class, ex.getClass());
         }
 
-        final Tuple2<X509Certificate, PrivateKey> result = KeyTool.createSelfSignedCertificate("CN=foo", "RSA", 512, 14);
+        final Tuple2<X509Certificate, PrivateKey> result = KeyTool.createSelfSignedCertificate("CN=foo", "RSA", 1024, 14);
 
         assertEquals("CN=foo", result.get1().getSubjectDN().getName());
         assertEquals("X.509", result.get1().getType());
