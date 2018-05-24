@@ -418,7 +418,12 @@ final class SLF4JLogger extends Logger {
         if (!logger.isInfoEnabled())
             return;
 
-        _log(INFO_INT, newInstance + " v" + Types.getVersion(newInstance.getClass()) + " instantiated.");
+        final String version = Types.getVersion(newInstance.getClass());
+        if (version == null || version.length() == 0) {
+            _log(INFO_INT, newInstance.toString() + " instantiated.");
+        } else {
+            _log(INFO_INT, newInstance + " v" + version + " instantiated.");
+        }
     }
 
     @Override
