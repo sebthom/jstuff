@@ -165,32 +165,37 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
 
                 // writing properties
                 for (final Entry<String, Object[]> property : properties.entrySet()) {
+                    String propName = property.getKey();
+                    // remove "with" prefix from withSomeProperty(...) named properties
+                    if (propName.length() > 4 && propName.startsWith("with")) {
+                        propName = Strings.lowerCaseFirstChar(propName.substring(4));
+                    }
                     final Object[] propArgs = property.getValue();
-                    if (propArgs.length == 1) {
-                        Types.writePropertyIgnoringFinal(target, property.getKey(), propArgs[0]);
+                    final String setterName = "set" + Strings.upperCaseFirstChar(propName);
+                    final Method setterMethod = Methods.findAnyCompatible(targetClass, setterName, propArgs);
+                    // if no setter found then directly try to set the field
+                    if (setterMethod == null && propArgs.length == 1) {
+                        Types.writePropertyIgnoringFinal(target, propName, propArgs[0]);
                     } else {
-                        final String mName = "set" + Strings.upperCaseFirstChar(property.getKey());
-                        final Method m = Methods.findAnyCompatible(targetClass, mName, propArgs);
-                        Assert.notNull(m, "Method [%s#%s()] not found.", targetClass.getName(), mName);
-                        Methods.invoke(target, m, propArgs);
+                        Assert.notNull(setterMethod, "Method [%s#%s()] not found.", targetClass.getName(), setterName);
+                        Methods.invoke(target, setterMethod, propArgs);
                     }
                 }
 
+                // validate @Property constraints
                 if (propertyConfig.size() > 0) {
                     for (final Entry<String, Builder.Property> prop : propertyConfig.entrySet()) {
                         final String propName = prop.getKey();
                         final Builder.Property propConfig = prop.getValue();
 
-                        final boolean propertyValueIsSet = properties.containsKey(propName);
-                        if (propertyValueIsSet) {
+                        if (properties.containsKey(propName)) {
                             final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
-                            if (!isNullable) {
-                                Args.notNull(propName, properties.get(propName));
-                            }
+                            if (!isNullable && (properties.get(propName) == null || properties.get(propName)[0] == null))
+                                throw new IllegalArgumentException(builderInterface.getSimpleName() + "." + propName + "(...) must not be set to null.");
                         } else {
                             final boolean isRequired = propConfig == null ? propertyDefaults.required() : propConfig.required();
                             if (isRequired)
-                                throw new IllegalStateException("[" + propName + "] was not specified");
+                                throw new IllegalStateException("Setting " + builderInterface.getSimpleName() + "." + propName + "(...) is required.");
                         }
                     }
                 }
