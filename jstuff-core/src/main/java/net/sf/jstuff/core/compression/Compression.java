@@ -29,7 +29,7 @@ public interface Compression {
     void compress(final byte[] uncompressed, final OutputStream output, final boolean closeOutput) throws IOException;
 
     /**
-     * @param input will be closed
+     * @param uncompressed will be closed
      * @param closeOutput if output shall be closed, if false output may also not be flushed automatically
      */
     void compress(InputStream uncompressed, OutputStream output, boolean closeOutput) throws IOException;
