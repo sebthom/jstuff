@@ -2,14 +2,13 @@
 <!--
     @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.sf.jstuff</groupId>
     <artifactId>jstuff-parent</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.0.1</version>
     <packaging>pom</packaging>
     <name>jstuff</name>
 
@@ -72,9 +71,9 @@
 
     <scm>
         <!-- http://maven.apache.org/scm/subversion.html -->
-        <url>https://github.com/sebthom/jstuff/</url>
-        <connection>scm:svn:https://github.com/sebthom/jstuff/trunk</connection>
-        <developerConnection>scm:svn:https://github.com/sebthom/jstuff/trunk</developerConnection>
+        <url>https://github.com/sebthom/jstuff/tags/jstuff-parent-3.0.1</url>
+        <connection>scm:svn:https://github.com/sebthom/jstuff/tags/jstuff-parent-3.0.1</connection>
+        <developerConnection>scm:svn:https://github.com/sebthom/jstuff/tags/jstuff-parent-3.0.1</developerConnection>
     </scm>
 
 
