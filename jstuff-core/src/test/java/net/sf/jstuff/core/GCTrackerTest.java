@@ -14,11 +14,14 @@ package net.sf.jstuff.core;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.event.EventListener;
+import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class GCTrackerTest extends TestCase {
+    private static final Logger LOG = Logger.create();
+
     private volatile int garbageCollected;
 
     public void testGCTracker() throws InterruptedException {
@@ -36,7 +39,7 @@ public class GCTrackerTest extends TestCase {
             @Override
             public void run() {
                 for (int i = 0; i < objects; i++) {
-                    System.out.println("[T1] new " + i);
+                    LOG.debug("[T1] new %s", i);
                     tracker.track(new Object(), null);
                 }
             };
@@ -45,7 +48,7 @@ public class GCTrackerTest extends TestCase {
             @Override
             public void run() {
                 for (int i = 0; i < objects; i++) {
-                    System.err.println("[T2] new " + i);
+                    LOG.debug("[T2] new %s", i);
                     tracker.track(new Object(), null);
                 }
             };
