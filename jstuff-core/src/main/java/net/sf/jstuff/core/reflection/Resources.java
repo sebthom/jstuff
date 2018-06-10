@@ -424,22 +424,34 @@ public abstract class Resources {
         final String surefireRealCP = System.getProperty("surefire.real.class.path");
         if (surefireRealCP != null) {
             LOG.debug("Maven Surefire run (forked + manifest-only-jar) detected.");
-            JarFile surefirebooterJar = null;
-            InputStream manifestIS = null;
-            try {
-                surefirebooterJar = new JarFile(surefireRealCP);
-                manifestIS = surefirebooterJar.getInputStream(surefirebooterJar.getEntry("META-INF/MANIFEST.MF"));
-                final String[] classPath = Strings.split(new Manifest(manifestIS).getMainAttributes().getValue("Class-Path"), ' ');
-                for (final String classPathEntry : classPath) {
-                    _scanClassPathEntry(new URL(classPathEntry), nameFilter, ClassLoader.getSystemClassLoader(), result);
+            final String[] classPath = Strings.split(surefireRealCP, File.pathSeparatorChar);
+            for (final String classPathEntry : classPath) {
+                if (classPathEntry.contains("surefirebooter")) {
+                    JarFile surefirebooterJar = null;
+                    InputStream manifestIS = null;
+                    try {
+                        surefirebooterJar = new JarFile(classPathEntry);
+                        manifestIS = surefirebooterJar.getInputStream(surefirebooterJar.getEntry("META-INF/MANIFEST.MF"));
+                        final String[] surefireBooterClassPath = Strings.split(new Manifest(manifestIS).getMainAttributes().getValue("Class-Path"), ' ');
+                        for (final String surefireBooterClassPathEntry : surefireBooterClassPath) {
+                            _scanClassPathEntry(new URL(surefireBooterClassPathEntry), nameFilter, ClassLoader.getSystemClassLoader(), result);
+                        }
+                        surefirebooterJar.close();
+                    } catch (final Exception ex) {
+                        LOG.error(ex);
+                    } finally {
+                        IOUtils.closeQuietly(manifestIS);
+                        IOUtils.closeQuietly(surefirebooterJar);
+                    }
+                } else {
+                    try {
+                        _scanClassPathEntry(new File(classPathEntry).toURI().toURL(), nameFilter, ClassLoader.getSystemClassLoader(), result);
+                    } catch (final Exception ex) {
+                        LOG.error(ex);
+                    }
                 }
-                surefirebooterJar.close();
-            } catch (final Exception ex) {
-                LOG.error(ex);
-            } finally {
-                IOUtils.closeQuietly(manifestIS);
-                IOUtils.closeQuietly(surefirebooterJar);
             }
+
             return;
         }
 
