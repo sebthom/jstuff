@@ -206,7 +206,7 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_INTERFACE extends Builder<? ex
                         Methods.invoke(target, onPostBuilds.get(i), ArrayUtils.EMPTY_OBJECT_ARRAY);
                     } catch (final InvokingMethodFailedException ex) {
                         if (ex.getCause() instanceof InvocationTargetException)
-                            throw (RuntimeException) ex.getCause().getCause();
+                            throw ex.getCause().getCause();
                         throw ex;
                     }
                 }
