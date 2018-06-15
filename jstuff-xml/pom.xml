@@ -44,7 +44,8 @@
             <!-- for XSD JAXB code generation -->
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-xjc</artifactId>
-            <version>2.2.11</version>
+            <!-- 2.2.7 requires JDK6 -->
+            <version>2.2.5-5</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>

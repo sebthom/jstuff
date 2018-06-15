@@ -2,7 +2,8 @@
 <!--
     @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -15,8 +16,9 @@
 
 
     <properties>
-        <!-- use JDK8 for compilation and integration tests to be able to compile and run integration tests against some libraries that require Java 7 or higher -->
-        <java.version>1.7</java.version>
+        <java.version.integration-tests>1.7</java.version.integration-tests>
+        <enforcer.maxBytecodeVersion>1.7</enforcer.maxBytecodeVersion>
+
         <jetty.version>7.6.21.v20160908</jetty.version>
 
         <!-- Java 5: <= 3.x-->
@@ -41,16 +43,39 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <!-- generate JDK5 binary compatible code -->
-                    <target>1.5</target>
-                </configuration>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-bytecode-version@validate</id>
+                        <configuration>
+                            <rules>
+                                <enforceBytecodeVersion>
+                                    <ignoreClasses>
+                                        <ignoreClass>com.thoughtworks.xstream.mapper.LambdaMapper</ignoreClass>
+                                        <ignoreClass>com.thoughtworks.xstream.converters.reflection.LambdaConverter</ignoreClass>
+                                        <ignoreClass>com.thoughtworks.xstream.converters.time.*</ignoreClass>
+                                        <ignoreClass>com.thoughtworks.xstream.core.util.ISO8601JavaTimeConverter</ignoreClass>
+                                    </ignoreClasses>
+                                </enforceBytecodeVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ban-duplicate-classes@validate</id>
+                        <configuration>
+                            <rules>
+                                <banDuplicateClasses>
+                                    <ignoreClasses>
+                                        <ignoreClass>org.aspectj.*</ignoreClass>
+                                    </ignoreClasses>
+                                </banDuplicateClasses>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-
 
     <dependencies>
         <dependency>
@@ -185,6 +210,12 @@
             <artifactId>xstream</artifactId>
             <version>1.4.10</version>
             <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>xpp3</groupId>
+                    <artifactId>xpp3_min</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <!-- JSON only -->
