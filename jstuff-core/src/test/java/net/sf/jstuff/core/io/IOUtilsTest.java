@@ -21,12 +21,12 @@ import junit.framework.TestCase;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class IOUtilsTest extends TestCase {
-    public void testReadBytes() throws IOException {
-        final ByteArrayInputStream is = new ByteArrayInputStream("Hello World!".getBytes());
-        assertEquals(5, IOUtils.readBytes(is, 5).length);
+   public void testReadBytes() throws IOException {
+      final ByteArrayInputStream is = new ByteArrayInputStream("Hello World!".getBytes());
+      assertEquals(5, IOUtils.readBytes(is, 5).length);
 
-        is.reset();
-        assertEquals("Hello World!", new String(IOUtils.readBytes(is, 12)));
-    }
+      is.reset();
+      assertEquals("Hello World!", new String(IOUtils.readBytes(is, 12)));
+   }
 
 }

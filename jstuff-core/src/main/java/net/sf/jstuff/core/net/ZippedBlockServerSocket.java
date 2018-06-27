@@ -20,14 +20,14 @@ import java.net.Socket;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ZippedBlockServerSocket extends ServerSocket {
-    public ZippedBlockServerSocket(final int port) throws IOException {
-        super(port);
-    }
+   public ZippedBlockServerSocket(final int port) throws IOException {
+      super(port);
+   }
 
-    @Override
-    public Socket accept() throws IOException {
-        final Socket s = new ZippedBlockSocket();
-        implAccept(s);
-        return s;
-    }
+   @Override
+   public Socket accept() throws IOException {
+      final Socket s = new ZippedBlockSocket();
+      implAccept(s);
+      return s;
+   }
 }

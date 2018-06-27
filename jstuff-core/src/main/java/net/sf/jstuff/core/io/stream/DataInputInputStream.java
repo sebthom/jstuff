@@ -22,21 +22,21 @@ import java.io.InputStream;
  */
 public class DataInputInputStream extends InputStream {
 
-    private final DataInput input;
+   private final DataInput input;
 
-    public DataInputInputStream(final DataInput input) {
-        this.input = input;
-    }
+   public DataInputInputStream(final DataInput input) {
+      this.input = input;
+   }
 
-    @Override
-    public int read() throws IOException {
-        try {
-            return input.readInt();
-        } catch (final IndexOutOfBoundsException ex) {
-            // e.g. in io.netty.buffer.AbstractByteBuf.readInt()
-            return -1;
-        } catch (final EOFException ex) {
-            return -1;
-        }
-    }
+   @Override
+   public int read() throws IOException {
+      try {
+         return input.readInt();
+      } catch (final IndexOutOfBoundsException ex) {
+         // e.g. in io.netty.buffer.AbstractByteBuf.readInt()
+         return -1;
+      } catch (final EOFException ex) {
+         return -1;
+      }
+   }
 }

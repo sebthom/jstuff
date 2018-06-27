@@ -28,26 +28,26 @@ import com.sun.tools.xjc.model.CPluginCustomization;
  */
 public abstract class AbstractPlugin extends Plugin {
 
-    protected String getCustomizationNS() {
-        return null;
-    }
+   protected String getCustomizationNS() {
+      return null;
+   }
 
-    @Override
-    public List<String> getCustomizationURIs() {
-        if (getCustomizationNS() == null)
-            return Collections.emptyList();
-        return Arrays.asList(getCustomizationNS());
-    }
+   @Override
+   public List<String> getCustomizationURIs() {
+      if (getCustomizationNS() == null)
+         return Collections.emptyList();
+      return Arrays.asList(getCustomizationNS());
+   }
 
-    protected CCustomizations findCustomizations(final CCustomizations cc, final String name) {
-        final CCustomizations result = new CCustomizations();
-        for (final CPluginCustomization cpc : cc) {
-            final Element e = cpc.element;
-            if (StringUtils.equals(getCustomizationNS(), e.getNamespaceURI()) && e.getLocalName().equals(name)) {
-                result.add(cpc);
-            }
-        }
-        return result;
-    }
+   protected CCustomizations findCustomizations(final CCustomizations cc, final String name) {
+      final CCustomizations result = new CCustomizations();
+      for (final CPluginCustomization cpc : cc) {
+         final Element e = cpc.element;
+         if (StringUtils.equals(getCustomizationNS(), e.getNamespaceURI()) && e.getLocalName().equals(name)) {
+            result.add(cpc);
+         }
+      }
+      return result;
+   }
 
 }

@@ -21,15 +21,15 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class PropertyChangeEvent implements Serializable {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public final JBean<?> bean;
-    public final PropertyDescriptor<?> property;
+   public final JBean<?> bean;
+   public final PropertyDescriptor<?> property;
 
-    public PropertyChangeEvent(final JBean<?> bean, final PropertyDescriptor<?> property) {
-        this.bean = bean;
-        this.property = property;
-    }
+   public PropertyChangeEvent(final JBean<?> bean, final PropertyDescriptor<?> property) {
+      this.bean = bean;
+      this.property = property;
+   }
 
-    abstract void undo();
+   abstract void undo();
 }

@@ -20,15 +20,15 @@ import net.sf.jstuff.integration.userregistry.UserDetails;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface Authentication {
-    String getPassword();
+   String getPassword();
 
-    Serializable getProperty(String name);
+   Serializable getProperty(String name);
 
-    UserDetails getUserDetails();
+   UserDetails getUserDetails();
 
-    void invalidate();
+   void invalidate();
 
-    boolean isAuthenticated();
+   boolean isAuthenticated();
 
-    void setProperty(String name, Serializable value);
+   void setProperty(String name, Serializable value);
 }

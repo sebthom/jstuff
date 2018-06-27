@@ -41,99 +41,93 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class BeanRowMapper<T> implements RowMapper<T> {
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    private static final BeanUtilsBean BUB;
+   private static final BeanUtilsBean BUB;
 
-    static {
-        /**
-         * to avoid
-         * org.apache.commons.beanutils.ConversionException: No value specified for 'Date'
-         * at org.apache.commons.beanutils.converters.AbstractConverter.handleMissing(AbstractConverter.java:325)
-         * at org.apache.commons.beanutils.converters.AbstractConverter.convert(AbstractConverter.java:151)
-         * at org.apache.commons.beanutils.converters.ConverterFacade.convert(ConverterFacade.java:60)
-         * at org.apache.commons.beanutils.BeanUtilsBean.convert(BeanUtilsBean.java:1079)
-         * at org.apache.commons.beanutils.BeanUtilsBean.copyProperty(BeanUtilsBean.java:437)
-         * at org.apache.commons.beanutils.BeanUtils.copyProperty(BeanUtils.java:160)
-         */
-        final ConvertUtilsBean converter = new ConvertUtilsBean();
-        converter.register(new DateConverter(null), Date.class);
-        BUB = new BeanUtilsBean(converter);
-    }
+   static {
+      /**
+       * to avoid
+       * org.apache.commons.beanutils.ConversionException: No value specified for 'Date'
+       * at org.apache.commons.beanutils.converters.AbstractConverter.handleMissing(AbstractConverter.java:325)
+       * at org.apache.commons.beanutils.converters.AbstractConverter.convert(AbstractConverter.java:151)
+       * at org.apache.commons.beanutils.converters.ConverterFacade.convert(ConverterFacade.java:60)
+       * at org.apache.commons.beanutils.BeanUtilsBean.convert(BeanUtilsBean.java:1079)
+       * at org.apache.commons.beanutils.BeanUtilsBean.copyProperty(BeanUtilsBean.java:437)
+       * at org.apache.commons.beanutils.BeanUtils.copyProperty(BeanUtils.java:160)
+       */
+      final ConvertUtilsBean converter = new ConvertUtilsBean();
+      converter.register(new DateConverter(null), Date.class);
+      BUB = new BeanUtilsBean(converter);
+   }
 
-    private Class<T> beanClass;
+   private Class<T> beanClass;
 
-    /**
-     * propertyNameLowerCase => propertyName
-     */
-    private Map<String, String> beanPropertyNames;
+   /**
+    * propertyNameLowerCase => propertyName
+    */
+   private Map<String, String> beanPropertyNames;
 
-    private final WeakHashMap<ResultSet, ResultSetDynaClass> rsDynaClassesCache = new WeakHashMap<ResultSet, ResultSetDynaClass>();
+   private final WeakHashMap<ResultSet, ResultSetDynaClass> rsDynaClassesCache = new WeakHashMap<ResultSet, ResultSetDynaClass>();
 
-    public BeanRowMapper(final Class<T> beanClass) throws IntrospectionException {
-        Args.notNull("beanClass", beanClass);
+   public BeanRowMapper(final Class<T> beanClass) throws IntrospectionException {
+      Args.notNull("beanClass", beanClass);
 
-        setBeanClass(beanClass);
-    }
+      setBeanClass(beanClass);
+   }
 
-    /**
-     * @return the beanClass
-     */
-    public Class<T> getBeanClass() {
-        return beanClass;
-    }
+   public Class<T> getBeanClass() {
+      return beanClass;
+   }
 
-    public T mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-        ResultSetDynaClass rsDynaClass = rsDynaClassesCache.get(rs);
-        if (rsDynaClass == null) {
-            rsDynaClass = new ResultSetDynaClass(rs, true);
-            rsDynaClassesCache.put(rs, rsDynaClass);
-        }
+   public T mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+      ResultSetDynaClass rsDynaClass = rsDynaClassesCache.get(rs);
+      if (rsDynaClass == null) {
+         rsDynaClass = new ResultSetDynaClass(rs, true);
+         rsDynaClassesCache.put(rs, rsDynaClass);
+      }
 
-        try {
-            // generate bean instance
-            final T bean = this.getBeanClass().newInstance();
-            //copy property from result set to created bean
-            for (final DynaProperty dynaProp : rsDynaClass.getDynaProperties()) {
-                final String dynaPropName = dynaProp.getName();
-                final Object dynaPropValue = rsDynaClass.getObjectFromResultSet(dynaPropName);
-                final String beanPropName = beanPropertyNames.get(dynaPropName);
-                BUB.copyProperty(bean, beanPropName, dynaPropValue);
-            }
+      try {
+         // generate bean instance
+         final T bean = this.getBeanClass().newInstance();
+         //copy property from result set to created bean
+         for (final DynaProperty dynaProp : rsDynaClass.getDynaProperties()) {
+            final String dynaPropName = dynaProp.getName();
+            final Object dynaPropValue = rsDynaClass.getObjectFromResultSet(dynaPropName);
+            final String beanPropName = beanPropertyNames.get(dynaPropName);
+            BUB.copyProperty(bean, beanPropName, dynaPropValue);
+         }
 
-            return bean;
-        } catch (final IllegalAccessException ex) {
-            LOG.error(ex);
-            throw new SQLException(ex.getMessage());
-        } catch (final InstantiationException ex) {
-            LOG.error(ex);
-            throw new SQLException(ex.getMessage());
-        } catch (final InvocationTargetException ex) {
-            LOG.error(ex);
-            throw new SQLException(ex.getMessage());
-        }
-    }
+         return bean;
+      } catch (final IllegalAccessException ex) {
+         LOG.error(ex);
+         throw new SQLException(ex.getMessage());
+      } catch (final InstantiationException ex) {
+         LOG.error(ex);
+         throw new SQLException(ex.getMessage());
+      } catch (final InvocationTargetException ex) {
+         LOG.error(ex);
+         throw new SQLException(ex.getMessage());
+      }
+   }
 
-    /**
-     * Method set beanClass and read information from the bean and to create internal mapping table
-     * for properties ( propertyNameLowerCase => propertyName )
-     *
-     * @param beanClass the beanClass to set
-     * @throws IntrospectionException
-     */
-    protected void setBeanClass(final Class<T> beanClass) throws IntrospectionException {
-        // get beanInformation from bean e.g. property names
-        final BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
+   /**
+    * Method set beanClass and read information from the bean and to create internal mapping table
+    * for properties ( propertyNameLowerCase => propertyName )
+    */
+   protected void setBeanClass(final Class<T> beanClass) throws IntrospectionException {
+      // get beanInformation from bean e.g. property names
+      final BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
 
-        final HashMap<String, String> propsLowerCase = new HashMap<String, String>();
-        for (final PropertyDescriptor prop : beanInfo.getPropertyDescriptors()) {
-            final String propName = prop.getName();
-            if (propsLowerCase.put(propName.toLowerCase(), propName) != null)
-                throw new IllegalStateException("Bean Class " + beanClass.getName() + " contains multiple properties with same lowercase representation: "
-                        + propName);
-        }
+      final HashMap<String, String> propsLowerCase = new HashMap<String, String>();
+      for (final PropertyDescriptor prop : beanInfo.getPropertyDescriptors()) {
+         final String propName = prop.getName();
+         if (propsLowerCase.put(propName.toLowerCase(), propName) != null)
+            throw new IllegalStateException("Bean Class " + beanClass.getName() + " contains multiple properties with same lowercase representation: "
+               + propName);
+      }
 
-        this.beanClass = beanClass;
-        this.beanPropertyNames = propsLowerCase;
-    }
+      this.beanClass = beanClass;
+      this.beanPropertyNames = propsLowerCase;
+   }
 }

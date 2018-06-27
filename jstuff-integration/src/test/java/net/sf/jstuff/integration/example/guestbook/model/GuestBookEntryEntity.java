@@ -21,50 +21,50 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class GuestBookEntryEntity extends AbstractEntity {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final GuestBookEntryEntity parent;
-    private String message;
-    private List<GuestBookEntryRatingEntity> ratings = new ArrayList<GuestBookEntryRatingEntity>();
-    private List<GuestBookEntryEntity> responses = new ArrayList<GuestBookEntryEntity>();
+   private final GuestBookEntryEntity parent;
+   private String message;
+   private List<GuestBookEntryRatingEntity> ratings = new ArrayList<GuestBookEntryRatingEntity>();
+   private List<GuestBookEntryEntity> responses = new ArrayList<GuestBookEntryEntity>();
 
-    public GuestBookEntryEntity(final String createdBy) {
-        super(createdBy);
-        parent = null;
-    }
+   public GuestBookEntryEntity(final String createdBy) {
+      super(createdBy);
+      parent = null;
+   }
 
-    public GuestBookEntryEntity(final String createdBy, final String message, final GuestBookEntryEntity parent) {
-        super(createdBy);
-        setMessage(message);
-        this.parent = parent;
-    }
+   public GuestBookEntryEntity(final String createdBy, final String message, final GuestBookEntryEntity parent) {
+      super(createdBy);
+      setMessage(message);
+      this.parent = parent;
+   }
 
-    public List<GuestBookEntryEntity> getResponses() {
-        return responses;
-    }
+   public List<GuestBookEntryEntity> getResponses() {
+      return responses;
+   }
 
-    public void setResponses(final List<GuestBookEntryEntity> responses) {
-        this.responses = responses;
-    }
+   public void setResponses(final List<GuestBookEntryEntity> responses) {
+      this.responses = responses;
+   }
 
-    public GuestBookEntryEntity getParent() {
-        return parent;
-    }
+   public GuestBookEntryEntity getParent() {
+      return parent;
+   }
 
-    public String getMessage() {
-        return message;
-    }
+   public String getMessage() {
+      return message;
+   }
 
-    public void setMessage(final String message) {
-        Args.notEmpty("message", message);
-        this.message = message.trim();
-    }
+   public void setMessage(final String message) {
+      Args.notEmpty("message", message);
+      this.message = message.trim();
+   }
 
-    public List<GuestBookEntryRatingEntity> getRatings() {
-        return ratings;
-    }
+   public List<GuestBookEntryRatingEntity> getRatings() {
+      return ratings;
+   }
 
-    public void setRatings(final List<GuestBookEntryRatingEntity> ratings) {
-        this.ratings = ratings;
-    }
+   public void setRatings(final List<GuestBookEntryRatingEntity> ratings) {
+      this.ratings = ratings;
+   }
 }

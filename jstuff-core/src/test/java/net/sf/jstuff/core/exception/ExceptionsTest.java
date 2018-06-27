@@ -21,39 +21,39 @@ import junit.framework.TestCase;
  */
 public class ExceptionsTest extends TestCase {
 
-    public void testThrowUnchecked() {
-        try {
-            Exceptions.throwUnchecked(new IOException());
-            fail();
-        } catch (final RuntimeException ex) {
-            assertEquals(IOException.class, ex.getCause().getClass());
-        }
+   public void testThrowUnchecked() {
+      try {
+         Exceptions.throwUnchecked(new IOException());
+         fail();
+      } catch (final RuntimeException ex) {
+         assertEquals(IOException.class, ex.getCause().getClass());
+      }
 
-        try {
-            throw Exceptions.throwUnchecked(new IOException());
-        } catch (final RuntimeException ex) {
-            assertEquals(IOException.class, ex.getCause().getClass());
-        }
+      try {
+         throw Exceptions.throwUnchecked(new IOException());
+      } catch (final RuntimeException ex) {
+         assertEquals(IOException.class, ex.getCause().getClass());
+      }
 
-        try {
-            Exceptions.throwUncheckedRaw(new IOException());
-            fail();
-        } catch (final Exception ex) {
-            assertEquals(IOException.class, ex.getClass());
-        }
+      try {
+         Exceptions.throwUncheckedRaw(new IOException());
+         fail();
+      } catch (final Exception ex) {
+         assertEquals(IOException.class, ex.getClass());
+      }
 
-        try {
-            throw Exceptions.throwUncheckedRaw(new IOException());
-        } catch (final Exception ex) {
-            assertEquals(IOException.class, ex.getClass());
-        }
-    }
+      try {
+         throw Exceptions.throwUncheckedRaw(new IOException());
+      } catch (final Exception ex) {
+         assertEquals(IOException.class, ex.getClass());
+      }
+   }
 
-    public void testWrapAs() {
-        final Exception ex = new Exception();
-        assertSame(ex, Exceptions.wrapAs(ex, Exception.class));
-        assertEquals(RuntimeException.class, Exceptions.wrapAs(ex, RuntimeException.class).getClass());
-        assertEquals(ex, Exceptions.wrapAs(ex, RuntimeException.class).getCause());
-        ex.printStackTrace();
-    }
+   public void testWrapAs() {
+      final Exception ex = new Exception();
+      assertSame(ex, Exceptions.wrapAs(ex, Exception.class));
+      assertEquals(RuntimeException.class, Exceptions.wrapAs(ex, RuntimeException.class).getClass());
+      assertEquals(ex, Exceptions.wrapAs(ex, RuntimeException.class).getCause());
+      ex.printStackTrace();
+   }
 }

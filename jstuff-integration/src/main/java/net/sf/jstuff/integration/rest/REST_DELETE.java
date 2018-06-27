@@ -22,18 +22,18 @@ import java.lang.annotation.Target;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-@Target({ ElementType.METHOD })
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface REST_DELETE {
-    /**
-     * POST resource id for clients not supporting DELETE
-     */
-    String fallback() default "";
+public @interface REST_DELETE { // CHECKSTYLE:IGNORE (AbbreviationAsWordInName|TypeName)
+   /**
+    * POST resource id for clients not supporting DELETE
+    */
+   String fallback() default "";
 
-    /**
-     * resource name
-     */
-    String value();
+   /**
+    * resource name
+    */
+   String value();
 }

@@ -28,141 +28,141 @@ import net.sf.jstuff.integration.serviceregistry.impl.DefaultServiceRegistry.Ser
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProxyInternal<SERVICE_INTERFACE> {
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    protected final Class<SERVICE_INTERFACE> serviceInterface;
-    protected final String serviceEndpointId;
-    private final ServiceEndpointState serviceEndpointState;
+   protected final Class<SERVICE_INTERFACE> serviceInterface;
+   protected final String serviceEndpointId;
+   private final ServiceEndpointState serviceEndpointState;
 
-    private final Set<ServiceListener<SERVICE_INTERFACE>> listeners = new WeakHashSet<ServiceListener<SERVICE_INTERFACE>>();
-    private final Lock listeners_READ;
-    private final Lock listeners_WRITE;
+   private final Set<ServiceListener<SERVICE_INTERFACE>> listeners = new WeakHashSet<ServiceListener<SERVICE_INTERFACE>>();
+   private final Lock listeners_READ;
+   private final Lock listeners_WRITE;
 
-    private ServiceProxyInternal<SERVICE_INTERFACE> proxy;
+   private ServiceProxyInternal<SERVICE_INTERFACE> proxy;
 
-    public DefaultServiceProxyAdvice(final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
-        Args.notNull("serviceEndpointState", serviceEndpointState);
-        Args.notNull("serviceInterface", serviceInterface);
+   public DefaultServiceProxyAdvice(final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
+      Args.notNull("serviceEndpointState", serviceEndpointState);
+      Args.notNull("serviceInterface", serviceInterface);
 
-        this.serviceEndpointState = serviceEndpointState;
-        this.serviceInterface = serviceInterface;
-        serviceEndpointId = serviceEndpointState.getServiceEndpointId();
+      this.serviceEndpointState = serviceEndpointState;
+      this.serviceInterface = serviceInterface;
+      serviceEndpointId = serviceEndpointState.getServiceEndpointId();
 
-        final ReadWriteLock lock = new ReentrantReadWriteLock();
-        listeners_READ = lock.readLock();
-        listeners_WRITE = lock.writeLock();
-    }
+      final ReadWriteLock lock = new ReentrantReadWriteLock();
+      listeners_READ = lock.readLock();
+      listeners_WRITE = lock.writeLock();
+   }
 
-    public boolean addServiceListener(final ServiceListener<SERVICE_INTERFACE> listener) {
-        Args.notNull("listener", listener);
+   public boolean addServiceListener(final ServiceListener<SERVICE_INTERFACE> listener) {
+      Args.notNull("listener", listener);
 
-        listeners_WRITE.lock();
-        try {
-            final boolean rc = listeners.add(listener);
-            serviceEndpointState.onListenerAdded(proxy);
-            return rc;
-        } finally {
-            listeners_WRITE.unlock();
-        }
-    }
+      listeners_WRITE.lock();
+      try {
+         final boolean rc = listeners.add(listener);
+         serviceEndpointState.onListenerAdded(proxy);
+         return rc;
+      } finally {
+         listeners_WRITE.unlock();
+      }
+   }
 
-    @SuppressWarnings("unchecked")
-    public SERVICE_INTERFACE get() {
-        return (SERVICE_INTERFACE) proxy;
-    }
+   @SuppressWarnings("unchecked")
+   public SERVICE_INTERFACE get() {
+      return (SERVICE_INTERFACE) proxy;
+   }
 
-    public int getListenerCount() {
-        listeners_READ.lock();
-        try {
-            return listeners.size();
-        } finally {
+   public int getListenerCount() {
+      listeners_READ.lock();
+      try {
+         return listeners.size();
+      } finally {
+         listeners_READ.unlock();
+      }
+   }
+
+   public String getServiceEndpointId() {
+      return serviceEndpointId;
+   }
+
+   public Class<?> getServiceImplementationClass() {
+      final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
+      return service == null ? null : service.getClass();
+   }
+
+   public Class<SERVICE_INTERFACE> getServiceInterface() {
+      return serviceInterface;
+   }
+
+   public boolean isServiceAvailable() {
+      return serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null;
+   }
+
+   @SuppressWarnings("unchecked")
+   public void onServiceAvailable() {
+      if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null) {
+         final ServiceListener<SERVICE_INTERFACE>[] listeners;
+         listeners_READ.lock();
+         try {
+            if (this.listeners.size() == 0)
+               return;
+            listeners = this.listeners.toArray(new ServiceListener[this.listeners.size()]);
+         } finally {
             listeners_READ.unlock();
-        }
-    }
+         }
 
-    public String getServiceEndpointId() {
-        return serviceEndpointId;
-    }
-
-    public Class<?> getServiceImplementationClass() {
-        final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
-        return service == null ? null : service.getClass();
-    }
-
-    public Class<SERVICE_INTERFACE> getServiceInterface() {
-        return serviceInterface;
-    }
-
-    public boolean isServiceAvailable() {
-        return serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void onServiceAvailable() {
-        if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null) {
-            ServiceListener<SERVICE_INTERFACE>[] listeners;
-            listeners_READ.lock();
+         for (final ServiceListener<SERVICE_INTERFACE> listener : listeners) {
             try {
-                if (this.listeners.size() == 0)
-                    return;
-                listeners = this.listeners.toArray(new ServiceListener[this.listeners.size()]);
-            } finally {
-                listeners_READ.unlock();
+               listener.onServiceAvailable(proxy);
+            } catch (final Exception ex) {
+               LOG.error(ex, "Failed to notify listener %s", listener);
             }
+         }
+      }
+   }
 
-            for (final ServiceListener<SERVICE_INTERFACE> listener : listeners) {
-                try {
-                    listener.onServiceAvailable(proxy);
-                } catch (final Exception ex) {
-                    LOG.error(ex, "Failed to notify listener %s", listener);
-                }
-            }
-        }
-    }
+   @SuppressWarnings("unchecked")
+   public void onServiceUnavailable() {
+      if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) == null) {
+         final ServiceListener<SERVICE_INTERFACE>[] listeners;
+         listeners_READ.lock();
+         try {
+            if (this.listeners.size() == 0)
+               return;
+            listeners = this.listeners.toArray(new ServiceListener[this.listeners.size()]);
+         } finally {
+            listeners_READ.unlock();
+         }
 
-    @SuppressWarnings("unchecked")
-    public void onServiceUnavailable() {
-        if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) == null) {
-            ServiceListener<SERVICE_INTERFACE>[] listeners;
-            listeners_READ.lock();
+         for (final ServiceListener<SERVICE_INTERFACE> listener : listeners) {
             try {
-                if (this.listeners.size() == 0)
-                    return;
-                listeners = this.listeners.toArray(new ServiceListener[this.listeners.size()]);
-            } finally {
-                listeners_READ.unlock();
+               listener.onServiceUnavailable(proxy);
+            } catch (final Exception ex) {
+               LOG.error(ex, "Failed to notify listener %s", listener);
             }
+         }
+      }
+   }
 
-            for (final ServiceListener<SERVICE_INTERFACE> listener : listeners) {
-                try {
-                    listener.onServiceUnavailable(proxy);
-                } catch (final Exception ex) {
-                    LOG.error(ex, "Failed to notify listener %s", listener);
-                }
-            }
-        }
-    }
+   public boolean removeServiceListener(final ServiceListener<SERVICE_INTERFACE> listener) {
+      Args.notNull("listener", listener);
 
-    public boolean removeServiceListener(final ServiceListener<SERVICE_INTERFACE> listener) {
-        Args.notNull("listener", listener);
+      listeners_WRITE.lock();
+      try {
+         return listeners.remove(listener);
+      } finally {
+         listeners_WRITE.unlock();
+      }
+   }
 
-        listeners_WRITE.lock();
-        try {
-            return listeners.remove(listener);
-        } finally {
-            listeners_WRITE.unlock();
-        }
-    }
+   public void setProxy(final ServiceProxyInternal<SERVICE_INTERFACE> proxy) {
+      this.proxy = proxy;
+   }
 
-    public void setProxy(final ServiceProxyInternal<SERVICE_INTERFACE> proxy) {
-        this.proxy = proxy;
-    }
-
-    @Override
-    public String toString() {
-        return ServiceProxy.class.getSimpleName() //
-                + "[serviceEndpointId=" + serviceEndpointId //
-                + ", serviceInterface=" + serviceInterface //
-                + ", service=" + serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) + "]";
-    }
+   @Override
+   public String toString() {
+      return ServiceProxy.class.getSimpleName() //
+         + "[serviceEndpointId=" + serviceEndpointId //
+         + ", serviceInterface=" + serviceInterface //
+         + ", service=" + serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) + "]";
+   }
 }

@@ -27,56 +27,56 @@ import net.sf.jstuff.core.collection.ObjectCache;
  */
 public class TypesTest extends TestCase {
 
-    public void testFindLibrary() {
-        File library;
+   public void testFindLibrary() {
+      File library;
 
-        // locate JDK class
-        library = Types.findLibrary(String.class);
-        assertNotNull(library);
-        assertFalse(library.isDirectory());
-        assertTrue(library.isFile());
-        assertTrue(library.exists());
+      // locate JDK class
+      library = Types.findLibrary(String.class);
+      assertNotNull(library);
+      assertFalse(library.isDirectory());
+      assertTrue(library.isFile());
+      assertTrue(library.exists());
 
-        // locate class in 3rd party JAR
-        library = Types.findLibrary(NOPLogger.class);
-        assertNotNull(library);
-        assertFalse(library.isDirectory());
-        assertTrue(library.isFile());
-        assertTrue(library.exists());
+      // locate class in 3rd party JAR
+      library = Types.findLibrary(NOPLogger.class);
+      assertNotNull(library);
+      assertFalse(library.isDirectory());
+      assertTrue(library.isFile());
+      assertTrue(library.exists());
 
-        // locate class in exploded directory (target/classes)
-        library = Types.findLibrary(ObjectCache.class);
-        assertNotNull(library);
-        assertTrue(library.isDirectory());
-        assertFalse(library.isFile());
-        assertTrue(library.exists());
+      // locate class in exploded directory (target/classes)
+      library = Types.findLibrary(ObjectCache.class);
+      assertNotNull(library);
+      assertTrue(library.isDirectory());
+      assertFalse(library.isFile());
+      assertTrue(library.exists());
 
-        // locate anonymous inner class in exploded directory (target/classes)
-        final Runnable r = new Runnable() {
-            public void run() {
-            }
-        };
-        library = Types.findLibrary(r.getClass());
-        assertNotNull(library);
-        assertTrue(library.isDirectory());
-        assertFalse(library.isFile());
-        assertTrue(library.exists());
-    }
+      // locate anonymous inner class in exploded directory (target/classes)
+      final Runnable r = new Runnable() {
+         public void run() {
+         }
+      };
+      library = Types.findLibrary(r.getClass());
+      assertNotNull(library);
+      assertTrue(library.isDirectory());
+      assertFalse(library.isFile());
+      assertTrue(library.exists());
+   }
 
-    public void testGetVersion() {
-        // from META-INF/MANIFEST.MF
-        assertEquals("3.1", Types.getVersion(ObjectUtils.class));
+   public void testGetVersion() {
+      // from META-INF/MANIFEST.MF
+      assertEquals("3.1", Types.getVersion(ObjectUtils.class));
 
-        // from META-INF/maven/.../pom.properties
-        assertEquals("2.8", Types.getVersion(Paranamer.class));
+      // from META-INF/maven/.../pom.properties
+      assertEquals("2.8", Types.getVersion(Paranamer.class));
 
-        // from jar name
-        assertEquals("4.12", Types.getVersion(TestCase.class));
-    }
+      // from jar name
+      assertEquals("4.12", Types.getVersion(TestCase.class));
+   }
 
-    public void testIsAssignableTo() {
-        assertTrue(Types.isAssignableTo(Integer.class, Number.class));
-        assertFalse(Types.isAssignableTo(Number.class, Integer.class));
-        assertTrue(Types.isAssignableTo(String.class, Object.class));
-    }
+   public void testIsAssignableTo() {
+      assertTrue(Types.isAssignableTo(Integer.class, Number.class));
+      assertFalse(Types.isAssignableTo(Number.class, Integer.class));
+      assertTrue(Types.isAssignableTo(String.class, Object.class));
+   }
 }

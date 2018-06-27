@@ -24,18 +24,18 @@ import net.sf.jstuff.core.reflection.Methods;
  */
 public class ResettableCountDownLatch extends CountDownLatch {
 
-    private final AbstractQueuedSynchronizer _sync;
-    private final Method _syncSetState;
-    private final int count;
+   private final AbstractQueuedSynchronizer _sync;
+   private final Method _syncSetState;
+   private final int count;
 
-    public ResettableCountDownLatch(final int count) {
-        super(count);
-        this.count = count;
-        _sync = Fields.read(this, "sync");
-        _syncSetState = Methods.findAny(AbstractQueuedSynchronizer.class, "setState", int.class);
-    }
+   public ResettableCountDownLatch(final int count) {
+      super(count);
+      this.count = count;
+      _sync = Fields.read(this, "sync");
+      _syncSetState = Methods.findAny(AbstractQueuedSynchronizer.class, "setState", int.class);
+   }
 
-    public void reset() {
-        Methods.invoke(_sync, _syncSetState, count);
-    }
+   public void reset() {
+      Methods.invoke(_sync, _syncSetState, count);
+   }
 }

@@ -25,56 +25,57 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class MetaSerializationTest extends TestCase {
-    public static class Entity<SELF_TYPE extends Entity<SELF_TYPE>> {
-        private String comment;
+   public static class Entity<SELF_TYPE extends Entity<SELF_TYPE>> {
+      public static final ClassDescriptor<EntityMeta> META_CLASS = EntityMeta.META_CLASS;
 
-        public static final ClassDescriptor<EntityMeta> META_CLASS = EntityMeta.META_CLASS;
+      private String comment;
 
-        @SuppressWarnings("unchecked")
-        public <T> T _get(final PropertyDescriptor<T> property) {
-            Args.notNull("property", property);
+      @SuppressWarnings("unchecked")
+      public <T> T _get(final PropertyDescriptor<T> property) {
+         Args.notNull("property", property);
 
-            if (property.equals(EntityMeta.PROP_comment))
-                return (T) getComment();
-            throw new UnsupportedOperationException();
-        }
+         if (property.equals(EntityMeta.PROP_comment))
+            return (T) getComment();
+         throw new UnsupportedOperationException();
+      }
 
-        public ClassDescriptor<EntityMeta> _getMetaClass() {
-            return EntityMeta.META_CLASS;
-        }
+      public ClassDescriptor<EntityMeta> _getMetaClass() {
+         return EntityMeta.META_CLASS;
+      }
 
-        public <T> SELF_TYPE _set(final PropertyDescriptor<T> property, final T value) {
-            Args.notNull("property", property);
+      public <T> SELF_TYPE _set(final PropertyDescriptor<T> property, final T value) {
+         Args.notNull("property", property);
 
-            if (property.equals(EntityMeta.PROP_comment)) {
-                setComment((String) value);
-            }
-            throw new UnsupportedOperationException();
-        }
+         if (property.equals(EntityMeta.PROP_comment)) {
+            setComment((String) value);
+         }
+         throw new UnsupportedOperationException();
+      }
 
-        public String getComment() {
-            return comment;
-        }
+      public String getComment() {
+         return comment;
+      }
 
-        public void setComment(final String comment) {
-            this.comment = comment;
-        }
-    }
+      public void setComment(final String comment) {
+         this.comment = comment;
+      }
+   }
 
-    public static class EntityMeta {
-        public static final ClassDescriptor<EntityMeta> META_CLASS = ClassDescriptor.of(EntityMeta.class, "Entity", null, null);
+   public static class EntityMeta {
+      public static final ClassDescriptor<EntityMeta> META_CLASS = ClassDescriptor.of(EntityMeta.class, "Entity", null, null);
 
-        public static final PropertyDescriptor<String> PROP_comment = PropertyDescriptor.create(META_CLASS, //
-            "comment", String.class, 0, 1, false, false, true, //
-            "", Maps.newHashMap( //
-                "descr", (Serializable) "this entity's comment" //
-            ));
-    }
+      // CHECKSTYLE:IGNORE ConstantName FOR NEXT 2 LINES
+      public static final PropertyDescriptor<String> PROP_comment = PropertyDescriptor.create(META_CLASS, //
+         "comment", String.class, 0, 1, false, false, true, //
+         "", Maps.newHashMap( //
+            "descr", (Serializable) "this entity's comment" //
+         ));
+   }
 
-    public void testSerialization() {
-        assertNotNull(Entity.META_CLASS);
-        assertSame(Entity.META_CLASS, SerializationUtils.clone(Entity.META_CLASS));
-        assertSame(Entity.META_CLASS, SerializationUtils.clone(EntityMeta.PROP_comment.getMetaClass()));
-        assertSame(EntityMeta.PROP_comment, SerializationUtils.clone(EntityMeta.PROP_comment));
-    }
+   public void testSerialization() {
+      assertNotNull(Entity.META_CLASS);
+      assertSame(Entity.META_CLASS, SerializationUtils.clone(Entity.META_CLASS));
+      assertSame(Entity.META_CLASS, SerializationUtils.clone(EntityMeta.PROP_comment.getMetaClass()));
+      assertSame(EntityMeta.PROP_comment, SerializationUtils.clone(EntityMeta.PROP_comment));
+   }
 }

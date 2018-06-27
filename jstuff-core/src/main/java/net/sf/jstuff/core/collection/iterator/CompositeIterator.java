@@ -23,51 +23,51 @@ import net.sf.jstuff.core.types.Composite;
  */
 public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V>> implements Iterator<V> {
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private Iterator<? extends V> lastItemIterator = Iterators.empty();
-    private Iterator<? extends V> nextItemIterator = Iterators.empty();
+   private Iterator<? extends V> lastItemIterator = Iterators.empty();
+   private Iterator<? extends V> nextItemIterator = Iterators.empty();
 
-    public CompositeIterator() {
-        super();
-    }
+   public CompositeIterator() {
+      super();
+   }
 
-    public CompositeIterator(final Collection<? extends Iterator<V>> components) {
-        super(components);
-        if (this.components.size() > 0) {
-            nextItemIterator = CollectionUtils.remove(this.components, 0);
-        }
-    }
+   public CompositeIterator(final Collection<? extends Iterator<V>> components) {
+      super(components);
+      if (this.components.size() > 0) {
+         nextItemIterator = CollectionUtils.remove(this.components, 0);
+      }
+   }
 
-    public CompositeIterator(final Iterator<V>... components) {
-        super(components);
-        if (this.components.size() > 0) {
-            nextItemIterator = CollectionUtils.remove(this.components, 0);
-        }
-    }
+   public CompositeIterator(final Iterator<V>... components) {
+      super(components);
+      if (this.components.size() > 0) {
+         nextItemIterator = CollectionUtils.remove(this.components, 0);
+      }
+   }
 
-    public boolean hasNext() {
-        prepareNextItemIterator();
-        return nextItemIterator.hasNext();
-    }
+   public boolean hasNext() {
+      prepareNextItemIterator();
+      return nextItemIterator.hasNext();
+   }
 
-    public V next() {
-        prepareNextItemIterator();
-        final V item = nextItemIterator.next();
-        lastItemIterator = nextItemIterator;
-        return item;
-    }
+   public V next() {
+      prepareNextItemIterator();
+      final V item = nextItemIterator.next();
+      lastItemIterator = nextItemIterator;
+      return item;
+   }
 
-    protected void prepareNextItemIterator() {
-        if (nextItemIterator.hasNext())
-            return;
-        if (components.size() > 0) {
-            nextItemIterator = CollectionUtils.remove(components, 0);
-            prepareNextItemIterator();
-        }
-    }
+   protected void prepareNextItemIterator() {
+      if (nextItemIterator.hasNext())
+         return;
+      if (components.size() > 0) {
+         nextItemIterator = CollectionUtils.remove(components, 0);
+         prepareNextItemIterator();
+      }
+   }
 
-    public void remove() {
-        lastItemIterator.remove();
-    }
+   public void remove() {
+      lastItemIterator.remove();
+   }
 }

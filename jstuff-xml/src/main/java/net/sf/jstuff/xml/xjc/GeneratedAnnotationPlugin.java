@@ -34,41 +34,41 @@ import com.sun.tools.xjc.outline.PackageOutline;
  */
 public class GeneratedAnnotationPlugin extends AbstractPlugin {
 
-    public static final String OPTION_NAME = "Xmark-generated";
+   public static final String OPTION_NAME = "Xmark-generated";
 
-    @Override
-    public String getOptionName() {
-        return OPTION_NAME;
-    }
+   @Override
+   public String getOptionName() {
+      return OPTION_NAME;
+   }
 
-    @Override
-    public String getUsage() {
-        return "  -" + OPTION_NAME + "    :  mark the generated types as @javax.annotation.Generated";
-    }
+   @Override
+   public String getUsage() {
+      return "  -" + OPTION_NAME + "    :  mark the generated types as @javax.annotation.Generated";
+   }
 
-    private JClass generatedAnnotation;
+   private JClass generatedAnnotation;
 
-    @Override
-    public boolean run(final Outline model, final Options options, final ErrorHandler errorHandler) {
-        // we want this to work without requiring JSR-250 jar.
-        generatedAnnotation = model.getCodeModel().ref("javax.annotation.Generated");
+   @Override
+   public boolean run(final Outline model, final Options options, final ErrorHandler errorHandler) {
+      // we want this to work without requiring JSR-250 jar.
+      generatedAnnotation = model.getCodeModel().ref("javax.annotation.Generated");
 
-        for (final PackageOutline pkgDef : model.getAllPackageContexts()) {
-            annotate(pkgDef._package());
-        }
-        for (final ClassOutline classDef : model.getClasses()) {
-            annotate(classDef.implClass);
-        }
-        for (final EnumOutline enumDef : model.getEnums()) {
-            annotate(enumDef.clazz);
-        }
+      for (final PackageOutline pkgDef : model.getAllPackageContexts()) {
+         annotate(pkgDef._package());
+      }
+      for (final ClassOutline classDef : model.getClasses()) {
+         annotate(classDef.implClass);
+      }
+      for (final EnumOutline enumDef : model.getEnums()) {
+         annotate(enumDef.clazz);
+      }
 
-        return true;
-    }
+      return true;
+   }
 
-    private void annotate(final JAnnotatable m) {
-        m.annotate(generatedAnnotation) //
-            .param("value", Driver.class.getName())//
-            .param("comments", "JAXB RI v" + Options.getBuildID());
-    }
+   private void annotate(final JAnnotatable m) {
+      m.annotate(generatedAnnotation) //
+         .param("value", Driver.class.getName())//
+         .param("comments", "JAXB RI v" + Options.getBuildID());
+   }
 }

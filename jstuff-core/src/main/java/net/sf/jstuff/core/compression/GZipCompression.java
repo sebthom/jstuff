@@ -32,81 +32,81 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class GZipCompression extends AbstractCompression {
 
-    public static final GZipCompression INSTANCE = new GZipCompression();
+   public static final GZipCompression INSTANCE = new GZipCompression();
 
-    /**
-     * https://www.rootusers.com/gzip-vs-bzip2-vs-xz-performance-comparison/
-     */
-    private int compressionLevel = 4;
+   /**
+    * https://www.rootusers.com/gzip-vs-bzip2-vs-xz-performance-comparison/
+    */
+   private int compressionLevel = 4;
 
-    public GZipCompression() {
-    }
+   public GZipCompression() {
+   }
 
-    public GZipCompression(final int compressionLevel) {
-        this.compressionLevel = compressionLevel;
-    }
+   public GZipCompression(final int compressionLevel) {
+      this.compressionLevel = compressionLevel;
+   }
 
-    @SuppressWarnings("resource")
-    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
+      Args.notNull("output", output);
 
-        if (!closeOutput) {
-            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-            output = new DelegatingOutputStream(output, true);
-        }
-        try {
-            final GZIPOutputStream compOS = (GZIPOutputStream) createCompressingOutputStream(output);
-            compOS.write(uncompressed);
-            compOS.finish();
-        } finally {
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      if (!closeOutput) {
+         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         output = new DelegatingOutputStream(output, true);
+      }
+      try {
+         final GZIPOutputStream compOS = (GZIPOutputStream) createCompressingOutputStream(output);
+         compOS.write(uncompressed);
+         compOS.finish();
+      } finally {
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    @SuppressWarnings("resource")
-    public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
+      Args.notNull("output", output);
 
-        if (!closeOutput) {
-            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-            output = new DelegatingOutputStream(output, true);
-        }
+      if (!closeOutput) {
+         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         output = new DelegatingOutputStream(output, true);
+      }
 
-        try {
-            final GZIPOutputStream compOS = (GZIPOutputStream) createCompressingOutputStream(output);
-            IOUtils.copyLarge(uncompressed, compOS);
-            compOS.finish();
-        } finally {
-            IOUtils.closeQuietly(uncompressed);
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         final GZIPOutputStream compOS = (GZIPOutputStream) createCompressingOutputStream(output);
+         IOUtils.copyLarge(uncompressed, compOS);
+         compOS.finish();
+      } finally {
+         IOUtils.closeQuietly(uncompressed);
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    @Override
-    public InputStream createCompressingInputStream(final InputStream uncompressed) throws IOException {
-        return new GZIPCompressingInputStream(uncompressed, compressionLevel);
-    }
+   @Override
+   public InputStream createCompressingInputStream(final InputStream uncompressed) throws IOException {
+      return new GZIPCompressingInputStream(uncompressed, compressionLevel);
+   }
 
-    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
-        return new GZIPOutputStream(output) {
-            {
-                def.setLevel(compressionLevel);
-            }
-        };
-    }
+   public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
+      return new GZIPOutputStream(output) {
+         {
+            def.setLevel(compressionLevel);
+         }
+      };
+   }
 
-    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
-        return new GZIPInputStream(compressed);
-    }
+   public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+      return new GZIPInputStream(compressed);
+   }
 
-    @Override
-    public String toString() {
-        return Strings.toString(this, "compressionLevel", compressionLevel);
-    }
+   @Override
+   public String toString() {
+      return Strings.toString(this, "compressionLevel", compressionLevel);
+   }
 }

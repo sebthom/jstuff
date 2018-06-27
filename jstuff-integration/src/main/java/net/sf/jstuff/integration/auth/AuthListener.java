@@ -18,7 +18,7 @@ import net.sf.jstuff.integration.userregistry.UserDetails;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface AuthListener {
-    void afterLogin(Authentication authentication);
+   void afterLogin(Authentication authentication);
 
-    void afterLogout(UserDetails userDetails);
+   void afterLogout(UserDetails userDetails);
 }

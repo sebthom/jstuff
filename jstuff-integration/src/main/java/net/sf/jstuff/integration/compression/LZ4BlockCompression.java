@@ -35,91 +35,91 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class LZ4BlockCompression extends AbstractCompression {
 
-    public static final LZ4BlockCompression INSTANCE = new LZ4BlockCompression();
+   public static final LZ4BlockCompression INSTANCE = new LZ4BlockCompression();
 
-    private static final int DEFAULT_BLOCK_SIZE = 64 * 1024;
+   private static final int DEFAULT_BLOCK_SIZE = 64 * 1024;
 
-    private static final LZ4Compressor COMP = LZ4Factory.fastestInstance().fastCompressor();
-    private static final LZ4FastDecompressor DECOMP = LZ4Factory.fastestInstance().fastDecompressor();
-    private static final ThreadLocal<Checksum> CHECKSUM = new ThreadLocal<Checksum>() {
+   private static final LZ4Compressor COMP = LZ4Factory.fastestInstance().fastCompressor();
+   private static final LZ4FastDecompressor DECOMP = LZ4Factory.fastestInstance().fastDecompressor();
+   private static final ThreadLocal<Checksum> CHECKSUM = new ThreadLocal<Checksum>() {
 
-        @Override
-        protected Checksum initialValue() {
-            return XXHashFactory.fastestInstance().newStreamingHash32(0x9747b28c).asChecksum();
-        }
-    };
+      @Override
+      protected Checksum initialValue() {
+         return XXHashFactory.fastestInstance().newStreamingHash32(0x9747b28c).asChecksum();
+      }
+   };
 
-    @SuppressWarnings("resource")
-    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
+      Args.notNull("output", output);
 
-        final int blockSize = uncompressed.length >= DEFAULT_BLOCK_SIZE ? DEFAULT_BLOCK_SIZE : uncompressed.length < 65 ? 64 : uncompressed.length;
+      final int blockSize = uncompressed.length >= DEFAULT_BLOCK_SIZE ? DEFAULT_BLOCK_SIZE : uncompressed.length < 65 ? 64 : uncompressed.length;
 
-        if (!closeOutput) {
-            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-            output = new DelegatingOutputStream(output, true);
-        }
-        try {
-            final LZ4BlockOutputStream compOS = new LZ4BlockOutputStream(output, blockSize, COMP, CHECKSUM.get(), false);
-            compOS.write(uncompressed);
-            compOS.finish();
-        } finally {
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      if (!closeOutput) {
+         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         output = new DelegatingOutputStream(output, true);
+      }
+      try {
+         final LZ4BlockOutputStream compOS = new LZ4BlockOutputStream(output, blockSize, COMP, CHECKSUM.get(), false);
+         compOS.write(uncompressed);
+         compOS.finish();
+      } finally {
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    @SuppressWarnings("resource")
-    public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
+      Args.notNull("output", output);
 
-        if (!closeOutput) {
-            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-            output = new DelegatingOutputStream(output, true);
-        }
+      if (!closeOutput) {
+         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         output = new DelegatingOutputStream(output, true);
+      }
 
-        try {
-            final LZ4BlockOutputStream compOS = new LZ4BlockOutputStream(output, DEFAULT_BLOCK_SIZE, COMP, CHECKSUM.get(), false);
-            IOUtils.copyLarge(uncompressed, compOS);
-            compOS.finish();
-        } finally {
-            IOUtils.closeQuietly(uncompressed);
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         final LZ4BlockOutputStream compOS = new LZ4BlockOutputStream(output, DEFAULT_BLOCK_SIZE, COMP, CHECKSUM.get(), false);
+         IOUtils.copyLarge(uncompressed, compOS);
+         compOS.finish();
+      } finally {
+         IOUtils.closeQuietly(uncompressed);
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
-        return new LZ4BlockOutputStream(output, DEFAULT_BLOCK_SIZE, COMP);
-    }
+   public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
+      return new LZ4BlockOutputStream(output, DEFAULT_BLOCK_SIZE, COMP);
+   }
 
-    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
-        return new LZ4BlockInputStream(compressed, DECOMP);
-    }
+   public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+      return new LZ4BlockInputStream(compressed, DECOMP);
+   }
 
-    @Override
-    public void decompress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("input", input);
-        Args.notNull("output", output);
+   @Override
+   public void decompress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("input", input);
+      Args.notNull("output", output);
 
-        try {
-            @SuppressWarnings("resource")
-            final LZ4BlockInputStream compIS = new LZ4BlockInputStream(input, DECOMP, CHECKSUM.get());
-            IOUtils.copyLarge(compIS, output);
-        } finally {
-            IOUtils.closeQuietly(input);
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         @SuppressWarnings("resource")
+         final LZ4BlockInputStream compIS = new LZ4BlockInputStream(input, DECOMP, CHECKSUM.get());
+         IOUtils.copyLarge(compIS, output);
+      } finally {
+         IOUtils.closeQuietly(input);
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    @Override
-    public String toString() {
-        return Strings.toString(this, new Object[0]);
-    }
+   @Override
+   public String toString() {
+      return Strings.toString(this, new Object[0]);
+   }
 }

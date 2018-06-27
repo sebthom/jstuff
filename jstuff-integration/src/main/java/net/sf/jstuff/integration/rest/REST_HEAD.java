@@ -22,18 +22,18 @@ import java.lang.annotation.Target;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-@Target({ ElementType.METHOD })
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface REST_HEAD {
-    /**
-     * GET resource id for clients not supporting HEAD
-     */
-    String fallback() default "";
+public @interface REST_HEAD { // CHECKSTYLE:IGNORE TypeName
+   /**
+    * GET resource id for clients not supporting HEAD
+    */
+   String fallback() default "";
 
-    /**
-     * resource name
-     */
-    String value();
+   /**
+    * resource name
+    */
+   String value();
 }

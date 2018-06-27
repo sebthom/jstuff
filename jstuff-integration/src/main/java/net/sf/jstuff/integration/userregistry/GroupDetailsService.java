@@ -18,7 +18,7 @@ import java.util.Set;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface GroupDetailsService {
-    GroupDetails getGroupDetailsByGroupDN(String groupDN);
+   GroupDetails getGroupDetailsByGroupDN(String groupDN);
 
-    Set<String> getGroupIdsByUserDN(String userDN);
+   Set<String> getGroupIdsByUserDN(String userDN);
 }

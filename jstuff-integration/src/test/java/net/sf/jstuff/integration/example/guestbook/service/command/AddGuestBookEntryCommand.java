@@ -18,8 +18,8 @@ import java.io.Serializable;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class AddGuestBookEntryCommand implements Serializable {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public Integer parentEntryId;
-    public String message;
+   public Integer parentEntryId;
+   public String message;
 }

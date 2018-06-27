@@ -36,86 +36,86 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class BrotliCompression extends AbstractCompression {
 
-    static {
-        BrotliLibraryLoader.loadBrotli();
-    }
+   static {
+      BrotliLibraryLoader.loadBrotli();
+   }
 
-    public static final BrotliCompression INSTANCE = new BrotliCompression();
+   public static final BrotliCompression INSTANCE = new BrotliCompression();
 
-    private final BrotliDeCompressor decompressor;
+   private final BrotliDeCompressor decompressor;
 
-    public BrotliCompression() {
-        decompressor = new BrotliDeCompressor();
-    }
+   public BrotliCompression() {
+      decompressor = new BrotliDeCompressor();
+   }
 
-    @SuppressWarnings("resource")
-    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
+      Args.notNull("output", output);
 
-        if (!closeOutput) {
-            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-            output = new DelegatingOutputStream(output, true);
-        }
+      if (!closeOutput) {
+         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         output = new DelegatingOutputStream(output, true);
+      }
 
-        try {
-            final OutputStream compOS = createCompressingOutputStream(output);
-            compOS.write(uncompressed);
-            compOS.flush();
-        } finally {
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         final OutputStream compOS = createCompressingOutputStream(output);
+         compOS.write(uncompressed);
+         compOS.flush();
+      } finally {
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    @SuppressWarnings("resource")
-    public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("input", input);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("input", input);
+      Args.notNull("output", output);
 
-        if (!closeOutput) {
-            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-            output = new DelegatingOutputStream(output, true);
-        }
+      if (!closeOutput) {
+         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         output = new DelegatingOutputStream(output, true);
+      }
 
-        try {
-            final OutputStream compOS = createCompressingOutputStream(output);
-            IOUtils.copyLarge(input, compOS);
-            compOS.flush();
-        } finally {
-            IOUtils.closeQuietly(input);
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         final OutputStream compOS = createCompressingOutputStream(output);
+         IOUtils.copyLarge(input, compOS);
+         compOS.flush();
+      } finally {
+         IOUtils.closeQuietly(input);
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
-        return new BrotliOutputStream(output);
-    }
+   public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
+      return new BrotliOutputStream(output);
+   }
 
-    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
-        return new BrotliInputStream(compressed);
-    }
+   public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+      return new BrotliInputStream(compressed);
+   }
 
-    @Override
-    public int decompress(final byte[] compressed, final byte[] output) throws IOException {
-        Args.notNull("compressed", compressed);
-        Args.notNull("output", output);
+   @Override
+   public int decompress(final byte[] compressed, final byte[] output) throws IOException {
+      Args.notNull("compressed", compressed);
+      Args.notNull("output", output);
 
-        try {
-            return decompressor.deCompress(compressed, output);
-        } catch (final BrotliException ex) {
-            if (ex.getMessage().contains("Error code: -14"))
-                throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
-            throw new IOExceptionWithCause(ex);
-        }
-    }
+      try {
+         return decompressor.deCompress(compressed, output);
+      } catch (final BrotliException ex) {
+         if (ex.getMessage().contains("Error code: -14"))
+            throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
+         throw new IOExceptionWithCause(ex);
+      }
+   }
 
-    @Override
-    public String toString() {
-        return Strings.toString(this);
-    }
+   @Override
+   public String toString() {
+      return Strings.toString(this);
+   }
 
 }

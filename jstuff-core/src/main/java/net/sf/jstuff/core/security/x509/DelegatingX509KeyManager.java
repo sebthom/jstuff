@@ -24,33 +24,33 @@ import javax.net.ssl.X509KeyManager;
  */
 public class DelegatingX509KeyManager implements X509KeyManager {
 
-    private final X509KeyManager wrapped;
+   private final X509KeyManager wrapped;
 
-    public DelegatingX509KeyManager(final X509KeyManager wrapped) {
-        this.wrapped = wrapped;
-    }
+   public DelegatingX509KeyManager(final X509KeyManager wrapped) {
+      this.wrapped = wrapped;
+   }
 
-    public String chooseClientAlias(final String[] keyType, final Principal[] issuers, final Socket socket) {
-        return wrapped.chooseClientAlias(keyType, issuers, socket);
-    }
+   public String chooseClientAlias(final String[] keyType, final Principal[] issuers, final Socket socket) {
+      return wrapped.chooseClientAlias(keyType, issuers, socket);
+   }
 
-    public String chooseServerAlias(final String keyType, final Principal[] issuers, final Socket socket) {
-        return wrapped.chooseServerAlias(keyType, issuers, socket);
-    }
+   public String chooseServerAlias(final String keyType, final Principal[] issuers, final Socket socket) {
+      return wrapped.chooseServerAlias(keyType, issuers, socket);
+   }
 
-    public X509Certificate[] getCertificateChain(final String alias) {
-        return wrapped.getCertificateChain(alias);
-    }
+   public X509Certificate[] getCertificateChain(final String alias) {
+      return wrapped.getCertificateChain(alias);
+   }
 
-    public String[] getClientAliases(final String keyType, final Principal[] issuers) {
-        return wrapped.getClientAliases(keyType, issuers);
-    }
+   public String[] getClientAliases(final String keyType, final Principal[] issuers) {
+      return wrapped.getClientAliases(keyType, issuers);
+   }
 
-    public PrivateKey getPrivateKey(final String alias) {
-        return wrapped.getPrivateKey(alias);
-    }
+   public PrivateKey getPrivateKey(final String alias) {
+      return wrapped.getPrivateKey(alias);
+   }
 
-    public String[] getServerAliases(final String keyType, final Principal[] issuers) {
-        return wrapped.getServerAliases(keyType, issuers);
-    }
+   public String[] getServerAliases(final String keyType, final Principal[] issuers) {
+      return wrapped.getServerAliases(keyType, issuers);
+   }
 }

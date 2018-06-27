@@ -26,44 +26,44 @@ import net.sf.jstuff.core.logging.Logger;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class CountingHttpSessionListener implements HttpSessionListener {
-    private static final class HttpSessionBindingListenerImpl implements HttpSessionBindingListener, Serializable {
-        private static final long serialVersionUID = 1L;
+   private static final class HttpSessionBindingListenerImpl implements HttpSessionBindingListener, Serializable {
+      private static final long serialVersionUID = 1L;
 
-        public void valueBound(final HttpSessionBindingEvent ev) {
-            // nothing to do
-        }
+      public void valueBound(final HttpSessionBindingEvent ev) {
+         // nothing to do
+      }
 
-        public void valueUnbound(final HttpSessionBindingEvent ev) {
-            SESSION_COUNT.decrementAndGet();
-        }
-    }
+      public void valueUnbound(final HttpSessionBindingEvent ev) {
+         SESSION_COUNT.decrementAndGet();
+      }
+   }
 
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    private static final HttpSessionBindingListenerImpl LISTENER = new HttpSessionBindingListenerImpl();
-    private static final AtomicInteger SESSION_COUNT = new AtomicInteger();
+   private static final HttpSessionBindingListenerImpl LISTENER = new HttpSessionBindingListenerImpl();
+   private static final AtomicInteger SESSION_COUNT = new AtomicInteger();
 
-    public static int getSessionCount() {
-        return SESSION_COUNT.intValue();
-    }
+   public static int getSessionCount() {
+      return SESSION_COUNT.intValue();
+   }
 
-    public CountingHttpSessionListener() {
-        LOG.infoNew(this);
-    }
+   public CountingHttpSessionListener() {
+      LOG.infoNew(this);
+   }
 
-    public void sessionCreated(final HttpSessionEvent se) {
-        SESSION_COUNT.incrementAndGet();
-        se.getSession().setAttribute(CountingHttpSessionListener.class.getName(), LISTENER);
-    }
+   public void sessionCreated(final HttpSessionEvent se) {
+      SESSION_COUNT.incrementAndGet();
+      se.getSession().setAttribute(CountingHttpSessionListener.class.getName(), LISTENER);
+   }
 
-    /**
-     * We are not using this method since it is not correctly implemented by all servlet containers.
-     * Some only call it when a session is explicitly invalidated but not when it expires,
-     * others invoke it multiple times.
-     * Instead we use {@link HttpSessionBindingListener#valueUnbound} which seems to work reliable
-     */
+   /**
+    * We are not using this method since it is not correctly implemented by all servlet containers.
+    * Some only call it when a session is explicitly invalidated but not when it expires,
+    * others invoke it multiple times.
+    * Instead we use {@link HttpSessionBindingListener#valueUnbound} which seems to work reliable
+    */
 
-    public void sessionDestroyed(final HttpSessionEvent se) {
-        //do nothing
-    }
+   public void sessionDestroyed(final HttpSessionEvent se) {
+      //do nothing
+   }
 }

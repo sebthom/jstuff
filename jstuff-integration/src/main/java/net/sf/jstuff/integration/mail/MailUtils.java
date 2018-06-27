@@ -40,93 +40,100 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class MailUtils {
-    public static class Mail implements Serializable {
-        private static final long serialVersionUID = 1L;
+   public static class Mail implements Serializable {
+      private static final long serialVersionUID = 1L;
 
-        public File[] attachments;
-        public String[] emailBCC;
-        public String[] emailCC;
-        public String emailFrom;
-        public String emailReturnReceiptTo;
-        public String[] emailTo;
-        public boolean isPlainTextMessage = true;
-        public String message;
-        public String subject;
-    }
+      public File[] attachments;
+      public String[] emailBCC;
+      public String[] emailCC;
+      public String emailFrom;
+      public String emailReturnReceiptTo;
+      public String[] emailTo;
+      public boolean isPlainTextMessage = true;
+      public String message;
+      public String subject;
+   }
 
-    public static class MailServer implements Serializable {
-        private static final long serialVersionUID = 1L;
+   public static class MailServer implements Serializable {
+      private static final long serialVersionUID = 1L;
 
-        public String smtpHostname;
-        public String smtpPassword;
-        public int smtpPort = 25;
-        public String smtpUsername;
-    }
+      public String smtpHostname;
+      public String smtpPassword;
+      public int smtpPort = 25;
+      public String smtpUsername;
+   }
 
-    public static void sendMail(final Mail mail, final MailServer mailServer) throws AddressException, MessagingException {
-        Args.notNull("mail", mail);
-        Args.notNull("mailServer", mailServer);
+   public static void sendMail(final Mail mail, final MailServer mailServer) throws AddressException, MessagingException {
+      Args.notNull("mail", mail);
+      Args.notNull("mailServer", mailServer);
 
-        final Properties props = new Properties();
-        props.put("mail.smtp.host", mailServer.smtpHostname);
-        props.put("mail.smtp.dsn.notify", "FAILURE");
-        props.put("mail.smtp.port", Integer.toString(mailServer.smtpPort));
-        final Session session;
-        if (Strings.isEmpty(mailServer.smtpUsername))
-            session = Session.getDefaultInstance(props, null);
-        else {
-            props.put("mail.smtp.auth", "true");
-            final Authenticator auth = new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(//
-                        mailServer.smtpUsername, //
-                        mailServer.smtpPassword == null ? "" : mailServer.smtpPassword//
-                    );
-                }
-            };
-            session = Session.getInstance(props, auth);
-        }
-        final MimeMessage msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress(mail.emailFrom));
-        msg.setSubject(mail.subject);
-        if (mail.emailTo != null)
-            for (final String item : mail.emailTo)
+      final Properties props = new Properties();
+      props.put("mail.smtp.host", mailServer.smtpHostname);
+      props.put("mail.smtp.dsn.notify", "FAILURE");
+      props.put("mail.smtp.port", Integer.toString(mailServer.smtpPort));
+      final Session session;
+      if (Strings.isEmpty(mailServer.smtpUsername)) {
+         session = Session.getDefaultInstance(props, null);
+      } else {
+         props.put("mail.smtp.auth", "true");
+         final Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+               return new PasswordAuthentication(//
+                  mailServer.smtpUsername, //
+                  mailServer.smtpPassword == null ? "" : mailServer.smtpPassword//
+               );
+            }
+         };
+         session = Session.getInstance(props, auth);
+      }
+      final MimeMessage msg = new MimeMessage(session);
+      msg.setFrom(new InternetAddress(mail.emailFrom));
+      msg.setSubject(mail.subject);
+      if (mail.emailTo != null) {
+         for (final String item : mail.emailTo) {
             msg.addRecipient(RecipientType.TO, new InternetAddress(item));
-        if (mail.emailCC != null)
-            for (final String item : mail.emailCC)
+         }
+      }
+      if (mail.emailCC != null) {
+         for (final String item : mail.emailCC) {
             msg.addRecipient(RecipientType.CC, new InternetAddress(item));
-        if (mail.emailBCC != null)
-            for (final String item : mail.emailBCC)
+         }
+      }
+      if (mail.emailBCC != null) {
+         for (final String item : mail.emailBCC) {
             msg.addRecipient(RecipientType.BCC, new InternetAddress(item));
-        if (mail.emailReturnReceiptTo != null)
-            msg.setHeader("Return-Receipt-To", mail.emailReturnReceiptTo);
-        final MimeMultipart mp = new MimeMultipart();
-        final MimeBodyPart text = new MimeBodyPart();
-        text.setDisposition(Part.INLINE);
-        text.setContent(mail.message, mail.isPlainTextMessage ? "text/plain" : "text/html");
-        mp.addBodyPart(text);
+         }
+      }
+      if (mail.emailReturnReceiptTo != null) {
+         msg.setHeader("Return-Receipt-To", mail.emailReturnReceiptTo);
+      }
+      final MimeMultipart mp = new MimeMultipart();
+      final MimeBodyPart text = new MimeBodyPart();
+      text.setDisposition(Part.INLINE);
+      text.setContent(mail.message, mail.isPlainTextMessage ? "text/plain" : "text/html");
+      mp.addBodyPart(text);
 
-        final FileTypeMap fileTypeMap = new FileTypeMap() {
-            @Override
-            public String getContentType(final File file) {
-                return getContentType(file.getName());
-            }
+      final FileTypeMap fileTypeMap = new FileTypeMap() {
+         @Override
+         public String getContentType(final File file) {
+            return getContentType(file.getName());
+         }
 
-            @Override
-            public String getContentType(final String fileName) {
-                if (fileName.toLowerCase().endsWith(".gif"))
-                    return "image/gif";
-                if (fileName.toLowerCase().endsWith(".png"))
-                    return "image/png";
-                if (fileName.toLowerCase().endsWith(".pdf"))
-                    return "application/pdf";
-                return "application/octet-stream";
-            }
-        };
+         @Override
+         public String getContentType(final String fileName) {
+            if (fileName.toLowerCase().endsWith(".gif"))
+               return "image/gif";
+            if (fileName.toLowerCase().endsWith(".png"))
+               return "image/png";
+            if (fileName.toLowerCase().endsWith(".pdf"))
+               return "application/pdf";
+            return "application/octet-stream";
+         }
+      };
 
-        if (mail.attachments != null)
-            for (final File file : mail.attachments) {
+      if (mail.attachments != null) {
+         for (final File file : mail.attachments) {
             final MimeBodyPart file_part = new MimeBodyPart();
             final FileDataSource fds = new FileDataSource(file);
             fds.setFileTypeMap(fileTypeMap);
@@ -136,16 +143,17 @@ public abstract class MailUtils {
             file_part.setDescription("Attached file: " + file.getName());
             file_part.setDataHandler(dh);
             mp.addBodyPart(file_part);
-        }
-        msg.setContent(mp);
-        msg.setSentDate(new Date());
-        msg.saveChanges();
+         }
+      }
+      msg.setContent(mp);
+      msg.setSentDate(new Date());
+      msg.saveChanges();
 
-        Transport.send(msg);
+      Transport.send(msg);
 
-        /*Transport transport = session.getTransport("smtp");
-         transport.connect(smtpHostname, smtpUsername, smtpPassword);
-         transport.sendMessage(msg, msg.getAllRecipients());
-         transport.close();*/
-    }
+      /*Transport transport = session.getTransport("smtp");
+       transport.connect(smtpHostname, smtpUsername, smtpPassword);
+       transport.sendMessage(msg, msg.getAllRecipients());
+       transport.close();*/
+   }
 }

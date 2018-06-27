@@ -16,7 +16,7 @@ package net.sf.jstuff.core.event;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface EventListenable<EVENT> {
-    boolean subscribe(EventListener<EVENT> listener);
+   boolean subscribe(EventListener<EVENT> listener);
 
-    boolean unsubscribe(EventListener<EVENT> listener);
+   boolean unsubscribe(EventListener<EVENT> listener);
 }

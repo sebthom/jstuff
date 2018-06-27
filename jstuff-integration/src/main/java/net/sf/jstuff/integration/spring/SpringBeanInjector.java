@@ -48,103 +48,103 @@ import net.sf.jstuff.core.validation.Assert;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @Component
-public class SpringBeanInjector {
-    private static final Logger LOG = Logger.create();
+public final class SpringBeanInjector {
+   private static final Logger LOG = Logger.create();
 
-    private static SpringBeanInjector _INSTANCE;
+   private static SpringBeanInjector _INSTANCE;
 
-    /**
-     * @return the default instance (the last instantiated one by any spring context)
-     */
-    public static SpringBeanInjector get() {
-        Assert.notNull(_INSTANCE, "No SpringBeanInjector instance created yet. Add <bean class=\"" + SpringBeanInjector.class.getName()
-                + "\" /> to your spring configuration!");
+   /**
+    * @return the default instance (the last instantiated one by any spring context)
+    */
+   public static SpringBeanInjector get() {
+      Assert.notNull(_INSTANCE, "No SpringBeanInjector instance created yet. Add <bean class=\"" + SpringBeanInjector.class.getName()
+         + "\" /> to your spring configuration!");
 
-        return _INSTANCE;
-    }
+      return _INSTANCE;
+   }
 
-    private final ObjectCache<String, Object> registeredSingletons = new ObjectCache<String, Object>(true);
+   private final ObjectCache<String, Object> registeredSingletons = new ObjectCache<String, Object>(true);
 
-    @Autowired
-    private DefaultListableBeanFactory beanFactory;
+   @Autowired
+   private DefaultListableBeanFactory beanFactory;
 
-    @Autowired
-    private List<DestructionAwareBeanPostProcessor> destructors;
+   @Autowired
+   private List<DestructionAwareBeanPostProcessor> destructors;
 
-    private SpringBeanInjector() {
-        Assert.isNull(_INSTANCE, "A instance of " + getClass().getName() + " already exists.");
+   private SpringBeanInjector() {
+      Assert.isNull(_INSTANCE, "A instance of " + getClass().getName() + " already exists.");
 
-        LOG.infoNew(this);
+      LOG.infoNew(this);
 
-        _INSTANCE = this;
-    }
+      _INSTANCE = this;
+   }
 
-    /**
-     * Injects declared dependencies but does not execute any life-cycle methods.
-     */
-    public void inject(final Object unmanagedBean) {
-        LOG.entry(unmanagedBean);
+   /**
+    * Executes @PreDestroy and {@link DisposableBean#destroy} life-cycle methods.
+    */
+   private void destroy(final Object unmanagedBean) throws Exception {
+      LOG.entry(unmanagedBean);
 
-        // process @Autowired, @Inject
-        beanFactory.autowireBean(unmanagedBean);
+      // process @PreDestroy
+      for (final DestructionAwareBeanPostProcessor destructor : destructors) {
+         destructor.postProcessBeforeDestruction(unmanagedBean, "bean");
+      }
 
-        LOG.exit();
-    }
+      if (unmanagedBean instanceof DisposableBean) {
+         ((DisposableBean) unmanagedBean).destroy();
+      }
 
-    /**
-     * Fully initializes the unmanaged bean, registers it with the spring context and enables
-     * life-cycle callback methods.
-     */
-    public void registerSingleton(final String beanName, final Object uninitializedBean) {
-        LOG.entry(uninitializedBean);
+      LOG.exit();
+   }
 
-        // process @Autowired, @Inject
-        beanFactory.autowireBean(uninitializedBean);
+   /**
+    * Injects declared dependencies but does not execute any life-cycle methods.
+    */
+   public void inject(final Object unmanagedBean) {
+      LOG.entry(unmanagedBean);
 
-        // process @PostConstruct, InitializingBean#afterPropertiesSet
-        beanFactory.initializeBean(uninitializedBean, beanName);
+      // process @Autowired, @Inject
+      beanFactory.autowireBean(unmanagedBean);
 
-        // add to spring context
-        beanFactory.registerSingleton(beanName, uninitializedBean);
+      LOG.exit();
+   }
 
-        // register for @Destroy processing
-        registeredSingletons.put(beanName, uninitializedBean);
+   @PreDestroy
+   private void onDestroy() {
+      for (final Entry<String, Object> s : registeredSingletons.getAll().entrySet()) {
+         try {
+            // removes the bean from the context, but does not it's call destroy life-cycle methods
+            beanFactory.destroySingleton(s.getKey());
 
-        LOG.exit();
-    }
+            // call life-cycle methods
+            destroy(s.getValue());
+         } catch (final Exception ex) {
+            LOG.error(ex);
+         }
+      }
+      _INSTANCE = null;
+   }
 
-    /**
-     * Executes @PreDestroy and {@link DisposableBean#destroy} life-cycle methods.
-     */
-    private void destroy(final Object unmanagedBean) throws Exception {
-        LOG.entry(unmanagedBean);
+   /**
+    * Fully initializes the unmanaged bean, registers it with the spring context and enables
+    * life-cycle callback methods.
+    */
+   public void registerSingleton(final String beanName, final Object uninitializedBean) {
+      LOG.entry(uninitializedBean);
 
-        // process @PreDestroy
-        for (final DestructionAwareBeanPostProcessor destructor : destructors) {
-            destructor.postProcessBeforeDestruction(unmanagedBean, "bean");
-        }
+      // process @Autowired, @Inject
+      beanFactory.autowireBean(uninitializedBean);
 
-        if (unmanagedBean instanceof DisposableBean) {
-            ((DisposableBean) unmanagedBean).destroy();
-        }
+      // process @PostConstruct, InitializingBean#afterPropertiesSet
+      beanFactory.initializeBean(uninitializedBean, beanName);
 
-        LOG.exit();
-    }
+      // add to spring context
+      beanFactory.registerSingleton(beanName, uninitializedBean);
 
-    @PreDestroy
-    private void onDestroy() {
-        for (final Entry<String, Object> s : registeredSingletons.getAll().entrySet()) {
-            try {
-                // removes the bean from the context, but does not it's call destroy life-cycle methods
-                beanFactory.destroySingleton(s.getKey());
+      // register for @Destroy processing
+      registeredSingletons.put(beanName, uninitializedBean);
 
-                // call life-cycle methods
-                destroy(s.getValue());
-            } catch (final Exception ex) {
-                LOG.error(ex);
-            }
-        }
-        _INSTANCE = null;
-    }
+      LOG.exit();
+   }
 
 }

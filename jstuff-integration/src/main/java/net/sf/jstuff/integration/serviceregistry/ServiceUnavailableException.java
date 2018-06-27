@@ -18,22 +18,22 @@ package net.sf.jstuff.integration.serviceregistry;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ServiceUnavailableException extends IllegalStateException {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final String serviceEndpointId;
-    private final Class<?> serviceInterface;
+   private final String serviceEndpointId;
+   private final Class<?> serviceInterface;
 
-    public ServiceUnavailableException(final String serviceEndpointId, final Class<?> serviceInterface) {
-        super("A service of type [" + serviceInterface.getName() + "] at endpoint [" + serviceEndpointId + "] is currently not available.");
-        this.serviceInterface = serviceInterface;
-        this.serviceEndpointId = serviceEndpointId;
-    }
+   public ServiceUnavailableException(final String serviceEndpointId, final Class<?> serviceInterface) {
+      super("A service of type [" + serviceInterface.getName() + "] at endpoint [" + serviceEndpointId + "] is currently not available.");
+      this.serviceInterface = serviceInterface;
+      this.serviceEndpointId = serviceEndpointId;
+   }
 
-    public String getServiceEndpointId() {
-        return serviceEndpointId;
-    }
+   public String getServiceEndpointId() {
+      return serviceEndpointId;
+   }
 
-    public Class<?> getServiceInterface() {
-        return serviceInterface;
-    }
+   public Class<?> getServiceInterface() {
+      return serviceInterface;
+   }
 }

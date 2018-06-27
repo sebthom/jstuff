@@ -22,22 +22,22 @@ import junit.framework.TestCase;
  */
 public class Base64Test extends TestCase {
 
-    public void testDecode() throws UnsupportedEncodingException {
-        assertEquals("Hello World!", new String(Base64.decode("SGVsbG8gV29ybGQh"), "UTF-8"));
-        assertEquals("Hell", new String(Base64.decode("SGVsbA=="), "UTF-8"));
-        assertEquals("Hell", new String(Base64.decode("SGVsbA="), "UTF-8"));
-        assertEquals("Hell", new String(Base64.decode("SGVsbA"), "UTF-8"));
-        assertEquals(null, Base64.decode(null));
-        assertEquals(0, Base64.decode("").length);
-        assertTrue(Arrays.equals(Base64.decode("A_"), Base64.decode("A/")));
-        assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+")));
-        assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+=")));
-        assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+==")));
-        try {
-            System.out.println(new String(Base64.decode("ÖÄÜ")));
-            fail();
-        } catch (final Exception ex) {
-            // expected
-        }
-    }
+   public void testDecode() throws UnsupportedEncodingException {
+      assertEquals("Hello World!", new String(Base64.decode("SGVsbG8gV29ybGQh"), "UTF-8"));
+      assertEquals("Hell", new String(Base64.decode("SGVsbA=="), "UTF-8"));
+      assertEquals("Hell", new String(Base64.decode("SGVsbA="), "UTF-8"));
+      assertEquals("Hell", new String(Base64.decode("SGVsbA"), "UTF-8"));
+      assertEquals(null, Base64.decode(null));
+      assertEquals(0, Base64.decode("").length);
+      assertTrue(Arrays.equals(Base64.decode("A_"), Base64.decode("A/")));
+      assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+")));
+      assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+=")));
+      assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+==")));
+      try {
+         System.out.println(new String(Base64.decode("ÖÄÜ")));
+         fail();
+      } catch (final Exception ex) {
+         // expected
+      }
+   }
 }

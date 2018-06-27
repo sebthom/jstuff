@@ -21,41 +21,41 @@ import java.util.WeakHashMap;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class WeakHashSet<E> extends MapBackedSet<E> implements Cloneable {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public static <E> WeakHashSet<E> create() {
-        return new WeakHashSet<E>();
-    }
+   public static <E> WeakHashSet<E> create() {
+      return new WeakHashSet<E>();
+   }
 
-    public static <E> WeakHashSet<E> create(final int initialCapacity) {
-        return new WeakHashSet<E>(initialCapacity);
-    }
+   public static <E> WeakHashSet<E> create(final int initialCapacity) {
+      return new WeakHashSet<E>(initialCapacity);
+   }
 
-    public static <E> WeakHashSet<E> create(final int initialCapacity, final float growthFactor) {
-        return new WeakHashSet<E>(initialCapacity, growthFactor);
-    }
+   public static <E> WeakHashSet<E> create(final int initialCapacity, final float growthFactor) {
+      return new WeakHashSet<E>(initialCapacity, growthFactor);
+   }
 
-    public WeakHashSet() {
-        this(16, 0.75f);
-    }
+   public WeakHashSet() {
+      this(16, 0.75f);
+   }
 
-    public WeakHashSet(final int initialCapacity) {
-        this(initialCapacity, 0.75f);
-    }
+   public WeakHashSet(final int initialCapacity) {
+      this(initialCapacity, 0.75f);
+   }
 
-    public WeakHashSet(final int initialCapacity, final float growthFactor) {
-        super(new WeakHashMap<E, Boolean>(initialCapacity, growthFactor));
-    }
+   public WeakHashSet(final int initialCapacity, final float growthFactor) {
+      super(new WeakHashMap<E, Boolean>(initialCapacity, growthFactor));
+   }
 
-    @Override
-    protected WeakHashSet<E> clone() {
-        final WeakHashSet<E> copy = new WeakHashSet<E>(size());
-        copy.addAll(this);
-        return copy;
-    }
+   @Override
+   protected WeakHashSet<E> clone() {
+      final WeakHashSet<E> copy = new WeakHashSet<E>(size());
+      copy.addAll(this);
+      return copy;
+   }
 
-    @SuppressWarnings("static-method")
-    private void writeObject(@SuppressWarnings("unused") final ObjectOutputStream oos) throws IOException {
-        throw new NotSerializableException();
-    }
+   @SuppressWarnings("static-method")
+   private void writeObject(@SuppressWarnings("unused") final ObjectOutputStream oos) throws IOException {
+      throw new NotSerializableException();
+   }
 }

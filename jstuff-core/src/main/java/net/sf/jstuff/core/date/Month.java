@@ -19,27 +19,27 @@ import java.util.ResourceBundle;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public enum Month {
-    JANUARY,
-    FEBRUAR,
-    MARCH,
-    APRIL,
-    MAY,
-    JUNE,
-    JULY,
-    AUGUST,
-    SEPTEMBER,
-    OCTOBER,
-    NOVEMBER,
-    DECEMBER;
+   JANUARY,
+   FEBRUAR,
+   MARCH,
+   APRIL,
+   MAY,
+   JUNE,
+   JULY,
+   AUGUST,
+   SEPTEMBER,
+   OCTOBER,
+   NOVEMBER,
+   DECEMBER;
 
-    private static final String BUNDLE_NAME = Month.class.getName();
+   private static final String BUNDLE_NAME = Month.class.getName();
 
-    @Override
-    public String toString() {
-        try {
-            return ResourceBundle.getBundle(BUNDLE_NAME).getString(name());
-        } catch (final MissingResourceException e) {
-            return name();
-        }
-    }
+   @Override
+   public String toString() {
+      try {
+         return ResourceBundle.getBundle(BUNDLE_NAME).getString(name());
+      } catch (final MissingResourceException e) {
+         return name();
+      }
+   }
 }

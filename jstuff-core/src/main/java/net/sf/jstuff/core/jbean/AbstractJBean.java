@@ -27,58 +27,63 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializable {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    /* ******************************************************************************
-     * Property Change Event Support
-     * ******************************************************************************/
-    private volatile SyncEventDispatcher<PropertyChangeEvent> events;
+   /* ******************************************************************************
+    * Property Change Event Support
+    * ******************************************************************************/
+   private volatile SyncEventDispatcher<PropertyChangeEvent> events;
 
-    public <T> T _get(final PropertyDescriptor<T> property) {
-        throw new UnsupportedOperationException("Unknown property [" + property + "]");
-    }
+   public <T> T _get(final PropertyDescriptor<T> property) {
+      throw new UnsupportedOperationException("Unknown property [" + property + "]");
+   }
 
-    public abstract ClassDescriptor<?> _getMeta();
+   public abstract ClassDescriptor<?> _getMeta();
 
-    public <T> AbstractJBean _set(final PropertyDescriptor<T> property, final T value) {
-        throw new UnsupportedOperationException("Unknown property [" + property + "]");
-    }
+   public <T> AbstractJBean _set(final PropertyDescriptor<T> property, final T value) {
+      throw new UnsupportedOperationException("Unknown property [" + property + "]");
+   }
 
-    public void _subscribe(final EventListener<PropertyChangeEvent> listener) {
-        getEvents().subscribe(listener);
-    }
+   public void _subscribe(final EventListener<PropertyChangeEvent> listener) {
+      getEvents().subscribe(listener);
+   }
 
-    public void _unsubscribe(final EventListener<PropertyChangeEvent> listener) {
-        getEvents().unsubscribe(listener);
-    }
+   public void _unsubscribe(final EventListener<PropertyChangeEvent> listener) {
+      getEvents().unsubscribe(listener);
+   }
 
-    private SyncEventDispatcher<PropertyChangeEvent> getEvents() {
-        //http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
-        SyncEventDispatcher<PropertyChangeEvent> result = events;
-        if (result == null)
-            synchronized (this) {
+   private SyncEventDispatcher<PropertyChangeEvent> getEvents() {
+      //http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
+      SyncEventDispatcher<PropertyChangeEvent> result = events;
+      if (result == null) {
+         synchronized (this) {
             result = events;
-            if (result == null)
-                events = result = new SyncEventDispatcher<PropertyChangeEvent>();
-        }
-        return result;
-    }
+            if (result == null) {
+               events = result = new SyncEventDispatcher<PropertyChangeEvent>();
+            }
+         }
+      }
+      return result;
+   }
 
-    /* ******************************************************************************
-     * Meta API Support
-     * ******************************************************************************/
-    protected void onItemAdded(final PropertyDescriptor<?> property, final Object item, final int index) {
-        if (events != null)
-            events.fire(new AddItemEvent(this, property, item, index));
-    }
+   /* ******************************************************************************
+    * Meta API Support
+    * ******************************************************************************/
+   protected void onItemAdded(final PropertyDescriptor<?> property, final Object item, final int index) {
+      if (events != null) {
+         events.fire(new AddItemEvent(this, property, item, index));
+      }
+   }
 
-    protected void onItemRemoved(final PropertyDescriptor<?> property, final Object item, final int index) {
-        if (events != null)
-            events.fire(new RemoveItemEvent(this, property, item, index));
-    }
+   protected void onItemRemoved(final PropertyDescriptor<?> property, final Object item, final int index) {
+      if (events != null) {
+         events.fire(new RemoveItemEvent(this, property, item, index));
+      }
+   }
 
-    protected void onValueSet(final PropertyDescriptor<?> property, final Object oldValue, final Object newValue) {
-        if (events != null)
-            events.fire(new SetValueEvent(this, property, oldValue, newValue));
-    }
+   protected void onValueSet(final PropertyDescriptor<?> property, final Object oldValue, final Object newValue) {
+      if (events != null) {
+         events.fire(new SetValueEvent(this, property, oldValue, newValue));
+      }
+   }
 }

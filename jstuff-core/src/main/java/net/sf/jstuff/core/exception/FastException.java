@@ -18,26 +18,26 @@ package net.sf.jstuff.core.exception;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class FastException extends Exception {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public FastException() {
-        super();
-    }
+   public FastException() {
+      super();
+   }
 
-    public FastException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
+   public FastException(final String message, final Throwable cause) {
+      super(message, cause);
+   }
 
-    public FastException(final String message) {
-        super(message);
-    }
+   public FastException(final String message) {
+      super(message);
+   }
 
-    public FastException(final Throwable cause) {
-        super(cause);
-    }
+   public FastException(final Throwable cause) {
+      super(cause);
+   }
 
-    @Override
-    public Throwable fillInStackTrace() {
-        return null;
-    }
+   @Override
+   public Throwable fillInStackTrace() {
+      return null;
+   }
 }

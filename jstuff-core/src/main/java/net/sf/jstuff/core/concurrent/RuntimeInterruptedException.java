@@ -16,18 +16,18 @@ package net.sf.jstuff.core.concurrent;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class RuntimeInterruptedException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public RuntimeInterruptedException(final InterruptedException cause) {
-        super(cause);
-    }
+   public RuntimeInterruptedException(final InterruptedException cause) {
+      super(cause);
+   }
 
-    public RuntimeInterruptedException(final String message, final InterruptedException cause) {
-        super(message, cause);
-    }
+   public RuntimeInterruptedException(final String message, final InterruptedException cause) {
+      super(message, cause);
+   }
 
-    @Override
-    public InterruptedException getCause() {
-        return (InterruptedException) super.getCause();
-    }
+   @Override
+   public InterruptedException getCause() {
+      return (InterruptedException) super.getCause();
+   }
 }

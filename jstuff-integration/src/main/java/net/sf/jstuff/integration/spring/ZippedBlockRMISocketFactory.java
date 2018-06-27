@@ -26,11 +26,11 @@ import net.sf.jstuff.core.net.ZippedBlockSocket;
  */
 public class ZippedBlockRMISocketFactory implements RMIServerSocketFactory, RMIClientSocketFactory {
 
-    public ServerSocket createServerSocket(final int port) throws IOException {
-        return new ZippedBlockServerSocket(port);
-    }
+   public ServerSocket createServerSocket(final int port) throws IOException {
+      return new ZippedBlockServerSocket(port);
+   }
 
-    public Socket createSocket(final String host, final int port) throws IOException {
-        return new ZippedBlockSocket(host, port);
-    }
+   public Socket createSocket(final String host, final int port) throws IOException {
+      return new ZippedBlockSocket(host, port);
+   }
 }

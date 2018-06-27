@@ -19,35 +19,35 @@ package net.sf.jstuff.integration.rest;
  */
 public enum HttpRequestMethod {
 
-    /**
-     * CRUD: Delete
-     */
-    DELETE,
+   /**
+    * CRUD: Delete
+    */
+   DELETE,
 
-    /**
-     * CRUD: Read
-     */
-    GET,
+   /**
+    * CRUD: Read
+    */
+   GET,
 
-    HEAD,
+   HEAD,
 
-    /**
-     * CRUD: Create
-     */
-    POST,
+   /**
+    * CRUD: Create
+    */
+   POST,
 
-    /**
-     * CRUD: Update/Replace
-     */
-    PUT,
+   /**
+    * CRUD: Update/Replace
+    */
+   PUT,
 
-    /**
-     * CRUD: Update/Modify
-     */
-    PATCH
-    
-    /*,
-    TRACE,
-    CONNECT,
-    OPTIONS*/
+   /**
+    * CRUD: Update/Modify
+    */
+   PATCH
+
+   /*,
+   TRACE,
+   CONNECT,
+   OPTIONS*/
 }

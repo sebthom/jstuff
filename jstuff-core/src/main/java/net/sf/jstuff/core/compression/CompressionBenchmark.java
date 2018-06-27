@@ -40,174 +40,174 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class CompressionBenchmark {
 
-    public static class BenchmarkResult {
-        public Compression compression;
-        public int iterations;
-        public long compressTimeMS;
-        public long decompressTimeMS;
-        public int uncompressedSize;
-        public int compressedSize;
+   public static class BenchmarkResult {
+      public Compression compression;
+      public int iterations;
+      public long compressTimeMS;
+      public long decompressTimeMS;
+      public int uncompressedSize;
+      public int compressedSize;
 
-        @Override
-        public String toString() {
-            final NumberFormat nf = NumberFormat.getIntegerInstance(Locale.ENGLISH);
-            return String.format("%d x %7s bytes -> %7s bytes in  compr: %s  decompr: %s  total: %s  %s", //
-                iterations, //
-                nf.format(uncompressedSize), //
-                nf.format(compressedSize), //
-                DurationFormatUtils.formatDurationHMS(compressTimeMS), //
-                DurationFormatUtils.formatDurationHMS(decompressTimeMS), //
-                DurationFormatUtils.formatDurationHMS(compressTimeMS + decompressTimeMS), //
-                compression);
-        }
-    }
+      @Override
+      public String toString() {
+         final NumberFormat nf = NumberFormat.getIntegerInstance(Locale.ENGLISH);
+         return String.format("%d x %7s bytes -> %7s bytes in  compr: %s  decompr: %s  total: %s  %s", //
+            iterations, //
+            nf.format(uncompressedSize), //
+            nf.format(compressedSize), //
+            DurationFormatUtils.formatDurationHMS(compressTimeMS), //
+            DurationFormatUtils.formatDurationHMS(decompressTimeMS), //
+            DurationFormatUtils.formatDurationHMS(compressTimeMS + decompressTimeMS), //
+            compression);
+      }
+   }
 
-    public static class CompressSpeedComparator implements Comparator<BenchmarkResult> {
-        public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
-            return o1.compressTimeMS < o2.compressTimeMS ? -1 : o1.compressTimeMS == o2.compressTimeMS ? 0 : 1;
-        }
-    }
+   public static class CompressSpeedComparator implements Comparator<BenchmarkResult> {
+      public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
+         return o1.compressTimeMS < o2.compressTimeMS ? -1 : o1.compressTimeMS == o2.compressTimeMS ? 0 : 1;
+      }
+   }
 
-    public static class DecompressSpeedComparator implements Comparator<BenchmarkResult> {
-        public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
-            return o1.decompressTimeMS < o2.decompressTimeMS ? -1 : o1.decompressTimeMS == o2.decompressTimeMS ? 0 : 1;
-        }
-    }
+   public static class DecompressSpeedComparator implements Comparator<BenchmarkResult> {
+      public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
+         return o1.decompressTimeMS < o2.decompressTimeMS ? -1 : o1.decompressTimeMS == o2.decompressTimeMS ? 0 : 1;
+      }
+   }
 
-    public static class SizeComparator implements Comparator<BenchmarkResult> {
-        public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
-            return o1.compressedSize < o2.compressedSize ? -1 : o1.compressedSize == o2.compressedSize ? 0 : 1;
-        }
-    }
+   public static class SizeComparator implements Comparator<BenchmarkResult> {
+      public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
+         return o1.compressedSize < o2.compressedSize ? -1 : o1.compressedSize == o2.compressedSize ? 0 : 1;
+      }
+   }
 
-    public static class SpeedComparator implements Comparator<BenchmarkResult> {
-        public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
-            return o1.compressTimeMS + o1.decompressTimeMS < o2.compressTimeMS + o2.decompressTimeMS ? -1
-                    : o1.compressTimeMS + o1.decompressTimeMS == o2.compressTimeMS + o2.decompressTimeMS ? 0 : 1;
-        }
-    }
+   public static class SpeedComparator implements Comparator<BenchmarkResult> {
+      public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
+         return o1.compressTimeMS + o1.decompressTimeMS < o2.compressTimeMS + o2.decompressTimeMS ? -1
+            : o1.compressTimeMS + o1.decompressTimeMS == o2.compressTimeMS + o2.decompressTimeMS ? 0 : 1;
+      }
+   }
 
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    private final Set<Compression> compressions = new HashSet<Compression>();
-    private byte[] uncompressed = ArrayUtils.EMPTY_BYTE_ARRAY;
-    private int iterations = 0;
+   private final Set<Compression> compressions = new HashSet<Compression>();
+   private byte[] uncompressed = ArrayUtils.EMPTY_BYTE_ARRAY;
+   private int iterations = 0;
 
-    public CompressionBenchmark addCompression(final Compression compression) {
-        Args.notNull("compression", compression);
-        compressions.add(compression);
-        return this;
-    }
+   public CompressionBenchmark addCompression(final Compression compression) {
+      Args.notNull("compression", compression);
+      compressions.add(compression);
+      return this;
+   }
 
-    @SuppressWarnings("resource")
-    public Map<Compression, BenchmarkResult> execute() throws IOException {
-        final Map<Compression, BenchmarkResult> result = new HashMap<Compression, BenchmarkResult>();
-        for (final Compression cmp : compressions) {
+   @SuppressWarnings("resource")
+   public Map<Compression, BenchmarkResult> execute() throws IOException {
+      final Map<Compression, BenchmarkResult> result = new HashMap<Compression, BenchmarkResult>();
+      for (final Compression cmp : compressions) {
+         final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
+         final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
+         cmp.compress(uncompressedIS, compressedOS, true);
+
+         final BenchmarkResult res = new BenchmarkResult();
+         res.compression = cmp;
+         res.uncompressedSize = uncompressed.length;
+         res.compressedSize = compressedOS.size();
+         res.iterations = iterations;
+
+         result.put(cmp, res);
+      }
+
+      Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+
+      /*
+       * warmup
+       */
+      for (final Compression cmp : compressions) {
+         LOG.info("Warmup [%s]...", cmp);
+         for (int i = 0; i < 50; i++) {
             final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
             final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
-            cmp.compress(uncompressedIS, compressedOS, true);
-
-            final BenchmarkResult res = new BenchmarkResult();
-            res.compression = cmp;
-            res.uncompressedSize = uncompressed.length;
-            res.compressedSize = compressedOS.size();
-            res.iterations = iterations;
-
-            result.put(cmp, res);
-        }
-
-        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-
-        /*
-         * warmup
-         */
-        for (final Compression cmp : compressions) {
-            LOG.info("Warmup [%s]...", cmp);
-            for (int i = 0; i < 50; i++) {
-                final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
-                final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
-                cmp.compress(uncompressedIS, compressedOS, true);
-
-                final FastByteArrayInputStream compressedIS = new FastByteArrayInputStream(ArrayUtils.EMPTY_BYTE_ARRAY);
-                compressedIS.setData(compressedOS.toByteArray());
-                try {
-                    final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
-                    cmp.decompress(compressedIS, uncompressedOS, true);
-                    if (!ArrayUtils.isEquals(uncompressed, uncompressedOS.toByteArray()))
-                        throw new IOException("Compression [" + cmp + "] is buggy!");
-                } catch (final ZipException ex) {
-                    throw ex;
-                }
-            }
-        }
-
-        /*
-         * micro benchmark
-         */
-        final StopWatch sw = new StopWatch();
-        for (final Compression cmp : compressions) {
-            LOG.info("Benchmarking compression [%s]...", cmp);
-
-            System.gc();
-            Threads.sleep(200);
-            System.gc();
-            Threads.sleep(100);
-
-            final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
-            final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
-
-            sw.reset();
-            sw.start();
-            for (int i = 0; i < iterations; i++) {
-                uncompressedIS.reset();
-                compressedOS.reset();
-                cmp.compress(uncompressedIS, compressedOS, true);
-            }
-            sw.stop();
-            result.get(cmp).compressTimeMS = sw.getTime();
-        }
-        for (final Compression cmp : compressions) {
-            LOG.info("Benchmarking decompression [%s]...", cmp);
-
-            System.gc();
-            Threads.sleep(200);
-            System.gc();
-            Threads.sleep(100);
-
-            final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
-            final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
-            final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
             cmp.compress(uncompressedIS, compressedOS, true);
 
             final FastByteArrayInputStream compressedIS = new FastByteArrayInputStream(ArrayUtils.EMPTY_BYTE_ARRAY);
             compressedIS.setData(compressedOS.toByteArray());
-
-            sw.reset();
-            sw.start();
-            for (int i = 0; i < iterations; i++) {
-                compressedIS.reset();
-                uncompressedOS.reset();
-                cmp.decompress(compressedIS, uncompressedOS, true);
+            try {
+               final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
+               cmp.decompress(compressedIS, uncompressedOS, true);
+               if (!ArrayUtils.isEquals(uncompressed, uncompressedOS.toByteArray()))
+                  throw new IOException("Compression [" + cmp + "] is buggy!");
+            } catch (final ZipException ex) {
+               throw ex;
             }
-            sw.stop();
-            result.get(cmp).decompressTimeMS = sw.getTime();
-        }
+         }
+      }
 
-        Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+      /*
+       * micro benchmark
+       */
+      final StopWatch sw = new StopWatch();
+      for (final Compression cmp : compressions) {
+         LOG.info("Benchmarking compression [%s]...", cmp);
 
-        LOG.info("Done.");
+         System.gc();
+         Threads.sleep(200);
+         System.gc();
+         Threads.sleep(100);
 
-        return Maps.sortByValue(result, new CompressSpeedComparator());
-    }
+         final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
+         final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
 
-    public CompressionBenchmark setIterations(final int iterations) {
-        this.iterations = iterations;
-        return this;
-    }
+         sw.reset();
+         sw.start();
+         for (int i = 0; i < iterations; i++) {
+            uncompressedIS.reset();
+            compressedOS.reset();
+            cmp.compress(uncompressedIS, compressedOS, true);
+         }
+         sw.stop();
+         result.get(cmp).compressTimeMS = sw.getTime();
+      }
+      for (final Compression cmp : compressions) {
+         LOG.info("Benchmarking decompression [%s]...", cmp);
 
-    public CompressionBenchmark setTestData(final byte[] uncompressed) {
-        Args.notNull("uncompressed", uncompressed);
-        this.uncompressed = uncompressed;
-        return this;
-    }
+         System.gc();
+         Threads.sleep(200);
+         System.gc();
+         Threads.sleep(100);
+
+         final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
+         final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
+         final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
+         cmp.compress(uncompressedIS, compressedOS, true);
+
+         final FastByteArrayInputStream compressedIS = new FastByteArrayInputStream(ArrayUtils.EMPTY_BYTE_ARRAY);
+         compressedIS.setData(compressedOS.toByteArray());
+
+         sw.reset();
+         sw.start();
+         for (int i = 0; i < iterations; i++) {
+            compressedIS.reset();
+            uncompressedOS.reset();
+            cmp.decompress(compressedIS, uncompressedOS, true);
+         }
+         sw.stop();
+         result.get(cmp).decompressTimeMS = sw.getTime();
+      }
+
+      Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+
+      LOG.info("Done.");
+
+      return Maps.sortByValue(result, new CompressSpeedComparator());
+   }
+
+   public CompressionBenchmark setIterations(final int iterations) {
+      this.iterations = iterations;
+      return this;
+   }
+
+   public CompressionBenchmark setTestData(final byte[] uncompressed) {
+      Args.notNull("uncompressed", uncompressed);
+      this.uncompressed = uncompressed;
+      return this;
+   }
 }

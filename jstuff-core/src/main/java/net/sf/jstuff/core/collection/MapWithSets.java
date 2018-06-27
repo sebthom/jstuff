@@ -20,35 +20,35 @@ import java.util.Set;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class MapWithSets<K, V> extends MapWithCollections<K, V, Set<V>> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public static <K, V> MapWithSets<K, V> create() {
-        return new MapWithSets<K, V>();
-    }
+   public static <K, V> MapWithSets<K, V> create() {
+      return new MapWithSets<K, V>();
+   }
 
-    public static <K, V> MapWithSets<K, V> create(final int initialCapacity, final int initialSetCapacity) {
-        return new MapWithSets<K, V>(initialCapacity, initialSetCapacity);
-    }
+   public static <K, V> MapWithSets<K, V> create(final int initialCapacity, final int initialSetCapacity) {
+      return new MapWithSets<K, V>(initialCapacity, initialSetCapacity);
+   }
 
-    public MapWithSets() {
-        super();
-    }
+   public MapWithSets() {
+      super();
+   }
 
-    public MapWithSets(final int initialCapacity) {
-        super(initialCapacity);
-    }
+   public MapWithSets(final int initialCapacity) {
+      super(initialCapacity);
+   }
 
-    public MapWithSets(final int initialCapacity, final int initialCapacityOfSet) {
-        super(initialCapacity, initialCapacityOfSet);
-    }
+   public MapWithSets(final int initialCapacity, final int initialCapacityOfSet) {
+      super(initialCapacity, initialCapacityOfSet);
+   }
 
-    @Override
-    protected Set<V> create(final K key) {
-        return new HashSet<V>(initialCapacityOfCollection, growthFactorOfCollection);
-    }
+   @Override
+   protected Set<V> create(final K key) {
+      return new HashSet<V>(initialCapacityOfCollection, growthFactorOfCollection);
+   }
 
-    @Override
-    protected Set<V> createNullSafe(final K key) {
-        return Collections.emptySet();
-    }
+   @Override
+   protected Set<V> createNullSafe(final K key) {
+      return Collections.emptySet();
+   }
 }

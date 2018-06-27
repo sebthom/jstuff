@@ -19,15 +19,15 @@ import java.util.Collection;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class RestServiceDescriptor implements Serializable {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private Collection<RestResourceAction> actions;
+   private Collection<RestResourceAction> actions;
 
-    public Collection<RestResourceAction> getActions() {
-        return actions;
-    }
+   public Collection<RestResourceAction> getActions() {
+      return actions;
+   }
 
-    public void setActions(final Collection<RestResourceAction> actions) {
-        this.actions = actions;
-    }
+   public void setActions(final Collection<RestResourceAction> actions) {
+      this.actions = actions;
+   }
 }

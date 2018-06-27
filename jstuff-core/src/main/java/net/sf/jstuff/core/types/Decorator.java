@@ -23,49 +23,49 @@ import net.sf.jstuff.core.validation.Assert;
  */
 public interface Decorator<T> {
 
-    public abstract class Default<T> implements Decorator<T> {
-        protected T wrapped;
+   abstract class Default<T> implements Decorator<T> {
+      protected T wrapped;
 
-        protected Default() {
-        }
+      protected Default() {
+      }
 
-        protected Default(final T wrapped) {
-            Args.notNull("wrapped", wrapped);
-            this.wrapped = wrapped;
-        }
+      protected Default(final T wrapped) {
+         Args.notNull("wrapped", wrapped);
+         this.wrapped = wrapped;
+      }
 
-        public T getWrapped() {
-            Assert.isTrue(isWrappedGettable(), "Accessing the wrapped object is not allowed.");
-            return wrapped;
-        }
+      public T getWrapped() {
+         Assert.isTrue(isWrappedGettable(), "Accessing the wrapped object is not allowed.");
+         return wrapped;
+      }
 
-        public boolean isWrappedGettable() {
-            return true;
-        }
+      public boolean isWrappedGettable() {
+         return true;
+      }
 
-        public boolean isWrappedSettable() {
-            return true;
-        }
+      public boolean isWrappedSettable() {
+         return true;
+      }
 
-        public void setWrapped(final T wrapped) {
-            Assert.isTrue(isWrappedSettable(), "Changing the wrapped object is not allowed.");
-            Args.notNull("wrapped", wrapped);
-            Assert.isFalse(wrapped == this, "[wrapped] must not be a self-reference.");
-            this.wrapped = wrapped;
-        }
-    }
+      public void setWrapped(final T wrapped) {
+         Assert.isTrue(isWrappedSettable(), "Changing the wrapped object is not allowed.");
+         Args.notNull("wrapped", wrapped);
+         Assert.isFalse(wrapped == this, "[wrapped] must not be a self-reference.");
+         this.wrapped = wrapped;
+      }
+   }
 
-    /**
-     * @throws {@link IllegalStateException} if getting the wrapped object is disallowed
-     */
-    T getWrapped();
+   /**
+    * @throws IllegalStateException if getting the wrapped object is disallowed
+    */
+   T getWrapped();
 
-    boolean isWrappedGettable();
+   boolean isWrappedGettable();
 
-    boolean isWrappedSettable();
+   boolean isWrappedSettable();
 
-    /**
-     * @throws {@link IllegalStateException} if setting the wrapped object is disallowed
-     */
-    void setWrapped(T wrapped);
+   /**
+    * @throws IllegalStateException if setting the wrapped object is disallowed
+    */
+   void setWrapped(T wrapped);
 }

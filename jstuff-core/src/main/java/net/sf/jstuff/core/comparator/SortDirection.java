@@ -19,6 +19,6 @@ package net.sf.jstuff.core.comparator;
  *
  */
 public enum SortDirection {
-    ASC,
-    DESC
+   ASC,
+   DESC
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
  * Thomschke.
- * 
+ *
  * All Rights Reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v20.html
- * 
+ *
  * Contributors:
  *     Sebastian Thomschke - initial implementation.
  *******************************************************************************/
@@ -21,33 +21,34 @@ import java.util.Locale;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class StringComparator implements Comparator<String>, Serializable {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    // collator is only serializable starting Java 6 
-    private transient Collator collator;
-    private final Locale locale;
+   // collator is only serializable starting Java 6
+   private transient Collator collator;
+   private final Locale locale;
 
-    public StringComparator() {
-        this(Locale.getDefault());
-    }
+   public StringComparator() {
+      this(Locale.getDefault());
+   }
 
-    public StringComparator(final Locale locale) {
-        this.locale = locale;
-    }
+   public StringComparator(final Locale locale) {
+      this.locale = locale;
+   }
 
-    private Collator _getCollator() {
-        if (collator == null)
-            collator = Collator.getInstance(locale);
-        return collator;
-    }
+   private Collator _getCollator() {
+      if (collator == null) {
+         collator = Collator.getInstance(locale);
+      }
+      return collator;
+   }
 
-    public int compare(final String o1, final String o2) {
-        if (o1 == o2)
-            return 0;
-        return _getCollator().compare(o1, o2);
-    }
+   public int compare(final String o1, final String o2) {
+      if (o1 == o2)
+         return 0;
+      return _getCollator().compare(o1, o2);
+   }
 
-    public Locale getLocale() {
-        return locale;
-    }
+   public Locale getLocale() {
+      return locale;
+   }
 }

@@ -22,20 +22,19 @@ import net.sf.jstuff.core.logging.Logger;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class Tomcat6Authenticator implements Authenticator {
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    public Tomcat6Authenticator() {
-        LOG.infoNew(this);
-    }
+   public Tomcat6Authenticator() {
+      LOG.infoNew(this);
+   }
 
-    /*
-     * based on http://wiki.apache.org/tomcat/HowTo#head-42e95596753a1fa4a4aa396d53010680e3d509b5
-     */
-    public boolean authenticate(final String logonName, final String password) {
-        //Note: this assumes the Container is "Catalina"
-        final Engine engine = (Engine) ServerFactory.getServer().findService("Catalina").getContainer();
-        final Context context = (Context) engine.findChild(engine.getDefaultHost()).findChild(SecurityFilter.HTTP_SERVLET_REQUEST_HOLDER.get()
-            .getContextPath());
-        return context.getRealm().authenticate(logonName, password) != null;
-    }
+   /*
+    * based on http://wiki.apache.org/tomcat/HowTo#head-42e95596753a1fa4a4aa396d53010680e3d509b5
+    */
+   public boolean authenticate(final String logonName, final String password) {
+      //Note: this assumes the Container is "Catalina"
+      final Engine engine = (Engine) ServerFactory.getServer().findService("Catalina").getContainer();
+      final Context context = (Context) engine.findChild(engine.getDefaultHost()).findChild(SecurityFilter.HTTP_SERVLET_REQUEST_HOLDER.get().getContextPath());
+      return context.getRealm().authenticate(logonName, password) != null;
+   }
 }

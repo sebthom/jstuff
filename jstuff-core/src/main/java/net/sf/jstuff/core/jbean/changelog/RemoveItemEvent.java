@@ -21,20 +21,20 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class RemoveItemEvent extends PropertyChangeEvent {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public final Object item;
-    public final int index;
+   public final Object item;
+   public final int index;
 
-    public RemoveItemEvent(final JBean<?> bean, final PropertyDescriptor<?> property, final Object item, final int index) {
-        super(bean, property);
-        this.item = item;
-        this.index = index;
-    }
+   public RemoveItemEvent(final JBean<?> bean, final PropertyDescriptor<?> property, final Object item, final int index) {
+      super(bean, property);
+      this.item = item;
+      this.index = index;
+   }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    void undo() {
-        ((Collection<Object>) bean._get(property)).add(item);
-    }
+   @SuppressWarnings("unchecked")
+   @Override
+   void undo() {
+      ((Collection<Object>) bean._get(property)).add(item);
+   }
 }

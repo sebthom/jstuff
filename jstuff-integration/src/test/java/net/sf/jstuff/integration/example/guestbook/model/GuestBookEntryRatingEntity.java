@@ -18,26 +18,26 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class GuestBookEntryRatingEntity extends AbstractEntity {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final GuestBookEntryEntity entry;
-    private boolean isGoodEntry;
+   private final GuestBookEntryEntity entry;
+   private boolean isGoodEntry;
 
-    public GuestBookEntryRatingEntity(final String createdBy, final GuestBookEntryEntity entry) {
-        super(createdBy);
-        Args.notNull("entry", entry);
-        this.entry = entry;
-    }
+   public GuestBookEntryRatingEntity(final String createdBy, final GuestBookEntryEntity entry) {
+      super(createdBy);
+      Args.notNull("entry", entry);
+      this.entry = entry;
+   }
 
-    public boolean isGoodEntry() {
-        return isGoodEntry;
-    }
+   public boolean isGoodEntry() {
+      return isGoodEntry;
+   }
 
-    public void setGoodEntry(final boolean isGoodEntry) {
-        this.isGoodEntry = isGoodEntry;
-    }
+   public void setGoodEntry(final boolean isGoodEntry) {
+      this.isGoodEntry = isGoodEntry;
+   }
 
-    public GuestBookEntryEntity getEntry() {
-        return entry;
-    }
+   public GuestBookEntryEntity getEntry() {
+      return entry;
+   }
 }

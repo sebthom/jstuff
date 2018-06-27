@@ -21,24 +21,24 @@ import net.sf.jstuff.core.reflection.SerializableField;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class AccessingFieldValueFailedException extends ReflectionException {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final SerializableField field;
-    private final transient Object targetObject;
-    private final Serializable targetSerializableObject;
+   private final SerializableField field;
+   private final transient Object targetObject;
+   private final Serializable targetSerializableObject;
 
-    public AccessingFieldValueFailedException(final Field field, final Object targetObject, final Throwable cause) {
-        super("Accessing value of field " + field.getName() + " failed.", cause);
-        this.field = SerializableField.get(field);
-        this.targetObject = targetObject;
-        targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
-    }
+   public AccessingFieldValueFailedException(final Field field, final Object targetObject, final Throwable cause) {
+      super("Accessing value of field " + field.getName() + " failed.", cause);
+      this.field = SerializableField.get(field);
+      this.targetObject = targetObject;
+      targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
+   }
 
-    public Field getField() {
-        return field.getField();
-    }
+   public Field getField() {
+      return field.getField();
+   }
 
-    public Object getTargetObject() {
-        return targetObject != null ? targetObject : targetSerializableObject;
-    }
+   public Object getTargetObject() {
+      return targetObject != null ? targetObject : targetSerializableObject;
+   }
 }

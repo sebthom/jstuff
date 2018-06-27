@@ -24,57 +24,57 @@ import net.sf.jstuff.core.Strings;
  */
 public abstract class Checksums {
 
-    public static String md5(final byte[] val) throws SecurityException {
-        try {
-            final MessageDigest md = MessageDigest.getInstance("MD5");
-            final BigInteger number = new BigInteger(1, md.digest(val));
-            return Strings.leftPad(number.toString(16), 32, '0');
-        } catch (final NoSuchAlgorithmException ex) {
-            throw new SecurityException(ex);
-        }
-    }
+   public static String md5(final byte[] val) throws SecurityException {
+      try {
+         final MessageDigest md = MessageDigest.getInstance("MD5");
+         final BigInteger number = new BigInteger(1, md.digest(val));
+         return Strings.leftPad(number.toString(16), 32, '0');
+      } catch (final NoSuchAlgorithmException ex) {
+         throw new SecurityException(ex);
+      }
+   }
 
-    public static String md5(final String txt) throws SecurityException {
-        try {
-            return md5(txt.getBytes("UTF-8"));
-        } catch (final UnsupportedEncodingException ex) {
-            throw new SecurityException(ex);
-        }
-    }
+   public static String md5(final String txt) throws SecurityException {
+      try {
+         return md5(txt.getBytes("UTF-8"));
+      } catch (final UnsupportedEncodingException ex) {
+         throw new SecurityException(ex);
+      }
+   }
 
-    public static String sha1(final byte[] val) throws SecurityException {
-        try {
-            final MessageDigest md = MessageDigest.getInstance("SHA-1");
-            final BigInteger number = new BigInteger(1, md.digest(val));
-            return Strings.leftPad(number.toString(16), 40, '0');
-        } catch (final NoSuchAlgorithmException ex) {
-            throw new SecurityException(ex);
-        }
-    }
+   public static String sha1(final byte[] val) throws SecurityException {
+      try {
+         final MessageDigest md = MessageDigest.getInstance("SHA-1");
+         final BigInteger number = new BigInteger(1, md.digest(val));
+         return Strings.leftPad(number.toString(16), 40, '0');
+      } catch (final NoSuchAlgorithmException ex) {
+         throw new SecurityException(ex);
+      }
+   }
 
-    public static String sha1(final String txt) throws SecurityException {
-        try {
-            return sha1(txt.getBytes("UTF-8"));
-        } catch (final UnsupportedEncodingException ex) {
-            throw new SecurityException(ex);
-        }
-    }
+   public static String sha1(final String txt) throws SecurityException {
+      try {
+         return sha1(txt.getBytes("UTF-8"));
+      } catch (final UnsupportedEncodingException ex) {
+         throw new SecurityException(ex);
+      }
+   }
 
-    public static String sha256(final byte[] val) throws SecurityException {
-        try {
-            final MessageDigest md = MessageDigest.getInstance("SHA-256");
-            final BigInteger number = new BigInteger(1, md.digest(val));
-            return Strings.leftPad(number.toString(16), 64, '0');
-        } catch (final NoSuchAlgorithmException ex) {
-            throw new SecurityException(ex);
-        }
-    }
+   public static String sha256(final byte[] val) throws SecurityException {
+      try {
+         final MessageDigest md = MessageDigest.getInstance("SHA-256");
+         final BigInteger number = new BigInteger(1, md.digest(val));
+         return Strings.leftPad(number.toString(16), 64, '0');
+      } catch (final NoSuchAlgorithmException ex) {
+         throw new SecurityException(ex);
+      }
+   }
 
-    public static String sha256(final String txt) throws SecurityException {
-        try {
-            return sha256(txt.getBytes("UTF-8"));
-        } catch (final UnsupportedEncodingException ex) {
-            throw new SecurityException(ex);
-        }
-    }
+   public static String sha256(final String txt) throws SecurityException {
+      try {
+         return sha256(txt.getBytes("UTF-8"));
+      } catch (final UnsupportedEncodingException ex) {
+         throw new SecurityException(ex);
+      }
+   }
 }

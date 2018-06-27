@@ -28,41 +28,41 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class LdapAuthenticator implements Authenticator {
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    protected LdapTemplate ldapTemplate;
-    protected UserDetailsService userDetailsService;
+   protected LdapTemplate ldapTemplate;
+   protected UserDetailsService userDetailsService;
 
-    public LdapAuthenticator() {
-        LOG.infoNew(this);
-    }
+   public LdapAuthenticator() {
+      LOG.infoNew(this);
+   }
 
-    public boolean authenticate(final String logonName, final String password) {
-        LOG.trace("Trying to authenticate user %s", logonName);
-        try {
-            ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
-                public Object invoke(final LdapContext ctx) throws NamingException {
-                    final UserDetails userDetails = userDetailsService.getUserDetailsByLogonName(logonName);
-                    ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, "simple");
-                    ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, userDetails.getDistingueshedName());
-                    ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, password);
-                    return ctx.lookup(userDetails.getDistingueshedName());
-                }
-            });
-            return true;
-        } catch (final LdapException ex) {
-            LOG.trace("Authentication failed.", ex);
-            return false;
-        }
-    }
+   public boolean authenticate(final String logonName, final String password) {
+      LOG.trace("Trying to authenticate user %s", logonName);
+      try {
+         ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
+            public Object invoke(final LdapContext ctx) throws NamingException {
+               final UserDetails userDetails = userDetailsService.getUserDetailsByLogonName(logonName);
+               ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, "simple");
+               ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, userDetails.getDistingueshedName());
+               ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, password);
+               return ctx.lookup(userDetails.getDistingueshedName());
+            }
+         });
+         return true;
+      } catch (final LdapException ex) {
+         LOG.trace("Authentication failed.", ex);
+         return false;
+      }
+   }
 
-    @Inject
-    public void setLdapTemplate(final LdapTemplate ldapTemplate) {
-        this.ldapTemplate = ldapTemplate;
-    }
+   @Inject
+   public void setLdapTemplate(final LdapTemplate ldapTemplate) {
+      this.ldapTemplate = ldapTemplate;
+   }
 
-    @Inject
-    public void setUserDetailsService(final UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+   @Inject
+   public void setUserDetailsService(final UserDetailsService userDetailsService) {
+      this.userDetailsService = userDetailsService;
+   }
 }

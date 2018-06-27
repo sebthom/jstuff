@@ -16,10 +16,10 @@ package net.sf.jstuff.core.event;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface FilteringEventListener<Event> extends EventListener<Event> {
-    /**
-     * Determines if this event listener accepts the given event.
-     *
-     * The {@link #onEvent(Object)} method is only called when <code>true</code> is returned.
-     */
-    boolean accept(Event event);
+   /**
+    * Determines if this event listener accepts the given event.
+    *
+    * The {@link #onEvent(Object)} method is only called when <code>true</code> is returned.
+    */
+   boolean accept(Event event);
 }

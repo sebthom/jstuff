@@ -28,42 +28,42 @@ import net.sf.jstuff.core.logging.Logger;
  */
 public class PrivateFieldsPlugin extends AbstractPlugin {
 
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    public static final String OPTION_NAME = "Xprivate-fields";
+   public static final String OPTION_NAME = "Xprivate-fields";
 
-    @Override
-    public String getOptionName() {
-        return OPTION_NAME;
-    }
+   @Override
+   public String getOptionName() {
+      return OPTION_NAME;
+   }
 
-    @Override
-    public String getUsage() {
-        return "  -" + OPTION_NAME + "    : Changes the field visibility from protected to private";
-    }
+   @Override
+   public String getUsage() {
+      return "  -" + OPTION_NAME + "    : Changes the field visibility from protected to private";
+   }
 
-    @Override
-    public boolean run(final Outline model, final Options options, final ErrorHandler errorHandler) throws SAXException {
+   @Override
+   public boolean run(final Outline model, final Options options, final ErrorHandler errorHandler) throws SAXException {
 
-        // scan all XSD classes
-        for (final ClassOutline classDef : model.getClasses()) {
+      // scan all XSD classes
+      for (final ClassOutline classDef : model.getClasses()) {
 
-            for (final JFieldVar fieldDef : classDef.implClass.fields().values()) {
-                // ignore static fields
-                if ((fieldDef.mods().getValue() & JMod.STATIC) != 0) {
-                    continue;
-                }
-
-                // ignore private fields
-                if ((fieldDef.mods().getValue() & JMod.PRIVATE) != 0) {
-                    continue;
-                }
-
-                LOG.info("Declaring [%s#%s] private.", classDef.implClass.name(), fieldDef.name());
-                fieldDef.mods().setPrivate();
+         for (final JFieldVar fieldDef : classDef.implClass.fields().values()) {
+            // ignore static fields
+            if ((fieldDef.mods().getValue() & JMod.STATIC) != 0) {
+               continue;
             }
-        }
-        return true;
-    }
+
+            // ignore private fields
+            if ((fieldDef.mods().getValue() & JMod.PRIVATE) != 0) {
+               continue;
+            }
+
+            LOG.info("Declaring [%s#%s] private.", classDef.implClass.name(), fieldDef.name());
+            fieldDef.mods().setPrivate();
+         }
+      }
+      return true;
+   }
 
 }

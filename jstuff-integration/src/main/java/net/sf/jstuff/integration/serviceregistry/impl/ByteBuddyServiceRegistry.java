@@ -31,52 +31,52 @@ import net.sf.jstuff.integration.serviceregistry.ServiceUnavailableException;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
-    protected static final class ByteBuddyServiceInterceptor<SERVICE_INTERFACE> {
-        private final ServiceEndpointState serviceEndpointState;
-        private final Class<SERVICE_INTERFACE> serviceInterface;
+   protected static final class ByteBuddyServiceInterceptor<SERVICE_INTERFACE> {
+      private final ServiceEndpointState serviceEndpointState;
+      private final Class<SERVICE_INTERFACE> serviceInterface;
 
-        protected ByteBuddyServiceInterceptor(final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
-            this.serviceEndpointState = serviceEndpointState;
-            this.serviceInterface = serviceInterface;
-        }
+      protected ByteBuddyServiceInterceptor(final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
+         this.serviceEndpointState = serviceEndpointState;
+         this.serviceInterface = serviceInterface;
+      }
 
-        @RuntimeType
-        public Object intercept(@Origin final Method method, @AllArguments final Object... args) throws Exception {
-            final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
-            if (service == null)
-                throw new ServiceUnavailableException(serviceEndpointState.getServiceEndpointId(), serviceInterface);
-            return method.invoke(service, args);
-        }
-    }
+      @RuntimeType
+      public Object intercept(@Origin final Method method, @AllArguments final Object... args) throws Exception {
+         final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
+         if (service == null)
+            throw new ServiceUnavailableException(serviceEndpointState.getServiceEndpointId(), serviceInterface);
+         return method.invoke(service, args);
+      }
+   }
 
-    @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointState serviceEndpointState,
-            final Class<SERVICE_INTERFACE> serviceInterface) {
+   @Override
+   @SuppressWarnings({"unchecked", "rawtypes"})
+   protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointState serviceEndpointState,
+      final Class<SERVICE_INTERFACE> serviceInterface) {
 
-        final MethodDelegation interceptor = MethodDelegation.to(new ByteBuddyServiceInterceptor<SERVICE_INTERFACE>(serviceEndpointState, serviceInterface));
+      final MethodDelegation interceptor = MethodDelegation.to(new ByteBuddyServiceInterceptor<SERVICE_INTERFACE>(serviceEndpointState, serviceInterface));
 
-        DynamicType.Builder builder = new ByteBuddy() //
-            .subclass(DefaultServiceProxyAdvice.class, ConstructorStrategy.Default.IMITATE_SUPER_CLASS_PUBLIC) //
-            .implement(serviceInterface) //
-            .method(ElementMatchers.isDeclaredBy(serviceInterface)).intercept(interceptor);
+      DynamicType.Builder builder = new ByteBuddy() //
+         .subclass(DefaultServiceProxyAdvice.class, ConstructorStrategy.Default.IMITATE_SUPER_CLASS_PUBLIC) //
+         .implement(serviceInterface) //
+         .method(ElementMatchers.isDeclaredBy(serviceInterface)).intercept(interceptor);
 
-        for (final Class<?> iface : Types.getInterfacesRecursive(serviceInterface)) {
-            builder = builder.implement(iface) //
-                .method(ElementMatchers.isDeclaredBy(iface)).intercept(interceptor);
-        }
+      for (final Class<?> iface : Types.getInterfacesRecursive(serviceInterface)) {
+         builder = builder.implement(iface) //
+            .method(ElementMatchers.isDeclaredBy(iface)).intercept(interceptor);
+      }
 
-        final Loaded<DefaultServiceProxyAdvice<SERVICE_INTERFACE>> clazz = builder.make().load(DefaultServiceRegistry.class.getClassLoader(),
-            ClassLoadingStrategy.Default.WRAPPER);
+      final Loaded<DefaultServiceProxyAdvice<SERVICE_INTERFACE>> clazz = builder.make().load(DefaultServiceRegistry.class.getClassLoader(),
+         ClassLoadingStrategy.Default.WRAPPER);
 
-        /*try {
-            clazz.saveIn(new java.io.File("F:\\out"));
-        } catch (final java.io.IOException ex) {
-            ex.printStackTrace();
-        }*/
+      /*try {
+          clazz.saveIn(new java.io.File("F:\\out"));
+      } catch (final java.io.IOException ex) {
+          ex.printStackTrace();
+      }*/
 
-        final DefaultServiceProxyAdvice<SERVICE_INTERFACE> proxy = Types.newInstance(clazz.getLoaded(), serviceEndpointState, serviceInterface);
-        proxy.setProxy(proxy);
-        return proxy;
-    }
+      final DefaultServiceProxyAdvice<SERVICE_INTERFACE> proxy = Types.newInstance(clazz.getLoaded(), serviceEndpointState, serviceInterface);
+      proxy.setProxy(proxy);
+      return proxy;
+   }
 }

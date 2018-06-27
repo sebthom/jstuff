@@ -21,25 +21,25 @@ import java.lang.annotation.Target;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface Builder<TARGET_TYPE> {
-    TARGET_TYPE build();
+   TARGET_TYPE build();
 
-    /**
-     * To specify the default behaviour for all properties add this annotation to the builder interface,
-     * otherwise to the respective interface methods representing the properties.
-     */
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.METHOD, ElementType.TYPE })
-    public @interface Property {
+   /**
+    * To specify the default behaviour for all properties add this annotation to the builder interface,
+    * otherwise to the respective interface methods representing the properties.
+    */
+   @Retention(RetentionPolicy.RUNTIME)
+   @Target({ElementType.METHOD, ElementType.TYPE})
+   public @interface Property {
 
-        /**
-         * specifies if the property can have a null value
-         */
-        boolean nullable() default false;
+      /**
+       * specifies if the property can have a null value
+       */
+      boolean nullable() default false;
 
-        /**
-         * specifies if the property must be set
-         */
-        boolean required() default false;
-    }
+      /**
+       * specifies if the property must be set
+       */
+      boolean required() default false;
+   }
 
 }

@@ -21,58 +21,66 @@ import net.sf.jstuff.core.logging.Logger;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    /**
-     * opens the given file with the default application handler
-     *
-     * @param file
-     */
-    public static void launchWithDefaultApplication(final File file) throws IOException {
-        if (IS_OS_WINDOWS)
-            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler \"" + file.getAbsolutePath() + "\"");
-        //"rundll32 SHELL32.DLL,ShellExec_RunDLL " + absoluteFilePath
-        else if (IS_OS_MAC)
-            Runtime.getRuntime().exec("open \"" + file.getAbsolutePath() + "\"");
+   /**
+    * opens the given file with the default application handler
+    */
+   public static void launchWithDefaultApplication(final File file) throws IOException {
+      if (IS_OS_WINDOWS) {
+         Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler \"" + file.getAbsolutePath() + "\"");
+      } else if (IS_OS_MAC) {
+         Runtime.getRuntime().exec("open \"" + file.getAbsolutePath() + "\"");
+      }
 
-        throw new UnsupportedOperationException("Not supported on platform " + OS_NAME);
-    }
+      throw new UnsupportedOperationException("Not supported on platform " + OS_NAME);
+   }
 
-    public static boolean openURLInBrowser(final String url) {
-        try {
-            if (IS_OS_WINDOWS)
-                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler javascript:location.href='" + url + "'");
-            else if (IS_OS_MAC)
-                Runtime.getRuntime().exec("open " + url);
-            else if (IS_OS_SUN_OS)
-                Runtime.getRuntime().exec("/usr/dt/bin/sdtwebclient " + url);
-            else {
-                Process p = Runtime.getRuntime().exec("firefox -remote \"openURL(" + url + ")\"");
-                if (p.waitFor() != 0)
-                    p = Runtime.getRuntime().exec("firefox " + url);
-                if (p.waitFor() != 0)
-                    p = Runtime.getRuntime().exec("mozilla -remote \"openURL(" + url + ")\"");
-                if (p.waitFor() != 0)
-                    p = Runtime.getRuntime().exec("mozilla " + url);
-                if (p.waitFor() != 0)
-                    p = Runtime.getRuntime().exec("netscape -remote \"openURL(" + url + ")\"");
-                if (p.waitFor() != 0)
-                    p = Runtime.getRuntime().exec("netscape " + url);
-                if (p.waitFor() != 0)
-                    p = Runtime.getRuntime().exec("opera -remote \"openURL(" + url + ")\"");
-                if (p.waitFor() != 0)
-                    p = Runtime.getRuntime().exec("galeon " + url);
-                if (p.waitFor() != 0)
-                    p = Runtime.getRuntime().exec("konqueror " + url);
-                if (p.waitFor() != 0)
-                    p = Runtime.getRuntime().exec("opera " + url);
-                if (p.waitFor() != 0)
-                    p = Runtime.getRuntime().exec("xterm -e lynx " + url);
+   public static boolean openURLInBrowser(final String url) {
+      try {
+         if (IS_OS_WINDOWS) {
+            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler javascript:location.href='" + url + "'");
+         } else if (IS_OS_MAC) {
+            Runtime.getRuntime().exec("open " + url);
+         } else if (IS_OS_SUN_OS) {
+            Runtime.getRuntime().exec("/usr/dt/bin/sdtwebclient " + url);
+         } else {
+            Process p = Runtime.getRuntime().exec("firefox -remote \"openURL(" + url + ")\"");
+            if (p.waitFor() != 0) {
+               p = Runtime.getRuntime().exec("firefox " + url);
             }
-        } catch (final Exception ex) {
-            LOG.error(ex, "Failed to launch browser");
-            return false;
-        }
-        return true;
-    }
+            if (p.waitFor() != 0) {
+               p = Runtime.getRuntime().exec("mozilla -remote \"openURL(" + url + ")\"");
+            }
+            if (p.waitFor() != 0) {
+               p = Runtime.getRuntime().exec("mozilla " + url);
+            }
+            if (p.waitFor() != 0) {
+               p = Runtime.getRuntime().exec("netscape -remote \"openURL(" + url + ")\"");
+            }
+            if (p.waitFor() != 0) {
+               p = Runtime.getRuntime().exec("netscape " + url);
+            }
+            if (p.waitFor() != 0) {
+               p = Runtime.getRuntime().exec("opera -remote \"openURL(" + url + ")\"");
+            }
+            if (p.waitFor() != 0) {
+               p = Runtime.getRuntime().exec("galeon " + url);
+            }
+            if (p.waitFor() != 0) {
+               p = Runtime.getRuntime().exec("konqueror " + url);
+            }
+            if (p.waitFor() != 0) {
+               p = Runtime.getRuntime().exec("opera " + url);
+            }
+            if (p.waitFor() != 0) {
+               p = Runtime.getRuntime().exec("xterm -e lynx " + url);
+            }
+         }
+      } catch (final Exception ex) {
+         LOG.error(ex, "Failed to launch browser");
+         return false;
+      }
+      return true;
+   }
 }

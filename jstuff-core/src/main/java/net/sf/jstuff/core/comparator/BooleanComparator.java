@@ -19,18 +19,18 @@ import java.util.Comparator;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class BooleanComparator implements Comparator<Boolean>, Serializable {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public static final BooleanComparator INSTANCE = new BooleanComparator();
+   public static final BooleanComparator INSTANCE = new BooleanComparator();
 
-    protected BooleanComparator() {
-        super();
-    }
+   protected BooleanComparator() {
+      super();
+   }
 
-    public int compare(final Boolean o1, final Boolean o2) {
-        final boolean b1 = o1.booleanValue();
-        final boolean b2 = o1.booleanValue();
+   public int compare(final Boolean o1, final Boolean o2) {
+      final boolean b1 = o1.booleanValue();
+      final boolean b2 = o1.booleanValue();
 
-        return b1 == b2 ? 0 : b1 ? 1 : -1;
-    }
+      return b1 == b2 ? 0 : b1 ? 1 : -1;
+   }
 }

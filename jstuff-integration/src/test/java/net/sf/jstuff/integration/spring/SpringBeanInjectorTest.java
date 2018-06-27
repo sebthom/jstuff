@@ -29,70 +29,74 @@ import junit.framework.TestCase;
  */
 public class SpringBeanInjectorTest extends TestCase {
 
-    public static class Entity implements InitializingBean, DisposableBean {
-        @Autowired
-        Object springBean;
+   public static class Entity implements InitializingBean, DisposableBean {
+      @Autowired
+      Object springBean;
 
-        @Inject
-        @Named("springBean")
-        Object springBean2;
+      @Inject
+      @Named("springBean")
+      Object springBean2;
 
-        boolean preDestroyCalled;
-        boolean postConstructCalled;
-        boolean destroyCalled;
-        boolean afterPropertiesSetCalled;
+      boolean preDestroyCalled;
+      boolean postConstructCalled;
+      boolean destroyCalled;
+      boolean afterPropertiesSetCalled;
 
-        public void afterPropertiesSet() throws Exception {
-            afterPropertiesSetCalled = true;
-        }
+      public void afterPropertiesSet() throws Exception {
+         afterPropertiesSetCalled = true;
+      }
 
-        public void destroy() throws Exception {
-            destroyCalled = true;
-        }
+      public void destroy() throws Exception {
+         destroyCalled = true;
+      }
 
-        @PostConstruct
-        void onPostConstruct() {
-            postConstructCalled = true;
-        }
+      @PostConstruct
+      void onPostConstruct() {
+         postConstructCalled = true;
+      }
 
-        @PreDestroy
-        void onPreDestroy() {
-            preDestroyCalled = true;
-        }
-    }
+      @PreDestroy
+      void onPreDestroy() {
+         preDestroyCalled = true;
+      }
+   }
 
-    public void testSpringBeanInjector() throws Exception {
-        try {
-            SpringBeanInjector.get(); // must fail, since the spring context is not yet opened
-            fail();
-        } catch (final IllegalStateException ex) {}
+   public void testSpringBeanInjector() throws Exception {
+      try {
+         SpringBeanInjector.get(); // must fail, since the spring context is not yet opened
+         fail();
+      } catch (final IllegalStateException ex) {
+         // expected
+      }
 
-        final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanInjectorTest.xml", SpringBeanInjectorTest.class);
+      final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanInjectorTest.xml", SpringBeanInjectorTest.class);
 
-        final SpringBeanInjector injector = SpringBeanInjector.get();
+      final SpringBeanInjector injector = SpringBeanInjector.get();
 
-        final Entity e = new Entity();
-        injector.inject(e);
-        assertNotNull(e.springBean);
-        assertNotNull(e.springBean2);
-        assertFalse(e.postConstructCalled);
-        assertFalse(e.afterPropertiesSetCalled);
+      final Entity e = new Entity();
+      injector.inject(e);
+      assertNotNull(e.springBean);
+      assertNotNull(e.springBean2);
+      assertFalse(e.postConstructCalled);
+      assertFalse(e.afterPropertiesSetCalled);
 
-        final Entity e2 = new Entity();
-        injector.registerSingleton("myBean", e2);
-        assertNotNull(e2.springBean);
-        assertNotNull(e2.springBean2);
-        assertTrue(e2.postConstructCalled);
-        assertTrue(e2.afterPropertiesSetCalled);
+      final Entity e2 = new Entity();
+      injector.registerSingleton("myBean", e2);
+      assertNotNull(e2.springBean);
+      assertNotNull(e2.springBean2);
+      assertTrue(e2.postConstructCalled);
+      assertTrue(e2.afterPropertiesSetCalled);
 
-        ctx.close();
+      ctx.close();
 
-        assertTrue(e2.preDestroyCalled);
-        assertTrue(e2.destroyCalled);
+      assertTrue(e2.preDestroyCalled);
+      assertTrue(e2.destroyCalled);
 
-        try {
-            SpringBeanInjector.get(); // must fail, since the spring context is closed
-            fail();
-        } catch (final IllegalStateException ex) {}
-    }
+      try {
+         SpringBeanInjector.get(); // must fail, since the spring context is closed
+         fail();
+      } catch (final IllegalStateException ex) {
+         // expected
+      }
+   }
 }

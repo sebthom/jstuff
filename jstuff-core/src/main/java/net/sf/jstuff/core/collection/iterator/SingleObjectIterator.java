@@ -21,31 +21,31 @@ import java.util.NoSuchElementException;
  */
 public class SingleObjectIterator<T> implements Iterator<T>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private T item;
-    private boolean hasNext = true;
+   private T item;
+   private boolean hasNext = true;
 
-    public SingleObjectIterator(final T item) {
-        this.item = item;
-    }
+   public SingleObjectIterator(final T item) {
+      this.item = item;
+   }
 
-    public boolean hasNext() {
-        return hasNext;
-    }
+   public boolean hasNext() {
+      return hasNext;
+   }
 
-    public T next() {
-        if (hasNext) {
-            hasNext = false;
-            final T tmp = item;
-            // help the gc
-            item = null;
-            return tmp;
-        }
-        throw new NoSuchElementException();
-    }
+   public T next() {
+      if (hasNext) {
+         hasNext = false;
+         final T tmp = item;
+         // help the gc
+         item = null;
+         return tmp;
+      }
+      throw new NoSuchElementException();
+   }
 
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
+   public void remove() {
+      throw new UnsupportedOperationException();
+   }
 }

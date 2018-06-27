@@ -22,13 +22,13 @@ import java.lang.annotation.Target;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-@Target({ ElementType.METHOD })
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface REST_POST {
-    /**
-     * resource name
-     */
-    String value();
+public @interface REST_POST { // CHECKSTYLE:IGNORE TypeName
+   /**
+    * resource name
+    */
+   String value();
 }
