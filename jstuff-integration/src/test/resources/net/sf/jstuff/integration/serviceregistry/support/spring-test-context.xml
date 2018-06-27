@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="
 http://www.springframework.org/schema/aop
 http://www.springframework.org/schema/aop/spring-aop.xsd
 http://www.springframework.org/schema/beans
@@ -12,23 +13,24 @@ http://www.springframework.org/schema/util
 http://www.springframework.org/schema/util/spring-util.xsd
 ">
 
-	<bean id="defaultService" class="net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsServiceTest.DefaultTestService" />
+    <bean id="defaultService" class="net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsServiceTest.DefaultTestService" />
 
-	<bean id="aopAdvice" class="net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsServiceTest.TestServiceAOPAdvice" />
+    <bean id="aopAdvice" class="net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsServiceTest.TestServiceAOPAdvice" />
 
-	<aop:config>
-		<aop:aspect ref="aopAdvice" id="alternativeGreetingAspect">
-			<aop:around pointcut="execution(* net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsServiceTest.DefaultTestService.getGreeting())"
-				method="getAlternativeGreeting" />
+    <aop:config>
+        <aop:aspect ref="aopAdvice" id="alternativeGreetingAspect">
+            <aop:around
+                pointcut="execution(* net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsServiceTest.DefaultTestService.getGreeting())"
+                method="getAlternativeGreeting" />
 
-		</aop:aspect>
-	</aop:config>
+        </aop:aspect>
+    </aop:config>
 
-	<bean class="net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsService">
-		<property name="serviceRegistry">
-			<util:constant static-field="net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsServiceTest.REGISTRY" />
-		</property>
-		<property name="service" ref="defaultService" />
-		<property name="serviceInterface" value="net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsServiceTest.TestService" />
-	</bean>
+    <bean class="net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsService">
+        <property name="serviceRegistry">
+            <util:constant static-field="net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsServiceTest.REGISTRY" />
+        </property>
+        <property name="service" ref="defaultService" />
+        <property name="serviceInterface" value="net.sf.jstuff.integration.serviceregistry.support.SpringBeanAsServiceTest.TestService" />
+    </bean>
 </beans>

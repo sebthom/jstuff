@@ -24,53 +24,53 @@ import net.sf.jstuff.core.validation.Assert;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface Composite<Component> {
-    public abstract class Default<Component> implements Composite<Component>, Serializable {
-        private static final long serialVersionUID = 1L;
+   abstract class Default<Component> implements Composite<Component>, Serializable {
+      private static final long serialVersionUID = 1L;
 
-        protected final Collection<Component> components = createCollection();
+      protected final Collection<Component> components = createCollection();
 
-        protected Collection<Component> createCollection() {
-            return new ArrayList<Component>();
-        }
+      public Default() {
+         super();
+      }
 
-        public Default() {
-            super();
-        }
+      public Default(final Collection<? extends Component> components) {
+         Args.notNull("components", components);
+         this.components.addAll(components);
+      }
 
-        public Default(final Collection<? extends Component> components) {
-            Args.notNull("components", components);
-            this.components.addAll(components);
-        }
+      public Default(final Component... components) {
+         Args.notNull("components", components);
+         CollectionUtils.addAll(this.components, components);
+      }
 
-        public Default(final Component... components) {
-            Args.notNull("components", components);
-            CollectionUtils.addAll(this.components, components);
-        }
+      public void addComponent(final Component component) {
+         Assert.isTrue(isCompositeModifiable(), "Adding components to this composite is not allowed!");
+         components.add(component);
+      }
 
-        public void addComponent(final Component component) {
-            Assert.isTrue(isCompositeModifiable(), "Adding components to this composite is not allowed!");
-            components.add(component);
-        }
+      protected Collection<Component> createCollection() {
+         return new ArrayList<Component>();
+      }
 
-        public boolean hasComponent(final Component component) {
-            return components.contains(component);
-        }
+      public boolean hasComponent(final Component component) {
+         return components.contains(component);
+      }
 
-        public boolean isCompositeModifiable() {
-            return true;
-        }
+      public boolean isCompositeModifiable() {
+         return true;
+      }
 
-        public boolean removeComponent(final Component component) {
-            Assert.isTrue(isCompositeModifiable(), "Removing components from this composite is not allowed!");
-            return components.remove(component);
-        }
-    }
+      public boolean removeComponent(final Component component) {
+         Assert.isTrue(isCompositeModifiable(), "Removing components from this composite is not allowed!");
+         return components.remove(component);
+      }
+   }
 
-    void addComponent(Component component);
+   void addComponent(Component component);
 
-    boolean hasComponent(Component component);
+   boolean hasComponent(Component component);
 
-    boolean isCompositeModifiable();
+   boolean isCompositeModifiable();
 
-    boolean removeComponent(Component component);
+   boolean removeComponent(Component component);
 }

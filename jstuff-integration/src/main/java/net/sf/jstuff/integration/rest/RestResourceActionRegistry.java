@@ -26,75 +26,76 @@ import net.sf.jstuff.integration.spring.SpringBeanParanamer;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class RestResourceActionRegistry {
-    private final MapWith<HttpRequestMethod, MapWithLists<String, RestResourceAction>> actions = new MapWith<HttpRequestMethod, MapWithLists<String, RestResourceAction>>() {
-        private static final long serialVersionUID = 1L;
+   private final MapWith<HttpRequestMethod, MapWithLists<String, RestResourceAction>> actions //
+      = new MapWith<HttpRequestMethod, MapWithLists<String, RestResourceAction>>() {
+         private static final long serialVersionUID = 1L;
 
-        @Override
-        protected MapWithLists<String, RestResourceAction> create(final HttpRequestMethod key) {
+         @Override
+         protected MapWithLists<String, RestResourceAction> create(final HttpRequestMethod key) {
             return MapWithLists.create();
-        }
-    };
+         }
+      };
 
-    public RestResourceAction registerResourceAction(final String resourceId, final HttpRequestMethod reqMethod, final Method serviceMethod,
-            final Object serviceImpl) {
-        final RestResourceAction action = new RestResourceAction(resourceId, reqMethod, serviceMethod, SpringBeanParanamer.getParameterNames(serviceMethod,
-            serviceImpl));
-        for (final RestResourceAction mappedAction : actions.getNullSafe(reqMethod).getNullSafe(resourceId))
-            if (mappedAction.getRequiredURLParameterCount() == action.getRequiredURLParameterCount())
-                throw new IllegalArgumentException("Another service method with the same number of parameters is mapped to the same resourceId+requestMethod: "
-                        + action + " <> " + mappedAction);
-        actions.getOrCreate(reqMethod).add(resourceId, action);
-        return action;
-    }
+   public List<RestResourceAction> getAllResourceActions() {
+      final List<RestResourceAction> coll = newArrayList();
+      for (final MapWithLists<String, RestResourceAction> actionsByMethod : actions.values()) {
+         for (final List<RestResourceAction> actionsByResourceId : actionsByMethod.values()) {
+            coll.addAll(actionsByResourceId);
+         }
+      }
+      return coll;
+   }
 
-    public RestResourceAction registerFallbackResourceAction(final String resourceId, final Method serviceMethod, final Object serviceImpl,
-            final RestResourceAction primaryResourceAction) {
-        // fallback method for DELETE is POST, for HEAD is GET
-        final HttpRequestMethod reqMethod = primaryResourceAction.getHttpRequestMethod() == HttpRequestMethod.DELETE ? HttpRequestMethod.POST
-                : HttpRequestMethod.GET;
+   public RestResourceAction getResourceAction(final HttpRequestMethod requestMethod, final String requestParameters) {
+      final MapWithLists<String, RestResourceAction> resourceActions = actions.getNullSafe(requestMethod);
 
-        final RestResourceAction action = new RestResourceAction(resourceId, reqMethod, serviceMethod, SpringBeanParanamer.getParameterNames(serviceMethod,
-            serviceImpl), primaryResourceAction);
-        for (final RestResourceAction mappedAction : actions.getNullSafe(reqMethod).getNullSafe(resourceId))
-            if (mappedAction.getRequiredURLParameterCount() == action.getRequiredURLParameterCount())
-                throw new IllegalArgumentException("Another service method with the same number of parameters is mapped to the same resourceId+requestMethod: "
-                        + action + " <> " + mappedAction);
-        actions.getOrCreate(reqMethod).add(resourceId, action);
-        return action;
-    }
+      // going backwards to the requestParameters to find the best matching rest action
+      String key = requestParameters + "/";
+      List<RestResourceAction> matchingActions = null;
+      do {
+         key = Strings.substringBeforeLast(key, "/");
 
-    public List<RestResourceAction> getAllResourceActions() {
-        final List<RestResourceAction> coll = newArrayList();
-        for (final MapWithLists<String, RestResourceAction> actionsByMethod : actions.values()) {
-            for (final List<RestResourceAction> actionsByResourceId : actionsByMethod.values()) {
-                coll.addAll(actionsByResourceId);
-            }
-        }
-        return coll;
-    }
+         if (resourceActions.containsKey(key)) {
+            matchingActions = resourceActions.get(key);
+            if (matchingActions.size() == 1)
+               return matchingActions.get(0);
+            final int paramCount = Strings.countMatches(requestParameters.substring(key.length()), "/");
+            for (final RestResourceAction action : matchingActions)
+               if (action.getRequiredURLParameterCount() == paramCount)
+                  return action;
+            return matchingActions.get(0);
+         }
+      }
+      while (key.contains("/"));
 
-    public RestResourceAction getResourceAction(final HttpRequestMethod requestMethod, final String requestParameters) {
-        final MapWithLists<String, RestResourceAction> resourceActions = actions.getNullSafe(requestMethod);
+      return null;
+   }
 
-        // going backwards to the requestParameters to find the best matching rest action
-        String key = requestParameters + "/";
-        List<RestResourceAction> matchingActions = null;
-        do {
-            key = Strings.substringBeforeLast(key, "/");
+   public RestResourceAction registerFallbackResourceAction(final String resourceId, final Method serviceMethod, final Object serviceImpl,
+      final RestResourceAction primaryResourceAction) {
+      // fallback method for DELETE is POST, for HEAD is GET
+      final HttpRequestMethod reqMethod = primaryResourceAction.getHttpRequestMethod() == HttpRequestMethod.DELETE ? HttpRequestMethod.POST
+         : HttpRequestMethod.GET;
 
-            if (resourceActions.containsKey(key)) {
-                matchingActions = resourceActions.get(key);
-                if (matchingActions.size() == 1)
-                    return matchingActions.get(0);
-                final int paramCount = Strings.countMatches(requestParameters.substring(key.length()), "/");
-                for (final RestResourceAction action : matchingActions)
-                    if (action.getRequiredURLParameterCount() == paramCount)
-                        return action;
-                return matchingActions.get(0);
-            }
-        }
-        while (key.contains("/"));
+      final RestResourceAction action = new RestResourceAction(resourceId, reqMethod, serviceMethod, SpringBeanParanamer.getParameterNames(serviceMethod,
+         serviceImpl), primaryResourceAction);
+      for (final RestResourceAction mappedAction : actions.getNullSafe(reqMethod).getNullSafe(resourceId))
+         if (mappedAction.getRequiredURLParameterCount() == action.getRequiredURLParameterCount())
+            throw new IllegalArgumentException("Another service method with the same number of parameters is mapped to the same resourceId+requestMethod: "
+               + action + " <> " + mappedAction);
+      actions.getOrCreate(reqMethod).add(resourceId, action);
+      return action;
+   }
 
-        return null;
-    }
+   public RestResourceAction registerResourceAction(final String resourceId, final HttpRequestMethod reqMethod, final Method serviceMethod,
+      final Object serviceImpl) {
+      final RestResourceAction action = new RestResourceAction(resourceId, reqMethod, serviceMethod, SpringBeanParanamer.getParameterNames(serviceMethod,
+         serviceImpl));
+      for (final RestResourceAction mappedAction : actions.getNullSafe(reqMethod).getNullSafe(resourceId))
+         if (mappedAction.getRequiredURLParameterCount() == action.getRequiredURLParameterCount())
+            throw new IllegalArgumentException("Another service method with the same number of parameters is mapped to the same resourceId+requestMethod: "
+               + action + " <> " + mappedAction);
+      actions.getOrCreate(reqMethod).add(resourceId, action);
+      return action;
+   }
 }

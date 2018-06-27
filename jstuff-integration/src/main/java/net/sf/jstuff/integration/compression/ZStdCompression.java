@@ -35,114 +35,114 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class ZStdCompression extends AbstractCompression {
 
-    public static final ZStdCompression INSTANCE = new ZStdCompression();
+   public static final ZStdCompression INSTANCE = new ZStdCompression();
 
-    public static int LEVEL_SMALL_AS_DEFLATE_4 = 2;
+   public static final int LEVEL_SMALL_AS_DEFLATE_4 = 2;
+   public static final int LEVEL_SMALL_AS_DEFLATE_6 = 5;
+   public static final int LEVEL_SMALL_AS_DEFLATE_9 = 5;
 
-    public static int LEVEL_SMALL_AS_DEFLATE_6 = 5;
-    public static int LEVEL_SMALL_AS_DEFLATE_9 = 5;
-    private boolean useChecksum = false;
-    private int compressionLevel = 3;
+   private boolean useChecksum = false;
+   private int compressionLevel = 3;
 
-    public ZStdCompression() {
-    }
+   public ZStdCompression() {
+   }
 
-    public ZStdCompression(final int compressionLevel) {
-        this.compressionLevel = compressionLevel;
-    }
+   public ZStdCompression(final int compressionLevel) {
+      this.compressionLevel = compressionLevel;
+   }
 
-    public ZStdCompression(final int compressionLevel, final boolean useChecksum) {
-        this.compressionLevel = compressionLevel;
-        this.useChecksum = useChecksum;
-    }
+   public ZStdCompression(final int compressionLevel, final boolean useChecksum) {
+      this.compressionLevel = compressionLevel;
+      this.useChecksum = useChecksum;
+   }
 
-    @Override
-    public byte[] compress(final byte[] uncompressed) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
+   @Override
+   public byte[] compress(final byte[] uncompressed) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
 
-        final long maxSize = Zstd.compressBound(uncompressed.length);
-        if (maxSize > Integer.MAX_VALUE)
-            throw new IOException("Max output size is greater than Integer.MAX_VALUE!");
-        final byte[] dst = new byte[(int) maxSize];
+      final long maxSize = Zstd.compressBound(uncompressed.length);
+      if (maxSize > Integer.MAX_VALUE)
+         throw new IOException("Max output size is greater than Integer.MAX_VALUE!");
+      final byte[] dst = new byte[(int) maxSize];
 
-        final long rc = Zstd.compress(dst, uncompressed, compressionLevel);
-        if (Zstd.isError(rc))
-            throw new IOException(Zstd.getErrorName(rc));
+      final long rc = Zstd.compress(dst, uncompressed, compressionLevel);
+      if (Zstd.isError(rc))
+         throw new IOException(Zstd.getErrorName(rc));
 
-        final int size = (int) rc;
-        final byte[] out = new byte[size];
-        System.arraycopy(dst, 0, out, 0, size);
-        return out;
-    }
+      final int size = (int) rc;
+      final byte[] out = new byte[size];
+      System.arraycopy(dst, 0, out, 0, size);
+      return out;
+   }
 
-    @SuppressWarnings("resource")
-    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
+      Args.notNull("output", output);
 
-        if (!closeOutput) {
-            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-            output = new DelegatingOutputStream(output, true);
-        }
+      if (!closeOutput) {
+         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         output = new DelegatingOutputStream(output, true);
+      }
 
-        try {
-            final OutputStream compOS = createCompressingOutputStream(output);
-            compOS.write(uncompressed);
-            compOS.flush();
-        } finally {
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         final OutputStream compOS = createCompressingOutputStream(output);
+         compOS.write(uncompressed);
+         compOS.flush();
+      } finally {
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    @SuppressWarnings("resource")
-    public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("input", input);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("input", input);
+      Args.notNull("output", output);
 
-        if (!closeOutput) {
-            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-            output = new DelegatingOutputStream(output, true);
-        }
+      if (!closeOutput) {
+         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         output = new DelegatingOutputStream(output, true);
+      }
 
-        try {
-            final OutputStream compOS = createCompressingOutputStream(output);
-            IOUtils.copyLarge(input, compOS);
-            compOS.flush();
-        } finally {
-            IOUtils.closeQuietly(input);
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         final OutputStream compOS = createCompressingOutputStream(output);
+         IOUtils.copyLarge(input, compOS);
+         compOS.flush();
+      } finally {
+         IOUtils.closeQuietly(input);
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
-        return new ZstdOutputStream(output, compressionLevel, true, useChecksum);
-    }
+   public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
+      return new ZstdOutputStream(output, compressionLevel, true, useChecksum);
+   }
 
-    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
-        return new ZstdInputStream(compressed);
-    }
+   public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+      return new ZstdInputStream(compressed);
+   }
 
-    @Override
-    public int decompress(final byte[] compressed, final byte[] output) throws IOException {
-        Args.notNull("compressed", compressed);
-        Args.notNull("output", output);
+   @Override
+   public int decompress(final byte[] compressed, final byte[] output) throws IOException {
+      Args.notNull("compressed", compressed);
+      Args.notNull("output", output);
 
-        final long rc = Zstd.decompress(output, compressed);
-        if (Zstd.isError(rc)) {
-            if (rc == -70)
-                throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
-            throw new IOException(Zstd.getErrorName(rc));
-        }
-        return (int) rc;
-    }
+      final long rc = Zstd.decompress(output, compressed);
+      if (Zstd.isError(rc)) {
+         if (rc == -70)
+            throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
+         throw new IOException(Zstd.getErrorName(rc));
+      }
+      return (int) rc;
+   }
 
-    @Override
-    public String toString() {
-        return Strings.toString(this, "compressionLevel", compressionLevel);
-    }
+   @Override
+   public String toString() {
+      return Strings.toString(this, "compressionLevel", compressionLevel);
+   }
 
 }

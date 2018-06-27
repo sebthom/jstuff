@@ -20,173 +20,173 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class BuilderTest extends TestCase {
 
-    public static class EntityA {
+   public static class EntityA {
 
-        public interface EntityABuilder<THIS extends EntityABuilder<THIS, T>, T extends EntityA> extends Builder<T> {
+      public interface EntityABuilder<THIS extends EntityABuilder<THIS, T>, T extends EntityA> extends Builder<T> {
 
-            @Builder.Property(required = true, nullable = false)
-            THIS propertyA(String value);
+         @Builder.Property(required = true, nullable = false)
+         THIS propertyA(String value);
 
-            THIS propertyB(int value);
-        }
+         THIS propertyB(int value);
+      }
 
-        @SuppressWarnings("unchecked")
-        public static EntityABuilder<?, ? extends EntityA> builder() {
-            return (EntityABuilder<?, ? extends EntityA>) BuilderFactory.of(EntityABuilder.class).create();
-        }
+      @SuppressWarnings("unchecked")
+      public static EntityABuilder<?, ? extends EntityA> builder() {
+         return (EntityABuilder<?, ? extends EntityA>) BuilderFactory.of(EntityABuilder.class).create();
+      }
 
-        protected String propertyA;
-        protected Integer propertyB = -1;
+      protected String propertyA;
+      protected Integer propertyB = -1;
 
-        @OnPostBuild
-        protected void onInitialized() {
-            Args.notNull("propertyB", propertyB);
-            Args.notNegative("propertyB", propertyB);
-        }
-    }
+      @OnPostBuild
+      protected void onInitialized() {
+         Args.notNull("propertyB", propertyB);
+         Args.notNegative("propertyB", propertyB);
+      }
+   }
 
-    public static class EntityB extends EntityA {
+   public static class EntityB extends EntityA {
 
-        public interface EntityBBuilder<THIS extends EntityBBuilder<THIS, T>, T extends EntityB> extends EntityABuilder<THIS, T> {
+      public interface EntityBBuilder<THIS extends EntityBBuilder<THIS, T>, T extends EntityB> extends EntityABuilder<THIS, T> {
 
-            THIS propertyC(Long value);
+         THIS propertyC(Long value);
 
-            THIS propertyD(String value);
+         THIS propertyD(String value);
 
-            @Builder.Property(required = true, nullable = true)
-            THIS withPropertyE(String value);
-        }
+         @Builder.Property(required = true, nullable = true)
+         THIS withPropertyE(String value);
+      }
 
-        @SuppressWarnings("unchecked")
-        public static EntityBBuilder<?, ? extends EntityB> builder() {
-            return (EntityBBuilder<?, ? extends EntityB>) BuilderFactory.of(EntityBBuilder.class).create();
-        }
+      @SuppressWarnings("unchecked")
+      public static EntityBBuilder<?, ? extends EntityB> builder() {
+         return (EntityBBuilder<?, ? extends EntityB>) BuilderFactory.of(EntityBBuilder.class).create();
+      }
 
-        public long propertyC = -1;
-        private String propertyD;
-        protected String propertyE;
+      public long propertyC = -1;
+      private String propertyD;
+      protected String propertyE;
 
-        @Override
-        protected void onInitialized() {
-            super.onInitialized();
-            Args.notNegative("propertyC", propertyC);
-            if (!propertyD.endsWith("_setWithSetter"))
-                throw new IllegalArgumentException("propertyD not set via setter");
-        }
+      @Override
+      protected void onInitialized() {
+         super.onInitialized();
+         Args.notNegative("propertyC", propertyC);
+         if (!propertyD.endsWith("_setWithSetter"))
+            throw new IllegalArgumentException("propertyD not set via setter");
+      }
 
-        public void setPropertyD(final String propertyD) {
-            this.propertyD = propertyD + "_setWithSetter";
-        }
-    }
+      public void setPropertyD(final String propertyD) {
+         this.propertyD = propertyD + "_setWithSetter";
+      }
+   }
 
-    public void testEntityABuilder() {
-        EntityA.builder() //
-            .propertyA("foo") //
-            .propertyB(1) //
+   public void testEntityABuilder() {
+      EntityA.builder() //
+         .propertyA("foo") //
+         .propertyB(1) //
+         .build();
+
+      try {
+         EntityA.builder() //
             .build();
+         fail();
+      } catch (final Exception ex) {
+         assertEquals("Setting EntityABuilder.propertyA(...) is required.", ex.getMessage());
+      }
 
-        try {
-            EntityA.builder() //
-                .build();
-            fail();
-        } catch (final Exception ex) {
-            assertEquals("Setting EntityABuilder.propertyA(...) is required.", ex.getMessage());
-        }
+      try {
+         EntityA.builder() //
+            .propertyA(null) //
+            .build();
+         fail();
+      } catch (final Exception ex) {
+         assertEquals(ex.getMessage(), "EntityABuilder.propertyA(...) must not be set to null.");
+      }
 
-        try {
-            EntityA.builder() //
-                .propertyA(null) //
-                .build();
-            fail();
-        } catch (final Exception ex) {
-            assertEquals(ex.getMessage(), "EntityABuilder.propertyA(...) must not be set to null.");
-        }
-
-        try {
-            EntityA.builder() //
-                .propertyA("foo") //
-                .build();
-            fail();
-        } catch (final Exception ex) {}
-
-        try {
-            EntityA.builder() //
-                .propertyA("foo") //
-                .propertyB(-1) //
-                .build();
-            fail();
-        } catch (final Exception ex) {}
-    }
-
-    public void testEntityBBuilder() {
-        EntityB.builder() //
+      try {
+         EntityA.builder() //
             .propertyA("foo") //
+            .build();
+         fail();
+      } catch (final Exception ex) { /* expected */ }
+
+      try {
+         EntityA.builder() //
+            .propertyA("foo") //
+            .propertyB(-1) //
+            .build();
+         fail();
+      } catch (final Exception ex) { /* expected */ }
+   }
+
+   public void testEntityBBuilder() {
+      EntityB.builder() //
+         .propertyA("foo") //
+         .propertyB(1) //
+         .propertyC(3L) //
+         .propertyD("bar") //
+         .withPropertyE("ee") //
+         .build();
+
+      try {
+         EntityB.builder() //
             .propertyB(1) //
             .propertyC(3L) //
             .propertyD("bar") //
             .withPropertyE("ee") //
             .build();
+         fail();
+      } catch (final Exception ex) {
+         assertEquals("Setting EntityBBuilder.propertyA(...) is required.", ex.getMessage());
+      }
 
-        try {
-            EntityB.builder() //
-                .propertyB(1) //
-                .propertyC(3L) //
-                .propertyD("bar") //
-                .withPropertyE("ee") //
-                .build();
-            fail();
-        } catch (final Exception ex) {
-            assertEquals("Setting EntityBBuilder.propertyA(...) is required.", ex.getMessage());
-        }
+      try {
+         EntityB.builder() //
+            .propertyA(null) //
+            .propertyB(1) //
+            .propertyC(3L) //
+            .propertyD("bar") //
+            .withPropertyE("ee") //
+            .build();
+         fail();
+      } catch (final Exception ex) {
+         assertEquals(ex.getMessage(), "EntityBBuilder.propertyA(...) must not be set to null.");
+      }
 
-        try {
-            EntityB.builder() //
-                .propertyA(null) //
-                .propertyB(1) //
-                .propertyC(3L) //
-                .propertyD("bar") //
-                .withPropertyE("ee") //
-                .build();
-            fail();
-        } catch (final Exception ex) {
-            assertEquals(ex.getMessage(), "EntityBBuilder.propertyA(...) must not be set to null.");
-        }
+      try {
+         EntityB.builder() //
+            .propertyC(3L) //
+            .propertyD("bar") //
+            .build();
+         fail();
+      } catch (final Exception ex) { /* expected */ }
+      try {
+         EntityB.builder() //
+            .propertyA("foo") //
+            .propertyB(1) //
+            .propertyC(-1L) //
+            .propertyD("bar") //
+            .build();
+         fail();
+      } catch (final Exception ex) { /* expected */ }
 
-        try {
-            EntityB.builder() //
-                .propertyC(3L) //
-                .propertyD("bar") //
-                .build();
-            fail();
-        } catch (final Exception ex) {}
-        try {
-            EntityB.builder() //
-                .propertyA("foo") //
-                .propertyB(1) //
-                .propertyC(-1L) //
-                .propertyD("bar") //
-                .build();
-            fail();
-        } catch (final Exception ex) {}
-
-        try {
-            EntityB.builder() //
-                .propertyA("") //
-                .propertyB(1) //
-                .propertyC(1L) //
-                .propertyD("foo") //
-                .build();
-            fail();
-        } catch (final Exception ex) {
-            assertEquals("Setting EntityBBuilder.withPropertyE(...) is required.", ex.getMessage());
-        }
-
-        EntityB.builder() //
+      try {
+         EntityB.builder() //
             .propertyA("") //
             .propertyB(1) //
             .propertyC(1L) //
             .propertyD("foo") //
-            .withPropertyE(null) //
             .build();
-    }
+         fail();
+      } catch (final Exception ex) {
+         assertEquals("Setting EntityBBuilder.withPropertyE(...) is required.", ex.getMessage());
+      }
+
+      EntityB.builder() //
+         .propertyA("") //
+         .propertyB(1) //
+         .propertyC(1L) //
+         .propertyD("foo") //
+         .withPropertyE(null) //
+         .build();
+   }
 }

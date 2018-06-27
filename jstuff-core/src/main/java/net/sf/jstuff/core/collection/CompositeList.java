@@ -25,67 +25,67 @@ import net.sf.jstuff.core.types.Composite;
  */
 public class CompositeList<V> extends AbstractList<V> implements Composite<List<? extends V>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public static <V> CompositeList<V> of(final Collection<List<? extends V>> components) {
-        return new CompositeList<V>(components);
-    }
+   public static <V> CompositeList<V> of(final Collection<List<? extends V>> components) {
+      return new CompositeList<V>(components);
+   }
 
-    public static <V> CompositeList<V> of(final List<? extends V>... components) {
-        return new CompositeList<V>(components);
-    }
+   public static <V> CompositeList<V> of(final List<? extends V>... components) {
+      return new CompositeList<V>(components);
+   }
 
-    private final Collection<List<? extends V>> components = new ArrayList<List<? extends V>>();
+   private final Collection<List<? extends V>> components = new ArrayList<List<? extends V>>();
 
-    public CompositeList() {
-        super();
-    }
+   public CompositeList() {
+      super();
+   }
 
-    public CompositeList(final Collection<List<? extends V>> components) {
-        this.components.addAll(components);
-    }
+   public CompositeList(final Collection<List<? extends V>> components) {
+      this.components.addAll(components);
+   }
 
-    public CompositeList(final List<? extends V>... components) {
-        CollectionUtils.addAll(this.components, components);
-    }
+   public CompositeList(final List<? extends V>... components) {
+      CollectionUtils.addAll(this.components, components);
+   }
 
-    public void addComponent(final List<? extends V> component) {
-        this.components.add(component);
-    }
+   public void addComponent(final List<? extends V> component) {
+      this.components.add(component);
+   }
 
-    @Override
-    public V get(final int index) {
-        int totalSizeOfCheckedLists = 0;
-        for (final List<? extends V> list : components) {
-            final int currentListIndex = index - totalSizeOfCheckedLists;
-            final int currentListSize = list.size();
-            if (currentListIndex >= currentListSize) {
-                totalSizeOfCheckedLists += currentListSize;
-                continue;
-            }
-            return list.get(currentListIndex);
-        }
-        throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + totalSizeOfCheckedLists);
-    }
+   @Override
+   public V get(final int index) {
+      int totalSizeOfCheckedLists = 0;
+      for (final List<? extends V> list : components) {
+         final int currentListIndex = index - totalSizeOfCheckedLists;
+         final int currentListSize = list.size();
+         if (currentListIndex >= currentListSize) {
+            totalSizeOfCheckedLists += currentListSize;
+            continue;
+         }
+         return list.get(currentListIndex);
+      }
+      throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + totalSizeOfCheckedLists);
+   }
 
-    public boolean hasComponent(final List<? extends V> component) {
-        return components.contains(component);
-    }
+   public boolean hasComponent(final List<? extends V> component) {
+      return components.contains(component);
+   }
 
-    public boolean isCompositeModifiable() {
-        return true;
-    }
+   public boolean isCompositeModifiable() {
+      return true;
+   }
 
-    public boolean removeComponent(final List<? extends V> component) {
-        return components.remove(component);
-    }
+   public boolean removeComponent(final List<? extends V> component) {
+      return components.remove(component);
+   }
 
-    @Override
-    public int size() {
-        int size = 0;
-        for (final List<? extends V> list : components) {
-            size += list.size();
-        }
-        return size;
-    }
+   @Override
+   public int size() {
+      int size = 0;
+      for (final List<? extends V> list : components) {
+         size += list.size();
+      }
+      return size;
+   }
 }

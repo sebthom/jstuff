@@ -21,63 +21,63 @@ import junit.framework.TestCase;
  */
 public class ServiceRegistryPerfITest extends TestCase {
 
-    public static interface MyService {
-        String getGreeting();
-    }
+   public interface MyService {
+      String getGreeting();
+   }
 
-    public static final MyService MY_SERVICE = new MyService() {
-        @SuppressWarnings("unused")
-        private long counter = 0;
+   public static final MyService MY_SERVICE = new MyService() {
+      @SuppressWarnings("unused")
+      private long counter = 0;
 
-        public String getGreeting() {
-            counter++;
-            return "Hello";
-        }
-    };
+      public String getGreeting() {
+         counter++;
+         return "Hello";
+      }
+   };
 
-    private ByteBuddyServiceRegistry byteBuddyRegistry;
-    private DefaultServiceRegistry jdkProxyRegistry;
+   private ByteBuddyServiceRegistry byteBuddyRegistry;
+   private DefaultServiceRegistry jdkProxyRegistry;
 
-    public void runPerfTest(final MyService service, final String label) {
-        final StopWatch sw = new StopWatch();
-        sw.start();
-        for (int i = 0; i < 2000000; i++) {
-            service.getGreeting();
-        }
-        sw.stop();
-        System.out.println(label + ": " + sw.toString());
-    };
+   public void runPerfTest(final MyService service, final String label) {
+      final StopWatch sw = new StopWatch();
+      sw.start();
+      for (int i = 0; i < 2000000; i++) {
+         service.getGreeting();
+      }
+      sw.stop();
+      System.out.println(label + ": " + sw.toString());
+   }
 
-    @Override
-    protected void setUp() throws Exception {
-        byteBuddyRegistry = new ByteBuddyServiceRegistry();
-        jdkProxyRegistry = new DefaultServiceRegistry();
-    }
+   @Override
+   protected void setUp() throws Exception {
+      byteBuddyRegistry = new ByteBuddyServiceRegistry();
+      jdkProxyRegistry = new DefaultServiceRegistry();
+   }
 
-    @Override
-    protected void tearDown() throws Exception {
-        byteBuddyRegistry = null;
-        jdkProxyRegistry = null;
-    }
+   @Override
+   protected void tearDown() throws Exception {
+      byteBuddyRegistry = null;
+      jdkProxyRegistry = null;
+   }
 
-    public void testPerformance() {
-        byteBuddyRegistry.addService("MyService", MyService.class, MY_SERVICE);
-        jdkProxyRegistry.addService("MyService", MyService.class, MY_SERVICE);
+   public void testPerformance() {
+      byteBuddyRegistry.addService("MyService", MyService.class, MY_SERVICE);
+      jdkProxyRegistry.addService("MyService", MyService.class, MY_SERVICE);
 
-        // warm up
-        System.out.println("-----------------------");
-        runPerfTest(MY_SERVICE, "Direct    ");
-        runPerfTest(byteBuddyRegistry.getService("MyService", MyService.class).get(), "Byte Buddy");
-        runPerfTest(jdkProxyRegistry.getService("MyService", MyService.class).get(), "JDK Proxy ");
+      // warm up
+      System.out.println("-----------------------");
+      runPerfTest(MY_SERVICE, "Direct    ");
+      runPerfTest(byteBuddyRegistry.getService("MyService", MyService.class).get(), "Byte Buddy");
+      runPerfTest(jdkProxyRegistry.getService("MyService", MyService.class).get(), "JDK Proxy ");
 
-        System.out.println("-----------------------");
-        runPerfTest(MY_SERVICE, "Direct    ");
-        runPerfTest(byteBuddyRegistry.getService("MyService", MyService.class).get(), "Byte Buddy");
-        runPerfTest(jdkProxyRegistry.getService("MyService", MyService.class).get(), "JDK Proxy ");
+      System.out.println("-----------------------");
+      runPerfTest(MY_SERVICE, "Direct    ");
+      runPerfTest(byteBuddyRegistry.getService("MyService", MyService.class).get(), "Byte Buddy");
+      runPerfTest(jdkProxyRegistry.getService("MyService", MyService.class).get(), "JDK Proxy ");
 
-        System.out.println("-----------------------");
-        runPerfTest(MY_SERVICE, "Direct    ");
-        runPerfTest(byteBuddyRegistry.getService("MyService", MyService.class).get(), "Byte Buddy");
-        runPerfTest(jdkProxyRegistry.getService("MyService", MyService.class).get(), "JDK Proxy ");
-    }
+      System.out.println("-----------------------");
+      runPerfTest(MY_SERVICE, "Direct    ");
+      runPerfTest(byteBuddyRegistry.getService("MyService", MyService.class).get(), "Byte Buddy");
+      runPerfTest(jdkProxyRegistry.getService("MyService", MyService.class).get(), "JDK Proxy ");
+   }
 }

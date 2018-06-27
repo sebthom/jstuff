@@ -22,22 +22,22 @@ import javax.net.ssl.X509KeyManager;
  */
 public class CertificateAliasPreselectingX509KeyManager extends DelegatingX509KeyManager {
 
-    private final String clientCertAlias;
-    private final String serverCertAlias;
+   private final String clientCertAlias;
+   private final String serverCertAlias;
 
-    public CertificateAliasPreselectingX509KeyManager(final X509KeyManager wrapped, final String clientCertAlias, final String serverCertAlias) {
-        super(wrapped);
-        this.clientCertAlias = clientCertAlias;
-        this.serverCertAlias = serverCertAlias;
-    }
+   public CertificateAliasPreselectingX509KeyManager(final X509KeyManager wrapped, final String clientCertAlias, final String serverCertAlias) {
+      super(wrapped);
+      this.clientCertAlias = clientCertAlias;
+      this.serverCertAlias = serverCertAlias;
+   }
 
-    @Override
-    public String chooseClientAlias(final String[] keyType, final Principal[] issuers, final Socket socket) {
-        return clientCertAlias == null ? super.chooseClientAlias(keyType, issuers, socket) : clientCertAlias;
-    }
+   @Override
+   public String chooseClientAlias(final String[] keyType, final Principal[] issuers, final Socket socket) {
+      return clientCertAlias == null ? super.chooseClientAlias(keyType, issuers, socket) : clientCertAlias;
+   }
 
-    @Override
-    public String chooseServerAlias(final String keyType, final Principal[] issuers, final Socket socket) {
-        return serverCertAlias == null ? super.chooseServerAlias(keyType, issuers, socket) : serverCertAlias;
-    }
+   @Override
+   public String chooseServerAlias(final String keyType, final Principal[] issuers, final Socket socket) {
+      return serverCertAlias == null ? super.chooseServerAlias(keyType, issuers, socket) : serverCertAlias;
+   }
 }

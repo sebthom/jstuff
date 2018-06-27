@@ -22,55 +22,55 @@ import java.util.Queue;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EmptyQueue<E> extends AbstractQueue<E> implements Serializable {
+public final class EmptyQueue<E> extends AbstractQueue<E> implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public static final Queue<?> INSTANCE = new EmptyQueue<Object>();
+   public static final Queue<?> INSTANCE = new EmptyQueue<Object>();
 
-    @SuppressWarnings("unchecked")
-    public static <T> EmptyQueue<T> get() {
-        return (EmptyQueue<T>) INSTANCE;
-    }
+   @SuppressWarnings("unchecked")
+   public static <T> EmptyQueue<T> get() {
+      return (EmptyQueue<T>) INSTANCE;
+   }
 
-    private EmptyQueue() {
-        super();
-    }
+   private EmptyQueue() {
+      super();
+   }
 
-    @Override
-    public void clear() {
-        // nothing to do
-    }
+   @Override
+   public void clear() {
+      // nothing to do
+   }
 
-    @Override
-    public boolean isEmpty() {
-        return true;
-    }
+   @Override
+   public boolean isEmpty() {
+      return true;
+   }
 
-    @Override
-    public Iterator<E> iterator() {
-        return Collections.<E> emptySet().iterator();
-    }
+   @Override
+   public Iterator<E> iterator() {
+      return Collections.<E> emptySet().iterator(); // CHECKSTYLE:IGNORE GenericWhitespace
+   }
 
-    public boolean offer(final E o) {
-        return false;
-    }
+   public boolean offer(final E o) {
+      return false;
+   }
 
-    public E peek() {
-        return null;
-    }
+   public E peek() {
+      return null;
+   }
 
-    public E poll() {
-        return null;
-    }
+   public E poll() {
+      return null;
+   }
 
-    @SuppressWarnings({ "static-method", "unused" })
-    private Object readResolve() throws ObjectStreamException {
-        return INSTANCE;
-    }
+   @SuppressWarnings({"static-method", "unused"})
+   private Object readResolve() throws ObjectStreamException {
+      return INSTANCE;
+   }
 
-    @Override
-    public int size() {
-        return 0;
-    }
+   @Override
+   public int size() {
+      return 0;
+   }
 }

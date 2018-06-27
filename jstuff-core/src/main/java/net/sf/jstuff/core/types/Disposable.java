@@ -17,5 +17,5 @@ package net.sf.jstuff.core.types;
  */
 public interface Disposable {
 
-    void dispose();
+   void dispose();
 }

@@ -31,106 +31,106 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class AbstractCompression implements Compression {
 
-    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+   private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
-    @SuppressWarnings("resource")
-    public byte[] compress(final byte[] uncompressed) throws IOException {
-        final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
-        compress(uncompressed, bytesOS, true);
-        return bytesOS.toByteArray();
-    }
+   @SuppressWarnings("resource")
+   public byte[] compress(final byte[] uncompressed) throws IOException {
+      final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
+      compress(uncompressed, bytesOS, true);
+      return bytesOS.toByteArray();
+   }
 
-    @SuppressWarnings("resource")
-    public InputStream createCompressingInputStream(final byte[] uncompressed) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
-        final FastByteArrayOutputStream output = new FastByteArrayOutputStream();
-        compress(uncompressed, output, true);
-        return output.toInputStream();
-    }
+   @SuppressWarnings("resource")
+   public InputStream createCompressingInputStream(final byte[] uncompressed) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
+      final FastByteArrayOutputStream output = new FastByteArrayOutputStream();
+      compress(uncompressed, output, true);
+      return output.toInputStream();
+   }
 
-    @SuppressWarnings("resource")
-    public InputStream createCompressingInputStream(final InputStream uncompressed) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
+   @SuppressWarnings("resource")
+   public InputStream createCompressingInputStream(final InputStream uncompressed) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
 
-        final PipedInputStream compressingInputStream = new PipedInputStream();
-        final PipedOutputStream transfomer = new PipedOutputStream(compressingInputStream);
-        final OutputStream compressingOutputStream = createCompressingOutputStream(transfomer);
+      final PipedInputStream compressingInputStream = new PipedInputStream();
+      final PipedOutputStream transfomer = new PipedOutputStream(compressingInputStream);
+      final OutputStream compressingOutputStream = createCompressingOutputStream(transfomer);
 
-        EXECUTOR.submit(new Callable<Void>() {
-            public Void call() throws Exception {
-                try {
-                    IOUtils.copyLarge(uncompressed, compressingOutputStream);
-                    compressingOutputStream.flush();
-                } catch (final IOException ex) {
-                    IOUtils.closeQuietly(compressingInputStream);
-                } finally {
-                    IOUtils.closeQuietly(uncompressed);
-                    IOUtils.closeQuietly(compressingOutputStream);
-                    IOUtils.closeQuietly(transfomer);
-                }
-                return null;
+      EXECUTOR.submit(new Callable<Void>() {
+         public Void call() throws Exception {
+            try {
+               IOUtils.copyLarge(uncompressed, compressingOutputStream);
+               compressingOutputStream.flush();
+            } catch (final IOException ex) {
+               IOUtils.closeQuietly(compressingInputStream);
+            } finally {
+               IOUtils.closeQuietly(uncompressed);
+               IOUtils.closeQuietly(compressingOutputStream);
+               IOUtils.closeQuietly(transfomer);
             }
-        });
+            return null;
+         }
+      });
 
-        return compressingInputStream;
-    }
+      return compressingInputStream;
+   }
 
-    @SuppressWarnings("resource")
-    public InputStream createDecompressingInputStream(final byte[] compressed) throws IOException {
-        Args.notNull("compressed", compressed);
-        return createDecompressingInputStream(new FastByteArrayInputStream(compressed));
-    }
+   @SuppressWarnings("resource")
+   public InputStream createDecompressingInputStream(final byte[] compressed) throws IOException {
+      Args.notNull("compressed", compressed);
+      return createDecompressingInputStream(new FastByteArrayInputStream(compressed));
+   }
 
-    @SuppressWarnings("resource")
-    public byte[] decompress(final byte[] compressed) throws IOException {
-        Args.notNull("compressed", compressed);
+   @SuppressWarnings("resource")
+   public byte[] decompress(final byte[] compressed) throws IOException {
+      Args.notNull("compressed", compressed);
 
-        final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream(compressed.length);
-        decompress(compressed, bytesOS, true);
-        return bytesOS.toByteArray();
-    }
+      final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream(compressed.length);
+      decompress(compressed, bytesOS, true);
+      return bytesOS.toByteArray();
+   }
 
-    @SuppressWarnings("resource")
-    public int decompress(final byte[] compressed, final byte[] output) throws IOException {
-        Args.notNull("compressed", compressed);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public int decompress(final byte[] compressed, final byte[] output) throws IOException {
+      Args.notNull("compressed", compressed);
+      Args.notNull("output", output);
 
-        final FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
-        final InputStream compIS = createDecompressingInputStream(new FastByteArrayInputStream(compressed));
-        IOUtils.copyLarge(compIS, baos);
-        if (baos.size() > output.length)
-            throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
-        baos.writeTo(output);
-        return baos.size();
-    }
+      final FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
+      final InputStream compIS = createDecompressingInputStream(new FastByteArrayInputStream(compressed));
+      IOUtils.copyLarge(compIS, baos);
+      if (baos.size() > output.length)
+         throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
+      baos.writeTo(output);
+      return baos.size();
+   }
 
-    public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("compressed", compressed);
-        Args.notNull("output", output);
+   public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("compressed", compressed);
+      Args.notNull("output", output);
 
-        try {
-            IOUtils.copyLarge(createDecompressingInputStream(compressed), output);
-        } finally {
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         IOUtils.copyLarge(createDecompressingInputStream(compressed), output);
+      } finally {
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    public void decompress(final InputStream compressed, final OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("compressed", compressed);
-        Args.notNull("output", output);
+   public void decompress(final InputStream compressed, final OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("compressed", compressed);
+      Args.notNull("output", output);
 
-        try {
-            @SuppressWarnings("resource")
-            final InputStream compIS = createDecompressingInputStream(compressed);
-            IOUtils.copyLarge(compIS, output);
-        } finally {
-            IOUtils.closeQuietly(compressed);
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         @SuppressWarnings("resource")
+         final InputStream compIS = createDecompressingInputStream(compressed);
+         IOUtils.copyLarge(compIS, output);
+      } finally {
+         IOUtils.closeQuietly(compressed);
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
 }

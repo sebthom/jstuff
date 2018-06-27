@@ -24,85 +24,83 @@ import net.sf.jstuff.core.logging.Logger;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class AbstractServer {
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    protected final Executor executor;
-    protected volatile boolean isRunning;
-    protected final int portNumber;
-    protected ServerSocket socketListener;
+   protected final Executor executor;
+   protected volatile boolean isRunning;
+   protected final int portNumber;
+   protected ServerSocket socketListener;
 
-    public AbstractServer(final int portNumber, final int numberOfThreads) {
-        this.portNumber = portNumber;
-        executor = Executors.newFixedThreadPool(numberOfThreads);
-    }
+   public AbstractServer(final int portNumber, final int numberOfThreads) {
+      this.portNumber = portNumber;
+      executor = Executors.newFixedThreadPool(numberOfThreads);
+   }
 
-    /**
-     * Gets port on which server is listening.
-     */
-    public int getPortNumber() {
-        return portNumber;
-    }
+   /**
+    * Gets port on which server is listening.
+    */
+   public int getPortNumber() {
+      return portNumber;
+   }
 
-    protected abstract void handleConnection(final Socket clientConnection) throws IOException;
+   protected abstract void handleConnection(Socket clientConnection) throws IOException;
 
-    /**
-     *
-     * @return if the server is currently listening to a socket
-     */
-    public boolean isRunning() {
-        return isRunning;
-    }
+   /**
+    *
+    * @return if the server is currently listening to a socket
+    */
+   public boolean isRunning() {
+      return isRunning;
+   }
 
-    /**
-     * starts the server in a background thread
-     */
-    public synchronized void startServer() {
-        if (!isRunning) {
-            isRunning = true;
+   /**
+    * Starts the server in a background thread.
+    */
+   public synchronized void startServer() {
+      if (!isRunning) {
+         isRunning = true;
 
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        socketListener = new ServerSocket(portNumber);
+         new Thread() {
+            @Override
+            public void run() {
+               try {
+                  socketListener = new ServerSocket(portNumber);
 
-                        while (true) {
-                            final Socket socket = socketListener.accept();
+                  while (true) {
+                     final Socket socket = socketListener.accept();
 
-                            if (isRunning) {
-                                executor.execute(new Runnable() {
-                                    public void run() {
-                                        try {
-                                            handleConnection(socket);
-                                            socket.close();
-                                        } catch (final IOException ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                });
-                            } else {
-                                socket.close();
-                                break;
-                            }
-                        }
-                    } catch (final IOException ex) {
-                        isRunning = false;
-                        LOG.error(ex);
-                    }
-                }
-            }.start();
-        }
-    }
+                     if (isRunning) {
+                        executor.execute(new Runnable() {
+                           public void run() {
+                              try {
+                                 handleConnection(socket);
+                                 socket.close();
+                              } catch (final IOException ex) {
+                                 ex.printStackTrace();
+                              }
+                           }
+                        });
+                     } else {
+                        socket.close();
+                        break;
+                     }
+                  }
+               } catch (final IOException ex) {
+                  isRunning = false;
+                  LOG.error(ex);
+               }
+            }
+         }.start();
+      }
+   }
 
-    /**
-     * stops the server from listening to the socket
-     *
-     * @throws IOException
-     */
-    public synchronized void stopServer() throws IOException {
-        if (isRunning) {
-            isRunning = false;
-            socketListener.close();
-        }
-    }
+   /**
+    * Stops the server from listening to the socket.
+    */
+   public synchronized void stopServer() throws IOException {
+      if (isRunning) {
+         isRunning = false;
+         socketListener.close();
+      }
+   }
 }

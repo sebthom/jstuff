@@ -18,26 +18,26 @@ package net.sf.jstuff.core.exception;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class FastRuntimeException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public FastRuntimeException() {
-        super();
-    }
+   public FastRuntimeException() {
+      super();
+   }
 
-    public FastRuntimeException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
+   public FastRuntimeException(final String message, final Throwable cause) {
+      super(message, cause);
+   }
 
-    public FastRuntimeException(final String message) {
-        super(message);
-    }
+   public FastRuntimeException(final String message) {
+      super(message);
+   }
 
-    public FastRuntimeException(final Throwable cause) {
-        super(cause);
-    }
+   public FastRuntimeException(final Throwable cause) {
+      super(cause);
+   }
 
-    @Override
-    public Throwable fillInStackTrace() {
-        return null;
-    }
+   @Override
+   public Throwable fillInStackTrace() {
+      return null;
+   }
 }

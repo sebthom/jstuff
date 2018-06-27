@@ -20,35 +20,35 @@ import java.util.List;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class MapWithLists<K, V> extends MapWithCollections<K, V, List<V>> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public static <K, V> MapWithLists<K, V> create() {
-        return new MapWithLists<K, V>();
-    }
+   public static <K, V> MapWithLists<K, V> create() {
+      return new MapWithLists<K, V>();
+   }
 
-    public static <K, V> MapWithLists<K, V> create(final int initialCapacity) {
-        return new MapWithLists<K, V>(initialCapacity);
-    }
+   public static <K, V> MapWithLists<K, V> create(final int initialCapacity) {
+      return new MapWithLists<K, V>(initialCapacity);
+   }
 
-    public MapWithLists() {
-        super();
-    }
+   public MapWithLists() {
+      super();
+   }
 
-    public MapWithLists(final int initialCapacity) {
-        super(initialCapacity);
-    }
+   public MapWithLists(final int initialCapacity) {
+      super(initialCapacity);
+   }
 
-    public MapWithLists(final int initialCapacity, final int initialCapacityOfList) {
-        super(initialCapacity, initialCapacityOfList);
-    }
+   public MapWithLists(final int initialCapacity, final int initialCapacityOfList) {
+      super(initialCapacity, initialCapacityOfList);
+   }
 
-    @Override
-    protected List<V> create(final K key) {
-        return new ArrayList<V>(initialCapacityOfCollection);
-    }
+   @Override
+   protected List<V> create(final K key) {
+      return new ArrayList<V>(initialCapacityOfCollection);
+   }
 
-    @Override
-    public List<V> createNullSafe(final Object key) {
-        return Collections.emptyList();
-    }
+   @Override
+   public List<V> createNullSafe(final Object key) {
+      return Collections.emptyList();
+   }
 }

@@ -20,44 +20,44 @@ import java.util.Set;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface AuthService {
-    void assertAuthenticated() throws PermissionDeniedException;
+   void assertAuthenticated() throws PermissionDeniedException;
 
-    void assertIdentity(String userId) throws PermissionDeniedException;
+   void assertIdentity(String userId) throws PermissionDeniedException;
 
-    void assertRole(String applicationRole) throws PermissionDeniedException;
+   void assertRole(String applicationRole) throws PermissionDeniedException;
 
-    /**
-     * Check if resource (URI) is secure and if required roles are available
-     * 
-     * @param uri resource address that for checking
-     * @throws PermissionDeniedException throw if required are not available
-     */
-    void assertURIAccess(String uri) throws PermissionDeniedException;
+   /**
+    * Check if resource (URI) is secure and if required roles are available
+    * 
+    * @param uri resource address that for checking
+    * @throws PermissionDeniedException throw if required are not available
+    */
+   void assertURIAccess(String uri) throws PermissionDeniedException;
 
-    Authentication getAuthentication();
+   Authentication getAuthentication();
 
-    /**
-     * returns the application roles for the current user
-     */
-    Set<String> getGrantedRoles();
+   /**
+    * returns the application roles for the current user
+    */
+   Set<String> getGrantedRoles();
 
-    Set<String> getGroupIds();
+   Set<String> getGroupIds();
 
-    boolean hasRole(String applicationRole);
+   boolean hasRole(String applicationRole);
 
-    /**
-     * Check is user is authenticated in system
-     * 
-     * @return <code>TRUE</code> if user is authenticated<br/>
-     *         <code>FALSE</code> if user is not authenticated
-     */
-    boolean isAuthenticated();
+   /**
+    * Check is user is authenticated in system
+    * 
+    * @return <code>TRUE</code> if user is authenticated<br/>
+    *         <code>FALSE</code> if user is not authenticated
+    */
+   boolean isAuthenticated();
 
-    boolean isIdentity(String userId);
+   boolean isIdentity(String userId);
 
-    void login(String userName, String password) throws AuthenticationFailedException;
+   void login(String userName, String password) throws AuthenticationFailedException;
 
-    void logout();
+   void logout();
 
-    void setListener(AuthListener listener);
+   void setListener(AuthListener listener);
 }

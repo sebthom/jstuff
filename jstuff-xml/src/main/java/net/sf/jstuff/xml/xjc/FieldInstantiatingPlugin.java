@@ -60,98 +60,98 @@ import net.sf.jstuff.core.reflection.Fields;
  */
 public class FieldInstantiatingPlugin extends AbstractPlugin {
 
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    public static final String OPTION_NAME = "Xinst-fields";
+   public static final String OPTION_NAME = "Xinst-fields";
 
-    private static final String CUSTOMIZATION_NAMESPACE = "FieldInstantiatingPlugin";
-    private static final String CUSTOMIZATION_ENABLED_TAG = "enabled";
+   private static final String CUSTOMIZATION_NAMESPACE = "FieldInstantiatingPlugin";
+   private static final String CUSTOMIZATION_ENABLED_TAG = "enabled";
 
-    @Override
-    protected String getCustomizationNS() {
-        return CUSTOMIZATION_NAMESPACE;
-    }
+   @Override
+   protected String getCustomizationNS() {
+      return CUSTOMIZATION_NAMESPACE;
+   }
 
-    @Override
-    public String getOptionName() {
-        return OPTION_NAME;
-    }
+   @Override
+   public String getOptionName() {
+      return OPTION_NAME;
+   }
 
-    @Override
-    public String getUsage() {
-        return "  -" + OPTION_NAME + "       : Automatically instantiate fields with types defined in the schema.";
-    }
+   @Override
+   public String getUsage() {
+      return "  -" + OPTION_NAME + "       : Automatically instantiate fields with types defined in the schema.";
+   }
 
-    @Override
-    public boolean run(final Outline outline, final Options options, final ErrorHandler errorHandler) throws SAXException {
+   @Override
+   public boolean run(final Outline outline, final Options options, final ErrorHandler errorHandler) throws SAXException {
 
-        // collect all types defined in the XSD
-        final List<JType> typeDefs = new ArrayList<JType>();
-        for (final ClassOutline classDef : outline.getClasses()) {
-            typeDefs.add(classDef.implClass);
-        }
+      // collect all types defined in the XSD
+      final List<JType> typeDefs = new ArrayList<JType>();
+      for (final ClassOutline classDef : outline.getClasses()) {
+         typeDefs.add(classDef.implClass);
+      }
 
-        // scan all XSD based classes for field references to other XSD based classes
-        for (final ClassOutline classDef : outline.getClasses()) {
+      // scan all XSD based classes for field references to other XSD based classes
+      for (final ClassOutline classDef : outline.getClasses()) {
 
-            for (final JFieldVar fieldDecl : classDef.implClass.fields().values()) {
+         for (final JFieldVar fieldDecl : classDef.implClass.fields().values()) {
 
-                /*
-                 * @XmlElementRefs({
-                 *    @XmlElementRef(name = "bike", namespace = "my-config", type = JAXBElement.class, required = false),
-                 *    @XmlElementRef(name = "car", namespace = "my-config", type = JAXBElement.class, required = false)
-                 * })
-                 * private List<JAXBElement<?>> bikesAndCars;
-                 */
-                final Field memberValueFields = Fields.find(JAnnotationUse.class, "memberValues");
-                for (final JAnnotationUse a : fieldDecl.annotations()) {
-                    if ("javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName())) {
-                        for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) a.getAnnotationMembers().get("value")).annotations()) {
-                            final JAnnotationValue requiredAttribute = xmlElementRefAnno.getAnnotationMembers().get("required");
-                            if (requiredAttribute != null) {
-                                ((Map<?, ?>) Fields.read(xmlElementRefAnno, memberValueFields)).remove("required");
-                            }
-                        }
-                    }
-                }
-                if (!typeDefs.contains(fieldDecl.type())) {
-                    continue;
-                }
-
-                FieldOutline fieldDef = null;
-                for (final FieldOutline f : classDef.getDeclaredFields()) {
-                    if (f.getPropertyInfo().getName(false).equals(fieldDecl.name())) {
-                        fieldDef = f;
-                    }
-                }
-                if (fieldDef == null)
-                    throw new IllegalStateException("FieldOutline not found for " + fieldDecl.name());
-
-                boolean doInstantiate = false;
-                for (final CPluginCustomization pc : findCustomizations(fieldDef.getPropertyInfo().getCustomizations(), CUSTOMIZATION_ENABLED_TAG)) {
-                    pc.markAsAcknowledged();
-                    doInstantiate = true;
-                    break;
-                }
-
-                // initialize field
-                if (doInstantiate) {
-                    LOG.info("%s#%s = new %s()", classDef.implClass.name(), fieldDecl.name(), fieldDecl.type().name());
-                    fieldDecl.init(JExpr._new(fieldDecl.type()));
-                } else {
-                    LOG.info("Not instantiating %s#%s", classDef.implClass.name(), fieldDecl.name());
-                }
+            /*
+             * @XmlElementRefs({
+             *    @XmlElementRef(name = "bike", namespace = "my-config", type = JAXBElement.class, required = false),
+             *    @XmlElementRef(name = "car", namespace = "my-config", type = JAXBElement.class, required = false)
+             * })
+             * private List<JAXBElement<?>> bikesAndCars;
+             */
+            final Field memberValueFields = Fields.find(JAnnotationUse.class, "memberValues");
+            for (final JAnnotationUse a : fieldDecl.annotations()) {
+               if ("javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName())) {
+                  for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) a.getAnnotationMembers().get("value")).annotations()) {
+                     final JAnnotationValue requiredAttribute = xmlElementRefAnno.getAnnotationMembers().get("required");
+                     if (requiredAttribute != null) {
+                        ((Map<?, ?>) Fields.read(xmlElementRefAnno, memberValueFields)).remove("required");
+                     }
+                  }
+               }
             }
-        }
+            if (!typeDefs.contains(fieldDecl.type())) {
+               continue;
+            }
 
-        return true;
-    }
+            FieldOutline fieldDef = null;
+            for (final FieldOutline f : classDef.getDeclaredFields()) {
+               if (f.getPropertyInfo().getName(false).equals(fieldDecl.name())) {
+                  fieldDef = f;
+               }
+            }
+            if (fieldDef == null)
+               throw new IllegalStateException("FieldOutline not found for " + fieldDecl.name());
 
-    @Override
-    public boolean isCustomizationTagName(final String nsURI, final String localName) {
-        if (!CUSTOMIZATION_NAMESPACE.equals(nsURI))
-            return false;
+            boolean doInstantiate = false;
+            for (final CPluginCustomization pc : findCustomizations(fieldDef.getPropertyInfo().getCustomizations(), CUSTOMIZATION_ENABLED_TAG)) {
+               pc.markAsAcknowledged();
+               doInstantiate = true;
+               break;
+            }
 
-        return CUSTOMIZATION_ENABLED_TAG.equals(localName);
-    }
+            // initialize field
+            if (doInstantiate) {
+               LOG.info("%s#%s = new %s()", classDef.implClass.name(), fieldDecl.name(), fieldDecl.type().name());
+               fieldDecl.init(JExpr._new(fieldDecl.type()));
+            } else {
+               LOG.info("Not instantiating %s#%s", classDef.implClass.name(), fieldDecl.name());
+            }
+         }
+      }
+
+      return true;
+   }
+
+   @Override
+   public boolean isCustomizationTagName(final String nsURI, final String localName) {
+      if (!CUSTOMIZATION_NAMESPACE.equals(nsURI))
+         return false;
+
+      return CUSTOMIZATION_ENABLED_TAG.equals(localName);
+   }
 }

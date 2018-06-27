@@ -23,40 +23,40 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class ImmediateFuture<T> implements Future<T> {
 
-    private final T value;
-    private final ExecutionException ex;
+   private final T value;
+   private final ExecutionException ex;
 
-    public ImmediateFuture(final T value) {
-        this.value = value;
-        ex = null;
-    }
+   public ImmediateFuture(final T value) {
+      this.value = value;
+      ex = null;
+   }
 
-    public ImmediateFuture(final Throwable ex) {
-        Args.notNull("ex", ex);
-        this.value = null;
-        this.ex = new ExecutionException(ex);
-    }
+   public ImmediateFuture(final Throwable ex) {
+      Args.notNull("ex", ex);
+      this.value = null;
+      this.ex = new ExecutionException(ex);
+   }
 
-    public boolean cancel(final boolean mayInterruptIfRunning) {
-        return false;
-    }
+   public boolean cancel(final boolean mayInterruptIfRunning) {
+      return false;
+   }
 
-    public boolean isCancelled() {
-        return false;
-    }
+   public boolean isCancelled() {
+      return false;
+   }
 
-    public boolean isDone() {
-        return true;
-    }
+   public boolean isDone() {
+      return true;
+   }
 
-    public T get() throws ExecutionException {
-        if (ex == null)
-            return value;
-        throw ex;
-    }
+   public T get() throws ExecutionException {
+      if (ex == null)
+         return value;
+      throw ex;
+   }
 
-    public T get(final long timeout, final TimeUnit unit) throws ExecutionException {
-        return get();
-    }
+   public T get(final long timeout, final TimeUnit unit) throws ExecutionException {
+      return get();
+   }
 
 }

@@ -21,31 +21,31 @@ import org.springframework.core.convert.converter.ConditionalGenericConverter;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class AbstractConverter implements ConditionalGenericConverter {
-    @Autowired
-    protected ConversionService conversionService;
+   @Autowired
+   protected ConversionService conversionService;
 
-    public AbstractConverter() {
-        super();
-    }
+   public AbstractConverter() {
+      super();
+   }
 
-    public AbstractConverter(final ConversionService conversionService) {
-        this.conversionService = conversionService;
-    }
+   public AbstractConverter(final ConversionService conversionService) {
+      this.conversionService = conversionService;
+   }
 
-    public ConversionService getConversionService() {
-        return conversionService;
-    }
+   public ConversionService getConversionService() {
+      return conversionService;
+   }
 
-    public boolean matches(final TypeDescriptor sourceType, final TypeDescriptor targetType) {
-        if (!conversionService.canConvert(sourceType, targetType.getMapKeyTypeDescriptor()))
-            return false;
+   public boolean matches(final TypeDescriptor sourceType, final TypeDescriptor targetType) {
+      if (!conversionService.canConvert(sourceType, targetType.getMapKeyTypeDescriptor()))
+         return false;
 
-        final boolean matches = conversionService.canConvert(sourceType, targetType.getMapValueTypeDescriptor());
-        return matches;
-    }
+      final boolean matches = conversionService.canConvert(sourceType, targetType.getMapValueTypeDescriptor());
+      return matches;
+   }
 
-    public void setConversionService(final ConversionService conversionService) {
-        this.conversionService = conversionService;
-    }
+   public void setConversionService(final ConversionService conversionService) {
+      this.conversionService = conversionService;
+   }
 
 }

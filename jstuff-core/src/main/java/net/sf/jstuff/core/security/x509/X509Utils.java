@@ -66,528 +66,536 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class X509Utils {
 
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    public static final CertificateFactory CERTIFICATE_FACTORY;
+   public static final CertificateFactory CERTIFICATE_FACTORY;
 
-    private static final Pattern CRL_PATTERN = Pattern.compile("BEGIN X509 CRL-+\r?\n?(.*[^-])\r?\n?-+END X509 CRL", Pattern.DOTALL);
-    private static final Pattern CERTIFICATE_PATTERN = Pattern.compile("BEGIN .*CERTIFICATE-+\r?\n?(.*[^-])\r?\n?-+END .*CERTIFICATE", Pattern.DOTALL);
-    private static final Pattern PRIVATE_KEY_PATTERN = Pattern.compile("BEGIN .*PRIVATE KEY-+\r?\n?(.*[^-])\r?\n?-+END .*PRIVATE KEY", Pattern.DOTALL);
-    private static final Pattern PUBLIC_KEY_PATTERN = Pattern.compile("BEGIN .*PUBLIC KEY-+\r?\n?(.*[^-])\r?\n?-+END .*PUBLIC KEY", Pattern.DOTALL);
+   private static final Pattern CRL_PATTERN = Pattern.compile("BEGIN X509 CRL-+\r?\n?(.*[^-])\r?\n?-+END X509 CRL", Pattern.DOTALL);
+   private static final Pattern CERTIFICATE_PATTERN = Pattern.compile("BEGIN .*CERTIFICATE-+\r?\n?(.*[^-])\r?\n?-+END .*CERTIFICATE", Pattern.DOTALL);
+   private static final Pattern PRIVATE_KEY_PATTERN = Pattern.compile("BEGIN .*PRIVATE KEY-+\r?\n?(.*[^-])\r?\n?-+END .*PRIVATE KEY", Pattern.DOTALL);
+   private static final Pattern PUBLIC_KEY_PATTERN = Pattern.compile("BEGIN .*PUBLIC KEY-+\r?\n?(.*[^-])\r?\n?-+END .*PUBLIC KEY", Pattern.DOTALL);
 
-    static {
-        try {
-            CERTIFICATE_FACTORY = CertificateFactory.getInstance("X.509");
-        } catch (final CertificateException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
+   static {
+      try {
+         CERTIFICATE_FACTORY = CertificateFactory.getInstance("X.509");
+      } catch (final CertificateException ex) {
+         throw new IllegalStateException(ex);
+      }
+   }
 
-    /**
-     * Converts a javax.security.cert.X509Certificate to java.security.cert.X509Certificate
-     */
-    @SuppressWarnings("resource")
-    public static X509Certificate convert(final javax.security.cert.X509Certificate cert) {
-        if (cert == null)
-            return null;
-        try {
-            final FastByteArrayInputStream bis = new FastByteArrayInputStream(cert.getEncoded());
-            return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(bis);
-        } catch (final Exception ex) {
-            throw new IllegalArgumentException("[cert] " + cert + " is not convertable!", ex);
-        }
-    }
+   /**
+    * Converts a javax.security.cert.X509Certificate to java.security.cert.X509Certificate
+    */
+   @SuppressWarnings("resource")
+   public static X509Certificate convert(final javax.security.cert.X509Certificate cert) {
+      if (cert == null)
+         return null;
+      try {
+         final FastByteArrayInputStream bis = new FastByteArrayInputStream(cert.getEncoded());
+         return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(bis);
+      } catch (final Exception ex) {
+         throw new IllegalArgumentException("[cert] " + cert + " is not convertable!", ex);
+      }
+   }
 
-    /**
-     * Converts a java.security.cert.X509Certificate to javax.security.cert.X509Certificate
-     */
-    public static javax.security.cert.X509Certificate convert(final X509Certificate cert) {
-        if (cert == null)
-            return null;
-        try {
-            return javax.security.cert.X509Certificate.getInstance(cert.getEncoded());
-        } catch (final Exception ex) {
-            throw new IllegalArgumentException("[cert] " + cert + " is not convertable!", ex);
-        }
-    }
+   /**
+    * Converts a java.security.cert.X509Certificate to javax.security.cert.X509Certificate
+    */
+   public static javax.security.cert.X509Certificate convert(final X509Certificate cert) {
+      if (cert == null)
+         return null;
+      try {
+         return javax.security.cert.X509Certificate.getInstance(cert.getEncoded());
+      } catch (final Exception ex) {
+         throw new IllegalArgumentException("[cert] " + cert + " is not convertable!", ex);
+      }
+   }
 
-    /**
-     * Constructs a X509Certificate instance from a PEM encoded certificate
-     */
-    public static X509Certificate getCertificateFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
-        Args.notNull("pemFile", pemFile);
-        return getCertificateFromPEM(FileUtils.readFileToString(pemFile));
-    }
+   /**
+    * Constructs a X509Certificate instance from a PEM encoded certificate
+    */
+   public static X509Certificate getCertificateFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
+      Args.notNull("pemFile", pemFile);
+      return getCertificateFromPEM(FileUtils.readFileToString(pemFile));
+   }
 
-    /**
-     * Constructs a X509Certificate instance from a PEM encoded certificate
-     */
-    public static X509Certificate getCertificateFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
-        Args.notNull("pemStream", pemStream);
-        try {
-            return getCertificateFromPEM(IOUtils.toString(pemStream));
-        } finally {
-            IOUtils.closeQuietly(pemStream);
-        }
-    }
+   /**
+    * Constructs a X509Certificate instance from a PEM encoded certificate
+    */
+   public static X509Certificate getCertificateFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
+      Args.notNull("pemStream", pemStream);
+      try {
+         return getCertificateFromPEM(IOUtils.toString(pemStream));
+      } finally {
+         IOUtils.closeQuietly(pemStream);
+      }
+   }
 
-    /**
-     * Constructs a X509Certificate instance from a PEM encoded certificate
-     */
-    @SuppressWarnings("resource")
-    public static X509Certificate getCertificateFromPEM(final String pemContent) throws GeneralSecurityException {
-        Args.notNull("pemContent", pemContent);
-        final Matcher m = CERTIFICATE_PATTERN.matcher(pemContent);
-        final byte[] certBytes;
-        if (m.find()) {
-            certBytes = pemContent.getBytes();
-        } else {
-            certBytes = ("-----BEGIN CERTIFICATE-----\n" + pemContent + "\n-----END CERTIFICATE-----").getBytes();
-        }
-        final Certificate cert = CERTIFICATE_FACTORY.generateCertificate(new FastByteArrayInputStream(certBytes));
+   /**
+    * Constructs a X509Certificate instance from a PEM encoded certificate
+    */
+   @SuppressWarnings("resource")
+   public static X509Certificate getCertificateFromPEM(final String pemContent) throws GeneralSecurityException {
+      Args.notNull("pemContent", pemContent);
+      final Matcher m = CERTIFICATE_PATTERN.matcher(pemContent);
+      final byte[] certBytes;
+      if (m.find()) {
+         certBytes = pemContent.getBytes();
+      } else {
+         certBytes = ("-----BEGIN CERTIFICATE-----\n" + pemContent + "\n-----END CERTIFICATE-----").getBytes();
+      }
+      final Certificate cert = CERTIFICATE_FACTORY.generateCertificate(new FastByteArrayInputStream(certBytes));
 
-        if ("X.509".equals(cert.getType()))
-            return (X509Certificate) cert;
+      if ("X.509".equals(cert.getType()))
+         return (X509Certificate) cert;
 
-        throw new GeneralSecurityException("PEM-encoded certificate [" + pemContent + "] is not X.509 but [" + cert.getType() + "]");
-    }
+      throw new GeneralSecurityException("PEM-encoded certificate [" + pemContent + "] is not X.509 but [" + cert.getType() + "]");
+   }
 
-    public static List<X509Certificate> getCertificates(final KeyStore ks) {
-        Args.notNull("ks", ks);
-        final List<X509Certificate> certs = new ArrayList<X509Certificate>();
-        try {
-            for (final Enumeration<String> en = ks.aliases(); en.hasMoreElements();) {
-                final Certificate cert = ks.getCertificate(en.nextElement());
-                if (cert instanceof X509Certificate) {
-                    certs.add((X509Certificate) cert);
-                }
+   public static List<X509Certificate> getCertificates(final KeyStore ks) {
+      Args.notNull("ks", ks);
+      final List<X509Certificate> certs = new ArrayList<X509Certificate>();
+      try {
+         for (final Enumeration<String> en = ks.aliases(); en.hasMoreElements();) {
+            final Certificate cert = ks.getCertificate(en.nextElement());
+            if (cert instanceof X509Certificate) {
+               certs.add((X509Certificate) cert);
             }
-        } catch (final KeyStoreException ex) {
-            LOG.error(ex);
-        }
-        return certs;
-    }
+         }
+      } catch (final KeyStoreException ex) {
+         LOG.error(ex);
+      }
+      return certs;
+   }
 
-    /**
-     * @return the first CN found
-     */
-    public static String getCN(final X509Certificate cert) {
-        Args.notNull("cert", cert);
-        try {
-            final String subjectPrincipal = cert.getSubjectX500Principal().getName(X500Principal.RFC2253);
-            for (final Rdn rdn : new LdapName(subjectPrincipal).getRdns()) {
-                final Attribute cnAttr = rdn.toAttributes().get("cn");
-                if (cnAttr != null) {
-                    try {
-                        final Object cnValue = cnAttr.get();
-                        if (cnValue != null)
-                            return cnValue.toString();
-                    } catch (final Exception ex) {}
-                }
+   /**
+    * @return the first CN found
+    */
+   public static String getCN(final X509Certificate cert) {
+      Args.notNull("cert", cert);
+      try {
+         final String subjectPrincipal = cert.getSubjectX500Principal().getName(X500Principal.RFC2253);
+         for (final Rdn rdn : new LdapName(subjectPrincipal).getRdns()) {
+            final Attribute cnAttr = rdn.toAttributes().get("cn");
+            if (cnAttr != null) {
+               try {
+                  final Object cnValue = cnAttr.get();
+                  if (cnValue != null)
+                     return cnValue.toString();
+               } catch (final Exception ex) {
+                  LOG.debug(ex);
+               }
             }
-        } catch (final InvalidNameException ex) {}
-        return null;
-    }
+         }
+      } catch (final InvalidNameException ex) {
+         LOG.debug(ex);
+      }
+      return null;
+   }
 
-    public static List<String> getCNs(final X509Certificate cert) {
-        Args.notNull("cert", cert);
-        final List<String> cns = new ArrayList<String>();
-        try {
-            final String subjectPrincipal = cert.getSubjectX500Principal().getName(X500Principal.RFC2253);
-            for (final Rdn rdn : new LdapName(subjectPrincipal).getRdns()) {
-                final Attribute cnAttr = rdn.toAttributes().get("cn");
-                if (cnAttr != null) {
-                    try {
-                        final Object cnValue = cnAttr.get();
-                        if (cnValue != null) {
-                            cns.add(cnValue.toString());
-                        }
-                    } catch (final Exception ex) {}
-                }
+   public static List<String> getCNs(final X509Certificate cert) {
+      Args.notNull("cert", cert);
+      final List<String> cns = new ArrayList<String>();
+      try {
+         final String subjectPrincipal = cert.getSubjectX500Principal().getName(X500Principal.RFC2253);
+         for (final Rdn rdn : new LdapName(subjectPrincipal).getRdns()) {
+            final Attribute cnAttr = rdn.toAttributes().get("cn");
+            if (cnAttr != null) {
+               try {
+                  final Object cnValue = cnAttr.get();
+                  if (cnValue != null) {
+                     cns.add(cnValue.toString());
+                  }
+               } catch (final Exception ex) {
+                  LOG.debug(ex);
+               }
             }
-        } catch (final InvalidNameException ex) {}
-        return cns;
-    }
+         }
+      } catch (final InvalidNameException ex) {
+         LOG.debug(ex);
+      }
+      return cns;
+   }
 
-    /**
-     * Constructs a X509CRL instance from a PEM encoded CRL
-     */
-    public static X509CRL getCRLFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
-        Args.notNull("pemFile", pemFile);
-        return getCRLFromPEM(FileUtils.readFileToString(pemFile));
-    }
+   /**
+    * Constructs a X509CRL instance from a PEM encoded CRL
+    */
+   public static X509CRL getCRLFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
+      Args.notNull("pemFile", pemFile);
+      return getCRLFromPEM(FileUtils.readFileToString(pemFile));
+   }
 
-    /**
-     * Constructs a X509CRL instance from a PEM encoded CRL
-     */
-    public static X509CRL getCRLFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
-        Args.notNull("pemStream", pemStream);
-        try {
-            return getCRLFromPEM(IOUtils.toString(pemStream));
-        } finally {
-            IOUtils.closeQuietly(pemStream);
-        }
-    }
+   /**
+    * Constructs a X509CRL instance from a PEM encoded CRL
+    */
+   public static X509CRL getCRLFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
+      Args.notNull("pemStream", pemStream);
+      try {
+         return getCRLFromPEM(IOUtils.toString(pemStream));
+      } finally {
+         IOUtils.closeQuietly(pemStream);
+      }
+   }
 
-    /**
-     * Constructs a X509CRL instance from a PEM encoded CRL
-     */
-    public static X509CRL getCRLFromPEM(final String pemContent) throws GeneralSecurityException {
-        Args.notNull("pemContent", pemContent);
-        final Matcher m = CRL_PATTERN.matcher(pemContent);
-        final byte[] certBytes;
-        if (m.find()) {
-            certBytes = pemContent.getBytes();
-        } else {
-            certBytes = ("-----BEGIN X509 CRL-----\n" + pemContent + "\n-----END X509 CRL-----").getBytes();
-        }
+   /**
+    * Constructs a X509CRL instance from a PEM encoded CRL
+    */
+   public static X509CRL getCRLFromPEM(final String pemContent) throws GeneralSecurityException {
+      Args.notNull("pemContent", pemContent);
+      final Matcher m = CRL_PATTERN.matcher(pemContent);
+      final byte[] certBytes;
+      if (m.find()) {
+         certBytes = pemContent.getBytes();
+      } else {
+         certBytes = ("-----BEGIN X509 CRL-----\n" + pemContent + "\n-----END X509 CRL-----").getBytes();
+      }
 
-        final CRL cert = CERTIFICATE_FACTORY.generateCRL(new ByteArrayInputStream(certBytes));
+      final CRL cert = CERTIFICATE_FACTORY.generateCRL(new ByteArrayInputStream(certBytes));
 
-        if ("X.509".equals(cert.getType()))
-            return (X509CRL) cert;
+      if ("X.509".equals(cert.getType()))
+         return (X509CRL) cert;
 
-        throw new GeneralSecurityException("PEM-encoded CRL [" + pemContent + "] is not X.509 but [" + cert.getType() + "]");
-    }
+      throw new GeneralSecurityException("PEM-encoded CRL [" + pemContent + "] is not X.509 but [" + cert.getType() + "]");
+   }
 
-    public static List<String> getCRLURLs(final X509Certificate cert) {
-        Args.notNull("cert", cert);
-        final byte[] crlExtValueRaw = cert.getExtensionValue("2.5.29.31");
-        if (crlExtValueRaw == null)
-            return Collections.emptyList();
+   public static List<String> getCRLURLs(final X509Certificate cert) { // CHECKSTYLE:IGNORE AbbreviationAsWordInName
+      Args.notNull("cert", cert);
+      final byte[] crlExtValueRaw = cert.getExtensionValue("2.5.29.31");
+      if (crlExtValueRaw == null)
+         return Collections.emptyList();
 
-        final List<String> crls = new ArrayList<String>();
+      final List<String> crls = new ArrayList<String>();
 
-        try {
-            final String crlExtValue = new String(crlExtValueRaw, "UTF-8");
-            int searchPos = 0;
-            final int[] foundAt = new int[4];
-            final int NOT_FOUND = -1;
-            while (searchPos + 1 < crlExtValue.length()) {
-                foundAt[0] = crlExtValue.indexOf("http", searchPos);
-                foundAt[1] = crlExtValue.indexOf("ldap", searchPos);
-                foundAt[2] = crlExtValue.indexOf("ftp", searchPos);
-                foundAt[3] = crlExtValue.indexOf("file", searchPos);
-                Arrays.sort(foundAt);
+      try {
+         final String crlExtValue = new String(crlExtValueRaw, "UTF-8");
+         int searchPos = 0;
+         final int[] foundAt = new int[4];
+         final int notFound = -1;
+         while (searchPos + 1 < crlExtValue.length()) {
+            foundAt[0] = crlExtValue.indexOf("http", searchPos);
+            foundAt[1] = crlExtValue.indexOf("ldap", searchPos);
+            foundAt[2] = crlExtValue.indexOf("ftp", searchPos);
+            foundAt[3] = crlExtValue.indexOf("file", searchPos);
+            Arrays.sort(foundAt);
 
-                int crlStartPos = NOT_FOUND;
-                for (final int i : foundAt) {
-                    if (i > NOT_FOUND) {
-                        crlStartPos = i;
-                        break;
-                    }
-                }
-                if (crlStartPos == NOT_FOUND) {
-                    break;
-                }
-
-                final int crlEndPos = crlExtValue.indexOf((char) 65533, crlStartPos);
-                if (crlEndPos == NOT_FOUND) {
-                    final String url = crlExtValue.substring(crlStartPos).trim();
-                    if (!crls.contains(url)) {
-                        crls.add(url);
-                    }
-                    break;
-                }
-
-                final String url = crlExtValue.substring(crlStartPos, crlEndPos - 2).trim();
-                if (!crls.contains(url)) {
-                    crls.add(url);
-                }
-                searchPos = crlEndPos + 1;
+            int crlStartPos = notFound;
+            for (final int i : foundAt) {
+               if (i > notFound) {
+                  crlStartPos = i;
+                  break;
+               }
+            }
+            if (crlStartPos == notFound) {
+               break;
             }
 
-            return crls;
-        } catch (final UnsupportedEncodingException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
-
-    public static String getFingerprint(final X509Certificate cert) throws CertificateEncodingException {
-        Args.notNull("cert", cert);
-        return Checksums.sha1(cert.getEncoded());
-    }
-
-    /**
-     * Extracts the OCSP Responder URL from the given certificate if specified.
-     *
-     * https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol
-     *
-     * @return null if OCSP URL is not specified or is not a HTTP or LDAP URL
-     */
-    public static String getOcspResponderURL(final X509Certificate cert) {
-        Args.notNull("cert", cert);
-        // https://tools.ietf.org/html/rfc4325#section-2
-        final byte[] ocspExtValueRaw = cert.getExtensionValue("1.3.6.1.5.5.7.1.1");
-        if (ocspExtValueRaw == null)
-            return null;
-
-        final String url;
-        try {
-            final String ocspExtValue = new String(ocspExtValueRaw, "US-ASCII");
-            if (ocspExtValue.contains("http")) {
-                url = "http" + Strings.substringAfter(new String(ocspExtValueRaw, "US-ASCII"), "http").trim();
-            } else if (ocspExtValue.contains("ldap")) {
-                url = "ldap" + Strings.substringAfter(new String(ocspExtValueRaw, "US-ASCII"), "ldap").trim();
-            } else {
-                url = null;
+            final int crlEndPos = crlExtValue.indexOf((char) 65533, crlStartPos);
+            if (crlEndPos == notFound) {
+               final String url = crlExtValue.substring(crlStartPos).trim();
+               if (!crls.contains(url)) {
+                  crls.add(url);
+               }
+               break;
             }
-        } catch (final UnsupportedEncodingException ex) {
-            throw new IllegalStateException(ex);
-        }
-        return url;
-    }
 
-    /**
-     * Constructs a private key instance from PKCS#8 PEM encoded private key
-     *
-     * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
-     */
-    public static PrivateKey getPrivateKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
-        Args.notNull("pemFile", pemFile);
-        Args.notNull("algorithm", algorithm);
-        return getPrivateKeyFromPEM(FileUtils.readFileToString(pemFile), algorithm);
-    }
-
-    /**
-     * Constructs a private key instance from PKCS#8 PEM encoded private key
-     *
-     * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
-     */
-    public static PrivateKey getPrivateKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException, IOException {
-        Args.notNull("pemStream", pemStream);
-        Args.notNull("algorithm", algorithm);
-        try {
-            return getPrivateKeyFromPEM(IOUtils.toString(pemStream), algorithm);
-        } finally {
-            IOUtils.closeQuietly(pemStream);
-        }
-    }
-
-    /**
-     * Constructs a private key instance from PKCS#8 PEM encoded private key
-     *
-     * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
-     */
-    public static PrivateKey getPrivateKeyFromPEM(final String pemContent, final String algorithm) throws GeneralSecurityException {
-        Args.notNull("pemContent", pemContent);
-        Args.notNull("algorithm", algorithm);
-
-        // https://stackoverflow.com/questions/15344125/load-a-rsa-private-key-in-java-algid-parse-error-not-a-sequence
-        // https://stackoverflow.com/questions/20065304/what-is-the-differences-between-begin-rsa-private-key-and-begin-private-key
-        if (pemContent.contains("BEGIN RSA PRIVATE KEY"))
-            throw new InvalidKeyException("PKCS#1 PEM encoded private keys are not supported.");
-
-        final Matcher keyMatcher = PRIVATE_KEY_PATTERN.matcher(pemContent);
-        final byte[] privateKey;
-        if (keyMatcher.find()) {
-            privateKey = Base64.decode(keyMatcher.group(1));
-        } else {
-            privateKey = Base64.decode(pemContent);
-        }
-        return toPrivateKey(privateKey, algorithm);
-    }
-
-    /**
-     * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
-     */
-    public static PublicKey getPublicKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
-        Args.notNull("pemFile", pemFile);
-        Args.notNull("algorithm", algorithm);
-        return getPublicKeyFromPEM(FileUtils.readFileToString(pemFile), algorithm);
-    }
-
-    /**
-     * Constructs a public key instance from PEM encoded public key, NOT from a PEM encoded certificate
-     */
-    public static PublicKey getPublicKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException, IOException {
-        Args.notNull("pemStream", pemStream);
-        Args.notNull("algorithm", algorithm);
-        try {
-            return getPublicKeyFromPEM(IOUtils.toString(pemStream), algorithm);
-        } finally {
-            IOUtils.closeQuietly(pemStream);
-        }
-    }
-
-    /**
-     * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
-     */
-    public static PublicKey getPublicKeyFromPEM(final String pemContent, final String algorithm) throws GeneralSecurityException {
-        Args.notNull("pemContent", pemContent);
-        Args.notNull("algorithm", algorithm);
-        final Matcher keyMatcher = PUBLIC_KEY_PATTERN.matcher(pemContent);
-        final byte[] publicKey;
-        if (keyMatcher.find()) {
-            publicKey = Base64.decode(keyMatcher.group(1));
-        } else {
-            publicKey = Base64.decode(pemContent);
-        }
-        return toPublicKey(publicKey, algorithm);
-    }
-
-    /**
-     * Constructs a private key instance from PEM encoded X509 private key
-     */
-    public static RSAPrivateKey getRSAPrivateKeyFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
-        Args.notNull("pemStream", pemStream);
-        return (RSAPrivateKey) getPrivateKeyFromPEM(pemStream, "RSA");
-    }
-
-    /**
-     * Constructs a private key instance from PEM encoded X509 private key
-     */
-    public static RSAPrivateKey getRSAPrivateKeyFromPEM(final String pemContent) throws GeneralSecurityException {
-        Args.notNull("pemContent", pemContent);
-        return (RSAPrivateKey) getPrivateKeyFromPEM(pemContent, "RSA");
-    }
-
-    /**
-     * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
-     */
-    public static RSAPublicKey getRSAPublicKeyFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
-        Args.notNull("pemStream", pemStream);
-        return (RSAPublicKey) getPublicKeyFromPEM(pemStream, "RSA");
-    }
-
-    /**
-     * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
-     */
-    public static RSAPublicKey getRSAPublicKeyFromPEM(final String pemContent) throws GeneralSecurityException {
-        Args.notNull("pemContent", pemContent);
-        return (RSAPublicKey) getPublicKeyFromPEM(pemContent, "RSA");
-    }
-
-    /**
-     * Performs a case-insensitive comparison of the DNs ignoring whitespaces between name components.
-     */
-    @SuppressWarnings("null")
-    public static boolean isEqualDN(String dn1, String dn2) {
-        if (dn1 == dn2)
-            return true;
-        if (dn1 == null && dn2 != null || dn1 != null && dn2 == null)
-            return false;
-        if (dn1.equalsIgnoreCase(dn2))
-            return true;
-
-        if (dn1.contains(", ")) {
-            final String[] parts = Strings.splitPreserveAllTokens(dn1, ',');
-            for (int i = 0; i < parts.length; i++) {
-                parts[i] = parts[i].trim();
+            final String url = crlExtValue.substring(crlStartPos, crlEndPos - 2).trim();
+            if (!crls.contains(url)) {
+               crls.add(url);
             }
-            dn1 = Strings.join(parts, ',');
-        }
+            searchPos = crlEndPos + 1;
+         }
 
-        if (dn2.contains(", ")) {
-            final String[] parts = Strings.splitPreserveAllTokens(dn2, ',');
-            for (int i = 0; i < parts.length; i++) {
-                parts[i] = parts[i].trim();
-            }
-            dn2 = Strings.join(parts, ',');
-        }
-        return dn1.equalsIgnoreCase(dn2);
-    }
+         return crls;
+      } catch (final UnsupportedEncodingException ex) {
+         throw new IllegalStateException(ex);
+      }
+   }
 
-    /**
-     * Performs a case-insensitive comparison of the issuer DNs.
-     */
-    public static boolean isIssuerDN(final X509Certificate cert, final String issuerDN) {
-        if (cert == null || issuerDN == null)
-            return false;
+   public static String getFingerprint(final X509Certificate cert) throws CertificateEncodingException {
+      Args.notNull("cert", cert);
+      return Checksums.sha1(cert.getEncoded());
+   }
 
-        return isEqualDN(cert.getIssuerX500Principal().getName(), issuerDN);
-    }
+   /**
+    * Extracts the OCSP Responder URL from the given certificate if specified.
+    *
+    * https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol
+    *
+    * @return null if OCSP URL is not specified or is not a HTTP or LDAP URL
+    */
+   public static String getOcspResponderURL(final X509Certificate cert) {
+      Args.notNull("cert", cert);
+      // https://tools.ietf.org/html/rfc4325#section-2
+      final byte[] ocspExtValueRaw = cert.getExtensionValue("1.3.6.1.5.5.7.1.1");
+      if (ocspExtValueRaw == null)
+         return null;
 
-    public static boolean isSelfSignedCertificate(final X509Certificate cert) {
-        Args.notNull("cert", cert);
-        try {
-            final PublicKey key = cert.getPublicKey();
-            cert.verify(key);
-            return true;
-        } catch (final GeneralSecurityException ex) {
-            return false;
-        }
-    }
+      final String url;
+      try {
+         final String ocspExtValue = new String(ocspExtValueRaw, "US-ASCII");
+         if (ocspExtValue.contains("http")) {
+            url = "http" + Strings.substringAfter(new String(ocspExtValueRaw, "US-ASCII"), "http").trim();
+         } else if (ocspExtValue.contains("ldap")) {
+            url = "ldap" + Strings.substringAfter(new String(ocspExtValueRaw, "US-ASCII"), "ldap").trim();
+         } else {
+            url = null;
+         }
+      } catch (final UnsupportedEncodingException ex) {
+         throw new IllegalStateException(ex);
+      }
+      return url;
+   }
 
-    /**
-     * Performs a case-insensitive comparison of the subject DNs.
-     */
-    public static boolean isSubjectDN(final X509Certificate cert, final String subjectDN) {
-        if (cert == null || subjectDN == null)
-            return false;
+   /**
+    * Constructs a private key instance from PKCS#8 PEM encoded private key
+    *
+    * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
+    */
+   public static PrivateKey getPrivateKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
+      Args.notNull("pemFile", pemFile);
+      Args.notNull("algorithm", algorithm);
+      return getPrivateKeyFromPEM(FileUtils.readFileToString(pemFile), algorithm);
+   }
 
-        return isEqualDN(cert.getSubjectX500Principal().getName(), subjectDN);
-    }
+   /**
+    * Constructs a private key instance from PKCS#8 PEM encoded private key
+    *
+    * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
+    */
+   public static PrivateKey getPrivateKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException, IOException {
+      Args.notNull("pemStream", pemStream);
+      Args.notNull("algorithm", algorithm);
+      try {
+         return getPrivateKeyFromPEM(IOUtils.toString(pemStream), algorithm);
+      } finally {
+         IOUtils.closeQuietly(pemStream);
+      }
+   }
 
-    /**
-     * @return true if the current date/time is within the validity period given in the certificate
-     */
-    public static boolean isValid(final X509Certificate cert) {
-        if (cert == null)
-            return false;
-        try {
-            cert.checkValidity();
-            return true;
-        } catch (final CertificateExpiredException e) {
-            return false;
-        } catch (final CertificateNotYetValidException e) {
-            return false;
-        }
-    }
+   /**
+    * Constructs a private key instance from PKCS#8 PEM encoded private key
+    *
+    * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
+    */
+   public static PrivateKey getPrivateKeyFromPEM(final String pemContent, final String algorithm) throws GeneralSecurityException {
+      Args.notNull("pemContent", pemContent);
+      Args.notNull("algorithm", algorithm);
 
-    public static boolean isX509Certificate(final Certificate cert) {
-        if (cert == null)
-            return false;
-        return cert instanceof X509Certificate;
-    }
+      // https://stackoverflow.com/questions/15344125/load-a-rsa-private-key-in-java-algid-parse-error-not-a-sequence
+      // https://stackoverflow.com/questions/20065304/what-is-the-differences-between-begin-rsa-private-key-and-begin-private-key
+      if (pemContent.contains("BEGIN RSA PRIVATE KEY"))
+         throw new InvalidKeyException("PKCS#1 PEM encoded private keys are not supported.");
 
-    private static String toPEM(final byte[] data, final String type, final int charsPerLine) {
-        final char[] encoded = Base64.encode(data).toCharArray();
-        final StringBuilder sb = new StringBuilder(encoded.length + 70);
-        sb.append("-----BEGIN ");
-        sb.append(type);
-        sb.append("-----");
-        sb.append(Strings.NEW_LINE);
-        for (int i = 0; i < encoded.length; i += charsPerLine) {
-            if (encoded.length - i < charsPerLine) {
-                sb.append(encoded, i, encoded.length - i);
-            } else {
-                sb.append(encoded, i, charsPerLine);
-            }
-            sb.append(Strings.NEW_LINE);
-        }
-        sb.append("-----END ");
-        sb.append(type);
-        sb.append("-----");
-        sb.append(Strings.NEW_LINE);
-        return sb.toString();
-    }
+      final Matcher keyMatcher = PRIVATE_KEY_PATTERN.matcher(pemContent);
+      final byte[] privateKey;
+      if (keyMatcher.find()) {
+         privateKey = Base64.decode(keyMatcher.group(1));
+      } else {
+         privateKey = Base64.decode(pemContent);
+      }
+      return toPrivateKey(privateKey, algorithm);
+   }
 
-    public static String toPEM(final PrivateKey key) {
-        return key == null ? null : toPEM(key.getEncoded(), "PRIVATE KEY", 64);
-    }
+   /**
+    * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
+    */
+   public static PublicKey getPublicKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
+      Args.notNull("pemFile", pemFile);
+      Args.notNull("algorithm", algorithm);
+      return getPublicKeyFromPEM(FileUtils.readFileToString(pemFile), algorithm);
+   }
 
-    public static String toPEM(final PublicKey key) {
-        return key == null ? null : toPEM(key.getEncoded(), "PUBLIC KEY", 64);
-    }
+   /**
+    * Constructs a public key instance from PEM encoded public key, NOT from a PEM encoded certificate
+    */
+   public static PublicKey getPublicKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException, IOException {
+      Args.notNull("pemStream", pemStream);
+      Args.notNull("algorithm", algorithm);
+      try {
+         return getPublicKeyFromPEM(IOUtils.toString(pemStream), algorithm);
+      } finally {
+         IOUtils.closeQuietly(pemStream);
+      }
+   }
 
-    public static String toPEM(final X509Certificate cert) throws CertificateEncodingException {
-        return cert == null ? null : toPEM(cert.getEncoded(), "CERTIFICATE", 64);
-    }
+   /**
+    * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
+    */
+   public static PublicKey getPublicKeyFromPEM(final String pemContent, final String algorithm) throws GeneralSecurityException {
+      Args.notNull("pemContent", pemContent);
+      Args.notNull("algorithm", algorithm);
+      final Matcher keyMatcher = PUBLIC_KEY_PATTERN.matcher(pemContent);
+      final byte[] publicKey;
+      if (keyMatcher.find()) {
+         publicKey = Base64.decode(keyMatcher.group(1));
+      } else {
+         publicKey = Base64.decode(pemContent);
+      }
+      return toPublicKey(publicKey, algorithm);
+   }
 
-    public static String toPEM(final X509CRL crl) throws CRLException {
-        return crl == null ? null : toPEM(crl.getEncoded(), "X509 CRL", 64);
-    }
+   /**
+    * Constructs a private key instance from PEM encoded X509 private key
+    */
+   public static RSAPrivateKey getRSAPrivateKeyFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
+      Args.notNull("pemStream", pemStream);
+      return (RSAPrivateKey) getPrivateKeyFromPEM(pemStream, "RSA");
+   }
 
-    private static PrivateKey toPrivateKey(final byte[] pkcs8PrivateKey, final String algorithm) throws GeneralSecurityException {
-        final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(pkcs8PrivateKey);
-        final KeyFactory kf = KeyFactory.getInstance(algorithm);
-        return kf.generatePrivate(spec);
-    }
+   /**
+    * Constructs a private key instance from PEM encoded X509 private key
+    */
+   public static RSAPrivateKey getRSAPrivateKeyFromPEM(final String pemContent) throws GeneralSecurityException {
+      Args.notNull("pemContent", pemContent);
+      return (RSAPrivateKey) getPrivateKeyFromPEM(pemContent, "RSA");
+   }
 
-    private static PublicKey toPublicKey(final byte[] x509PublicKey, final String algorithm) throws GeneralSecurityException {
-        final X509EncodedKeySpec spec = new X509EncodedKeySpec(x509PublicKey);
-        final KeyFactory kf = KeyFactory.getInstance(algorithm);
-        return kf.generatePublic(spec);
-    }
+   /**
+    * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
+    */
+   public static RSAPublicKey getRSAPublicKeyFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
+      Args.notNull("pemStream", pemStream);
+      return (RSAPublicKey) getPublicKeyFromPEM(pemStream, "RSA");
+   }
+
+   /**
+    * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
+    */
+   public static RSAPublicKey getRSAPublicKeyFromPEM(final String pemContent) throws GeneralSecurityException {
+      Args.notNull("pemContent", pemContent);
+      return (RSAPublicKey) getPublicKeyFromPEM(pemContent, "RSA");
+   }
+
+   /**
+    * Performs a case-insensitive comparison of the DNs ignoring whitespaces between name components.
+    */
+   @SuppressWarnings("null")
+   public static boolean isEqualDN(String dn1, String dn2) {
+      if (dn1 == dn2)
+         return true;
+      if (dn1 == null && dn2 != null || dn1 != null && dn2 == null)
+         return false;
+      if (dn1.equalsIgnoreCase(dn2))
+         return true;
+
+      if (dn1.contains(", ")) {
+         final String[] parts = Strings.splitPreserveAllTokens(dn1, ',');
+         for (int i = 0; i < parts.length; i++) {
+            parts[i] = parts[i].trim();
+         }
+         dn1 = Strings.join(parts, ',');
+      }
+
+      if (dn2.contains(", ")) {
+         final String[] parts = Strings.splitPreserveAllTokens(dn2, ',');
+         for (int i = 0; i < parts.length; i++) {
+            parts[i] = parts[i].trim();
+         }
+         dn2 = Strings.join(parts, ',');
+      }
+      return dn1.equalsIgnoreCase(dn2);
+   }
+
+   /**
+    * Performs a case-insensitive comparison of the issuer DNs.
+    */
+   public static boolean isIssuerDN(final X509Certificate cert, final String issuerDN) {
+      if (cert == null || issuerDN == null)
+         return false;
+
+      return isEqualDN(cert.getIssuerX500Principal().getName(), issuerDN);
+   }
+
+   public static boolean isSelfSignedCertificate(final X509Certificate cert) {
+      Args.notNull("cert", cert);
+      try {
+         final PublicKey key = cert.getPublicKey();
+         cert.verify(key);
+         return true;
+      } catch (final GeneralSecurityException ex) {
+         return false;
+      }
+   }
+
+   /**
+    * Performs a case-insensitive comparison of the subject DNs.
+    */
+   public static boolean isSubjectDN(final X509Certificate cert, final String subjectDN) {
+      if (cert == null || subjectDN == null)
+         return false;
+
+      return isEqualDN(cert.getSubjectX500Principal().getName(), subjectDN);
+   }
+
+   /**
+    * @return true if the current date/time is within the validity period given in the certificate
+    */
+   public static boolean isValid(final X509Certificate cert) {
+      if (cert == null)
+         return false;
+      try {
+         cert.checkValidity();
+         return true;
+      } catch (final CertificateExpiredException e) {
+         return false;
+      } catch (final CertificateNotYetValidException e) {
+         return false;
+      }
+   }
+
+   public static boolean isX509Certificate(final Certificate cert) {
+      if (cert == null)
+         return false;
+      return cert instanceof X509Certificate;
+   }
+
+   private static String toPEM(final byte[] data, final String type, final int charsPerLine) {
+      final char[] encoded = Base64.encode(data).toCharArray();
+      final StringBuilder sb = new StringBuilder(encoded.length + 70);
+      sb.append("-----BEGIN ");
+      sb.append(type);
+      sb.append("-----");
+      sb.append(Strings.NEW_LINE);
+      for (int i = 0; i < encoded.length; i += charsPerLine) {
+         if (encoded.length - i < charsPerLine) {
+            sb.append(encoded, i, encoded.length - i);
+         } else {
+            sb.append(encoded, i, charsPerLine);
+         }
+         sb.append(Strings.NEW_LINE);
+      }
+      sb.append("-----END ");
+      sb.append(type);
+      sb.append("-----");
+      sb.append(Strings.NEW_LINE);
+      return sb.toString();
+   }
+
+   public static String toPEM(final PrivateKey key) {
+      return key == null ? null : toPEM(key.getEncoded(), "PRIVATE KEY", 64);
+   }
+
+   public static String toPEM(final PublicKey key) {
+      return key == null ? null : toPEM(key.getEncoded(), "PUBLIC KEY", 64);
+   }
+
+   public static String toPEM(final X509Certificate cert) throws CertificateEncodingException {
+      return cert == null ? null : toPEM(cert.getEncoded(), "CERTIFICATE", 64);
+   }
+
+   public static String toPEM(final X509CRL crl) throws CRLException {
+      return crl == null ? null : toPEM(crl.getEncoded(), "X509 CRL", 64);
+   }
+
+   private static PrivateKey toPrivateKey(final byte[] pkcs8PrivateKey, final String algorithm) throws GeneralSecurityException {
+      final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(pkcs8PrivateKey);
+      final KeyFactory kf = KeyFactory.getInstance(algorithm);
+      return kf.generatePrivate(spec);
+   }
+
+   private static PublicKey toPublicKey(final byte[] x509PublicKey, final String algorithm) throws GeneralSecurityException {
+      final X509EncodedKeySpec spec = new X509EncodedKeySpec(x509PublicKey);
+      final KeyFactory kf = KeyFactory.getInstance(algorithm);
+      return kf.generatePublic(spec);
+   }
 }

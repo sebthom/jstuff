@@ -17,10 +17,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
 import net.sf.jstuff.core.date.Dates;
 import net.sf.jstuff.core.types.Identifiable;
-
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * The following child elements are defined by this specification (note
@@ -59,138 +59,85 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class AtomEntry extends Identifiable.Default<String> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private String title;
-    private AtomText summary;
-    private AtomText content;
+   private String title;
+   private AtomText summary;
+   private AtomText content;
 
-    @XStreamImplicit(itemFieldName = "category")
-    private Collection<AtomCategory> categories;
+   @XStreamImplicit(itemFieldName = "category")
+   private Collection<AtomCategory> categories;
 
-    private AtomLink link;
-    private String published;
-    private String updated;
-    private AtomPerson author;
+   private AtomLink link;
+   private String published;
+   private String updated;
+   private AtomPerson author;
 
-    /**
-     * @return the author
-     */
-    public AtomPerson getAuthor() {
-        return author;
-    }
+   public AtomPerson getAuthor() {
+      return author;
+   }
 
-    /**
-     * @return the categories
-     */
-    public Collection<AtomCategory> getCategories() {
-        return categories;
-    }
+   public Collection<AtomCategory> getCategories() {
+      return categories;
+   }
 
-    /**
-     * @return the content
-     */
-    public AtomText getContent() {
-        return content;
-    }
+   public AtomText getContent() {
+      return content;
+   }
 
-    /**
-     * @return the link
-     */
-    public AtomLink getLink() {
-        return link;
-    }
+   public AtomLink getLink() {
+      return link;
+   }
 
-    /**
-     * @return the published
-     * @throws ParseException
-     */
-    public Date getPublished() throws ParseException {
-        return Dates.fromRFC3399(published);
-    }
+   public Date getPublished() throws ParseException {
+      return Dates.fromRFC3399(published);
+   }
 
-    /**
-     * @return the summary
-     */
-    public AtomText getSummary() {
-        return summary;
-    }
+   public AtomText getSummary() {
+      return summary;
+   }
 
-    /**
-     * @return the title
-     */
-    public String getTitle() {
-        return title;
-    }
+   public String getTitle() {
+      return title;
+   }
 
-    /**
-     * @return the updated
-     * @throws ParseException
-     */
-    public Date getUpdated() throws ParseException {
-        return Dates.fromRFC3399(updated);
-    }
+   public Date getUpdated() throws ParseException {
+      return Dates.fromRFC3399(updated);
+   }
 
-    /**
-     * @param author the author to set
-     */
-    public void setAuthor(final AtomPerson author) {
-        this.author = author;
-    }
+   public void setAuthor(final AtomPerson author) {
+      this.author = author;
+   }
 
-    /**
-     * @param categories the categories to set
-     */
-    public void setCategories(final AtomCategory... categories) {
-        this.categories = Arrays.asList(categories);
-    }
+   public void setCategories(final AtomCategory... categories) {
+      this.categories = Arrays.asList(categories);
+   }
 
-    /**
-     * @param categories the categories to set
-     */
-    public void setCategories(final Collection<AtomCategory> categories) {
-        this.categories = categories;
-    }
+   public void setCategories(final Collection<AtomCategory> categories) {
+      this.categories = categories;
+   }
 
-    /**
-     * @param content the content to set
-     */
-    public void setContent(final AtomText content) {
-        this.content = content;
-    }
+   public void setContent(final AtomText content) {
+      this.content = content;
+   }
 
-    /**
-     * @param link the link to set
-     */
-    public void setLink(final AtomLink link) {
-        this.link = link;
-    }
+   public void setLink(final AtomLink link) {
+      this.link = link;
+   }
 
-    /**
-     * @param published the published to set
-     */
-    public void setPublished(final Date published) {
-        this.published = Dates.toRFC3399_UTC(published);
-    }
+   public void setPublished(final Date published) {
+      this.published = Dates.toRFC3399_UTC(published);
+   }
 
-    /**
-     * @param summary the summary to set
-     */
-    public void setSummary(final AtomText summary) {
-        this.summary = summary;
-    }
+   public void setSummary(final AtomText summary) {
+      this.summary = summary;
+   }
 
-    /**
-     * @param title the title to set
-     */
-    public void setTitle(final String title) {
-        this.title = title;
-    }
+   public void setTitle(final String title) {
+      this.title = title;
+   }
 
-    /**
-     * @param updated the updated to set
-     */
-    public void setUpdated(final Date updated) {
-        this.updated = Dates.toRFC3399_UTC(updated);
-    }
+   public void setUpdated(final Date updated) {
+      this.updated = Dates.toRFC3399_UTC(updated);
+   }
 }

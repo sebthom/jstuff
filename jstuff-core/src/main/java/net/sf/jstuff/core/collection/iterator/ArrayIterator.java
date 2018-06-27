@@ -20,28 +20,28 @@ import java.util.Iterator;
  */
 public class ArrayIterator<T> implements Iterator<T>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public static <T> ArrayIterator<T> of(final T... array) {
-        return new ArrayIterator<T>(array);
-    }
+   public static <T> ArrayIterator<T> of(final T... array) {
+      return new ArrayIterator<T>(array);
+   }
 
-    private final T[] array;
-    private int currentIndex = 0;
+   private final T[] array;
+   private int currentIndex = 0;
 
-    public ArrayIterator(final T... array) {
-        this.array = array;
-    }
+   public ArrayIterator(final T... array) {
+      this.array = array;
+   }
 
-    public boolean hasNext() {
-        return currentIndex < array.length;
-    }
+   public boolean hasNext() {
+      return currentIndex < array.length;
+   }
 
-    public T next() {
-        return array[currentIndex++];
-    }
+   public T next() {
+      return array[currentIndex++];
+   }
 
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
+   public void remove() {
+      throw new UnsupportedOperationException();
+   }
 }

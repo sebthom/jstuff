@@ -28,107 +28,107 @@ import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingHttpServletResponseWrapper {
-    private ServletOutputStream exposedOutputStream;
-    private PrintWriter exposedPrintWriter;
-    private final FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
+   private ServletOutputStream exposedOutputStream;
+   private PrintWriter exposedPrintWriter;
+   private final FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
 
-    public ContentCapturingHttpServletResponseWrapper(final HttpServletResponse response) {
-        super(response);
-    }
+   public ContentCapturingHttpServletResponseWrapper(final HttpServletResponse response) {
+      super(response);
+   }
 
-    public void clear() {
-        outputStream.reset();
-    }
+   public void clear() {
+      outputStream.reset();
+   }
 
-    public byte[] toByteArray() {
-        return outputStream.toByteArray();
-    }
+   public byte[] toByteArray() {
+      return outputStream.toByteArray();
+   }
 
-    @Override
-    public String toString() {
-        if (exposedPrintWriter != null) {
-            exposedPrintWriter.flush();
-        }
+   @Override
+   public String toString() {
+      if (exposedPrintWriter != null) {
+         exposedPrintWriter.flush();
+      }
 
-        try {
-            final String encoding = getCharacterEncoding();
-            return outputStream.toString(encoding);
-        } catch (final UnsupportedEncodingException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+      try {
+         final String encoding = getCharacterEncoding();
+         return outputStream.toString(encoding);
+      } catch (final UnsupportedEncodingException ex) {
+         throw new RuntimeException(ex);
+      }
+   }
 
-    @Override
-    public ServletOutputStream getOutputStream() {
-        if (exposedPrintWriter != null)
-            throw new IllegalStateException("getWriter() was called already!");
+   @Override
+   public ServletOutputStream getOutputStream() {
+      if (exposedPrintWriter != null)
+         throw new IllegalStateException("getWriter() was called already!");
 
-        if (exposedOutputStream == null) {
-            exposedOutputStream = new ServletOutputStream() {
-                @Override
-                public void write(final byte[] b) throws IOException {
-                    outputStream.write(b);
-                }
+      if (exposedOutputStream == null) {
+         exposedOutputStream = new ServletOutputStream() {
+            @Override
+            public void write(final byte[] b) throws IOException {
+               outputStream.write(b);
+            }
 
-                @Override
-                public void write(final byte[] b, final int off, final int len) throws IOException {
-                    outputStream.write(b, off, len);
-                }
+            @Override
+            public void write(final byte[] b, final int off, final int len) throws IOException {
+               outputStream.write(b, off, len);
+            }
 
-                @Override
-                public void write(final int b) throws IOException {
-                    outputStream.write(b);
-                }
-            };
-        }
-        return exposedOutputStream;
-    }
+            @Override
+            public void write(final int b) throws IOException {
+               outputStream.write(b);
+            }
+         };
+      }
+      return exposedOutputStream;
+   }
 
-    @Override
-    public PrintWriter getWriter() {
-        if (exposedOutputStream != null)
-            throw new IllegalStateException("getOutpuStream() was called already!");
+   @Override
+   public PrintWriter getWriter() {
+      if (exposedOutputStream != null)
+         throw new IllegalStateException("getOutpuStream() was called already!");
 
-        if (exposedPrintWriter == null) {
+      if (exposedPrintWriter == null) {
 
-            exposedPrintWriter = new PrintWriter(new Writer() {
-                @Override
-                public void write(final String str) throws IOException {
-                    outputStream.write(str.getBytes(getCharacterEncoding()));
-                }
+         exposedPrintWriter = new PrintWriter(new Writer() {
+            @Override
+            public void write(final String str) throws IOException {
+               outputStream.write(str.getBytes(getCharacterEncoding()));
+            }
 
-                @Override
-                public void write(final char[] cbuf, final int off, final int len) throws IOException {
-                    outputStream.write(new String(cbuf, off, len).getBytes(getCharacterEncoding()));
-                }
+            @Override
+            public void write(final char[] cbuf, final int off, final int len) throws IOException {
+               outputStream.write(new String(cbuf, off, len).getBytes(getCharacterEncoding()));
+            }
 
-                @Override
-                public void flush() throws IOException {
-                }
+            @Override
+            public void flush() throws IOException {
+            }
 
-                @Override
-                public void close() throws IOException {
-                }
-            }) {
-                @Override
-                public void write(final String str) {
-                    try {
-                        outputStream.write(str.getBytes(getCharacterEncoding()));
-                    } catch (final UnsupportedEncodingException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-            };
+            @Override
+            public void close() throws IOException {
+            }
+         }) {
+            @Override
+            public void write(final String str) {
+               try {
+                  outputStream.write(str.getBytes(getCharacterEncoding()));
+               } catch (final UnsupportedEncodingException ex) {
+                  throw new RuntimeException(ex);
+               }
+            }
+         };
 
-            /* 3x slower:
-            try {
-                exposedPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, getCharacterEncoding())), false);
-            } catch (final UnsupportedEncodingException ex) {
-                throw new RuntimeException(ex);
-            } */
-        }
+         /* 3x slower:
+         try {
+             exposedPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, getCharacterEncoding())), false);
+         } catch (final UnsupportedEncodingException ex) {
+             throw new RuntimeException(ex);
+         } */
+      }
 
-        return exposedPrintWriter;
-    }
+      return exposedPrintWriter;
+   }
 
 }

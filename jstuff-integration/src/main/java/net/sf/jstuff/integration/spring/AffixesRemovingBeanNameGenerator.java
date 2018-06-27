@@ -28,11 +28,11 @@ import net.sf.jstuff.core.Strings;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class AffixesRemovingBeanNameGenerator extends AnnotationBeanNameGenerator {
-    @Override
-    public String generateBeanName(final BeanDefinition definition, final BeanDefinitionRegistry registry) {
-        final String beanName = super.generateBeanName(definition, registry);
-        if (beanName.startsWith("Default"))
-            return Strings.substringAfter(beanName, "Default");
-        return Strings.substringBeforeLast(beanName, "Impl");
-    }
+   @Override
+   public String generateBeanName(final BeanDefinition definition, final BeanDefinitionRegistry registry) {
+      final String beanName = super.generateBeanName(definition, registry);
+      if (beanName.startsWith("Default"))
+         return Strings.substringAfter(beanName, "Default");
+      return Strings.substringBeforeLast(beanName, "Impl");
+   }
 }

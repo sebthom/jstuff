@@ -25,45 +25,45 @@ import net.sf.jstuff.core.logging.Logger;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ClassPathResourcesServletContext extends ServletContextWrapper {
-    private final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    public ClassPathResourcesServletContext(final ServletContext delegate) {
-        super(delegate);
-    }
+   public ClassPathResourcesServletContext(final ServletContext delegate) {
+      super(delegate);
+   }
 
-    @Override
-    public ServletContext getContext(final String uripath) {
-        final ServletContext ctx = delegate.getContext(uripath);
-        if (ctx instanceof ClassPathResourcesServletContext)
-            return ctx;
-        if (ctx == delegate)
-            return this;
-        return new ClassPathResourcesServletContext(ctx);
-    }
+   @Override
+   public ServletContext getContext(final String uripath) {
+      final ServletContext ctx = delegate.getContext(uripath);
+      if (ctx instanceof ClassPathResourcesServletContext)
+         return ctx;
+      if (ctx == delegate)
+         return this;
+      return new ClassPathResourcesServletContext(ctx);
+   }
 
-    @Override
-    public URL getResource(final String path) throws MalformedURLException {
-        URL resource = delegate.getResource(path);
-        if (resource == null) {
-            resource = ClassPathResourcesFilter.findResourceInClassPath(path);
-        }
-        return resource;
-    }
+   @Override
+   public URL getResource(final String path) throws MalformedURLException {
+      URL resource = delegate.getResource(path);
+      if (resource == null) {
+         resource = ClassPathResourcesFilter.findResourceInClassPath(path);
+      }
+      return resource;
+   }
 
-    @SuppressWarnings("resource")
-    @Override
-    public InputStream getResourceAsStream(final String path) {
-        InputStream stream = delegate.getResourceAsStream(path);
-        if (stream == null) {
-            final URL resource = ClassPathResourcesFilter.findResourceInClassPath(path);
-            if (resource != null) {
-                try {
-                    stream = resource.openStream();
-                } catch (final IOException ex) {
-                    LOG.error(ex, "Failed to open stream of resource [%s]", path);
-                }
+   @SuppressWarnings("resource")
+   @Override
+   public InputStream getResourceAsStream(final String path) {
+      InputStream stream = delegate.getResourceAsStream(path);
+      if (stream == null) {
+         final URL resource = ClassPathResourcesFilter.findResourceInClassPath(path);
+         if (resource != null) {
+            try {
+               stream = resource.openStream();
+            } catch (final IOException ex) {
+               LOG.error(ex, "Failed to open stream of resource [%s]", path);
             }
-        }
-        return stream;
-    }
+         }
+      }
+      return stream;
+   }
 }

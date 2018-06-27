@@ -19,50 +19,50 @@ import java.io.InputStream;
  */
 public final class EmptyInputStream extends InputStream {
 
-    public static final EmptyInputStream INSTANCE = new EmptyInputStream();
+   public static final EmptyInputStream INSTANCE = new EmptyInputStream();
 
-    private EmptyInputStream() {
-    }
+   private EmptyInputStream() {
+   }
 
-    @Override
-    public int available() {
-        return 0;
-    }
+   @Override
+   public int available() {
+      return 0;
+   }
 
-    @Override
-    public void close() {
-    }
+   @Override
+   public void close() {
+   }
 
-    @Override
-    public void mark(final int readLimit) {
-    }
+   @Override
+   public void mark(final int readLimit) {
+   }
 
-    @Override
-    public boolean markSupported() {
-        return true;
-    }
+   @Override
+   public boolean markSupported() {
+      return true;
+   }
 
-    @Override
-    public int read() {
-        return -1;
-    }
+   @Override
+   public int read() {
+      return -1;
+   }
 
-    @Override
-    public int read(final byte[] b) {
-        return -1;
-    }
+   @Override
+   public int read(final byte[] b) {
+      return -1;
+   }
 
-    @Override
-    public int read(final byte[] b, final int off, final int len) {
-        return -1;
-    }
+   @Override
+   public int read(final byte[] b, final int off, final int len) {
+      return -1;
+   }
 
-    @Override
-    public void reset() {
-    }
+   @Override
+   public void reset() {
+   }
 
-    @Override
-    public long skip(final long n) {
-        return 0L;
-    }
+   @Override
+   public long skip(final long n) {
+      return 0L;
+   }
 }

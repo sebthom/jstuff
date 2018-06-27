@@ -19,13 +19,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ConcurrentHashSet<E> extends MapBackedSet<E> {
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public ConcurrentHashSet() {
-        super(new ConcurrentHashMap<E, Boolean>());
-    }
+   public ConcurrentHashSet() {
+      super(new ConcurrentHashMap<E, Boolean>());
+   }
 
-    public ConcurrentHashSet(final int initialCapacity) {
-        super(new ConcurrentHashMap<E, Boolean>(initialCapacity));
-    }
+   public ConcurrentHashSet(final int initialCapacity) {
+      super(new ConcurrentHashMap<E, Boolean>(initialCapacity));
+   }
 }

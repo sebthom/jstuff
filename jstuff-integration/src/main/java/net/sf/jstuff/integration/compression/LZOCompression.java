@@ -35,78 +35,78 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class LZOCompression extends AbstractCompression {
 
-    public static final LZOCompression INSTANCE = new LZOCompression();
+   public static final LZOCompression INSTANCE = new LZOCompression();
 
-    private final LzoCompressor compressor;
-    private final LzoDecompressor decompressor;
+   private final LzoCompressor compressor;
+   private final LzoDecompressor decompressor;
 
-    public LZOCompression() {
-        this(LzoAlgorithm.LZO1X, null);
-    }
+   public LZOCompression() {
+      this(LzoAlgorithm.LZO1X, null);
+   }
 
-    public LZOCompression(final LzoAlgorithm algorithm) {
-        this(algorithm, null);
-    }
+   public LZOCompression(final LzoAlgorithm algorithm) {
+      this(algorithm, null);
+   }
 
-    public LZOCompression(final LzoAlgorithm algorithm, final LzoConstraint constraint) {
-        Args.notNull("algorithm", algorithm);
-        compressor = LzoLibrary.getInstance().newCompressor(algorithm, constraint);
-        decompressor = LzoLibrary.getInstance().newDecompressor(algorithm, constraint);
-    }
+   public LZOCompression(final LzoAlgorithm algorithm, final LzoConstraint constraint) {
+      Args.notNull("algorithm", algorithm);
+      compressor = LzoLibrary.getInstance().newCompressor(algorithm, constraint);
+      decompressor = LzoLibrary.getInstance().newDecompressor(algorithm, constraint);
+   }
 
-    @SuppressWarnings("resource")
-    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("uncompressed", uncompressed);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
+      Args.notNull("output", output);
 
-        if (!closeOutput) {
-            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-            output = new DelegatingOutputStream(output, true);
-        }
+      if (!closeOutput) {
+         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         output = new DelegatingOutputStream(output, true);
+      }
 
-        try {
-            final OutputStream compOS = createCompressingOutputStream(output);
-            compOS.write(uncompressed);
-            compOS.flush();
-        } finally {
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         final OutputStream compOS = createCompressingOutputStream(output);
+         compOS.write(uncompressed);
+         compOS.flush();
+      } finally {
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    @SuppressWarnings("resource")
-    public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
-        Args.notNull("input", input);
-        Args.notNull("output", output);
+   @SuppressWarnings("resource")
+   public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
+      Args.notNull("input", input);
+      Args.notNull("output", output);
 
-        if (!closeOutput) {
-            // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-            output = new DelegatingOutputStream(output, true);
-        }
+      if (!closeOutput) {
+         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         output = new DelegatingOutputStream(output, true);
+      }
 
-        try {
-            final OutputStream compOS = createCompressingOutputStream(output);
-            IOUtils.copyLarge(input, compOS);
-            compOS.flush();
-        } finally {
-            IOUtils.closeQuietly(input);
-            if (closeOutput) {
-                IOUtils.closeQuietly(output);
-            }
-        }
-    }
+      try {
+         final OutputStream compOS = createCompressingOutputStream(output);
+         IOUtils.copyLarge(input, compOS);
+         compOS.flush();
+      } finally {
+         IOUtils.closeQuietly(input);
+         if (closeOutput) {
+            IOUtils.closeQuietly(output);
+         }
+      }
+   }
 
-    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
-        return new LzoOutputStream(output, compressor, 32 * 1024);
-    }
+   public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
+      return new LzoOutputStream(output, compressor, 32 * 1024);
+   }
 
-    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
-        return new LzoInputStream(compressed, decompressor);
-    }
+   public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+      return new LzoInputStream(compressed, decompressor);
+   }
 
-    @Override
-    public String toString() {
-        return Strings.toString(this, "algorithm", compressor.getAlgorithm());
-    }
+   @Override
+   public String toString() {
+      return Strings.toString(this, "algorithm", compressor.getAlgorithm());
+   }
 }

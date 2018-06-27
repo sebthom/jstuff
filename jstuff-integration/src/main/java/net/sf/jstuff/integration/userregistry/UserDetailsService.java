@@ -16,7 +16,7 @@ package net.sf.jstuff.integration.userregistry;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface UserDetailsService {
-    UserDetails getUserDetailsByLogonName(String logonName);
+   UserDetails getUserDetailsByLogonName(String logonName);
 
-    UserDetails getUserDetailsByUserId(String userId);
+   UserDetails getUserDetailsByUserId(String userId);
 }

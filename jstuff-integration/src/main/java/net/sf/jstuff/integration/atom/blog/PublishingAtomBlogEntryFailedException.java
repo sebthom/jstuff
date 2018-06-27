@@ -13,21 +13,21 @@
 package net.sf.jstuff.integration.atom.blog;
 
 public class PublishingAtomBlogEntryFailedException extends AtomBlogException {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public PublishingAtomBlogEntryFailedException() {
-        super();
-    }
+   public PublishingAtomBlogEntryFailedException() {
+      super();
+   }
 
-    public PublishingAtomBlogEntryFailedException(final String message) {
-        super(message);
-    }
+   public PublishingAtomBlogEntryFailedException(final String message) {
+      super(message);
+   }
 
-    public PublishingAtomBlogEntryFailedException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
+   public PublishingAtomBlogEntryFailedException(final String message, final Throwable cause) {
+      super(message, cause);
+   }
 
-    public PublishingAtomBlogEntryFailedException(final Throwable cause) {
-        super(cause);
-    }
+   public PublishingAtomBlogEntryFailedException(final Throwable cause) {
+      super(cause);
+   }
 }

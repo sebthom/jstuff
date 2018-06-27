@@ -115,10 +115,10 @@ SPDX-License-Identifier: EPL-2.0
                         <configuration>
                             <resources>
                                 <resource>
-                                    <directory>../</directory>
+                                    <directory>./</directory>
                                     <targetPath>META-INF</targetPath>
                                     <includes>
-                                        <include>LICENSE.txt</include>
+                                        <include>../LICENSE.txt</include>
                                     </includes>
                                 </resource>
                             </resources>

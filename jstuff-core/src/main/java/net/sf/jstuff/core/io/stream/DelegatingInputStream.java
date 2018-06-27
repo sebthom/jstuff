@@ -20,80 +20,80 @@ import java.io.InputStream;
  */
 public class DelegatingInputStream extends InputStream {
 
-    protected InputStream delegate;
-    protected boolean ignoreClose = false;
+   protected InputStream delegate;
+   protected boolean ignoreClose = false;
 
-    public DelegatingInputStream(final InputStream delegate) {
-        this.delegate = delegate;
-    }
+   public DelegatingInputStream(final InputStream delegate) {
+      this.delegate = delegate;
+   }
 
-    @Override
-    public int available() throws IOException {
-        return delegate.available();
-    }
+   @Override
+   public int available() throws IOException {
+      return delegate.available();
+   }
 
-    @Override
-    public void close() throws IOException {
-        if (!ignoreClose) {
-            delegate.close();
-        }
-    }
+   @Override
+   public void close() throws IOException {
+      if (!ignoreClose) {
+         delegate.close();
+      }
+   }
 
-    public InputStream getDelegate() {
-        return delegate;
-    }
+   public InputStream getDelegate() {
+      return delegate;
+   }
 
-    public boolean isIgnoreClose() {
-        return ignoreClose;
-    }
+   public boolean isIgnoreClose() {
+      return ignoreClose;
+   }
 
-    @Override
-    public void mark(final int readlimit) {
-        delegate.mark(readlimit);
-    }
+   @Override
+   public void mark(final int readlimit) {
+      delegate.mark(readlimit);
+   }
 
-    @Override
-    public boolean markSupported() {
-        return delegate.markSupported();
-    }
+   @Override
+   public boolean markSupported() {
+      return delegate.markSupported();
+   }
 
-    public byte readByte() throws IOException {
-        final byte[] b = new byte[1];
-        delegate.read(b);
-        return b[0];
-    }
+   public byte readByte() throws IOException {
+      final byte[] b = new byte[1];
+      delegate.read(b);
+      return b[0];
+   }
 
-    @Override
-    public int read() throws IOException {
-        return delegate.read();
-    }
+   @Override
+   public int read() throws IOException {
+      return delegate.read();
+   }
 
-    @Override
-    public int read(final byte[] b) throws IOException {
-        return delegate.read(b);
-    }
+   @Override
+   public int read(final byte[] b) throws IOException {
+      return delegate.read(b);
+   }
 
-    @Override
-    public int read(final byte[] b, final int off, final int len) throws IOException {
-        return delegate.read(b, off, len);
-    }
+   @Override
+   public int read(final byte[] b, final int off, final int len) throws IOException {
+      return delegate.read(b, off, len);
+   }
 
-    @Override
-    public void reset() throws IOException {
-        delegate.reset();
-    }
+   @Override
+   public void reset() throws IOException {
+      delegate.reset();
+   }
 
-    public void setDelegate(final InputStream delegate) {
-        this.delegate = delegate;
-    }
+   public void setDelegate(final InputStream delegate) {
+      this.delegate = delegate;
+   }
 
-    public void setIgnoreClose(final boolean ignoreClose) {
-        this.ignoreClose = ignoreClose;
-    }
+   public void setIgnoreClose(final boolean ignoreClose) {
+      this.ignoreClose = ignoreClose;
+   }
 
-    @Override
-    public long skip(final long n) throws IOException {
-        return delegate.skip(n);
-    }
+   @Override
+   public long skip(final long n) throws IOException {
+      return delegate.skip(n);
+   }
 
 }

@@ -20,50 +20,50 @@ import net.sf.jstuff.core.reflection.Resources.Resource;
  */
 public class ResourcesTest extends TestCase {
 
-    public void testResources() {
-        {
-            boolean foundStringsClass = false;
-            for (final Resource r : Resources.findResourcesByGlobPattern("**/*.class", ClassLoader.getSystemClassLoader())) {
-                if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
-                    foundStringsClass = true;
-                }
+   public void testResources() {
+      {
+         boolean foundStringsClass = false;
+         for (final Resource r : Resources.findResourcesByGlobPattern("**/*.class", ClassLoader.getSystemClassLoader())) {
+            if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
+               foundStringsClass = true;
             }
-            assertTrue(foundStringsClass);
-        }
+         }
+         assertTrue(foundStringsClass);
+      }
 
-        {
-            boolean foundStringsClass = false;
-            for (final Resource r : Resources.findResourcesByGlobPattern("**/Strin*.class")) {
-                if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
-                    foundStringsClass = true;
-                }
+      {
+         boolean foundStringsClass = false;
+         for (final Resource r : Resources.findResourcesByGlobPattern("**/Strin*.class")) {
+            if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
+               foundStringsClass = true;
             }
-            assertTrue(foundStringsClass);
-        }
+         }
+         assertTrue(foundStringsClass);
+      }
 
-        {
-            boolean foundStringsClass = false;
-            for (final Resource r : Resources.findResourcesByGlobPattern("Strings.class")) {
-                if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
-                    foundStringsClass = true;
-                }
+      {
+         boolean foundStringsClass = false;
+         for (final Resource r : Resources.findResourcesByGlobPattern("Strings.class")) {
+            if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
+               foundStringsClass = true;
             }
-            assertFalse(foundStringsClass);
-        }
+         }
+         assertFalse(foundStringsClass);
+      }
 
-        {
-            boolean foundStringsClass = false;
-            boolean foundDayProperties = false;
-            for (final Resource r : Resources.findResourcesByGlobPattern("**/*.properties")) {
-                if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
-                    foundStringsClass = true;
-                }
-                if (r.name.equals("net/sf/jstuff/core/date/Day.properties")) {
-                    foundDayProperties = true;
-                }
+      {
+         boolean foundStringsClass = false;
+         boolean foundDayProperties = false;
+         for (final Resource r : Resources.findResourcesByGlobPattern("**/*.properties")) {
+            if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
+               foundStringsClass = true;
             }
-            assertFalse(foundStringsClass);
-            assertTrue(foundDayProperties);
-        }
-    }
+            if (r.name.equals("net/sf/jstuff/core/date/Day.properties")) {
+               foundDayProperties = true;
+            }
+         }
+         assertFalse(foundStringsClass);
+         assertTrue(foundDayProperties);
+      }
+   }
 }

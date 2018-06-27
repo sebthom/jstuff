@@ -16,5 +16,5 @@ package net.sf.jstuff.core.functional;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface ChainableFunction<In, Out> extends Function<In, Out> {
-    <NextOut> ChainableFunction<In, NextOut> and(Function<? super Out, NextOut> next);
+   <NextOut> ChainableFunction<In, NextOut> and(Function<? super Out, NextOut> next);
 }

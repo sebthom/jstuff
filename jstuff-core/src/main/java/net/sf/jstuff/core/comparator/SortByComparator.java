@@ -20,30 +20,31 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class SortByComparator<T, SortKeyType> implements Comparator<T> {
-    private SortBy<SortKeyType>[] sortBy;
+   private SortBy<SortKeyType>[] sortBy;
 
-    public SortByComparator(final SortBy<SortKeyType>... sortBy) {
-        setSortBy(sortBy);
-    }
+   public SortByComparator(final SortBy<SortKeyType>... sortBy) {
+      setSortBy(sortBy);
+   }
 
-    public int compare(final T o1, final T o2) {
-        for (final SortBy<SortKeyType> sb : sortBy) {
-            final int i = compareByKey(o1, o2, sb.getKey());
-            if (i == 0)
-                continue;
-            return sb.getDirection() == SortDirection.ASC ? i : -i;
-        }
-        return 0;
-    }
+   public int compare(final T o1, final T o2) {
+      for (final SortBy<SortKeyType> sb : sortBy) {
+         final int i = compareByKey(o1, o2, sb.getKey());
+         if (i == 0) {
+            continue;
+         }
+         return sb.getDirection() == SortDirection.ASC ? i : -i;
+      }
+      return 0;
+   }
 
-    public void setSortBy(final SortBy<SortKeyType>[] sortBy) {
-        Args.notNull("sortBy", sortBy);
-        this.sortBy = sortBy;
-    }
+   protected int compareByKey(final T o1, final T o2, final SortKeyType sortKey) {
+      return getComparator(sortKey).compare(o1, o2);
+   }
 
-    protected int compareByKey(final T o1, final T o2, final SortKeyType sortKey) {
-        return getComparator(sortKey).compare(o1, o2);
-    }
+   protected abstract Comparator<T> getComparator(SortKeyType sortKey);
 
-    protected abstract Comparator<T> getComparator(final SortKeyType sortKey);
+   public void setSortBy(final SortBy<SortKeyType>[] sortBy) {
+      Args.notNull("sortBy", sortBy);
+      this.sortBy = sortBy;
+   }
 }

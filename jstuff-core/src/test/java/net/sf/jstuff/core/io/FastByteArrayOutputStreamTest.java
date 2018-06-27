@@ -23,44 +23,44 @@ import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
  */
 public class FastByteArrayOutputStreamTest extends TestCase {
 
-    @SuppressWarnings({ "resource", "unused" })
-    public void testFastByteArrayOutputStream() throws IOException {
+   @SuppressWarnings({"resource", "unused"})
+   public void testFastByteArrayOutputStream() throws IOException {
 
-        try {
-            new FastByteArrayOutputStream(-1);
-            fail();
-        } catch (final IllegalArgumentException expected) {
-            //expected
-        }
+      try {
+         new FastByteArrayOutputStream(-1);
+         fail();
+      } catch (final IllegalArgumentException expected) {
+         //expected
+      }
 
-        final FastByteArrayOutputStream os = new FastByteArrayOutputStream(0);
-        assertEquals(0, os.size());
-        os.write(new byte[] { 1, 2, 3 });
-        os.write(new byte[] { 4, 5 });
-        os.write(6);
-        assertEquals(6, os.size());
-        assertTrue(ArrayUtils.isEquals(new byte[] { 1, 2, 3, 4, 5, 6 }, os.toByteArray()));
+      final FastByteArrayOutputStream os = new FastByteArrayOutputStream(0);
+      assertEquals(0, os.size());
+      os.write(new byte[] {1, 2, 3});
+      os.write(new byte[] {4, 5});
+      os.write(6);
+      assertEquals(6, os.size());
+      assertTrue(ArrayUtils.isEquals(new byte[] {1, 2, 3, 4, 5, 6}, os.toByteArray()));
 
-        final FastByteArrayOutputStream os2 = new FastByteArrayOutputStream();
-        os.writeTo(os2);
-        assertEquals(6, os2.size());
-        assertTrue(ArrayUtils.isEquals(os.toByteArray(), os2.toByteArray()));
+      final FastByteArrayOutputStream os2 = new FastByteArrayOutputStream();
+      os.writeTo(os2);
+      assertEquals(6, os2.size());
+      assertTrue(ArrayUtils.isEquals(os.toByteArray(), os2.toByteArray()));
 
-        os.reset();
-        assertEquals(0, os.size());
+      os.reset();
+      assertEquals(0, os.size());
 
-        os.write("äÄüÜöÖß!€".getBytes("UTF-8"));
-        assertEquals("äÄüÜöÖß!€", os.toString("UTF-8"));
-        assertFalse("äÄüÜöÖß!€".equals(os.toString("ISO-8859-1")));
+      os.write("äÄüÜöÖß!€".getBytes("UTF-8"));
+      assertEquals("äÄüÜöÖß!€", os.toString("UTF-8"));
+      assertFalse("äÄüÜöÖß!€".equals(os.toString("ISO-8859-1")));
 
-        os.reset();
-        os.write("äÄüÜöÖß!€".getBytes("ISO-8859-1"));
-        assertFalse("äÄüÜöÖß!€".equals(os.toString("UTF-8")));
-        assertFalse("äÄüÜöÖß!€".equals(os.toString("ISO-8859-1"))); // € not part of ISO-8859-1
+      os.reset();
+      os.write("äÄüÜöÖß!€".getBytes("ISO-8859-1"));
+      assertFalse("äÄüÜöÖß!€".equals(os.toString("UTF-8")));
+      assertFalse("äÄüÜöÖß!€".equals(os.toString("ISO-8859-1"))); // € not part of ISO-8859-1
 
-        os.reset();
-        os.write("äÄüÜöÖß!€".getBytes("ISO-8859-15"));
-        assertFalse("äÄüÜöÖß!€".equals(os.toString("UTF-8")));
-        assertEquals("äÄüÜöÖß!€", os.toString("ISO-8859-15"));
-    }
+      os.reset();
+      os.write("äÄüÜöÖß!€".getBytes("ISO-8859-15"));
+      assertFalse("äÄüÜöÖß!€".equals(os.toString("UTF-8")));
+      assertEquals("äÄüÜöÖß!€", os.toString("ISO-8859-15"));
+   }
 }

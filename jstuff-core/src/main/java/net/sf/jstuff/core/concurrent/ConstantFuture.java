@@ -20,33 +20,33 @@ import java.util.concurrent.TimeUnit;
  */
 public class ConstantFuture<T> implements Future<T> {
 
-    public static <T> ConstantFuture<T> of(final T value) {
-        return new ConstantFuture<T>(value);
-    }
+   public static <T> ConstantFuture<T> of(final T value) {
+      return new ConstantFuture<T>(value);
+   }
 
-    private final T value;
+   private final T value;
 
-    public ConstantFuture(final T value) {
-        this.value = value;
-    }
+   public ConstantFuture(final T value) {
+      this.value = value;
+   }
 
-    public boolean cancel(final boolean mayInterruptIfRunning) {
-        return false;
-    }
+   public boolean cancel(final boolean mayInterruptIfRunning) {
+      return false;
+   }
 
-    public boolean isCancelled() {
-        return false;
-    }
+   public boolean isCancelled() {
+      return false;
+   }
 
-    public boolean isDone() {
-        return true;
-    }
+   public boolean isDone() {
+      return true;
+   }
 
-    public T get() {
-        return value;
-    }
+   public T get() {
+      return value;
+   }
 
-    public T get(final long timeout, final TimeUnit unit) {
-        return get();
-    }
+   public T get(final long timeout, final TimeUnit unit) {
+      return get();
+   }
 }

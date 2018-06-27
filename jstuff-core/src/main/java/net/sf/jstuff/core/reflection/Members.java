@@ -26,87 +26,87 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Members {
-    private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission("suppressAccessChecks");
+   private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission("suppressAccessChecks");
 
-    /**
-     * @throws SecurityException
-     */
-    public static void assertPrivateAccessAllowed() {
-        final SecurityManager mgr = System.getSecurityManager();
-        if (mgr != null)
-            try {
+   public static void assertPrivateAccessAllowed() throws ReflectionException {
+      final SecurityManager mgr = System.getSecurityManager();
+      if (mgr != null) {
+         try {
             mgr.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
-        } catch (final SecurityException ex) {
+         } catch (final SecurityException ex) {
             throw new ReflectionException("Current security manager configuration does not allow access to private fields and methods.", ex);
-        }
-    }
+         }
+      }
+   }
 
-    public static void ensureAccessible(final AccessibleObject ao) {
-        if (!ao.isAccessible())
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                public Object run() {
-                    ao.setAccessible(true);
-                    return null;
-                }
-            });
-    }
+   public static void ensureAccessible(final AccessibleObject ao) {
+      if (!ao.isAccessible()) {
+         AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run() {
+               ao.setAccessible(true);
+               return null;
+            }
+         });
+      }
+   }
 
-    public static boolean isAbstract(final Member member) {
-        Args.notNull("member", member);
+   public static boolean isAbstract(final Member member) {
+      Args.notNull("member", member);
 
-        return (member.getModifiers() & Modifier.ABSTRACT) != 0;
-    }
+      return (member.getModifiers() & Modifier.ABSTRACT) != 0;
+   }
 
-    public static boolean isFinal(final Member member) {
-        Args.notNull("member", member);
+   public static boolean isFinal(final Member member) {
+      Args.notNull("member", member);
 
-        return (member.getModifiers() & Modifier.FINAL) != 0;
-    }
+      return (member.getModifiers() & Modifier.FINAL) != 0;
+   }
 
-    public static boolean isPackage(final Member member) {
-        Args.notNull("member", member);
+   public static boolean isPackage(final Member member) {
+      Args.notNull("member", member);
 
-        return (member.getModifiers() & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED)) == 0;
-    }
+      return (member.getModifiers() & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED)) == 0;
+   }
 
-    public static boolean isPrivate(final Member member) {
-        Args.notNull("member", member);
+   public static boolean isPrivate(final Member member) {
+      Args.notNull("member", member);
 
-        return (member.getModifiers() & Modifier.PRIVATE) != 0;
-    }
+      return (member.getModifiers() & Modifier.PRIVATE) != 0;
+   }
 
-    public static boolean isPrivateAccessAllowed() {
-        final SecurityManager manager = System.getSecurityManager();
-        if (manager != null)
-            try {
+   public static boolean isPrivateAccessAllowed() {
+      final SecurityManager manager = System.getSecurityManager();
+      if (manager != null) {
+         try {
             manager.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
-        } catch (final SecurityException ex) {
+         } catch (final SecurityException ex) {
             return false;
-        }
-        return true;
-    }
+         }
+      }
+      return true;
+   }
 
-    public static boolean isProtected(final Member member) {
-        Args.notNull("member", member);
+   public static boolean isProtected(final Member member) {
+      Args.notNull("member", member);
 
-        return (member.getModifiers() & Modifier.PROTECTED) != 0;
-    }
+      return (member.getModifiers() & Modifier.PROTECTED) != 0;
+   }
 
-    public static boolean isPublic(final Member member) {
-        Args.notNull("member", member);
+   public static boolean isPublic(final Member member) {
+      Args.notNull("member", member);
 
-        return (member.getModifiers() & Modifier.PUBLIC) != 0;
-    }
+      return (member.getModifiers() & Modifier.PUBLIC) != 0;
+   }
 
-    public static boolean isStatic(final Member member) {
-        Args.notNull("member", member);
+   public static boolean isStatic(final Member member) {
+      Args.notNull("member", member);
 
-        return (member.getModifiers() & Modifier.STATIC) != 0;
-    }
+      return (member.getModifiers() & Modifier.STATIC) != 0;
+   }
 
-    public static boolean isTransient(final Member member) {
-        Args.notNull("member", member);
+   public static boolean isTransient(final Member member) {
+      Args.notNull("member", member);
 
-        return (member.getModifiers() & Modifier.TRANSIENT) != 0;
-    }
+      return (member.getModifiers() & Modifier.TRANSIENT) != 0;
+   }
 }

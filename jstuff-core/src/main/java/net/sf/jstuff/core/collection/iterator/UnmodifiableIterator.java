@@ -22,24 +22,24 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class UnmodifiableIterator<T> implements Iterator<T>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final Iterator<T> delegate;
+   private final Iterator<T> delegate;
 
-    public UnmodifiableIterator(final Iterator<T> delegate) {
-        Args.notNull("delegate", delegate);
-        this.delegate = delegate;
-    }
+   public UnmodifiableIterator(final Iterator<T> delegate) {
+      Args.notNull("delegate", delegate);
+      this.delegate = delegate;
+   }
 
-    public boolean hasNext() {
-        return delegate.hasNext();
-    }
+   public boolean hasNext() {
+      return delegate.hasNext();
+   }
 
-    public T next() {
-        return delegate.next();
-    }
+   public T next() {
+      return delegate.next();
+   }
 
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
+   public void remove() {
+      throw new UnsupportedOperationException();
+   }
 }

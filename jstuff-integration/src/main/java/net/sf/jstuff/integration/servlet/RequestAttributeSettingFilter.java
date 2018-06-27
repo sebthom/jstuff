@@ -46,8 +46,8 @@ import net.sf.jstuff.core.logging.Logger;
     </init-param>
 </filter>
 <filter-mapping>
-	<filter-name>RequestAttributeSettingFilter</filter-name>
-	<url-pattern>/services/*</url-pattern>
+    <filter-name>RequestAttributeSettingFilter</filter-name>
+    <url-pattern>/services/*</url-pattern>
 </filter-mapping>
 }
  * </pre>
@@ -55,32 +55,32 @@ import net.sf.jstuff.core.logging.Logger;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class RequestAttributeSettingFilter implements Filter {
-    private static final Logger LOG = Logger.create();
-    private final Map<String, String> attributes = new LinkedHashMap<String, String>();
+   private static final Logger LOG = Logger.create();
+   private final Map<String, String> attributes = new LinkedHashMap<String, String>();
 
-    public void destroy() {
-    }
+   public void destroy() {
+   }
 
-    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
-        if (!attributes.isEmpty()) {
-            LOG.debug("For request [%s] setting request attributes: %s", request, attributes);
+   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+      if (!attributes.isEmpty()) {
+         LOG.debug("For request [%s] setting request attributes: %s", request, attributes);
 
-            for (final Entry<String, String> entry : attributes.entrySet()) {
-                request.setAttribute(entry.getKey(), entry.getValue());
-            }
-        }
+         for (final Entry<String, String> entry : attributes.entrySet()) {
+            request.setAttribute(entry.getKey(), entry.getValue());
+         }
+      }
 
-        chain.doFilter(request, response);
-    }
+      chain.doFilter(request, response);
+   }
 
-    public Map<String, String> getAttributes() {
-        return attributes;
-    }
+   public Map<String, String> getAttributes() {
+      return attributes;
+   }
 
-    @SuppressWarnings("unchecked")
-    public void init(final FilterConfig filterConfig) throws ServletException {
-        for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames())) {
-            attributes.put(param, filterConfig.getInitParameter(param));
-        }
-    }
+   @SuppressWarnings("unchecked")
+   public void init(final FilterConfig filterConfig) throws ServletException {
+      for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames())) {
+         attributes.put(param, filterConfig.getInitParameter(param));
+      }
+   }
 }

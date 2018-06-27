@@ -18,21 +18,21 @@ import java.io.Serializable;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class RestServiceError implements Serializable {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    private final String message;
-    private final String type;
+   private final String message;
+   private final String type;
 
-    public RestServiceError(final String type, final String message) {
-        this.type = type;
-        this.message = message;
-    }
+   public RestServiceError(final String type, final String message) {
+      this.type = type;
+      this.message = message;
+   }
 
-    public String getMessage() {
-        return message;
-    }
+   public String getMessage() {
+      return message;
+   }
 
-    public String getType() {
-        return type;
-    }
+   public String getType() {
+      return type;
+   }
 }

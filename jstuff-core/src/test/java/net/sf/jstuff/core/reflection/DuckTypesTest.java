@@ -21,40 +21,40 @@ import junit.framework.TestCase;
  */
 public class DuckTypesTest extends TestCase {
 
-    private static interface Duck {
-        void walk();
-    }
+   private interface Duck {
+      void walk();
+   }
 
-    public static class DuckLike {
-        public int count = 0;
+   public static class DuckLike {
+      public int count = 0;
 
-        public void walk() {
-            count++;
-        }
-    }
+      public void walk() {
+         count++;
+      }
+   }
 
-    public void testDuckTyping() {
-        assertFalse(DuckTypes.isDuckType(new Object(), Duck.class));
+   public void testDuckTyping() {
+      assertFalse(DuckTypes.isDuckType(new Object(), Duck.class));
 
-        final DuckLike duckLike = new DuckLike();
-        assertTrue(DuckTypes.isDuckType(duckLike, Duck.class));
-        assertEquals(0, duckLike.count);
-        final Duck duckTyped = DuckTypes.duckType(duckLike, Duck.class);
-        duckTyped.walk();
-        assertEquals(1, duckLike.count);
-    }
+      final DuckLike duckLike = new DuckLike();
+      assertTrue(DuckTypes.isDuckType(duckLike, Duck.class));
+      assertEquals(0, duckLike.count);
+      final Duck duckTyped = DuckTypes.duckType(duckLike, Duck.class);
+      duckTyped.walk();
+      assertEquals(1, duckLike.count);
+   }
 
-    public void testDuckTypingWithAnonymousInnerClass() {
-        final AtomicInteger count = new AtomicInteger();
-        final Object duckLike = new Object() {
-            @SuppressWarnings("unused")
-            public void walk() {
-                count.incrementAndGet();
-            }
-        };
-        assertEquals(0, count.get());
-        final Duck duckTyped = DuckTypes.duckType(duckLike, Duck.class);
-        duckTyped.walk();
-        assertEquals(1, count.get());
-    }
+   public void testDuckTypingWithAnonymousInnerClass() {
+      final AtomicInteger count = new AtomicInteger();
+      final Object duckLike = new Object() {
+         @SuppressWarnings("unused")
+         public void walk() {
+            count.incrementAndGet();
+         }
+      };
+      assertEquals(0, count.get());
+      final Duck duckTyped = DuckTypes.duckType(duckLike, Duck.class);
+      duckTyped.walk();
+      assertEquals(1, count.get());
+   }
 }

@@ -22,18 +22,18 @@ import java.lang.annotation.Target;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-@Target({ ElementType.METHOD })
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface REST_PUT {
-    /**
-     * POST resource id for clients not supporting PUT
-     */
-    String fallback() default "";
+public @interface REST_PUT { // CHECKSTYLE:IGNORE TypeName
+   /**
+    * POST resource id for clients not supporting PUT
+    */
+   String fallback() default "";
 
-    /**
-     * resource name
-     */
-    String value();
+   /**
+    * resource name
+    */
+   String value();
 }

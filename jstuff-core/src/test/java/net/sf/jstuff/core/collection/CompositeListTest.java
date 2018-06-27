@@ -22,32 +22,34 @@ import junit.framework.TestCase;
  */
 public class CompositeListTest extends TestCase {
 
-    public void testCompositeList() {
-        final List<String> l1 = Arrays.asList("a", "b");
-        final List<String> l2 = Arrays.asList("c", "d");
-        @SuppressWarnings("unchecked")
-        final List<String> cl = CompositeList.of(l1, l2);
-        assertEquals(4, cl.size());
-        assertEquals("a", cl.get(0));
-        assertEquals("b", cl.get(1));
-        assertEquals("c", cl.get(2));
-        assertEquals("d", cl.get(3));
-        try {
-            cl.get(10);
-        } catch (final IndexOutOfBoundsException ex) {
-            assertEquals("Index: 10, Size: 4", ex.getMessage());
-        }
+   public void testCompositeList() {
+      final List<String> l1 = Arrays.asList("a", "b");
+      final List<String> l2 = Arrays.asList("c", "d");
+      @SuppressWarnings("unchecked")
+      final List<String> cl = CompositeList.of(l1, l2);
+      assertEquals(4, cl.size());
+      assertEquals("a", cl.get(0));
+      assertEquals("b", cl.get(1));
+      assertEquals("c", cl.get(2));
+      assertEquals("d", cl.get(3));
+      try {
+         cl.get(10);
+      } catch (final IndexOutOfBoundsException ex) {
+         assertEquals("Index: 10, Size: 4", ex.getMessage());
+      }
 
-        try {
-            cl.add("foo");
-        } catch (final UnsupportedOperationException ex) {
+      try {
+         cl.add("foo");
+         fail();
+      } catch (final UnsupportedOperationException ex) {
+         // expected
+      }
 
-        }
-
-        try {
-            cl.remove(2);
-        } catch (final UnsupportedOperationException ex) {
-
-        }
-    }
+      try {
+         cl.remove(2);
+         fail();
+      } catch (final UnsupportedOperationException ex) {
+         // expected
+      }
+   }
 }

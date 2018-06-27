@@ -21,57 +21,57 @@ import java.security.Permission;
  */
 public class NoExitSecurityManager extends DelegatingSecurityManagerWithThreadLocalControl {
 
-    public static class ExitNotAllowedException extends SecurityException {
+   public static class ExitNotAllowedException extends SecurityException {
 
-        private static final long serialVersionUID = 1L;
+      private static final long serialVersionUID = 1L;
 
-        private final Integer status;
+      private final Integer status;
 
-        public ExitNotAllowedException() {
-            super("Executing java.lang.System.exit(?) is not allowed.");
-            status = null;
-        }
+      public ExitNotAllowedException() {
+         super("Executing java.lang.System.exit(?) is not allowed.");
+         status = null;
+      }
 
-        public ExitNotAllowedException(final int status) {
-            super("Executing java.lang.System.exit(" + status + ") is not allowed.");
-            this.status = status;
-        }
+      public ExitNotAllowedException(final int status) {
+         super("Executing java.lang.System.exit(" + status + ") is not allowed.");
+         this.status = status;
+      }
 
-        public Integer getStatus() {
-            return status;
-        }
-    }
+      public Integer getStatus() {
+         return status;
+      }
+   }
 
-    public NoExitSecurityManager() {
-        super();
-    }
+   public NoExitSecurityManager() {
+      super();
+   }
 
-    public NoExitSecurityManager(final SecurityManager wrapped) {
-        super(wrapped);
-    }
+   public NoExitSecurityManager(final SecurityManager wrapped) {
+      super(wrapped);
+   }
 
-    @Override
-    public void checkExit(final int status) {
-        if (isEnabledForThread.get())
-            throw new ExitNotAllowedException(status);
-        super.checkExit(status);
-    }
+   @Override
+   public void checkExit(final int status) {
+      if (isEnabledForThread.get())
+         throw new ExitNotAllowedException(status);
+      super.checkExit(status);
+   }
 
-    @Override
-    public void checkPermission(final Permission perm) {
-        if (isEnabledForThread.get()) {
-            if (perm instanceof RuntimePermission && "exitVM".equals(perm.getName()))
-                throw new ExitNotAllowedException();
-        }
-        super.checkPermission(perm);
-    }
+   @Override
+   public void checkPermission(final Permission perm) {
+      if (isEnabledForThread.get()) {
+         if (perm instanceof RuntimePermission && "exitVM".equals(perm.getName()))
+            throw new ExitNotAllowedException();
+      }
+      super.checkPermission(perm);
+   }
 
-    @Override
-    public void checkPermission(final Permission perm, final Object context) {
-        if (isEnabledForThread.get()) {
-            if (perm instanceof RuntimePermission && "exitVM".equals(perm.getName()))
-                throw new ExitNotAllowedException();
-        }
-        super.checkPermission(perm, context);
-    }
+   @Override
+   public void checkPermission(final Permission perm, final Object context) {
+      if (isEnabledForThread.get()) {
+         if (perm instanceof RuntimePermission && "exitVM".equals(perm.getName()))
+            throw new ExitNotAllowedException();
+      }
+      super.checkPermission(perm, context);
+   }
 }

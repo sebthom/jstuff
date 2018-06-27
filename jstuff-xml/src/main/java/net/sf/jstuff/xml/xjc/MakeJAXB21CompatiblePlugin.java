@@ -39,7 +39,7 @@ import net.sf.jstuff.core.reflection.Fields;
  *    &#64;XmlElementRef(name = "car", namespace = "my-config", type = JAXBElement.class, required = false),
  *    &#64;XmlElementRef(name = "bike", namespace = "my-config", type = JAXBElement.class, required = false)
  *  })
- * private List<JAXBElement<?>> carsAndBikes;
+ * private List&lt;JAXBElement&lt;?&gt;&gt;carsAndBikes;
  * </code>
  * </pre>
  *
@@ -47,43 +47,43 @@ import net.sf.jstuff.core.reflection.Fields;
  */
 public class MakeJAXB21CompatiblePlugin extends AbstractPlugin {
 
-    private static final Field MEMBER_VALUES_FIELD = Fields.find(JAnnotationUse.class, "memberValues");
+   private static final Field MEMBER_VALUES_FIELD = Fields.find(JAnnotationUse.class, "memberValues");
 
-    public static final String OPTION_NAME = "Xjaxb21compat";
+   public static final String OPTION_NAME = "Xjaxb21compat";
 
-    @Override
-    public String getOptionName() {
-        return OPTION_NAME;
-    }
+   @Override
+   public String getOptionName() {
+      return OPTION_NAME;
+   }
 
-    @Override
-    public String getUsage() {
-        return "  -" + OPTION_NAME + "    :  fixes the generate code to be compatible with JAXB2.1";
-    }
+   @Override
+   public String getUsage() {
+      return "  -" + OPTION_NAME + "    :  fixes the generate code to be compatible with JAXB2.1";
+   }
 
-    private void removeRequiredAttribute(final JFieldVar fieldDecl) {
-        for (final JAnnotationUse a : fieldDecl.annotations()) {
-            if (XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName())) {
-                for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) a.getAnnotationMembers().get("value")).annotations()) {
-                    final JAnnotationValue requiredAttribute = xmlElementRefAnno.getAnnotationMembers().get("required");
-                    if (requiredAttribute != null) {
-                        ((Map<?, ?>) Fields.read(xmlElementRefAnno, MEMBER_VALUES_FIELD)).remove("required");
-                    }
-                }
+   private void removeRequiredAttribute(final JFieldVar fieldDecl) {
+      for (final JAnnotationUse a : fieldDecl.annotations()) {
+         if (XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName())) {
+            for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) a.getAnnotationMembers().get("value")).annotations()) {
+               final JAnnotationValue requiredAttribute = xmlElementRefAnno.getAnnotationMembers().get("required");
+               if (requiredAttribute != null) {
+                  ((Map<?, ?>) Fields.read(xmlElementRefAnno, MEMBER_VALUES_FIELD)).remove("required");
+               }
             }
-        }
-    }
+         }
+      }
+   }
 
-    @Override
-    public boolean run(final Outline outline, final Options options, final ErrorHandler errorHandler) throws SAXException {
-        // iterate over all classes
-        for (final ClassOutline classDef : outline.getClasses()) {
-            // iterate over all fields
-            for (final JFieldVar fieldDecl : classDef.implClass.fields().values()) {
-                removeRequiredAttribute(fieldDecl);
-            }
-        }
-        return true;
-    }
+   @Override
+   public boolean run(final Outline outline, final Options options, final ErrorHandler errorHandler) throws SAXException {
+      // iterate over all classes
+      for (final ClassOutline classDef : outline.getClasses()) {
+         // iterate over all fields
+         for (final JFieldVar fieldDecl : classDef.implClass.fields().values()) {
+            removeRequiredAttribute(fieldDecl);
+         }
+      }
+      return true;
+   }
 
 }

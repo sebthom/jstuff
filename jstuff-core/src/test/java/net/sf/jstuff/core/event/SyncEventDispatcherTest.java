@@ -22,39 +22,39 @@ import junit.framework.TestCase;
  */
 public class SyncEventDispatcherTest extends TestCase {
 
-    public void testSyncEventDispatcher() throws InterruptedException, ExecutionException {
-        final EventDispatcher<String> em = new SyncEventDispatcher<String>();
+   public void testSyncEventDispatcher() throws InterruptedException, ExecutionException {
+      final EventDispatcher<String> em = new SyncEventDispatcher<String>();
 
-        final AtomicLong listener1Count = new AtomicLong();
-        final EventListener<String> listener1 = new EventListener<String>() {
-            public void onEvent(final String event) {
-                listener1Count.incrementAndGet();
-            }
-        };
+      final AtomicLong listener1Count = new AtomicLong();
+      final EventListener<String> listener1 = new EventListener<String>() {
+         public void onEvent(final String event) {
+            listener1Count.incrementAndGet();
+         }
+      };
 
-        assertTrue(em.subscribe(listener1));
-        assertFalse(em.subscribe(listener1));
+      assertTrue(em.subscribe(listener1));
+      assertFalse(em.subscribe(listener1));
 
-        final AtomicLong listener2Count = new AtomicLong();
-        final EventListener<String> listener2 = new FilteringEventListener<String>() {
-            public boolean accept(final String event) {
-                return event != null && event.length() < 5;
-            }
+      final AtomicLong listener2Count = new AtomicLong();
+      final EventListener<String> listener2 = new FilteringEventListener<String>() {
+         public boolean accept(final String event) {
+            return event != null && event.length() < 5;
+         }
 
-            public void onEvent(final String event) {
-                listener2Count.incrementAndGet();
-            }
-        };
+         public void onEvent(final String event) {
+            listener2Count.incrementAndGet();
+         }
+      };
 
-        assertTrue(em.subscribe(listener2));
-        assertFalse(em.subscribe(listener2));
+      assertTrue(em.subscribe(listener2));
+      assertFalse(em.subscribe(listener2));
 
-        assertEquals(2, em.fire("123").get().intValue());
-        assertEquals(1, listener1Count.get());
-        assertEquals(1, listener2Count.get());
+      assertEquals(2, em.fire("123").get().intValue());
+      assertEquals(1, listener1Count.get());
+      assertEquals(1, listener2Count.get());
 
-        assertEquals(1, em.fire("1234567890").get().intValue());
-        assertEquals(2, listener1Count.get());
-        assertEquals(1, listener2Count.get());
-    }
+      assertEquals(1, em.fire("1234567890").get().intValue());
+      assertEquals(2, listener1Count.get());
+      assertEquals(1, listener2Count.get());
+   }
 }

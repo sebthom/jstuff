@@ -29,126 +29,126 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ServletContextWrapper implements ServletContext {
-    protected ServletContext delegate;
+   protected ServletContext delegate;
 
-    public ServletContextWrapper(final ServletContext delegate) {
-        Args.notNull("delegate", delegate);
-        this.delegate = delegate;
-    }
+   public ServletContextWrapper(final ServletContext delegate) {
+      Args.notNull("delegate", delegate);
+      this.delegate = delegate;
+   }
 
-    public Object getAttribute(final String name) {
-        return delegate.getAttribute(name);
-    }
+   public Object getAttribute(final String name) {
+      return delegate.getAttribute(name);
+   }
 
-    @SuppressWarnings("unchecked")
-    public Enumeration<String> getAttributeNames() {
-        return delegate.getAttributeNames();
-    }
+   @SuppressWarnings("unchecked")
+   public Enumeration<String> getAttributeNames() {
+      return delegate.getAttributeNames();
+   }
 
-    public ServletContext getContext(final String uripath) {
-        return delegate.getContext(uripath);
-    }
+   public ServletContext getContext(final String uripath) {
+      return delegate.getContext(uripath);
+   }
 
-    public String getContextPath() {
-        return delegate.getContextPath();
-    }
+   public String getContextPath() {
+      return delegate.getContextPath();
+   }
 
-    public ServletContext getDelegate() {
-        return delegate;
-    }
+   public ServletContext getDelegate() {
+      return delegate;
+   }
 
-    public String getInitParameter(final String name) {
-        return delegate.getInitParameter(name);
-    }
+   public String getInitParameter(final String name) {
+      return delegate.getInitParameter(name);
+   }
 
-    @SuppressWarnings("unchecked")
-    public Enumeration<String> getInitParameterNames() {
-        return delegate.getInitParameterNames();
-    }
+   @SuppressWarnings("unchecked")
+   public Enumeration<String> getInitParameterNames() {
+      return delegate.getInitParameterNames();
+   }
 
-    public int getMajorVersion() {
-        return delegate.getMajorVersion();
-    }
+   public int getMajorVersion() {
+      return delegate.getMajorVersion();
+   }
 
-    public String getMimeType(final String file) {
-        return delegate.getMimeType(file);
-    }
+   public String getMimeType(final String file) {
+      return delegate.getMimeType(file);
+   }
 
-    public int getMinorVersion() {
-        return delegate.getMinorVersion();
-    }
+   public int getMinorVersion() {
+      return delegate.getMinorVersion();
+   }
 
-    public RequestDispatcher getNamedDispatcher(final String name) {
-        return delegate.getNamedDispatcher(name);
-    }
+   public RequestDispatcher getNamedDispatcher(final String name) {
+      return delegate.getNamedDispatcher(name);
+   }
 
-    public String getRealPath(final String path) {
-        return delegate.getRealPath(path);
-    }
+   public String getRealPath(final String path) {
+      return delegate.getRealPath(path);
+   }
 
-    public RequestDispatcher getRequestDispatcher(final String path) {
-        return delegate.getRequestDispatcher(path);
-    }
+   public RequestDispatcher getRequestDispatcher(final String path) {
+      return delegate.getRequestDispatcher(path);
+   }
 
-    public URL getResource(final String path) throws MalformedURLException {
-        return delegate.getResource(path);
-    }
+   public URL getResource(final String path) throws MalformedURLException {
+      return delegate.getResource(path);
+   }
 
-    public InputStream getResourceAsStream(final String path) {
-        return delegate.getResourceAsStream(path);
-    }
+   public InputStream getResourceAsStream(final String path) {
+      return delegate.getResourceAsStream(path);
+   }
 
-    @SuppressWarnings("unchecked")
-    public Set<String> getResourcePaths(final String path) {
-        return delegate.getResourcePaths(path);
-    }
+   @SuppressWarnings("unchecked")
+   public Set<String> getResourcePaths(final String path) {
+      return delegate.getResourcePaths(path);
+   }
 
-    public String getServerInfo() {
-        return delegate.getServerInfo();
-    }
+   public String getServerInfo() {
+      return delegate.getServerInfo();
+   }
 
-    @SuppressWarnings({ "deprecation" })
-    public Servlet getServlet(final String name) throws ServletException {
-        return delegate.getServlet(name);
-    }
+   @SuppressWarnings({"deprecation"})
+   public Servlet getServlet(final String name) throws ServletException {
+      return delegate.getServlet(name);
+   }
 
-    public String getServletContextName() {
-        return delegate.getServletContextName();
-    }
+   public String getServletContextName() {
+      return delegate.getServletContextName();
+   }
 
-    @SuppressWarnings({ "deprecation", "rawtypes" })
-    public Enumeration getServletNames() {
-        return delegate.getServletNames();
-    }
+   @SuppressWarnings({"deprecation", "rawtypes"})
+   public Enumeration getServletNames() {
+      return delegate.getServletNames();
+   }
 
-    @SuppressWarnings({ "deprecation", "rawtypes" })
-    public Enumeration getServlets() {
-        return delegate.getServlets();
-    }
+   @SuppressWarnings({"deprecation", "rawtypes"})
+   public Enumeration getServlets() {
+      return delegate.getServlets();
+   }
 
-    @SuppressWarnings("deprecation")
-    public void log(final Exception exception, final String msg) {
-        delegate.log(exception, msg);
-    }
+   @SuppressWarnings("deprecation")
+   public void log(final Exception exception, final String msg) {
+      delegate.log(exception, msg);
+   }
 
-    public void log(final String msg) {
-        delegate.log(msg);
-    }
+   public void log(final String msg) {
+      delegate.log(msg);
+   }
 
-    public void log(final String message, final Throwable throwable) {
-        delegate.log(message, throwable);
-    }
+   public void log(final String message, final Throwable throwable) {
+      delegate.log(message, throwable);
+   }
 
-    public void removeAttribute(final String name) {
-        delegate.removeAttribute(name);
-    }
+   public void removeAttribute(final String name) {
+      delegate.removeAttribute(name);
+   }
 
-    public void setAttribute(final String name, final Object object) {
-        delegate.setAttribute(name, object);
-    }
+   public void setAttribute(final String name, final Object object) {
+      delegate.setAttribute(name, object);
+   }
 
-    public void setDelegate(final ServletContext delegate) {
-        Args.notNull("delegate", delegate);
-        this.delegate = delegate;
-    }
+   public void setDelegate(final ServletContext delegate) {
+      Args.notNull("delegate", delegate);
+      this.delegate = delegate;
+   }
 }

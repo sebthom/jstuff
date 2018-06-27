@@ -23,50 +23,50 @@ import net.sf.jstuff.integration.userregistry.UserDetails;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 class DefaultAuthentication implements Authentication {
-    public static final Authentication UNBOUND = new DefaultAuthentication(new DefaultUserDetails("anonymous", "anonymous", null, null, null), null);
+   public static final Authentication UNBOUND = new DefaultAuthentication(new DefaultUserDetails("anonymous", "anonymous", null, null, null), null);
 
-    private String password;
-    private final Map<String, Serializable> properties = new HashMap<String, Serializable>(2);
-    private UserDetails userDetails;
+   private String password;
+   private final Map<String, Serializable> properties = new HashMap<String, Serializable>(2);
+   private UserDetails userDetails;
 
-    public DefaultAuthentication(final UserDetails userDetails, final String password) {
-        this.userDetails = userDetails;
-        this.password = password;
-    }
+   DefaultAuthentication(final UserDetails userDetails, final String password) {
+      this.userDetails = userDetails;
+      this.password = password;
+   }
 
-    /**
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
+   /**
+    * @return the password
+    */
+   public String getPassword() {
+      return password;
+   }
 
-    public Serializable getProperty(final String name) {
-        return properties.get(name);
-    }
+   public Serializable getProperty(final String name) {
+      return properties.get(name);
+   }
 
-    public UserDetails getUserDetails() {
-        return userDetails;
-    }
+   public UserDetails getUserDetails() {
+      return userDetails;
+   }
 
-    public void invalidate() {
-        userDetails = UNBOUND.getUserDetails();
-        properties.clear();
-        password = null;
-    }
+   public void invalidate() {
+      userDetails = UNBOUND.getUserDetails();
+      properties.clear();
+      password = null;
+   }
 
-    public boolean isAuthenticated() {
-        return userDetails != null && userDetails.getDistingueshedName() != null;
-    }
+   public boolean isAuthenticated() {
+      return userDetails != null && userDetails.getDistingueshedName() != null;
+   }
 
-    /**
-     * @param password the password to set
-     */
-    public void setPassword(final String password) {
-        this.password = password;
-    }
+   /**
+    * @param password the password to set
+    */
+   public void setPassword(final String password) {
+      this.password = password;
+   }
 
-    public void setProperty(final String name, final Serializable value) {
-        properties.put(name, value);
-    }
+   public void setProperty(final String name, final Serializable value) {
+      properties.put(name, value);
+   }
 }

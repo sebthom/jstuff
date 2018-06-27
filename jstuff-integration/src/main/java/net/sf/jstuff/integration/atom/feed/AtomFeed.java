@@ -17,12 +17,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
-import net.sf.jstuff.core.date.Dates;
-import net.sf.jstuff.core.types.Identifiable;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
+import net.sf.jstuff.core.date.Dates;
+import net.sf.jstuff.core.types.Identifiable;
 
 /**
  * http://www.ietf.org/rfc/rfc4287.txt
@@ -52,171 +52,113 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * <li>atom:feed elements MUST contain exactly one atom:title element.
  * <li>atom:feed elements MUST contain exactly one atom:updated element.
  * </ul>
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @XStreamAlias("feed")
 public class AtomFeed extends Identifiable.Default<String> {
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    @XStreamAsAttribute
-    private String xmlns = "http://www.w3.org/2005/Atom";
+   @XStreamAsAttribute
+   private String xmlns = "http://www.w3.org/2005/Atom";
 
-    private String title;
-    private String logo;
+   private String title;
+   private String logo;
 
-    @XStreamImplicit(itemFieldName = "author")
-    private Collection<AtomPerson> authors;
+   @XStreamImplicit(itemFieldName = "author")
+   private Collection<AtomPerson> authors;
 
-    private String subtitle;
+   private String subtitle;
 
-    @XStreamImplicit(itemFieldName = "link")
-    private Collection<AtomLink> links;
+   @XStreamImplicit(itemFieldName = "link")
+   private Collection<AtomLink> links;
 
-    private String updated;
+   private String updated;
 
-    @XStreamImplicit(itemFieldName = "entry")
-    private Collection<AtomEntry> entries;
+   @XStreamImplicit(itemFieldName = "entry")
+   private Collection<AtomEntry> entries;
 
-    public AtomFeed() {
-        super();
-    }
+   public AtomFeed() {
+      super();
+   }
 
-    public AtomFeed(final String id) {
-        setId(id);
-    }
+   public AtomFeed(final String id) {
+      setId(id);
+   }
 
-    /**
-     * @return the authors
-     */
-    public Collection<AtomPerson> getAuthors() {
-        return authors;
-    }
+   public Collection<AtomPerson> getAuthors() {
+      return authors;
+   }
 
-    /**
-     * @return the entries
-     */
-    public Collection<AtomEntry> getEntries() {
-        return entries;
-    }
+   public Collection<AtomEntry> getEntries() {
+      return entries;
+   }
 
-    /**
-     * @return the links
-     */
-    public Collection<AtomLink> getLinks() {
-        return links;
-    }
+   public Collection<AtomLink> getLinks() {
+      return links;
+   }
 
-    /**
-     * @return the logo
-     */
-    public String getLogo() {
-        return logo;
-    }
+   public String getLogo() {
+      return logo;
+   }
 
-    /**
-     * @return the subtitle
-     */
-    public String getSubtitle() {
-        return subtitle;
-    }
+   public String getSubtitle() {
+      return subtitle;
+   }
 
-    /**
-     * @return the title
-     */
-    public String getTitle() {
-        return title;
-    }
+   public String getTitle() {
+      return title;
+   }
 
-    /**
-     * @return the updated
-     * @throws ParseException
-     */
-    public Date getUpdated() throws ParseException {
-        return Dates.fromRFC3399(updated);
-    }
+   public Date getUpdated() throws ParseException {
+      return Dates.fromRFC3399(updated);
+   }
 
-    /**
-     * @return the xmlns
-     */
-    public String getXmlns() {
-        return xmlns;
-    }
+   public String getXmlns() {
+      return xmlns;
+   }
 
-    /**
-     * @param authors the authors to set
-     */
-    public void setAuthors(final AtomPerson... authors) {
-        this.authors = Arrays.asList(authors);
-    }
+   public void setAuthors(final AtomPerson... authors) {
+      this.authors = Arrays.asList(authors);
+   }
 
-    /**
-     * @param authors the authors to set
-     */
-    public void setAuthors(final Collection<AtomPerson> authors) {
-        this.authors = authors;
-    }
+   public void setAuthors(final Collection<AtomPerson> authors) {
+      this.authors = authors;
+   }
 
-    /**
-     * @param entries the entries to set
-     */
-    public void setEntries(final AtomEntry... entries) {
-        this.entries = Arrays.asList(entries);
-    }
+   public void setEntries(final AtomEntry... entries) {
+      this.entries = Arrays.asList(entries);
+   }
 
-    /**
-     * @param entries the entries to set
-     */
-    public void setEntries(final Collection<AtomEntry> entries) {
-        this.entries = entries;
-    }
+   public void setEntries(final Collection<AtomEntry> entries) {
+      this.entries = entries;
+   }
 
-    /**
-     * @param links the links to set
-     */
-    public void setLinks(final AtomLink... links) {
-        this.links = Arrays.asList(links);
-    }
+   public void setLinks(final AtomLink... links) {
+      this.links = Arrays.asList(links);
+   }
 
-    /**
-     * @param links the links to set
-     */
-    public void setLinks(final Collection<AtomLink> links) {
-        this.links = links;
-    }
+   public void setLinks(final Collection<AtomLink> links) {
+      this.links = links;
+   }
 
-    /**
-     * @param logo the logo to set
-     */
-    public void setLogo(final String logo) {
-        this.logo = logo;
-    }
+   public void setLogo(final String logo) {
+      this.logo = logo;
+   }
 
-    /**
-     * @param subtitle the subtitle to set
-     */
-    public void setSubtitle(final String subtitle) {
-        this.subtitle = subtitle;
-    }
+   public void setSubtitle(final String subtitle) {
+      this.subtitle = subtitle;
+   }
 
-    /**
-     * @param title the title to set
-     */
-    public void setTitle(final String title) {
-        this.title = title;
-    }
+   public void setTitle(final String title) {
+      this.title = title;
+   }
 
-    /**
-     * @param updated the updated to set
-     */
-    public void setUpdated(final Date updated) {
-        this.updated = Dates.toRFC3399_UTC(updated);
-    }
+   public void setUpdated(final Date updated) {
+      this.updated = Dates.toRFC3399_UTC(updated);
+   }
 
-    /**
-     * @param xmlns the xmlns to set
-     */
-    public void setXmlns(final String xmlns) {
-        this.xmlns = xmlns;
-    }
+   public void setXmlns(final String xmlns) {
+      this.xmlns = xmlns;
+   }
 }

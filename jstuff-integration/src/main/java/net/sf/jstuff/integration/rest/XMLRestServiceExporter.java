@@ -31,74 +31,74 @@ import net.sf.jstuff.core.reflection.Types;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class XMLRestServiceExporter extends AbstractRestServiceExporter {
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    private final XStream xStream;
+   private final XStream xStream;
 
-    public XMLRestServiceExporter() {
-        super("UTF-8", "application/xml");
-        final HierarchicalStreamDriver xmlDriver = getXStreamDriver();
-        LOG.info("XML driver implementation: %s", xmlDriver);
-        xStream = new XStream(xmlDriver);
+   public XMLRestServiceExporter() {
+      super("UTF-8", "application/xml");
+      final HierarchicalStreamDriver xmlDriver = getXStreamDriver();
+      LOG.info("XML driver implementation: %s", xmlDriver);
+      xStream = new XStream(xmlDriver);
 
-        configureXStream(xStream);
-    }
+      configureXStream(xStream);
+   }
 
-    protected void configureXStream(final XStream xStream) {
-        xStream.useAttributeFor(Class.class);
-        xStream.useAttributeFor(boolean.class);
-        xStream.useAttributeFor(byte.class);
-        xStream.useAttributeFor(char.class);
-        xStream.useAttributeFor(double.class);
-        xStream.useAttributeFor(float.class);
-        xStream.useAttributeFor(int.class);
-        xStream.useAttributeFor(long.class);
-        xStream.useAttributeFor(Boolean.class);
-        xStream.useAttributeFor(Byte.class);
-        xStream.useAttributeFor(Character.class);
-        xStream.useAttributeFor(Double.class);
-        xStream.useAttributeFor(Float.class);
-        xStream.useAttributeFor(Integer.class);
-        xStream.useAttributeFor(Long.class);
-        xStream.useAttributeFor(String.class);
+   protected void configureXStream(final XStream xStream) {
+      xStream.useAttributeFor(Class.class);
+      xStream.useAttributeFor(boolean.class);
+      xStream.useAttributeFor(byte.class);
+      xStream.useAttributeFor(char.class);
+      xStream.useAttributeFor(double.class);
+      xStream.useAttributeFor(float.class);
+      xStream.useAttributeFor(int.class);
+      xStream.useAttributeFor(long.class);
+      xStream.useAttributeFor(Boolean.class);
+      xStream.useAttributeFor(Byte.class);
+      xStream.useAttributeFor(Character.class);
+      xStream.useAttributeFor(Double.class);
+      xStream.useAttributeFor(Float.class);
+      xStream.useAttributeFor(Integer.class);
+      xStream.useAttributeFor(Long.class);
+      xStream.useAttributeFor(String.class);
 
-        xStream.alias("pagedList", PagedListWithSortBy.class);
-        xStream.alias("sortBy", SortBy.class);
-        xStream.alias("action", RestResourceAction.class);
-        xStream.alias(RestServiceDescriptor.class.getSimpleName(), RestServiceDescriptor.class);
-        xStream.addImplicitCollection(RestServiceDescriptor.class, "actions");
-    }
+      xStream.alias("pagedList", PagedListWithSortBy.class);
+      xStream.alias("sortBy", SortBy.class);
+      xStream.alias("action", RestResourceAction.class);
+      xStream.alias(RestServiceDescriptor.class.getSimpleName(), RestServiceDescriptor.class);
+      xStream.addImplicitCollection(RestServiceDescriptor.class, "actions");
+   }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    protected <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException {
-        return (T) xStream.fromXML(request.getInputStream());
-    }
+   @Override
+   @SuppressWarnings("unchecked")
+   protected <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException {
+      return (T) xStream.fromXML(request.getInputStream());
+   }
 
-    protected HierarchicalStreamDriver getXStreamDriver() {
-        if (Types.isAvailable("javax.xml.stream.XMLStreamReader")) {
-            try {
+   protected HierarchicalStreamDriver getXStreamDriver() {
+      if (Types.isAvailable("javax.xml.stream.XMLStreamReader")) {
+         try {
 
-                final StaxDriver xmlDriver = new StaxDriver();
-                xmlDriver.getInputFactory();
-                xmlDriver.getOutputFactory();
-                return xmlDriver;
-            } catch (final Exception ex) {
-                LOG.warn(ex, "Failed to use StaxDriver.");
-            } catch (final Error er) {
-                if ("javax.xml.stream.FactoryConfigurationError".equals(er.getClass().getName())) {
-                    LOG.warn(er, "Failed to use StaxDriver.");
-                } else
-                    throw er;
-            }
-        }
+            final StaxDriver xmlDriver = new StaxDriver();
+            xmlDriver.getInputFactory();
+            xmlDriver.getOutputFactory();
+            return xmlDriver;
+         } catch (final Exception ex) {
+            LOG.warn(ex, "Failed to use StaxDriver.");
+         } catch (final Error ex) {
+            if ("javax.xml.stream.FactoryConfigurationError".equals(ex.getClass().getName())) {
+               LOG.warn(ex, "Failed to use StaxDriver.");
+            } else
+               throw ex;
+         }
+      }
 
-        return Types.isAvailable("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
-                new DomDriver();
-    }
+      return Types.isAvailable("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
+         new DomDriver();
+   }
 
-    @Override
-    protected String serializeResponse(final Object resultObject) {
-        return xStream.toXML(resultObject);
-    }
+   @Override
+   protected String serializeResponse(final Object resultObject) {
+      return xStream.toXML(resultObject);
+   }
 }

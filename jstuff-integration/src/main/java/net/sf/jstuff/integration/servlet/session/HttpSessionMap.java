@@ -34,143 +34,143 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class HttpSessionMap implements SessionMap {
 
-    @SuppressWarnings("deprecation")
-    private static String[] getValueNames(final HttpSession sess) {
-        if (sess == null)
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+   @SuppressWarnings("deprecation")
+   private static String[] getValueNames(final HttpSession sess) {
+      if (sess == null)
+         return ArrayUtils.EMPTY_STRING_ARRAY;
 
-        final String[] valueNames = sess.getValueNames();
-        return valueNames == null ? ArrayUtils.EMPTY_STRING_ARRAY : valueNames;
-    }
+      final String[] valueNames = sess.getValueNames();
+      return valueNames == null ? ArrayUtils.EMPTY_STRING_ARRAY : valueNames;
+   }
 
-    private final HttpServletRequest request;
+   private final HttpServletRequest request;
 
-    public HttpSessionMap(final HttpServletRequest request) {
-        Args.notNull("request", request);
-        this.request = request;
-    }
+   public HttpSessionMap(final HttpServletRequest request) {
+      Args.notNull("request", request);
+      this.request = request;
+   }
 
-    public void clear() {
-        throw new UnsupportedOperationException();
-    }
+   public void clear() {
+      throw new UnsupportedOperationException();
+   }
 
-    public boolean containsKey(final Object key) {
-        final HttpSession sess = request.getSession(false);
-        if (sess == null)
-            return false;
-        return Enumerations.contains(sess.getAttributeNames(), key);
-    }
+   public boolean containsKey(final Object key) {
+      final HttpSession sess = request.getSession(false);
+      if (sess == null)
+         return false;
+      return Enumerations.contains(sess.getAttributeNames(), key);
+   }
 
-    @SuppressWarnings("unchecked")
-    public boolean containsValue(final Object value) {
-        final HttpSession sess = request.getSession(false);
-        if (sess == null)
-            return false;
-        for (final String key : Enumerations.toIterable((Enumeration<String>) sess.getAttributeNames()))
-            if (ObjectUtils.equals(sess.getAttribute(key), value))
-                return true;
-        return false;
-    }
-
-    public Set<java.util.Map.Entry<String, Object>> entrySet() {
-        final HttpSession sess = request.getSession(false);
-        if (sess == null)
-            return Collections.emptySet();
-
-        final Map<String, Object> result = Maps.newHashMap();
-        for (final String key : getValueNames(sess)) {
-            result.put(key, sess.getAttribute(key));
-        }
-        return result.entrySet();
-    }
-
-    public boolean exists() {
-        return request.getSession(false) != null;
-    }
-
-    public Object get(final Object key) {
-        final HttpSession sess = request.getSession(false);
-        if (sess == null)
-            return null;
-        return sess.getAttribute(key == null ? null : key.toString());
-    }
-
-    public Object get(final String key, final Object defaultValueIfNull) {
-        final Object val = get(key);
-        if (val == null)
-            return defaultValueIfNull;
-        return val;
-    }
-
-    public Object getId() {
-        final HttpSession sess = request.getSession(true);
-        return sess.getId();
-    }
-
-    public void invalidate() {
-        final HttpSession sess = request.getSession(false);
-        if (sess == null)
-            return;
-        sess.invalidate();
-    }
-
-    public boolean isEmpty() {
-        final HttpSession sess = request.getSession(false);
-        if (sess == null)
+   @SuppressWarnings("unchecked")
+   public boolean containsValue(final Object value) {
+      final HttpSession sess = request.getSession(false);
+      if (sess == null)
+         return false;
+      for (final String key : Enumerations.toIterable((Enumeration<String>) sess.getAttributeNames()))
+         if (ObjectUtils.equals(sess.getAttribute(key), value))
             return true;
-        return !sess.getAttributeNames().hasMoreElements();
-    }
+      return false;
+   }
 
-    public Set<String> keySet() {
-        final HttpSession sess = request.getSession(false);
-        if (sess == null)
-            return Collections.emptySet();
-        final Set<String> result = CollectionUtils.newHashSet();
-        CollectionUtils.addAll(result, getValueNames(sess));
-        return result;
-    }
+   public Set<java.util.Map.Entry<String, Object>> entrySet() {
+      final HttpSession sess = request.getSession(false);
+      if (sess == null)
+         return Collections.emptySet();
 
-    public Object put(final String key, final Object value) {
-        final HttpSession sess = request.getSession(true);
-        final Object oldValue = sess.getAttribute(key);
-        sess.setAttribute(key, value);
-        return oldValue;
-    }
+      final Map<String, Object> result = Maps.newHashMap();
+      for (final String key : getValueNames(sess)) {
+         result.put(key, sess.getAttribute(key));
+      }
+      return result.entrySet();
+   }
 
-    public void putAll(final Map<? extends String, ? extends Object> map) {
-        final HttpSession sess = request.getSession(true);
-        for (final Entry<? extends String, ? extends Object> e : map.entrySet()) {
-            sess.setAttribute(e.getKey(), e.getValue());
-        }
-    }
+   public boolean exists() {
+      return request.getSession(false) != null;
+   }
 
-    public Object remove(final Object key) {
-        final HttpSession sess = request.getSession(false);
-        if (sess == null)
-            return null;
+   public Object get(final Object key) {
+      final HttpSession sess = request.getSession(false);
+      if (sess == null)
+         return null;
+      return sess.getAttribute(key == null ? null : key.toString());
+   }
 
-        final Object oldValue = sess.getAttribute(key == null ? null : key.toString());
-        sess.removeAttribute(key == null ? null : key.toString());
-        return oldValue;
-    }
+   public Object get(final String key, final Object defaultValueIfNull) {
+      final Object val = get(key);
+      if (val == null)
+         return defaultValueIfNull;
+      return val;
+   }
 
-    public int size() {
-        final HttpSession sess = request.getSession(false);
-        if (sess == null)
-            return 0;
+   public Object getId() {
+      final HttpSession sess = request.getSession(true);
+      return sess.getId();
+   }
 
-        return getValueNames(sess).length;
-    }
+   public void invalidate() {
+      final HttpSession sess = request.getSession(false);
+      if (sess == null)
+         return;
+      sess.invalidate();
+   }
 
-    public Collection<Object> values() {
-        final HttpSession sess = request.getSession(false);
-        if (sess == null)
-            return Collections.emptyList();
+   public boolean isEmpty() {
+      final HttpSession sess = request.getSession(false);
+      if (sess == null)
+         return true;
+      return !sess.getAttributeNames().hasMoreElements();
+   }
 
-        final Collection<Object> result = CollectionUtils.newArrayList();
-        for (final String key : getValueNames(sess)) {
-            result.add(sess.getAttribute(key));
-        }
-        return result;
-    }
+   public Set<String> keySet() {
+      final HttpSession sess = request.getSession(false);
+      if (sess == null)
+         return Collections.emptySet();
+      final Set<String> result = CollectionUtils.newHashSet();
+      CollectionUtils.addAll(result, getValueNames(sess));
+      return result;
+   }
+
+   public Object put(final String key, final Object value) {
+      final HttpSession sess = request.getSession(true);
+      final Object oldValue = sess.getAttribute(key);
+      sess.setAttribute(key, value);
+      return oldValue;
+   }
+
+   public void putAll(final Map<? extends String, ? extends Object> map) {
+      final HttpSession sess = request.getSession(true);
+      for (final Entry<? extends String, ? extends Object> e : map.entrySet()) {
+         sess.setAttribute(e.getKey(), e.getValue());
+      }
+   }
+
+   public Object remove(final Object key) {
+      final HttpSession sess = request.getSession(false);
+      if (sess == null)
+         return null;
+
+      final Object oldValue = sess.getAttribute(key == null ? null : key.toString());
+      sess.removeAttribute(key == null ? null : key.toString());
+      return oldValue;
+   }
+
+   public int size() {
+      final HttpSession sess = request.getSession(false);
+      if (sess == null)
+         return 0;
+
+      return getValueNames(sess).length;
+   }
+
+   public Collection<Object> values() {
+      final HttpSession sess = request.getSession(false);
+      if (sess == null)
+         return Collections.emptyList();
+
+      final Collection<Object> result = CollectionUtils.newArrayList();
+      for (final String key : getValueNames(sess)) {
+         result.add(sess.getAttribute(key));
+      }
+      return result;
+   }
 }

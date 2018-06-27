@@ -13,21 +13,22 @@
 package net.sf.jstuff.core.functional;
 
 import static net.sf.jstuff.core.functional.Functions.*;
+
 import junit.framework.TestCase;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class FunctionsTest extends TestCase {
-    public void testConverts() {
-        final Function<Object, Integer> t1 = objectToString()//
-            .and(stringToInt())//
-            .and(castTo(Number.class))//
-            .and(objectToString())//
-            .and(trim()) //
-            .and(stringToInt());
+   public void testConverts() {
+      final Function<Object, Integer> t1 = objectToString()//
+         .and(stringToInt())//
+         .and(castTo(Number.class))//
+         .and(objectToString())//
+         .and(trim()) //
+         .and(stringToInt());
 
-        assertEquals(null, t1.apply(null));
-        assertEquals(Integer.valueOf(1), t1.apply("1"));
-    }
+      assertEquals(null, t1.apply(null));
+      assertEquals(Integer.valueOf(1), t1.apply("1"));
+   }
 }

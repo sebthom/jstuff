@@ -16,7 +16,7 @@ package net.sf.jstuff.integration.serviceregistry;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface ServiceEndpoint {
-    String getServiceEndpointId();
+   String getServiceEndpointId();
 
-    Class<?> getServiceInterface();
+   Class<?> getServiceInterface();
 }

@@ -20,28 +20,28 @@ import java.util.Map;
  */
 public class FIFOMap<K, V> extends LinkedHashMap<K, V> {
 
-    private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-    public static <K, V> FIFOMap<K, V> create(final int maxSize) {
-        return new FIFOMap<K, V>(maxSize);
-    }
+   public static <K, V> FIFOMap<K, V> create(final int maxSize) {
+      return new FIFOMap<K, V>(maxSize);
+   }
 
-    private final int maxSize;
+   private final int maxSize;
 
-    /**
-     * @param maxSize the maximum size of the cache. When maxSize is exceeded the oldest entry in the cache is removed.
-     */
-    public FIFOMap(final int maxSize) {
-        super(maxSize, 0.75f, false);
-        this.maxSize = maxSize;
-    }
+   /**
+    * @param maxSize the maximum size of the cache. When maxSize is exceeded the oldest entry in the cache is removed.
+    */
+   public FIFOMap(final int maxSize) {
+      super(maxSize, 0.75f, false);
+      this.maxSize = maxSize;
+   }
 
-    public int getMaxSize() {
-        return maxSize;
-    }
+   public int getMaxSize() {
+      return maxSize;
+   }
 
-    @Override
-    protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
-        return size() > maxSize;
-    }
+   @Override
+   protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
+      return size() > maxSize;
+   }
 }

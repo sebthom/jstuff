@@ -37,270 +37,270 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class TypesGenericsTest extends TestCase {
-    public static class ClassA_1 {
-    }
+   public static class ClassA_1 {
+   }
 
-    public static class ClassA_2<T> extends ClassA_1 implements InterfaceA_5<T> {
-    }
+   public static class ClassA_2<T> extends ClassA_1 implements InterfaceA_5<T> {
+   }
 
-    public static class ClassA_3<T1, T2> extends ClassA_2<T1> implements InterfaceB<T1, T2> {
-    }
+   public static class ClassA_3<T1, T2> extends ClassA_2<T1> implements InterfaceB<T1, T2> {
+   }
 
-    public static class ClassA_4 extends ClassA_3<String, Integer> implements InterfaceC {
-    }
+   public static class ClassA_4 extends ClassA_3<String, Integer> implements InterfaceC {
+   }
 
-    public static class ClassA_5 extends ClassA_4 {
-    }
+   public static class ClassA_5 extends ClassA_4 {
+   }
 
-    public static class ClassB<T> {
-    }
+   public static class ClassB<T> {
+   }
 
-    public interface InterfaceA_1 {
-    }
+   public interface InterfaceA_1 {
+   }
 
-    public interface InterfaceA_2<T> extends InterfaceA_1 {
-    }
+   public interface InterfaceA_2<T> extends InterfaceA_1 {
+   }
 
-    public interface InterfaceA_3 extends InterfaceA_2<Double> {
-    }
+   public interface InterfaceA_3 extends InterfaceA_2<Double> {
+   }
 
-    public interface InterfaceA_4<T> extends InterfaceA_3 {
-    }
+   public interface InterfaceA_4<T> extends InterfaceA_3 {
+   }
 
-    public interface InterfaceA_5<T> extends InterfaceA_4<T> {
-    }
+   public interface InterfaceA_5<T> extends InterfaceA_4<T> {
+   }
 
-    public interface InterfaceB<T, T2> {
-    }
+   public interface InterfaceB<T, T2> {
+   }
 
-    public interface InterfaceC {
-    }
+   public interface InterfaceC {
+   }
 
-    /**
-     * old implementation without using visitor - slightly faster but more code and harder to read
-     */
-    @SuppressWarnings({ "null" })
-    private static <T> Class<?>[] _findGenericTypeArguments(final Class<? extends T> searchIn, final Class<T> searchFor) {
-        Args.notNull("searchIn", searchIn);
-        Args.notNull("searchFor", searchFor);
+   /**
+    * old implementation without using visitor - slightly faster but more code and harder to read
+    */
+   @SuppressWarnings({"null"})
+   private static <T> Class<?>[] _findGenericTypeArguments(final Class<? extends T> searchIn, final Class<T> searchFor) {
+      Args.notNull("searchIn", searchIn);
+      Args.notNull("searchFor", searchFor);
 
-        // if the searchFor type is not a generic type there is nothing to find
-        if (searchFor.getTypeParameters().length == 0)
-            return ArrayUtils.EMPTY_CLASS_ARRAY;
+      // if the searchFor type is not a generic type there is nothing to find
+      if (searchFor.getTypeParameters().length == 0)
+         return ArrayUtils.EMPTY_CLASS_ARRAY;
 
-        if (!searchFor.isAssignableFrom(searchIn))
-            throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is assignable to [searchFor=" + searchFor.getName() + "]");
+      if (!searchFor.isAssignableFrom(searchIn))
+         throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is assignable to [searchFor=" + searchFor.getName() + "]");
 
-        final boolean isSearchForInterface = searchFor.isInterface();
-        final Queue<Type> interfacesToCheck = isSearchForInterface ? new LinkedList<Type>() : null;
+      final boolean isSearchForInterface = searchFor.isInterface();
+      final Queue<Type> interfacesToCheck = isSearchForInterface ? new LinkedList<Type>() : null;
 
-        /*
-         * traverse the class hierarchy and collect generic variable => concrete variable argument (type) mappings
-         */
-        final Map<TypeVariable<?>, Type> genericVariableToArgumentMappings = Maps.newHashMap();
-        Type currentType = searchIn;
-        outer: while (true) {
-            if (currentType == Object.class) {
-                break;
+      /*
+       * traverse the class hierarchy and collect generic variable => concrete variable argument (type) mappings
+       */
+      final Map<TypeVariable<?>, Type> genericVariableToArgumentMappings = Maps.newHashMap();
+      Type currentType = searchIn;
+      outer: while (true) {
+         if (currentType == Object.class) {
+            break;
+         }
+
+         final Class<?> currentClass = resolveUnderlyingClass(currentType);
+
+         // populate the mappings with info from generic class
+         if (currentType instanceof ParameterizedType) {
+            Maps.putAll(genericVariableToArgumentMappings, //
+               /*generic variable*/(TypeVariable<?>[]) currentClass.getTypeParameters(), //
+               /*arguments (concrete types) of generic variables*/((ParameterizedType) currentType).getActualTypeArguments() //
+            );
+         }
+
+         if (currentClass == searchFor) {
+            break;
+         }
+
+         if (isSearchForInterface) {
+            for (final Type ifaceType : currentClass.getGenericInterfaces()) {
+               if (!isAssignableTo(resolveUnderlyingClass(ifaceType), searchFor)) {
+                  continue;
+               }
+               interfacesToCheck.add(ifaceType);
             }
 
-            final Class<?> currentClass = resolveUnderlyingClass(currentType);
+            while (!interfacesToCheck.isEmpty()) {
+               final Type currentInterfaceType = interfacesToCheck.poll();
+               if (currentInterfaceType == Object.class) {
+                  continue;
+               }
 
-            // populate the mappings with info from generic class
-            if (currentType instanceof ParameterizedType) {
-                Maps.putAll(genericVariableToArgumentMappings, //
-                    /*generic variable*/(TypeVariable<?>[]) currentClass.getTypeParameters(), //
-                    /*arguments (concrete types) of generic variables*/((ParameterizedType) currentType).getActualTypeArguments() //
-                );
+               final Class<?> currentInterfaceClass = resolveUnderlyingClass(currentInterfaceType);
+
+               // populate the mappings with info from generic interfaces
+               if (currentInterfaceType instanceof ParameterizedType) {
+                  Maps.putAll(genericVariableToArgumentMappings, //
+                     /*generic variable*/(TypeVariable<?>[]) currentInterfaceClass.getTypeParameters(), //
+                     /*arguments (concrete types) of generic variables*/((ParameterizedType) currentInterfaceType).getActualTypeArguments() //
+                  );
+               }
+
+               if (currentInterfaceClass == searchFor) {
+                  currentType = currentInterfaceType;
+                  break outer;
+               }
+
+               for (final Type ifaceType : currentInterfaceClass.getGenericInterfaces()) {
+                  if (!isAssignableTo(resolveUnderlyingClass(ifaceType), searchFor)) {
+                     continue;
+                  }
+                  interfacesToCheck.add(ifaceType);
+               }
             }
+         }
+         currentType = currentClass.getGenericSuperclass();
+      }
 
-            if (currentClass == searchFor) {
-                break;
-            }
+      /*
+       * build the result list based on the information collected in genericVariableToTypeMappings
+       */
+      final Type[] genericVariables;
+      if (currentType instanceof Class) {
+         genericVariables = ((Class<?>) currentType).getTypeParameters();
+      } else {
+         genericVariables = ((ParameterizedType) currentType).getActualTypeArguments();
+      }
+      final Class<?>[] res = new Class<?>[genericVariables.length];
+      for (int i = 0, l = genericVariables.length; i < l; i++) {
+         Type genericVariable = genericVariables[i];
+         while (genericVariableToArgumentMappings.containsKey(genericVariable)) {
+            genericVariable = genericVariableToArgumentMappings.get(genericVariable);
+         }
+         res[i] = resolveUnderlyingClass(genericVariable);
+      }
+      return res;
+   }
 
-            if (isSearchForInterface) {
-                for (final Type ifaceType : currentClass.getGenericInterfaces()) {
-                    if (!isAssignableTo(resolveUnderlyingClass(ifaceType), searchFor)) {
-                        continue;
-                    }
-                    interfacesToCheck.add(ifaceType);
-                }
+   public <T> void assertEquals(final List<T> actual, final T... expected) {
+      assertEquals(new ArrayList<T>(actual), Arrays.asList(expected));
+   }
 
-                while (!interfacesToCheck.isEmpty()) {
-                    final Type currentInterfaceType = interfacesToCheck.poll();
-                    if (currentInterfaceType == Object.class) {
-                        continue;
-                    }
+   @SuppressWarnings({"unchecked", "rawtypes"})
+   public void testGenerics() {
+      // CLASSES: good behavior tests
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_1.class, ClassA_1.class));
 
-                    final Class<?> currentInterfaceClass = resolveUnderlyingClass(currentInterfaceType);
+      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_2.class, ClassA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_2.class, ClassA_1.class));
 
-                    // populate the mappings with info from generic interfaces
-                    if (currentInterfaceType instanceof ParameterizedType) {
-                        Maps.putAll(genericVariableToArgumentMappings, //
-                            /*generic variable*/(TypeVariable<?>[]) currentInterfaceClass.getTypeParameters(), //
-                            /*arguments (concrete types) of generic variables*/((ParameterizedType) currentInterfaceType).getActualTypeArguments() //
-                        );
-                    }
+      assertArrayEquals(toArray(null, null), findGenericTypeArguments(ClassA_3.class, ClassA_3.class));
+      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_3.class, ClassA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_3.class, ClassA_1.class));
 
-                    if (currentInterfaceClass == searchFor) {
-                        currentType = currentInterfaceType;
-                        break outer;
-                    }
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, ClassA_4.class));
+      assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_4.class, ClassA_3.class));
+      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_4.class, ClassA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, ClassA_1.class));
 
-                    for (final Type ifaceType : currentInterfaceClass.getGenericInterfaces()) {
-                        if (!isAssignableTo(resolveUnderlyingClass(ifaceType), searchFor)) {
-                            continue;
-                        }
-                        interfacesToCheck.add(ifaceType);
-                    }
-                }
-            }
-            currentType = currentClass.getGenericSuperclass();
-        }
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, ClassA_5.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, ClassA_4.class));
+      assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_5.class, ClassA_3.class));
+      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_5.class, ClassA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, ClassA_1.class));
 
-        /*
-         * build the result list based on the information collected in genericVariableToTypeMappings
-         */
-        final Type[] genericVariables;
-        if (currentType instanceof Class) {
-            genericVariables = ((Class<?>) currentType).getTypeParameters();
-        } else {
-            genericVariables = ((ParameterizedType) currentType).getActualTypeArguments();
-        }
-        final Class<?>[] res = new Class<?>[genericVariables.length];
-        for (int i = 0, l = genericVariables.length; i < l; i++) {
-            Type genericVariable = genericVariables[i];
-            while (genericVariableToArgumentMappings.containsKey(genericVariable)) {
-                genericVariable = genericVariableToArgumentMappings.get(genericVariable);
-            }
-            res[i] = resolveUnderlyingClass(genericVariable);
-        }
-        return res;
-    }
+      // CLASSES: bad behavior tests
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(Long.class, Number.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(Byte.class, byte.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(byte.class, Byte.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(byte.class, Number.class));
+      try {
+         findGenericTypeArguments((Class) ClassA_5.class, (Class) ClassB.class);
+         fail("IllegalArgumentException expected.");
+      } catch (final IllegalArgumentException ex) { /* expected */ }
 
-    public <T> void assertEquals(final List<T> actual, final T... expected) {
-        assertEquals(new ArrayList<T>(actual), Arrays.asList(expected));
-    }
+      // INTERFACES: good behavior tests
+      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_2.class, InterfaceA_5.class));
+      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_2.class, InterfaceA_4.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_2.class, InterfaceA_3.class));
+      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_2.class, InterfaceA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_2.class, InterfaceA_1.class));
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void testGenerics() {
-        // CLASSES: good behavior tests
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_1.class, ClassA_1.class));
+      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_3.class, InterfaceA_5.class));
+      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_3.class, InterfaceA_4.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_3.class, InterfaceA_3.class));
+      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_3.class, InterfaceA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_3.class, InterfaceA_1.class));
 
-        assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_2.class, ClassA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_2.class, ClassA_1.class));
+      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_4.class, InterfaceA_5.class));
+      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_4.class, InterfaceA_4.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, InterfaceA_3.class));
+      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_4.class, InterfaceA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, InterfaceA_1.class));
 
-        assertArrayEquals(toArray(null, null), findGenericTypeArguments(ClassA_3.class, ClassA_3.class));
-        assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_3.class, ClassA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_3.class, ClassA_1.class));
+      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_5.class, InterfaceA_5.class));
+      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_5.class, InterfaceA_4.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, InterfaceA_3.class));
+      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, InterfaceA_1.class));
 
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, ClassA_4.class));
-        assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_4.class, ClassA_3.class));
-        assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_4.class, ClassA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, ClassA_1.class));
+      assertArrayEquals(toArray(null, null), findGenericTypeArguments(ClassA_3.class, InterfaceB.class));
+      assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_4.class, InterfaceB.class));
+      assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_5.class, InterfaceB.class));
 
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, ClassA_5.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, ClassA_4.class));
-        assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_5.class, ClassA_3.class));
-        assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_5.class, ClassA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, ClassA_1.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, InterfaceC.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, InterfaceC.class));
 
-        // CLASSES: bad behavior tests
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(Long.class, Number.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(Byte.class, byte.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(byte.class, Byte.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(byte.class, Number.class));
-        try {
-            findGenericTypeArguments((Class) ClassA_5.class, (Class) ClassB.class);
-            fail("IllegalArgumentException expected.");
-        } catch (final IllegalArgumentException ex) {}
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_1.class, InterfaceA_1.class));
 
-        // INTERFACES: good behavior tests
-        assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_2.class, InterfaceA_5.class));
-        assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_2.class, InterfaceA_4.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_2.class, InterfaceA_3.class));
-        assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_2.class, InterfaceA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_2.class, InterfaceA_1.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_2.class, InterfaceA_1.class));
+      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_2.class, InterfaceA_2.class));
 
-        assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_3.class, InterfaceA_5.class));
-        assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_3.class, InterfaceA_4.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_3.class, InterfaceA_3.class));
-        assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_3.class, InterfaceA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_3.class, InterfaceA_1.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_3.class, InterfaceA_1.class));
+      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(InterfaceA_3.class, InterfaceA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_3.class, InterfaceA_3.class));
 
-        assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_4.class, InterfaceA_5.class));
-        assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_4.class, InterfaceA_4.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, InterfaceA_3.class));
-        assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_4.class, InterfaceA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, InterfaceA_1.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_4.class, InterfaceA_1.class));
+      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(InterfaceA_4.class, InterfaceA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_4.class, InterfaceA_3.class));
+      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_4.class, InterfaceA_4.class));
 
-        assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_5.class, InterfaceA_5.class));
-        assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_5.class, InterfaceA_4.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, InterfaceA_3.class));
-        assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, InterfaceA_1.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_5.class, InterfaceA_1.class));
+      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(InterfaceA_5.class, InterfaceA_2.class));
+      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_5.class, InterfaceA_3.class));
+      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_5.class, InterfaceA_4.class));
+      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_5.class, InterfaceA_5.class));
+   }
 
-        assertArrayEquals(toArray(null, null), findGenericTypeArguments(ClassA_3.class, InterfaceB.class));
-        assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_4.class, InterfaceB.class));
-        assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_5.class, InterfaceB.class));
+   public void testPerformance() {
+      final int iterations = 10000;
+      final StopWatch sw = new StopWatch();
+      sw.start();
+      for (int i = 0; i < iterations; i++) {
+         _findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
+      }
+      sw.stop();
+      System.out.println(sw.toString());
 
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, InterfaceC.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, InterfaceC.class));
+      sw.reset();
+      sw.start();
+      for (int i = 0; i < iterations; i++) {
+         findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
+      }
+      sw.stop();
+      System.out.println(sw.toString());
 
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_1.class, InterfaceA_1.class));
+      sw.reset();
+      sw.start();
+      for (int i = 0; i < iterations; i++) {
+         _findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
+      }
+      sw.stop();
+      System.out.println(sw.toString());
 
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_2.class, InterfaceA_1.class));
-        assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_2.class, InterfaceA_2.class));
+      sw.reset();
+      sw.start();
+      for (int i = 0; i < iterations; i++) {
+         findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
+      }
+      sw.stop();
 
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_3.class, InterfaceA_1.class));
-        assertArrayEquals(toArray(Double.class), findGenericTypeArguments(InterfaceA_3.class, InterfaceA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_3.class, InterfaceA_3.class));
-
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_4.class, InterfaceA_1.class));
-        assertArrayEquals(toArray(Double.class), findGenericTypeArguments(InterfaceA_4.class, InterfaceA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_4.class, InterfaceA_3.class));
-        assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_4.class, InterfaceA_4.class));
-
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_5.class, InterfaceA_1.class));
-        assertArrayEquals(toArray(Double.class), findGenericTypeArguments(InterfaceA_5.class, InterfaceA_2.class));
-        assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_5.class, InterfaceA_3.class));
-        assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_5.class, InterfaceA_4.class));
-        assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_5.class, InterfaceA_5.class));
-    }
-
-    public void testPerformance() {
-        final int iterations = 10000;
-        final StopWatch sw = new StopWatch();
-        sw.start();
-        for (int i = 0; i < iterations; i++) {
-            _findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
-        }
-        sw.stop();
-        System.out.println(sw.toString());
-
-        sw.reset();
-        sw.start();
-        for (int i = 0; i < iterations; i++) {
-            findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
-        }
-        sw.stop();
-        System.out.println(sw.toString());
-
-        sw.reset();
-        sw.start();
-        for (int i = 0; i < iterations; i++) {
-            _findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
-        }
-        sw.stop();
-        System.out.println(sw.toString());
-
-        sw.reset();
-        sw.start();
-        for (int i = 0; i < iterations; i++) {
-            findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class);
-        }
-        sw.stop();
-
-        System.out.println(sw.toString());
-    }
+      System.out.println(sw.toString());
+   }
 }

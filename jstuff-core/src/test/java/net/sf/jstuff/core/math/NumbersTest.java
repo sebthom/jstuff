@@ -22,18 +22,18 @@ import junit.framework.TestCase;
  */
 public class NumbersTest extends TestCase {
 
-    public void testIsLong() {
-        assertEquals(true, Numbers.isLong(BigInteger.ZERO));
-        assertEquals(true, Numbers.isLong(BigInteger.TEN));
-        assertEquals(true, Numbers.isLong(BigInteger.valueOf(Long.MAX_VALUE)));
-        assertEquals(true, Numbers.isLong(BigInteger.valueOf(Long.MIN_VALUE)));
-        assertEquals(false, Numbers.isLong(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.valueOf(1))));
-        assertEquals(false, Numbers.isLong(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.valueOf(1))));
-    }
+   public void testIsLong() {
+      assertEquals(true, Numbers.isLong(BigInteger.ZERO));
+      assertEquals(true, Numbers.isLong(BigInteger.TEN));
+      assertEquals(true, Numbers.isLong(BigInteger.valueOf(Long.MAX_VALUE)));
+      assertEquals(true, Numbers.isLong(BigInteger.valueOf(Long.MIN_VALUE)));
+      assertEquals(false, Numbers.isLong(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.valueOf(1))));
+      assertEquals(false, Numbers.isLong(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.valueOf(1))));
+   }
 
-    public void testUuidToBigInteger() {
-        final UUID uuid = UUID.randomUUID();
-        assertEquals(new BigInteger(uuid.toString().replaceAll("-", ""), 16), Numbers.toBigInteger(uuid));
-    }
+   public void testUuidToBigInteger() {
+      final UUID uuid = UUID.randomUUID();
+      assertEquals(new BigInteger(uuid.toString().replaceAll("-", ""), 16), Numbers.toBigInteger(uuid));
+   }
 
 }

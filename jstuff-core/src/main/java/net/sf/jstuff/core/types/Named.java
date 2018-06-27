@@ -16,5 +16,5 @@ package net.sf.jstuff.core.types;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface Named {
-    String getName();
+   String getName();
 }

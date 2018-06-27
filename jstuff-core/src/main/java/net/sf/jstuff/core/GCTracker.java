@@ -36,95 +36,95 @@ import net.sf.jstuff.core.validation.Args;
  */
 @ThreadSafe
 public class GCTracker<EVENT> implements EventListenable<EVENT> {
-    /**
-     * http://mindprod.com/jgloss/phantom.html
-     * http://blog.yohanliyanage.com/2010/10/ktjs-3-soft-weak-phantom-references/
-     */
-    private final class GCReference extends PhantomReference<Object> {
-        private final EVENT eventToFireOnGC;
-        private final GCTracker<EVENT> tracker;
+   /**
+    * http://mindprod.com/jgloss/phantom.html
+    * http://blog.yohanliyanage.com/2010/10/ktjs-3-soft-weak-phantom-references/
+    */
+   private final class GCReference extends PhantomReference<Object> {
+      private final EVENT eventToFireOnGC;
+      private final GCTracker<EVENT> tracker;
 
-        protected GCReference(final Object trackedObject, final EVENT eventToFireOnGC, final GCTracker<EVENT> tracker) {
-            super(trackedObject, garbageCollectedRefs);
-            this.eventToFireOnGC = eventToFireOnGC;
-            this.tracker = tracker;
-        }
-    }
+      protected GCReference(final Object trackedObject, final EVENT eventToFireOnGC, final GCTracker<EVENT> tracker) {
+         super(trackedObject, garbageCollectedRefs);
+         this.eventToFireOnGC = eventToFireOnGC;
+         this.tracker = tracker;
+      }
+   }
 
-    private static final class LazyInitialized {
-        private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder()
-            .daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("GCTracker-thread").build());
-    }
+   private static final class LazyInitialized {
+      private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder()
+         .daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("GCTracker-thread").build());
+   }
 
-    private static final Logger LOG = Logger.create();
+   private static final Logger LOG = Logger.create();
 
-    private final SyncEventDispatcher<EVENT> events = new SyncEventDispatcher<EVENT>();
+   private final SyncEventDispatcher<EVENT> events = new SyncEventDispatcher<EVENT>();
 
-    /**
-     * synchronized list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage collected
-     */
-    private final Queue<GCReference> monitoredReferences = new ConcurrentLinkedQueue<GCReference>();
-    private final ReferenceQueue<Object> garbageCollectedRefs = new ReferenceQueue<Object>();
+   /**
+    * synchronized list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage collected
+    */
+   private final Queue<GCReference> monitoredReferences = new ConcurrentLinkedQueue<GCReference>();
+   private final ReferenceQueue<Object> garbageCollectedRefs = new ReferenceQueue<Object>();
 
-    private volatile ScheduledExecutorService executor;
+   private volatile ScheduledExecutorService executor;
 
-    private final int intervalMS;
+   private final int intervalMS;
 
-    public GCTracker(final int intervalMS) {
-        this.intervalMS = intervalMS;
-        executor = LazyInitialized.DEFAULT_NOTIFICATION_THREAD;
-        init();
-    }
+   public GCTracker(final int intervalMS) {
+      this.intervalMS = intervalMS;
+      executor = LazyInitialized.DEFAULT_NOTIFICATION_THREAD;
+      init();
+   }
 
-    public GCTracker(final int intervalMS, final ScheduledExecutorService executor) {
-        this.intervalMS = intervalMS;
-        Args.notNull("executor", executor);
-        this.executor = executor;
-        init();
-    }
+   public GCTracker(final int intervalMS, final ScheduledExecutorService executor) {
+      this.intervalMS = intervalMS;
+      Args.notNull("executor", executor);
+      this.executor = executor;
+      init();
+   }
 
-    private void init() {
-        executor.scheduleWithFixedDelay(new Runnable() {
-            @SuppressWarnings("unchecked")
-            public void run() {
-                GCReference ref;
-                while ((ref = (GCReference) garbageCollectedRefs.poll()) != null) {
-                    ref.tracker.monitoredReferences.remove(ref);
-                    try {
-                        ref.tracker.onGCEvent(ref.eventToFireOnGC);
-                    } catch (final Exception ex) {
-                        LOG.error(ex, "Failed to execute callback.");
-                    }
-                }
+   private void init() {
+      executor.scheduleWithFixedDelay(new Runnable() {
+         @SuppressWarnings("unchecked")
+         public void run() {
+            GCReference ref;
+            while ((ref = (GCReference) garbageCollectedRefs.poll()) != null) {
+               ref.tracker.monitoredReferences.remove(ref);
+               try {
+                  ref.tracker.onGCEvent(ref.eventToFireOnGC);
+               } catch (final Exception ex) {
+                  LOG.error(ex, "Failed to execute callback.");
+               }
             }
-        }, intervalMS, intervalMS, TimeUnit.MILLISECONDS);
-    }
+         }
+      }, intervalMS, intervalMS, TimeUnit.MILLISECONDS);
+   }
 
-    protected void onGCEvent(final EVENT event) {
-        events.fire(event);
-    }
+   protected void onGCEvent(final EVENT event) {
+      events.fire(event);
+   }
 
-    public boolean subscribe(final EventListener<EVENT> listener) {
-        return events.subscribe(listener);
-    }
+   public boolean subscribe(final EventListener<EVENT> listener) {
+      return events.subscribe(listener);
+   }
 
-    /**
-     * <b>Important:</b> <code>eventToFireOnGC</code> must not have a direct or indirect hard reference to <code>target</code>, otherwise you are producing a
-     * memory leak by preventing garbage collection of <code>target</code>.
-     *
-     * @param subject the object whose garbage collection should be tracked
-     * @param eventToFireOnGC an event that is fired on garbage collection of <code>target</code>
-     */
-    public void track(final Object subject, final EVENT eventToFireOnGC) {
-        Args.notNull("target", subject);
+   /**
+    * <b>Important:</b> <code>eventToFireOnGC</code> must not have a direct or indirect hard reference to <code>target</code>, otherwise you are producing a
+    * memory leak by preventing garbage collection of <code>target</code>.
+    *
+    * @param subject the object whose garbage collection should be tracked
+    * @param eventToFireOnGC an event that is fired on garbage collection of <code>target</code>
+    */
+   public void track(final Object subject, final EVENT eventToFireOnGC) {
+      Args.notNull("target", subject);
 
-        if (subject == eventToFireOnGC)
-            throw new IllegalArgumentException("eventToFireOnGC callback cannot be the same as the target, this avoids garbage collection of target.");
+      if (subject == eventToFireOnGC)
+         throw new IllegalArgumentException("eventToFireOnGC callback cannot be the same as the target, this avoids garbage collection of target.");
 
-        monitoredReferences.add(new GCReference(subject, eventToFireOnGC, this));
-    }
+      monitoredReferences.add(new GCReference(subject, eventToFireOnGC, this));
+   }
 
-    public boolean unsubscribe(final EventListener<EVENT> listener) {
-        return events.unsubscribe(listener);
-    }
+   public boolean unsubscribe(final EventListener<EVENT> listener) {
+      return events.unsubscribe(listener);
+   }
 }
