@@ -3,341 +3,343 @@
     @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.sf.jstuff</groupId>
-        <artifactId>jstuff-parent</artifactId>
-        <version>3.0.3-SNAPSHOT</version>
-    </parent>
+   <parent>
+      <groupId>net.sf.jstuff</groupId>
+      <artifactId>jstuff-parent</artifactId>
+      <version>3.0.3-SNAPSHOT</version>
+   </parent>
 
-    <artifactId>jstuff-integration</artifactId>
-
-
-    <properties>
-        <java.version.integration-tests>1.7</java.version.integration-tests>
-        <enforcer.maxBytecodeVersion>1.7</enforcer.maxBytecodeVersion>
-
-        <jetty.version>7.6.21.v20160908</jetty.version>
-
-        <!-- Java 5: <= 3.x-->
-        <!-- Java 6: <= 4.x-->
-        <!-- Java 8: <= 5.x-->
-        <spring.version>3.2.18.RELEASE</spring.version>
-    </properties>
+   <artifactId>jstuff-integration</artifactId>
 
 
-    <repositories>
-        <repository>
-            <id>bintray-nitram509-jbrotli</id>
-            <name>bintray</name>
-            <url>http://dl.bintray.com/nitram509/jbrotli</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+   <properties>
+      <java.version.integration-tests>1.7</java.version.integration-tests>
+      <enforcer.maxBytecodeVersion>1.7</enforcer.maxBytecodeVersion>
+
+      <jetty.version>7.6.21.v20160908</jetty.version>
+
+      <!-- Java 5: <= 3.x-->
+      <!-- Java 6: <= 4.x-->
+      <!-- Java 8: <= 5.x-->
+      <spring.version>3.2.18.RELEASE</spring.version>
+   </properties>
 
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>enforce-bytecode-version@validate</id>
-                        <configuration>
-                            <rules>
-                                <enforceBytecodeVersion>
-                                    <ignoreClasses>
-                                        <ignoreClass>com.thoughtworks.xstream.mapper.LambdaMapper</ignoreClass>
-                                        <ignoreClass>com.thoughtworks.xstream.converters.reflection.LambdaConverter</ignoreClass>
-                                        <ignoreClass>com.thoughtworks.xstream.converters.time.*</ignoreClass>
-                                        <ignoreClass>com.thoughtworks.xstream.core.util.ISO8601JavaTimeConverter</ignoreClass>
-                                    </ignoreClasses>
-                                </enforceBytecodeVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>ban-duplicate-classes@validate</id>
-                        <configuration>
-                            <rules>
-                                <banDuplicateClasses>
-                                    <ignoreClasses>
-                                        <ignoreClass>org.aspectj.*</ignoreClass>
-                                    </ignoreClasses>
-                                </banDuplicateClasses>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jstuff-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jstuff-xml</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <!-- only for ServiceRegistry -->
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.8.12</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <!-- 2.5 is JEE5 -->
-            <version>2.5</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>javax.portlet</groupId>
-            <artifactId>portlet-api</artifactId>
-            <version>2.0</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- SpringBeanParanamer -->
-            <groupId>com.thoughtworks.paranamer</groupId>
-            <artifactId>paranamer</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- @PostConstruct -->
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-            <version>1.0</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- @Inject -->
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>javax.mail-api</artifactId>
-            <!-- 1.5 is part of JEE6 -->
-            <version>1.4.6</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- for AuthenticatorTomcatImpl only -->
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>catalina</artifactId>
-            <version>6.0.53</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.tomcat</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.tomcat</groupId>
-                    <artifactId>annotations-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.tomcat</groupId>
-                    <artifactId>juli</artifactId>
-                </exclusion>
-            </exclusions>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-            <version>1.10</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- only for Spring BeanRowMapper -->
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <!-- Java 5: <= 1.9.2 -->
-            <version>1.9.2</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
-            <version>1.0.1.Final</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- only for H2ServerSpringBean -->
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <!-- Java 5: <= 1.3.168 -->
-            <!-- Java 6: <= 1.4.190 -->
-            <version>1.3.168</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- for ATOM only -->
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- for ATOM only -->
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-            <version>1.4.10</version>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <groupId>xpp3</groupId>
-                    <artifactId>xpp3_min</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <!-- JSON only -->
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <!-- Java 5: <= 2.1.5 -->
-            <!-- Java 6: <= 2.6.x -->
-            <version>2.1.5</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <!-- compression https://github.com/lz4/lz4-java -->
-            <!-- Java 6: <groupId>net.jpountz.lz4</groupId><artifactId>lz4</artifactId><version>1.3.0</version>-->
-            <groupId>org.lz4</groupId>
-            <artifactId>lz4-java</artifactId>
-            <version>1.4.1</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <!-- compression https://github.com/shevek/lzo-java -->
-            <groupId>org.anarres.lzo</groupId>
-            <artifactId>lzo-core</artifactId>
-            <version>1.0.5</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <!-- compression https://github.com/luben/zstd-jni -->
-            <groupId>com.github.luben</groupId>
-            <artifactId>zstd-jni</artifactId>
-            <version>1.3.4-10</version>
-        </dependency>
-
-        <dependency>
-            <!-- compression https://github.com/xerial/snappy-java -->
-            <groupId>org.xerial.snappy</groupId>
-            <artifactId>snappy-java</artifactId>
-            <!-- Java 5: <= 1.0.5.4 -->
-            <!-- Java 6: <= 1.1.2.6 -->
-            <version>1.0.5.4</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <!-- compression https://github.com/MeteoGroup/jbrotli -->
-            <groupId>org.meteogroup.jbrotli</groupId>
-            <artifactId>jbrotli</artifactId>
-            <version>0.5.0</version>
-            <optional>true</optional>
-        </dependency>
+   <repositories>
+      <repository>
+         <id>bintray-nitram509-jbrotli</id>
+         <name>bintray</name>
+         <url>http://dl.bintray.com/nitram509/jbrotli</url>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+   </repositories>
 
 
-        <!--==================================================================
-            Test dependencies
-            ================================================================== -->
-        <dependency>
-            <!-- to generate test data -->
-            <!-- https://github.com/andygibson/datafactory -->
-            <!-- https://github.com/DiUS/java-faker -->
-            <!-- https://github.com/Devskiller/jfairy -->
-            <groupId>com.github.javafaker</groupId>
-            <artifactId>javafaker</artifactId>
-            <version>0.15</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.aggregate</groupId>
-            <artifactId>jetty-all-server</artifactId>
-            <version>${jetty.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.jetty.orbit</groupId>
-                    <artifactId>javax.servlet</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.jetty.orbit</groupId>
-                    <artifactId>javax.activation</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.jetty.orbit</groupId>
-                    <artifactId>javax.mail.glassfish</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.jetty.orbit</groupId>
-                    <artifactId>javax.annotation</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <!-- newer versions require Java 8 -->
-            <version>1.8.9</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <!-- newer versions require Java 8 -->
-            <version>1.8.9</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>enforce-bytecode-version@validate</id>
+                  <configuration>
+                     <rules>
+                        <enforceBytecodeVersion>
+                           <ignoreClasses>
+                              <ignoreClass>com.thoughtworks.xstream.mapper.LambdaMapper</ignoreClass>
+                              <ignoreClass>com.thoughtworks.xstream.converters.reflection.LambdaConverter</ignoreClass>
+                              <ignoreClass>com.thoughtworks.xstream.converters.time.*</ignoreClass>
+                              <ignoreClass>com.thoughtworks.xstream.core.util.ISO8601JavaTimeConverter</ignoreClass>
+                           </ignoreClasses>
+                        </enforceBytecodeVersion>
+                     </rules>
+                  </configuration>
+               </execution>
+               <execution>
+                  <id>ban-duplicate-classes@validate</id>
+                  <configuration>
+                     <rules>
+                        <banDuplicateClasses>
+                           <ignoreClasses>
+                              <ignoreClass>org.aspectj.*</ignoreClass>
+                           </ignoreClasses>
+                        </banDuplicateClasses>
+                     </rules>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+
+   <dependencies>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jstuff-core</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jstuff-xml</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <!-- only for ServiceRegistry -->
+         <groupId>net.bytebuddy</groupId>
+         <artifactId>byte-buddy</artifactId>
+         <version>1.8.12</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>servlet-api</artifactId>
+         <!-- 2.5 is JEE5 -->
+         <version>2.5</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>javax.portlet</groupId>
+         <artifactId>portlet-api</artifactId>
+         <version>2.0</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- SpringBeanParanamer -->
+         <groupId>com.thoughtworks.paranamer</groupId>
+         <artifactId>paranamer</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- @PostConstruct -->
+         <groupId>javax.annotation</groupId>
+         <artifactId>jsr250-api</artifactId>
+         <version>1.0</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- @Inject -->
+         <groupId>javax.inject</groupId>
+         <artifactId>javax.inject</artifactId>
+         <version>1</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-web</artifactId>
+         <version>${spring.version}</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-jdbc</artifactId>
+         <version>${spring.version}</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>javax.mail</groupId>
+         <artifactId>javax.mail-api</artifactId>
+         <!-- 1.5 is part of JEE6 -->
+         <version>1.4.6</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- for AuthenticatorTomcatImpl only -->
+         <groupId>org.apache.tomcat</groupId>
+         <artifactId>catalina</artifactId>
+         <version>6.0.53</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>servlet-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>annotations-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>juli</artifactId>
+            </exclusion>
+         </exclusions>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>commons-configuration</groupId>
+         <artifactId>commons-configuration</artifactId>
+         <version>1.10</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- only for Spring BeanRowMapper -->
+         <groupId>commons-beanutils</groupId>
+         <artifactId>commons-beanutils</artifactId>
+         <!-- Java 5: <= 1.9.2 -->
+         <version>1.9.2</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.hibernate.javax.persistence</groupId>
+         <artifactId>hibernate-jpa-2.0-api</artifactId>
+         <version>1.0.1.Final</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- only for H2ServerSpringBean -->
+         <groupId>com.h2database</groupId>
+         <artifactId>h2</artifactId>
+         <!-- Java 5: <= 1.3.168 -->
+         <!-- Java 6: <= 1.4.190 -->
+         <version>1.3.168</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- for ATOM only -->
+         <groupId>commons-httpclient</groupId>
+         <artifactId>commons-httpclient</artifactId>
+         <version>3.1</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- for ATOM only -->
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+         <version>1.4.10</version>
+         <optional>true</optional>
+         <exclusions>
+            <exclusion>
+               <groupId>xpp3</groupId>
+               <artifactId>xpp3_min</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <!-- JSON only -->
+         <groupId>com.fasterxml.jackson.core</groupId>
+         <artifactId>jackson-databind</artifactId>
+         <!-- Java 5: <= 2.1.5 -->
+         <!-- Java 6: <= 2.6.x -->
+         <version>2.1.5</version>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/lz4/lz4-java -->
+         <!-- Java 6: <groupId>net.jpountz.lz4</groupId><artifactId>lz4</artifactId><version>1.3.0</version>-->
+         <groupId>org.lz4</groupId>
+         <artifactId>lz4-java</artifactId>
+         <version>1.4.1</version>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/shevek/lzo-java -->
+         <groupId>org.anarres.lzo</groupId>
+         <artifactId>lzo-core</artifactId>
+         <version>1.0.5</version>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/luben/zstd-jni -->
+         <groupId>com.github.luben</groupId>
+         <artifactId>zstd-jni</artifactId>
+         <version>1.3.4-10</version>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/xerial/snappy-java -->
+         <groupId>org.xerial.snappy</groupId>
+         <artifactId>snappy-java</artifactId>
+         <!-- Java 5: <= 1.0.5.4 -->
+         <!-- Java 6: <= 1.1.2.6 -->
+         <version>1.0.5.4</version>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/MeteoGroup/jbrotli -->
+         <groupId>org.meteogroup.jbrotli</groupId>
+         <artifactId>jbrotli</artifactId>
+         <version>0.5.0</version>
+         <optional>true</optional>
+      </dependency>
+
+
+     <!--
+     ==================================================================
+     Test dependencies
+     ==================================================================
+     -->
+      <dependency>
+         <!-- to generate test data -->
+         <!-- https://github.com/andygibson/datafactory -->
+         <!-- https://github.com/DiUS/java-faker -->
+         <!-- https://github.com/Devskiller/jfairy -->
+         <groupId>com.github.javafaker</groupId>
+         <artifactId>javafaker</artifactId>
+         <version>0.15</version>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-simple</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.eclipse.jetty.aggregate</groupId>
+         <artifactId>jetty-all-server</artifactId>
+         <version>${jetty.version}</version>
+         <exclusions>
+            <exclusion>
+               <groupId>org.eclipse.jetty.orbit</groupId>
+               <artifactId>javax.servlet</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.eclipse.jetty.orbit</groupId>
+               <artifactId>javax.activation</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.eclipse.jetty.orbit</groupId>
+               <artifactId>javax.mail.glassfish</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.eclipse.jetty.orbit</groupId>
+               <artifactId>javax.annotation</artifactId>
+            </exclusion>
+         </exclusions>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <version>${spring.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjrt</artifactId>
+         <!-- newer versions require Java 8 -->
+         <version>1.8.9</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjweaver</artifactId>
+         <!-- newer versions require Java 8 -->
+         <version>1.8.9</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>1.2.3</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
 </project>
