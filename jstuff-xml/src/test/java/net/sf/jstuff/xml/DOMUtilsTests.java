@@ -30,6 +30,12 @@ import net.sf.jstuff.xml.DOMUtils.XPathNodeConfiguration;
  */
 public class DOMUtilsTests extends TestCase {
 
+   public void testCreateCommentBefore() {
+      final Element elem = DOMUtils.parseString("<foo id='myid'><bar/></foo>", null).getDocumentElement();
+      DOMUtils.createCommentBefore(DOMUtils.findNode(elem, "/foo/bar"), "MY_COMMENT");
+      assertEquals("<foo id=\"myid\"><!--MY_COMMENT--><bar/></foo>", DOMUtils.toXML(elem, false, false));
+   }
+
    public void testEvaluate() {
       final Element elem = DOMUtils.parseString("<foo id='myid'><bar/><bar/><bar/></foo>", null).getDocumentElement();
 
@@ -134,7 +140,6 @@ public class DOMUtilsTests extends TestCase {
          // sort on two attribute
          final Document doc = DOMUtils.parseString("<foo><bar name='bb' value='BB'/><bar name='bb' value='AA'/><bar name='aa' value='AA'/></foo>", null);
          DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true, "name", "value");
-         System.out.println(DOMUtils.toXML(doc, false, false));
          assertEquals("<foo><bar name=\"aa\" value=\"AA\"/><bar name=\"bb\" value=\"AA\"/><bar name=\"bb\" value=\"BB\"/></foo>", DOMUtils.toXML(doc, false,
             false));
       }
