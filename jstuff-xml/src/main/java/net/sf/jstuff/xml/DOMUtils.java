@@ -350,46 +350,46 @@ public abstract class DOMUtils {
       return elem;
    }
 
-   public static Element createElementWithText(final Node parent, final String tagName, final String text) {
-      final Element elem = createElement(parent, tagName, null);
-      createTextNode(elem, text);
-      return elem;
-   }
-
-   public static Element createElementWithText(final Node parent, final String tagName, final String text, final Map<String, String> tagAttributes) {
+   public static Element createElementWithText(final Node parent, final String tagName, final Map<String, String> tagAttributes, final Object text) {
       final Element elem = createElement(parent, tagName, tagAttributes);
       createTextNode(elem, text);
       return elem;
    }
 
-   public static Element createElementWithTextBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes, final String text) {
+   public static Element createElementWithText(final Node parent, final String tagName, final Object text) {
+      final Element elem = createElement(parent, tagName, null);
+      createTextNode(elem, text);
+      return elem;
+   }
+
+   public static Element createElementWithTextBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes, final Object text) {
       final Element elem = createElementBefore(sibling, tagName, tagAttributes);
       createTextNode(elem, text);
       return elem;
    }
 
-   public static Element createElementWithTextBefore(final Node sibling, final String tagName, final String text) {
+   public static Element createElementWithTextBefore(final Node sibling, final String tagName, final Object text) {
       final Element elem = createElementBefore(sibling, tagName, null);
       createTextNode(elem, text);
       return elem;
    }
 
-   public static Text createTextNode(final Node parent, final String text) {
+   public static Text createTextNode(final Node parent, final Object text) {
       Args.notNull("parent", parent);
       Args.notNull("text", text);
 
-      final Text elem = (Text) parent.appendChild(_getOwnerDocument(parent).createTextNode(text));
+      final Text elem = (Text) parent.appendChild(_getOwnerDocument(parent).createTextNode(text.toString()));
       return elem;
    }
 
-   public static Text createTextNodeBefore(final Node sibling, final String text) {
+   public static Text createTextNodeBefore(final Node sibling, final Object text) {
       Args.notNull("sibling", sibling);
       Args.notNull("text", text);
 
       final Node parent = sibling.getParentNode();
       Args.notNull("sibling.parentNode", parent);
 
-      final Text elem = (Text) parent.insertBefore(_getOwnerDocument(parent).createTextNode(text), sibling);
+      final Text elem = (Text) parent.insertBefore(_getOwnerDocument(parent).createTextNode(text.toString()), sibling);
       return elem;
    }
 

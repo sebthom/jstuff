@@ -139,14 +139,38 @@ public class DOMFile {
       return DOMUtils.createElementBefore(sibling, tagName, tagAttributes);
    }
 
-   public Text createTextNode(final Node parent, final String text) {
+   public Element createElementWithText(final Node parent, final String tagName, final Map<String, String> tagAttributes, final Object text) {
+      final Element elem = createElement(parent, tagName, tagAttributes);
+      createTextNode(elem, text);
+      return elem;
+   }
+
+   public Element createElementWithText(final Node parent, final String tagName, final Object text) {
+      final Element elem = createElement(parent, tagName, null);
+      createTextNode(elem, text);
+      return elem;
+   }
+
+   public Element createElementWithTextBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes, final Object text) {
+      final Element elem = createElementBefore(sibling, tagName, tagAttributes);
+      createTextNode(elem, text);
+      return elem;
+   }
+
+   public Element createElementWithTextBefore(final Node sibling, final String tagName, final Object text) {
+      final Element elem = createElementBefore(sibling, tagName, null);
+      createTextNode(elem, text);
+      return elem;
+   }
+
+   public Text createTextNode(final Node parent, final Object text) {
       Args.notNull("parent", parent);
       Assert.isTrue(DOMUtils._getOwnerDocument(parent) == domDocument, "[parent] belongs to another DOM document!");
 
       return DOMUtils.createTextNode(parent, text);
    }
 
-   public Text createTextNodeBefore(final Node sibling, final String text) {
+   public Text createTextNodeBefore(final Node sibling, final Object text) {
       Args.notNull("sibling", sibling);
       Assert.isTrue(DOMUtils._getOwnerDocument(sibling) == domDocument, "[sibling] belongs to another DOM document!");
 
