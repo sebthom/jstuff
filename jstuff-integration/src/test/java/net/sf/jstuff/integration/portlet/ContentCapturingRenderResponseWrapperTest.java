@@ -33,7 +33,6 @@ public class ContentCapturingRenderResponseWrapperTest extends TestCase {
       final String[] encoding = new String[] {"ISO-8859-1"};
 
       final RenderResponse mock = Types.createMixin(RenderResponse.class, new Object() {
-
          public String getCharacterEncoding() {
             return encoding[0];
          }

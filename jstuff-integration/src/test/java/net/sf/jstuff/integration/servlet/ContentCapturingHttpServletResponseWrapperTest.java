@@ -33,7 +33,6 @@ public class ContentCapturingHttpServletResponseWrapperTest extends TestCase {
       final String[] encoding = new String[] {"ISO-8859-1"};
 
       final HttpServletResponse mock = Types.createMixin(HttpServletResponse.class, new Object() {
-
          public String getCharacterEncoding() {
             return encoding[0];
          }

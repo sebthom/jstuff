@@ -49,9 +49,14 @@ public class StringsTest extends TestCase {
    public void testCountMatches() {
       assertEquals(2, Strings.countMatches("1234512345", "1", 0));
       assertEquals(1, Strings.countMatches("1234512345", "1", 1));
-      assertEquals(0, Strings.countMatches("1234512345", "1", 9));
+      assertEquals(1, Strings.countMatches("1234512345", "1", 5));
+      assertEquals(0, Strings.countMatches("1234512345", "1", 6));
       assertEquals(0, Strings.countMatches("1234512345", "1", 100));
-      assertEquals(0, Strings.countMatches("1234512345", "1", -100));
+      assertEquals(0, Strings.countMatches("1234512345", "1", -4));
+      assertEquals(1, Strings.countMatches("1234512345", "1", -5));
+      assertEquals(1, Strings.countMatches("1234512345", "1", -9));
+      assertEquals(2, Strings.countMatches("1234512345", "1", -10));
+      assertEquals(2, Strings.countMatches("1234512345", "1", -100));
       assertEquals(0, Strings.countMatches(null, "1", 1));
       assertEquals(0, Strings.countMatches("1", null, 1));
    }

@@ -148,19 +148,19 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
       final String secs = m.group(16);
       final String msecs = m.group(21);
       if (days != null) {
-         milliseconds += Integer.parseInt(days) * 1000 * 60 * 60 * 24;
+         milliseconds += Long.parseLong(days) * 1000 * 60 * 60 * 24;
       }
       if (hours != null) {
-         milliseconds += Integer.parseInt(hours) * 1000 * 60 * 60;
+         milliseconds += Long.parseLong(hours) * 1000 * 60 * 60;
       }
       if (mins != null) {
-         milliseconds += Integer.parseInt(mins) * 1000 * 60;
+         milliseconds += Long.parseLong(mins) * 1000 * 60;
       }
       if (secs != null) {
-         milliseconds += Integer.parseInt(secs) * 1000;
+         milliseconds += Long.parseLong(secs) * 1000;
       }
       if (msecs != null) {
-         milliseconds += Integer.parseInt(msecs);
+         milliseconds += Long.parseLong(msecs);
       }
       return milliseconds;
    }

@@ -348,11 +348,19 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     * @return the number of occurrences, 0 if either String is <code>null</code>
     */
    public static int countMatches(final String searchIn, final String searchFor, final int startAt) {
-      if (isEmpty(searchIn) || isEmpty(searchFor) || startAt >= searchIn.length() || startAt < 0)
+      if (isEmpty(searchIn) || isEmpty(searchFor) || startAt >= searchIn.length())
          return 0;
 
       int count = 0;
-      int foundAt = startAt > -1 ? startAt - 1 : 0;
+      int foundAt;
+      if (startAt >= 0) {
+         foundAt = startAt;
+      } else if (startAt < -searchIn.length()) {
+         foundAt = 0;
+      } else {
+         foundAt = searchIn.length() + startAt;
+      }
+      foundAt--;
       while ((foundAt = searchIn.indexOf(searchFor, foundAt + 1)) > -1) {
          count++;
       }
