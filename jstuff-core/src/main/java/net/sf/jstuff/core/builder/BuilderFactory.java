@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -91,6 +92,7 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
          }
 
          // collecting @OnPostBuild methods
+         final Set<String> overridablePostBuildMethodNames = newHashSet(2);
          Types.visit(targetClass, new DefaultClassVisitor() {
             @Override
             public boolean isVisitingFields(final Class<?> clazz) {
@@ -105,7 +107,17 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
             @Override
             public boolean isVisitingMethod(final Method method) {
                if (!Methods.isAbstract(method) && !Methods.isStatic(method) && method.isAnnotationPresent(OnPostBuild.class)) {
-                  onPostBuilds.add(method);
+                  if (method.getParameterTypes().length > 0)
+                     throw new IllegalStateException("@OnPostBuild method [" + method + "] must not declare parameters!");
+                  if (Methods.isPrivate(method)) {
+                     onPostBuilds.add(method);
+                  } else {
+                     final String mName = method.getName();
+                     if (!overridablePostBuildMethodNames.contains(mName)) {
+                        onPostBuilds.add(method);
+                        overridablePostBuildMethodNames.add(mName);
+                     }
+                  }
                }
                return false;
             }
@@ -181,12 +193,14 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
          }
          throw new UnsupportedOperationException(method.toString());
       }
+
    }
 
    /**
     * @param targetClass if <code>null</code> the builder factory tries to extract the generic argument type information from the builderInterface class
     */
    public static <TARGET_CLASS, BUILDER_IFACE extends Builder<? extends TARGET_CLASS>> BuilderFactory<TARGET_CLASS, BUILDER_IFACE> //
+
       of(final Class<BUILDER_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {
       return new BuilderFactory<TARGET_CLASS, BUILDER_IFACE>(builderInterface, targetClass, constructorArgs);
    }
