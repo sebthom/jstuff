@@ -16,6 +16,8 @@ import static net.sf.jstuff.core.math.NumericalSystem.*;
 
 import java.math.BigInteger;
 
+import org.apache.commons.lang3.time.StopWatch;
+
 import junit.framework.TestCase;
 
 /**
@@ -114,4 +116,26 @@ public class NumericalSystemTest extends TestCase {
       // assertEquals(BigInteger.valueOf(123456789).toString(62), BASE36.encode(123456789));
    }
 
+   public void testToBase62EncodeBigIntPerf() {
+
+      final BigInteger number = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(Long.MAX_VALUE));
+
+      assertEquals(NumericalSystem.BASE62.encode(number), NumericalSystem.BASE62.encode_slow(number));
+
+      final int iterations = 1000000;
+      final StopWatch sw = new StopWatch();
+      sw.start();
+      for (int i = 0; i < iterations; i++) {
+         NumericalSystem.BASE62.encode(number);
+      }
+      sw.stop();
+      System.out.println(sw);
+      sw.reset();
+      sw.start();
+      for (int i = 0; i < iterations; i++) {
+         NumericalSystem.BASE62.encode_slow(number);
+      }
+      sw.stop();
+      System.out.println(sw);
+   }
 }
