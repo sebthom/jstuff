@@ -97,7 +97,6 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
       return serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null;
    }
 
-   @SuppressWarnings("unchecked")
    public void onServiceAvailable() {
       if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) != null) {
          final ServiceListener<SERVICE_INTERFACE>[] listeners;
@@ -120,7 +119,6 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
       }
    }
 
-   @SuppressWarnings("unchecked")
    public void onServiceUnavailable() {
       if (serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) == null) {
          final ServiceListener<SERVICE_INTERFACE>[] listeners;

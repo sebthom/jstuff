@@ -40,7 +40,6 @@ public class ServletContextWrapper implements ServletContext {
       return delegate.getAttribute(name);
    }
 
-   @SuppressWarnings("unchecked")
    public Enumeration<String> getAttributeNames() {
       return delegate.getAttributeNames();
    }
@@ -61,7 +60,6 @@ public class ServletContextWrapper implements ServletContext {
       return delegate.getInitParameter(name);
    }
 
-   @SuppressWarnings("unchecked")
    public Enumeration<String> getInitParameterNames() {
       return delegate.getInitParameterNames();
    }
@@ -98,7 +96,6 @@ public class ServletContextWrapper implements ServletContext {
       return delegate.getResourceAsStream(path);
    }
 
-   @SuppressWarnings("unchecked")
    public Set<String> getResourcePaths(final String path) {
       return delegate.getResourcePaths(path);
    }
@@ -116,12 +113,12 @@ public class ServletContextWrapper implements ServletContext {
       return delegate.getServletContextName();
    }
 
-   @SuppressWarnings({"deprecation", "rawtypes"})
+   @SuppressWarnings("deprecation")
    public Enumeration getServletNames() {
       return delegate.getServletNames();
    }
 
-   @SuppressWarnings({"deprecation", "rawtypes"})
+   @SuppressWarnings("deprecation")
    public Enumeration getServlets() {
       return delegate.getServlets();
    }

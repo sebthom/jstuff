@@ -77,7 +77,6 @@ public class RequestAttributeSettingFilter implements Filter {
       return attributes;
    }
 
-   @SuppressWarnings("unchecked")
    public void init(final FilterConfig filterConfig) throws ServletException {
       for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames())) {
          attributes.put(param, filterConfig.getInitParameter(param));

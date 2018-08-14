@@ -50,7 +50,7 @@ public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
    }
 
    @Override
-   @SuppressWarnings({"unchecked", "rawtypes"})
+   @SuppressWarnings("rawtypes")
    protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointState serviceEndpointState,
       final Class<SERVICE_INTERFACE> serviceInterface) {
 

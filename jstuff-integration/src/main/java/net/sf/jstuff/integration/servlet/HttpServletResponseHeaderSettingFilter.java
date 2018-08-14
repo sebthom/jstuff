@@ -51,7 +51,6 @@ public class HttpServletResponseHeaderSettingFilter implements Filter {
       chain.doFilter(request, response);
    }
 
-   @SuppressWarnings("unchecked")
    public void init(final FilterConfig filterConfig) throws ServletException {
       for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames())) {
          parameter.put(param, filterConfig.getInitParameter(param));

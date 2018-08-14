@@ -22,7 +22,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class AtomTextConverter implements Converter {
-   @SuppressWarnings("rawtypes")
    public boolean canConvert(final Class type) {
       return type.equals(AtomText.class);
    }

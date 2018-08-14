@@ -49,7 +49,6 @@ public class AsyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
    }
 
    public Future<Integer> fire(final EVENT type) {
-      @SuppressWarnings("unchecked")
       final EventListener<EVENT>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
 
       return executor.submit(new Callable<Integer>() {

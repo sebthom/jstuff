@@ -61,7 +61,6 @@ public class HttpSessionMap implements SessionMap {
       return Enumerations.contains(sess.getAttributeNames(), key);
    }
 
-   @SuppressWarnings("unchecked")
    public boolean containsValue(final Object value) {
       final HttpSession sess = request.getSession(false);
       if (sess == null)
