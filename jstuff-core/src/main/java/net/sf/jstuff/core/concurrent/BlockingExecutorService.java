@@ -34,7 +34,7 @@ import net.sf.jstuff.core.validation.Args;
 public class BlockingExecutorService extends BlockingExecutor implements ExecutorService {
 
    protected static final class CallableWrapper<T> implements Callable<T> {
-      private final Callable<T> wrapped;;
+      private final Callable<T> wrapped;
       private final Semaphore limiter;
 
       protected CallableWrapper(final Callable<T> wrapped, final Semaphore limiter) {

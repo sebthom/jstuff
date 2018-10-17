@@ -28,7 +28,7 @@ import net.sf.jstuff.core.validation.Args;
 public class BlockingExecutor implements Executor {
 
    protected static final class RunnableWrapper implements Runnable {
-      private final Runnable wrapped;;
+      private final Runnable wrapped;
       private final Semaphore limiter;
 
       protected RunnableWrapper(final Runnable wrapped, final Semaphore limiter) {
