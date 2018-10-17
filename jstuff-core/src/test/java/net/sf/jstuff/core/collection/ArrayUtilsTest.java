@@ -12,6 +12,13 @@
  *******************************************************************************/
 package net.sf.jstuff.core.collection;
 
+import static org.junit.Assert.*;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+
+import org.apache.commons.lang3.RandomStringUtils;
+
 import junit.framework.TestCase;
 import net.sf.jstuff.core.functional.Accept;
 
@@ -19,6 +26,18 @@ import net.sf.jstuff.core.functional.Accept;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ArrayUtilsTest extends TestCase {
+
+   public void testFilter() {
+      final String[] filtered = ArrayUtils.filter(new Accept<String>() {
+         public boolean accept(final String obj) {
+            return "foo".equals(obj) || "bar".equals(obj);
+         }
+      }, new String[] {"dog", "foo", "bar", "cat"});
+
+      assertEquals(2, filtered.length);
+      assertEquals("foo", filtered[0]);
+      assertEquals("bar", filtered[1]);
+   }
 
    public void testIntersect() {
       assertEquals(0, ArrayUtils.intersect((Object[]) null).length);
@@ -33,16 +52,8 @@ public class ArrayUtilsTest extends TestCase {
       assertEquals("bar", ArrayUtils.intersect(arr1, arr2)[1]);
    }
 
-   public void testFilter() {
-
-      final String[] filtered = ArrayUtils.filter(new Accept<String>() {
-         public boolean accept(final String obj) {
-            return "foo".equals(obj) || "bar".equals(obj);
-         }
-      }, new String[] {"dog", "foo", "bar", "cat"});
-
-      assertEquals(2, filtered.length);
-      assertEquals("foo", filtered[0]);
-      assertEquals("bar", filtered[1]);
+   public void testToByteArray() throws UnsupportedEncodingException {
+      final String str = RandomStringUtils.random(250);
+      assertArrayEquals(str.getBytes("UTF-8"), ArrayUtils.toByteArray(str.toCharArray(), Charset.forName("UTF-8")));
    }
 }

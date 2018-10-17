@@ -13,6 +13,9 @@
 package net.sf.jstuff.core.collection;
 
 import java.lang.reflect.Array;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -95,6 +98,34 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
          return null;
 
       return values.toArray((T[]) Array.newInstance(itemType, values.size()));
+   }
+
+   /**
+    * About 30% faster than <code>new String(chars).getBytes("UTF-8")</code>
+    */
+   public static byte[] toByteArray(final char[] chars, final Charset charset) {
+      if (chars == null)
+         return null;
+
+      if (chars.length == 0)
+         return EMPTY_BYTE_ARRAY;
+
+      final CharBuffer charBuff = CharBuffer.wrap(chars);
+      final ByteBuffer bytesBuff = charset.encode(charBuff);
+      final byte[] bytes = new byte[bytesBuff.remaining()];
+      bytesBuff.get(bytes);
+      return bytes;
+   }
+
+   public static byte[] toByteArray(final char[] chars, final int off, final int len, final Charset charset) {
+      if (chars == null)
+         return null;
+
+      final CharBuffer charBuff = CharBuffer.wrap(chars, off, len);
+      final ByteBuffer bytesBuff = charset.encode(charBuff);
+      final byte[] bytes = new byte[bytesBuff.remaining()];
+      bytesBuff.get(bytes);
+      return bytes;
    }
 
    public static List<Boolean> toList(final boolean... array) {
