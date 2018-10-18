@@ -12,10 +12,8 @@
  *******************************************************************************/
 package net.sf.jstuff.core.security;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 
 import org.apache.commons.lang3.JavaVersion;
@@ -38,19 +36,7 @@ public abstract class SSLUtils {
    }
 
    public static void installAllTrustManager() {
-      final TrustManager[] trustAllCerts = {new javax.net.ssl.X509TrustManager() {
-         public void checkClientTrusted(final java.security.cert.X509Certificate[] certs, final String authType) {
-            // trust all
-         }
-
-         public void checkServerTrusted(final java.security.cert.X509Certificate[] certs, final String authType) {
-            // trust all
-         }
-
-         public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-            return null;
-         }
-      }};
+      final TrustManager[] trustAllCerts = {new TrustAllTrustManager()};
 
       // Install the all-trusting trust manager
       try {
@@ -58,13 +44,9 @@ public abstract class SSLUtils {
          final SSLContext sc = SSLContext.getInstance("TLSv1");
          sc.init(null, trustAllCerts, new java.security.SecureRandom());
          HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-         HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-            public boolean verify(final String hostname, final SSLSession session) {
-               return true;
-            }
-         });
+         HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHostnameVerifier());
       } catch (final Exception ex) {
-         throw new RuntimeException("Failed to install all-trusting trust manager", ex);
+         throw new SecurityException("Failed to install all-trusting trust manager", ex);
       }
    }
 }
