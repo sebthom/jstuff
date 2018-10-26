@@ -37,7 +37,6 @@ import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
-import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -99,7 +98,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
          throw new IllegalArgumentException("backupFolder [" + backupFolder + "] is not a directory");
 
       if (fileToBackup.exists()) {
-         Assert.isFileReadable(fileToBackup); // ensure it is actually a file
+         Args.isFileReadable("fileToBackup", fileToBackup); // ensure it is actually a file
 
          final File backupFile = new File(backupFolder, FilenameUtils.getBaseName(fileToBackup) + "_" + DateFormatUtils.format(System.currentTimeMillis(),
             "yyyy-MM-dd_hhmmss") + "." + FilenameUtils.getExtension(fileToBackup));

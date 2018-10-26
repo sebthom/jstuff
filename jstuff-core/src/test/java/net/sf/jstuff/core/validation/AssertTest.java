@@ -21,54 +21,8 @@ import junit.framework.TestCase;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class AssertTest extends TestCase {
-   public void testArgumentNotEmpty() {
-      try {
-         Args.notEmpty("password", (String) null);
-         fail();
-      } catch (final IllegalArgumentException ex) {
-         assertEquals("[password] must not be null", ex.getMessage());
-      }
 
-      try {
-         Args.notEmpty("password", "");
-         fail();
-      } catch (final IllegalArgumentException ex) {
-         assertEquals("[password] must not be empty", ex.getMessage());
-      }
-
-      Args.notEmpty("password", "secret");
-
-      try {
-         Args.notEmpty("values", (String[]) null);
-         fail();
-      } catch (final IllegalArgumentException ex) {
-         assertEquals("[values] must not be null", ex.getMessage());
-      }
-
-      try {
-         Args.notEmpty("values", new String[0]);
-         fail();
-      } catch (final IllegalArgumentException ex) {
-         assertEquals("[values] must not be empty", ex.getMessage());
-      }
-
-      Args.notEmpty("values", new String[] {"dfd"});
-
-   }
-
-   public void testArgumentNotNull() {
-      try {
-         Args.notNull("password", null);
-         fail();
-      } catch (final IllegalArgumentException ex) {
-         assertEquals("[password] must not be null", ex.getMessage());
-      }
-
-      Args.notNull("password", "");
-      Args.notNull("password", "secret");
-   }
-
-   public void testIsFalse() {
+   public void testAssert_IsFalse() {
       try {
          Assert.isFalse(true, "foo");
          fail();
@@ -79,7 +33,7 @@ public class AssertTest extends TestCase {
       Assert.isFalse(false, "foo");
    }
 
-   public void testIsReadableFile() throws IOException {
+   public void testAssert_IsFileReadable() throws IOException {
       try {
          Assert.isFileReadable(new File("foo"));
          fail();
@@ -91,11 +45,11 @@ public class AssertTest extends TestCase {
          Assert.isFileReadable(File.createTempFile("foo", "bar").getParentFile());
          fail();
       } catch (final IllegalStateException ex) {
-         assertTrue(ex.getMessage().contains("is not a file"));
+         assertTrue(ex.getMessage().contains("is not a regular file"));
       }
    }
 
-   public void testIsTrue() {
+   public void testAssert_IsTrue() {
       try {
          Assert.isTrue(false, "foo");
          fail();
@@ -106,7 +60,7 @@ public class AssertTest extends TestCase {
       Assert.isTrue(true, "foo");
    }
 
-   public void testNotEmpty() {
+   public void testAssert_NotEmpty() {
       try {
          Assert.notEmpty("", "foo");
          fail();
@@ -140,7 +94,7 @@ public class AssertTest extends TestCase {
       Assert.notEmpty(new String[] {"value"}, "foo");
    }
 
-   public void testNotNull() {
+   public void testAssert_NotNull() {
       try {
          Assert.notNull(null, "foo");
          fail();
