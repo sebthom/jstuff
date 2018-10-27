@@ -15,11 +15,8 @@ package net.sf.jstuff.core.reflection;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.WeakHashMap;
 
 import org.apache.commons.io.IOExceptionWithCause;
-
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Method objects since they do not implement Serializable
@@ -29,59 +26,37 @@ import net.sf.jstuff.core.validation.Args;
 public final class SerializableMethod implements Serializable {
    private static final long serialVersionUID = 1L;
 
-   private static final WeakHashMap<Method, SerializableMethod> CACHE = new WeakHashMap<Method, SerializableMethod>();
-
-   public static SerializableMethod get(final Method method) {
-      Args.notNull("method", method);
-
-      /*
-       * intentionally the following code is not synchronized
-       */
-      SerializableMethod sm = CACHE.get(method);
-      if (sm == null) {
-         sm = new SerializableMethod(method);
-         CACHE.put(method, sm);
-      }
-      return sm;
-   }
-
-   private final Class<?> declaringClass;
+   private Class<?> declaringClass;
    private transient Method method;
-   private final String name;
-   private final Class<?>[] parameterTypes;
+   private String name;
+   private Class<?>[] parameterTypes;
 
-   private SerializableMethod(final Method method) {
+   public SerializableMethod(final Method method) {
       this.method = method;
-      name = method.getName();
-      parameterTypes = method.getParameterTypes();
-      declaringClass = method.getDeclaringClass();
    }
 
-   /**
-    * @return the declaringClass
-    */
    public Class<?> getDeclaringClass() {
+      if (declaringClass == null) {
+         declaringClass = method.getDeclaringClass();
+      }
       return declaringClass;
    }
 
-   /**
-    * @return the method
-    */
    public Method getMethod() {
       return method;
    }
 
-   /**
-    * @return the name
-    */
    public String getName() {
+      if (name == null) {
+         name = method.getName();
+      }
       return name;
    }
 
-   /**
-    * @return the parameterTypes
-    */
    public Class<?>[] getParameterTypes() {
+      if (parameterTypes == null) {
+         parameterTypes = method.getParameterTypes();
+      }
       return parameterTypes;
    }
 
@@ -92,5 +67,14 @@ public final class SerializableMethod implements Serializable {
       } catch (final NoSuchMethodException ex) {
          throw new IOExceptionWithCause(ex);
       }
+   }
+
+   private void writeObject(final java.io.ObjectOutputStream stream) throws IOException {
+      // ensure fields are populated
+      getName();
+      getDeclaringClass();
+      getParameterTypes();
+
+      stream.defaultWriteObject();
    }
 }

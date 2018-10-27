@@ -29,14 +29,14 @@ public class SettingFieldValueFailedException extends ReflectionException {
 
    public SettingFieldValueFailedException(final Field field, final Object targetObject, final String message) {
       super(message);
-      this.field = SerializableField.get(field);
+      this.field = new SerializableField(field);
       this.targetObject = targetObject;
       targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
    }
 
    public SettingFieldValueFailedException(final Field field, final Object targetObject, final Throwable cause) {
       super("Setting value of field " + field.getName() + " failed.", cause);
-      this.field = SerializableField.get(field);
+      this.field = new SerializableField(field);
       this.targetObject = targetObject;
       targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
    }

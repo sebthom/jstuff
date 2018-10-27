@@ -15,11 +15,8 @@ package net.sf.jstuff.core.reflection;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.WeakHashMap;
 
 import org.apache.commons.io.IOExceptionWithCause;
-
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * Serializable Wrapper for java.lang.reflect.Field objects since they do not implement Serializable
@@ -29,50 +26,29 @@ import net.sf.jstuff.core.validation.Args;
 public final class SerializableField implements Serializable {
    private static final long serialVersionUID = 1L;
 
-   private static final WeakHashMap<Field, SerializableField> CACHE = new WeakHashMap<Field, SerializableField>();
-
-   public static SerializableField get(final Field field) {
-      Args.notNull("field", field);
-
-      /*
-       * intentionally the following code is not synchronized
-       */
-      SerializableField sm = CACHE.get(field);
-      if (sm == null) {
-         sm = new SerializableField(field);
-         CACHE.put(field, sm);
-      }
-      return sm;
-   }
-
-   private final Class<?> declaringClass;
+   private Class<?> declaringClass;
    private transient Field field;
-   private final String name;
+   private String name;
 
-   private SerializableField(final Field field) {
+   public SerializableField(final Field field) {
       this.field = field;
-      name = field.getName();
-      declaringClass = field.getDeclaringClass();
    }
 
-   /**
-    * @return the declaringClass
-    */
    public Class<?> getDeclaringClass() {
+      if (declaringClass == null) {
+         declaringClass = field.getDeclaringClass();
+      }
       return declaringClass;
    }
 
-   /**
-    * @return the field
-    */
    public Field getField() {
       return field;
    }
 
-   /**
-    * @return the name
-    */
    public String getName() {
+      if (name == null) {
+         name = field.getName();
+      }
       return name;
    }
 
@@ -83,5 +59,13 @@ public final class SerializableField implements Serializable {
       } catch (final NoSuchFieldException ex) {
          throw new IOExceptionWithCause(ex);
       }
+   }
+
+   private void writeObject(final java.io.ObjectOutputStream stream) throws IOException {
+      // ensure fields are populated
+      getName();
+      getDeclaringClass();
+
+      stream.defaultWriteObject();
    }
 }

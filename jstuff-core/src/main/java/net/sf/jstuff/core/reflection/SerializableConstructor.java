@@ -15,7 +15,6 @@ package net.sf.jstuff.core.reflection;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.util.WeakHashMap;
 
 import org.apache.commons.io.IOExceptionWithCause;
 
@@ -29,50 +28,31 @@ import net.sf.jstuff.core.validation.Args;
 public final class SerializableConstructor implements Serializable {
    private static final long serialVersionUID = 1L;
 
-   private static final WeakHashMap<Constructor<?>, SerializableConstructor> CACHE = new WeakHashMap<Constructor<?>, SerializableConstructor>();
+   private transient Constructor<?> constructor;
+   private Class<?> declaringClass;
+   private Class<?>[] parameterTypes;
 
-   public static SerializableConstructor get(final Constructor<?> constructor) {
+   public SerializableConstructor(final Constructor<?> constructor) {
       Args.notNull("constructor", constructor);
 
-      /*
-       * intentionally the following code is not synchronized
-       */
-      SerializableConstructor sm = CACHE.get(constructor);
-      if (sm == null) {
-         sm = new SerializableConstructor(constructor);
-         CACHE.put(constructor, sm);
-      }
-      return sm;
-   }
-
-   private transient Constructor<?> constructor;
-   private final Class<?> declaringClass;
-   private final Class<?>[] parameterTypes;
-
-   private SerializableConstructor(final Constructor<?> constructor) {
       this.constructor = constructor;
-      parameterTypes = constructor.getParameterTypes();
-      declaringClass = constructor.getDeclaringClass();
    }
 
-   /**
-    * @return the constructor
-    */
    public Constructor<?> getConstructor() {
       return constructor;
    }
 
-   /**
-    * @return the declaringClass
-    */
    public Class<?> getDeclaringClass() {
+      if (declaringClass == null) {
+         declaringClass = constructor.getDeclaringClass();
+      }
       return declaringClass;
    }
 
-   /**
-    * @return the parameterTypes
-    */
    public Class<?>[] getParameterTypes() {
+      if (parameterTypes == null) {
+         parameterTypes = constructor.getParameterTypes();
+      }
       return parameterTypes;
    }
 
@@ -83,5 +63,13 @@ public final class SerializableConstructor implements Serializable {
       } catch (final NoSuchMethodException ex) {
          throw new IOExceptionWithCause(ex);
       }
+   }
+
+   private void writeObject(final java.io.ObjectOutputStream stream) throws IOException {
+      // ensure fields are populated
+      getDeclaringClass();
+      getParameterTypes();
+
+      stream.defaultWriteObject();
    }
 }

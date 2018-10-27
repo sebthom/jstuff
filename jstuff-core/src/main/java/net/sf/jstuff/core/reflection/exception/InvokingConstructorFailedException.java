@@ -26,7 +26,7 @@ public class InvokingConstructorFailedException extends ReflectionException {
 
    public InvokingConstructorFailedException(final Constructor<?> ctor, final Throwable cause) {
       super("Invoking constructor " + ctor + " failed.", cause);
-      this.ctor = SerializableConstructor.get(ctor);
+      this.ctor = new SerializableConstructor(ctor);
    }
 
    public Constructor<?> getConstructor() {
