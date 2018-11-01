@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2018 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.integration.spring;
 
 import java.io.IOException;
@@ -33,7 +30,7 @@ import net.sf.jstuff.integration.rest.AbstractRestServiceExporter;
 
 /**
  * <u>applicationContext.xml:</u>
- * 
+ *
  * <pre>
  *   &lt;bean name="/UserService" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter" lazy-init="false"&gt;
  *     &lt;property name="service" ref="userService" /&gt;
@@ -44,9 +41,9 @@ import net.sf.jstuff.integration.rest.AbstractRestServiceExporter;
  *     &lt;property name="serviceInterface" value="com.acme.services.GroupService" /&gt;
  *   &lt;/bean>
  * </pre>
- * 
+ *
  * <u>web.xml</u>:
- * 
+ *
  * <pre>
  * &lt;servlet&gt;
  *    &lt;servlet-name&gt;httpServicesServlet&lt;/servlet-name&gt;
