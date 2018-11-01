@@ -47,7 +47,7 @@ public class RestResourceAction implements Serializable {
       Args.notNull("method", serviceMethod);
       Args.notNull("parameterNames", parameterNames);
 
-      this.serviceMethod = SerializableMethod.get(serviceMethod);
+      this.serviceMethod = new SerializableMethod(serviceMethod);
       this.resourceName = resourceName;
       this.httpRequestMethod = httpRequestMethod;
       this.fallbackFor = fallbackFor;
@@ -66,7 +66,8 @@ public class RestResourceAction implements Serializable {
             requestURITemplate = resourceName + "/${" + Strings.join(ArrayUtils.remove(parameterNames, paramCount - 1), "}/${") + "}";
          }
 
-         // for POST and PUT the last parameter is supposed to be submitted as HTTP Body Message
+         // for POST and PUT the last parameter is supposed to be submitted as HTTP Body
+         // Message
          requiredURLParameterCount = paramCount - 1 - (serviceMethod.isVarArgs() ? 1 : 0);
          httpRequestBodyType = serviceMethod.getParameterTypes()[paramCount - 1];
       } else {
