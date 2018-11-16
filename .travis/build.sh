@@ -55,8 +55,9 @@ if [[ ${projectVersion:-foo} == ${POM_CURRENT_VERSION:-bar} ]]; then
     git checkout ${TRAVIS_BRANCH}
 
     # workaround for "Cannot prepare the release because you have local modifications"
-    git reset --hard HEAD
-    git clean -df
+    # https://stackoverflow.com/questions/11383094/unstaged-changes-left-after-git-reset-hard/41041863#41041863
+    git rm --cached -r .
+    git reset --hard
 
     mvn -e -U --batch-mode --show-version \
         -s .travis/maven_settings.xml -t .travis/maven_toolchains.xml \
