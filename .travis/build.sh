@@ -2,7 +2,7 @@
 #
 # Copyright 2015-2018 by Vegard IT GmbH, Germany, https://vegardit.com
 # SPDX-License-Identifier: Apache-2.0
-# 
+#
 # @author Sebastian Thomschke, Vegard IT GmbH
 # @author Patrick Spielmann, Vegard IT GmbH
 
@@ -10,7 +10,7 @@ set -e # abort script at first error
 set -o pipefail # causes a pipeline to return the exit status of the last command in the pipe that returned a non-zero return value
 
 if [[ -f ./.travis/release-trigger.sh ]]; then
-    echo "Sourcing [./.travis/release-trigger.sh]..." 
+    echo "Sourcing [./.travis/release-trigger.sh]..."
     source ./.travis/release-trigger.sh
 fi
 
@@ -46,13 +46,17 @@ if [[ ${projectVersion:-foo} == ${POM_CURRENT_VERSION:-bar} ]]; then
     echo "  -> Next Development Version: ${nextDevelopmentVersion}"
     echo "  ->           Skipping Tests: ${SKIP_TESTS}"
     echo "  ->               Is Dry-Run: ${DRY_RUN}"
-    
+
     # workaround for "No toolchain found with specification [version:1.8, vendor:default]" during release builds
     cp -f .travis/maven_settings.xml $HOME/.m2/settings.xml
     cp -f .travis/maven_toolchains.xml $HOME/.m2/toolchains.xml
 
     # workaround for "Git fatal: ref HEAD is not a symbolic ref" during release
     git checkout ${TRAVIS_BRANCH}
+
+    # workaround for "Cannot prepare the release because you have local modifications"
+    git reset --hard HEAD
+    git clean -df
 
     mvn -e -U --batch-mode --show-version \
         -s .travis/maven_settings.xml -t .travis/maven_toolchains.xml \
