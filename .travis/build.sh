@@ -54,11 +54,6 @@ if [[ ${projectVersion:-foo} == ${POM_CURRENT_VERSION:-bar} ]]; then
     # workaround for "Git fatal: ref HEAD is not a symbolic ref" during release
     git checkout ${TRAVIS_BRANCH}
 
-    # workaround for "Cannot prepare the release because you have local modifications"
-    # https://stackoverflow.com/questions/11383094/unstaged-changes-left-after-git-reset-hard/41041863#41041863
-    git rm --cached -r .
-    git reset --hard
-
     mvn -e -U --batch-mode --show-version \
         -s .travis/maven_settings.xml -t .travis/maven_toolchains.xml \
         -DdryRun=${DRY_RUN} -Dresume=false "-Darguments=-DskipTests=${SKIP_TESTS} -DskipITs=${SKIP_TESTS}" -DreleaseVersion=${POM_RELEASE_VERSION} -DdevelopmentVersion=${nextDevelopmentVersion} \
