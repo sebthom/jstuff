@@ -18,6 +18,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
+import net.sf.jstuff.core.Strings;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -224,6 +226,21 @@ public abstract class Args {
          if (item == null)
             throw _createIllegalArgumentException(argumentName, "must not contain elements with value <null>");
       return items;
+   }
+
+   /**
+    * @throws IllegalArgumentException if string <code>value</code> is null, has a length of 0, or only contains whitespace chars
+    */
+   public static <S extends CharSequence> S notBlank(final String argumentName, final S value) {
+      _notNull("argumentName", argumentName);
+      _notNull(argumentName, value);
+
+      if (value.length() == 0)
+         throw _createIllegalArgumentException(argumentName, "must not be empty");
+
+      if (Strings.isBlank(value))
+         throw _createIllegalArgumentException(argumentName, "must not be blank");
+      return value;
    }
 
    /**
