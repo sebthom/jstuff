@@ -17,6 +17,7 @@ import static net.sf.jstuff.core.collection.CollectionUtils.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,6 +27,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.Maps;
+import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.reflection.Annotations;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.Proxies;
@@ -41,7 +43,7 @@ import net.sf.jstuff.core.validation.Assert;
 public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extends TARGET_CLASS>> {
 
    private static final class BuilderImpl implements InvocationHandler {
-      final Map<String, Object[]> properties = Maps.newHashMap();
+      final List<Tuple2<String, Object[]>> properties = new ArrayList<Tuple2<String, Object[]>>();
 
       private final Class<?> builderInterface;
       private final Class<?> targetClass;
@@ -135,13 +137,13 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
             final Object target = Types.newInstance(targetClass, constructorArgs);
 
             // writing properties
-            for (final Entry<String, Object[]> property : properties.entrySet()) {
-               String propName = property.getKey();
+            for (final Tuple2<String, Object[]> property : properties) {
+               String propName = property.get1();
                // remove "with" prefix from withSomeProperty(...) named properties
                if (propName.length() > 4 && propName.startsWith("with")) {
                   propName = Strings.lowerCaseFirstChar(propName.substring(4));
                }
-               final Object[] propArgs = property.getValue();
+               final Object[] propArgs = property.get2();
                final String setterName = "set" + Strings.upperCaseFirstChar(propName);
                final Method setterMethod = Methods.findAnyCompatible(targetClass, setterName, propArgs);
                // if no setter found then directly try to set the field
@@ -159,11 +161,16 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
                   final String propName = prop.getKey();
                   final Builder.Property propConfig = prop.getValue();
 
-                  if (properties.containsKey(propName)) {
-                     final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
-                     if (!isNullable && (properties.get(propName) == null || properties.get(propName)[0] == null))
-                        throw new IllegalArgumentException(builderInterface.getSimpleName() + "." + propName + "(...) must not be set to null.");
-                  } else {
+                  boolean found = false;
+                  for (final Tuple2<String, Object[]> property : properties) {
+                     if (propName.equals(property.get1())) {
+                        final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
+                        if (!isNullable && (property.get2() == null || property.get2()[0] == null))
+                           throw new IllegalArgumentException(builderInterface.getSimpleName() + "." + propName + "(...) must not be set to null.");
+                        found = true;
+                     }
+                  }
+                  if (!found) {
                      final boolean isRequired = propConfig == null ? propertyDefaults.required() : propConfig.required();
                      if (isRequired)
                         throw new IllegalStateException("Setting " + builderInterface.getSimpleName() + "." + propName + "(...) is required.");
@@ -188,7 +195,7 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
             return builderInterface.getName() + "@" + hashCode();
 
          if (method.getReturnType().isAssignableFrom(builderInterface)) {
-            properties.put(method.getName(), args);
+            properties.add(Tuple2.create(method.getName(), args));
             return proxy;
          }
          throw new UnsupportedOperationException(method.toString());

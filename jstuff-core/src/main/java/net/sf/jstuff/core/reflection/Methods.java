@@ -95,30 +95,34 @@ public abstract class Methods extends Members {
       if (argTypes == null || argTypes.length == 0)
          return null;
 
-      final Method[] declaredMethods = clazz.getDeclaredMethods();
-      for (final Method candidate : declaredMethods) {
-         if (isStatic(candidate)) {
-            continue;
-         }
-         if (!methodName.equals(candidate.getName())) {
-            continue;
-         }
-
-         final Class<?>[] candidateParameterTypes = candidate.getParameterTypes();
-
-         if (candidateParameterTypes.length != argTypes.length) {
-            continue;
-         }
-
-         for (int i = 0; i < argTypes.length; i++) {
-            if (argTypes[i] == null) {
+      Class<?> currentClass = clazz;
+      while (currentClass != null) {
+         final Method[] declaredMethods = currentClass.getDeclaredMethods();
+         for (final Method candidate : declaredMethods) {
+            if (isStatic(candidate)) {
                continue;
             }
-            if (!Types.isAssignableTo(argTypes[i], candidateParameterTypes[i])) {
-               break;
+            if (!methodName.equals(candidate.getName())) {
+               continue;
             }
+
+            final Class<?>[] candidateParameterTypes = candidate.getParameterTypes();
+
+            if (candidateParameterTypes.length != argTypes.length) {
+               continue;
+            }
+
+            for (int i = 0; i < argTypes.length; i++) {
+               if (argTypes[i] == null) {
+                  continue;
+               }
+               if (!Types.isAssignableTo(argTypes[i], candidateParameterTypes[i])) {
+                  break;
+               }
+            }
+            return candidate;
          }
-         return candidate;
+         currentClass = currentClass.getSuperclass();
       }
       return null;
    }

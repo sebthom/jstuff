@@ -28,6 +28,8 @@ public class BuilderTest extends TestCase {
          THIS propertyA(String value);
 
          THIS propertyB(int value);
+
+         THIS withMethodCall(String name, int value);
       }
 
       @SuppressWarnings("unchecked")
@@ -37,11 +39,17 @@ public class BuilderTest extends TestCase {
 
       protected String propertyA;
       protected Integer propertyB = -1;
+      protected int methodCallCount = 0;
 
       @OnPostBuild
       protected void onInitialized() {
          Args.notNull("propertyB", propertyB);
          Args.notNegative("propertyB", propertyB);
+      }
+
+      @SuppressWarnings("unused")
+      protected void setMethodCall(final String name, final int value) {
+         methodCallCount++;
       }
    }
 
@@ -55,6 +63,7 @@ public class BuilderTest extends TestCase {
 
          @Builder.Property(required = true, nullable = true)
          THIS withPropertyE(String value);
+
       }
 
       @SuppressWarnings("unchecked")
@@ -74,9 +83,10 @@ public class BuilderTest extends TestCase {
             throw new IllegalArgumentException("propertyD not set via setter");
       }
 
-      public void setPropertyD(final String propertyD) {
-         this.propertyD = propertyD + "_setWithSetter";
+      public void setPropertyD(final String value) {
+         propertyD = value + "_setWithSetter";
       }
+
    }
 
    public void testEntityABuilder() {
@@ -119,13 +129,17 @@ public class BuilderTest extends TestCase {
    }
 
    public void testEntityBBuilder() {
-      EntityB.builder() //
+      final EntityB entity = EntityB.builder() //
          .propertyA("foo") //
          .propertyB(1) //
          .propertyC(3L) //
          .propertyD("bar") //
          .withPropertyE("ee") //
+         .withMethodCall("cat", 22) //
+         .withMethodCall("dog", 33) //
          .build();
+
+      assertEquals(2, entity.methodCallCount);
 
       try {
          EntityB.builder() //

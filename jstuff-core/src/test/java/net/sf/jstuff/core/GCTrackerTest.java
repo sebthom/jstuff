@@ -61,6 +61,8 @@ public class GCTrackerTest extends TestCase {
       Thread.sleep(1000);
       System.gc();
       Thread.sleep(1000);
+      System.gc();
+      Thread.sleep(1000);
       assertEquals(2 * objects, garbageCollected);
    }
 }
