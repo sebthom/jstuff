@@ -18,6 +18,8 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
+import net.sf.jstuff.core.Strings;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -167,6 +169,15 @@ public abstract class Assert {
          if (item == null)
             throw _createIllegalStateException(errorMessage);
       return items;
+   }
+
+   /**
+    * @throws IllegalStateException if string <code>value</code> is null, has a length of 0, or only contains whitespace chars
+    */
+   public static <S extends CharSequence> S notBlank(final S value, final String errorMessage) {
+      if (Strings.isBlank(value))
+         throw _createIllegalStateException(errorMessage);
+      return value;
    }
 
    public static <A> A[] notEmpty(final A[] value, final String errorMessage) {
