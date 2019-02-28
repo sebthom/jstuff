@@ -109,15 +109,18 @@ public abstract class Methods extends Members {
                continue;
             }
 
+            boolean isCompatible = true;
             for (int i = 0; i < argTypes.length; i++) {
                if (argTypes[i] == null) {
                   continue;
                }
                if (!Types.isAssignableTo(argTypes[i], candidateParameterTypes[i])) {
+                  isCompatible = false;
                   break;
                }
             }
-            return candidate;
+            if (isCompatible)
+               return candidate;
          }
          currentClass = currentClass.getSuperclass();
       }
