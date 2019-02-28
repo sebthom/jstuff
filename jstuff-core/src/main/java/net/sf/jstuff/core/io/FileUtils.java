@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core.io;
 
 import java.io.BufferedInputStream;
@@ -37,7 +34,6 @@ import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
-import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -99,7 +95,7 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
          throw new IllegalArgumentException("backupFolder [" + backupFolder + "] is not a directory");
 
       if (fileToBackup.exists()) {
-         Assert.isFileReadable(fileToBackup); // ensure it is actually a file
+         Args.isFileReadable("fileToBackup", fileToBackup); // ensure it is actually a file
 
          final File backupFile = new File(backupFolder, FilenameUtils.getBaseName(fileToBackup) + "_" + DateFormatUtils.format(System.currentTimeMillis(),
             "yyyy-MM-dd_hhmmss") + "." + FilenameUtils.getExtension(fileToBackup));

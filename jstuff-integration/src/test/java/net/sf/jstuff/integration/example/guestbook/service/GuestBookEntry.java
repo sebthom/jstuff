@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.integration.example.guestbook.service;
 
 import java.io.Serializable;
@@ -37,10 +34,11 @@ public class GuestBookEntry implements Serializable {
       summary.lastModifiedOn = entity.getLastModifiedOn();
 
       for (final GuestBookEntryRatingEntity r : entity.getRatings())
-         if (r.isGoodEntry())
+         if (r.isGoodEntry()) {
             summary.goodRatingsCount++;
-         else
+         } else {
             summary.badRatingsCount++;
+         }
       summary.responsesCount = entity.getResponses().size();
       return summary;
    }

@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
@@ -95,30 +92,34 @@ public abstract class Methods extends Members {
       if (argTypes == null || argTypes.length == 0)
          return null;
 
-      final Method[] declaredMethods = clazz.getDeclaredMethods();
-      for (final Method candidate : declaredMethods) {
-         if (isStatic(candidate)) {
-            continue;
-         }
-         if (!methodName.equals(candidate.getName())) {
-            continue;
-         }
-
-         final Class<?>[] candidateParameterTypes = candidate.getParameterTypes();
-
-         if (candidateParameterTypes.length != argTypes.length) {
-            continue;
-         }
-
-         for (int i = 0; i < argTypes.length; i++) {
-            if (argTypes[i] == null) {
+      Class<?> currentClass = clazz;
+      while (currentClass != null) {
+         final Method[] declaredMethods = currentClass.getDeclaredMethods();
+         for (final Method candidate : declaredMethods) {
+            if (isStatic(candidate)) {
                continue;
             }
-            if (!Types.isAssignableTo(argTypes[i], candidateParameterTypes[i])) {
-               break;
+            if (!methodName.equals(candidate.getName())) {
+               continue;
             }
+
+            final Class<?>[] candidateParameterTypes = candidate.getParameterTypes();
+
+            if (candidateParameterTypes.length != argTypes.length) {
+               continue;
+            }
+
+            for (int i = 0; i < argTypes.length; i++) {
+               if (argTypes[i] == null) {
+                  continue;
+               }
+               if (!Types.isAssignableTo(argTypes[i], candidateParameterTypes[i])) {
+                  break;
+               }
+            }
+            return candidate;
          }
-         return candidate;
+         currentClass = currentClass.getSuperclass();
       }
       return null;
    }

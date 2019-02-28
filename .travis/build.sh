@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-# Copyright 2015-2018 by Vegard IT GmbH, Germany, https://vegardit.com
+# Copyright 2015-2019 by Vegard IT GmbH, Germany, https://vegardit.com
 # SPDX-License-Identifier: Apache-2.0
-# 
+#
 # @author Sebastian Thomschke, Vegard IT GmbH
 # @author Patrick Spielmann, Vegard IT GmbH
 
@@ -10,11 +10,11 @@ set -e # abort script at first error
 set -o pipefail # causes a pipeline to return the exit status of the last command in the pipe that returned a non-zero return value
 
 if [[ -f ./.travis/release-trigger.sh ]]; then
-    echo "Sourcing [./.travis/release-trigger.sh]..." 
+    echo "Sourcing [./.travis/release-trigger.sh]..."
     source ./.travis/release-trigger.sh
 fi
 
-MAVEN_VERSION=3.5.4
+MAVEN_VERSION=3.6.0
 if [[ ! -e $HOME/.m2/bin/apache-maven-$MAVEN_VERSION ]]; then
     echo "Installing Maven version $MAVEN_VERSION..."
     mkdir -p $HOME/.m2/bin/
@@ -46,7 +46,7 @@ if [[ ${projectVersion:-foo} == ${POM_CURRENT_VERSION:-bar} ]]; then
     echo "  -> Next Development Version: ${nextDevelopmentVersion}"
     echo "  ->           Skipping Tests: ${SKIP_TESTS}"
     echo "  ->               Is Dry-Run: ${DRY_RUN}"
-    
+
     # workaround for "No toolchain found with specification [version:1.8, vendor:default]" during release builds
     cp -f .travis/maven_settings.xml $HOME/.m2/settings.xml
     cp -f .travis/maven_toolchains.xml $HOME/.m2/toolchains.xml
@@ -56,15 +56,20 @@ if [[ ${projectVersion:-foo} == ${POM_CURRENT_VERSION:-bar} ]]; then
 
     mvn -e -U --batch-mode --show-version \
         -s .travis/maven_settings.xml -t .travis/maven_toolchains.xml \
-        -DdryRun=${DRY_RUN} -Dresume=false "-Darguments=-DskipTests=${SKIP_TESTS} -DskipITs=${SKIP_TESTS}" -DautoVersionSubmodules=true -DreleaseVersion=${POM_RELEASE_VERSION} -DdevelopmentVersion=${nextDevelopmentVersion} \
+        -DdryRun=${DRY_RUN} -Dresume=false "-Darguments=-DskipTests=${SKIP_TESTS} -DskipITs=${SKIP_TESTS}" -DreleaseVersion=${POM_RELEASE_VERSION} -DdevelopmentVersion=${nextDevelopmentVersion} \
         help:active-profiles clean release:clean release:prepare release:perform \
         | grep -v -e "\[INFO\]  .* \[0.0[0-9][0-9]s\]" # the grep command suppresses all lines from maven-buildtime-extension that report plugins with execution time <=99ms
 else
     echo "###################################################"
     echo "# Building Maven Project...                       #"
     echo "###################################################"
+    if [[ ${TRAVIS_BRANCH} == "master" ]]; then
+        mavenGoal="deploy"
+    else
+        mavenGoal="verify"
+    fi
     mvn -e -U --batch-mode --show-version \
         -s .travis/maven_settings.xml -t .travis/maven_toolchains.xml \
-        help:active-profiles clean deploy \
+        help:active-profiles clean $mavenGoal \
         | grep -v -e "\[INFO\]  .* \[0.0[0-9][0-9]s\]" # the grep command suppresses all lines from maven-buildtime-extension that report plugins with execution time <=99ms
 fi

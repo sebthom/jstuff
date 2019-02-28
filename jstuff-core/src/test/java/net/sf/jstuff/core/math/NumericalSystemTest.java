@@ -1,20 +1,19 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core.math;
 
 import static net.sf.jstuff.core.math.NumericalSystem.*;
 
 import java.math.BigInteger;
+
+import org.apache.commons.lang3.time.StopWatch;
 
 import junit.framework.TestCase;
 
@@ -114,4 +113,26 @@ public class NumericalSystemTest extends TestCase {
       // assertEquals(BigInteger.valueOf(123456789).toString(62), BASE36.encode(123456789));
    }
 
+   public void testToBase62EncodeBigIntPerf() {
+
+      final BigInteger number = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(Long.MAX_VALUE));
+
+      assertEquals(NumericalSystem.BASE62.encode(number), NumericalSystem.BASE62.encode_slow(number));
+
+      final int iterations = 1000000;
+      final StopWatch sw = new StopWatch();
+      sw.start();
+      for (int i = 0; i < iterations; i++) {
+         NumericalSystem.BASE62.encode(number);
+      }
+      sw.stop();
+      System.out.println(sw);
+      sw.reset();
+      sw.start();
+      for (int i = 0; i < iterations; i++) {
+         NumericalSystem.BASE62.encode_slow(number);
+      }
+      sw.stop();
+      System.out.println(sw);
+   }
 }

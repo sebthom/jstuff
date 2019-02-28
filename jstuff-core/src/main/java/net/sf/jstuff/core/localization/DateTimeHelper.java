@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core.localization;
 
 import java.io.Serializable;
@@ -274,14 +271,15 @@ public class DateTimeHelper implements Serializable {
       Args.notNull("date", date);
 
       final DateFormat df;
-      if (isValidDateTime(date))
+      if (isValidDateTime(date)) {
          df = DateFormat.getDateInstance(getDateTimeStyle(date).style, locale);
-      else if (isValidDate(date))
+      } else if (isValidDate(date)) {
          df = DateFormat.getDateInstance(getDateStyle(date).style, locale);
-      else if (isValidTime(date))
+      } else if (isValidTime(date)) {
          df = DateFormat.getTimeInstance(getTimeStyle(date).style, locale);
-      else
+      } else {
          df = DateFormat.getDateInstance();
+      }
 
       df.setLenient(false);
 

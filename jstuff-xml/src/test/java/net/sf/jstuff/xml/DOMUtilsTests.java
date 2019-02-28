@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.xml;
 
 import java.io.File;
@@ -29,6 +26,12 @@ import net.sf.jstuff.xml.DOMUtils.XPathNodeConfiguration;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class DOMUtilsTests extends TestCase {
+
+   public void testCreateCommentBefore() {
+      final Element elem = DOMUtils.parseString("<foo id='myid'><bar/></foo>", null).getDocumentElement();
+      DOMUtils.createCommentBefore(DOMUtils.findNode(elem, "/foo/bar"), "MY_COMMENT");
+      assertEquals("<foo id=\"myid\"><!--MY_COMMENT--><bar/></foo>", DOMUtils.toXML(elem, false, false));
+   }
 
    public void testEvaluate() {
       final Element elem = DOMUtils.parseString("<foo id='myid'><bar/><bar/><bar/></foo>", null).getDocumentElement();
@@ -134,7 +137,6 @@ public class DOMUtilsTests extends TestCase {
          // sort on two attribute
          final Document doc = DOMUtils.parseString("<foo><bar name='bb' value='BB'/><bar name='bb' value='AA'/><bar name='aa' value='AA'/></foo>", null);
          DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true, "name", "value");
-         System.out.println(DOMUtils.toXML(doc, false, false));
          assertEquals("<foo><bar name=\"aa\" value=\"AA\"/><bar name=\"bb\" value=\"AA\"/><bar name=\"bb\" value=\"BB\"/></foo>", DOMUtils.toXML(doc, false,
             false));
       }

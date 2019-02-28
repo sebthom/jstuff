@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
- * 
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
- * 
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core.reflection.exception;
 
 import java.io.Serializable;
@@ -29,7 +26,7 @@ public class AccessingFieldValueFailedException extends ReflectionException {
 
    public AccessingFieldValueFailedException(final Field field, final Object targetObject, final Throwable cause) {
       super("Accessing value of field " + field.getName() + " failed.", cause);
-      this.field = SerializableField.get(field);
+      this.field = new SerializableField(field);
       this.targetObject = targetObject;
       targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
    }

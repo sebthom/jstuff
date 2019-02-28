@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
 import java.lang.reflect.Constructor;
@@ -45,14 +42,16 @@ public abstract class Constructors extends Members {
 
          final Class<?>[] ctorParamTypes = ctor.getParameterTypes();
 
-         if (ctorParamTypes.length != parameterTypesLen)
+         if (ctorParamTypes.length != parameterTypesLen) {
             continue;
+         }
          if (parameterTypesLen == 0)
             return ctor;
 
          for (int i = 0; i < parameterTypesLen; i++)
-            if (!Types.isAssignableTo(parameterTypes[i], ctorParamTypes[i]))
+            if (!Types.isAssignableTo(parameterTypes[i], ctorParamTypes[i])) {
                continue ctor_loop;
+            }
          return ctor;
       }
       return null;
@@ -70,18 +69,21 @@ public abstract class Constructors extends Members {
 
          final Class<?>[] ctorParamTypes = ctor.getParameterTypes();
 
-         if (ctorParamTypes.length != argsLen)
+         if (ctorParamTypes.length != argsLen) {
             continue;
+         }
          if (argsLen == 0)
             return ctor;
 
          for (int i = 0; i < argsLen; i++)
             if (args[i] == null) {
                // if arg is null and ctor param is a primitive we have no match since primitives cannot be assigned null
-               if (ctorParamTypes[i].getClass().isPrimitive())
+               if (ctorParamTypes[i].getClass().isPrimitive()) {
                   continue ctor_loop;
-            } else if (!Types.isAssignableTo(args[i].getClass(), ctorParamTypes[i]))
+               }
+            } else if (!Types.isAssignableTo(args[i].getClass(), ctorParamTypes[i])) {
                continue ctor_loop;
+            }
          return ctor;
       }
       return null;

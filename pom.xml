@@ -1,198 +1,196 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-Copyright 2005-2018 by Sebastian Thomschke and others.
-
-This program and the accompanying materials are made
-available under the terms of the Eclipse Public License 2.0
-which is available at https://www.eclipse.org/legal/epl-2.0/
-
-SPDX-License-Identifier: EPL-2.0
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+   <!--
+   Copyright 2010-2019 by Sebastian Thomschke and others.
 
-    <parent>
-        <groupId>com.vegardit.maven</groupId>
-        <artifactId>vegardit-maven-parent</artifactId>
-        <version>RELEASE</version>
-    </parent>
+   This program and the accompanying materials are made
+   available under the terms of the Eclipse Public License 2.0
+   which is available at https://www.eclipse.org/legal/epl-2.0/
 
-    <groupId>net.sf.jstuff</groupId>
-    <artifactId>jstuff-parent</artifactId>
-    <version>3.0.3-SNAPSHOT</version>
-    <packaging>pom</packaging>
+   SPDX-License-Identifier: EPL-2.0
+   -->
 
+   <modelVersion>4.0.0</modelVersion>
 
-    <name>jstuff</name>
-    <url>https://sourceforge.net/projects/jstuff/</url>
-    <description>Toolbox for Java</description>
-    <inceptionYear>2010</inceptionYear>
+   <parent>
+      <groupId>com.vegardit.maven</groupId>
+      <artifactId>vegardit-maven-parent</artifactId>
+      <version>RELEASE</version>
+   </parent>
 
-
-    <licenses>
-        <license>
-            <name>Eclipse Public License 2.0</name>
-            <distribution>repo</distribution>
-            <url>https://spdx.org/licenses/EPL-2.0</url>
-        </license>
-    </licenses>
+   <groupId>net.sf.jstuff</groupId>
+   <artifactId>jstuff-parent</artifactId>
+   <version>4.1.6-SNAPSHOT</version>
+   <packaging>pom</packaging>
 
 
-    <developers>
-        <developer>
-            <id>sebthom</id>
-            <name>Sebastian Thomschke</name>
-            <email>sebthom at users.sourceforge.net</email>
-            <url>https://sebthom.de/</url>
-            <roles>
-                <role>lead</role>
-                <role>developer</role>
-            </roles>
-            <timezone>Europe/Berlin</timezone>
-        </developer>
-    </developers>
+   <name>jstuff</name>
+   <url>https://sourceforge.net/projects/jstuff/</url>
+   <description>Toolbox for Java</description>
+   <inceptionYear>2010</inceptionYear>
 
 
-    <properties>
-        <java.version>1.5</java.version>
-        <slf4j.version>1.7.25</slf4j.version>
-    </properties>
+   <licenses>
+      <license>
+         <name>Eclipse Public License 2.0</name>
+         <distribution>repo</distribution>
+         <url>https://spdx.org/licenses/EPL-2.0</url>
+      </license>
+   </licenses>
 
 
-    <scm>
-        <!-- http://maven.apache.org/scm/subversion.html -->
-        <!-- http://maven.apache.org/scm/git.html -->
-        <url>https://github.com/sebthom/jstuff</url>
-        <connection>scm:git:https://github.com/sebthom/jstuff.git</connection>
-        <developerConnection>scm:git:https://github.com/sebthom/jstuff.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
+   <developers>
+      <developer>
+         <id>sebthom</id>
+         <name>Sebastian Thomschke</name>
+         <email>sebthom at users.sourceforge.net</email>
+         <url>https://sebthom.de/</url>
+         <roles>
+            <role>lead</role>
+            <role>developer</role>
+         </roles>
+         <timezone>Europe/Berlin</timezone>
+      </developer>
+   </developers>
 
 
-    <distributionManagement>
-        <downloadUrl>https://jcenter.bintray.com/</downloadUrl>
-        <repository>
-            <id>bintray-release-uploads</id>
-            <url>https://api.bintray.com/maven/sebthom/maven/jstuff/;publish=1</url>
-        </repository>
-    </distributionManagement>
+   <properties>
+      <java.version>1.5</java.version>
+      <slf4j.version>1.7.25</slf4j.version>
+   </properties>
 
 
-    <ciManagement>
-        <system>travis-ci.org</system>
-        <url>https://travis-ci.org/sebthom/jstuff</url>
-    </ciManagement>
+   <scm>
+      <!-- http://maven.apache.org/scm/subversion.html -->
+      <!-- http://maven.apache.org/scm/git.html -->
+      <url>https://github.com/sebthom/jstuff</url>
+      <connection>scm:git:https://github.com/sebthom/jstuff.git</connection>
+      <developerConnection>scm:git:https://github.com/sebthom/jstuff.git</developerConnection>
+      <tag>HEAD</tag>
+   </scm>
 
 
-    <issueManagement>
-        <system>github.com</system>
-        <url>https://github.com/sebthom/jstuff/issues</url>
-    </issueManagement>
+   <distributionManagement>
+      <downloadUrl>https://jcenter.bintray.com/</downloadUrl>
+      <repository>
+         <id>bintray-release-uploads</id>
+         <url>https://api.bintray.com/maven/sebthom/maven/jstuff/;publish=1</url>
+      </repository>
+   </distributionManagement>
 
 
-    <modules>
-        <module>jstuff-core</module>
-        <module>jstuff-integration</module>
-        <module>jstuff-xml</module>
-    </modules>
+   <ciManagement>
+      <system>travis-ci.org</system>
+      <url>https://travis-ci.org/sebthom/jstuff</url>
+   </ciManagement>
 
 
-    <build>
-        <plugins>
+   <issueManagement>
+      <system>github.com</system>
+      <url>https://github.com/sebthom/jstuff/issues</url>
+   </issueManagement>
+
+
+   <modules>
+      <module>jstuff-core</module>
+      <module>jstuff-integration</module>
+      <module>jstuff-xml</module>
+   </modules>
+
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+               <execution>
+                  <id>add-license-file-to-jar</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                     <goal>add-resource</goal>
+                  </goals>
+                  <configuration>
+                     <resources>
+                        <resource>
+                           <directory>./</directory>
+                           <targetPath>META-INF</targetPath>
+                           <includes>
+                              <include>../LICENSE.txt</include>
+                           </includes>
+                        </resource>
+                     </resources>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+
+
+      <pluginManagement>
+         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>add-license-file-to-jar</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>add-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>./</directory>
-                                    <targetPath>META-INF</targetPath>
-                                    <includes>
-                                        <include>../LICENSE.txt</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
+               <artifactId>maven-surefire-plugin</artifactId>
+               <!-- newer versions crash when running JDK 5 tests: org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
+               <version>2.19.1</version>
             </plugin>
-        </plugins>
-
-
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <inherited>true</inherited>
-                    <!-- newer versions crash when running JDK 5 tests: org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
-                    <version>2.19.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <inherited>true</inherited>
-                    <!-- newer versions crash when running JDK 5 tests: org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
-                    <version>2.19.1</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+            <plugin>
+               <artifactId>maven-failsafe-plugin</artifactId>
+               <!-- newer versions crash when running JDK 5 tests: org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
+               <version>2.19.1</version>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+   </build>
 
 
     <!-- global dependencies -->
-    <dependencies>
+   <dependencies>
         <!-- test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.12</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
 
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.thoughtworks.paranamer</groupId>
-                <artifactId>paranamer</artifactId>
-                <version>2.8</version>
-            </dependency>
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>com.thoughtworks.paranamer</groupId>
+            <artifactId>paranamer</artifactId>
+            <version>2.8</version>
+         </dependency>
 
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <!-- newer versions requires Java 6 or higher -->
-                <version>3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <!-- newer versions requires Java 6 or higher -->
-                <version>2.2</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <!-- newer versions requires Java 6 or higher -->
+            <version>3.1</version>
+         </dependency>
+         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <!-- newer versions requires Java 6 or higher -->
+            <version>2.2</version>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
 
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <inherited>true</inherited>
-                <!-- newer versions crash when running JDK 5 tests: org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
-                <version>2.19.1</version>
-            </plugin>
-        </plugins>
-    </reporting>
+   <reporting>
+      <plugins>
+         <plugin>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+             <!-- newer versions crash when running JDK 5 tests: org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called? -->
+            <version>2.19.1</version>
+         </plugin>
+      </plugins>
+   </reporting>
 
 </project>

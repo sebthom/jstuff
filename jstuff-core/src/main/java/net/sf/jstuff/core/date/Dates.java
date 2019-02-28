@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core.date;
 
 import java.text.ParseException;
@@ -148,19 +145,19 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
       final String secs = m.group(16);
       final String msecs = m.group(21);
       if (days != null) {
-         milliseconds += Integer.parseInt(days) * 1000 * 60 * 60 * 24;
+         milliseconds += Long.parseLong(days) * 1000 * 60 * 60 * 24;
       }
       if (hours != null) {
-         milliseconds += Integer.parseInt(hours) * 1000 * 60 * 60;
+         milliseconds += Long.parseLong(hours) * 1000 * 60 * 60;
       }
       if (mins != null) {
-         milliseconds += Integer.parseInt(mins) * 1000 * 60;
+         milliseconds += Long.parseLong(mins) * 1000 * 60;
       }
       if (secs != null) {
-         milliseconds += Integer.parseInt(secs) * 1000;
+         milliseconds += Long.parseLong(secs) * 1000;
       }
       if (msecs != null) {
-         milliseconds += Integer.parseInt(msecs);
+         milliseconds += Long.parseLong(msecs);
       }
       return milliseconds;
    }
