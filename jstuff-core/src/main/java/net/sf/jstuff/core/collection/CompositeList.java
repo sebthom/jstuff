@@ -69,7 +69,7 @@ public class CompositeList<V> extends AbstractList<V> implements Composite<List<
       return components.contains(component);
    }
 
-   public boolean isCompositeModifiable() {
+   public boolean isModifiable() {
       return true;
    }
 
