@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core;
 
 import java.io.IOException;
@@ -165,15 +162,18 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    /**
-    * \r 13 Carriage Return
+    * \r 13 Carriage Return, new line separator on Macintosh
     */
    public static final char CR = 13;
 
    /**
-    * \n 10 Line Feed
+    * \n 10 Line Feed, new line separator on Unix/Linux
     */
    public static final char LF = 10;
 
+   /**
+    * \r\n new line separator on Windows
+    */
    public static final String CR_LF = "" + CR + LF;
 
    public static final String NEW_LINE = System.getProperty("line.separator");
@@ -348,11 +348,19 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     * @return the number of occurrences, 0 if either String is <code>null</code>
     */
    public static int countMatches(final String searchIn, final String searchFor, final int startAt) {
-      if (isEmpty(searchIn) || isEmpty(searchFor) || startAt >= searchIn.length() || startAt < 0)
+      if (isEmpty(searchIn) || isEmpty(searchFor) || startAt >= searchIn.length())
          return 0;
 
       int count = 0;
-      int foundAt = startAt > -1 ? startAt - 1 : 0;
+      int foundAt;
+      if (startAt >= 0) {
+         foundAt = startAt;
+      } else if (startAt < -searchIn.length()) {
+         foundAt = 0;
+      } else {
+         foundAt = searchIn.length() + startAt;
+      }
+      foundAt--;
       while ((foundAt = searchIn.indexOf(searchFor, foundAt + 1)) > -1) {
          count++;
       }
@@ -365,6 +373,27 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
    public static boolean endsWith(final CharSequence str, final char ch) {
       return isEmpty(str) ? false : str.charAt(str.length() - 1) == ch;
+   }
+
+   /**
+    * @return null if input does not contain a new line separator.
+    */
+   public static String getNewLineSeparator(final CharSequence txt) {
+      if (txt == null)
+         return null;
+      char lastChar = 0;
+      for (int i = 0, txtLen = txt.length(); i < txtLen; i++) {
+         final char ch = txt.charAt(i);
+
+         if (lastChar == '\r') {
+            if (ch == '\n')
+               return "\r\n";
+            return "\r";
+         } else if (ch == '\n')
+            return "\n";
+         lastChar = ch;
+      }
+      return lastChar == '\r' ? "\r" : null;
    }
 
    /**

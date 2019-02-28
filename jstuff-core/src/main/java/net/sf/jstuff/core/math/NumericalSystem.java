@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core.math;
 
 import java.math.BigInteger;
@@ -107,23 +104,50 @@ public class NumericalSystem {
       if (value == null)
          return null;
 
-      if (value.compareTo(BigInteger.ZERO) == 0)
-         return "0";
+      switch (value.compareTo(BigInteger.ZERO)) {
+         case -1:
+            throw new IllegalArgumentException("[value] negative numbers not supported.");
+         case 0:
+            return "0";
+      }
 
       if (Numbers.isLong(value))
          return encode(value.longValue());
 
-      final BigInteger base = BigInteger.valueOf(digitsArray.length);
+      final int base = digitsArray.length;
+      final BigInteger baseBI = BigInteger.valueOf(base);
+
       BigInteger remainder = value;
+      long remainderAsLong = -1;
+
       final StringBuilder sb = new StringBuilder();
-      while (remainder.compareTo(BigInteger.ZERO) > 0) {
-         sb.append(digitsArray[remainder.mod(base).intValue()]);
-         remainder = remainder.divide(base);
+
+      while (true) {
+         final int idx;
+         if (remainderAsLong == -1) {
+            idx = remainder.mod(baseBI).byteValue();
+            remainder = remainder.divide(baseBI);
+            final boolean remainderIsNowLong = remainder.compareTo(Numbers.LONG_MAX_VALUE) <= 0;
+            if (remainderIsNowLong) {
+               remainderAsLong = remainder.longValue();
+            }
+         } else {
+            idx = (int) (remainderAsLong % base);
+            remainderAsLong = remainderAsLong / base;
+         }
+
+         sb.append(digitsArray[idx]);
+
+         if (remainderAsLong == 0) {
+            break;
+         }
       }
       return sb.reverse().toString();
    }
 
    public String encode(final int value) {
+      Args.notNegative("value", value);
+
       if (value == 0)
          return "0";
 
@@ -139,6 +163,8 @@ public class NumericalSystem {
    }
 
    public String encode(final long value) {
+      Args.notNegative("value", value);
+
       if (value == 0)
          return "0";
 
@@ -151,6 +177,33 @@ public class NumericalSystem {
          remainder = remainder / base;
       }
 
+      return sb.reverse().toString();
+   }
+
+   /**
+    * non-optimized version of {@link #encode(BigInteger)}
+    */
+   String encode_slow(final BigInteger value) {
+      if (value == null)
+         return null;
+
+      switch (value.compareTo(BigInteger.ZERO)) {
+         case -1:
+            throw new IllegalArgumentException("[value] negative numbers not supported.");
+         case 0:
+            return "0";
+      }
+
+      if (Numbers.isLong(value))
+         return encode(value.longValue());
+
+      final BigInteger base = BigInteger.valueOf(digitsArray.length);
+      BigInteger remainder = value;
+      final StringBuilder sb = new StringBuilder();
+      while (remainder.compareTo(BigInteger.ZERO) > 0) {
+         sb.append(digitsArray[remainder.mod(base).intValue()]);
+         remainder = remainder.divide(base);
+      }
       return sb.reverse().toString();
    }
 

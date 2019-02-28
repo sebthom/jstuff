@@ -1,26 +1,29 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.integration.servlet;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
+import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.validation.Assert;
 
 /**
  * Use {{@link #toString()} to get the response as string.
@@ -41,15 +44,21 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
    }
 
    public byte[] toByteArray() {
-      return outputStream.toByteArray();
-   }
-
-   @Override
-   public String toString() {
       if (exposedPrintWriter != null) {
          exposedPrintWriter.flush();
       }
 
+      return outputStream.toByteArray();
+   }
+
+   public void copyTo(final OutputStream target) throws IOException {
+      Args.notNull("target", target);
+
+      IOUtils.copy(outputStream.toInputStream(), target);
+   }
+
+   @Override
+   public String toString() {
       try {
          final String encoding = getCharacterEncoding();
          return outputStream.toString(encoding);
@@ -60,8 +69,7 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
 
    @Override
    public ServletOutputStream getOutputStream() {
-      if (exposedPrintWriter != null)
-         throw new IllegalStateException("getWriter() was called already!");
+      Assert.isNull(exposedPrintWriter, "getWriter() was called already!");
 
       if (exposedOutputStream == null) {
          exposedOutputStream = new ServletOutputStream() {
@@ -86,12 +94,12 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
 
    @Override
    public PrintWriter getWriter() {
-      if (exposedOutputStream != null)
-         throw new IllegalStateException("getOutpuStream() was called already!");
+      Assert.isNull(exposedOutputStream, "getOutpuStream() was called already!");
 
       if (exposedPrintWriter == null) {
 
          exposedPrintWriter = new PrintWriter(new Writer() {
+
             @Override
             public void write(final String str) throws IOException {
                outputStream.write(str.getBytes(getCharacterEncoding()));
@@ -99,7 +107,9 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
 
             @Override
             public void write(final char[] cbuf, final int off, final int len) throws IOException {
-               outputStream.write(new String(cbuf, off, len).getBytes(getCharacterEncoding()));
+               // outputStream.write(new String(cbuf, off, len).getBytes(getCharacterEncoding()));
+               final Charset charset = Charset.forName(getCharacterEncoding());
+               outputStream.write(ArrayUtils.toByteArray(cbuf, off, len, charset));
             }
 
             @Override
@@ -122,13 +132,14 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
 
          /* 3x slower:
          try {
-             exposedPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, getCharacterEncoding())), false);
+            exposedPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, getCharacterEncoding())), false);
+            // or
+            exposedPrintWriter = new PrintWriter(outputStream);
          } catch (final UnsupportedEncodingException ex) {
-             throw new RuntimeException(ex);
+            throw new RuntimeException(ex);
          } */
       }
 
       return exposedPrintWriter;
    }
-
 }

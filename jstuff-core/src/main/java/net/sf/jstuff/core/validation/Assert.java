@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core.validation;
 
 import static net.sf.jstuff.core.reflection.StackTrace.*;
@@ -18,16 +15,35 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
+import net.sf.jstuff.core.Strings;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Assert {
+
+   private static IllegalStateException _createIllegalStateException(final String errorMessage) {
+      return removeFirstStackTraceElement( //
+         removeFirstStackTraceElement( //
+            new IllegalStateException(errorMessage) //
+         ) //
+      );
+   }
+
+   private static IllegalStateException _createIllegalStateException(final String errorMessage, final Object... errorMessageArgs) {
+      return removeFirstStackTraceElement( //
+         removeFirstStackTraceElement( //
+            new IllegalStateException(String.format(errorMessage, errorMessageArgs)) //
+         ) //
+      );
+   }
+
    /**
     * @throws IllegalStateException if <code>value</code> is <code>true</code>
     */
    public static boolean isFalse(final boolean value, final String errorMessage) {
       if (value)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
@@ -36,22 +52,24 @@ public abstract class Assert {
     */
    public static boolean isFalse(final boolean value, final String errorMessage, final Object... errorMessageArgs) {
       if (value)
-         throw removeFirstStackTraceElement(new IllegalStateException(String.format(errorMessage, errorMessageArgs)));
+         throw _createIllegalStateException(errorMessage, errorMessageArgs);
       return value;
    }
 
    /**
+    * Ensures file exists, points to a regular file and is readable by the current user.
+    *
     * @throws IllegalStateException if <code>value</code> is not readable
     */
    public static File isFileReadable(final File file) {
       Args.notNull("file", file);
 
       if (!file.exists())
-         throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] does not exist."));
+         throw _createIllegalStateException("File [" + file.getAbsolutePath() + "] does not exist.");
       if (!file.isFile())
-         throw removeFirstStackTraceElement(new IllegalStateException("Resource [" + file.getAbsolutePath() + "] is not a file."));
+         throw _createIllegalStateException("Resource [" + file.getAbsolutePath() + "] is not a regular file.");
       if (!file.canRead())
-         throw removeFirstStackTraceElement(new IllegalStateException("File [" + file.getAbsolutePath() + "] is not readable."));
+         throw _createIllegalStateException("File [" + file.getAbsolutePath() + "] is not readable.");
       return file;
    }
 
@@ -60,7 +78,7 @@ public abstract class Assert {
     */
    public static <T> T isNull(final T value, final String errorMessage) {
       if (value != null)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
@@ -69,7 +87,7 @@ public abstract class Assert {
     */
    public static boolean isTrue(final boolean value, final String errorMessage) {
       if (!value)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
@@ -78,55 +96,55 @@ public abstract class Assert {
     */
    public static boolean isTrue(final boolean value, final String errorMessage, final Object... errorMessageArgs) {
       if (!value)
-         throw removeFirstStackTraceElement(new IllegalStateException(String.format(errorMessage, errorMessageArgs)));
+         throw _createIllegalStateException(errorMessage, errorMessageArgs);
       return value;
    }
 
    public static byte max(final byte value, final byte max, final String errorMessage) {
       if (value > max)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static int max(final int value, final int max, final String errorMessage) {
       if (value > max)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static long max(final long value, final long max, final String errorMessage) {
       if (value > max)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static short max(final short value, final short max, final String errorMessage) {
       if (value > max)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static byte min(final byte value, final byte min, final String errorMessage) {
       if (value < min)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static int min(final int value, final int min, final String errorMessage) {
       if (value < min)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static long min(final long value, final long min, final String errorMessage) {
       if (value < min)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static short min(final short value, final short min, final String errorMessage) {
       if (value < min)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
@@ -136,7 +154,7 @@ public abstract class Assert {
 
       for (final Object item : items)
          if (item == null)
-            throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+            throw _createIllegalStateException(errorMessage);
       return items;
    }
 
@@ -146,13 +164,22 @@ public abstract class Assert {
 
       for (final T item : items)
          if (item == null)
-            throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+            throw _createIllegalStateException(errorMessage);
       return items;
+   }
+
+   /**
+    * @throws IllegalStateException if string <code>value</code> is null, has a length of 0, or only contains whitespace chars
+    */
+   public static <S extends CharSequence> S notBlank(final S value, final String errorMessage) {
+      if (Strings.isBlank(value))
+         throw _createIllegalStateException(errorMessage);
+      return value;
    }
 
    public static <A> A[] notEmpty(final A[] value, final String errorMessage) {
       if (value == null || value.length == 0)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
@@ -161,7 +188,7 @@ public abstract class Assert {
     */
    public static <C extends Collection<?>> C notEmpty(final C value, final String errorMessage) {
       if (value == null || value.isEmpty())
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
@@ -170,37 +197,37 @@ public abstract class Assert {
     */
    public static <M extends Map<?, ?>> M notEmpty(final M value, final String errorMessage) {
       if (value == null || value.isEmpty())
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static <S extends CharSequence> S notEmpty(final S value, final String errorMessage) {
       if (value == null || value.length() == 0)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static byte notNegative(final byte value, final String errorMessage) {
       if (value < 0)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static int notNegative(final int value, final String errorMessage) {
       if (value < 0)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static long notNegative(final long value, final String errorMessage) {
       if (value < 0)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
    public static short notNegative(final short value, final String errorMessage) {
       if (value < 0)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
@@ -209,7 +236,7 @@ public abstract class Assert {
     */
    public static <T> T notNull(final T value, final String errorMessage) {
       if (value == null)
-         throw removeFirstStackTraceElement(new IllegalStateException(errorMessage));
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 
@@ -218,7 +245,7 @@ public abstract class Assert {
     */
    public static <T> T notNull(final T value, final String errorMessage, final Object... errorMessageArgs) {
       if (value == null)
-         throw removeFirstStackTraceElement(new IllegalStateException(String.format(errorMessage, errorMessageArgs)));
+         throw _createIllegalStateException(errorMessage, errorMessageArgs);
       return value;
    }
 }

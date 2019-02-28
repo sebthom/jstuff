@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c,b) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.core;
 
 import java.util.regex.Pattern;
@@ -49,11 +46,32 @@ public class StringsTest extends TestCase {
    public void testCountMatches() {
       assertEquals(2, Strings.countMatches("1234512345", "1", 0));
       assertEquals(1, Strings.countMatches("1234512345", "1", 1));
-      assertEquals(0, Strings.countMatches("1234512345", "1", 9));
+      assertEquals(1, Strings.countMatches("1234512345", "1", 5));
+      assertEquals(0, Strings.countMatches("1234512345", "1", 6));
       assertEquals(0, Strings.countMatches("1234512345", "1", 100));
-      assertEquals(0, Strings.countMatches("1234512345", "1", -100));
+      assertEquals(0, Strings.countMatches("1234512345", "1", -4));
+      assertEquals(1, Strings.countMatches("1234512345", "1", -5));
+      assertEquals(1, Strings.countMatches("1234512345", "1", -9));
+      assertEquals(2, Strings.countMatches("1234512345", "1", -10));
+      assertEquals(2, Strings.countMatches("1234512345", "1", -100));
       assertEquals(0, Strings.countMatches(null, "1", 1));
       assertEquals(0, Strings.countMatches("1", null, 1));
+   }
+
+   public void testGetNewLineSeparator() {
+      assertEquals("\n", Strings.getNewLineSeparator("abc\ndef"));
+      assertEquals("\n", Strings.getNewLineSeparator("abc\n"));
+      assertEquals("\n", Strings.getNewLineSeparator("\n"));
+      assertEquals("\r", Strings.getNewLineSeparator("abc\rdef"));
+      assertEquals("\r", Strings.getNewLineSeparator("abc\r"));
+      assertEquals("\r", Strings.getNewLineSeparator("\r"));
+      assertEquals("\r\n", Strings.getNewLineSeparator("abc\r\ndef"));
+      assertEquals("\r\n", Strings.getNewLineSeparator("abc\r\n"));
+      assertEquals("\r\n", Strings.getNewLineSeparator("\r\n"));
+      assertEquals("\n", Strings.getNewLineSeparator("abc\n\rdef"));
+      assertEquals("\n", Strings.getNewLineSeparator("abc\n\r"));
+      assertEquals("\n", Strings.getNewLineSeparator("\n\r"));
+      assertEquals(null, Strings.getNewLineSeparator("abcdef"));
    }
 
    public void testGlobToRegEx() {

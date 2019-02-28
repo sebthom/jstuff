@@ -1,15 +1,12 @@
-/*******************************************************************************
- * Portions created by Sebastian Thomschke are copyright (c) 2010-2018 Sebastian
- * Thomschke.
+/*********************************************************************
+ * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
- * All Rights Reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v20.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
- * Contributors:
- *     Sebastian Thomschke - initial implementation.
- *******************************************************************************/
+ * SPDX-License-Identifier: EPL-2.0
+ *********************************************************************/
 package net.sf.jstuff.xml;
 
 import java.io.File;
@@ -139,14 +136,38 @@ public class DOMFile {
       return DOMUtils.createElementBefore(sibling, tagName, tagAttributes);
    }
 
-   public Text createTextNode(final Node parent, final String text) {
+   public Element createElementWithText(final Node parent, final String tagName, final Map<String, String> tagAttributes, final Object text) {
+      final Element elem = createElement(parent, tagName, tagAttributes);
+      createTextNode(elem, text);
+      return elem;
+   }
+
+   public Element createElementWithText(final Node parent, final String tagName, final Object text) {
+      final Element elem = createElement(parent, tagName, null);
+      createTextNode(elem, text);
+      return elem;
+   }
+
+   public Element createElementWithTextBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes, final Object text) {
+      final Element elem = createElementBefore(sibling, tagName, tagAttributes);
+      createTextNode(elem, text);
+      return elem;
+   }
+
+   public Element createElementWithTextBefore(final Node sibling, final String tagName, final Object text) {
+      final Element elem = createElementBefore(sibling, tagName, null);
+      createTextNode(elem, text);
+      return elem;
+   }
+
+   public Text createTextNode(final Node parent, final Object text) {
       Args.notNull("parent", parent);
       Assert.isTrue(DOMUtils._getOwnerDocument(parent) == domDocument, "[parent] belongs to another DOM document!");
 
       return DOMUtils.createTextNode(parent, text);
    }
 
-   public Text createTextNodeBefore(final Node sibling, final String text) {
+   public Text createTextNodeBefore(final Node sibling, final Object text) {
       Args.notNull("sibling", sibling);
       Assert.isTrue(DOMUtils._getOwnerDocument(sibling) == domDocument, "[sibling] belongs to another DOM document!");
 
