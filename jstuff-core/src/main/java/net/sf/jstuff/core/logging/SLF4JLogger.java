@@ -229,6 +229,21 @@ final class SLF4JLogger extends Logger {
    }
 
    @Override
+   public void debugNew(final Object newInstance) {
+      Args.notNull("newInstance", newInstance);
+
+      if (!logger.isDebugEnabled())
+         return;
+
+      final String version = Types.getVersion(newInstance.getClass());
+      if (version == null || version.length() == 0) {
+         _log(DEBUG_INT, newInstance.toString() + " instantiated.");
+      } else {
+         _log(DEBUG_INT, newInstance + " v" + version + " instantiated.");
+      }
+   }
+
+   @Override
    public void entry() {
       if (!logger.isTraceEnabled())
          return;

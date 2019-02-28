@@ -72,6 +72,11 @@ final class DelegatingLogger extends Logger {
    }
 
    @Override
+   public void debugNew(final Object newInstance) {
+      delegate.debugNew(newInstance);
+   }
+
+   @Override
    public void error(final String msg) {
       delegate.error(msg);
    }

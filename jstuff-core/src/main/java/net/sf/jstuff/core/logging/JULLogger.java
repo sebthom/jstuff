@@ -205,6 +205,22 @@ final class JULLogger extends Logger {
    }
 
    @Override
+   public void debugNew(final Object newInstance) {
+      Args.notNull("newInstance", newInstance);
+
+      final int effectiveLevel = getLevelInt();
+      if (effectiveLevel > L_DEBUG)
+         return;
+
+      final String version = Types.getVersion(newInstance.getClass());
+      if (version == null || version.length() == 0) {
+         _log(Level.FINE, newInstance.toString() + " instantiated.", effectiveLevel <= L_DEBUG);
+      } else {
+         _log(Level.FINE, newInstance + " v" + version + " instantiated.", effectiveLevel <= L_DEBUG);
+      }
+   }
+
+   @Override
    public void entry() {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_TRACE)

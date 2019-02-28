@@ -289,6 +289,11 @@ public abstract class Logger {
    public abstract void debug(Throwable ex, String messageTemplate, Object... args);
 
    /**
+    * Logs the instantiation of the given object at DEBUG level including the corresponding class's implementation version.
+    */
+   public abstract void debugNew(Object newInstance);
+
+   /**
     * Logs a method entry at TRACE level.
     */
    public abstract void entry();
