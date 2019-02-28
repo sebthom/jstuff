@@ -70,7 +70,7 @@ public class CompositeInputStream extends InputStream implements Composite<Input
       return ArrayUtils.contains(streams, stream);
    }
 
-   public boolean isCompositeModifiable() {
+   public boolean isModifiable() {
       return false;
    }
 

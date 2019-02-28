@@ -15,13 +15,12 @@ import java.util.Collection;
 
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.validation.Args;
-import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Composite<Component> {
-   abstract class Default<Component> implements Composite<Component>, Serializable {
+public interface Composite<Component> extends Modifiable {
+   abstract class Default<Component> extends Modifiable.Default implements Composite<Component>, Serializable {
       private static final long serialVersionUID = 1L;
 
       protected final Collection<Component> components = createCollection();
@@ -30,18 +29,28 @@ public interface Composite<Component> {
          super();
       }
 
-      public Default(final Collection<? extends Component> components) {
+      public Default(final boolean isModifiable, final Collection<? extends Component> components) {
          Args.notNull("components", components);
          this.components.addAll(components);
+         this.isModifiable = isModifiable;
+      }
+
+      public Default(final boolean isModifiable, final Component... components) {
+         Args.notNull("components", components);
+         CollectionUtils.addAll(this.components, components);
+         this.isModifiable = isModifiable;
+      }
+
+      public Default(final Collection<? extends Component> components) {
+         this(true, components);
       }
 
       public Default(final Component... components) {
-         Args.notNull("components", components);
-         CollectionUtils.addAll(this.components, components);
+         this(true, components);
       }
 
       public void addComponent(final Component component) {
-         Assert.isTrue(isCompositeModifiable(), "Adding components to this composite is not allowed!");
+         assertIsModifiable();
          components.add(component);
       }
 
@@ -53,12 +62,8 @@ public interface Composite<Component> {
          return components.contains(component);
       }
 
-      public boolean isCompositeModifiable() {
-         return true;
-      }
-
       public boolean removeComponent(final Component component) {
-         Assert.isTrue(isCompositeModifiable(), "Removing components from this composite is not allowed!");
+         assertIsModifiable();
          return components.remove(component);
       }
    }
@@ -66,8 +71,6 @@ public interface Composite<Component> {
    void addComponent(Component component);
 
    boolean hasComponent(Component component);
-
-   boolean isCompositeModifiable();
 
    boolean removeComponent(Component component);
 }
