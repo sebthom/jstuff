@@ -501,7 +501,7 @@ final class JULLogger extends Logger {
 
       final String version = Types.getVersion(newInstance.getClass());
       if (version == null || version.length() == 0) {
-         _log(Level.INFO, newInstance.toString(), effectiveLevel <= L_DEBUG);
+         _log(Level.INFO, newInstance.toString() + " instantiated.", effectiveLevel <= L_DEBUG);
       } else {
          _log(Level.INFO, newInstance + " v" + version + " instantiated.", effectiveLevel <= L_DEBUG);
       }
