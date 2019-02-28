@@ -152,6 +152,10 @@ public class CircuitBreaker implements EventListenable<State> {
       return BuilderFactory.of(CircuitBreakerBuilder.class).create();
    }
 
+   protected CircuitBreaker() {
+      super();
+   }
+
    protected int activePermits = 0;
 
    protected EventDispatcher<State> eventDispatcher;
