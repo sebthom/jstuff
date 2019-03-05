@@ -12,6 +12,7 @@ package net.sf.jstuff.core.io;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -53,8 +54,10 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
                try {
                   LOG.debug("Deleting %s...", file);
                   forceDelete(file);
+               } catch (final FileNotFoundException ex) {
+                  // ignore
                } catch (final IOException ex) {
-                  LOG.error(ex);
+                  LOG.error("Failed to delete file: " + file, ex);
                }
             }
 
@@ -62,8 +65,10 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
                try {
                   LOG.debug("Cleaning %s...", directory);
                   cleanDirectory(directory);
+               } catch (final FileNotFoundException ex) {
+                  // ignore
                } catch (final IOException ex) {
-                  LOG.error(ex);
+                  LOG.error("Failed to delete directory: " + directory, ex);
                }
             }
 
