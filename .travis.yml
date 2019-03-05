@@ -1,12 +1,18 @@
 dist: trusty
 
 language: java
-  
+
 os:
   - linux
-  
+
+addons:
+  apt:
+    packages:
+      - openjdk-6-jdk
+      - openjdk-7-jdk
+
 jdk:
-  - oraclejdk8 # used by maven runtime
+  - openjdk8 # used by maven runtime
 
 cache:
   directories:
@@ -18,11 +24,13 @@ before_cache:
   - rm -rf $HOME/.m2/repository/net/sf/jstuff
 
 install:
+  - which java
+  - echo JAVA_HOME=$JAVA_HOME
   - ls -l /usr/lib/jvm/
   # installing java 5 used for compilation and tests
   - if [ ! -f /tmp/jdk1.5.0_22/bin/java ]; then
       rm -rf /tmp/jdk1.5.0_22;
-      wget --quiet --no-cookies -O /tmp/jdk-1_5_0_22-linux-amd64.bin http://monalisa.cern.ch/MONALISA/download/java/jdk-1_5_0_22-linux-amd64.bin;
+      wget --quiet --no-cookies -O /tmp/jdk-1_5_0_22-linux-amd64.bin http://archive.org/download/jdk-1_5_0_22-linux-i586/jdk-1_5_0_22-linux-amd64.bin;
       unzip -d /tmp /tmp/jdk-1_5_0_22-linux-amd64.bin || true;
       find /tmp/jdk1.5.0_22 -type f -name \*.pack -exec bash -c 'archive="{}"; echo "Extracting $archive..."; unpack200 $archive ${archive/.pack/.jar}' \;;
     fi
