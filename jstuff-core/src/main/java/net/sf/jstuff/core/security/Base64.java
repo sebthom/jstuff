@@ -28,7 +28,6 @@ import net.sf.jstuff.core.reflection.Types;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-@SuppressWarnings("restriction")
 public abstract class Base64 {
 
    private interface Base64Adapter {
@@ -156,11 +155,11 @@ public abstract class Base64 {
                cleaned[len] = '=';
                len++;
                //$FALL-THROUGH$
-            case 2: // CHECKSTYLE:IGNORE FallThrough
+            case 2:
                cleaned[len] = '=';
                len++;
                //$FALL-THROUGH$
-            case 3: // CHECKSTYLE:IGNORE FallThrough
+            case 3:
                cleaned[len] = '=';
                len++;
          }

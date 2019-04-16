@@ -17,7 +17,7 @@
 
    <profiles>
       <profile>
-            <!-- https://jfrog.com/knowledge-base/why-should-i-use-jcenter-over-maven-central/ -->
+         <!-- https://jfrog.com/knowledge-base/why-should-i-use-jcenter-over-maven-central/ -->
          <id>jcenter</id>
          <repositories>
             <repository>

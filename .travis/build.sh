@@ -14,7 +14,7 @@ if [[ -f ./.travis/release-trigger.sh ]]; then
     source ./.travis/release-trigger.sh
 fi
 
-MAVEN_VERSION=3.6.0
+MAVEN_VERSION=3.6.1
 if [[ ! -e $HOME/.m2/bin/apache-maven-$MAVEN_VERSION ]]; then
     echo "Installing Maven version $MAVEN_VERSION..."
     mkdir -p $HOME/.m2/bin/
