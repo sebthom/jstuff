@@ -36,7 +36,7 @@ import net.sf.jstuff.core.validation.Args;
 @ThreadSafe
 public abstract class Logger {
    private static class ParanamerParamNamesResolver implements Invocable<String[], Method, RuntimeException> {
-      com.thoughtworks.paranamer.Paranamer paranamer = new com.thoughtworks.paranamer.CachingParanamer(
+      final com.thoughtworks.paranamer.Paranamer paranamer = new com.thoughtworks.paranamer.CachingParanamer(
          new com.thoughtworks.paranamer.BytecodeReadingParanamer());
 
       public String[] invoke(final Method method) {
@@ -51,14 +51,19 @@ public abstract class Logger {
    private static final String METHOD_EXIT_MARKER = "EXIT  << ";
    private static final String METHOD_EXIT_MARKER_VOID = METHOD_EXIT_MARKER + "*void*";
 
-   private static Invocable<String[], Method, RuntimeException> paramNamesResolver;
+   private static final Invocable<String[], Method, RuntimeException> PARAM_NAMES_RESOLVER;
 
    static {
+      Invocable<String[], Method, RuntimeException> paramNamesResolver;
       try {
          // test if paranamer is available on classpath
-         @SuppressWarnings("unused")
-         final Class<?> paranamerAvailable = com.thoughtworks.paranamer.BytecodeReadingParanamer.class;
          paramNamesResolver = new ParanamerParamNamesResolver();
+      } catch (final Exception ex) {
+         paramNamesResolver = new Invocable<String[], Method, RuntimeException>() {
+            public String[] invoke(final Method arg) throws RuntimeException {
+               return ArrayUtils.EMPTY_STRING_ARRAY;
+            }
+         };
       } catch (final LinkageError err) {
          paramNamesResolver = new Invocable<String[], Method, RuntimeException>() {
             public String[] invoke(final Method arg) throws RuntimeException {
@@ -66,6 +71,7 @@ public abstract class Logger {
             }
          };
       }
+      PARAM_NAMES_RESOLVER = paramNamesResolver;
    }
 
    private static String argToString(final Object object) {
@@ -135,7 +141,7 @@ public abstract class Logger {
 
       final StringBuilder sb = new StringBuilder(METHOD_ENTRY_MARKER);
 
-      final String[] paramNames = paramNamesResolver.invoke(method);
+      final String[] paramNames = PARAM_NAMES_RESOLVER.invoke(method);
       final int paramNamesLen = paramNames.length;
       if (paramNamesLen == 0) {
          sb.append(argToString(args[0]));
