@@ -159,9 +159,9 @@ public class DefaultAuthService implements AuthService {
    }
 
    public void logout() {
-      final UserDetails details = AuthenticationHolder.getAuthentication().getUserDetails();
       AuthenticationHolder.getAuthentication().invalidate();
       if (listener != null) {
+         final UserDetails details = AuthenticationHolder.getAuthentication().getUserDetails();
          listener.afterLogout(details);
       }
    }

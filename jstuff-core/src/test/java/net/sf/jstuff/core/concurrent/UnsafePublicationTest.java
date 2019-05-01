@@ -116,10 +116,9 @@ public class UnsafePublicationTest extends TestCase {
          return false;
       }
 
-      final RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
-      final List<String> arguments = runtimeMxBean.getInputArguments();
-
       if ("64".equals(System.getProperty("sun.arch.data.model"))) {
+         final RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+         final List<String> arguments = runtimeMxBean.getInputArguments();
          if (!arguments.contains("-XX:-UseCompressedOops")) {
             LOG.info("This test requires JVM option -XX:-UseCompressedOops when run on 64bit JVM");
             return false;

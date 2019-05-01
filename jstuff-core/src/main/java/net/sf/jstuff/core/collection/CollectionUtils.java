@@ -368,6 +368,7 @@ public abstract class CollectionUtils {
 
       int i = 0;
       for (final Iterator<T> it = coll.iterator(); it.hasNext();) {
+         // CHECKSTYLE:IGNORE MoveVariableInsideIfCheck FOR NEXT LINE
          final T item = it.next();
          if (i == index) {
             it.remove();
