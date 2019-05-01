@@ -38,7 +38,7 @@ public abstract class Threads {
       return result;
    }
 
-   public static Thread[] allPrioritized() {
+   public static Thread[] allSortedByPriority() {
       final Thread[] allThreads = all();
       Arrays.sort(allThreads, THREAD_PRIORITY_COMPARATOR);
       return allThreads;
