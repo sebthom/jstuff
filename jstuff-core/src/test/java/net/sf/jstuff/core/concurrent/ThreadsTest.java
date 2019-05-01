@@ -25,7 +25,7 @@ public class ThreadsTest extends TestCase {
       assertEquals(0, Threads.deadlockedIDs().length);
       assertTrue(Threads.count() > 0);
       assertEquals(Threads.count(), Threads.all().length);
-      assertEquals(Threads.count(), Threads.allPrioritized().length);
+      assertEquals(Threads.count(), Threads.allSortedByPriority().length);
       assertNotNull(Threads.rootThreadGroup());
    }
 }
