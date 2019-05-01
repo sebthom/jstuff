@@ -80,6 +80,7 @@ public abstract class Resources {
          this.cl = cl;
       }
 
+      @Override
       public int compareTo(final Resource o) {
          return name.compareTo(o.name);
       }
@@ -115,12 +116,13 @@ public abstract class Resources {
 
    private static final Logger LOG = Logger.create();
 
-   private static final List<ClassLoaderHandler> CLASS_LOADER_HANDLERS = new ArrayList<ClassLoaderHandler>();
+   private static final List<ClassLoaderHandler> CLASS_LOADER_HANDLERS = new ArrayList<>();
    static {
       /*
        * URL Classloader
        */
       CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
+         @Override
          public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
             if (!(cl instanceof URLClassLoader))
                return false;
@@ -146,6 +148,7 @@ public abstract class Resources {
       if (websphereClassLoader != null) {
          LOG.info("IBM WebSphere Classloaders detected.");
          CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
+            @Override
             public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
                if (!Types.isAssignableTo(cl.getClass(), websphereClassLoader))
                   return false;
@@ -193,6 +196,7 @@ public abstract class Resources {
       if (websphereLibertyClassLoader != null) {
          LOG.info("IBM WebSphere Liberty Classloaders detected.");
          CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
+            @Override
             public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
                if (!Types.isAssignableTo(cl.getClass(), websphereLibertyClassLoader))
                   return false;
@@ -226,6 +230,7 @@ public abstract class Resources {
       final Class<?> eclipseBaseClassLoaderClass = Types.find("org.eclipse.osgi.baseadaptor.loader.BaseClassLoader", false);
       if (eclipseBaseClassLoaderClass != null) {
          CLASS_LOADER_HANDLERS.add(new ClassLoaderHandler() {
+            @Override
             public boolean handle(final Accept<String> nameFilter, final ClassLoader cl, final Set<Resource> result) {
                if (!Types.isAssignableTo(cl.getClass(), eclipseBaseClassLoaderClass))
                   return false;
@@ -302,7 +307,7 @@ public abstract class Resources {
          case DIRECTORY: {
             final File rootDir = new File(url.getPath());
             final URI rootDirURI = rootDir.toURI();
-            final Queue<File> toScan = new LinkedList<File>();
+            final Queue<File> toScan = new LinkedList<>();
             toScan.add(rootDir);
             while (!toScan.isEmpty()) {
                final File file = toScan.poll();
@@ -478,7 +483,7 @@ public abstract class Resources {
       Args.notNull("searchScope", searchScope);
       Args.notNull("nameFilter", nameFilter);
 
-      final SortedSet<Resource> result = new TreeSet<Resource>();
+      final SortedSet<Resource> result = new TreeSet<>();
 
       _scanSurefireClasspath(nameFilter, result);
 
@@ -517,6 +522,7 @@ public abstract class Resources {
    public static Collection<Resource> findResources(final Pattern namePattern, final ClassLoader searchScope) {
       Args.notNull("namePattern", namePattern);
       return findResources(new Accept<String>() {
+         @Override
          public boolean accept(final String name) {
             return namePattern.matcher(name).matches();
          }

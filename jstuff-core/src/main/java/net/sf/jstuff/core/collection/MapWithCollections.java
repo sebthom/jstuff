@@ -54,7 +54,7 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
       getOrCreate(key).addAll(values);
    }
 
-   public void addAll(final K key, final V... values) {
+   public void addAll(final K key, @SuppressWarnings("unchecked") final V... values) {
       if (values == null)
          return;
 
@@ -98,7 +98,7 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
     *         A null return can also indicate that the map previously associated null with the specified key,
     *         if the implementation supports null values.
     */
-   public C put(final K key, final V... values) {
+   public C put(final K key, @SuppressWarnings("unchecked") final V... values) {
       final C coll = create(key);
       CollectionUtils.addAll(coll, values);
       return put(key, coll);

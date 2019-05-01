@@ -33,8 +33,8 @@ public class GuestBookAtomFeedExporter extends AbstractAtomFeedExporter {
    @Override
    protected List<SimpleEntry<?>> getSimpleEntries(final HttpServletRequest request) {
       final List<SimpleEntry<?>> result = newArrayList();
-      for (final GuestBookEntry entry : guestBookService.getEntries(1, maxEntries, new SortBy<String>("lastModifiedOn", SortDirection.DESC))) {
-         final SimpleEntry<Integer> se = new SimpleEntry<Integer>();
+      for (final GuestBookEntry entry : guestBookService.getEntries(1, maxEntries, new SortBy<>("lastModifiedOn", SortDirection.DESC))) {
+         final SimpleEntry<Integer> se = new SimpleEntry<>();
          se.setAuthorDisplayName(entry.createdBy);
          se.setAuthorEMailAddress("n/a");
          se.setAuthorURL("n/a");

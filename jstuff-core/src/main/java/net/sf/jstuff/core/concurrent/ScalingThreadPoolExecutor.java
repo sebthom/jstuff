@@ -36,6 +36,7 @@ public class ScalingThreadPoolExecutor extends ThreadPoolExecutor {
    }
 
    private static final RejectedExecutionHandler FORCE_QUEUE_POLICY = new RejectedExecutionHandler() {
+      @Override
       public void rejectedExecution(final Runnable r, final ThreadPoolExecutor executor) {
          if (executor.isShutdown())
             throw new RejectedExecutionException(executor + " has been shutdown.");

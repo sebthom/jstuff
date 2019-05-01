@@ -118,6 +118,7 @@ public abstract class AbstractAtomFeedExporter extends RemotingSupport implement
 
    protected abstract List<SimpleEntry<?>> getSimpleEntries(HttpServletRequest request);
 
+   @Override
    public void handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
       final AtomFeed atomFeed = new AtomFeed("tag:" + request.getServerName() + "," + Dates.getCurrentYear() + ":" + feedId);
       atomFeed.setLogo(getLogoURL(request));

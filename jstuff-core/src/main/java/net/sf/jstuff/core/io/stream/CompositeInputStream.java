@@ -39,6 +39,7 @@ public class CompositeInputStream extends InputStream implements Composite<Input
       currentStream = streams[0];
    }
 
+   @Override
    public void addComponent(final InputStream stream) {
       throw new UnsupportedOperationException();
    }
@@ -66,10 +67,12 @@ public class CompositeInputStream extends InputStream implements Composite<Input
          throw ex;
    }
 
+   @Override
    public boolean hasComponent(final InputStream stream) {
       return ArrayUtils.contains(streams, stream);
    }
 
+   @Override
    public boolean isModifiable() {
       return false;
    }
@@ -111,6 +114,7 @@ public class CompositeInputStream extends InputStream implements Composite<Input
       return -1;
    }
 
+   @Override
    public boolean removeComponent(final InputStream stream) {
       throw new UnsupportedOperationException();
    }

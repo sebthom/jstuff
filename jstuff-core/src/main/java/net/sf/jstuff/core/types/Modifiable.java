@@ -22,6 +22,7 @@ public interface Modifiable {
             throw new IllegalStateException(this + " is not modifiable!");
       }
 
+      @Override
       public boolean isModifiable() {
          return isModifiable;
       }

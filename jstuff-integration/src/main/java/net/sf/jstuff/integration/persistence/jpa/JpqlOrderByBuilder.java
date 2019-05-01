@@ -20,8 +20,9 @@ import net.sf.jstuff.core.fluent.Fluent;
  */
 public class JpqlOrderByBuilder {
    private final SortBy<String>[] defaultSortBy;
-   private final Map<String, String> mappings = new HashMap<String, String>(4);
+   private final Map<String, String> mappings = new HashMap<>(4);
 
+   @SafeVarargs
    public JpqlOrderByBuilder(final SortBy<String>... defaultSortBy) {
       this.defaultSortBy = defaultSortBy;
    }

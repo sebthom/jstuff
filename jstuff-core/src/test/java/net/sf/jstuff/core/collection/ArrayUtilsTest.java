@@ -17,7 +17,6 @@ import java.nio.charset.Charset;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.functional.Accept;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -25,11 +24,7 @@ import net.sf.jstuff.core.functional.Accept;
 public class ArrayUtilsTest extends TestCase {
 
    public void testFilter() {
-      final String[] filtered = ArrayUtils.filter(new Accept<String>() {
-         public boolean accept(final String obj) {
-            return "foo".equals(obj) || "bar".equals(obj);
-         }
-      }, new String[] {"dog", "foo", "bar", "cat"});
+      final String[] filtered = ArrayUtils.filter(obj -> "foo".equals(obj) || "bar".equals(obj), new String[] {"dog", "foo", "bar", "cat"});
 
       assertEquals(2, filtered.length);
       assertEquals("foo", filtered[0]);

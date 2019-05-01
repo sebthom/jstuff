@@ -27,7 +27,7 @@ import net.sf.jstuff.core.validation.Assert;
 public final class ClassDescriptor<T> implements Serializable {
    private static final long serialVersionUID = 1L;
 
-   private static final Map<Class<?>, ClassDescriptor<?>> REGISTRY = new WeakHashMap<Class<?>, ClassDescriptor<?>>();
+   private static final Map<Class<?>, ClassDescriptor<?>> REGISTRY = new WeakHashMap<>();
 
    @SuppressWarnings("unchecked")
    public static <T> ClassDescriptor<T> of(final Class<T> type, final String name, final String description, final ClassDescriptor<?> parent) {
@@ -39,7 +39,7 @@ public final class ClassDescriptor<T> implements Serializable {
          if (metaClass != null)
             return (ClassDescriptor<T>) metaClass;
 
-         final ClassDescriptor<T> newMetaClass = new ClassDescriptor<T>(type, name, description, parent);
+         final ClassDescriptor<T> newMetaClass = new ClassDescriptor<>(type, name, description, parent);
          REGISTRY.put(type, newMetaClass);
          return newMetaClass;
       }

@@ -20,10 +20,11 @@ import junit.framework.TestCase;
 public class SyncEventDispatcherTest extends TestCase {
 
    public void testSyncEventDispatcher() throws InterruptedException, ExecutionException {
-      final EventDispatcher<String> em = new SyncEventDispatcher<String>();
+      final EventDispatcher<String> em = new SyncEventDispatcher<>();
 
       final AtomicLong listener1Count = new AtomicLong();
       final EventListener<String> listener1 = new EventListener<String>() {
+         @Override
          public void onEvent(final String event) {
             listener1Count.incrementAndGet();
          }
@@ -34,10 +35,12 @@ public class SyncEventDispatcherTest extends TestCase {
 
       final AtomicLong listener2Count = new AtomicLong();
       final EventListener<String> listener2 = new FilteringEventListener<String>() {
+         @Override
          public boolean accept(final String event) {
             return event != null && event.length() < 5;
          }
 
+         @Override
          public void onEvent(final String event) {
             listener2Count.incrementAndGet();
          }

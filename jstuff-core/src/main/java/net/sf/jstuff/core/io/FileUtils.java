@@ -18,17 +18,18 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.DirectoryWalker;
-import org.apache.commons.io.FileSystemUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import net.sf.jstuff.core.Strings;
@@ -42,8 +43,8 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class FileUtils extends org.apache.commons.io.FileUtils {
    private static final Logger LOG = Logger.create();
 
-   private static final Queue<File> _FILES_TO_DELETE_ON_SHUTDOWN = new ConcurrentLinkedQueue<File>();
-   private static final Queue<File> _DIRS_TO_DELETE_ON_SHUTDOWN = new ConcurrentLinkedQueue<File>();
+   private static final Queue<File> _FILES_TO_DELETE_ON_SHUTDOWN = new ConcurrentLinkedQueue<>();
+   private static final Queue<File> _DIRS_TO_DELETE_ON_SHUTDOWN = new ConcurrentLinkedQueue<>();
    private static final AtomicLong _FILE_UNIQUE_ID = new AtomicLong();
 
    static {
@@ -201,8 +202,9 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
     */
    public static Collection<File> find(final String searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
       throws IOException {
-      final Collection<File> result = new ArrayList<File>();
+      final Collection<File> result = new ArrayList<>();
       find(searchRootPath, globPattern, new EventListener<File>() {
+         @Override
          public void onEvent(final File file) {
             if (file.isDirectory() && includeDirectories) {
                result.add(file);
@@ -304,12 +306,20 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
       return URLConnection.getFileNameMap().getContentTypeFor(file);
    }
 
-   public static long getFreeSpaceInKB(final String path) throws IOException {
-      return FileSystemUtils.freeSpaceKb(path);
+   public static long getFreeSpaceInKB(final String path) {
+      return new File(path).getFreeSpace() / 1024;
    }
 
-   public static long getFreeTempSpaceInKB() throws IOException {
-      return FileSystemUtils.freeSpaceKb(getTempDirectoryPath());
+   public static long getFreeTempSpaceInKB() {
+      return getTempDirectory().getUsableSpace() / 1024;
+   }
+
+   public static String readFileToString(final File file) throws IOException {
+      return readFileToString(file, Charset.defaultCharset());
+   }
+
+   public static List<String> readLines(final File file) throws IOException {
+      return readLines(file, Charset.defaultCharset());
    }
 
    public static File[] toFiles(final String... filePaths) {
@@ -335,11 +345,19 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
    }
 
    public static void writeStringToFile(final String file, final CharSequence data) throws IOException {
-      write(new File(file), data, null, false);
+      write(new File(file), data, Charset.defaultCharset(), false);
    }
 
    public static void writeStringToFile(final String file, final CharSequence data, final boolean append) throws IOException {
-      write(new File(file), data, null, append);
+      write(new File(file), data, Charset.defaultCharset(), append);
+   }
+
+   public static void writeStringToFile(final String file, final CharSequence data, final Charset encoding) throws IOException {
+      write(new File(file), data, encoding, false);
+   }
+
+   public static void writeStringToFile(final String file, final CharSequence data, final Charset encoding, final boolean append) throws IOException {
+      write(new File(file), data, encoding, append);
    }
 
    public static void writeStringToFile(final String file, final CharSequence data, final String encoding) throws IOException {

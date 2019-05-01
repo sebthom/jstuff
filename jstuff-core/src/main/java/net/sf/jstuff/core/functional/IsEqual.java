@@ -9,15 +9,16 @@
  *********************************************************************/
 package net.sf.jstuff.core.functional;
 
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Objects;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface IsEqual<T> {
    IsEqual<Object> DEFAULT = new IsEqual<Object>() {
+      @Override
       public boolean isEqual(final Object obj1, final Object obj2) {
-         return ObjectUtils.equals(obj1, obj2);
+         return Objects.equals(obj1, obj2);
       }
    };
 

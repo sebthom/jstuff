@@ -23,7 +23,7 @@ class DefaultAuthentication implements Authentication {
    public static final Authentication UNBOUND = new DefaultAuthentication(new DefaultUserDetails("anonymous", "anonymous", null, null, null), null);
 
    private String password;
-   private final Map<String, Serializable> properties = new HashMap<String, Serializable>(2);
+   private final Map<String, Serializable> properties = new HashMap<>(2);
    private UserDetails userDetails;
 
    DefaultAuthentication(final UserDetails userDetails, final String password) {
@@ -34,24 +34,29 @@ class DefaultAuthentication implements Authentication {
    /**
     * @return the password
     */
+   @Override
    public String getPassword() {
       return password;
    }
 
+   @Override
    public Serializable getProperty(final String name) {
       return properties.get(name);
    }
 
+   @Override
    public UserDetails getUserDetails() {
       return userDetails;
    }
 
+   @Override
    public void invalidate() {
       userDetails = UNBOUND.getUserDetails();
       properties.clear();
       password = null;
    }
 
+   @Override
    public boolean isAuthenticated() {
       return userDetails != null && userDetails.getDistingueshedName() != null;
    }
@@ -63,6 +68,7 @@ class DefaultAuthentication implements Authentication {
       this.password = password;
    }
 
+   @Override
    public void setProperty(final String name, final Serializable value) {
       properties.put(name, value);
    }

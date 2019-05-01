@@ -39,6 +39,7 @@ public abstract class Logger {
       final com.thoughtworks.paranamer.Paranamer paranamer = new com.thoughtworks.paranamer.CachingParanamer(
          new com.thoughtworks.paranamer.BytecodeReadingParanamer());
 
+      @Override
       public String[] invoke(final Method method) {
          if (method == null)
             return ArrayUtils.EMPTY_STRING_ARRAY;
@@ -60,12 +61,14 @@ public abstract class Logger {
          paramNamesResolver = new ParanamerParamNamesResolver();
       } catch (final Exception ex) {
          paramNamesResolver = new Invocable<String[], Method, RuntimeException>() {
+            @Override
             public String[] invoke(final Method arg) throws RuntimeException {
                return ArrayUtils.EMPTY_STRING_ARRAY;
             }
          };
       } catch (final LinkageError err) {
          paramNamesResolver = new Invocable<String[], Method, RuntimeException>() {
+            @Override
             public String[] invoke(final Method arg) throws RuntimeException {
                return ArrayUtils.EMPTY_STRING_ARRAY;
             }
@@ -116,6 +119,7 @@ public abstract class Logger {
       return (I) Proxy.newProxyInstance(object.getClass().getClassLoader(), interfaces, new InvocationHandler() {
          Logger log = Logger.create(object.getClass());
 
+         @Override
          public Object invoke(final Object proxy, final Method interfaceMethod, final Object[] args) throws Throwable {
             if (log.isTraceEnabled()) {
                final long start = System.currentTimeMillis();
@@ -186,7 +190,7 @@ public abstract class Logger {
       if (stacktrace == null || stacktrace.length < 3)
          return;
 
-      final List<StackTraceElement> sanitized = new ArrayList<StackTraceElement>(stacktrace.length - 2);
+      final List<StackTraceElement> sanitized = new ArrayList<>(stacktrace.length - 2);
       // we leave the first two elements untouched to keep the context
       sanitized.add(stacktrace[0]);
       sanitized.add(stacktrace[1]);

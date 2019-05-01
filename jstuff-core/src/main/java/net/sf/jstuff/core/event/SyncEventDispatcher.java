@@ -22,25 +22,29 @@ import net.sf.jstuff.core.validation.Args;
 @ThreadSafe
 public class SyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
 
-   private final Set<EventListener<EVENT>> eventListeners = new CopyOnWriteArraySet<EventListener<EVENT>>();
+   private final Set<EventListener<EVENT>> eventListeners = new CopyOnWriteArraySet<>();
 
    /**
     * @return the number of listeners notified successfully
     */
+   @Override
    public ConstantFuture<Integer> fire(final EVENT event) {
       return ConstantFuture.of(Events.fire(event, eventListeners));
    }
 
+   @Override
    public boolean subscribe(final EventListener<EVENT> listener) {
       Args.notNull("listener", listener);
       return eventListeners.add(listener);
    }
 
+   @Override
    public boolean unsubscribe(final EventListener<EVENT> listener) {
       Args.notNull("listener", listener);
       return eventListeners.remove(listener);
    }
 
+   @Override
    public void unsubscribeAll() {
       eventListeners.clear();
    }

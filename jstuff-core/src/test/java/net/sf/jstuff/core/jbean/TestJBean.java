@@ -9,7 +9,7 @@
  *********************************************************************/
 package net.sf.jstuff.core.jbean;
 
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Objects;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.Maps;
@@ -70,7 +70,7 @@ public class TestJBean extends TestCase {
       public void setComment(String newValue) {
          newValue = newValue == null ? null : newValue.trim();
          final String oldValue = getComment();
-         if (!ObjectUtils.equals(oldValue, newValue)) {
+         if (!Objects.equals(oldValue, newValue)) {
             comment = newValue;
             onValueSet(PROP_comment, oldValue, newValue);
          }

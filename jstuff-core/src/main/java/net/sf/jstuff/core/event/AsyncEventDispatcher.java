@@ -32,7 +32,7 @@ public class AsyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
          .daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("EventManager-thread").build());
    }
 
-   private final Set<EventListener<EVENT>> eventListeners = new CopyOnWriteArraySet<EventListener<EVENT>>();
+   private final Set<EventListener<EVENT>> eventListeners = new CopyOnWriteArraySet<>();
 
    private ExecutorService executor;
 
@@ -45,26 +45,31 @@ public class AsyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
       this.executor = executor;
    }
 
+   @Override
    public Future<Integer> fire(final EVENT type) {
       final EventListener<EVENT>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
 
       return executor.submit(new Callable<Integer>() {
+         @Override
          public Integer call() throws Exception {
             return Events.fire(type, copy);
          }
       });
    }
 
+   @Override
    public boolean subscribe(final EventListener<EVENT> listener) {
       Args.notNull("listener", listener);
       return eventListeners.add(listener);
    }
 
+   @Override
    public boolean unsubscribe(final EventListener<EVENT> listener) {
       Args.notNull("listener", listener);
       return eventListeners.remove(listener);
    }
 
+   @Override
    public void unsubscribeAll() {
       eventListeners.clear();
    }

@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.commons.io.IOExceptionWithCause;
-import org.apache.commons.io.IOUtils;
 import org.meteogroup.jbrotli.BrotliDeCompressor;
 import org.meteogroup.jbrotli.BrotliException;
 import org.meteogroup.jbrotli.io.BrotliInputStream;
@@ -23,6 +21,7 @@ import org.meteogroup.jbrotli.libloader.BrotliLibraryLoader;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.compression.AbstractCompression;
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
@@ -45,6 +44,7 @@ public class BrotliCompression extends AbstractCompression {
       decompressor = new BrotliDeCompressor();
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -66,6 +66,7 @@ public class BrotliCompression extends AbstractCompression {
       }
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("input", input);
@@ -88,10 +89,12 @@ public class BrotliCompression extends AbstractCompression {
       }
    }
 
+   @Override
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
       return new BrotliOutputStream(output);
    }
 
+   @Override
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
       return new BrotliInputStream(compressed);
    }
@@ -106,7 +109,7 @@ public class BrotliCompression extends AbstractCompression {
       } catch (final BrotliException ex) {
          if (ex.getMessage().contains("Error code: -14"))
             throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
-         throw new IOExceptionWithCause(ex);
+         throw new IOException(ex);
       }
    }
 

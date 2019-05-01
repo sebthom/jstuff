@@ -25,7 +25,6 @@ import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.exception.Exceptions;
 import net.sf.jstuff.core.io.FileUtils;
-import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Methods;
@@ -72,24 +71,22 @@ public abstract class KeyTool {
 
    public static Tuple2<X509Certificate, PrivateKey> createSelfSignedCertificate(final String subjectDN, final String keyAlgo, final int keySize,
       final int daysValid) throws GeneralSecurityException, IllegalArgumentException {
-      File keyStoreFile = null;
-      InputStream keyStoreIS = null;
-      try {
-         keyStoreFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".jks");
-         final String[] args = new String[] { //
-            "-genkey", //
-            "-keyalg", keyAlgo, //
-            "-alias", "selfsigned", //
-            "-keystore", keyStoreFile.getPath(), //
-            "-storepass", "changeit", //
-            "-keypass", "changeit", //
-            "-dname", subjectDN, //
-            "-validity", Integer.toString(daysValid), //
-            "-keysize", Integer.toString(keySize) //
-         };
-         run(args);
 
-         keyStoreIS = new FileInputStream(keyStoreFile);
+      final File keyStoreFile = new File(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".jks");
+      final String[] args = new String[] { //
+         "-genkey", //
+         "-keyalg", keyAlgo, //
+         "-alias", "selfsigned", //
+         "-keystore", keyStoreFile.getPath(), //
+         "-storepass", "changeit", //
+         "-keypass", "changeit", //
+         "-dname", subjectDN, //
+         "-validity", Integer.toString(daysValid), //
+         "-keysize", Integer.toString(keySize) //
+      };
+      run(args);
+
+      try (InputStream keyStoreIS = new FileInputStream(keyStoreFile)) {
          final KeyStore keyStore = KeyStore.getInstance("JKS");
          keyStore.load(keyStoreIS, "changeit".toCharArray());
          return Tuple2.create( //
@@ -99,8 +96,7 @@ public abstract class KeyTool {
       } catch (final IOException ex) {
          throw new GeneralSecurityException(ex);
       } finally {
-         IOUtils.closeQuietly(keyStoreIS);
-         if (keyStoreFile != null && keyStoreFile.exists()) {
+         if (keyStoreFile.exists()) {
             keyStoreFile.delete();
             keyStoreFile.deleteOnExit();
          }

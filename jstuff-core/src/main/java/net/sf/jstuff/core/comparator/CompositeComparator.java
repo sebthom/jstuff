@@ -18,6 +18,7 @@ import java.util.Comparator;
 public class CompositeComparator<T> extends net.sf.jstuff.core.types.Composite.Default<Comparator<T>> implements Comparator<T> {
    private static final long serialVersionUID = 1L;
 
+   @SafeVarargs
    public static <T> CompositeComparator<T> of(final Comparator<T>... comparators) {
       return new CompositeComparator<T>(comparators);
    }
@@ -30,10 +31,12 @@ public class CompositeComparator<T> extends net.sf.jstuff.core.types.Composite.D
       super(comparators);
    }
 
+   @SafeVarargs
    public CompositeComparator(final Comparator<T>... comparators) {
       super(comparators);
    }
 
+   @Override
    public int compare(final T o1, final T o2) {
       for (final Comparator<T> comparator : components) {
          final int rc = comparator.compare(o1, o2);

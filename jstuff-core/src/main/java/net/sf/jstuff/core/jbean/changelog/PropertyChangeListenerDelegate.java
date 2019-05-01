@@ -24,6 +24,7 @@ public class PropertyChangeListenerDelegate implements EventListener<PropertyCha
       this.listener = listener;
    }
 
+   @Override
    public void onEvent(final PropertyChangeEvent event) {
       if (event instanceof SetValueEvent) {
          final SetValueEvent ev = (SetValueEvent) event;

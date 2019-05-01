@@ -12,9 +12,8 @@ package net.sf.jstuff.core.collection;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-
-import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -32,14 +31,17 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       map = createBackingMap(initialCapacity);
    }
 
+   @Override
    public void clear() {
       map.clear();
    }
 
+   @Override
    public boolean containsKey(final Object key) {
       return map.containsKey(key);
    }
 
+   @Override
    public boolean containsValue(final Object value) {
       return map.containsValue(value);
    }
@@ -54,10 +56,12 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       return create(key);
    }
 
+   @Override
    public Set<java.util.Map.Entry<K, V>> entrySet() {
       return map.entrySet();
    }
 
+   @Override
    public V get(final Object key) {
       return map.get(key);
    }
@@ -76,18 +80,22 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       return value;
    }
 
+   @Override
    public boolean isEmpty() {
       return map.isEmpty();
    }
 
+   @Override
    public Set<K> keySet() {
       return map.keySet();
    }
 
+   @Override
    public V put(final K key, final V value) {
       return map.put(key, value);
    }
 
+   @Override
    public void putAll(final Map<? extends K, ? extends V> otherMap) {
       map.putAll(otherMap);
    }
@@ -95,12 +103,14 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
    /**
     * @since 1.8
     */
+   @Override
    public V putIfAbsent(final K key, final V value) {
       if (!containsKey(key))
          return map.put(key, value);
       return map.get(key);
    }
 
+   @Override
    public V remove(final Object key) {
       return map.remove(key);
    }
@@ -110,21 +120,24 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
     *
     * @since 1.8
     */
+   @Override
    public boolean remove(final Object key, final Object value) {
       if (!containsKey(key))
          return false;
 
-      if (ObjectUtils.equals(get(key), value)) {
+      if (Objects.equals(get(key), value)) {
          remove(key);
          return true;
       }
       return false;
    }
 
+   @Override
    public int size() {
       return map.size();
    }
 
+   @Override
    public Collection<V> values() {
       return map.values();
    }

@@ -44,7 +44,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
       /*
        * build the final map of attributes to be used
        */
-      final Map<String, Object> attrValues = new HashMap<String, Object>();
+      final Map<String, Object> attrValues = new HashMap<>();
       int count = 0;
       for (final Method m : annotationType.getDeclaredMethods()) {
          final String attrName = m.getName();
@@ -66,6 +66,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
        */
       try {
          return Proxies.create(new InvocationHandler() {
+            @Override
             public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
                final String name = method.getName();
                if ("hashCode".equals(name) && args == null && method.getReturnType() == int.class)
@@ -121,6 +122,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
       Args.notNull("annotation", annotation);
 
       return (A) Proxy.newProxyInstance(annotation.getClassLoader(), new Class[] {annotation}, new InvocationHandler() {
+         @Override
          public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             return method.getDefaultValue();
          }
@@ -185,7 +187,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
       Args.notNull("annotation", annotation);
 
       final Method[] methods = annotation.annotationType().getDeclaredMethods();
-      final Map<String, Object> parameters = new HashMap<String, Object>(methods.length);
+      final Map<String, Object> parameters = new HashMap<>(methods.length);
       for (final Method m : methods) {
          try {
             parameters.put(m.getName(), m.invoke(annotation));

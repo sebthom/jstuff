@@ -89,7 +89,7 @@ public class TypesGenericsTest extends TestCase {
          throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is assignable to [searchFor=" + searchFor.getName() + "]");
 
       final boolean isSearchForInterface = searchFor.isInterface();
-      final Queue<Type> interfacesToCheck = isSearchForInterface ? new LinkedList<Type>() : null;
+      final Queue<Type> interfacesToCheck = isSearchForInterface ? new LinkedList<>() : null;
 
       /*
        * traverse the class hierarchy and collect generic variable => concrete variable argument (type) mappings
@@ -175,8 +175,8 @@ public class TypesGenericsTest extends TestCase {
       return res;
    }
 
-   public <T> void assertEquals(final List<T> actual, final T... expected) {
-      assertEquals(new ArrayList<T>(actual), Arrays.asList(expected));
+   public <T> void assertEquals(final List<T> actual, @SuppressWarnings("unchecked") final T... expected) {
+      assertEquals(new ArrayList<>(actual), Arrays.asList(expected));
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})

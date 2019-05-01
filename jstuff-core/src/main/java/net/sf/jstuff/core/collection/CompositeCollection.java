@@ -23,38 +23,40 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
 
    private static final long serialVersionUID = 1L;
 
-   public static <V> CompositeCollection<V> of(final Collection<? extends Collection<? extends V>> components) {
-      return new CompositeCollection<V>(components);
-   }
-
-   public static <V> CompositeCollection<V> of(final Collection<? extends V>... components) {
-      return new CompositeCollection<V>(components);
+   @SafeVarargs
+   public static <V> CompositeCollection<V> of(final Collection<? extends V>... collections) {
+      return new CompositeCollection<>(collections);
    }
 
    public CompositeCollection() {
       super();
    }
 
-   public CompositeCollection(final Collection<? extends Collection<? extends V>> components) {
-      super(components);
+   public CompositeCollection(final Collection<? extends Collection<? extends V>> collections) {
+      super(collections);
    }
 
-   public CompositeCollection(final Collection<? extends V>... components) {
-      super(components);
+   @SafeVarargs
+   public CompositeCollection(final Collection<? extends V>... collections) {
+      super(collections);
    }
 
+   @Override
    public boolean add(final Object item) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public boolean addAll(final Collection<? extends V> values) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public void clear() {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public boolean contains(final Object item) {
       for (final Collection<? extends V> coll : components)
          if (!coll.contains(item))
@@ -62,6 +64,7 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
       return false;
    }
 
+   @Override
    public boolean containsAll(final Collection<?> coll) {
       for (final Object item : coll)
          if (!this.contains(item))
@@ -69,6 +72,7 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
       return true;
    }
 
+   @Override
    public boolean isEmpty() {
       for (final Collection<? extends V> coll : components)
          if (!coll.isEmpty())
@@ -76,26 +80,31 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
       return false;
    }
 
+   @Override
    public Iterator<V> iterator() {
-      final CompositeIterator<V> it = new CompositeIterator<V>();
+      final CompositeIterator<V> it = new CompositeIterator<>();
       for (final Collection<? extends V> coll : components) {
          it.addComponent(coll.iterator());
       }
       return it;
    }
 
+   @Override
    public boolean remove(final Object item) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public boolean removeAll(final Collection<?> values) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public boolean retainAll(final Collection<?> values) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public int size() {
       int size = 0;
       for (final Collection<? extends V> coll : components) {
@@ -104,6 +113,7 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
       return size;
    }
 
+   @Override
    public Object[] toArray() {
       final Object[] result = new Object[this.size()];
       int idx = 0;
@@ -113,6 +123,7 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
       return result;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public <T> T[] toArray(final T[] array) {
       final int size = this.size();

@@ -45,10 +45,11 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
       setBeanClass(beanClass);
    }
 
+   @Override
    public List<T> extractData(final ResultSet resultSet) throws SQLException, DataAccessException {
       Assert.notNull(beanClass, "Property beanClass must be set.");
 
-      final List<T> extractedBeans = new ArrayList<T>();
+      final List<T> extractedBeans = new ArrayList<>();
 
       for (final Iterator<?> it = new ResultSetDynaClass(resultSet, true).iterator(); it.hasNext();) {
          final DynaBean dynaBean = (DynaBean) it.next();
@@ -78,7 +79,7 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
    public void setBeanClass(final Class<T> beanClass) throws IntrospectionException {
       final BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
 
-      final HashMap<String, String> propsLowerCase = new HashMap<String, String>();
+      final HashMap<String, String> propsLowerCase = new HashMap<>();
       for (final PropertyDescriptor prop : beanInfo.getPropertyDescriptors()) {
          final String propName = prop.getName();
          if (propsLowerCase.put(propName.toLowerCase(), propName) != null)

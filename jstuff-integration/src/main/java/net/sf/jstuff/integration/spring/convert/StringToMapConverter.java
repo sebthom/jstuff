@@ -33,6 +33,7 @@ public class StringToMapConverter extends AbstractConverter {
       super(conversionService);
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
       if (source == null)
@@ -57,6 +58,7 @@ public class StringToMapConverter extends AbstractConverter {
       return result;
    }
 
+   @Override
    public Set<ConvertiblePair> getConvertibleTypes() {
       return Collections.singleton(new ConvertiblePair(String.class, Map.class));
    }

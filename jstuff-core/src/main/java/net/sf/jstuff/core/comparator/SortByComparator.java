@@ -19,10 +19,12 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class SortByComparator<T, SortKeyType> implements Comparator<T> {
    private SortBy<SortKeyType>[] sortBy;
 
+   @SafeVarargs
    public SortByComparator(final SortBy<SortKeyType>... sortBy) {
       setSortBy(sortBy);
    }
 
+   @Override
    public int compare(final T o1, final T o2) {
       for (final SortBy<SortKeyType> sb : sortBy) {
          final int i = compareByKey(o1, o2, sb.getKey());

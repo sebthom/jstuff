@@ -60,7 +60,7 @@ public final class SpringBeanInjector {
       return _INSTANCE;
    }
 
-   private final ObjectCache<String, Object> registeredSingletons = new ObjectCache<String, Object>(true);
+   private final ObjectCache<String, Object> registeredSingletons = new ObjectCache<>(true);
 
    @Autowired
    private DefaultListableBeanFactory beanFactory;

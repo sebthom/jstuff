@@ -18,7 +18,7 @@ import java.util.ListIterator;
  */
 public class ObservableList<E> extends ObservableCollection<E, List<E>> implements List<E> {
    public static <E> ObservableList<E> of(final List<E> list) {
-      return new ObservableList<E>(list);
+      return new ObservableList<>(list);
    }
 
    public ObservableList(final List<E> list) {
@@ -32,11 +32,13 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
       return true;
    }
 
+   @Override
    public void add(final int index, final E item) {
       wrapped.add(index, item);
       onAdded(item, index);
    }
 
+   @Override
    public boolean addAll(int index, final Collection<? extends E> itemsToAdd) {
       if (itemsToAdd == null || itemsToAdd.size() == 0)
          return false;
@@ -52,59 +54,72 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
       }
    }
 
+   @Override
    public E get(final int index) {
       return wrapped.get(index);
    }
 
+   @Override
    public int indexOf(final Object item) {
       return wrapped.indexOf(item);
    }
 
+   @Override
    public int lastIndexOf(final Object item) {
       return wrapped.lastIndexOf(item);
    }
 
+   @Override
    public ListIterator<E> listIterator() {
       return listIterator(0);
    }
 
+   @Override
    public ListIterator<E> listIterator(final int index) {
       final ListIterator<E> it = wrapped.listIterator(index);
       return new ListIterator<E>() {
          private E current;
 
+         @Override
          public boolean hasNext() {
             return it.hasNext();
          }
 
+         @Override
          public E next() {
             current = it.next();
             return current;
          }
 
+         @Override
          public boolean hasPrevious() {
             return it.hasPrevious();
          }
 
+         @Override
          public E previous() {
             current = it.previous();
             return current;
          }
 
+         @Override
          public int nextIndex() {
             return it.nextIndex();
          }
 
+         @Override
          public int previousIndex() {
             return it.previousIndex();
          }
 
+         @Override
          public void remove() {
             final int index = nextIndex() - 1;
             it.remove();
             onRemoved(current, index);
          }
 
+         @Override
          public void set(final E item) {
             if (item != current) {
                final int index = nextIndex() - 1;
@@ -115,6 +130,7 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
             }
          }
 
+         @Override
          public void add(final E item) {
             final int index = nextIndex();
             it.add(item);
@@ -123,6 +139,7 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
       };
    }
 
+   @Override
    public E remove(final int index) {
       final E item = wrapped.remove(index);
       onRemoved(item, index);
@@ -138,6 +155,7 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
       return true;
    }
 
+   @Override
    public E set(final int index, final E item) {
       final E old = wrapped.set(index, item);
       if (old != item) {
@@ -149,6 +167,7 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
       return old;
    }
 
+   @Override
    public List<E> subList(final int fromIndex, final int toIndex) {
       throw new UnsupportedOperationException("Not implemented");
    }

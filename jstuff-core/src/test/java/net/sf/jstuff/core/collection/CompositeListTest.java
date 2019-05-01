@@ -22,8 +22,8 @@ public class CompositeListTest extends TestCase {
    public void testCompositeList() {
       final List<String> l1 = Arrays.asList("a", "b");
       final List<String> l2 = Arrays.asList("c", "d");
-      @SuppressWarnings("unchecked")
-      final List<String> cl = CompositeList.of(l1, l2);
+
+      final List<String> cl = new CompositeList<>(l1, l2);
       assertEquals(4, cl.size());
       assertEquals("a", cl.get(0));
       assertEquals("b", cl.get(1));

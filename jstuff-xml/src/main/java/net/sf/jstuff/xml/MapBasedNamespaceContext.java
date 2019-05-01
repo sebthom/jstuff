@@ -51,6 +51,7 @@ public class MapBasedNamespaceContext implements NamespaceContext {
       prefixesByNamespaceURI.get(namespaceURI).add(prefix);
    }
 
+   @Override
    public String getNamespaceURI(final String prefix) {
       Args.notNull("prefix", prefix);
 
@@ -66,6 +67,7 @@ public class MapBasedNamespaceContext implements NamespaceContext {
       return XMLConstants.NULL_NS_URI;
    }
 
+   @Override
    public String getPrefix(final String namespaceURI) {
       Args.notNull("namespaceURI", namespaceURI);
 
@@ -79,6 +81,7 @@ public class MapBasedNamespaceContext implements NamespaceContext {
       return prefixesByNamespaceURI.containsKey(namespaceURI) ? prefixesByNamespaceURI.get(namespaceURI).get(0) : null;
    }
 
+   @Override
    public Iterator<String> getPrefixes(final String namespaceURI) {
       Args.notNull("namespaceURI", namespaceURI);
 

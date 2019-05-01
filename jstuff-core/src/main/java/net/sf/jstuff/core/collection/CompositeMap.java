@@ -25,30 +25,34 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
 
    private static final long serialVersionUID = 1L;
 
-   public static <K, V> CompositeMap<K, V> of(final Collection<? extends Map<? extends K, ? extends V>> components) {
-      return new CompositeMap<K, V>(components);
+   public static <K, V> CompositeMap<K, V> of(final Collection<? extends Map<? extends K, ? extends V>> maps) {
+      return new CompositeMap<>(maps);
    }
 
-   public static <K, V> CompositeMap<K, V> of(final Map<? extends K, ? extends V>... components) {
-      return new CompositeMap<K, V>(components);
+   @SafeVarargs
+   public static <K, V> CompositeMap<K, V> of(final Map<? extends K, ? extends V>... maps) {
+      return new CompositeMap<>(maps);
    }
 
    public CompositeMap() {
       super();
    }
 
-   public CompositeMap(final Collection<? extends Map<? extends K, ? extends V>> components) {
-      super(components);
+   public CompositeMap(final Collection<? extends Map<? extends K, ? extends V>> maps) {
+      super(maps);
    }
 
-   public CompositeMap(final Map<? extends K, ? extends V>... components) {
-      super(components);
+   @SafeVarargs
+   public CompositeMap(final Map<? extends K, ? extends V>... maps) {
+      super(maps);
    }
 
+   @Override
    public void clear() {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public boolean containsKey(final Object key) {
       for (final Map<? extends K, ? extends V> m : components)
          if (m.containsKey(key))
@@ -56,6 +60,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
       return false;
    }
 
+   @Override
    public boolean containsValue(final Object value) {
       for (final Map<? extends K, ? extends V> m : components)
          if (m.containsValue(value))
@@ -63,8 +68,9 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
       return false;
    }
 
+   @Override
    public CompositeSet<Entry<K, V>> entrySet() {
-      final CompositeSet<Entry<K, V>> entries = new CompositeSet<Entry<K, V>>();
+      final CompositeSet<Entry<K, V>> entries = new CompositeSet<>();
       for (final Map<? extends K, ? extends V> m : components) {
          final Collection<? extends Entry<K, V>> set = Types.cast(m.entrySet());
          entries.addComponent(set);
@@ -72,6 +78,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
       return entries;
    }
 
+   @Override
    public V get(final Object key) {
       for (final Map<? extends K, ? extends V> m : components)
          if (m.containsKey(key))
@@ -79,6 +86,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
       return null;
    }
 
+   @Override
    public boolean isEmpty() {
       for (final Map<? extends K, ? extends V> m : components)
          if (!m.isEmpty())
@@ -86,30 +94,36 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
       return true;
    }
 
+   @Override
    public Set<K> keySet() {
-      final CompositeSet<K> keys = new CompositeSet<K>();
+      final CompositeSet<K> keys = new CompositeSet<>();
       for (final Map<? extends K, ? extends V> m : components) {
          keys.addComponent(m.keySet());
       }
       return keys;
    }
 
+   @Override
    public V put(final Object key, final Object value) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public void putAll(final Map<? extends K, ? extends V> map) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public V remove(final Object key) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public int size() {
       return keySet().size();
    }
 
+   @Override
    public Collection<V> values() {
       return new AbstractList<V>() {
          @Override

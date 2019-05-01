@@ -64,17 +64,16 @@ public abstract class AbstractServer {
                   socketListener = new ServerSocket(portNumber);
 
                   while (true) {
+                     @SuppressWarnings("resource")
                      final Socket socket = socketListener.accept();
 
                      if (isRunning) {
-                        executor.execute(new Runnable() {
-                           public void run() {
-                              try {
-                                 handleConnection(socket);
-                                 socket.close();
-                              } catch (final IOException ex) {
-                                 ex.printStackTrace();
-                              }
+                        executor.execute(() -> {
+                           try {
+                              handleConnection(socket);
+                              socket.close();
+                           } catch (final IOException ex) {
+                              ex.printStackTrace();
                            }
                         });
                      } else {

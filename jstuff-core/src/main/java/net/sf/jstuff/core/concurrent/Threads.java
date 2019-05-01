@@ -130,6 +130,7 @@ public abstract class Threads {
    private static final Logger LOG = Logger.create();
 
    private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = new java.util.Comparator<Thread>() {
+      @Override
       public int compare(final Thread t1, final Thread t2) {
          return t2.getPriority() - t1.getPriority();
       }

@@ -39,6 +39,7 @@ public abstract class Members {
    public static void ensureAccessible(final AccessibleObject ao) {
       if (!ao.isAccessible()) {
          AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            @Override
             public Object run() {
                ao.setAccessible(true);
                return null;

@@ -10,9 +10,9 @@
 package net.sf.jstuff.core.io;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 
 /**
@@ -36,12 +36,12 @@ public class FastByteArrayOutputStreamTest extends TestCase {
       os.write(new byte[] {4, 5});
       os.write(6);
       assertEquals(6, os.size());
-      assertTrue(ArrayUtils.isEquals(new byte[] {1, 2, 3, 4, 5, 6}, os.toByteArray()));
+      assertTrue(Objects.deepEquals(new byte[] {1, 2, 3, 4, 5, 6}, os.toByteArray()));
 
       final FastByteArrayOutputStream os2 = new FastByteArrayOutputStream();
       os.writeTo(os2);
       assertEquals(6, os2.size());
-      assertTrue(ArrayUtils.isEquals(os.toByteArray(), os2.toByteArray()));
+      assertTrue(Objects.deepEquals(os.toByteArray(), os2.toByteArray()));
 
       os.reset();
       assertEquals(0, os.size());

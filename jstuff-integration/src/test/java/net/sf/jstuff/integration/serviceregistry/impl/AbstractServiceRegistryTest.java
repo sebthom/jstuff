@@ -27,10 +27,12 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
          this.count = count;
       }
 
+      @Override
       public void onServiceAvailable(final ServiceProxy<T> service) {
          count.incrementAndGet();
       }
 
+      @Override
       public void onServiceUnavailable(final ServiceProxy<T> service) {
          count.incrementAndGet();
       }
@@ -38,10 +40,12 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
 
    public static class DefaultService1 implements Service1 {
 
+      @Override
       public String getGreeting() {
          return "Hello";
       }
 
+      @Override
       public boolean validate() {
          return true;
       }
@@ -49,10 +53,12 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
 
    public static class DefaultService2 implements Service2 {
 
+      @Override
       public String getGreeting() {
          return "Hola";
       }
 
+      @Override
       public boolean validate() {
          return true;
       }
@@ -60,6 +66,7 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
 
    public static class DefaultService2Extended extends DefaultService2 implements Service2Extended {
 
+      @Override
       public String getGoodbye() {
          return "Adios";
       }
@@ -123,7 +130,7 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
    public void testServiceListener() {
       final ServiceProxy<Service1> srv1Proxy = registry.getService(Service1.ENDPOINT_ID, Service1.class);
       final AtomicInteger count = new AtomicInteger();
-      final CountingListener<AbstractServiceRegistryTest.Service1> listener = new CountingListener<AbstractServiceRegistryTest.Service1>(count);
+      final CountingListener<AbstractServiceRegistryTest.Service1> listener = new CountingListener<>(count);
       srv1Proxy.addServiceListener(listener);
 
       final DefaultService1 srv1Impl = new DefaultService1();
@@ -147,7 +154,7 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
    public void testServiceListenerGC() throws InterruptedException {
       ServiceProxy<Runnable> srv1Proxy = registry.getService(Runnable.class.getName(), Runnable.class);
       final AtomicInteger count = new AtomicInteger();
-      CountingListener<Runnable> listener = new CountingListener<Runnable>(count);
+      CountingListener<Runnable> listener = new CountingListener<>(count);
       assertTrue(srv1Proxy.addServiceListener(listener));
       assertFalse(srv1Proxy.addServiceListener(listener));
 
@@ -157,6 +164,7 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> ext
 
       final Runnable service = new Runnable() {
 
+         @Override
          public void run() {
          }
       };

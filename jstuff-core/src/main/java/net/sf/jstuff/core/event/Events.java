@@ -59,6 +59,7 @@ public abstract class Events {
    /**
     * @return the number of listeners notified successfully
     */
+   @SafeVarargs
    public static <Event> int fire(final Event type, final EventListener<Event>... listeners) {
       int count = 0;
       if (listeners != null && listeners.length > 0) {

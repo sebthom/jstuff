@@ -20,6 +20,7 @@ import net.sf.jstuff.core.collection.Maps;
 public class SortByPropertyComparator<T> extends SortByComparator<T, String> {
    private final Map<String, Comparator<T>> comparators = Maps.newHashMap();
 
+   @SafeVarargs
    public SortByPropertyComparator(final SortBy<String>... sortBy) {
       super(sortBy);
    }

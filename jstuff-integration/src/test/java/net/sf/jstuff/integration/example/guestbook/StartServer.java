@@ -14,6 +14,13 @@ import org.eclipse.jetty.server.bio.SocketConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
+ * http://localhost:8080/services/guestbook.json
+ * http://localhost:8080/services/feed/atom/guestbook.xml
+ * http://localhost:8080/services/rest/xml/guestbook?explain
+ * http://localhost:8080/services/rest/xml/guestbook?explainAsHTML
+ * http://localhost:8080/services/rest/json/guestbook?explain
+ * http://localhost:8080/services/rest/json/guestbook?explainAsHTML
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public final class StartServer {

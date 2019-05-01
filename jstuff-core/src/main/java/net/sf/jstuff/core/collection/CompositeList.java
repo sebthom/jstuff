@@ -24,36 +24,39 @@ public class CompositeList<V> extends AbstractList<V> implements Composite<List<
 
    private static final long serialVersionUID = 1L;
 
-   public static <V> CompositeList<V> of(final Collection<List<? extends V>> components) {
-      return new CompositeList<V>(components);
+   public static <V> CompositeList<V> of(final Collection<List<? extends V>> lists) {
+      return new CompositeList<>(lists);
    }
 
-   public static <V> CompositeList<V> of(final List<? extends V>... components) {
-      return new CompositeList<V>(components);
+   @SafeVarargs
+   public static <V> CompositeList<V> of(final List<? extends V>... lists) {
+      return new CompositeList<>(lists);
    }
 
-   private final Collection<List<? extends V>> components = new ArrayList<List<? extends V>>();
+   private final Collection<List<? extends V>> lists = new ArrayList<>();
 
    public CompositeList() {
       super();
    }
 
-   public CompositeList(final Collection<List<? extends V>> components) {
-      this.components.addAll(components);
+   public CompositeList(final Collection<List<? extends V>> lists) {
+      this.lists.addAll(lists);
    }
 
-   public CompositeList(final List<? extends V>... components) {
-      CollectionUtils.addAll(this.components, components);
+   @SafeVarargs
+   public CompositeList(final List<? extends V>... lists) {
+      CollectionUtils.addAll(this.lists, lists);
    }
 
-   public void addComponent(final List<? extends V> component) {
-      this.components.add(component);
+   @Override
+   public void addComponent(final List<? extends V> list) {
+      this.lists.add(list);
    }
 
    @Override
    public V get(final int index) {
       int totalSizeOfCheckedLists = 0;
-      for (final List<? extends V> list : components) {
+      for (final List<? extends V> list : lists) {
          final int currentListIndex = index - totalSizeOfCheckedLists;
          final int currentListSize = list.size();
          if (currentListIndex >= currentListSize) {
@@ -65,22 +68,25 @@ public class CompositeList<V> extends AbstractList<V> implements Composite<List<
       throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + totalSizeOfCheckedLists);
    }
 
-   public boolean hasComponent(final List<? extends V> component) {
-      return components.contains(component);
+   @Override
+   public boolean hasComponent(final List<? extends V> list) {
+      return lists.contains(list);
    }
 
+   @Override
    public boolean isModifiable() {
       return true;
    }
 
-   public boolean removeComponent(final List<? extends V> component) {
-      return components.remove(component);
+   @Override
+   public boolean removeComponent(final List<? extends V> list) {
+      return lists.remove(list);
    }
 
    @Override
    public int size() {
       int size = 0;
-      for (final List<? extends V> list : components) {
+      for (final List<? extends V> list : lists) {
          size += list.size();
       }
       return size;

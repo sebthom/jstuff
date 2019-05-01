@@ -21,22 +21,24 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
 
    private static final long serialVersionUID = 1L;
 
-   public static <V> CompositeSet<V> of(final Collection<Set<? extends V>> components) {
-      return new CompositeSet<V>(components);
+   public static <V> CompositeSet<V> of(final Collection<Set<? extends V>> sets) {
+      return new CompositeSet<>(sets);
    }
 
-   public static <V> CompositeSet<V> of(final Set<? extends V>... components) {
-      return new CompositeSet<V>(components);
+   @SafeVarargs
+   public static <V> CompositeSet<V> of(final Set<? extends V>... sets) {
+      return new CompositeSet<>(sets);
    }
 
    public CompositeSet() {
       super();
    }
 
-   public CompositeSet(final Collection<Set<? extends V>> components) {
-      super(components);
+   public CompositeSet(final Collection<Set<? extends V>> sets) {
+      super(sets);
    }
 
+   @SafeVarargs
    public CompositeSet(final Set<? extends V>... sets) {
       super(sets);
    }
@@ -60,7 +62,7 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
    }
 
    private Set<V> getSnapshot() {
-      final LinkedHashSet<V> values = new LinkedHashSet<V>();
+      final LinkedHashSet<V> values = new LinkedHashSet<>();
       for (final Collection<? extends V> coll : components) {
          values.addAll(coll);
       }
@@ -83,14 +85,17 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
       // to avoid duplicate elements from the different backing sets we dump the values of all into a new set
       final Iterator<V> it = getSnapshot().iterator();
       return new Iterator<V>() {
+         @Override
          public boolean hasNext() {
             return it.hasNext();
          }
 
+         @Override
          public V next() {
             return it.next();
          }
 
+         @Override
          public void remove() {
             throw new UnsupportedOperationException();
          }

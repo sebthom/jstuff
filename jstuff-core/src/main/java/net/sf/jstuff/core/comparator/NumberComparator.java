@@ -24,6 +24,7 @@ public class NumberComparator implements Comparator<Number>, Serializable {
       super();
    }
 
+   @Override
    public int compare(final Number o1, final Number o2) {
       final double d1 = o1.doubleValue();
       final double d2 = o2.doubleValue();

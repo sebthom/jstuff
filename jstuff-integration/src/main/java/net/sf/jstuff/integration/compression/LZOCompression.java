@@ -20,10 +20,10 @@ import org.anarres.lzo.LzoDecompressor;
 import org.anarres.lzo.LzoInputStream;
 import org.anarres.lzo.LzoLibrary;
 import org.anarres.lzo.LzoOutputStream;
-import org.apache.commons.io.IOUtils;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.compression.AbstractCompression;
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
@@ -51,6 +51,7 @@ public class LZOCompression extends AbstractCompression {
       decompressor = LzoLibrary.getInstance().newDecompressor(algorithm, constraint);
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -72,6 +73,7 @@ public class LZOCompression extends AbstractCompression {
       }
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("input", input);
@@ -94,10 +96,12 @@ public class LZOCompression extends AbstractCompression {
       }
    }
 
+   @Override
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
       return new LzoOutputStream(output, compressor, 32 * 1024);
    }
 
+   @Override
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
       return new LzoInputStream(compressed, decompressor);
    }

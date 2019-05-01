@@ -19,6 +19,7 @@ public class ArrayIterator<T> implements Iterator<T>, Serializable {
 
    private static final long serialVersionUID = 1L;
 
+   @SafeVarargs
    public static <T> ArrayIterator<T> of(final T... array) {
       return new ArrayIterator<T>(array);
    }
@@ -26,18 +27,22 @@ public class ArrayIterator<T> implements Iterator<T>, Serializable {
    private final T[] array;
    private int currentIndex = 0;
 
+   @SafeVarargs
    public ArrayIterator(final T... array) {
       this.array = array;
    }
 
+   @Override
    public boolean hasNext() {
       return currentIndex < array.length;
    }
 
+   @Override
    public T next() {
       return array[currentIndex++];
    }
 
+   @Override
    public void remove() {
       throw new UnsupportedOperationException();
    }

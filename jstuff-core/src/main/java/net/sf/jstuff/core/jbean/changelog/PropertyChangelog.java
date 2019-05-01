@@ -24,7 +24,7 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 public class PropertyChangelog implements EventListener<PropertyChangeEvent>, Serializable {
    private static final long serialVersionUID = 1L;
 
-   private final List<PropertyChangeEvent> propertyChanges = new ArrayList<PropertyChangeEvent>();
+   private final List<PropertyChangeEvent> propertyChanges = new ArrayList<>();
 
    private boolean undoing = false;
 
@@ -46,6 +46,7 @@ public class PropertyChangelog implements EventListener<PropertyChangeEvent>, Se
       return false;
    }
 
+   @Override
    public void onEvent(final PropertyChangeEvent event) {
       if (undoing)
          return;

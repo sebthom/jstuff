@@ -30,22 +30,27 @@ public class DelegatingCollection<V> implements Collection<V>, Serializable {
       this.delegate = delegate;
    }
 
+   @Override
    public boolean add(final V o) {
       return delegate.add(o);
    }
 
+   @Override
    public boolean addAll(final Collection<? extends V> c) {
       return delegate.addAll(c);
    }
 
+   @Override
    public void clear() {
       delegate.clear();
    }
 
+   @Override
    public boolean contains(final Object o) {
       return delegate.contains(o);
    }
 
+   @Override
    public boolean containsAll(final Collection<?> c) {
       return delegate.containsAll(c);
    }
@@ -60,34 +65,42 @@ public class DelegatingCollection<V> implements Collection<V>, Serializable {
       return delegate.hashCode();
    }
 
+   @Override
    public boolean isEmpty() {
       return delegate.isEmpty();
    }
 
+   @Override
    public Iterator<V> iterator() {
       return delegate.iterator();
    }
 
+   @Override
    public boolean remove(final Object o) {
       return delegate.remove(o);
    }
 
+   @Override
    public boolean removeAll(final Collection<?> c) {
       return delegate.removeAll(c);
    }
 
+   @Override
    public boolean retainAll(final Collection<?> c) {
       return delegate.retainAll(c);
    }
 
+   @Override
    public int size() {
       return delegate.size();
    }
 
+   @Override
    public Object[] toArray() {
       return delegate.toArray();
    }
 
+   @Override
    public <T> T[] toArray(final T[] a) {
       return delegate.toArray(a);
    }

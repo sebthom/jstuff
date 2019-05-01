@@ -23,12 +23,13 @@ public class GCTrackerTest extends TestCase {
 
    public void testGCTracker() throws InterruptedException {
       final EventListener<Void> countGC = new EventListener<Void>() {
+         @Override
          public void onEvent(final Void event) {
             garbageCollected++;
          }
       };
 
-      final GCTracker<Void> tracker = new GCTracker<Void>(100);
+      final GCTracker<Void> tracker = new GCTracker<>(100);
       tracker.subscribe(countGC);
 
       final int objects = 10000;

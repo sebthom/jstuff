@@ -24,8 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class RequestResponseHoldingFilter implements Filter {
-   private static final ThreadLocal<ServletRequest> REQ = new ThreadLocal<ServletRequest>();
-   private static final ThreadLocal<ServletResponse> RESP = new ThreadLocal<ServletResponse>();
+   private static final ThreadLocal<ServletRequest> REQ = new ThreadLocal<>();
+   private static final ThreadLocal<ServletResponse> RESP = new ThreadLocal<>();
 
    public static HttpServletRequest getHttpServletRequest() {
       final ServletRequest req = REQ.get();
@@ -49,9 +49,11 @@ public class RequestResponseHoldingFilter implements Filter {
       return RESP.get();
    }
 
+   @Override
    public void destroy() {
    }
 
+   @Override
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
       REQ.set(request);
       try {
@@ -66,6 +68,7 @@ public class RequestResponseHoldingFilter implements Filter {
       }
    }
 
+   @Override
    public void init(final FilterConfig filterConfig) throws ServletException {
    }
 }

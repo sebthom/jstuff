@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2010-2019 by Sebastian Thomschke and others.
@@ -16,22 +17,19 @@
    <parent>
       <groupId>net.sf.jstuff</groupId>
       <artifactId>jstuff-parent</artifactId>
-      <version>4.2.2-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
    </parent>
 
    <artifactId>jstuff-integration</artifactId>
 
 
    <properties>
-      <java.version.integration-tests>1.7</java.version.integration-tests>
-      <enforcer.maxBytecodeVersion>1.7</enforcer.maxBytecodeVersion>
-
       <jetty.version>7.6.21.v20160908</jetty.version>
 
       <!-- Java 5: <= 3.x-->
       <!-- Java 6: <= 4.x-->
       <!-- Java 8: <= 5.x-->
-      <spring.version>3.2.18.RELEASE</spring.version>
+      <spring.version>5.1.6.RELEASE</spring.version>
    </properties>
 
 
@@ -52,21 +50,6 @@
          <plugin>
             <artifactId>maven-enforcer-plugin</artifactId>
             <executions>
-               <execution>
-                  <id>enforce-bytecode-version@validate</id>
-                  <configuration>
-                     <rules>
-                        <enforceBytecodeVersion>
-                           <ignoreClasses>
-                              <ignoreClass>com.thoughtworks.xstream.mapper.LambdaMapper</ignoreClass>
-                              <ignoreClass>com.thoughtworks.xstream.converters.reflection.LambdaConverter</ignoreClass>
-                              <ignoreClass>com.thoughtworks.xstream.converters.time.*</ignoreClass>
-                              <ignoreClass>com.thoughtworks.xstream.core.util.ISO8601JavaTimeConverter</ignoreClass>
-                           </ignoreClasses>
-                        </enforceBytecodeVersion>
-                     </rules>
-                  </configuration>
-               </execution>
                <execution>
                   <id>ban-duplicate-classes@validate</id>
                   <configuration>
@@ -99,14 +82,13 @@
          <!-- only for ServiceRegistry -->
          <groupId>net.bytebuddy</groupId>
          <artifactId>byte-buddy</artifactId>
-         <version>1.8.12</version>
+         <version>1.9.12</version>
          <optional>true</optional>
       </dependency>
       <dependency>
          <groupId>javax.servlet</groupId>
-         <artifactId>servlet-api</artifactId>
-         <!-- 2.5 is JEE5 -->
-         <version>2.5</version>
+         <artifactId>javax.servlet-api</artifactId>
+         <version>3.1.0</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -137,6 +119,12 @@
       </dependency>
       <dependency>
          <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <version>${spring.version}</version>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
          <artifactId>spring-web</artifactId>
          <version>${spring.version}</version>
          <optional>true</optional>
@@ -150,30 +138,37 @@
       <dependency>
          <groupId>javax.mail</groupId>
          <artifactId>javax.mail-api</artifactId>
-         <!-- 1.5 is part of JEE6 -->
-         <version>1.4.6</version>
+         <version>1.5.6</version>
          <optional>true</optional>
       </dependency>
       <dependency>
-         <!-- for AuthenticatorTomcatImpl only -->
+         <!-- for TomcatAuthenticator only -->
          <groupId>org.apache.tomcat</groupId>
-         <artifactId>catalina</artifactId>
-         <version>6.0.53</version>
+         <artifactId>tomcat-catalina</artifactId>
+         <version>8.5.40</version>
+         <optional>true</optional>
          <exclusions>
             <exclusion>
                <groupId>org.apache.tomcat</groupId>
-               <artifactId>servlet-api</artifactId>
+               <artifactId>tomcat-annotations-api</artifactId>
             </exclusion>
             <exclusion>
                <groupId>org.apache.tomcat</groupId>
-               <artifactId>annotations-api</artifactId>
+               <artifactId>tomcat-juli</artifactId>
             </exclusion>
             <exclusion>
                <groupId>org.apache.tomcat</groupId>
-               <artifactId>juli</artifactId>
+               <artifactId>tomcat-servlet-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>tomcat-jaspic-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>tomcat-jsp-api</artifactId>
             </exclusion>
          </exclusions>
-         <optional>true</optional>
       </dependency>
       <dependency>
          <groupId>commons-configuration</groupId>

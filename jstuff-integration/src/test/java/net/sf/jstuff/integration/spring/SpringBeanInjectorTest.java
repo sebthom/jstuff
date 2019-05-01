@@ -39,10 +39,12 @@ public class SpringBeanInjectorTest extends TestCase {
       boolean destroyCalled;
       boolean afterPropertiesSetCalled;
 
+      @Override
       public void afterPropertiesSet() throws Exception {
          afterPropertiesSetCalled = true;
       }
 
+      @Override
       public void destroy() throws Exception {
          destroyCalled = true;
       }

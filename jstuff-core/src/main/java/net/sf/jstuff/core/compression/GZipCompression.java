@@ -43,6 +43,7 @@ public class GZipCompression extends AbstractCompression {
       this.compressionLevel = compressionLevel;
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -63,6 +64,7 @@ public class GZipCompression extends AbstractCompression {
       }
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -90,6 +92,7 @@ public class GZipCompression extends AbstractCompression {
       return new GZIPCompressingInputStream(uncompressed, compressionLevel);
    }
 
+   @Override
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
       return new GZIPOutputStream(output) {
          {
@@ -98,6 +101,7 @@ public class GZipCompression extends AbstractCompression {
       };
    }
 
+   @Override
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
       return new GZIPInputStream(compressed);
    }

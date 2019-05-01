@@ -55,13 +55,13 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
 
    private static final Logger LOG = Logger.create();
 
-   private final SyncEventDispatcher<EVENT> events = new SyncEventDispatcher<EVENT>();
+   private final SyncEventDispatcher<EVENT> events = new SyncEventDispatcher<>();
 
    /**
     * synchronized list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage collected
     */
-   private final Queue<GCReference> monitoredReferences = new ConcurrentLinkedQueue<GCReference>();
-   private final ReferenceQueue<Object> garbageCollectedRefs = new ReferenceQueue<Object>();
+   private final Queue<GCReference> monitoredReferences = new ConcurrentLinkedQueue<>();
+   private final ReferenceQueue<Object> garbageCollectedRefs = new ReferenceQueue<>();
 
    private volatile ScheduledExecutorService executor;
 
@@ -82,6 +82,7 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
 
    private void init() {
       executor.scheduleWithFixedDelay(new Runnable() {
+         @Override
          @SuppressWarnings("unchecked")
          public void run() {
             GCReference ref;
@@ -101,6 +102,7 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
       events.fire(event);
    }
 
+   @Override
    public boolean subscribe(final EventListener<EVENT> listener) {
       return events.subscribe(listener);
    }
@@ -121,6 +123,7 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
       monitoredReferences.add(new GCReference(subject, eventToFireOnGC, this));
    }
 
+   @Override
    public boolean unsubscribe(final EventListener<EVENT> listener) {
       return events.unsubscribe(listener);
    }

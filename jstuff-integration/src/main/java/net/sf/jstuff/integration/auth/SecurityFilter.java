@@ -35,7 +35,7 @@ public class SecurityFilter implements Filter {
    private static final Logger LOG = Logger.create();
    private static final String SESSION_AUTHENTICATION_ATTRIBUTE = Authentication.class.getName();
 
-   public static final ThreadLocal<HttpServletRequest> HTTP_SERVLET_REQUEST_HOLDER = new ThreadLocal<HttpServletRequest>();
+   public static final ThreadLocal<HttpServletRequest> HTTP_SERVLET_REQUEST_HOLDER = new ThreadLocal<>();
 
    private AuthService authService;
    private UserDetailsService userDetailsService;
@@ -44,10 +44,12 @@ public class SecurityFilter implements Filter {
       LOG.infoNew(this);
    }
 
+   @Override
    public void destroy() {
       // do nothing
    }
 
+   @Override
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
       final HttpServletRequest req = (HttpServletRequest) request;
       HTTP_SERVLET_REQUEST_HOLDER.set(req);
@@ -93,6 +95,7 @@ public class SecurityFilter implements Filter {
 
    }
 
+   @Override
    public void init(final FilterConfig cfg) throws ServletException {
       // do nothing
    }

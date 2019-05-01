@@ -24,11 +24,11 @@ public class CompositeCollectionTest extends TestCase {
    public void testCompositeCollection() {
       final List<String> l1 = Arrays.asList("a", "b");
       final List<String> l2 = Arrays.asList("c", "d");
-      @SuppressWarnings("unchecked")
+
       final Collection<String> cc = CompositeCollection.of(l1, l2);
       assertEquals(4, cc.size());
 
-      final List<String> l3 = new ArrayList<String>(cc);
+      final List<String> l3 = new ArrayList<>(cc);
       assertEquals("a", l3.get(0));
       assertEquals("b", l3.get(1));
       assertEquals("c", l3.get(2));

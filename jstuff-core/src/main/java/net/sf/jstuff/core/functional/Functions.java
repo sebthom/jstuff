@@ -23,6 +23,7 @@ public abstract class Functions {
    public abstract static class AbstractFunction<In, Out> implements ChainableFunction<In, Out>, Serializable {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public <NextOut> ChainableFunction<In, NextOut> and(final Function<? super Out, NextOut> next) {
          return new And<In, Out, NextOut>(this, next);
       }
@@ -47,6 +48,7 @@ public abstract class Functions {
          this.second = second;
       }
 
+      @Override
       public final Out apply(final In source) {
          return second.apply(first.apply(source));
       }
@@ -55,6 +57,7 @@ public abstract class Functions {
    public static class CastTo<In, Out> extends AbstractFunction<In, Out> {
       private static final long serialVersionUID = 1L;
 
+      @Override
       @SuppressWarnings("unchecked")
       public Out apply(final In source) {
          return (Out) source;
@@ -64,6 +67,7 @@ public abstract class Functions {
    public static class ObjectToString<In> extends AbstractFunction<In, String> {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public String apply(final In source) {
          return source == null ? null : source.toString();
       }
@@ -80,6 +84,7 @@ public abstract class Functions {
          this.prefix = prefix;
       }
 
+      @Override
       public String apply(final In source) {
          return source == null ? null : prefix + source;
       }
@@ -88,6 +93,7 @@ public abstract class Functions {
    public static class StringToInt extends AbstractFunction<String, Integer> {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public Integer apply(final String source) {
          return source == null ? null : Integer.parseInt(source);
       }
@@ -104,6 +110,7 @@ public abstract class Functions {
          this.suffix = suffix;
       }
 
+      @Override
       public String apply(final In source) {
          return source == null ? null : source + suffix;
       }
@@ -112,6 +119,7 @@ public abstract class Functions {
    public static class Trim<In> extends AbstractFunction<In, String> {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public String apply(final In source) {
          return source == null ? null : source.toString().trim();
       }

@@ -24,26 +24,32 @@ public class UnmodifiableListIterator<T> extends UnmodifiableIterator<T> impleme
       this.delegate = delegate;
    }
 
+   @Override
    public void add(final T o) {
       throw new UnsupportedOperationException();
    }
 
+   @Override
    public boolean hasPrevious() {
       return delegate.hasPrevious();
    }
 
+   @Override
    public int nextIndex() {
       return delegate.nextIndex();
    }
 
+   @Override
    public T previous() {
       return delegate.previous();
    }
 
+   @Override
    public int previousIndex() {
       return delegate.previousIndex();
    }
 
+   @Override
    public void set(final T o) {
       throw new UnsupportedOperationException();
    }

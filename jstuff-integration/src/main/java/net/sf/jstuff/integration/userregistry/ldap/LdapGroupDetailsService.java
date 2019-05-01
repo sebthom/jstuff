@@ -48,11 +48,13 @@ public class LdapGroupDetailsService implements GroupDetailsService {
       LOG.infoNew(this);
    }
 
+   @Override
    public GroupDetails getGroupDetailsByGroupDN(final String groupDN) {
       Args.notNull("groupDN", groupDN);
 
       return (GroupDetails) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
 
+         @Override
          public Object invoke(final LdapContext ctx) throws NamingException {
             final Attributes attr = ctx.getAttributes(groupDN, new String[] {groupAttributeDisplayName, groupAttributeGroupId, groupAttributeMember});
 
@@ -61,7 +63,7 @@ public class LdapGroupDetailsService implements GroupDetailsService {
             groupDetails.setDistingueshedName(groupDN);
             groupDetails.setGroupId((String) attr.get(groupAttributeGroupId).get());
 
-            final Set<String> memberDNs = new HashSet<String>();
+            final Set<String> memberDNs = new HashSet<>();
             for (final Object dn : Enumerations.toIterable(attr.get(groupAttributeMember).getAll())) {
                memberDNs.add((String) dn);
             }
@@ -71,14 +73,16 @@ public class LdapGroupDetailsService implements GroupDetailsService {
       });
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Set<String> getGroupIdsByUserDN(final String userDN) {
       Args.notNull("userDN", userDN);
 
       return (Set<String>) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
 
+         @Override
          public Object invoke(final LdapContext ctx) throws NamingException {
-            final Set<String> groupIds = new HashSet<String>();
+            final Set<String> groupIds = new HashSet<>();
 
             LOG.trace("Performing LDAP Group Search for %s=%s", groupAttributeMember, userDN);
             for (final SearchResult sr : searchGroup(ctx, groupAttributeMember + "=" + userDN, new String[] {groupAttributeGroupId})) {

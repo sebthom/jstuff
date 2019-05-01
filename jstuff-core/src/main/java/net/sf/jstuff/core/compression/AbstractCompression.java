@@ -30,6 +30,7 @@ public abstract class AbstractCompression implements Compression {
 
    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
+   @Override
    @SuppressWarnings("resource")
    public byte[] compress(final byte[] uncompressed) throws IOException {
       final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
@@ -37,6 +38,7 @@ public abstract class AbstractCompression implements Compression {
       return bytesOS.toByteArray();
    }
 
+   @Override
    @SuppressWarnings("resource")
    public InputStream createCompressingInputStream(final byte[] uncompressed) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -45,6 +47,7 @@ public abstract class AbstractCompression implements Compression {
       return output.toInputStream();
    }
 
+   @Override
    @SuppressWarnings("resource")
    public InputStream createCompressingInputStream(final InputStream uncompressed) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -54,6 +57,7 @@ public abstract class AbstractCompression implements Compression {
       final OutputStream compressingOutputStream = createCompressingOutputStream(transfomer);
 
       EXECUTOR.submit(new Callable<Void>() {
+         @Override
          public Void call() throws Exception {
             try {
                IOUtils.copyLarge(uncompressed, compressingOutputStream);
@@ -72,12 +76,14 @@ public abstract class AbstractCompression implements Compression {
       return compressingInputStream;
    }
 
+   @Override
    @SuppressWarnings("resource")
    public InputStream createDecompressingInputStream(final byte[] compressed) throws IOException {
       Args.notNull("compressed", compressed);
       return createDecompressingInputStream(new FastByteArrayInputStream(compressed));
    }
 
+   @Override
    @SuppressWarnings("resource")
    public byte[] decompress(final byte[] compressed) throws IOException {
       Args.notNull("compressed", compressed);
@@ -87,6 +93,7 @@ public abstract class AbstractCompression implements Compression {
       return bytesOS.toByteArray();
    }
 
+   @Override
    @SuppressWarnings("resource")
    public int decompress(final byte[] compressed, final byte[] output) throws IOException {
       Args.notNull("compressed", compressed);
@@ -101,6 +108,7 @@ public abstract class AbstractCompression implements Compression {
       return baos.size();
    }
 
+   @Override
    public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);
@@ -114,6 +122,7 @@ public abstract class AbstractCompression implements Compression {
       }
    }
 
+   @Override
    public void decompress(final InputStream compressed, final OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);

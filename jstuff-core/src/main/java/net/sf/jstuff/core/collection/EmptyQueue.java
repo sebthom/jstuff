@@ -49,14 +49,17 @@ public final class EmptyQueue<E> extends AbstractQueue<E> implements Serializabl
       return Collections.<E> emptySet().iterator(); // CHECKSTYLE:IGNORE GenericWhitespace
    }
 
+   @Override
    public boolean offer(final E o) {
       return false;
    }
 
+   @Override
    public E peek() {
       return null;
    }
 
+   @Override
    public E poll() {
       return null;
    }

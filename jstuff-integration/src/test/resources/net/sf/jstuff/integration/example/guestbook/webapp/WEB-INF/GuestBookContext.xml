@@ -19,13 +19,13 @@ http://www.springframework.org/schema/context/spring-context.xsd
 
     <!-- REST service exporters -->
     <bean name="/rest/xml/guestbook" class="net.sf.jstuff.integration.rest.XMLRestServiceExporter">
-        <property name="service" ref="guestbookService" />
         <property name="serviceInterface" value="net.sf.jstuff.integration.example.guestbook.service.GuestBookService" />
+        <property name="service" ref="guestbookService" />
     </bean>
 
     <bean name="/rest/json/guestbook" class="net.sf.jstuff.integration.rest.JsonRestServiceExporter">
-        <property name="service" ref="guestbookService" />
         <property name="serviceInterface" value="net.sf.jstuff.integration.example.guestbook.service.GuestBookService" />
+        <property name="service" ref="guestbookService" />
     </bean>
 
     <bean name="/feed/atom/guestbook.xml" class="net.sf.jstuff.integration.example.guestbook.service.GuestBookAtomFeedExporter">

@@ -47,6 +47,7 @@ public class SpringBeanAsService<T> implements InitializingBean, DisposableBean 
    private Class<T> serviceInterface;
    private T springBean;
 
+   @Override
    public synchronized void afterPropertiesSet() throws Exception {
       Assert.isFalse(isInitialized, "Already initialized!");
       Assert.notNull(serviceRegistry, "[serviceRegistry] must not be null!");
@@ -60,6 +61,7 @@ public class SpringBeanAsService<T> implements InitializingBean, DisposableBean 
       serviceRegistry.addService(serviceEndpointId, serviceInterface, springBean);
    }
 
+   @Override
    public synchronized void destroy() throws Exception {
       if (!isInitialized)
          return;

@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Objects;
 
 import net.sf.jstuff.core.validation.Args;
 
@@ -27,7 +26,7 @@ public abstract class Enumerations {
       Args.notNull("en", en);
       while (en.hasMoreElements()) {
          final Object elem = en.nextElement();
-         if (ObjectUtils.equals(elem, searchFor))
+         if (Objects.equals(elem, searchFor))
             return true;
       }
       return false;
@@ -53,16 +52,20 @@ public abstract class Enumerations {
 
    public static <T> Iterable<T> toIterable(final Enumeration<T> en) {
       return new Iterable<T>() {
+         @Override
          public Iterator<T> iterator() {
             return new Iterator<T>() {
+               @Override
                public boolean hasNext() {
                   return en == null ? false : en.hasMoreElements();
                }
 
+               @Override
                public T next() {
                   return en.nextElement();
                }
 
+               @Override
                public void remove() {
                   throw new UnsupportedOperationException();
                }
@@ -74,7 +77,7 @@ public abstract class Enumerations {
    public static <T> List<T> toList(final Enumeration<T> en) {
       if (en == null)
          return null;
-      final List<T> result = new ArrayList<T>();
+      final List<T> result = new ArrayList<>();
       while (en.hasMoreElements()) {
          result.add(en.nextElement());
       }

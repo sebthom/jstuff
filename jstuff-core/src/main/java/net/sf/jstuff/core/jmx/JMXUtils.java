@@ -56,7 +56,7 @@ public abstract class JMXUtils {
       }
 
       try {
-         mbeanServer = (MBeanServer) MBeanServerFactory.findMBeanServer(null).get(0);
+         mbeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
          if (mbeanServer != null) {
             LOG.info("Located MBeanServer via MBeanServerFactory#findMBeanServer(null).get(0)");
             return mbeanServer;

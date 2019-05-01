@@ -43,6 +43,7 @@ public class CompositeX509TrustManager implements X509TrustManager {
       this.trustManagers = Arrays.asList(trustManagers);
    }
 
+   @Override
    public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
       for (final X509TrustManager trustManager : trustManagers) {
          try {
@@ -55,6 +56,7 @@ public class CompositeX509TrustManager implements X509TrustManager {
       throw new CertificateException("Client certificate chain not trusted by any registered trust manager");
    }
 
+   @Override
    public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
       for (final X509TrustManager trustManager : trustManagers) {
          try {
@@ -67,8 +69,9 @@ public class CompositeX509TrustManager implements X509TrustManager {
       throw new CertificateException("Server certificate chain not trusted by any registered trust manager");
    }
 
+   @Override
    public X509Certificate[] getAcceptedIssuers() {
-      final List<X509Certificate> result = new ArrayList<X509Certificate>();
+      final List<X509Certificate> result = new ArrayList<>();
       for (final X509TrustManager trustManager : trustManagers) {
          CollectionUtils.addAll(result, trustManager.getAcceptedIssuers());
       }

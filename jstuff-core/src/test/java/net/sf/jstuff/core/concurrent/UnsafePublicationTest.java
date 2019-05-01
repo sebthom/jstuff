@@ -47,6 +47,7 @@ public class UnsafePublicationTest extends TestCase {
    private abstract static class AbstractConsumingActor implements Runnable {
       protected abstract Subject getSubject();
 
+      @Override
       public void run() {
          for (int i = 0; i < REPETITION_COUNT; i++) {
             final Subject l = getSubject();
@@ -66,6 +67,7 @@ public class UnsafePublicationTest extends TestCase {
    private abstract static class AbstractPublishingActor implements Runnable {
       protected abstract void publishSubject();
 
+      @Override
       public void run() {
          for (int i = 0; i < REPETITION_COUNT; i++) {
             publishSubject();
@@ -136,7 +138,7 @@ public class UnsafePublicationTest extends TestCase {
 
       FAILURES.set(0);
 
-      final List<Thread> threads = new ArrayList<Thread>();
+      final List<Thread> threads = new ArrayList<>();
       for (int i = 0; i < CPU_COUNT / 2; i++) {
          threads.add(new Thread(publisher));
          threads.add(new Thread(consumer));
@@ -184,7 +186,7 @@ public class UnsafePublicationTest extends TestCase {
             @Override
             protected void publishSubject() {
                // non-final fields to not act as an implicit memory barrier
-               final Ref<Subject> memoryBarrier = new MutableRef<Subject>(//
+               final Ref<Subject> memoryBarrier = new MutableRef<>(//
                   new Subject(subjectCtorArg /*must be a non-static, non-final reference to provoke instruction re-ordering on 64bit OracleJVM*/) //
                );
                subject = memoryBarrier.get();
@@ -208,7 +210,7 @@ public class UnsafePublicationTest extends TestCase {
                //  http://www.cs.umd.edu/~pugh/java/memoryModel/newFinal.pdf
                //  http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.5.1
                //  http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java -> FinalWrapper
-               final Ref<Subject> memoryBarrier = new FinalRef<Subject>(//
+               final Ref<Subject> memoryBarrier = new FinalRef<>(//
                   new Subject(subjectCtorArg /*must be a non-static, non-final reference to provoke instruction re-ordering on 64bit OracleJVM*/) //
                );
                subject = memoryBarrier.get();

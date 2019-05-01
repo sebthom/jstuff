@@ -32,19 +32,22 @@ public final class EmptyIterator<T> implements Iterator<T>, Serializable {
       super();
    }
 
+   @Override
    public boolean hasNext() {
       return false;
    }
 
+   @Override
    public T next() {
       throw new NoSuchElementException();
    }
 
-   @SuppressWarnings({"static-method", "unused"})
+   @SuppressWarnings("unused")
    private Object readResolve() throws ObjectStreamException {
       return INSTANCE;
    }
 
+   @Override
    public void remove() {
       throw new UnsupportedOperationException();
    }
