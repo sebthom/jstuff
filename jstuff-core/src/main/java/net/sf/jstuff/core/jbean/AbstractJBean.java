@@ -31,20 +31,24 @@ public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializabl
     * ******************************************************************************/
    private volatile SyncEventDispatcher<PropertyChangeEvent> events;
 
+   @Override
    public <T> T _get(final PropertyDescriptor<T> property) {
       throw new UnsupportedOperationException("Unknown property [" + property + "]");
    }
 
    public abstract ClassDescriptor<?> _getMeta();
 
+   @Override
    public <T> AbstractJBean _set(final PropertyDescriptor<T> property, final T value) {
       throw new UnsupportedOperationException("Unknown property [" + property + "]");
    }
 
+   @Override
    public void _subscribe(final EventListener<PropertyChangeEvent> listener) {
       getEvents().subscribe(listener);
    }
 
+   @Override
    public void _unsubscribe(final EventListener<PropertyChangeEvent> listener) {
       getEvents().unsubscribe(listener);
    }

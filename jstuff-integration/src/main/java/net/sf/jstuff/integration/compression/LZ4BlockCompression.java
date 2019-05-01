@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.Checksum;
 
-import org.apache.commons.io.IOUtils;
-
 import net.jpountz.lz4.LZ4BlockInputStream;
 import net.jpountz.lz4.LZ4BlockOutputStream;
 import net.jpountz.lz4.LZ4Compressor;
@@ -24,6 +22,7 @@ import net.jpountz.lz4.LZ4FastDecompressor;
 import net.jpountz.xxhash.XXHashFactory;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.compression.AbstractCompression;
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
@@ -46,6 +45,7 @@ public class LZ4BlockCompression extends AbstractCompression {
       }
    };
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -68,6 +68,7 @@ public class LZ4BlockCompression extends AbstractCompression {
       }
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -90,10 +91,12 @@ public class LZ4BlockCompression extends AbstractCompression {
       }
    }
 
+   @Override
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
       return new LZ4BlockOutputStream(output, DEFAULT_BLOCK_SIZE, COMP);
    }
 
+   @Override
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
       return new LZ4BlockInputStream(compressed, DECOMP);
    }

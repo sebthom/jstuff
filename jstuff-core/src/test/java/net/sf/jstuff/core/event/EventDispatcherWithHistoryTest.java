@@ -20,13 +20,14 @@ import junit.framework.TestCase;
 public class EventDispatcherWithHistoryTest extends TestCase {
 
    public void testEventDispatcherWithHistory() throws InterruptedException, ExecutionException {
-      final EventDispatcherWithHistory<String> em = new EventDispatcherWithHistory<String>(new SyncEventDispatcher<String>());
+      final EventDispatcherWithHistory<String> em = new EventDispatcherWithHistory<>(new SyncEventDispatcher<String>());
 
       assertEquals(0, em.fire("123").get().intValue());
       assertEquals(0, em.fire("1234567890").get().intValue());
 
       final AtomicLong listener1Count = new AtomicLong();
       final EventListener<String> listener1 = new EventListener<String>() {
+         @Override
          public void onEvent(final String event) {
             listener1Count.incrementAndGet();
          }
@@ -38,10 +39,12 @@ public class EventDispatcherWithHistoryTest extends TestCase {
 
       final AtomicLong listener2Count = new AtomicLong();
       final EventListener<String> listener2 = new FilteringEventListener<String>() {
+         @Override
          public boolean accept(final String event) {
             return event != null && event.length() < 5;
          }
 
+         @Override
          public void onEvent(final String event) {
             listener2Count.incrementAndGet();
          }

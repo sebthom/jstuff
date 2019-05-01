@@ -18,6 +18,7 @@ import java.security.Permission;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("deprecation")
 public class DelegatingSecurityManager extends NoOpSecurityManager {
 
    private SecurityManager wrapped;

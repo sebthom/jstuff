@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.zip.ZipException;
 
@@ -60,24 +61,28 @@ public class CompressionBenchmark {
    }
 
    public static class CompressSpeedComparator implements Comparator<BenchmarkResult> {
+      @Override
       public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
          return o1.compressTimeMS < o2.compressTimeMS ? -1 : o1.compressTimeMS == o2.compressTimeMS ? 0 : 1;
       }
    }
 
    public static class DecompressSpeedComparator implements Comparator<BenchmarkResult> {
+      @Override
       public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
          return o1.decompressTimeMS < o2.decompressTimeMS ? -1 : o1.decompressTimeMS == o2.decompressTimeMS ? 0 : 1;
       }
    }
 
    public static class SizeComparator implements Comparator<BenchmarkResult> {
+      @Override
       public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
          return o1.compressedSize < o2.compressedSize ? -1 : o1.compressedSize == o2.compressedSize ? 0 : 1;
       }
    }
 
    public static class SpeedComparator implements Comparator<BenchmarkResult> {
+      @Override
       public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
          return o1.compressTimeMS + o1.decompressTimeMS < o2.compressTimeMS + o2.decompressTimeMS ? -1
             : o1.compressTimeMS + o1.decompressTimeMS == o2.compressTimeMS + o2.decompressTimeMS ? 0 : 1;
@@ -86,7 +91,7 @@ public class CompressionBenchmark {
 
    private static final Logger LOG = Logger.create();
 
-   private final Set<Compression> compressions = new HashSet<Compression>();
+   private final Set<Compression> compressions = new HashSet<>();
    private byte[] uncompressed = ArrayUtils.EMPTY_BYTE_ARRAY;
    private int iterations = 0;
 
@@ -98,7 +103,7 @@ public class CompressionBenchmark {
 
    @SuppressWarnings("resource")
    public Map<Compression, BenchmarkResult> execute() throws IOException {
-      final Map<Compression, BenchmarkResult> result = new HashMap<Compression, BenchmarkResult>();
+      final Map<Compression, BenchmarkResult> result = new HashMap<>();
       for (final Compression cmp : compressions) {
          final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
          final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
@@ -130,7 +135,7 @@ public class CompressionBenchmark {
             try {
                final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
                cmp.decompress(compressedIS, uncompressedOS, true);
-               if (!ArrayUtils.isEquals(uncompressed, uncompressedOS.toByteArray()))
+               if (!Objects.deepEquals(uncompressed, uncompressedOS.toByteArray()))
                   throw new IOException("Compression [" + cmp + "] is buggy!");
             } catch (final ZipException ex) {
                throw ex;

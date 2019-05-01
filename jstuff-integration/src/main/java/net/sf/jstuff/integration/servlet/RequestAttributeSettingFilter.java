@@ -10,7 +10,6 @@
 package net.sf.jstuff.integration.servlet;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -53,11 +52,13 @@ import net.sf.jstuff.core.logging.Logger;
  */
 public class RequestAttributeSettingFilter implements Filter {
    private static final Logger LOG = Logger.create();
-   private final Map<String, String> attributes = new LinkedHashMap<String, String>();
+   private final Map<String, String> attributes = new LinkedHashMap<>();
 
+   @Override
    public void destroy() {
    }
 
+   @Override
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
       if (!attributes.isEmpty()) {
          LOG.debug("For request [%s] setting request attributes: %s", request, attributes);
@@ -74,8 +75,9 @@ public class RequestAttributeSettingFilter implements Filter {
       return attributes;
    }
 
+   @Override
    public void init(final FilterConfig filterConfig) throws ServletException {
-      for (final String param : Enumerations.toIterable((Enumeration<String>) filterConfig.getInitParameterNames())) {
+      for (final String param : Enumerations.toIterable(filterConfig.getInitParameterNames())) {
          attributes.put(param, filterConfig.getInitParameter(param));
       }
    }

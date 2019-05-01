@@ -50,6 +50,7 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable {
       return collator;
    }
 
+   @Override
    public int compare(final T o1, final T o2) {
       if (o1 == o2)
          return 0;

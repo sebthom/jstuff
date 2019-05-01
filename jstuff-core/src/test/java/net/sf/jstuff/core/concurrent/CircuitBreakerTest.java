@@ -40,6 +40,7 @@ public class CircuitBreakerTest extends TestCase {
          cb.release();
       }
       assertTrue(cb.tryExecute(new Runnable() {
+         @Override
          public void run() {
          }
       }));
@@ -58,6 +59,7 @@ public class CircuitBreakerTest extends TestCase {
       assertEquals(cb.getState(), State.OPEN);
       assertFalse(cb.tryAcquire());
       assertFalse(cb.tryExecute(new Runnable() {
+         @Override
          public void run() {
          }
       }));

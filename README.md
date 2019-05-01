@@ -7,6 +7,7 @@
 [comment]: # (https://img.shields.io/github/license/sebthom/jstuff.svg?label=License)
 
 1. [What is it?](#what-is-it)
+1. [Java Compatibility](#compatibility)
 1. [License](#license)
 
 
@@ -19,6 +20,14 @@ jstuff is a collection of utility libraries
 1. [jstuff-integration](/jstuff-integration/src/main/java/net/sf/jstuff/integration) - utility classes for Java EE (Servlet, JPA, ...) and 3rd party frameworks.
 
 1. [jstuff-xml](/jstuff-xml/src/main/java/net/sf/jstuff/xml) - contains supporting classes for XML processing.
+
+
+## <a name="compatibility"></a>Java Compatibility
+
+jstuff 1.x-4.x requires Java 5 or newer.
+
+jstuff 5.x requires Java 8 or newer.
+
 
 
 ## <a name="license"></a>License

@@ -28,14 +28,17 @@ public class UnmodifiableIterator<T> implements Iterator<T>, Serializable {
       this.delegate = delegate;
    }
 
+   @Override
    public boolean hasNext() {
       return delegate.hasNext();
    }
 
+   @Override
    public T next() {
       return delegate.next();
    }
 
+   @Override
    public void remove() {
       throw new UnsupportedOperationException();
    }

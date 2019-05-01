@@ -24,7 +24,7 @@ import net.sf.jstuff.core.reflection.Beans;
 public abstract class ExtJSUtils {
    public static List<String> getRecordDefinition(final Class<?> javaBeanType) {
       final Collection<PropertyDescriptor> props = Beans.getBeanPropertyDescriptors(javaBeanType);
-      final List<String> recordDef = new ArrayList<String>(props.size());
+      final List<String> recordDef = new ArrayList<>(props.size());
       final StringBuilder sb = new StringBuilder();
       for (final PropertyDescriptor prop : props) {
          sb.append('{');

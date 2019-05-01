@@ -35,6 +35,7 @@ public interface Composite<Component> extends Modifiable {
          this.isModifiable = isModifiable;
       }
 
+      @SafeVarargs
       public Default(final boolean isModifiable, final Component... components) {
          Args.notNull("components", components);
          CollectionUtils.addAll(this.components, components);
@@ -45,10 +46,12 @@ public interface Composite<Component> extends Modifiable {
          this(true, components);
       }
 
+      @SafeVarargs
       public Default(final Component... components) {
          this(true, components);
       }
 
+      @Override
       public void addComponent(final Component component) {
          assertIsModifiable();
          components.add(component);
@@ -58,10 +61,12 @@ public interface Composite<Component> extends Modifiable {
          return new ArrayList<Component>();
       }
 
+      @Override
       public boolean hasComponent(final Component component) {
          return components.contains(component);
       }
 
+      @Override
       public boolean removeComponent(final Component component) {
          assertIsModifiable();
          return components.remove(component);

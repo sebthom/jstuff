@@ -19,11 +19,11 @@ import java.util.Set;
  */
 public class WeakIdentityHashSet<E> extends AbstractSet<E> implements Cloneable {
    public static <E> WeakIdentityHashSet<E> create() {
-      return new WeakIdentityHashSet<E>();
+      return new WeakIdentityHashSet<>();
    }
 
    public static <E> WeakIdentityHashSet<E> create(final int initialCapacity) {
-      return new WeakIdentityHashSet<E>(initialCapacity);
+      return new WeakIdentityHashSet<>(initialCapacity);
    }
 
    private final WeakIdentityHashMap<E, Boolean> map;
@@ -33,7 +33,7 @@ public class WeakIdentityHashSet<E> extends AbstractSet<E> implements Cloneable 
    }
 
    public WeakIdentityHashSet(final int initialCapacity) {
-      map = new WeakIdentityHashMap<E, Boolean>(initialCapacity);
+      map = new WeakIdentityHashMap<>(initialCapacity);
    }
 
    @Override
@@ -48,7 +48,7 @@ public class WeakIdentityHashSet<E> extends AbstractSet<E> implements Cloneable 
 
    @Override
    public WeakIdentityHashSet<E> clone() throws CloneNotSupportedException {
-      final WeakIdentityHashSet<E> copy = new WeakIdentityHashSet<E>(size());
+      final WeakIdentityHashSet<E> copy = new WeakIdentityHashSet<>(size());
       copy.addAll(this);
       return copy;
    }

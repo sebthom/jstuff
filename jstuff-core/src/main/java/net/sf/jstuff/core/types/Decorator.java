@@ -31,19 +31,23 @@ public interface Decorator<T> {
          this.wrapped = wrapped;
       }
 
+      @Override
       public T getWrapped() {
          Assert.isTrue(isWrappedGettable(), "Accessing the wrapped object is not allowed.");
          return wrapped;
       }
 
+      @Override
       public boolean isWrappedGettable() {
          return true;
       }
 
+      @Override
       public boolean isWrappedSettable() {
          return true;
       }
 
+      @Override
       public void setWrapped(final T wrapped) {
          Assert.isTrue(isWrappedSettable(), "Changing the wrapped object is not allowed.");
          Args.notNull("wrapped", wrapped);

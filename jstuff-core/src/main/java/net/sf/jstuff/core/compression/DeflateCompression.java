@@ -18,8 +18,6 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
-import org.apache.commons.io.IOExceptionWithCause;
-
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.IOUtils;
@@ -91,6 +89,7 @@ public class DeflateCompression extends AbstractCompression {
       }
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -111,6 +110,7 @@ public class DeflateCompression extends AbstractCompression {
       }
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -142,6 +142,7 @@ public class DeflateCompression extends AbstractCompression {
       return new DeflaterInputStream(uncompressed, compressor);
    }
 
+   @Override
    public OutputStream createCompressingOutputStream(final OutputStream output) {
       final Deflater compressor = new Deflater(compressionLevel);
       if (dictionary.length > 0) {
@@ -150,6 +151,7 @@ public class DeflateCompression extends AbstractCompression {
       return new DeflaterOutputStream(output, compressor);
    }
 
+   @Override
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
       Args.notNull("compressed", compressed);
       final Inflater decompressor = new Inflater(false);
@@ -172,7 +174,7 @@ public class DeflateCompression extends AbstractCompression {
             throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
          return bytesRead;
       } catch (final DataFormatException ex) {
-         throw new IOExceptionWithCause(ex);
+         throw new IOException(ex);
       }
    }
 

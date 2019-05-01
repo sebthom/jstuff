@@ -23,7 +23,7 @@ public final class LoggerConfig {
    /**
     * weak set holding all instantiated loggers. required to switch the backing logger implementation during runtime if required.
     */
-   private static final Set<DelegatingLogger> LOGGERS = new WeakIdentityHashSet<DelegatingLogger>(64);
+   private static final Set<DelegatingLogger> LOGGERS = new WeakIdentityHashSet<>(64);
 
    private static final boolean isSLF4JAvailable; // CHECKSTYLE:IGNORE ConstantName
 

@@ -33,6 +33,7 @@ public class BlockingExecutor implements Executor {
          this.limiter = limiter;
       }
 
+      @Override
       public void run() {
          try {
             wrapped.run();
@@ -75,6 +76,7 @@ public class BlockingExecutor implements Executor {
       }
    }
 
+   @Override
    public final void execute(final Runnable command) throws RejectedExecutionException {
       Args.notNull("command", command);
 

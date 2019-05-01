@@ -83,7 +83,7 @@ public class FieldInstantiatingPlugin extends AbstractPlugin {
    public boolean run(final Outline outline, final Options options, final ErrorHandler errorHandler) throws SAXException {
 
       // collect all types defined in the XSD
-      final List<JType> typeDefs = new ArrayList<JType>();
+      final List<JType> typeDefs = new ArrayList<>();
       for (final ClassOutline classDef : outline.getClasses()) {
          typeDefs.add(classDef.implClass);
       }

@@ -32,6 +32,7 @@ public final class ObjectCache<K, V> {
          this.key = key;
       }
 
+      @Override
       public K getKey() {
          return key;
       }
@@ -51,13 +52,14 @@ public final class ObjectCache<K, V> {
          this.key = key;
       }
 
+      @Override
       public K getKey() {
          return key;
       }
    }
 
-   private final ConcurrentMap<K, ValueReference<K, V>> cache = new ConcurrentHashMap<K, ValueReference<K, V>>();
-   private final ReferenceQueue<V> garbageCollectedRefs = new ReferenceQueue<V>();
+   private final ConcurrentMap<K, ValueReference<K, V>> cache = new ConcurrentHashMap<>();
+   private final ReferenceQueue<V> garbageCollectedRefs = new ReferenceQueue<>();
    private final int maxObjectsToKeep;
 
    /**
@@ -93,7 +95,7 @@ public final class ObjectCache<K, V> {
     */
    public ObjectCache(final int maxObjectsToKeep, final boolean useWeakValueReferences) {
       this.maxObjectsToKeep = maxObjectsToKeep;
-      mru = maxObjectsToKeep > -1 ? new LinkedList<V>() : null;
+      mru = maxObjectsToKeep > -1 ? new LinkedList<>() : null;
       this.useWeakReferences = useWeakValueReferences;
    }
 
@@ -146,7 +148,7 @@ public final class ObjectCache<K, V> {
     */
    public Map<K, V> getAll() {
       expungeStaleEntries();
-      final Map<K, V> result = new HashMap<K, V>();
+      final Map<K, V> result = new HashMap<>();
       for (final ValueReference<K, V> ref : cache.values()) {
          final V value = ref.get();
          if (value == null) {
@@ -164,8 +166,8 @@ public final class ObjectCache<K, V> {
 
    public void put(final K key, final V value) {
       cache.put(key, useWeakReferences ? //
-         new WeakValueReference<K, V>(key, value, garbageCollectedRefs) : //
-         new SoftValueReference<K, V>(key, value, garbageCollectedRefs) //
+         new WeakValueReference<>(key, value, garbageCollectedRefs) : //
+         new SoftValueReference<>(key, value, garbageCollectedRefs) //
       );
    }
 

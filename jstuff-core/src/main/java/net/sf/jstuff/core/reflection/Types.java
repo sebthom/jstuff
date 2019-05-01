@@ -67,8 +67,9 @@ public abstract class Types {
       Args.notEmpty("mixins", mixins);
 
       return Proxies.create(new InvocationHandler() {
-         final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<Method, Tuple2<Object, Method>>();
+         final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<>();
 
+         @Override
          public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
             if (mixedInMethod == null) {
@@ -100,6 +101,7 @@ public abstract class Types {
       Args.notNull("object", object);
 
       return Proxies.create(new InvocationHandler() {
+         @Override
          public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             synchronized (lock) {
                return method.invoke(object, args);
@@ -113,6 +115,7 @@ public abstract class Types {
       Args.notNull("threadLocal", threadLocal);
 
       return Proxies.create(new InvocationHandler() {
+         @Override
          public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             return method.invoke(threadLocal.get(), args);
          }
@@ -186,18 +189,22 @@ public abstract class Types {
       final ParameterizedType[] searchForType = {null};
 
       visit(searchIn, new ClassVisitorWithTypeArguments() {
+         @Override
          public boolean isVisiting(final Class<?> clazz, final ParameterizedType type) {
             return searchFor.isAssignableFrom(clazz);
          }
 
+         @Override
          public boolean isVisitingInterfaces(final Class<?> clazz, final ParameterizedType type) {
             return isSearchForInterface && searchFor.isAssignableFrom(clazz);
          }
 
+         @Override
          public boolean isVisitingSuperclass(final Class<?> clazz, final ParameterizedType type) {
             return searchFor.isAssignableFrom(clazz);
          }
 
+         @Override
          public boolean visit(final Class<?> clazz, final ParameterizedType type) {
             if (type != null) {
                Maps.putAll(genericVariableToArgumentMappings, //
@@ -359,16 +366,13 @@ public abstract class Types {
                }
 
                if (jarEntryName.endsWith("/pom.properties")) {
-                  final InputStream is = jar.getInputStream(jarEntry);
-                  try {
+                  try (InputStream is = jar.getInputStream(jarEntry);) {
                      final Properties p = new Properties();
-                     p.load(jar.getInputStream(jarEntry));
+                     p.load(is);
                      final String version = Strings.trim(p.getProperty("version"));
                      if (!Strings.isEmpty(version))
                         return version;
                      break;
-                  } finally {
-                     IOUtils.closeQuietly(is);
                   }
                }
             }
@@ -539,7 +543,7 @@ public abstract class Types {
       Args.notNull("clazz", clazz);
       Args.notNull("visitor", visitor);
 
-      final Queue<Class<?>> toVisit = new LinkedList<Class<?>>();
+      final Queue<Class<?>> toVisit = new LinkedList<>();
       toVisit.add(clazz);
       while (!toVisit.isEmpty()) {
          final Class<?> current = toVisit.poll();
@@ -578,7 +582,7 @@ public abstract class Types {
       Args.notNull("clazz", clazz);
       Args.notNull("visitor", visitor);
 
-      final Queue<Type> toVisit = new LinkedList<Type>();
+      final Queue<Type> toVisit = new LinkedList<>();
       toVisit.add(clazz);
       while (!toVisit.isEmpty()) {
          final Type current = toVisit.poll();

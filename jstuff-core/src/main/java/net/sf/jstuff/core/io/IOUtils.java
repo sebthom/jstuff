@@ -10,6 +10,7 @@
 package net.sf.jstuff.core.io;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -18,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipFile;
@@ -35,7 +37,23 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
 
    private static final Logger LOG = Logger.create();
 
-   public static final int EOF = -1;
+   public static void closeQuietly(final Closeable closeable) {
+      try {
+         if (closeable != null) {
+            closeable.close();
+         }
+      } catch (final IOException ioe) {
+         // ignore
+      }
+   }
+
+   public static void closeQuietly(final InputStream input) {
+      closeQuietly((Closeable) input);
+   }
+
+   public static void closeQuietly(final OutputStream output) {
+      closeQuietly((Closeable) output);
+   }
 
    public static void closeQuietly(final ZipFile file) {
       if (file != null) {
@@ -154,7 +172,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
 
    public static List<String> readLines(final Reader reader) throws IOException {
       final BufferedReader bf = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
-      final List<String> lines = new ArrayList<String>();
+      final List<String> lines = new ArrayList<>();
       String line = bf.readLine();
       while (line != null) {
          lines.add(line);
@@ -182,6 +200,10 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
          Threads.sleep(100);
       }
       return result;
+   }
+
+   public static String toString(final InputStream input) throws IOException {
+      return toString(input, Charset.defaultCharset());
    }
 
    /**

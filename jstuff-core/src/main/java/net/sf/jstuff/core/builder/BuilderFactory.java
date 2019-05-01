@@ -40,7 +40,7 @@ import net.sf.jstuff.core.validation.Assert;
 public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extends TARGET_CLASS>> {
 
    private static final class BuilderImpl implements InvocationHandler {
-      final List<Tuple2<String, Object[]>> properties = new ArrayList<Tuple2<String, Object[]>>();
+      final List<Tuple2<String, Object[]>> properties = new ArrayList<>();
 
       private final Class<?> builderInterface;
       private final Class<?> targetClass;
@@ -123,6 +123,7 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
          });
       }
 
+      @Override
       public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
          final boolean isBuildMethod = "build".equals(method.getName()) //
             && method.getParameterTypes().length == 0 //

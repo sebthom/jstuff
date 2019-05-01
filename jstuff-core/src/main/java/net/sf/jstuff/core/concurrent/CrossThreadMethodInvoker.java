@@ -64,7 +64,7 @@ public class CrossThreadMethodInvoker {
    /**
     * queue of method invocations that shall be executed in another thread
     */
-   private final ConcurrentLinkedQueue<MethodInvocation> invocations = new ConcurrentLinkedQueue<MethodInvocation>();
+   private final ConcurrentLinkedQueue<MethodInvocation> invocations = new ConcurrentLinkedQueue<>();
    private volatile Thread owner;
    private final int timeout;
    private AtomicInteger backgroundThreadCount = new AtomicInteger(Integer.MIN_VALUE);
@@ -88,6 +88,7 @@ public class CrossThreadMethodInvoker {
    @SuppressWarnings("unchecked")
    public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target, final Class<?>... targetInterfaces) {
       return (CrossThreadProxy<INTERFACE>) Proxies.create(new InvocationHandler() {
+         @Override
          public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             if (method.getDeclaringClass() == CrossThreadProxy.class) {
                final String mName = method.getName();
@@ -107,6 +108,7 @@ public class CrossThreadMethodInvoker {
    public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target, final Function<Object, Object> resultTransformer,
       final Class<?>... targetInterfaces) {
       return (CrossThreadProxy<INTERFACE>) Proxies.create(Thread.currentThread().getContextClassLoader(), new InvocationHandler() {
+         @Override
          public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             if (method.getDeclaringClass() == CrossThreadProxy.class) {
                final String mName = method.getName();

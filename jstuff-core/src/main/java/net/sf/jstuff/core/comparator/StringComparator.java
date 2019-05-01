@@ -39,6 +39,7 @@ public class StringComparator implements Comparator<String>, Serializable {
       return collator;
    }
 
+   @Override
    public int compare(final String o1, final String o2) {
       if (o1 == o2)
          return 0;

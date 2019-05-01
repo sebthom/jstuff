@@ -47,9 +47,9 @@ import net.sf.jstuff.core.functional.Functions;
  */
 public class INIFileConfiguration extends AbstractFileConfiguration {
 
-   private final Set<String> loadedSections = new LinkedHashSet<String>();
-   private final Map<String, List<String>> comments = new HashMap<String, List<String>>();
-   private final Map<String, String> inlineComments = new HashMap<String, String>();
+   private final Set<String> loadedSections = new LinkedHashSet<>();
+   private final Map<String, List<String>> comments = new HashMap<>();
+   private final Map<String, String> inlineComments = new HashMap<>();
 
    private boolean isAutoSort = true;
 
@@ -96,6 +96,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
    public String[] getComments(final String key) {
       return ArrayUtils.toArray(transform(comments.get(key), new Function<String, String>() {
 
+         @Override
          public String apply(final String source) {
             // strip the comment character
             return source.startsWith("#") || source.startsWith(";") ? "" : source.substring(1);
@@ -120,7 +121,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
    }
 
    public Set<String> getSections() {
-      final Set<String> sections = isAutoSort ? new TreeSet<String>() : new LinkedHashSet<String>();
+      final Set<String> sections = isAutoSort ? new TreeSet<>() : new LinkedHashSet<>();
       sections.addAll(loadedSections);
 
       // this will result in new sections being added to the end of the file
@@ -152,6 +153,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
       return Strings.startsWith(line, '[') && Strings.endsWith(line, ']');
    }
 
+   @Override
    public void load(final Reader in) throws ConfigurationException {
       final BufferedReader input = new BufferedReader(in);
 
@@ -256,6 +258,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
       return Tuple2.create(isQuoted ? result.toString() : result.toString().trim(), inlineComment);
    }
 
+   @Override
    public void save(final Writer out) throws ConfigurationException {
       final BufferedWriter bw = new BufferedWriter(out);
 

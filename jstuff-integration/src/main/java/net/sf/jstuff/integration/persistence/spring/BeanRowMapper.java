@@ -65,7 +65,7 @@ public class BeanRowMapper<T> implements RowMapper<T> {
     */
    private Map<String, String> beanPropertyNames;
 
-   private final WeakHashMap<ResultSet, ResultSetDynaClass> rsDynaClassesCache = new WeakHashMap<ResultSet, ResultSetDynaClass>();
+   private final WeakHashMap<ResultSet, ResultSetDynaClass> rsDynaClassesCache = new WeakHashMap<>();
 
    public BeanRowMapper(final Class<T> beanClass) throws IntrospectionException {
       Args.notNull("beanClass", beanClass);
@@ -77,6 +77,7 @@ public class BeanRowMapper<T> implements RowMapper<T> {
       return beanClass;
    }
 
+   @Override
    public T mapRow(final ResultSet rs, final int rowNum) throws SQLException {
       ResultSetDynaClass rsDynaClass = rsDynaClassesCache.get(rs);
       if (rsDynaClass == null) {
@@ -116,7 +117,7 @@ public class BeanRowMapper<T> implements RowMapper<T> {
       // get beanInformation from bean e.g. property names
       final BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
 
-      final HashMap<String, String> propsLowerCase = new HashMap<String, String>();
+      final HashMap<String, String> propsLowerCase = new HashMap<>();
       for (final PropertyDescriptor prop : beanInfo.getPropertyDescriptors()) {
          final String propName = prop.getName();
          if (propsLowerCase.put(propName.toLowerCase(), propName) != null)

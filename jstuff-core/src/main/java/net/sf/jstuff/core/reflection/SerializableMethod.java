@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import org.apache.commons.io.IOExceptionWithCause;
-
 /**
  * Serializable Wrapper for java.lang.reflect.Method objects since they do not implement Serializable
  *
@@ -62,7 +60,7 @@ public final class SerializableMethod implements Serializable {
       try {
          method = declaringClass.getDeclaredMethod(name, parameterTypes);
       } catch (final NoSuchMethodException ex) {
-         throw new IOExceptionWithCause(ex);
+         throw new IOException(ex);
       }
    }
 

@@ -47,6 +47,7 @@ public class HashLockManager<KeyType> {
          ref = new WeakReference<HashLockManager<T>>(mgr);
       }
 
+      @Override
       public void run() {
          final HashLockManager<T> mgr = ref.get();
          if (mgr == null) {
@@ -76,7 +77,7 @@ public class HashLockManager<KeyType> {
          true).priority(Thread.NORM_PRIORITY).namingPattern("HashLockManager-thread").build());
    }
 
-   private final ConcurrentMap<KeyType, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<KeyType, ReentrantReadWriteLock>();
+   private final ConcurrentMap<KeyType, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<>();
 
    public HashLockManager(final int intervalMS) {
       this(intervalMS, LazyInitialized.DEFAULT_CLEANUP_THREAD);
@@ -84,7 +85,7 @@ public class HashLockManager<KeyType> {
 
    public HashLockManager(final int intervalMS, final ScheduledExecutorService executor) {
       Args.notNull("executor", executor);
-      final CleanUpTask<KeyType> cleanup = new CleanUpTask<KeyType>(this);
+      final CleanUpTask<KeyType> cleanup = new CleanUpTask<>(this);
       cleanup.future = executor.scheduleWithFixedDelay(cleanup, intervalMS, intervalMS, TimeUnit.MILLISECONDS);
    }
 

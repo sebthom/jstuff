@@ -34,6 +34,7 @@ public abstract class CollectionUtils {
     * @return number of items added
     * @throws IllegalArgumentException if <code>collection == null</code>
     */
+   @SafeVarargs
    public static <T> int addAll(final Collection<T> collection, final Accept<T> filter, final T... items) {
       Args.notNull("collection", collection);
       Args.notNull("filter", filter);
@@ -55,6 +56,7 @@ public abstract class CollectionUtils {
     * @return number of items added
     * @throws IllegalArgumentException if <code>collection == null</code>
     */
+   @SafeVarargs
    public static <T> int addAll(final Collection<T> collection, final T... items) throws IllegalArgumentException {
       Args.notNull("collection", collection);
 
@@ -111,7 +113,7 @@ public abstract class CollectionUtils {
 
       Args.notNull("accept", accept);
 
-      final List<T> result = new ArrayList<T>();
+      final List<T> result = new ArrayList<>();
       for (final T item : collection)
          if (accept.accept(item)) {
             result.add(item);
@@ -130,7 +132,7 @@ public abstract class CollectionUtils {
 
       Args.notNull("accept", accept);
 
-      final Set<T> result = new HashSet<T>();
+      final Set<T> result = new HashSet<>();
       for (final T item : collection)
          if (accept.accept(item)) {
             result.add(item);
@@ -171,7 +173,7 @@ public abstract class CollectionUtils {
       if (n < 1)
          return Collections.emptyList();
 
-      final List<T> result = new ArrayList<T>(n > list.size() ? list.size() : n);
+      final List<T> result = new ArrayList<>(n > list.size() ? list.size() : n);
 
       int counter = 1;
       for (final T item : list) {
@@ -187,6 +189,7 @@ public abstract class CollectionUtils {
    /**
     * @return all items that are contained in all lists.
     */
+   @SafeVarargs
    public static <T> List<T> intersect(final List<T>... lists) {
       if (lists == null)
          return Collections.emptyList();
@@ -196,7 +199,7 @@ public abstract class CollectionUtils {
             return Collections.emptyList();
       }
 
-      final List<T> commonItems = new ArrayList<T>();
+      final List<T> commonItems = new ArrayList<>();
 
       for (final T candidate : lists[0]) {
          boolean isCommon = true;
@@ -217,6 +220,7 @@ public abstract class CollectionUtils {
    /**
     * @return all items that are contained in all sets.
     */
+   @SafeVarargs
    public static <T> Set<T> intersect(final Set<T>... sets) {
       if (sets == null)
          return Collections.emptySet();
@@ -226,7 +230,7 @@ public abstract class CollectionUtils {
             return Collections.emptySet();
       }
 
-      final Set<T> commonItems = new LinkedHashSet<T>();
+      final Set<T> commonItems = new LinkedHashSet<>();
 
       for (final T candidate : sets[0]) {
          boolean isCommon = true;
@@ -260,11 +264,12 @@ public abstract class CollectionUtils {
       return new ArrayList<K>(initialSize);
    }
 
+   @SafeVarargs
    public static <K> ArrayList<K> newArrayList(final K... values) {
       if (values == null || values.length == 0)
          return new ArrayList<K>();
 
-      final ArrayList<K> l = new ArrayList<K>(values.length);
+      final ArrayList<K> l = new ArrayList<>(values.length);
       // faster than Collections.addAll(result, array);
       for (final K v : values) {
          l.add(v);
@@ -284,11 +289,12 @@ public abstract class CollectionUtils {
       return new HashSet<K>(initialSize);
    }
 
+   @SafeVarargs
    public static <K> HashSet<K> newHashSet(final K... values) {
       if (values == null || values.length == 0)
          return new HashSet<K>();
 
-      final HashSet<K> s = new HashSet<K>(values.length);
+      final HashSet<K> s = new HashSet<>(values.length);
       for (final K v : values) {
          s.add(v);
       }
@@ -303,11 +309,12 @@ public abstract class CollectionUtils {
       return new LinkedHashSet<K>(initialSize);
    }
 
+   @SafeVarargs
    public static <K> HashSet<K> newLinkedHashSet(final K... values) {
       if (values == null || values.length == 0)
          return new LinkedHashSet<K>();
 
-      final HashSet<K> s = new LinkedHashSet<K>(values.length);
+      final HashSet<K> s = new LinkedHashSet<>(values.length);
       for (final K v : values) {
          s.add(v);
       }
@@ -390,7 +397,7 @@ public abstract class CollectionUtils {
          return Collections.emptyList();
 
       final int listSize = list.size();
-      final List<T> result = new ArrayList<T>(n > listSize ? listSize : n);
+      final List<T> result = new ArrayList<>(n > listSize ? listSize : n);
       final int fromIndex = n > listSize ? 0 : listSize - n;
       final int toIndex = listSize - 1;
 
@@ -404,6 +411,7 @@ public abstract class CollectionUtils {
       Args.notNull("it", it);
 
       return new Iterable<T>() {
+         @Override
          public Iterator<T> iterator() {
             return it;
          }

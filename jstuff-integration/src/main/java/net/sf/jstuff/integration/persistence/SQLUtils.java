@@ -126,7 +126,7 @@ public abstract class SQLUtils {
       Args.notNull("con", con);
       Args.notEmpty("tableName", tableName);
 
-      final Map<String, Integer> m = new HashMap<String, Integer>();
+      final Map<String, Integer> m = new HashMap<>();
       final ResultSet rs = con.getMetaData().getColumns("%", "%", tableName, "%");
       while (rs.next()) {
          m.put(rs.getString("COLUMN_NAME").toLowerCase(), rs.getInt("DATA_TYPE"));

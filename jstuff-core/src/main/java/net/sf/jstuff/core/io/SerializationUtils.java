@@ -34,10 +34,11 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
    public static String bean2xml(final Object javaBean) throws SerializationException {
       Args.notNull("javaBean", javaBean);
 
-      final ArrayList<Exception> exList = new ArrayList<Exception>(2);
+      final ArrayList<Exception> exList = new ArrayList<>(2);
       final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
       final XMLEncoder encoder = new XMLEncoder(bos);
       encoder.setExceptionListener(new ExceptionListener() {
+         @Override
          public void exceptionThrown(final Exception ex) {
             exList.add(ex);
          }
@@ -60,14 +61,10 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
    public static Serializable deserialize(final InputStream is) throws SerializationException {
       Args.notNull("is", is);
 
-      ObjectInputStream ois = null;
-      try {
-         ois = new ObjectInputStream(is);
+      try (ObjectInputStream ois = new ObjectInputStream(is)) {
          return (Serializable) ois.readObject();
       } catch (final Exception ex) {
          throw new SerializationException("Deserialization failed", ex);
-      } finally {
-         IOUtils.closeQuietly(ois);
       }
    }
 
@@ -78,10 +75,11 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
    public static <T> T xml2bean(final String xmlData) throws SerializationException {
       Args.notNull("xmlData", xmlData);
 
-      final ArrayList<Exception> exList = new ArrayList<Exception>(2);
+      final ArrayList<Exception> exList = new ArrayList<>(2);
       final FastByteArrayInputStream bis = new FastByteArrayInputStream(xmlData.getBytes());
       final XMLDecoder decoder = new XMLDecoder(bis);
       decoder.setExceptionListener(new ExceptionListener() {
+         @Override
          public void exceptionThrown(final Exception ex) {
             exList.add(ex);
          }

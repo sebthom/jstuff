@@ -39,7 +39,7 @@ public class PropertyComparatorTest extends TestCase {
       final Entity e3 = new Entity("333");
       final Entity e4 = new Entity(null);
       {
-         final TreeSet<Entity> set = new TreeSet<Entity>(new PropertyComparator<Entity>("name"));
+         final TreeSet<Entity> set = new TreeSet<>(new PropertyComparator<Entity>("name"));
          set.add(e1);
          set.add(e2);
          set.add(e3);
@@ -56,7 +56,7 @@ public class PropertyComparatorTest extends TestCase {
       e3.child = new Entity(null);
       e4.child = new Entity("BBB");
       {
-         final TreeSet<Entity> set = new TreeSet<Entity>(new PropertyComparator<Entity>("child.name"));
+         final TreeSet<Entity> set = new TreeSet<>(new PropertyComparator<Entity>("child.name"));
          set.add(e1);
          set.add(e2);
          set.add(e3);

@@ -213,13 +213,14 @@ public abstract class Args {
       return items;
    }
 
+   @SafeVarargs
    public static <T> T[] noNulls(final String argumentName, final T... items) {
       _notNull("argumentName", argumentName);
 
       if (items == null)
          return null;
 
-      for (final T item : items)
+      for (final Object item : items)
          if (item == null)
             throw _createIllegalArgumentException(argumentName, "must not contain elements with value <null>");
       return items;

@@ -17,6 +17,7 @@ public abstract class LazyInitializedRef<T> implements Ref<T> {
 
    protected abstract T create();
 
+   @Override
    public final T get() {
       T result = value;
       if (result == null) {

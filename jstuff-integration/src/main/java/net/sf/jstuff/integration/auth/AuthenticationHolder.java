@@ -13,7 +13,7 @@ package net.sf.jstuff.integration.auth;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 final class AuthenticationHolder {
-   private static final ThreadLocal<Authentication> THREAD_LOCAL_AUTHENTICATION = new ThreadLocal<Authentication>();
+   private static final ThreadLocal<Authentication> THREAD_LOCAL_AUTHENTICATION = new ThreadLocal<>();
 
    public static Authentication getAuthentication() {
       final Authentication auth = THREAD_LOCAL_AUTHENTICATION.get();

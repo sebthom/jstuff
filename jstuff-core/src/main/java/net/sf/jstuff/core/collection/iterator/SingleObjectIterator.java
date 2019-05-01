@@ -27,10 +27,12 @@ public class SingleObjectIterator<T> implements Iterator<T>, Serializable {
       this.item = item;
    }
 
+   @Override
    public boolean hasNext() {
       return hasNext;
    }
 
+   @Override
    public T next() {
       if (hasNext) {
          hasNext = false;
@@ -42,6 +44,7 @@ public class SingleObjectIterator<T> implements Iterator<T>, Serializable {
       throw new NoSuchElementException();
    }
 
+   @Override
    public void remove() {
       throw new UnsupportedOperationException();
    }

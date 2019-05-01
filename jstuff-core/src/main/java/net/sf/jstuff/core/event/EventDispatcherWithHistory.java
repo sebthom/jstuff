@@ -37,6 +37,7 @@ public class EventDispatcherWithHistory<EVENT> implements EventDispatcher<EVENT>
       eventHistory.clear();
    }
 
+   @Override
    public Future<Integer> fire(final EVENT event) {
       addEventToHistory(event);
 
@@ -68,14 +69,17 @@ public class EventDispatcherWithHistory<EVENT> implements EventDispatcher<EVENT>
       return false;
    }
 
+   @Override
    public boolean subscribe(final EventListener<EVENT> listener) {
       return wrapped.subscribe(listener);
    }
 
+   @Override
    public boolean unsubscribe(final EventListener<EVENT> listener) {
       return wrapped.unsubscribe(listener);
    }
 
+   @Override
    public void unsubscribeAll() {
       wrapped.unsubscribeAll();
    }

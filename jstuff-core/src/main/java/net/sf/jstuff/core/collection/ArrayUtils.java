@@ -69,7 +69,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
             return (T[]) Array.newInstance(itemType, 0);
       }
 
-      final List<T> commonItems = new ArrayList<T>();
+      final List<T> commonItems = new ArrayList<>();
 
       for (final T candidate : arrays[0]) {
          boolean isCommon = true;
@@ -129,7 +129,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
       if (array == null)
          return null;
 
-      final ArrayList<Boolean> result = new ArrayList<Boolean>(array.length);
+      final ArrayList<Boolean> result = new ArrayList<>(array.length);
       for (final boolean i : array) {
          result.add(i);
       }
@@ -140,7 +140,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
       if (array == null)
          return null;
 
-      final ArrayList<Byte> result = new ArrayList<Byte>(array.length);
+      final ArrayList<Byte> result = new ArrayList<>(array.length);
       for (final byte i : array) {
          result.add(i);
       }
@@ -151,7 +151,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
       if (array == null)
          return null;
 
-      final ArrayList<Character> result = new ArrayList<Character>(array.length);
+      final ArrayList<Character> result = new ArrayList<>(array.length);
       for (final char i : array) {
          result.add(i);
       }
@@ -162,7 +162,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
       if (array == null)
          return null;
 
-      final ArrayList<Double> result = new ArrayList<Double>(array.length);
+      final ArrayList<Double> result = new ArrayList<>(array.length);
       for (final double i : array) {
          result.add(i);
       }
@@ -173,7 +173,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
       if (array == null)
          return null;
 
-      final ArrayList<Float> result = new ArrayList<Float>(array.length);
+      final ArrayList<Float> result = new ArrayList<>(array.length);
       for (final float i : array) {
          result.add(i);
       }
@@ -184,7 +184,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
       if (array == null)
          return null;
 
-      final ArrayList<Integer> result = new ArrayList<Integer>(array.length);
+      final ArrayList<Integer> result = new ArrayList<>(array.length);
       for (final int i : array) {
          result.add(i);
       }
@@ -195,7 +195,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
       if (array == null)
          return null;
 
-      final ArrayList<Long> result = new ArrayList<Long>(array.length);
+      final ArrayList<Long> result = new ArrayList<>(array.length);
       for (final long i : array) {
          result.add(i);
       }
@@ -222,13 +222,14 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
       if (array == null)
          return null;
 
-      final ArrayList<Short> result = new ArrayList<Short>(array.length);
+      final ArrayList<Short> result = new ArrayList<>(array.length);
       for (final short i : array) {
          result.add(i);
       }
       return result;
    }
 
+   @SafeVarargs
    public static <T> List<T> toList(final T... array) {
       return CollectionUtils.newArrayList(array);
    }

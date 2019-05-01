@@ -39,6 +39,7 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
          this.limiter = limiter;
       }
 
+      @Override
       public T call() throws Exception {
          try {
             return wrapped.call();
@@ -68,57 +69,53 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
       }
    }
 
+   @Override
    public boolean awaitTermination(final long timeout, final TimeUnit unit) throws InterruptedException {
       return executorService.awaitTermination(timeout, unit);
    }
 
-   protected <T> Collection<Callable<T>> wrapTasks(final Collection<Callable<T>> tasks) throws RejectedExecutionException {
-      Args.notNull("tasks", tasks);
-      Args.noNulls("tasks", tasks);
-
-      aquirePermits(tasks.size());
-
-      final Collection<Callable<T>> result = new ArrayList<Callable<T>>(tasks.size());
-      for (final Callable<T> task : tasks) {
-         result.add(new CallableWrapper<T>(task, limiter));
-      }
-      return result;
-   }
-
-   public <T> List<Future<T>> invokeAll(final Collection<Callable<T>> tasks) throws InterruptedException, RejectedExecutionException {
+   @Override
+   public <T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> tasks) throws InterruptedException {
       return executorService.invokeAll(wrapTasks(tasks));
    }
 
-   public <T> List<Future<T>> invokeAll(final Collection<Callable<T>> tasks, final long timeout, final TimeUnit unit) throws InterruptedException,
-      RejectedExecutionException {
+   @Override
+   public <T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit) throws InterruptedException {
       return executorService.invokeAll(wrapTasks(tasks), timeout, unit);
    }
 
-   public <T> T invokeAny(final Collection<Callable<T>> tasks) throws InterruptedException, ExecutionException, RejectedExecutionException {
+   @Override
+   public <T> T invokeAny(final Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
       return executorService.invokeAny(wrapTasks(tasks));
    }
 
-   public <T> T invokeAny(final Collection<Callable<T>> tasks, final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException,
-      TimeoutException, RejectedExecutionException {
+   @Override
+   public <T> T invokeAny(final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit) throws InterruptedException,
+      ExecutionException, TimeoutException {
       return executorService.invokeAny(wrapTasks(tasks), timeout, unit);
    }
 
+   @Override
    public boolean isShutdown() {
       return executorService.isShutdown();
    }
 
+   @Override
    public boolean isTerminated() {
       return executorService.isTerminated();
    }
 
+   @Override
    public void shutdown() {
       executorService.shutdown();
    }
 
+   @Override
    public List<Runnable> shutdownNow() {
       return executorService.shutdownNow();
    }
 
+   @Override
    public <T> Future<T> submit(final Callable<T> task) throws RejectedExecutionException {
       Args.notNull("task", task);
 
@@ -132,6 +129,7 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
       }
    }
 
+   @Override
    public Future<?> submit(final Runnable task) throws RejectedExecutionException {
       Args.notNull("task", task);
 
@@ -145,6 +143,7 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
       }
    }
 
+   @Override
    public <T> Future<T> submit(final Runnable task, final T result) throws RejectedExecutionException {
       Args.notNull("task", task);
 
@@ -156,6 +155,19 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
          limiter.release();
          throw ex;
       }
+   }
+
+   protected <T> Collection<Callable<T>> wrapTasks(final Collection<? extends Callable<T>> tasks) throws RejectedExecutionException {
+      Args.notNull("tasks", tasks);
+      Args.noNulls("tasks", tasks);
+
+      aquirePermits(tasks.size());
+
+      final Collection<Callable<T>> result = new ArrayList<>(tasks.size());
+      for (final Callable<T> task : tasks) {
+         result.add(new CallableWrapper<T>(task, limiter));
+      }
+      return result;
    }
 
 }

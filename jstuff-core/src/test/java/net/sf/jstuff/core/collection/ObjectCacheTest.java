@@ -16,7 +16,7 @@ import junit.framework.TestCase;
  */
 public class ObjectCacheTest extends TestCase {
    public void testObjectCache_SoftRef_NoValuesToKeep() throws InterruptedException {
-      final ObjectCache<String, Object> cache = new ObjectCache<String, Object>();
+      final ObjectCache<String, Object> cache = new ObjectCache<>();
       cache.put("1", new Object());
       cache.put("2", new Object());
       cache.put("3", new Object());
@@ -31,7 +31,7 @@ public class ObjectCacheTest extends TestCase {
    }
 
    public void testObjectCache_WeakRef_NoValuesToKeep() throws InterruptedException {
-      final ObjectCache<String, Object> cache = new ObjectCache<String, Object>(true);
+      final ObjectCache<String, Object> cache = new ObjectCache<>(true);
       cache.put("1", new Object());
       cache.put("2", new Object());
       cache.put("3", new Object());
@@ -46,7 +46,7 @@ public class ObjectCacheTest extends TestCase {
    }
 
    public void testObjectCache_WeakRef_Last2ValuesToKeep() throws InterruptedException {
-      final ObjectCache<String, Object> cache = new ObjectCache<String, Object>(2, true);
+      final ObjectCache<String, Object> cache = new ObjectCache<>(2, true);
       cache.put("1", new Object());
       cache.put("2", new Object());
       cache.put("3", new Object());

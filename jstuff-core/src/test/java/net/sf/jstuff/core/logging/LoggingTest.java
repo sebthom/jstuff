@@ -27,11 +27,13 @@ import net.sf.jstuff.core.concurrent.Threads;
  */
 public class LoggingTest extends TestCase {
    private static class Entity implements InterfaceA, InterfaceB {
+      @Override
       public Object[] methodA(final int a, final String b, final String... c) {
          Threads.sleep(1000);
          return new Object[] {b, c};
       }
 
+      @Override
       public void methodB() {
          Threads.sleep(1000);
       }

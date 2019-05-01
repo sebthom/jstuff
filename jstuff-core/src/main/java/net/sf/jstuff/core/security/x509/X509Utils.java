@@ -151,7 +151,7 @@ public abstract class X509Utils {
 
    public static List<X509Certificate> getCertificates(final KeyStore ks) {
       Args.notNull("ks", ks);
-      final List<X509Certificate> certs = new ArrayList<X509Certificate>();
+      final List<X509Certificate> certs = new ArrayList<>();
       try {
          for (final Enumeration<String> en = ks.aliases(); en.hasMoreElements();) {
             final Certificate cert = ks.getCertificate(en.nextElement());
@@ -192,7 +192,7 @@ public abstract class X509Utils {
 
    public static List<String> getCNs(final X509Certificate cert) {
       Args.notNull("cert", cert);
-      final List<String> cns = new ArrayList<String>();
+      final List<String> cns = new ArrayList<>();
       try {
          final String subjectPrincipal = cert.getSubjectX500Principal().getName(X500Principal.RFC2253);
          for (final Rdn rdn : new LdapName(subjectPrincipal).getRdns()) {
@@ -261,7 +261,7 @@ public abstract class X509Utils {
       if (crlExtValueRaw == null)
          return Collections.emptyList();
 
-      final List<String> crls = new ArrayList<String>();
+      final List<String> crls = new ArrayList<>();
 
       try {
          final String crlExtValue = new String(crlExtValueRaw, "UTF-8");

@@ -25,6 +25,7 @@ public class DateComparator implements Comparator<Date>, Serializable {
       super();
    }
 
+   @Override
    public int compare(final Date o1, final Date o2) {
       final long n1 = o1.getTime();
       final long n2 = o2.getTime();

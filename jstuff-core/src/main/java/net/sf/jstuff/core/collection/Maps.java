@@ -94,7 +94,7 @@ public abstract class Maps {
       Args.notNull("rightMap", rightMap);
       Args.notNull("isEqual", isEqual);
 
-      final MapDiff<K, V> mapDiff = new MapDiff<K, V>(leftMap, rightMap);
+      final MapDiff<K, V> mapDiff = new MapDiff<>(leftMap, rightMap);
       final Set<K> processedLeftKeys = CollectionUtils.newHashSet(Math.max(leftMap.size(), rightMap.size()));
 
       /*
@@ -107,7 +107,7 @@ public abstract class Maps {
          if (rightMap.containsKey(leftKey)) {
             final V rightValue = rightMap.get(leftKey);
             if (!isEqual.isEqual(leftValue, rightValue)) {
-               mapDiff.entryValueDiffs.add(new EntryValueDiff<K, V>(leftMap, rightMap, leftKey, leftValue, rightValue));
+               mapDiff.entryValueDiffs.add(new EntryValueDiff<>(leftMap, rightMap, leftKey, leftValue, rightValue));
             }
          } else {
             mapDiff.leftOnlyEntries.put(leftKey, leftValue);
@@ -171,46 +171,46 @@ public abstract class Maps {
    }
 
    public static <K, V> HashMap<K, V> newHashMap() {
-      return new HashMap<K, V>();
+      return new HashMap<>();
    }
 
    public static <K, V> HashMap<K, V> newHashMap(final int initialSize) {
-      return new HashMap<K, V>(initialSize);
+      return new HashMap<>(initialSize);
    }
 
    public static <K, V, KK extends K, VV extends V> HashMap<K, V> newHashMap(final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues) {
-      final HashMap<K, V> m = new HashMap<K, V>(1 + moreInitialKeysAndValues.length / 2);
+      final HashMap<K, V> m = new HashMap<>(1 + moreInitialKeysAndValues.length / 2);
       return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
    }
 
    public static <K, V> HashMap<K, V> newHashMap(final Map<? extends K, ? extends V> initialValues) {
-      return initialValues == null ? new HashMap<K, V>() : new HashMap<K, V>(initialValues);
+      return initialValues == null ? new HashMap<>() : new HashMap<>(initialValues);
    }
 
    public static <K, V> HashMap<K, V> newHashMap(final Object[] initialKeysAndValues) {
       if (initialKeysAndValues == null)
-         return new HashMap<K, V>();
+         return new HashMap<>();
 
       return putAll(new HashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
    }
 
    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap() {
-      return new LinkedHashMap<K, V>();
+      return new LinkedHashMap<>();
    }
 
    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final int initialSize) {
-      return new LinkedHashMap<K, V>(initialSize);
+      return new LinkedHashMap<>(initialSize);
    }
 
    public static <K, V, KK extends K, VV extends V> LinkedHashMap<K, V> newLinkedHashMap(final KK firstKey, final VV firstValue,
       final Object... moreInitialKeysAndValues) {
-      final LinkedHashMap<K, V> m = new LinkedHashMap<K, V>(1 + moreInitialKeysAndValues.length / 2);
+      final LinkedHashMap<K, V> m = new LinkedHashMap<>(1 + moreInitialKeysAndValues.length / 2);
       return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
    }
 
    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final Object[] initialKeysAndValues) {
       if (initialKeysAndValues == null)
-         return new LinkedHashMap<K, V>();
+         return new LinkedHashMap<>();
 
       return putAll(new LinkedHashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
    }
@@ -219,7 +219,7 @@ public abstract class Maps {
       return new ThreadLocal<HashMap<K, V>>() {
          @Override
          public HashMap<K, V> initialValue() {
-            return new HashMap<K, V>();
+            return new HashMap<>();
          }
       };
    }
@@ -228,34 +228,34 @@ public abstract class Maps {
       return new ThreadLocal<WeakHashMap<K, V>>() {
          @Override
          public WeakHashMap<K, V> initialValue() {
-            return new WeakHashMap<K, V>();
+            return new WeakHashMap<>();
          }
       };
    }
 
    public static <K, V> TreeMap<K, V> newTreeMap() {
-      return new TreeMap<K, V>();
+      return new TreeMap<>();
    }
 
    public static <K, V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator) {
-      return new TreeMap<K, V>(keyComparator);
+      return new TreeMap<>(keyComparator);
    }
 
    public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator, final KK firstKey, final VV firstValue,
       final Object... moreInitialKeysAndValues) {
-      final TreeMap<K, V> m = new TreeMap<K, V>(keyComparator);
+      final TreeMap<K, V> m = new TreeMap<>(keyComparator);
       return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
    }
 
    public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator, final Object[] initialKeysAndValues) {
       if (initialKeysAndValues == null)
-         return new TreeMap<K, V>(keyComparator);
+         return new TreeMap<>(keyComparator);
 
       return putAll(new TreeMap<K, V>(keyComparator), initialKeysAndValues);
    }
 
    public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues) {
-      final TreeMap<K, V> m = new TreeMap<K, V>();
+      final TreeMap<K, V> m = new TreeMap<>();
       return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
    }
 
@@ -318,14 +318,15 @@ public abstract class Maps {
       if (map.isEmpty())
          return map;
 
-      final List<Map.Entry<K, V>> entries = new ArrayList<Map.Entry<K, V>>(map.entrySet());
+      final List<Map.Entry<K, V>> entries = new ArrayList<>(map.entrySet());
       Collections.sort(entries, new Comparator<Map.Entry<K, V>>() {
+         @Override
          public int compare(final Map.Entry<K, V> o1, final Map.Entry<K, V> o2) {
             return o1.getValue().compareTo(o2.getValue());
          }
       });
 
-      final Map<K, V> result = new LinkedHashMap<K, V>();
+      final Map<K, V> result = new LinkedHashMap<>();
       for (final Map.Entry<K, V> entry : entries) {
          result.put(entry.getKey(), entry.getValue());
       }
@@ -340,14 +341,15 @@ public abstract class Maps {
 
       Args.notNull("comparator", comparator);
 
-      final List<Map.Entry<K, V>> entries = new ArrayList<Map.Entry<K, V>>(map.entrySet());
+      final List<Map.Entry<K, V>> entries = new ArrayList<>(map.entrySet());
       Collections.sort(entries, new Comparator<Map.Entry<K, V>>() {
+         @Override
          public int compare(final Map.Entry<K, V> o1, final Map.Entry<K, V> o2) {
             return comparator.compare(o1.getValue(), o2.getValue());
          }
       });
 
-      final Map<K, V> result = new LinkedHashMap<K, V>();
+      final Map<K, V> result = new LinkedHashMap<>();
       for (final Map.Entry<K, V> entry : entries) {
          result.put(entry.getKey(), entry.getValue());
       }
@@ -374,6 +376,7 @@ public abstract class Maps {
       return result;
    }
 
+   @SafeVarargs
    public static <T> Map<T, T> toMap(final T... keysAndValues) {
       if (keysAndValues == null)
          return null;

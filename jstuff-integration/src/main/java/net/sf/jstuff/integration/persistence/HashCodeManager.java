@@ -110,8 +110,8 @@ public final class HashCodeManager {
       }
    };
 
-   private static final ConcurrentMap<FQId, HashCodeAssignment> HASHCODE_ASSIGNMENT_BY_ID = new ConcurrentHashMap<FQId, HashCodeAssignment>();
-   private static final ConcurrentMap<String, HashCodeAssignment> HASHCODE_ASSIGNMENT_BY_TRACKING_ID = new ConcurrentHashMap<String, HashCodeAssignment>();
+   private static final ConcurrentMap<FQId, HashCodeAssignment> HASHCODE_ASSIGNMENT_BY_ID = new ConcurrentHashMap<>();
+   private static final ConcurrentMap<String, HashCodeAssignment> HASHCODE_ASSIGNMENT_BY_TRACKING_ID = new ConcurrentHashMap<>();
 
    private static final AtomicLong LOCAL_ID_GENERATOR = new AtomicLong(0);
    private static final String LOCAL_JVM_ID = UUID.randomUUID().toString();

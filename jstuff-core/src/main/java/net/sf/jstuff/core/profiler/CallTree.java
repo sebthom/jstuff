@@ -26,7 +26,7 @@ public final class CallTree {
 
    private long idleSeen = 0;
    private long executingSeen = 0;
-   private final Map<CodeLocation, CallTree> children = new HashMap<CodeLocation, CallTree>(32);
+   private final Map<CodeLocation, CallTree> children = new HashMap<>(32);
 
    protected CallTree markSeen(final String clazz, final String method, final int lineNumber, final boolean isExecuting) {
       final CodeLocation codeLocation = new CodeLocation(clazz, method, lineNumber);

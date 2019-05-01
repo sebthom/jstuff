@@ -28,6 +28,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable {
       this.propertyPath = propertyPath;
    }
 
+   @Override
    @SuppressWarnings({"unchecked", "rawtypes"})
    public int compare(final T o1, final T o2) {
       if (o1 == o2)

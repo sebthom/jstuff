@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -73,7 +74,7 @@ import net.sf.jstuff.core.validation.Assert;
  */
 public abstract class DOMUtils {
    private static final class SAXParseExceptionHandler extends org.xml.sax.helpers.DefaultHandler {
-      private final List<SAXParseException> violations = new ArrayList<SAXParseException>();
+      private final List<SAXParseException> violations = new ArrayList<>();
 
       @Override
       public void error(final SAXParseException ex) throws SAXException {
@@ -109,11 +110,11 @@ public abstract class DOMUtils {
             return false;
          final XPathNode other = (XPathNode) obj;
 
-         if (!ObjectUtils.equals(name, other.name))
+         if (!Objects.equals(name, other.name))
             return false;
-         if (!ObjectUtils.equals(value, other.value))
+         if (!Objects.equals(value, other.value))
             return false;
-         if (!ObjectUtils.equals(xPath, other.xPath))
+         if (!Objects.equals(xPath, other.xPath))
             return false;
          return true;
       }
@@ -140,7 +141,7 @@ public abstract class DOMUtils {
 
       public boolean recursive = true;
       public boolean useSchemaIdAttributes = true;
-      public final MapWithLists<String, String> idAttributesByXMLTagName = new MapWithLists<String, String>();
+      public final MapWithLists<String, String> idAttributesByXMLTagName = new MapWithLists<>();
 
       @Override
       protected XPathNodeConfiguration clone() throws CloneNotSupportedException {
@@ -163,6 +164,7 @@ public abstract class DOMUtils {
    private static final EntityResolver NOREMOTE_DTD_RESOLVER = new EntityResolver() {
       private final Logger log = Logger.create();
 
+      @Override
       public InputSource resolveEntity(final String schemaId, final String schemaLocation) throws SAXException, IOException {
          if (!schemaLocation.startsWith("file://")) {
             log.debug("Ignoring DTD [%s] [%s]", schemaId, schemaLocation);
@@ -498,7 +500,7 @@ public abstract class DOMUtils {
    public static SortedMap<String, XPathNode> getXPathNodes(final Element element) {
       Args.notNull("element", element);
 
-      final SortedMap<String, XPathNode> valuesByXPath = new TreeMap<String, XPathNode>();
+      final SortedMap<String, XPathNode> valuesByXPath = new TreeMap<>();
       _getXPathNodes(element, XPathNodeConfiguration.INTERNAL_SHARED_INSTANCE, "", valuesByXPath);
       return valuesByXPath;
    }
@@ -510,7 +512,7 @@ public abstract class DOMUtils {
       Args.notNull("element", element);
       Args.notNull("config", config);
 
-      final SortedMap<String, XPathNode> valuesByXPath = new TreeMap<String, XPathNode>();
+      final SortedMap<String, XPathNode> valuesByXPath = new TreeMap<>();
       _getXPathNodes(element, config, "", valuesByXPath);
       return valuesByXPath;
    }
@@ -544,7 +546,7 @@ public abstract class DOMUtils {
       Args.notNull("nodesToImport", nodesToImport);
 
       final Document targetDoc = _getOwnerDocument(parent);
-      final List<T> importedNodes = new ArrayList<T>(nodesToImport.size());
+      final List<T> importedNodes = new ArrayList<>(nodesToImport.size());
       for (final T nodeToImport : nodesToImport) {
          final T importedNode = (T) parent.appendChild(targetDoc.importNode(nodeToImport, true));
          importedNodes.add(importedNode);
@@ -568,7 +570,7 @@ public abstract class DOMUtils {
       Args.notNull("sibling.parentNode", parent);
 
       final Document targetDoc = _getOwnerDocument(parent);
-      final List<T> importedNodes = new ArrayList<T>(nodesToImport.size());
+      final List<T> importedNodes = new ArrayList<>(nodesToImport.size());
       for (final T nodeToImport : nodesToImport) {
          final T importedNode = (T) parent.insertBefore(targetDoc.importNode(nodeToImport, true), sibling);
          importedNodes.add(importedNode);
@@ -869,7 +871,7 @@ public abstract class DOMUtils {
       Args.notNull("parentNode", parentNode);
       Args.notNull("comparator", comparator);
 
-      final List<Node> sortedNodes = new ArrayList<Node>();
+      final List<Node> sortedNodes = new ArrayList<>();
       for (final Node node : getChildNodes(parentNode)) {
          // Remove empty text nodes
          if (node instanceof Text && ((Text) node).getTextContent().trim().length() > 1) {
@@ -890,7 +892,7 @@ public abstract class DOMUtils {
    public static void sortChildNodesByAttributes(final Node parentNode, final boolean ascending, final String... attributeNames) {
       Args.notNull("parentNode", parentNode);
 
-      final List<Node> children = new ArrayList<Node>();
+      final List<Node> children = new ArrayList<>();
       for (final Node node : getChildNodes(parentNode)) {
          // Remove empty text nodes
          if (node instanceof Text && ((Text) node).getTextContent().trim().length() > 1) {
@@ -900,6 +902,7 @@ public abstract class DOMUtils {
       }
 
       Collections.sort(children, new Comparator<Node>() {
+         @Override
          public int compare(final Node n1, final Node n2) {
             final NamedNodeMap m1 = n1.getAttributes();
             final NamedNodeMap m2 = n2.getAttributes();

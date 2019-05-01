@@ -34,6 +34,7 @@ public class HashLockManagerTest extends TestCase {
    private int sum = -1;
 
    final Runnable calculation = new Runnable() {
+      @Override
       public void run() {
          sum++;
          sum = sum * 2;
@@ -42,7 +43,7 @@ public class HashLockManagerTest extends TestCase {
    };
 
    public void testWithHashLockManager() throws InterruptedException {
-      final HashLockManager<String> lockManager = new HashLockManager<String>(100);
+      final HashLockManager<String> lockManager = new HashLockManager<>(100);
 
       final StopWatch sw = new StopWatch();
       sw.start();
@@ -54,6 +55,7 @@ public class HashLockManagerTest extends TestCase {
             // intentionally generated new object to proof synchronization is not based on lock identity but hashcode identity
             final String namedLock = new String("MY_LOCK");
 
+            @Override
             public void run() {
                for (int i = 0; i < ITERATIONS_PER_THREAD; i++) {
                   lockManager.executeWriteLocked(namedLock, calculation);
@@ -88,6 +90,7 @@ public class HashLockManagerTest extends TestCase {
          es.execute(new Runnable() {
             final String namedLock = new String("MY_LOCK");
 
+            @Override
             public void run() {
                for (int i = 0; i < ITERATIONS_PER_THREAD; i++) {
                   // this synchronization of course has no effect since the lock object is a different string instance for each thread

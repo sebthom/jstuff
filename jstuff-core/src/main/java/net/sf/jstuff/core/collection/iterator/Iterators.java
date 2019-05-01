@@ -12,8 +12,7 @@ package net.sf.jstuff.core.collection.iterator;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
-
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Objects;
 
 import net.sf.jstuff.core.validation.Args;
 
@@ -22,6 +21,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Iterators {
 
+   @SafeVarargs
    public static <T> ArrayIterator<T> array(final T... array) {
       return new ArrayIterator<T>(array);
    }
@@ -30,6 +30,7 @@ public abstract class Iterators {
       return new CompositeIterator<V>(components);
    }
 
+   @SafeVarargs
    public static <V> CompositeIterator<V> composite(final Iterator<V>... components) {
       return new CompositeIterator<V>(components);
    }
@@ -38,7 +39,7 @@ public abstract class Iterators {
       Args.notNull("iterator", iterator);
       while (iterator.hasNext()) {
          final Object elem = iterator.next();
-         if (ObjectUtils.equals(elem, searchFor))
+         if (Objects.equals(elem, searchFor))
             return true;
       }
       return false;
@@ -73,6 +74,7 @@ public abstract class Iterators {
 
    public static <T> Iterable<T> toIterable(final Iterator<T> it) {
       return new Iterable<T>() {
+         @Override
          public Iterator<T> iterator() {
             return it;
          }

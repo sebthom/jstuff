@@ -37,7 +37,7 @@ public class AtomBlogsReader {
    };
 
    private static AtomCollection processCollection(final XMLStreamReader xmlr) throws XMLStreamException {
-      if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("collection")))
+      if (xmlr.getEventType() != XMLStreamConstants.START_ELEMENT || !xmlr.getLocalName().equals("collection"))
          return null;
 
       final AtomCollection coll = new AtomCollection();
@@ -54,7 +54,7 @@ public class AtomBlogsReader {
 
    public static List<AtomBlog> processStream(final InputStream is, final String encoding) throws XMLStreamException {
       final XMLStreamReader xmlr = XML_INPUT_FACTORY.get().createXMLStreamReader(is, encoding);
-      final List<AtomBlog> blogs = new ArrayList<AtomBlog>(2);
+      final List<AtomBlog> blogs = new ArrayList<>(2);
 
       while (xmlr.hasNext()) {
          xmlr.next();
@@ -64,14 +64,14 @@ public class AtomBlogsReader {
    }
 
    private static String processTitle(final XMLStreamReader xmlr) throws XMLStreamException {
-      if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("title")))
+      if (xmlr.getEventType() != XMLStreamConstants.START_ELEMENT || !xmlr.getLocalName().equals("title"))
          return null;
 
       return xmlr.getElementText();
    }
 
    private static void processWorkspace(final XMLStreamReader xmlr, final List<AtomBlog> blogs) throws XMLStreamException {
-      if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("workspace")))
+      if (xmlr.getEventType() != XMLStreamConstants.START_ELEMENT || !xmlr.getLocalName().equals("workspace"))
          return;
 
       String title = null;

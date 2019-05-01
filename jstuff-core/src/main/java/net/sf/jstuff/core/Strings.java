@@ -32,6 +32,7 @@ import net.sf.jstuff.core.validation.Assert;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings({"deprecation", "javadoc"})
 public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
    public static final class ANSIState {
@@ -164,11 +165,13 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    /**
     * \r 13 Carriage Return, new line separator on Macintosh
     */
+   @SuppressWarnings("hiding")
    public static final char CR = 13;
 
    /**
     * \n 10 Line Feed, new line separator on Unix/Linux
     */
+   @SuppressWarnings("hiding")
    public static final char LF = 10;
 
    /**
@@ -1034,16 +1037,10 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       }
    }
 
-   /**
-    * {@link WordUtils#wrap(String, int)}
-    */
    public static String wrap(final String str, final int wrapLength) {
       return WordUtils.wrap(str, wrapLength);
    }
 
-   /**
-    * {@link WordUtils#wrap(String, int)}
-    */
    public static String wrap(final String str, final int wrapLength, final String newLineStr) {
       return WordUtils.wrap(str, wrapLength, newLineStr, false);
    }

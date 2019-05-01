@@ -24,6 +24,7 @@ public class StatusCapturingHttpServletResponseWrapper extends HttpServletRespon
       super(response);
    }
 
+   @Override
    public int getStatus() {
       return httpStatus;
    }
@@ -46,6 +47,13 @@ public class StatusCapturingHttpServletResponseWrapper extends HttpServletRespon
       super.setStatus(sc);
    }
 
+   /**
+    * @deprecated As of version 2.1, due to ambiguous meaning of the
+    *             message parameter. To set a status code
+    *             use {@link #setStatus(int)}, to send an error with a description
+    *             use {@link #sendError(int, String)}
+    */
+   @Deprecated
    @Override
    public void setStatus(final int sc, final String sm) {
       httpStatus = sc;

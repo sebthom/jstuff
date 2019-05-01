@@ -103,9 +103,8 @@ public class CircuitBreaker implements EventListenable<State> {
        * Types of exceptions that trip {@link State#OPEN} instantly ignoring the failure threshold.
        */
       @Fluent
-      //@SafeVarargs
       @Builder.Property(required = false)
-      CircuitBreakerBuilder hardTrippingExceptionTypes(Class<? extends Throwable>... value);
+      CircuitBreakerBuilder hardTrippingExceptionTypes(@SuppressWarnings("unchecked") Class<? extends Throwable>... value);
 
       /**
        * Maximum number of issued permits at the same time while in {@link State#CLOSE}.
@@ -160,7 +159,7 @@ public class CircuitBreaker implements EventListenable<State> {
 
    protected EventDispatcher<State> eventDispatcher;
    protected int failureThreshold;
-   protected List<Long> failureTimestamps = new ArrayList<Long>();
+   protected List<Long> failureTimestamps = new ArrayList<>();
    protected long failureTrackingPeriodMS;
    protected Class<? extends Throwable>[] hardTrippingExceptionTypes;
    protected long inOpenStateUntil = -1;
@@ -304,6 +303,7 @@ public class CircuitBreaker implements EventListenable<State> {
       resetPeriodMS = timeUnit.toMillis(time);
    }
 
+   @Override
    public boolean subscribe(final EventListener<State> listener) {
       Assert.notNull(eventDispatcher, "No eventDispatcher configured.");
 
@@ -542,6 +542,7 @@ public class CircuitBreaker implements EventListenable<State> {
       }
    }
 
+   @Override
    public boolean unsubscribe(final EventListener<State> listener) {
       if (eventDispatcher == null)
          return false;

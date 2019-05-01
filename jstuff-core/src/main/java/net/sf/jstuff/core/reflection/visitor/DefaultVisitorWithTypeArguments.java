@@ -15,18 +15,22 @@ import java.lang.reflect.ParameterizedType;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class DefaultVisitorWithTypeArguments implements ClassVisitorWithTypeArguments {
+   @Override
    public boolean isVisiting(final Class<?> clazz, final ParameterizedType type) {
       return true;
    }
 
+   @Override
    public boolean isVisitingInterfaces(final Class<?> clazz, final ParameterizedType type) {
       return true;
    }
 
+   @Override
    public boolean isVisitingSuperclass(final Class<?> clazz, final ParameterizedType type) {
       return true;
    }
 
+   @Override
    public boolean visit(final Class<?> clazz, final ParameterizedType type) {
       return true;
    }

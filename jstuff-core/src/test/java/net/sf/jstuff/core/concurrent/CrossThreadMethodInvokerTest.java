@@ -27,6 +27,7 @@ public class CrossThreadMethodInvokerTest extends TestCase {
 
       int invocations = 0;
 
+      @Override
       public String work(final String input) {
          Args.notNull("input", input);
 

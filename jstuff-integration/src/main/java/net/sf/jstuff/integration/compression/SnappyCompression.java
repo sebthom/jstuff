@@ -13,12 +13,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.xerial.snappy.SnappyInputStream;
 import org.xerial.snappy.SnappyOutputStream;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.compression.AbstractCompression;
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
@@ -31,6 +31,7 @@ public class SnappyCompression extends AbstractCompression {
 
    public static final SnappyCompression INSTANCE = new SnappyCompression();
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -52,6 +53,7 @@ public class SnappyCompression extends AbstractCompression {
       }
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -74,10 +76,12 @@ public class SnappyCompression extends AbstractCompression {
       }
    }
 
+   @Override
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
       return new SnappyInputStream(compressed);
    }
 
+   @Override
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
       return new SnappyOutputStream(output, DEFAULT_BLOCK_SIZE);
    }

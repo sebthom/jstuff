@@ -36,6 +36,7 @@ public abstract class Base64 {
       String encode(byte[] plain);
    }
 
+   @SuppressWarnings("restriction")
    private static final class Base64Adapter_Java5 implements Base64Adapter {
       ThreadLocal<Tuple2<sun.misc.BASE64Encoder, sun.misc.BASE64Decoder>> codec = new ThreadLocal<Tuple2<sun.misc.BASE64Encoder, sun.misc.BASE64Decoder>>() {
          @Override
@@ -48,6 +49,7 @@ public abstract class Base64 {
          }
       };
 
+      @Override
       @SuppressWarnings("resource")
       public byte[] decode(final String encoded) {
          try {
@@ -61,6 +63,7 @@ public abstract class Base64 {
          }
       }
 
+      @Override
       public String encode(final byte[] plain) {
          return codec.get().get1().encode(plain);
       }
@@ -71,10 +74,12 @@ public abstract class Base64 {
          Types.initialize(javax.xml.bind.DatatypeConverter.class);
       }
 
+      @Override
       public byte[] decode(final String encoded) {
          return javax.xml.bind.DatatypeConverter.parseBase64Binary(encoded);
       }
 
+      @Override
       public String encode(final byte[] plain) {
          return javax.xml.bind.DatatypeConverter.printBase64Binary(plain);
       }
@@ -84,10 +89,12 @@ public abstract class Base64 {
       private static final java.util.Base64.Decoder DEC = java.util.Base64.getDecoder();
       private static final java.util.Base64.Encoder ENC = java.util.Base64.getEncoder();
 
+      @Override
       public byte[] decode(final String encoded) {
          return DEC.decode(encoded);
       }
 
+      @Override
       public String encode(final byte[] plain) {
          return ENC.encodeToString(plain);
       }

@@ -13,13 +13,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.SystemUtils;
 
 import com.github.javafaker.Faker;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.compression.Compression;
 import net.sf.jstuff.core.compression.CompressionBenchmark;
 import net.sf.jstuff.core.compression.CompressionBenchmark.BenchmarkResult;
@@ -58,15 +58,15 @@ public class CompressionITest extends TestCase {
          final byte[] compressed = cmp.compress(TEST_TEXT_BYTES);
 
          {
-            assertTrue(ArrayUtils.isEquals(compressed, cmp.compress(TEST_TEXT_BYTES))); // test for reproducable results
+            assertTrue(Objects.deepEquals(compressed, cmp.compress(TEST_TEXT_BYTES))); // test for reproducable results
 
-            assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, cmp.decompress(compressed)));
+            assertTrue(Objects.deepEquals(TEST_TEXT_BYTES, cmp.decompress(compressed)));
          }
 
          {
             final byte[] uncompressed = new byte[TEST_TEXT_BYTES.length];
             assertEquals(uncompressed.length, cmp.decompress(compressed, uncompressed));
-            assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, uncompressed));
+            assertTrue(Objects.deepEquals(TEST_TEXT_BYTES, uncompressed));
          }
 
          {
@@ -86,14 +86,14 @@ public class CompressionITest extends TestCase {
             final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
             cmp.decompress(compressedOS.toByteArray(), uncompressedOS, true);
 
-            assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, uncompressedOS.toByteArray()));
+            assertTrue(Objects.deepEquals(TEST_TEXT_BYTES, uncompressedOS.toByteArray()));
          }
 
          {
-            assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, IOUtils.readBytes(cmp.createDecompressingInputStream(compressed))));
+            assertTrue(Objects.deepEquals(TEST_TEXT_BYTES, IOUtils.readBytes(cmp.createDecompressingInputStream(compressed))));
 
             final byte[] compressed2 = IOUtils.readBytes(cmp.createCompressingInputStream(TEST_TEXT_BYTES));
-            assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, IOUtils.readBytes(cmp.createDecompressingInputStream(compressed2))));
+            assertTrue(Objects.deepEquals(TEST_TEXT_BYTES, IOUtils.readBytes(cmp.createDecompressingInputStream(compressed2))));
          }
 
       }
@@ -107,14 +107,14 @@ public class CompressionITest extends TestCase {
          cmp.compress(new ByteArrayInputStream(TEST_TEXT_BYTES), compressedOS, true);
          cmp.decompress(new ByteArrayInputStream(compressedOS.toByteArray()), uncompressedOS, true);
 
-         assertTrue(ArrayUtils.isEquals(TEST_TEXT_BYTES, uncompressedOS.toByteArray()));
+         assertTrue(Objects.deepEquals(TEST_TEXT_BYTES, uncompressedOS.toByteArray()));
 
-         assertTrue(ArrayUtils.isEquals( //
+         assertTrue(Objects.deepEquals( //
             TEST_TEXT_BYTES, //
             IOUtils.readBytes(cmp.createDecompressingInputStream(new ByteArrayInputStream(compressedOS.toByteArray()))) //
          ));
 
-         assertTrue(ArrayUtils.isEquals( //
+         assertTrue(Objects.deepEquals( //
             TEST_TEXT_BYTES, //
             cmp.decompress(IOUtils.readBytes(cmp.createCompressingInputStream(new ByteArrayInputStream(TEST_TEXT_BYTES)))) ///
          ));

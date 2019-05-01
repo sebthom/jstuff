@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class Interner {
-   private final ConcurrentMap<Object, Object> refs = new ConcurrentHashMap<Object, Object>();
+   private final ConcurrentMap<Object, Object> refs = new ConcurrentHashMap<>();
 
    public void clear() {
       refs.clear();

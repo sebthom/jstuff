@@ -22,10 +22,12 @@ public class TypesMixinTest extends TestCase {
    }
 
    protected static class TestEntityImpl implements TestEntity {
+      @Override
       public String createClosing(final String name) {
          return "Goodbye " + name + ".";
       }
 
+      @Override
       public String createGreeting(final String name) {
          return "Hello " + name + "!";
       }

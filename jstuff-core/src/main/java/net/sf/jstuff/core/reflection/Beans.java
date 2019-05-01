@@ -28,8 +28,7 @@ import net.sf.jstuff.core.validation.Assert;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Beans extends java.beans.Beans {
-   private static final WeakHashMap<Class<?>, Map<String, PropertyDescriptor>> BEAN_PROPERTIES_CACHE = //
-      new WeakHashMap<Class<?>, Map<String, PropertyDescriptor>>();
+   private static final WeakHashMap<Class<?>, Map<String, PropertyDescriptor>> BEAN_PROPERTIES_CACHE = new WeakHashMap<>();
 
    /**
     * list of properties
@@ -76,7 +75,7 @@ public abstract class Beans extends java.beans.Beans {
       try {
          final BeanInfo beanInfo = Introspector.getBeanInfo(beanType, Object.class);
          final PropertyDescriptor[] props = beanInfo.getPropertyDescriptors();
-         final Map<String, PropertyDescriptor> beanProperties = new HashMap<String, PropertyDescriptor>(props.length);
+         final Map<String, PropertyDescriptor> beanProperties = new HashMap<>(props.length);
          for (final PropertyDescriptor prop : props) {
             beanProperties.put(prop.getName(), prop);
          }

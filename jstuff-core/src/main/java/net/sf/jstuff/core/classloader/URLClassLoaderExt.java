@@ -57,7 +57,7 @@ public class URLClassLoaderExt extends URLClassLoader {
       Assert.isFileReadable(jarFile);
 
       LOG.trace("Adding file [%s] to classpath", jarFile);
-      addURL(jarFile.toURL());
+      addURL(jarFile.toURI().toURL());
    }
 
    public boolean addJARs(final File jarDirectory, final boolean recursive) throws IOException {

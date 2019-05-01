@@ -27,6 +27,7 @@ public class FinalRef<T> implements Ref<T>, Serializable {
       this.value = value;
    }
 
+   @Override
    public T get() {
       return value;
    }

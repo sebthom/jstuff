@@ -13,14 +13,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.commons.io.IOUtils;
-
 import com.github.luben.zstd.Zstd;
 import com.github.luben.zstd.ZstdInputStream;
 import com.github.luben.zstd.ZstdOutputStream;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.compression.AbstractCompression;
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
@@ -72,6 +71,7 @@ public class ZStdCompression extends AbstractCompression {
       return out;
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -93,6 +93,7 @@ public class ZStdCompression extends AbstractCompression {
       }
    }
 
+   @Override
    @SuppressWarnings("resource")
    public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("input", input);
@@ -115,10 +116,15 @@ public class ZStdCompression extends AbstractCompression {
       }
    }
 
+   @Override
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
-      return new ZstdOutputStream(output, compressionLevel, true, useChecksum);
+      final ZstdOutputStream out = new ZstdOutputStream(output, compressionLevel);
+      out.setCloseFrameOnFlush(true);
+      out.setChecksum(useChecksum);
+      return out;
    }
 
+   @Override
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
       return new ZstdInputStream(compressed);
    }

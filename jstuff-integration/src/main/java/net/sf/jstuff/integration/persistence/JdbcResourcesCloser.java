@@ -46,7 +46,7 @@ public class JdbcResourcesCloser {
 
    private static final Logger LOG = Logger.create();
 
-   private final LinkedList<Object> resources = new LinkedList<Object>();
+   private final LinkedList<Object> resources = new LinkedList<>();
 
    /**
     * closes all resources in LIFO order.

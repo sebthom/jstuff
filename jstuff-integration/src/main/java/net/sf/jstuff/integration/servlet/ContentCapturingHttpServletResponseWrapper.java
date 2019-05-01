@@ -17,6 +17,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
@@ -86,6 +87,16 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
             @Override
             public void write(final int b) throws IOException {
                outputStream.write(b);
+            }
+
+            @Override
+            public boolean isReady() {
+               throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void setWriteListener(final WriteListener writeListener) {
+               throw new UnsupportedOperationException();
             }
          };
       }

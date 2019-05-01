@@ -62,9 +62,9 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
       return BuilderFactory.of(DefaultTrustStoreProviderBuilder.class).create();
    }
 
-   protected EventDispatcher<Event> eventDispatcher = new SyncEventDispatcher<Event>();
+   protected EventDispatcher<Event> eventDispatcher = new SyncEventDispatcher<>();
 
-   protected ConcurrentMap<String, X509Certificate> trustCertsByAlias = new ConcurrentHashMap<String, X509Certificate>();
+   protected ConcurrentMap<String, X509Certificate> trustCertsByAlias = new ConcurrentHashMap<>();
    protected AtomicInteger trustCertsAliasIndex = new AtomicInteger();
 
    protected TrustManager[] trustManagers;
@@ -103,7 +103,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
       assertIsModifiable();
 
       try {
-         final List<X509Certificate> certs = new ArrayList<X509Certificate>();
+         final List<X509Certificate> certs = new ArrayList<>();
          for (final String certAlias : Enumerations.toIterable(trustStore.aliases())) {
             final Certificate cert = trustStore.getCertificate(certAlias);
             if (cert == null) {
@@ -133,7 +133,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
        * when new certificates are added we swap out the current truststore with a new copy holding the previous plus the newly added certificates
        */
       LOG.info("Adding trusted certificates...");
-      final List<X509Certificate> addedCerts = new ArrayList<X509Certificate>();
+      final List<X509Certificate> addedCerts = new ArrayList<>();
       for (final X509Certificate cert : certs) {
          if (cert == null || trustCertsByAlias.containsValue(cert)) {
             continue;
@@ -143,10 +143,12 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
          if (now.after(cert.getNotAfter())) {
             LOG.warn("  -> Certificate [%s] EXPIRED [%s]!", cert.getSubjectX500Principal().getName(), cert.getNotAfter());
             eventDispatcher.fire(new CertificateExpiredEvent() {
+               @Override
                public EventType getEventType() {
                   return EventType.CERTIFICATE_EXPIRED;
                }
 
+               @Override
                public X509Certificate getExpired() {
                   return cert;
                }
@@ -163,16 +165,19 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
       rebuildTrustStore();
 
       eventDispatcher.fire(new CertificatesAddedEvent() {
+         @Override
          public Collection<X509Certificate> getAdded() {
             return addedCerts;
          }
 
+         @Override
          public EventType getEventType() {
             return EventType.CERTIFICATES_ADDED;
          }
       });
    }
 
+   @Override
    public TrustManager[] getTrustManagers() {
       if (trustManagers == null)
          return new TrustManager[0];
@@ -180,6 +185,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
       return trustManagers.clone();
    }
 
+   @Override
    public KeyStore getTrustStore() {
       return trustStore;
    }
@@ -212,7 +218,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
        * when new certificates are added we swap out the current truststore with a new copy holding the previous plus the newly added certificates
        */
       LOG.info("Removing trusted certificates...");
-      final List<X509Certificate> removedCerts = new ArrayList<X509Certificate>();
+      final List<X509Certificate> removedCerts = new ArrayList<>();
       final Iterator<Map.Entry<String, X509Certificate>> it = trustCertsByAlias.entrySet().iterator();
       while (it.hasNext()) {
          final Map.Entry<String, X509Certificate> entry = it.next();
@@ -227,10 +233,12 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
       rebuildTrustStore();
 
       eventDispatcher.fire(new CertificatesRemovedEvent() {
+         @Override
          public EventType getEventType() {
             return EventType.CERTIFICATES_REMOVED;
          }
 
+         @Override
          public Collection<X509Certificate> getRemoved() {
             return removedCerts;
          }
@@ -251,10 +259,12 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
       addTrustCerts(certs);
    }
 
+   @Override
    public boolean subscribe(final EventListener<Event> listener) {
       return eventDispatcher.subscribe(listener);
    }
 
+   @Override
    public boolean unsubscribe(final EventListener<Event> listener) {
       return eventDispatcher.unsubscribe(listener);
    }

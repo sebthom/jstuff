@@ -22,8 +22,8 @@ public class GuestBookEntryEntity extends AbstractEntity {
 
    private final GuestBookEntryEntity parent;
    private String message;
-   private List<GuestBookEntryRatingEntity> ratings = new ArrayList<GuestBookEntryRatingEntity>();
-   private List<GuestBookEntryEntity> responses = new ArrayList<GuestBookEntryEntity>();
+   private List<GuestBookEntryRatingEntity> ratings = new ArrayList<>();
+   private List<GuestBookEntryEntity> responses = new ArrayList<>();
 
    public GuestBookEntryEntity(final String createdBy) {
       super(createdBy);

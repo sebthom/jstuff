@@ -22,18 +22,22 @@ public class DefaultGroupDetails implements GroupDetails {
    private String groupId;
    private String[] memberDNs;
 
+   @Override
    public String getDisplayName() {
       return displayName;
    }
 
+   @Override
    public String getDistingueshedName() {
       return distingueshedName;
    }
 
+   @Override
    public String getGroupId() {
       return groupId;
    }
 
+   @Override
    public String[] getMemberDNs() {
       return memberDNs.clone();
    }

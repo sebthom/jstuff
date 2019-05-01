@@ -37,8 +37,9 @@ public abstract class AbstractThreadMXSampler {
    private final ThreadMXBean threadMBean;
    private boolean isWarningLogged = false;
 
-   private final Queue<ThreadInfo[]> samples = new ConcurrentLinkedQueue<ThreadInfo[]>();
+   private final Queue<ThreadInfo[]> samples = new ConcurrentLinkedQueue<>();
    private final Callable<Void> aggregator = new Callable<Void>() {
+      @Override
       public Void call() throws Exception {
          while (true) {
             final ThreadInfo[] sample = samples.poll();
@@ -54,6 +55,7 @@ public abstract class AbstractThreadMXSampler {
    };
 
    private final Runnable sampler = new Runnable() {
+      @Override
       public void run() {
          final long startAt = System.currentTimeMillis();
          samples.add(threadMBean.getThreadInfo(threadMBean.getAllThreadIds(), Integer.MAX_VALUE));

@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 
-import org.apache.commons.io.IOExceptionWithCause;
-
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -58,7 +56,7 @@ public final class SerializableConstructor implements Serializable {
       try {
          constructor = declaringClass.getDeclaredConstructor(parameterTypes);
       } catch (final NoSuchMethodException ex) {
-         throw new IOExceptionWithCause(ex);
+         throw new IOException(ex);
       }
    }
 

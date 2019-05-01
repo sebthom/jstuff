@@ -46,7 +46,7 @@ public class AESEncryptor {
       }
    }
 
-   private final Map<String, SecretKey> _cachedAESKeys = new WeakHashMap<String, SecretKey>();
+   private final Map<String, SecretKey> _cachedAESKeys = new WeakHashMap<>();
 
    private final ThreadLocal<Cipher> _ciphers = new ThreadLocal<Cipher>() {
       @Override

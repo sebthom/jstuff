@@ -60,6 +60,7 @@ public class LdapUserDetailsService implements UserDetailsService {
 
       return (UserDetails) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
 
+         @Override
          public Object invoke(final LdapContext ctx) throws NamingException {
             final Iterator<SearchResult> results = searchUser(ctx, filter, new String[] { //
                userAttributeDisplayName, //
@@ -92,12 +93,14 @@ public class LdapUserDetailsService implements UserDetailsService {
       });
    }
 
+   @Override
    public UserDetails getUserDetailsByLogonName(final String logonName) {
       Args.notNull("logonName", logonName);
 
       return getUserDetailsByFilter(userAttributeLogonName + "=" + LdapUtils.ldapEscape(logonName));
    }
 
+   @Override
    public UserDetails getUserDetailsByUserId(final String userId) {
       Args.notNull("userId", userId);
 

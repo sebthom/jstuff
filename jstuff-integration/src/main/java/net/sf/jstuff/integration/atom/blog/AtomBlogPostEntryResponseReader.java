@@ -27,7 +27,7 @@ public abstract class AtomBlogPostEntryResponseReader {
    };
 
    private static AtomBlogEntry processEntry(final XMLStreamReader xmlr) throws XMLStreamException {
-      if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("entry")))
+      if (xmlr.getEventType() != XMLStreamConstants.START_ELEMENT || !xmlr.getLocalName().equals("entry"))
          return null;
 
       final AtomBlogEntry atomBlockEntry = new AtomBlogEntry();
@@ -41,14 +41,14 @@ public abstract class AtomBlogPostEntryResponseReader {
    }
 
    private static void processId(final XMLStreamReader xmlr, final AtomBlogEntry atomBlogEntry) throws XMLStreamException {
-      if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("id")))
+      if (xmlr.getEventType() != XMLStreamConstants.START_ELEMENT || !xmlr.getLocalName().equals("id"))
          return;
 
       atomBlogEntry.setId(xmlr.getElementText());
    }
 
    private static void processLink(final XMLStreamReader xmlr, final AtomBlogEntry atomBlogEntry) {
-      if (!(xmlr.getEventType() == XMLStreamConstants.START_ELEMENT && xmlr.getLocalName().equals("link")))
+      if (xmlr.getEventType() != XMLStreamConstants.START_ELEMENT || !xmlr.getLocalName().equals("link"))
          return;
 
       final String rel = StAXUtils.getAttributeValue(xmlr, "rel");

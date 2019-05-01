@@ -32,6 +32,7 @@ public class UnmodifiableComparator<T> implements Comparator<T>, Serializable {
       this.delegate = delegate;
    }
 
+   @Override
    public int compare(final T o1, final T o2) {
       return delegate.compare(o1, o2);
    }

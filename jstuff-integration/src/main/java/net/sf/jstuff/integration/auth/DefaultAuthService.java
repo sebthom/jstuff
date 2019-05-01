@@ -44,21 +44,25 @@ public class DefaultAuthService implements AuthService {
       LOG.infoNew(this);
    }
 
+   @Override
    public void assertAuthenticated() throws PermissionDeniedException {
       if (!isAuthenticated())
          throw new PermissionDeniedException("You are not authorized to perform that operation. You need to authenticate first.");
    }
 
+   @Override
    public void assertIdentity(final String userId) throws PermissionDeniedException {
       if (!isIdentity(userId))
          throw new PermissionDeniedException("You are not authorized to perform that operation. Identity mismatch.");
    }
 
+   @Override
    public void assertRole(final String applicationRole) throws PermissionDeniedException {
       if (!hasRole(applicationRole))
          throw new PermissionDeniedException("You are not authorized to perform that operation.");
    }
 
+   @Override
    public void assertURIAccess(final String uri) throws PermissionDeniedException {
       for (final Entry<String, Set<String>> entry : uriPatternsToApplicationRoleMappings.entrySet()) {
          final String uriPattern = entry.getKey();
@@ -85,10 +89,12 @@ public class DefaultAuthService implements AuthService {
       }
    }
 
+   @Override
    public Authentication getAuthentication() {
       return AuthenticationHolder.getAuthentication();
    }
 
+   @Override
    public Set<String> getGrantedRoles() {
       final Authentication auth = AuthenticationHolder.getAuthentication();
       if (!auth.isAuthenticated()) {
@@ -102,7 +108,7 @@ public class DefaultAuthService implements AuthService {
       Args.notEmpty("userDN", userDN);
 
       final Set<String> groupIds = groupDetailsService.getGroupIdsByUserDN(userDN);
-      final Set<String> roles = new HashSet<String>();
+      final Set<String> roles = new HashSet<>();
 
       for (final String groupId : groupIds) {
          final Collection<String> coll = groupIdToApplicationRoleMappings.get(groupId);
@@ -113,6 +119,7 @@ public class DefaultAuthService implements AuthService {
       return roles;
    }
 
+   @Override
    public Set<String> getGroupIds() {
       final Authentication auth = AuthenticationHolder.getAuthentication();
       if (!auth.isAuthenticated()) {
@@ -122,6 +129,7 @@ public class DefaultAuthService implements AuthService {
       return groupDetailsService.getGroupIdsByUserDN(auth.getUserDetails().getDistingueshedName());
    }
 
+   @Override
    public boolean hasRole(final String applicationRole) {
       final Set<String> roles = getGrantedRoles();
       if (roles == null)
@@ -129,16 +137,19 @@ public class DefaultAuthService implements AuthService {
       return roles.contains(applicationRole);
    }
 
+   @Override
    public boolean isAuthenticated() {
       return AuthenticationHolder.getAuthentication().isAuthenticated();
    }
 
+   @Override
    public boolean isIdentity(final String userId) throws PermissionDeniedException {
       final Authentication auth = AuthenticationHolder.getAuthentication();
 
       return auth.isAuthenticated() && auth.getUserDetails().getUserId().equals(userId);
    }
 
+   @Override
    public void login(final String logonName, final String password) throws AuthenticationFailedException, AlreadyAuthenticatedException {
       if (isAuthenticated())
          throw new AlreadyAuthenticatedException("An authentication for the active session already exists.");
@@ -158,6 +169,7 @@ public class DefaultAuthService implements AuthService {
       }
    }
 
+   @Override
    public void logout() {
       AuthenticationHolder.getAuthentication().invalidate();
       if (listener != null) {
@@ -171,7 +183,7 @@ public class DefaultAuthService implements AuthService {
     */
    @Inject
    public synchronized void setApplicationRoles(final String[] applicationRoles) {
-      this.applicationRoles = new HashSet<String>();
+      this.applicationRoles = new HashSet<>();
       for (final String element : applicationRoles) {
          LOG.trace("Registering application role: %s", element);
          this.applicationRoles.add(element);
@@ -198,7 +210,7 @@ public class DefaultAuthService implements AuthService {
     * @param mappings format ? groupIdXXX -> roleXXX
     */
    public synchronized void setGroupIdToApplicationRoleMappings(final Map<String, String> mappings) throws UnknownApplicationRoleException {
-      groupIdToApplicationRoleMappings = new MapWithSets<String, String>();
+      groupIdToApplicationRoleMappings = new MapWithSets<>();
       for (final Entry<String, String> mapping : mappings.entrySet()) {
          final String group = mapping.getKey().trim();
          String role = mapping.getValue();
@@ -221,7 +233,7 @@ public class DefaultAuthService implements AuthService {
     * @param mappings format = "groupIdXXX=roleXXX"
     */
    public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final String[] mappings) throws UnknownApplicationRoleException {
-      groupIdToApplicationRoleMappings = new MapWithSets<String, String>();
+      groupIdToApplicationRoleMappings = new MapWithSets<>();
       for (final String element : mappings) {
          final String[] pair = element.split("=");
          pair[0] = pair[0].trim();
@@ -240,6 +252,7 @@ public class DefaultAuthService implements AuthService {
       }
    }
 
+   @Override
    public void setListener(final AuthListener listener) {
       this.listener = listener;
    }
@@ -249,7 +262,7 @@ public class DefaultAuthService implements AuthService {
     */
    @Inject
    public synchronized void setUriPatternsToApplicationRoleMappings(final String[] mappings) throws UnknownApplicationRoleException {
-      uriPatternsToApplicationRoleMappings = new MapWithSets<String, String>();
+      uriPatternsToApplicationRoleMappings = new MapWithSets<>();
       for (final String element : mappings) {
          final String[] pair = element.split("=");
          pair[0] = pair[0].trim();

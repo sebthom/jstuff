@@ -50,6 +50,7 @@ public class TypesTest extends TestCase {
 
       // locate anonymous inner class in exploded directory (target/classes)
       final Runnable r = new Runnable() {
+         @Override
          public void run() {
          }
       };
@@ -62,7 +63,7 @@ public class TypesTest extends TestCase {
 
    public void testGetVersion() {
       // from META-INF/MANIFEST.MF
-      assertEquals("3.1", Types.getVersion(ObjectUtils.class));
+      assertEquals("3.9", Types.getVersion(ObjectUtils.class));
 
       // from META-INF/maven/.../pom.properties
       assertEquals("2.8", Types.getVersion(Paranamer.class));

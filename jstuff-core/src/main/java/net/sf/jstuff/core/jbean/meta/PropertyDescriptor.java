@@ -36,7 +36,7 @@ public final class PropertyDescriptor<P> implements Serializable {
       final Map<String, ? extends Serializable> properties //
    ) {
       synchronized (metaClass) {
-         final PropertyDescriptor<P> p = new PropertyDescriptor<P>();
+         final PropertyDescriptor<P> p = new PropertyDescriptor<>();
          p.metaClass = metaClass;
          p.name = name;
          p.lowerBound = lowerBound;

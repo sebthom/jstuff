@@ -11,6 +11,7 @@ package net.sf.jstuff.core.functional;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,12 +28,14 @@ public abstract class Accepts {
    public abstract static class AbstractAccept<T> implements ChainableAccept<T>, Serializable {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public <V extends T> And<V> and(final Accept<? super V> next) {
          Args.notNull("next", next);
 
          return new And<V>(AbstractAccept.this, next);
       }
 
+      @Override
       public <V extends T> Or<V> or(final Accept<? super V> next) {
          Args.notNull("next", next);
 
@@ -77,6 +80,7 @@ public abstract class Accepts {
          this.second = second;
       }
 
+      @Override
       public boolean accept(final V obj) {
          return first.accept(obj) && second.accept(obj);
       }
@@ -92,6 +96,7 @@ public abstract class Accepts {
 
       private static final Anything<?> INSTANCE = new Anything<Object>();
 
+      @Override
       public boolean accept(final V obj) {
          return true;
       }
@@ -108,6 +113,7 @@ public abstract class Accepts {
          this.searchFor = searchFor;
       }
 
+      @Override
       public boolean accept(final V obj) {
          if (obj == null)
             return false;
@@ -119,7 +125,7 @@ public abstract class Accepts {
          if (locale == null) {
             locale = Locale.getDefault();
          }
-         final Contains<V> accept = new Contains<V>(searchFor.toLowerCase(locale));
+         final Contains<V> accept = new Contains<>(searchFor.toLowerCase(locale));
          accept.ignoreCaseLocale = locale;
          return accept;
       }
@@ -136,6 +142,7 @@ public abstract class Accepts {
          this.suffix = stringify(suffix);
       }
 
+      @Override
       public boolean accept(final V obj) {
          if (obj == null)
             return false;
@@ -147,7 +154,7 @@ public abstract class Accepts {
          if (locale == null) {
             locale = Locale.getDefault();
          }
-         final EndingWith<V> accept = new EndingWith<V>(stringify(suffix));
+         final EndingWith<V> accept = new EndingWith<>(stringify(suffix));
          accept.ignoreCaseLocale = locale;
          return accept;
       }
@@ -162,8 +169,9 @@ public abstract class Accepts {
          this.equivalent = equivalent;
       }
 
+      @Override
       public boolean accept(final V obj) {
-         return ObjectUtils.equals(obj, equivalent);
+         return Objects.equals(obj, equivalent);
       }
    }
 
@@ -176,6 +184,7 @@ public abstract class Accepts {
          this.compareTo = compareTo;
       }
 
+      @Override
       public boolean accept(final V obj) {
          return ObjectUtils.compare(obj, compareTo) > 0;
       }
@@ -190,6 +199,7 @@ public abstract class Accepts {
          this.type = type;
       }
 
+      @Override
       public boolean accept(final V obj) {
          return type.isInstance(obj);
       }
@@ -204,6 +214,7 @@ public abstract class Accepts {
          this.compareTo = compareTo;
       }
 
+      @Override
       public boolean accept(final V obj) {
          if (obj == null)
             return false;
@@ -221,6 +232,7 @@ public abstract class Accepts {
          this.pattern = Pattern.compile(pattern);
       }
 
+      @Override
       public boolean accept(final V obj) {
          if (obj == null)
             return false;
@@ -239,6 +251,7 @@ public abstract class Accepts {
          this.accept = accept;
       }
 
+      @Override
       public boolean accept(final V obj) {
          return !accept.accept(obj);
       }
@@ -254,6 +267,7 @@ public abstract class Accepts {
 
       private static final Nothing<?> INSTANCE = new Nothing<Object>();
 
+      @Override
       public boolean accept(final V obj) {
          return false;
       }
@@ -262,6 +276,7 @@ public abstract class Accepts {
    public static class NotNull<V> extends AbstractAccept<V> {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public boolean accept(final V obj) {
          return obj != null;
       }
@@ -270,6 +285,7 @@ public abstract class Accepts {
    public static class Null<V> extends AbstractAccept<V> {
       private static final long serialVersionUID = 1L;
 
+      @Override
       public boolean accept(final V obj) {
          return obj == null;
       }
@@ -289,6 +305,7 @@ public abstract class Accepts {
          this.second = second;
       }
 
+      @Override
       public boolean accept(final V obj) {
          return first.accept(obj) || second.accept(obj);
       }
@@ -313,6 +330,7 @@ public abstract class Accepts {
          this.accept = accept;
       }
 
+      @Override
       @SuppressWarnings("unchecked")
       public boolean accept(final V obj) {
          try {
@@ -334,6 +352,7 @@ public abstract class Accepts {
          this.prefix = stringify(prefix);
       }
 
+      @Override
       public boolean accept(final V obj) {
          if (obj == null)
             return false;
@@ -345,7 +364,7 @@ public abstract class Accepts {
          if (locale == null) {
             locale = Locale.getDefault();
          }
-         final StartingWith<V> accept = new StartingWith<V>(stringify(prefix));
+         final StartingWith<V> accept = new StartingWith<>(stringify(prefix));
          accept.ignoreCaseLocale = locale;
          return accept;
       }

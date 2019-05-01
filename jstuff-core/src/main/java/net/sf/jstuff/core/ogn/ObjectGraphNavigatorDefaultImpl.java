@@ -35,6 +35,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
       this.strict = strict;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public <T> T getValueAt(final Object root, final String path) {
       Args.notNull("root", root);
@@ -67,6 +68,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
       return strict;
    }
 
+   @Override
    public ObjectGraphNavigationResult navigateTo(final Object root, final String path) {
       Args.notNull("root", root);
       Args.notNull("path", path);

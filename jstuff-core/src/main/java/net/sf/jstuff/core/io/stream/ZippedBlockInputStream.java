@@ -16,8 +16,6 @@ import java.io.InputStream;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-import org.apache.commons.io.IOExceptionWithCause;
-
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.validation.Args;
 
@@ -191,7 +189,7 @@ public class ZippedBlockInputStream extends FilterInputStream {
          decompressor.inflate(block);
          decompressor.reset();
       } catch (final DataFormatException ex) {
-         throw new IOExceptionWithCause(ex);
+         throw new IOException(ex);
       }
 
       blockOffset = 0;

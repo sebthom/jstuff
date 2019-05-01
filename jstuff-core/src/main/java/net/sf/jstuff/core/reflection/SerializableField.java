@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
-import org.apache.commons.io.IOExceptionWithCause;
-
 /**
  * Serializable Wrapper for java.lang.reflect.Field objects since they do not implement Serializable
  *
@@ -54,7 +52,7 @@ public final class SerializableField implements Serializable {
       try {
          field = declaringClass.getDeclaredField(name);
       } catch (final NoSuchFieldException ex) {
-         throw new IOExceptionWithCause(ex);
+         throw new IOException(ex);
       }
    }
 

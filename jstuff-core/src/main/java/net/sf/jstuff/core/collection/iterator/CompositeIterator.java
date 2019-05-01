@@ -36,6 +36,7 @@ public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V
       }
    }
 
+   @SafeVarargs
    public CompositeIterator(final Iterator<V>... components) {
       super(components);
       if (this.components.size() > 0) {
@@ -43,11 +44,13 @@ public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V
       }
    }
 
+   @Override
    public boolean hasNext() {
       prepareNextItemIterator();
       return nextItemIterator.hasNext();
    }
 
+   @Override
    public V next() {
       prepareNextItemIterator();
       final V item = nextItemIterator.next();
@@ -64,6 +67,7 @@ public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V
       }
    }
 
+   @Override
    public void remove() {
       lastItemIterator.remove();
    }

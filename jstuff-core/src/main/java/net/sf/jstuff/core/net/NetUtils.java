@@ -175,22 +175,17 @@ public abstract class NetUtils {
    }
 
    public static boolean isLocalPortAvailable(final int port) {
-      ServerSocket socket = null;
-      try {
-         socket = new ServerSocket(port);
+      try (ServerSocket socket = new ServerSocket(port)) {
          socket.setReuseAddress(true);
          return true;
       } catch (final IOException ex) {
          return false;
-      } finally {
-         closeQuietly(socket);
       }
    }
 
    public static boolean isRemotePortOpen(final String hostname, final int port) {
       Args.notNull("hostname", hostname);
-      try {
-         closeQuietly(new Socket(hostname, port));
+      try (Socket socket = new Socket(hostname, port)) {
          return true;
       } catch (final IOException ex) {
          return false;

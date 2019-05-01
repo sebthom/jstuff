@@ -50,12 +50,12 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
    }
 
    public static <E> ObservableCollection<E, Collection<E>> of(final Collection<E> set) {
-      return new ObservableCollection<E, Collection<E>>(set);
+      return new ObservableCollection<>(set);
    }
 
    protected BulkAction currentBulkAction;
 
-   private final SyncEventDispatcher<ItemAction<E>> events = new SyncEventDispatcher<ItemAction<E>>();
+   private final SyncEventDispatcher<ItemAction<E>> events = new SyncEventDispatcher<>();
 
    protected final C wrapped;
 
@@ -64,6 +64,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       this.wrapped = coll;
    }
 
+   @Override
    public boolean add(final E item) {
       if (wrapped.add(item)) {
          onAdded(item, -1);
@@ -72,6 +73,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       return false;
    }
 
+   @Override
    public boolean addAll(final Collection<? extends E> itemsToAdd) {
       if (itemsToAdd == null || itemsToAdd.size() == 0)
          return false;
@@ -90,6 +92,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
 
    }
 
+   @Override
    public void clear() {
       currentBulkAction = BulkAction.CLEAR;
       try {
@@ -101,10 +104,12 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       }
    }
 
+   @Override
    public boolean contains(final Object item) {
       return wrapped.contains(item);
    }
 
+   @Override
    public boolean containsAll(final Collection<?> items) {
       return wrapped.containsAll(items);
    }
@@ -113,6 +118,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       return currentBulkAction;
    }
 
+   @Override
    public boolean isEmpty() {
       return wrapped.isEmpty();
    }
@@ -121,22 +127,26 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       return wrapped == collection;
    }
 
+   @Override
    public Iterator<E> iterator() {
       final Iterator<E> it = wrapped.iterator();
       return new Iterator<E>() {
          int index = -1;
          E item;
 
+         @Override
          public boolean hasNext() {
             return it.hasNext();
          }
 
+         @Override
          public E next() {
             index++;
             item = it.next();
             return item;
          }
 
+         @Override
          public void remove() {
             it.remove();
             onRemoved(item, index);
@@ -148,16 +158,17 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
     * @param index negative value if index unknown
     */
    protected void onAdded(final E item, final int index) {
-      events.fire(new ItemAction<E>(ItemActionType.ADD, item, index));
+      events.fire(new ItemAction<>(ItemActionType.ADD, item, index));
    }
 
    /**
     * @param index negative value if index unknown
     */
    protected void onRemoved(final E item, final int index) {
-      events.fire(new ItemAction<E>(ItemActionType.REMOVE, item, index));
+      events.fire(new ItemAction<>(ItemActionType.REMOVE, item, index));
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public boolean remove(final Object item) {
       final boolean removed = wrapped.remove(item);
@@ -167,6 +178,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       return removed;
    }
 
+   @Override
    public boolean removeAll(final Collection<?> itemsToRemove) {
       if (itemsToRemove == null || itemsToRemove.size() == 0)
          return false;
@@ -184,6 +196,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       }
    }
 
+   @Override
    public boolean retainAll(final Collection<?> itemsToKeep) {
       currentBulkAction = BulkAction.RETAIN_ALL;
       try {
@@ -201,22 +214,27 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       }
    }
 
+   @Override
    public int size() {
       return wrapped.size();
    }
 
+   @Override
    public boolean subscribe(final EventListener<ItemAction<E>> listener) {
       return events.subscribe(listener);
    }
 
+   @Override
    public Object[] toArray() {
       return wrapped.toArray();
    }
 
+   @Override
    public <T> T[] toArray(final T[] a) {
       return wrapped.toArray(a);
    }
 
+   @Override
    public boolean unsubscribe(final EventListener<ItemAction<E>> listener) {
       return events.unsubscribe(listener);
    }

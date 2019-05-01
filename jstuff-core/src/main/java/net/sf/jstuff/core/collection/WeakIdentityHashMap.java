@@ -16,10 +16,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
-
-import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -48,6 +47,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
          return get() == ref.get();
       }
 
+      @Override
       public Object get() {
          return key;
       }
@@ -99,6 +99,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
          return get() == ref.get();
       }
 
+      @Override
       public Object get() {
          return null;
       }
@@ -110,29 +111,29 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
    };
 
    public static <K, V> WeakIdentityHashMap<K, V> create() {
-      return new WeakIdentityHashMap<K, V>();
+      return new WeakIdentityHashMap<>();
    }
 
    public static <K, V> WeakIdentityHashMap<K, V> create(final int initialCapacity) {
-      return new WeakIdentityHashMap<K, V>(initialCapacity);
+      return new WeakIdentityHashMap<>(initialCapacity);
    }
 
    public static <K, V> WeakIdentityHashMap<K, V> create(final int initialCapacity, final float growthFactor) {
-      return new WeakIdentityHashMap<K, V>(initialCapacity, growthFactor);
+      return new WeakIdentityHashMap<>(initialCapacity, growthFactor);
    }
 
-   private final ReferenceQueue<K> garbageCollectedRefs = new ReferenceQueue<K>();
+   private final ReferenceQueue<K> garbageCollectedRefs = new ReferenceQueue<>();
    private final Map<KeyWrapper<K>, V> map;
 
    public WeakIdentityHashMap() {
-      map = new HashMap<KeyWrapper<K>, V>();
+      map = new HashMap<>();
    }
 
    /**
     * @param initialCapacity The initial capacity of the backing {@link WeakHashMap}
     */
    public WeakIdentityHashMap(final int initialCapacity) {
-      map = new HashMap<KeyWrapper<K>, V>(initialCapacity);
+      map = new HashMap<>(initialCapacity);
    }
 
    /**
@@ -140,19 +141,22 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
     * @param growthFactor The growth factor of the backing {@link WeakHashMap}
     */
    public WeakIdentityHashMap(final int initialCapacity, final float growthFactor) {
-      map = new HashMap<KeyWrapper<K>, V>(initialCapacity, growthFactor);
+      map = new HashMap<>(initialCapacity, growthFactor);
    }
 
+   @Override
    public void clear() {
       map.clear();
       expungeStaleEntries();
    }
 
+   @Override
    public boolean containsKey(final Object key) {
       expungeStaleEntries();
       return map.containsKey(new LookupKeyWrapper(key));
    }
 
+   @Override
    public boolean containsValue(final Object value) {
       expungeStaleEntries();
       return map.containsValue(value);
@@ -161,21 +165,25 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
    /**
     * <b>Important:</b> The returned set is unmodifiable and does not reflect later changes to the map.
     */
+   @Override
    public Set<Map.Entry<K, V>> entrySet() {
       expungeStaleEntries();
-      final Set<Map.Entry<K, V>> entrySet = new HashSet<Map.Entry<K, V>>();
+      final Set<Map.Entry<K, V>> entrySet = new HashSet<>();
       for (final Map.Entry<KeyWrapper<K>, V> ref : map.entrySet()) {
          final K key = ref.getKey().get();
          final V value = ref.getValue();
          final Map.Entry<K, V> entry = new Map.Entry<K, V>() {
+            @Override
             public K getKey() {
                return key;
             }
 
+            @Override
             public V getValue() {
                return value;
             }
 
+            @Override
             public V setValue(final V value) {
                throw new UnsupportedOperationException();
             }
@@ -196,7 +204,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
          return false;
       for (final Entry<K, V> entry : entrySet()) {
          final K key = entry.getKey();
-         if (!otherMap.containsKey(key) || !ObjectUtils.equals(entry.getValue(), otherMap.get(key)))
+         if (!otherMap.containsKey(key) || !Objects.equals(entry.getValue(), otherMap.get(key)))
             return false;
       }
       return true;
@@ -210,6 +218,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       }
    }
 
+   @Override
    public V get(final Object key) {
       expungeStaleEntries();
       return map.get(new LookupKeyWrapper(key));
@@ -221,6 +230,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       return map.hashCode();
    }
 
+   @Override
    public boolean isEmpty() {
       expungeStaleEntries();
       return map.isEmpty();
@@ -229,23 +239,26 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
    /**
     * <b>Important:</b> The returned set is unmodifiable and does not reflect later changes to the map.
     */
+   @Override
    public Set<K> keySet() {
       expungeStaleEntries();
-      final Set<K> keySet = new IdentityHashSet<K>();
+      final Set<K> keySet = new IdentityHashSet<>();
       for (final KeyWrapper<K> ref : map.keySet()) {
          keySet.add(ref.get());
       }
       return Collections.unmodifiableSet(keySet);
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public V put(final K key, final V value) {
       expungeStaleEntries();
       if (key == null)
          return map.put((KeyWrapper<K>) NULL_KEY_WRAPPER, value);
-      return map.put(new WeakKeyWrapper<K>(key, garbageCollectedRefs), value);
+      return map.put(new WeakKeyWrapper<>(key, garbageCollectedRefs), value);
    }
 
+   @Override
    public void putAll(final Map<? extends K, ? extends V> m) {
       expungeStaleEntries();
       for (final Entry<? extends K, ? extends V> e : m.entrySet()) {
@@ -253,6 +266,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       }
    }
 
+   @Override
    public V remove(final Object key) {
       expungeStaleEntries();
       return map.remove(new LookupKeyWrapper(key));
@@ -263,11 +277,13 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       return map.keySet().retainAll(keysToKeep);
    }
 
+   @Override
    public int size() {
       expungeStaleEntries();
       return map.size();
    }
 
+   @Override
    public Collection<V> values() {
       expungeStaleEntries();
       return map.values();

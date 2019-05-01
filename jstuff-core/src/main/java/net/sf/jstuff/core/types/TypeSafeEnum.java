@@ -36,6 +36,7 @@ import net.sf.jstuff.core.reflection.Types;
  */
 public abstract class TypeSafeEnum<ID> implements Serializable {
    private static final Comparator<TypeSafeEnum<?>> ORDINAL_COMPARATOR = new Comparator<TypeSafeEnum<?>>() {
+      @Override
       public int compare(final TypeSafeEnum<?> o1, final TypeSafeEnum<?> o2) {
          return o1.ordinal == o2.ordinal ? 0 : o1.ordinal < o2.ordinal ? -1 : 1;
       }
@@ -43,8 +44,7 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
 
    private static final long serialVersionUID = 1L;
 
-   private static final ConcurrentMap<Class<? extends TypeSafeEnum<?>>, ConcurrentMap<?, ? extends TypeSafeEnum<?>>> ENUMS_BY_TYPE = //
-      new ConcurrentHashMap<Class<? extends TypeSafeEnum<?>>, ConcurrentMap<?, ? extends TypeSafeEnum<?>>>();
+   private static final ConcurrentMap<Class<? extends TypeSafeEnum<?>>, ConcurrentMap<?, ? extends TypeSafeEnum<?>>> ENUMS_BY_TYPE = new ConcurrentHashMap<>();
 
    private static final AtomicInteger ORDINAL_COUNTER = new AtomicInteger();
 
@@ -68,7 +68,7 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
             return Collections.emptyList();
       }
 
-      final List<T> result = new ArrayList<T>(enumsById.values());
+      final List<T> result = new ArrayList<>(enumsById.values());
       Collections.sort(result, ORDINAL_COMPARATOR);
       return result;
    }
@@ -134,7 +134,7 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
     * registers this instance in the global map.
     */
    private void registerEnum() {
-      ConcurrentMap<ID, TypeSafeEnum<?>> enumItems = new ConcurrentHashMap<ID, TypeSafeEnum<?>>(2);
+      ConcurrentMap<ID, TypeSafeEnum<?>> enumItems = new ConcurrentHashMap<>(2);
       @SuppressWarnings("unchecked")
       final ConcurrentMap<ID, TypeSafeEnum<?>> existingEnumItems = (ConcurrentMap<ID, TypeSafeEnum<?>>) ENUMS_BY_TYPE.putIfAbsent(
          (Class<? extends TypeSafeEnum<?>>) getClass(), enumItems);

@@ -43,6 +43,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
       this.keyManagers = Arrays.asList(keyManagers);
    }
 
+   @Override
    public String chooseClientAlias(final String[] keyType, final Principal[] issuers, final Socket socket) {
       for (final X509KeyManager keyManager : keyManagers) {
          final String alias = keyManager.chooseClientAlias(keyType, issuers, socket);
@@ -52,6 +53,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
       return null;
    }
 
+   @Override
    public String chooseServerAlias(final String keyType, final Principal[] issuers, final Socket socket) {
       for (final X509KeyManager keyManager : keyManagers) {
          final String alias = keyManager.chooseServerAlias(keyType, issuers, socket);
@@ -61,6 +63,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
       return null;
    }
 
+   @Override
    public X509Certificate[] getCertificateChain(final String alias) {
       for (final X509KeyManager keyManager : keyManagers) {
          final X509Certificate[] chain = keyManager.getCertificateChain(alias);
@@ -70,8 +73,9 @@ public class CompositeX509KeyManager implements X509KeyManager {
       return null;
    }
 
+   @Override
    public String[] getClientAliases(final String keyType, final Principal[] issuers) {
-      final List<String> result = new ArrayList<String>();
+      final List<String> result = new ArrayList<>();
       for (final X509KeyManager keyManager : keyManagers) {
          CollectionUtils.addAll(result, keyManager.getClientAliases(keyType, issuers));
       }
@@ -80,6 +84,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
       return result.toArray(new String[result.size()]);
    }
 
+   @Override
    public PrivateKey getPrivateKey(final String alias) {
       for (final X509KeyManager keyManager : keyManagers) {
          final PrivateKey privateKey = keyManager.getPrivateKey(alias);
@@ -89,8 +94,9 @@ public class CompositeX509KeyManager implements X509KeyManager {
       return null;
    }
 
+   @Override
    public String[] getServerAliases(final String keyType, final Principal[] issuers) {
-      final List<String> result = new ArrayList<String>();
+      final List<String> result = new ArrayList<>();
       for (final X509KeyManager keyManager : keyManagers) {
          CollectionUtils.addAll(result, keyManager.getServerAliases(keyType, issuers));
       }

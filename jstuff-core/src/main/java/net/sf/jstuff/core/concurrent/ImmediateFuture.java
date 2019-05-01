@@ -34,24 +34,29 @@ public class ImmediateFuture<T> implements Future<T> {
       this.ex = new ExecutionException(ex);
    }
 
+   @Override
    public boolean cancel(final boolean mayInterruptIfRunning) {
       return false;
    }
 
+   @Override
    public boolean isCancelled() {
       return false;
    }
 
+   @Override
    public boolean isDone() {
       return true;
    }
 
+   @Override
    public T get() throws ExecutionException {
       if (ex == null)
          return value;
       throw ex;
    }
 
+   @Override
    public T get(final long timeout, final TimeUnit unit) throws ExecutionException {
       return get();
    }
