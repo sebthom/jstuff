@@ -121,7 +121,6 @@ public class SpringHttpServicesServlet extends HttpServlet {
          LOG.error(ex, "Unexpected exception occured while retrieving bean [%s].", relativePath);
       }
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return;
    }
 
    public void setShowIndex(final boolean showIndex) {

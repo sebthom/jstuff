@@ -75,7 +75,7 @@ public class ClassPathResourcesFilter implements Filter {
    }
 
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
-      if (!(request instanceof HttpServletRequest && response instanceof HttpServletResponse)) {
+      if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
          chain.doFilter(request, response);
          return;
       }

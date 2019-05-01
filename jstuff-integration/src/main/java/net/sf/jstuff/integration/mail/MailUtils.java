@@ -111,25 +111,25 @@ public abstract class MailUtils {
       text.setContent(mail.message, mail.isPlainTextMessage ? "text/plain" : "text/html");
       mp.addBodyPart(text);
 
-      final FileTypeMap fileTypeMap = new FileTypeMap() {
-         @Override
-         public String getContentType(final File file) {
-            return getContentType(file.getName());
-         }
-
-         @Override
-         public String getContentType(final String fileName) {
-            if (fileName.toLowerCase().endsWith(".gif"))
-               return "image/gif";
-            if (fileName.toLowerCase().endsWith(".png"))
-               return "image/png";
-            if (fileName.toLowerCase().endsWith(".pdf"))
-               return "application/pdf";
-            return "application/octet-stream";
-         }
-      };
-
       if (mail.attachments != null) {
+         final FileTypeMap fileTypeMap = new FileTypeMap() {
+            @Override
+            public String getContentType(final File file) {
+               return getContentType(file.getName());
+            }
+
+            @Override
+            public String getContentType(final String fileName) {
+               if (fileName.toLowerCase().endsWith(".gif"))
+                  return "image/gif";
+               if (fileName.toLowerCase().endsWith(".png"))
+                  return "image/png";
+               if (fileName.toLowerCase().endsWith(".pdf"))
+                  return "application/pdf";
+               return "application/octet-stream";
+            }
+         };
+
          for (final File file : mail.attachments) {
             final MimeBodyPart file_part = new MimeBodyPart();
             final FileDataSource fds = new FileDataSource(file);
