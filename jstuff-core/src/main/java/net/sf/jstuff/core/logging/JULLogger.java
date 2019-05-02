@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.core.logging;
 
+import static net.sf.jstuff.core.logging.LoggerUtils.*;
+
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 
@@ -20,7 +22,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-final class JULLogger extends Logger {
+final class JULLogger implements LoggerInternal {
 
    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(JULLogger.class.getName());
 
@@ -554,7 +556,7 @@ final class JULLogger extends Logger {
    }
 
    @Override
-   protected void trace(final Method location, String msg) {
+   public void trace(final Method location, String msg) {
       if (LoggerConfig.isDebugMessagePrefixEnabled) {
          msg = location.getName() + "():" + msg;
       }
