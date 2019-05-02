@@ -13,95 +13,91 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.types.Decorator;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DelegatingCollection<V> implements Collection<V>, Serializable {
+public class DelegatingCollection<V> extends Decorator.Default<Collection<V>> implements Collection<V>, Serializable {
 
    private static final long serialVersionUID = 1L;
 
-   private final Collection<V> delegate;
-
    public DelegatingCollection(final Collection<V> delegate) {
-      Args.notNull("delegate", delegate);
-
-      this.delegate = delegate;
+      super(delegate);
    }
 
    @Override
    public boolean add(final V o) {
-      return delegate.add(o);
+      return wrapped.add(o);
    }
 
    @Override
    public boolean addAll(final Collection<? extends V> c) {
-      return delegate.addAll(c);
+      return wrapped.addAll(c);
    }
 
    @Override
    public void clear() {
-      delegate.clear();
+      wrapped.clear();
    }
 
    @Override
    public boolean contains(final Object o) {
-      return delegate.contains(o);
+      return wrapped.contains(o);
    }
 
    @Override
    public boolean containsAll(final Collection<?> c) {
-      return delegate.containsAll(c);
+      return wrapped.containsAll(c);
    }
 
    @Override
    public boolean equals(final Object o) {
-      return delegate.equals(o);
+      return wrapped.equals(o);
    }
 
    @Override
    public int hashCode() {
-      return delegate.hashCode();
+      return wrapped.hashCode();
    }
 
    @Override
    public boolean isEmpty() {
-      return delegate.isEmpty();
+      return wrapped.isEmpty();
    }
 
    @Override
    public Iterator<V> iterator() {
-      return delegate.iterator();
+      return wrapped.iterator();
    }
 
    @Override
    public boolean remove(final Object o) {
-      return delegate.remove(o);
+      return wrapped.remove(o);
    }
 
    @Override
    public boolean removeAll(final Collection<?> c) {
-      return delegate.removeAll(c);
+      return wrapped.removeAll(c);
    }
 
    @Override
    public boolean retainAll(final Collection<?> c) {
-      return delegate.retainAll(c);
+      return wrapped.retainAll(c);
    }
 
    @Override
    public int size() {
-      return delegate.size();
+      return wrapped.size();
    }
 
    @Override
    public Object[] toArray() {
-      return delegate.toArray();
+      return wrapped.toArray();
    }
 
    @Override
    public <T> T[] toArray(final T[] a) {
-      return delegate.toArray(a);
+      return wrapped.toArray(a);
    }
 }
