@@ -22,7 +22,6 @@ public class PagedListWithSortBy<E, SortKeyType> extends PagedList<E> {
    private SortBy<SortKeyType>[] sortedBy;
 
    public PagedListWithSortBy() {
-      super();
    }
 
    public PagedListWithSortBy(final Class<E> elementType) {

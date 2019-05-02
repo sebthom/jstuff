@@ -20,15 +20,14 @@ public class MapWithLists<K, V> extends MapWithCollections<K, V, List<V>> {
    private static final long serialVersionUID = 1L;
 
    public static <K, V> MapWithLists<K, V> create() {
-      return new MapWithLists<K, V>();
+      return new MapWithLists<>();
    }
 
    public static <K, V> MapWithLists<K, V> create(final int initialCapacity) {
-      return new MapWithLists<K, V>(initialCapacity);
+      return new MapWithLists<>(initialCapacity);
    }
 
    public MapWithLists() {
-      super();
    }
 
    public MapWithLists(final int initialCapacity) {
@@ -41,7 +40,7 @@ public class MapWithLists<K, V> extends MapWithCollections<K, V, List<V>> {
 
    @Override
    protected List<V> create(final K key) {
-      return new ArrayList<V>(initialCapacityOfCollection);
+      return new ArrayList<>(initialCapacityOfCollection);
    }
 
    @Override

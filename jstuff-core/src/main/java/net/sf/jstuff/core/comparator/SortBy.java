@@ -23,7 +23,6 @@ public class SortBy<SortKeyType> implements Serializable {
    private SortKeyType key;
 
    public SortBy() {
-      super();
    }
 
    public SortBy(final SortKeyType key) {

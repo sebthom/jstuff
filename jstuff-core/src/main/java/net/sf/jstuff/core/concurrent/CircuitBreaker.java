@@ -152,7 +152,6 @@ public class CircuitBreaker implements EventListenable<State> {
    }
 
    protected CircuitBreaker() {
-      super();
    }
 
    protected int activePermits = 0;

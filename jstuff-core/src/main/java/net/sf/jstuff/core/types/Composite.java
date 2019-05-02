@@ -26,7 +26,6 @@ public interface Composite<Component> extends Modifiable {
       protected final Collection<Component> components = createCollection();
 
       public Default() {
-         super();
       }
 
       public Default(final boolean isModifiable, final Collection<? extends Component> components) {
@@ -58,7 +57,7 @@ public interface Composite<Component> extends Modifiable {
       }
 
       protected Collection<Component> createCollection() {
-         return new ArrayList<Component>();
+         return new ArrayList<>();
       }
 
       @Override

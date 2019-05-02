@@ -29,7 +29,6 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
    }
 
    public CompositeCollection() {
-      super();
    }
 
    public CompositeCollection(final Collection<? extends Collection<? extends V>> collections) {

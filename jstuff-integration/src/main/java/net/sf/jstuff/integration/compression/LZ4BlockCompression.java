@@ -41,7 +41,7 @@ public class LZ4BlockCompression extends AbstractCompression {
 
       @Override
       protected Checksum initialValue() {
-         return XXHashFactory.fastestInstance().newStreamingHash32(0x9747b28c).asChecksum();
+         return XXHashFactory.fastestInstance().newStreamingHash32(0x97_47B_28C).asChecksum();
       }
    };
 

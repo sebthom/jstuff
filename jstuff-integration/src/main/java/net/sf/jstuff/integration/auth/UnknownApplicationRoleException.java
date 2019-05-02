@@ -16,7 +16,6 @@ public class UnknownApplicationRoleException extends RuntimeException {
    private static final long serialVersionUID = 1L;
 
    public UnknownApplicationRoleException() {
-      super();
    }
 
    public UnknownApplicationRoleException(final String message) {

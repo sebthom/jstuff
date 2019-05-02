@@ -42,7 +42,8 @@ public abstract class SortByComparator<T, SortKeyType> implements Comparator<T> 
 
    protected abstract Comparator<T> getComparator(SortKeyType sortKey);
 
-   public void setSortBy(final SortBy<SortKeyType>[] sortBy) {
+   @SafeVarargs
+   public final void setSortBy(final SortBy<SortKeyType>... sortBy) {
       Args.notNull("sortBy", sortBy);
       this.sortBy = sortBy;
    }

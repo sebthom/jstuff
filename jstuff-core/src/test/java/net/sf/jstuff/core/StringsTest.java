@@ -102,14 +102,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, b).equals("123abcdefghijk"));
       assertTrue(Strings.replace(a, 4, b).equals("1234abcdefghijk"));
       assertTrue(Strings.replace(a, 5, b).equals("1234abcdefghijk"));
-      assertTrue(Strings.replace(a, 1000000, b).equals("1234abcdefghijk"));
+      assertTrue(Strings.replace(a, 1_000_000, b).equals("1234abcdefghijk"));
 
       assertTrue(Strings.replace(a, -1, b).equals("123abcdefghijk"));
       assertTrue(Strings.replace(a, -2, b).equals("12abcdefghijk"));
       assertTrue(Strings.replace(a, -3, b).equals("1abcdefghijk"));
       assertTrue(Strings.replace(a, -4, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -5, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, -1000000, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, -1_000_000, b).equals("abcdefghijk"));
 
       a = "1234";
       b = "a";
@@ -120,14 +120,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, b).equals("123a"));
       assertTrue(Strings.replace(a, 4, b).equals("1234a"));
       assertTrue(Strings.replace(a, 5, b).equals("1234a"));
-      assertTrue(Strings.replace(a, 1000000, b).equals("1234a"));
+      assertTrue(Strings.replace(a, 1_000_000, b).equals("1234a"));
 
       assertTrue(Strings.replace(a, -1, b).equals("123a"));
       assertTrue(Strings.replace(a, -2, b).equals("12a"));
       assertTrue(Strings.replace(a, -3, b).equals("1a"));
       assertTrue(Strings.replace(a, -4, b).equals("a"));
       assertTrue(Strings.replace(a, -5, b).equals("a"));
-      assertTrue(Strings.replace(a, -1000000, b).equals("a"));
+      assertTrue(Strings.replace(a, -1_000_000, b).equals("a"));
 
       a = "1234";
       b = "";
@@ -138,14 +138,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, b).equals("123"));
       assertTrue(Strings.replace(a, 4, b).equals("1234"));
       assertTrue(Strings.replace(a, 5, b).equals("1234"));
-      assertTrue(Strings.replace(a, 1000000, b).equals("1234"));
+      assertTrue(Strings.replace(a, 1_000_000, b).equals("1234"));
 
       assertTrue(Strings.replace(a, -1, b).equals("123"));
       assertTrue(Strings.replace(a, -2, b).equals("12"));
       assertTrue(Strings.replace(a, -3, b).equals("1"));
       assertTrue(Strings.replace(a, -4, b).equals(""));
       assertTrue(Strings.replace(a, -5, b).equals(""));
-      assertTrue(Strings.replace(a, -1000000, b).equals(""));
+      assertTrue(Strings.replace(a, -1_000_000, b).equals(""));
 
       a = "";
       b = "";
@@ -156,14 +156,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, b).equals(""));
       assertTrue(Strings.replace(a, 4, b).equals(""));
       assertTrue(Strings.replace(a, 5, b).equals(""));
-      assertTrue(Strings.replace(a, 1000000, b).equals(""));
+      assertTrue(Strings.replace(a, 1_000_000, b).equals(""));
 
       assertTrue(Strings.replace(a, -1, b).equals(""));
       assertTrue(Strings.replace(a, -2, b).equals(""));
       assertTrue(Strings.replace(a, -3, b).equals(""));
       assertTrue(Strings.replace(a, -4, b).equals(""));
       assertTrue(Strings.replace(a, -5, b).equals(""));
-      assertTrue(Strings.replace(a, -1000000, b).equals(""));
+      assertTrue(Strings.replace(a, -1_000_000, b).equals(""));
 
       a = "";
       b = "abcdefghijk";
@@ -174,14 +174,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 4, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 5, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, 1000000, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, 1_000_000, b).equals("abcdefghijk"));
 
       assertTrue(Strings.replace(a, -1, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -2, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -3, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -4, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -5, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, -1000000, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, -1_000_000, b).equals("abcdefghijk"));
    }
 
    /**
@@ -202,7 +202,7 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("123abcdefghijk4"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234abcdefghijk"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234abcdefghijk"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234abcdefghijk"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234abcdefghijk"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("123abcdefghijk4"));
       assertTrue(Strings.replace(a, -2, c, b).equals("12abcdefghijk34"));
@@ -221,14 +221,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("123a4"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234a"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234a"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234a"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234a"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("123a4"));
       assertTrue(Strings.replace(a, -2, c, b).equals("12a34"));
       assertTrue(Strings.replace(a, -3, c, b).equals("1a234"));
       assertTrue(Strings.replace(a, -4, c, b).equals("a1234"));
       assertTrue(Strings.replace(a, -5, c, b).equals("a1234"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("a1234"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("a1234"));
 
       a = "1234";
       b = "";
@@ -240,14 +240,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("1234"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("1234"));
       assertTrue(Strings.replace(a, -2, c, b).equals("1234"));
       assertTrue(Strings.replace(a, -3, c, b).equals("1234"));
       assertTrue(Strings.replace(a, -4, c, b).equals("1234"));
       assertTrue(Strings.replace(a, -5, c, b).equals("1234"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("1234"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("1234"));
 
       a = "";
       b = "";
@@ -259,14 +259,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals(""));
       assertTrue(Strings.replace(a, 4, c, b).equals(""));
       assertTrue(Strings.replace(a, 5, c, b).equals(""));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals(""));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals(""));
 
       assertTrue(Strings.replace(a, -1, c, b).equals(""));
       assertTrue(Strings.replace(a, -2, c, b).equals(""));
       assertTrue(Strings.replace(a, -3, c, b).equals(""));
       assertTrue(Strings.replace(a, -4, c, b).equals(""));
       assertTrue(Strings.replace(a, -5, c, b).equals(""));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals(""));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals(""));
 
       a = "";
       b = "abcdefghijk";
@@ -278,14 +278,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 4, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 5, c, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("abcdefghijk"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -2, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -3, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -4, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -5, c, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("abcdefghijk"));
    }
 
    /**
@@ -306,7 +306,7 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("123abcdefghijk"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234abcdefghijk"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234abcdefghijk"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234abcdefghijk"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234abcdefghijk"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("123abcdefghijk"));
       assertTrue(Strings.replace(a, -2, c, b).equals("12abcdefghijk4"));
@@ -325,14 +325,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("123a"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234a"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234a"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234a"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234a"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("123a"));
       assertTrue(Strings.replace(a, -2, c, b).equals("12a4"));
       assertTrue(Strings.replace(a, -3, c, b).equals("1a34"));
       assertTrue(Strings.replace(a, -4, c, b).equals("a234"));
       assertTrue(Strings.replace(a, -5, c, b).equals("a234"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("a234"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("a234"));
 
       a = "1234";
       b = "";
@@ -344,14 +344,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("123"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("123"));
       assertTrue(Strings.replace(a, -2, c, b).equals("124"));
       assertTrue(Strings.replace(a, -3, c, b).equals("134"));
       assertTrue(Strings.replace(a, -4, c, b).equals("234"));
       assertTrue(Strings.replace(a, -5, c, b).equals("234"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("234"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("234"));
 
       a = "";
       b = "";
@@ -363,14 +363,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals(""));
       assertTrue(Strings.replace(a, 4, c, b).equals(""));
       assertTrue(Strings.replace(a, 5, c, b).equals(""));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals(""));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals(""));
 
       assertTrue(Strings.replace(a, -1, c, b).equals(""));
       assertTrue(Strings.replace(a, -2, c, b).equals(""));
       assertTrue(Strings.replace(a, -3, c, b).equals(""));
       assertTrue(Strings.replace(a, -4, c, b).equals(""));
       assertTrue(Strings.replace(a, -5, c, b).equals(""));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals(""));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals(""));
 
       a = "";
       b = "abcdefghijk";
@@ -382,18 +382,18 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 4, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 5, c, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("abcdefghijk"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -2, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -3, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -4, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -5, c, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("abcdefghijk"));
    }
 
    /**
-    * test: replace(string, replacement, start, length) --> length = 1000000
+    * test: replace(string, replacement, start, length) --> length = 1_000_000
     */
    public void testReplace4() {
       String a;
@@ -402,7 +402,7 @@ public class StringsTest extends TestCase {
 
       a = "1234";
       b = "abcdefghijk";
-      c = 1000000;
+      c = 1_000_000;
 
       assertTrue(Strings.replace(a, 0, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 1, c, b).equals("1abcdefghijk"));
@@ -410,18 +410,18 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("123abcdefghijk"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234abcdefghijk"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234abcdefghijk"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234abcdefghijk"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234abcdefghijk"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("123abcdefghijk"));
       assertTrue(Strings.replace(a, -2, c, b).equals("12abcdefghijk"));
       assertTrue(Strings.replace(a, -3, c, b).equals("1abcdefghijk"));
       assertTrue(Strings.replace(a, -4, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -5, c, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("abcdefghijk"));
 
       a = "1234";
       b = "a";
-      c = 1000000;
+      c = 1_000_000;
 
       assertTrue(Strings.replace(a, 0, c, b).equals("a"));
       assertTrue(Strings.replace(a, 1, c, b).equals("1a"));
@@ -429,18 +429,18 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("123a"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234a"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234a"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234a"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234a"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("123a"));
       assertTrue(Strings.replace(a, -2, c, b).equals("12a"));
       assertTrue(Strings.replace(a, -3, c, b).equals("1a"));
       assertTrue(Strings.replace(a, -4, c, b).equals("a"));
       assertTrue(Strings.replace(a, -5, c, b).equals("a"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("a"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("a"));
 
       a = "1234";
       b = "";
-      c = 1000000;
+      c = 1_000_000;
 
       assertTrue(Strings.replace(a, 0, c, b).equals(""));
       assertTrue(Strings.replace(a, 1, c, b).equals("1"));
@@ -448,18 +448,18 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("123"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("123"));
       assertTrue(Strings.replace(a, -2, c, b).equals("12"));
       assertTrue(Strings.replace(a, -3, c, b).equals("1"));
       assertTrue(Strings.replace(a, -4, c, b).equals(""));
       assertTrue(Strings.replace(a, -5, c, b).equals(""));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals(""));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals(""));
 
       a = "";
       b = "";
-      c = 1000000;
+      c = 1_000_000;
 
       assertTrue(Strings.replace(a, 0, c, b).equals(""));
       assertTrue(Strings.replace(a, 1, c, b).equals(""));
@@ -467,18 +467,18 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals(""));
       assertTrue(Strings.replace(a, 4, c, b).equals(""));
       assertTrue(Strings.replace(a, 5, c, b).equals(""));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals(""));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals(""));
 
       assertTrue(Strings.replace(a, -1, c, b).equals(""));
       assertTrue(Strings.replace(a, -2, c, b).equals(""));
       assertTrue(Strings.replace(a, -3, c, b).equals(""));
       assertTrue(Strings.replace(a, -4, c, b).equals(""));
       assertTrue(Strings.replace(a, -5, c, b).equals(""));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals(""));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals(""));
 
       a = "";
       b = "abcdefghijk";
-      c = 1000000;
+      c = 1_000_000;
 
       assertTrue(Strings.replace(a, 0, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 1, c, b).equals("abcdefghijk"));
@@ -486,14 +486,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 4, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 5, c, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("abcdefghijk"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -2, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -3, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -4, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -5, c, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("abcdefghijk"));
    }
 
    /**
@@ -514,14 +514,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("123abcdefghijk4"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234abcdefghijk"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234abcdefghijk"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234abcdefghijk"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234abcdefghijk"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("123abcdefghijk4"));
       assertTrue(Strings.replace(a, -2, c, b).equals("12abcdefghijk4"));
       assertTrue(Strings.replace(a, -3, c, b).equals("1abcdefghijk4"));
       assertTrue(Strings.replace(a, -4, c, b).equals("abcdefghijk4"));
       assertTrue(Strings.replace(a, -5, c, b).equals("abcdefghijk4"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("abcdefghijk4"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("abcdefghijk4"));
 
       a = "1234";
       b = "a";
@@ -533,14 +533,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("123a4"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234a"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234a"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234a"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234a"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("123a4"));
       assertTrue(Strings.replace(a, -2, c, b).equals("12a4"));
       assertTrue(Strings.replace(a, -3, c, b).equals("1a4"));
       assertTrue(Strings.replace(a, -4, c, b).equals("a4"));
       assertTrue(Strings.replace(a, -5, c, b).equals("a4"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("a4"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("a4"));
 
       a = "1234";
       b = "";
@@ -552,14 +552,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("1234"));
       assertTrue(Strings.replace(a, 4, c, b).equals("1234"));
       assertTrue(Strings.replace(a, 5, c, b).equals("1234"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("1234"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("1234"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("1234"));
       assertTrue(Strings.replace(a, -2, c, b).equals("124"));
       assertTrue(Strings.replace(a, -3, c, b).equals("14"));
       assertTrue(Strings.replace(a, -4, c, b).equals("4"));
       assertTrue(Strings.replace(a, -5, c, b).equals("4"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("4"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("4"));
 
       a = "";
       b = "";
@@ -571,14 +571,14 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals(""));
       assertTrue(Strings.replace(a, 4, c, b).equals(""));
       assertTrue(Strings.replace(a, 5, c, b).equals(""));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals(""));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals(""));
 
       assertTrue(Strings.replace(a, -1, c, b).equals(""));
       assertTrue(Strings.replace(a, -2, c, b).equals(""));
       assertTrue(Strings.replace(a, -3, c, b).equals(""));
       assertTrue(Strings.replace(a, -4, c, b).equals(""));
       assertTrue(Strings.replace(a, -5, c, b).equals(""));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals(""));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals(""));
 
       a = "";
       b = "abcdefghijk";
@@ -590,18 +590,18 @@ public class StringsTest extends TestCase {
       assertTrue(Strings.replace(a, 3, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 4, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, 5, c, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, 1000000, c, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, 1_000_000, c, b).equals("abcdefghijk"));
 
       assertTrue(Strings.replace(a, -1, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -2, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -3, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -4, c, b).equals("abcdefghijk"));
       assertTrue(Strings.replace(a, -5, c, b).equals("abcdefghijk"));
-      assertTrue(Strings.replace(a, -1000000, c, b).equals("abcdefghijk"));
+      assertTrue(Strings.replace(a, -1_000_000, c, b).equals("abcdefghijk"));
    }
 
    /**
-    * test: replace(string, replacement, start, length) --> length = -1000000
+    * test: replace(string, replacement, start, length) --> length = -1_000_000
     */
    public void testReplace6() {
       String a;
@@ -610,7 +610,7 @@ public class StringsTest extends TestCase {
 
       a = "1234";
       b = "abcdefghijk";
-      c = -1000000;
+      c = -1_000_000;
 
       assertEquals("abcdefghijk1234", Strings.replace(a, 0, c, b));
       assertEquals("1abcdefghijk234", Strings.replace(a, 1, c, b));
@@ -618,18 +618,18 @@ public class StringsTest extends TestCase {
       assertEquals("123abcdefghijk4", Strings.replace(a, 3, c, b));
       assertEquals("1234abcdefghijk", Strings.replace(a, 4, c, b));
       assertEquals("1234abcdefghijk", Strings.replace(a, 5, c, b));
-      assertEquals("1234abcdefghijk", Strings.replace(a, 1000000, c, b));
+      assertEquals("1234abcdefghijk", Strings.replace(a, 1_000_000, c, b));
 
       assertEquals("123abcdefghijk4", Strings.replace(a, -1, c, b));
       assertEquals("12abcdefghijk34", Strings.replace(a, -2, c, b));
       assertEquals("1abcdefghijk234", Strings.replace(a, -3, c, b));
       assertEquals("abcdefghijk1234", Strings.replace(a, -4, c, b));
       assertEquals("abcdefghijk1234", Strings.replace(a, -5, c, b));
-      assertEquals("abcdefghijk1234", Strings.replace(a, -1000000, c, b));
+      assertEquals("abcdefghijk1234", Strings.replace(a, -1_000_000, c, b));
 
       a = "1234";
       b = "a";
-      c = -1000000;
+      c = -1_000_000;
 
       assertEquals("a1234", Strings.replace(a, 0, c, b));
       assertEquals("1a234", Strings.replace(a, 1, c, b));
@@ -637,18 +637,18 @@ public class StringsTest extends TestCase {
       assertEquals("123a4", Strings.replace(a, 3, c, b));
       assertEquals("1234a", Strings.replace(a, 4, c, b));
       assertEquals("1234a", Strings.replace(a, 5, c, b));
-      assertEquals("1234a", Strings.replace(a, 1000000, c, b));
+      assertEquals("1234a", Strings.replace(a, 1_000_000, c, b));
 
       assertEquals("123a4", Strings.replace(a, -1, c, b));
       assertEquals("12a34", Strings.replace(a, -2, c, b));
       assertEquals("1a234", Strings.replace(a, -3, c, b));
       assertEquals("a1234", Strings.replace(a, -4, c, b));
       assertEquals("a1234", Strings.replace(a, -5, c, b));
-      assertEquals("a1234", Strings.replace(a, -1000000, c, b));
+      assertEquals("a1234", Strings.replace(a, -1_000_000, c, b));
 
       a = "1234";
       b = "";
-      c = -1000000;
+      c = -1_000_000;
 
       assertEquals("1234", Strings.replace(a, 0, c, b));
       assertEquals("1234", Strings.replace(a, 1, c, b));
@@ -656,18 +656,18 @@ public class StringsTest extends TestCase {
       assertEquals("1234", Strings.replace(a, 3, c, b));
       assertEquals("1234", Strings.replace(a, 4, c, b));
       assertEquals("1234", Strings.replace(a, 5, c, b));
-      assertEquals("1234", Strings.replace(a, 1000000, c, b));
+      assertEquals("1234", Strings.replace(a, 1_000_000, c, b));
 
       assertEquals("1234", Strings.replace(a, -1, c, b));
       assertEquals("1234", Strings.replace(a, -2, c, b));
       assertEquals("1234", Strings.replace(a, -3, c, b));
       assertEquals("1234", Strings.replace(a, -4, c, b));
       assertEquals("1234", Strings.replace(a, -5, c, b));
-      assertEquals("1234", Strings.replace(a, -1000000, c, b));
+      assertEquals("1234", Strings.replace(a, -1_000_000, c, b));
 
       a = "";
       b = "";
-      c = -1000000;
+      c = -1_000_000;
 
       assertEquals("", Strings.replace(a, 0, c, b));
       assertEquals("", Strings.replace(a, 1, c, b));
@@ -675,18 +675,18 @@ public class StringsTest extends TestCase {
       assertEquals("", Strings.replace(a, 3, c, b));
       assertEquals("", Strings.replace(a, 4, c, b));
       assertEquals("", Strings.replace(a, 5, c, b));
-      assertEquals("", Strings.replace(a, 1000000, c, b));
+      assertEquals("", Strings.replace(a, 1_000_000, c, b));
 
       assertEquals("", Strings.replace(a, -1, c, b));
       assertEquals("", Strings.replace(a, -2, c, b));
       assertEquals("", Strings.replace(a, -3, c, b));
       assertEquals("", Strings.replace(a, -4, c, b));
       assertEquals("", Strings.replace(a, -5, c, b));
-      assertEquals("", Strings.replace(a, -1000000, c, b));
+      assertEquals("", Strings.replace(a, -1_000_000, c, b));
 
       a = "";
       b = "abcdefghijk";
-      c = -1000000;
+      c = -1_000_000;
 
       assertEquals("abcdefghijk", Strings.replace(a, 0, c, b));
       assertEquals("abcdefghijk", Strings.replace(a, 1, c, b));
@@ -694,14 +694,14 @@ public class StringsTest extends TestCase {
       assertEquals("abcdefghijk", Strings.replace(a, 3, c, b));
       assertEquals("abcdefghijk", Strings.replace(a, 4, c, b));
       assertEquals("abcdefghijk", Strings.replace(a, 5, c, b));
-      assertEquals("abcdefghijk", Strings.replace(a, 1000000, c, b));
+      assertEquals("abcdefghijk", Strings.replace(a, 1_000_000, c, b));
 
       assertEquals("abcdefghijk", Strings.replace(a, -1, c, b));
       assertEquals("abcdefghijk", Strings.replace(a, -2, c, b));
       assertEquals("abcdefghijk", Strings.replace(a, -3, c, b));
       assertEquals("abcdefghijk", Strings.replace(a, -4, c, b));
       assertEquals("abcdefghijk", Strings.replace(a, -5, c, b));
-      assertEquals("abcdefghijk", Strings.replace(a, -1000000, c, b));
+      assertEquals("abcdefghijk", Strings.replace(a, -1_000_000, c, b));
    }
 
    public void testRepleaceEach() {

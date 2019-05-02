@@ -69,14 +69,16 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
             @Override
             public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
                final String name = method.getName();
-               if ("hashCode".equals(name) && args == null && method.getReturnType() == int.class)
-                  return Annotations.hashCode((Annotation) proxy);
-               if ("equals".equals(name) && args.length == 1 && method.getReturnType() == boolean.class)
+               if (args == null) {
+                  if ("hashCode".equals(name) && method.getReturnType() == int.class)
+                     return Annotations.hashCode((Annotation) proxy);
+                  if ("toString".equals(name) && method.getReturnType() == String.class)
+                     return Annotations.toString((Annotation) proxy);
+                  if ("annotationType".equals(name) && method.getReturnType() == Class.class)
+                     return annotationType;
+               } else if (args.length == 1 && "equals".equals(name) && method.getReturnType() == boolean.class)
                   return Annotations.equals((Annotation) proxy, (Annotation) args[0]);
-               if ("toString".equals(name) && args == null && method.getReturnType() == String.class)
-                  return Annotations.toString((Annotation) proxy);
-               if ("annotationType".equals(name) && args == null && method.getReturnType() == Class.class)
-                  return annotationType;
+
                return attrValues.get(method.getName());
             }
          }, annotationType);
@@ -162,7 +164,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
                if (paramAnnos.length > 0) {
                   HashSet<Annotation> cummulatedParamAnnos = methodParameterAnnotations[i];
                   if (cummulatedParamAnnos == null) {
-                     methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<Annotation>();
+                     methodParameterAnnotations[i] = cummulatedParamAnnos = new HashSet<>();
                   }
                   for (final Annotation anno : paramAnnos) {
                      cummulatedParamAnnos.add(anno);

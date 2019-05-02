@@ -9,11 +9,13 @@
  *********************************************************************/
 package net.sf.jstuff.integration.atom.blog;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public class PublishingAtomBlogEntryFailedException extends AtomBlogException {
    private static final long serialVersionUID = 1L;
 
    public PublishingAtomBlogEntryFailedException() {
-      super();
    }
 
    public PublishingAtomBlogEntryFailedException(final String message) {

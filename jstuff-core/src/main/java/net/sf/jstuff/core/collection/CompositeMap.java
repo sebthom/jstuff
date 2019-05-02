@@ -35,7 +35,6 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
    }
 
    public CompositeMap() {
-      super();
    }
 
    public CompositeMap(final Collection<? extends Map<? extends K, ? extends V>> maps) {

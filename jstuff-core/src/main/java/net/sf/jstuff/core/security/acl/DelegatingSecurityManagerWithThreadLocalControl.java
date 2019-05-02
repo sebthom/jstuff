@@ -14,7 +14,7 @@ package net.sf.jstuff.core.security.acl;
  */
 public abstract class DelegatingSecurityManagerWithThreadLocalControl extends DelegatingSecurityManager {
 
-   private Boolean isEnabledByDefault = true;
+   private boolean isEnabledByDefault = true;
 
    /**
     * Determines if custom security checks implemented by this class are executed or if calls are only delegated to the underlying security manager
@@ -30,7 +30,6 @@ public abstract class DelegatingSecurityManagerWithThreadLocalControl extends De
    };
 
    public DelegatingSecurityManagerWithThreadLocalControl() {
-      super();
    }
 
    public DelegatingSecurityManagerWithThreadLocalControl(final SecurityManager wrapped) {

@@ -19,11 +19,10 @@ public class MapWithMaps<K, K2, V> extends MapWith<K, Map<K2, V>> {
    private static final long serialVersionUID = 1L;
 
    public static <K, K2, V> MapWithMaps<K, K2, V> create() {
-      return new MapWithMaps<K, K2, V>();
+      return new MapWithMaps<>();
    }
 
    public MapWithMaps() {
-      super();
    }
 
    public MapWithMaps(final int initialCapacity) {

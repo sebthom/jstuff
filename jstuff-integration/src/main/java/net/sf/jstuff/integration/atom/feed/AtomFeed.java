@@ -76,7 +76,6 @@ public class AtomFeed extends Identifiable.Default<String> {
    private Collection<AtomEntry> entries;
 
    public AtomFeed() {
-      super();
    }
 
    public AtomFeed(final String id) {

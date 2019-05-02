@@ -27,6 +27,6 @@ public class DateUtilsTest extends TestCase {
       assertEquals(1000 * 60 * 60, Dates.parseDuration(" 1hour "));
       assertEquals(1000 * 60 * 60 * 24, Dates.parseDuration("1d"));
       assertEquals(1000 * 60 * 60 * 24, Dates.parseDuration(" 1day "));
-      assertEquals(446582002, Dates.parseDuration("5d 4h 3m 2s 2ms"));
+      assertEquals(446_582_002, Dates.parseDuration("5d 4h 3m 2s 2ms"));
    }
 }

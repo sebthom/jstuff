@@ -27,6 +27,5 @@ final class AuthenticationHolder {
    }
 
    private AuthenticationHolder() {
-      super();
    }
 }

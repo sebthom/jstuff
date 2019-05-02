@@ -11,13 +11,11 @@ package net.sf.jstuff.integration.atom.blog;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
- *
  */
 public class DeletingAtomBlogEntryFailedException extends AtomBlogException {
    private static final long serialVersionUID = 1L;
 
    public DeletingAtomBlogEntryFailedException() {
-      super();
    }
 
    public DeletingAtomBlogEntryFailedException(final String message) {

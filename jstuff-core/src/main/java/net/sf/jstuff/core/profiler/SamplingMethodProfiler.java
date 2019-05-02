@@ -47,7 +47,7 @@ public class SamplingMethodProfiler {
       };
    }
 
-   protected void processSample(final ThreadInfo[] threadsState) {
+   protected final void processSample(final ThreadInfo[] threadsState) {
       for (final ThreadInfo threadInfo : threadsState) {
          final boolean isThreadExecuting = threadInfo.getThreadState() == State.RUNNABLE && threadInfo.getLockName() == null;
 

@@ -8,7 +8,7 @@ http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context.xsd
 ">
 
-    <bean name="guestbookService" class="net.sf.jstuff.integration.example.guestbook.service.GuestBookServiceInMemoryImpl" />
+    <bean name="guestbookService" class="net.sf.jstuff.integration.example.guestbook.service.GuestBookServiceInMemoryImpl" init-method="init" />
 
     <!-- SMD service exporter -->
     <bean name="/guestbook.json" class="net.sf.jstuff.integration.json.SMDServiceExporter">

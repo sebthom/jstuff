@@ -20,15 +20,14 @@ public class MapWithSets<K, V> extends MapWithCollections<K, V, Set<V>> {
    private static final long serialVersionUID = 1L;
 
    public static <K, V> MapWithSets<K, V> create() {
-      return new MapWithSets<K, V>();
+      return new MapWithSets<>();
    }
 
    public static <K, V> MapWithSets<K, V> create(final int initialCapacity, final int initialSetCapacity) {
-      return new MapWithSets<K, V>(initialCapacity, initialSetCapacity);
+      return new MapWithSets<>(initialCapacity, initialSetCapacity);
    }
 
    public MapWithSets() {
-      super();
    }
 
    public MapWithSets(final int initialCapacity) {
@@ -41,7 +40,7 @@ public class MapWithSets<K, V> extends MapWithCollections<K, V, Set<V>> {
 
    @Override
    protected Set<V> create(final K key) {
-      return new HashSet<V>(initialCapacityOfCollection, growthFactorOfCollection);
+      return new HashSet<>(initialCapacityOfCollection, growthFactorOfCollection);
    }
 
    @Override

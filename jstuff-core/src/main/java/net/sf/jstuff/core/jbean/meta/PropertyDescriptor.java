@@ -68,7 +68,6 @@ public final class PropertyDescriptor<P> implements Serializable {
    private transient Map<String, ? extends Serializable> propertiesReadOnly;
 
    private PropertyDescriptor() {
-      super();
    }
 
    public String getDescription() {

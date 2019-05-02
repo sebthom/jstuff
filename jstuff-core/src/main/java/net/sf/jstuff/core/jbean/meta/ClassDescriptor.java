@@ -54,7 +54,6 @@ public final class ClassDescriptor<T> implements Serializable {
    private final transient Map<String, PropertyDescriptor<?>> propertiesReadOnly = Collections.unmodifiableMap(properties);
    private final transient Map<String, PropertyDescriptor<?>> propertiesRecursivelyReadOnly;
 
-   @SuppressWarnings("unchecked")
    private ClassDescriptor(final Class<T> type, final String name, final String description, final ClassDescriptor<?> parent) {
       this.type = type;
       this.name = name;

@@ -121,6 +121,5 @@ public final class LoggerConfig {
    }
 
    private LoggerConfig() {
-      super();
    }
 }

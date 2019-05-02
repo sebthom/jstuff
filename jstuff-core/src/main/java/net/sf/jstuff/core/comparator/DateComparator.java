@@ -22,7 +22,6 @@ public class DateComparator implements Comparator<Date>, Serializable {
    public static final DateComparator INSTANCE = new DateComparator();
 
    protected DateComparator() {
-      super();
    }
 
    @Override

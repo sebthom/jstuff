@@ -21,7 +21,6 @@ public class BooleanComparator implements Comparator<Boolean>, Serializable {
    public static final BooleanComparator INSTANCE = new BooleanComparator();
 
    protected BooleanComparator() {
-      super();
    }
 
    @Override

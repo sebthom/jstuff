@@ -55,6 +55,5 @@ public final class StartServer {
    }
 
    private StartServer() {
-      super();
    }
 }

@@ -36,7 +36,6 @@ public class CompositeList<V> extends AbstractList<V> implements Composite<List<
    private final Collection<List<? extends V>> lists = new ArrayList<>();
 
    public CompositeList() {
-      super();
    }
 
    public CompositeList(final Collection<List<? extends V>> lists) {

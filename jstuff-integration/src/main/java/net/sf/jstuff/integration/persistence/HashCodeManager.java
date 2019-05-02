@@ -181,6 +181,5 @@ public final class HashCodeManager {
    }
 
    private HashCodeManager() {
-      super();
    }
 }

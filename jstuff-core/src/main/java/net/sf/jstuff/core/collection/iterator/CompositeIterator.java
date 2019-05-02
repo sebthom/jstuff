@@ -26,7 +26,6 @@ public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V
    private Iterator<? extends V> nextItemIterator = Iterators.empty();
 
    public CompositeIterator() {
-      super();
    }
 
    public CompositeIterator(final Collection<? extends Iterator<V>> components) {

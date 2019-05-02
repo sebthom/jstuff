@@ -26,7 +26,6 @@ public class StringToMapConverter extends AbstractConverter {
    private static final String VALUE_ASSIGNMENT = "=>";
 
    public StringToMapConverter() {
-      super();
    }
 
    public StringToMapConverter(final ConversionService conversionService) {

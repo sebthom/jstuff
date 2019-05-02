@@ -21,7 +21,7 @@ public final class EmptyIterator<T> implements Iterator<T>, Serializable {
 
    private static final long serialVersionUID = 1L;
 
-   static final EmptyIterator<?> INSTANCE = new EmptyIterator<Object>();
+   static final EmptyIterator<?> INSTANCE = new EmptyIterator<>();
 
    @SuppressWarnings("unchecked")
    public static <T> EmptyIterator<T> get() {
@@ -29,7 +29,6 @@ public final class EmptyIterator<T> implements Iterator<T>, Serializable {
    }
 
    private EmptyIterator() {
-      super();
    }
 
    @Override

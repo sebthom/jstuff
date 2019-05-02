@@ -1,4 +1,5 @@
 /*********************************************************************
+
  * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
@@ -31,7 +32,6 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
    }
 
    public CompositeSet() {
-      super();
    }
 
    public CompositeSet(final Collection<Set<? extends V>> sets) {

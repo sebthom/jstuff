@@ -32,14 +32,14 @@ public abstract class Accepts {
       public <V extends T> And<V> and(final Accept<? super V> next) {
          Args.notNull("next", next);
 
-         return new And<V>(AbstractAccept.this, next);
+         return new And<>(AbstractAccept.this, next);
       }
 
       @Override
       public <V extends T> Or<V> or(final Accept<? super V> next) {
          Args.notNull("next", next);
 
-         return new Or<V>(AbstractAccept.this, next);
+         return new Or<>(AbstractAccept.this, next);
       }
 
       @Override
@@ -59,7 +59,7 @@ public abstract class Accepts {
 
       public abstract ChainableAccept<V> ignoreCase(Locale locale);
 
-      protected String stringify(final Object obj) {
+      protected final String stringify(final Object obj) {
          if (ignoreCaseLocale == null)
             return obj.toString();
          return obj.toString().toLowerCase(ignoreCaseLocale);
@@ -94,7 +94,7 @@ public abstract class Accepts {
    public static class Anything<V> extends AbstractAccept<V> {
       private static final long serialVersionUID = 1L;
 
-      private static final Anything<?> INSTANCE = new Anything<Object>();
+      private static final Anything<?> INSTANCE = new Anything<>();
 
       @Override
       public boolean accept(final V obj) {
@@ -265,7 +265,7 @@ public abstract class Accepts {
    public static class Nothing<V> extends AbstractAccept<V> {
       private static final long serialVersionUID = 1L;
 
-      private static final Nothing<?> INSTANCE = new Nothing<Object>();
+      private static final Nothing<?> INSTANCE = new Nothing<>();
 
       @Override
       public boolean accept(final V obj) {
@@ -371,7 +371,7 @@ public abstract class Accepts {
    }
 
    public static <V> And<V> and(final Accept<? super V> first, final Accept<? super V> second) {
-      return new And<V>(first, second);
+      return new And<>(first, second);
    }
 
    @SuppressWarnings("unchecked")
@@ -380,39 +380,39 @@ public abstract class Accepts {
    }
 
    public static <V> Contains<V> contains(final String searchFor) {
-      return new Contains<V>(searchFor);
+      return new Contains<>(searchFor);
    }
 
    public static <V> EndingWith<V> endingWith(final String suffix) {
-      return new EndingWith<V>(suffix);
+      return new EndingWith<>(suffix);
    }
 
    public static <V> EqualTo<V> equalTo(final V equivalent) {
-      return new EqualTo<V>(equivalent);
+      return new EqualTo<>(equivalent);
    }
 
    public static <V extends Comparable<V>> GreaterThan<V> greaterThan(final V compareTo) {
-      return new GreaterThan<V>(compareTo);
+      return new GreaterThan<>(compareTo);
    }
 
    public static <V> InstanceOf<V> instanceOf(final Class<?> type) {
-      return new InstanceOf<V>(type);
+      return new InstanceOf<>(type);
    }
 
    public static <V> Null<V> isNull() {
-      return new Null<V>();
+      return new Null<>();
    }
 
    public static <V extends Comparable<V>> LessThan<V> lessThan(final V compareTo) {
-      return new LessThan<V>(compareTo);
+      return new LessThan<>(compareTo);
    }
 
    public static <V> Matches<V> matches(final String pattern) {
-      return new Matches<V>(pattern);
+      return new Matches<>(pattern);
    }
 
    public static <V> Not<V> not(final Accept<? super V> accept) {
-      return new Not<V>(accept);
+      return new Not<>(accept);
    }
 
    @SuppressWarnings("unchecked")
@@ -421,23 +421,23 @@ public abstract class Accepts {
    }
 
    public static <V> NotNull<V> notNull() {
-      return new NotNull<V>();
+      return new NotNull<>();
    }
 
    public static <V> Or<V> or(final Accept<? super V> first, final Accept<? super V> second) {
-      return new Or<V>(first, second);
+      return new Or<>(first, second);
    }
 
    public static <V, PropertyType> Property<V, PropertyType> property(@SuppressWarnings("unused") final Class<V> castingHelper, final String propertyPath,
       final Accept<PropertyType> accept) {
-      return new Property<V, PropertyType>(propertyPath, accept);
+      return new Property<>(propertyPath, accept);
    }
 
    public static <V, PropertyType> Property<V, PropertyType> property(final String propertyPath, final Accept<PropertyType> accept) {
-      return new Property<V, PropertyType>(propertyPath, accept);
+      return new Property<>(propertyPath, accept);
    }
 
    public static <V> StartingWith<V> startingWith(final String prefix) {
-      return new StartingWith<V>(prefix);
+      return new StartingWith<>(prefix);
    }
 }

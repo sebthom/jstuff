@@ -18,7 +18,6 @@ public class FastRuntimeException extends RuntimeException {
    private static final long serialVersionUID = 1L;
 
    public FastRuntimeException() {
-      super();
    }
 
    public FastRuntimeException(final String message, final Throwable cause) {
