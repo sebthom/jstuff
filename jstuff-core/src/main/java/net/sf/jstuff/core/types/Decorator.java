@@ -22,6 +22,8 @@ public interface Decorator<T> {
 
    abstract class Default<T> implements Decorator<T> {
       protected T wrapped;
+      protected boolean wrappedGettable = true;
+      protected boolean wrappedSettable = true;
 
       protected Default() {
       }
@@ -37,14 +39,22 @@ public interface Decorator<T> {
          return wrapped;
       }
 
+      public void hideWrapped() {
+         wrappedGettable = false;
+      }
+
+      public void freezeWrapped() {
+         wrappedSettable = false;
+      }
+
       @Override
       public boolean isWrappedGettable() {
-         return true;
+         return wrappedGettable;
       }
 
       @Override
       public boolean isWrappedSettable() {
-         return true;
+         return wrappedSettable;
       }
 
       @Override
