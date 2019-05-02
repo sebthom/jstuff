@@ -34,6 +34,7 @@ public class XMLRestServiceExporter extends AbstractRestServiceExporter {
 
    public XMLRestServiceExporter() {
       super("UTF-8", "application/xml");
+
       final HierarchicalStreamDriver xmlDriver = getXStreamDriver();
       LOG.info("XML driver implementation: %s", xmlDriver);
       xStream = new XStream(xmlDriver);

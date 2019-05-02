@@ -26,7 +26,6 @@ public class ZippedBlockSocket extends Socket {
    private ZippedBlockOutputStream out;
 
    public ZippedBlockSocket() {
-      super();
    }
 
    public ZippedBlockSocket(final String host, final int port) throws IOException {

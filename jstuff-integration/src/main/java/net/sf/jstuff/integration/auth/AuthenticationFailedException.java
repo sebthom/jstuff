@@ -16,7 +16,6 @@ public class AuthenticationFailedException extends RuntimeException {
    private static final long serialVersionUID = 1L;
 
    public AuthenticationFailedException() {
-      super();
    }
 
    public AuthenticationFailedException(final String message) {

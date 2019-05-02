@@ -57,7 +57,6 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
     * Create a new empty INI configuration.
     */
    public INIFileConfiguration() {
-      super();
    }
 
    /**

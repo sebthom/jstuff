@@ -214,7 +214,7 @@ public class DefaultAuthService implements AuthService {
       for (final Entry<String, String> mapping : mappings.entrySet()) {
          final String group = mapping.getKey().trim();
          String role = mapping.getValue();
-         if (group.length() > 0 && role != null) {
+         if (role != null && group.length() > 0) {
             role = role.trim();
 
             if (role.length() > 0) {

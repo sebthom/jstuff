@@ -20,11 +20,10 @@ public class CompositeComparator<T> extends net.sf.jstuff.core.types.Composite.D
 
    @SafeVarargs
    public static <T> CompositeComparator<T> of(final Comparator<T>... comparators) {
-      return new CompositeComparator<T>(comparators);
+      return new CompositeComparator<>(comparators);
    }
 
    public CompositeComparator() {
-      super();
    }
 
    public CompositeComparator(final Collection<? extends Comparator<T>> comparators) {

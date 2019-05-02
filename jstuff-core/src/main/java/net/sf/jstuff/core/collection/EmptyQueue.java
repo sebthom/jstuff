@@ -23,7 +23,7 @@ public final class EmptyQueue<E> extends AbstractQueue<E> implements Serializabl
 
    private static final long serialVersionUID = 1L;
 
-   public static final Queue<?> INSTANCE = new EmptyQueue<Object>();
+   public static final Queue<?> INSTANCE = new EmptyQueue<>();
 
    @SuppressWarnings("unchecked")
    public static <T> EmptyQueue<T> get() {
@@ -31,7 +31,6 @@ public final class EmptyQueue<E> extends AbstractQueue<E> implements Serializabl
    }
 
    private EmptyQueue() {
-      super();
    }
 
    @Override

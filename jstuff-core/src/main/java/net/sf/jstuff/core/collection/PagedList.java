@@ -25,11 +25,9 @@ public class PagedList<E> extends ArrayList<E> {
    private int totalCount;
 
    public PagedList() {
-      super();
    }
 
    public PagedList(final Class<E> elementType) {
-      super();
       setElementType(elementType);
    }
 

@@ -30,7 +30,7 @@ public class CodeLocation {
       if (obj == null || !(obj instanceof CodeLocation))
          return false;
       final CodeLocation other = (CodeLocation) obj;
-      return clazz.equals(other.clazz) && method.equals(other.method) && lineNumber == other.lineNumber;
+      return lineNumber == other.lineNumber && clazz.equals(other.clazz) && method.equals(other.method);
    }
 
    @Override

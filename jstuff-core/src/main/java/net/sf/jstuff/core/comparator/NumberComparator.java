@@ -21,7 +21,6 @@ public class NumberComparator implements Comparator<Number>, Serializable {
    public static final NumberComparator INSTANCE = new NumberComparator();
 
    protected NumberComparator() {
-      super();
    }
 
    @Override

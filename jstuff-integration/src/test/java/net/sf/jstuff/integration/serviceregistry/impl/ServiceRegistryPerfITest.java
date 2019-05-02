@@ -39,7 +39,7 @@ public class ServiceRegistryPerfITest extends TestCase {
    public void runPerfTest(final MyService service, final String label) {
       final StopWatch sw = new StopWatch();
       sw.start();
-      for (int i = 0; i < 2000000; i++) {
+      for (int i = 0; i < 2_000_000; i++) {
          service.getGreeting();
       }
       sw.stop();

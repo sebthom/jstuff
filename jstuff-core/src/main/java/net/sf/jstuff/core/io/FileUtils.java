@@ -206,10 +206,10 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
       find(searchRootPath, globPattern, new EventListener<File>() {
          @Override
          public void onEvent(final File file) {
-            if (file.isDirectory() && includeDirectories) {
+            if (includeDirectories && file.isDirectory()) {
                result.add(file);
             }
-            if (file.isFile() && includeFiles) {
+            if (includeFiles && file.isFile()) {
                result.add(file);
             }
          }

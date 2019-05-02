@@ -24,7 +24,6 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
    protected float growthFactorOfCollection = 0.75f;
 
    public MapWithCollections() {
-      super();
    }
 
    public MapWithCollections(final int initialCapacity) {

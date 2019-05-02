@@ -16,7 +16,6 @@ public class AlreadyAuthenticatedException extends RuntimeException {
    private static final long serialVersionUID = 1L;
 
    public AlreadyAuthenticatedException() {
-      super();
    }
 
    public AlreadyAuthenticatedException(final String message) {

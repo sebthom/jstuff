@@ -14,12 +14,12 @@ import java.io.IOException;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@Deprecated
 public class IOExceptionWithCause extends IOException {
 
    private static final long serialVersionUID = 1L;
 
    public IOExceptionWithCause() {
-      super();
    }
 
    public IOExceptionWithCause(final String msg) {
@@ -32,7 +32,6 @@ public class IOExceptionWithCause extends IOException {
    }
 
    public IOExceptionWithCause(final Throwable cause) {
-      this();
       initCause(cause);
    }
 }

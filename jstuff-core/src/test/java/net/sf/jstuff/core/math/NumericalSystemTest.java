@@ -25,36 +25,36 @@ public class NumericalSystemTest extends TestCase {
    public void testBase16Decode() {
       assertEquals(0, BASE16.decodeAsLong("0"));
       assertEquals(1, BASE16.decodeAsLong("1"));
-      assertEquals(123456789, BASE16.decodeAsLong(BASE16.encode(123456789)));
+      assertEquals(123_456_789, BASE16.decodeAsLong(BASE16.encode(123_456_789)));
       assertEquals(Long.MAX_VALUE, BASE16.decodeAsLong(BASE16.encode(Long.MAX_VALUE)));
 
       assertEquals(0, BASE16.decodeAsBigInteger("0").longValue());
       assertEquals(1, BASE16.decodeAsBigInteger("1").longValue());
-      assertEquals(123456789, BASE16.decodeAsBigInteger(BASE16.encode(123456789)).longValue());
+      assertEquals(123_456_789, BASE16.decodeAsBigInteger(BASE16.encode(123_456_789)).longValue());
       assertEquals(Long.MAX_VALUE, BASE16.decodeAsBigInteger(BASE16.encode(Long.MAX_VALUE)).longValue());
    }
 
    public void testBase36Decode() {
       assertEquals(0, BASE36.decodeAsLong("0"));
       assertEquals(1, BASE36.decodeAsLong("1"));
-      assertEquals(123456789, BASE36.decodeAsLong(BASE36.encode(123456789)));
+      assertEquals(123_456_789, BASE36.decodeAsLong(BASE36.encode(123_456_789)));
       assertEquals(Long.MAX_VALUE, BASE36.decodeAsLong(BASE36.encode(Long.MAX_VALUE)));
 
       assertEquals(0, BASE36.decodeAsBigInteger("0").longValue());
       assertEquals(1, BASE36.decodeAsBigInteger("1").longValue());
-      assertEquals(123456789, BASE36.decodeAsBigInteger(BASE36.encode(123456789)).longValue());
+      assertEquals(123_456_789, BASE36.decodeAsBigInteger(BASE36.encode(123_456_789)).longValue());
       assertEquals(Long.MAX_VALUE, BASE36.decodeAsBigInteger(BASE36.encode(Long.MAX_VALUE)).longValue());
    }
 
    public void testBase62Decode() {
       assertEquals(0, BASE62.decodeAsLong("0"));
       assertEquals(1, BASE62.decodeAsLong("1"));
-      assertEquals(123456789, BASE62.decodeAsLong(BASE62.encode(123456789)));
+      assertEquals(123_456_789, BASE62.decodeAsLong(BASE62.encode(123_456_789)));
       assertEquals(Long.MAX_VALUE, BASE62.decodeAsLong(BASE62.encode(Long.MAX_VALUE)));
 
       assertEquals(0, BASE62.decodeAsBigInteger("0").longValue());
       assertEquals(1, BASE62.decodeAsBigInteger("1").longValue());
-      assertEquals(123456789, BASE62.decodeAsBigInteger(BASE62.encode(123456789)).longValue());
+      assertEquals(123_456_789, BASE62.decodeAsBigInteger(BASE62.encode(123_456_789)).longValue());
       assertEquals(Long.MAX_VALUE, BASE62.decodeAsBigInteger(BASE62.encode(Long.MAX_VALUE)).longValue());
    }
 
@@ -73,7 +73,7 @@ public class NumericalSystemTest extends TestCase {
       assertEquals("24", BASE16.encode(BigInteger.valueOf(36)));
       assertEquals("3d", BASE16.encode(BigInteger.valueOf(61)));
 
-      assertEquals(BigInteger.valueOf(123456789).toString(16), BASE16.encode(123456789));
+      assertEquals(BigInteger.valueOf(123_456_789).toString(16), BASE16.encode(123_456_789));
    }
 
    public void testToBase36Encode() {
@@ -91,7 +91,7 @@ public class NumericalSystemTest extends TestCase {
       assertEquals("10", BASE36.encode(BigInteger.valueOf(36)));
       assertEquals("1p", BASE36.encode(BigInteger.valueOf(61)));
 
-      assertEquals(BigInteger.valueOf(123456789).toString(36), BASE36.encode(123456789));
+      assertEquals(BigInteger.valueOf(123_456_789).toString(36), BASE36.encode(123_456_789));
    }
 
    public void testToBase62Encode() {
@@ -110,7 +110,7 @@ public class NumericalSystemTest extends TestCase {
       assertEquals("Z", BASE62.encode(BigInteger.valueOf(61)));
 
       // Max Radix for BigInteger is 36, thus the following test would fail
-      // assertEquals(BigInteger.valueOf(123456789).toString(62), BASE36.encode(123456789));
+      // assertEquals(BigInteger.valueOf(123_456_789).toString(62), BASE36.encode(123_456_789));
    }
 
    public void testToBase62EncodeBigIntPerf() {
@@ -119,7 +119,7 @@ public class NumericalSystemTest extends TestCase {
 
       assertEquals(NumericalSystem.BASE62.encode(number), NumericalSystem.BASE62.encode_slow(number));
 
-      final int iterations = 1000000;
+      final int iterations = 1_000_000;
       final StopWatch sw = new StopWatch();
       sw.start();
       for (int i = 0; i < iterations; i++) {

@@ -22,7 +22,6 @@ public abstract class AbstractConverter implements ConditionalGenericConverter {
    protected ConversionService conversionService;
 
    public AbstractConverter() {
-      super();
    }
 
    public AbstractConverter(final ConversionService conversionService) {

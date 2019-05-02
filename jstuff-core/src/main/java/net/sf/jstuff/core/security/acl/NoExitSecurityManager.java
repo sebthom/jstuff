@@ -40,7 +40,6 @@ public class NoExitSecurityManager extends DelegatingSecurityManagerWithThreadLo
    }
 
    public NoExitSecurityManager() {
-      super();
    }
 
    public NoExitSecurityManager(final SecurityManager wrapped) {

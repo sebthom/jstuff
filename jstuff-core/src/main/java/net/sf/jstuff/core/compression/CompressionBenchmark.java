@@ -18,7 +18,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.zip.ZipException;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -132,14 +131,12 @@ public class CompressionBenchmark {
 
             final FastByteArrayInputStream compressedIS = new FastByteArrayInputStream(ArrayUtils.EMPTY_BYTE_ARRAY);
             compressedIS.setData(compressedOS.toByteArray());
-            try {
-               final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
-               cmp.decompress(compressedIS, uncompressedOS, true);
-               if (!Objects.deepEquals(uncompressed, uncompressedOS.toByteArray()))
-                  throw new IOException("Compression [" + cmp + "] is buggy!");
-            } catch (final ZipException ex) {
-               throw ex;
-            }
+
+            final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
+            cmp.decompress(compressedIS, uncompressedOS, true);
+            if (!Objects.deepEquals(uncompressed, uncompressedOS.toByteArray()))
+               throw new IOException("Compression [" + cmp + "] is buggy!");
+
          }
       }
 

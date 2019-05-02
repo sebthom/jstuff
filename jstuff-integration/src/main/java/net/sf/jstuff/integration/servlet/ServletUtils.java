@@ -27,7 +27,9 @@ public abstract class ServletUtils {
       url.append(scheme); // http, https
       url.append("://");
       url.append(request.getServerName());
-      if ("http".equals(scheme) && port != 80 || "https".equals(scheme) && port != 443) {
+      if (port != 80 && "http".equals(scheme) || //
+         port != 443 && "https".equals(scheme) //
+      ) {
          url.append(':');
          url.append(request.getServerPort());
       }

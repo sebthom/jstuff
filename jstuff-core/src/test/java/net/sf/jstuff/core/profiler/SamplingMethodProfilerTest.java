@@ -24,7 +24,7 @@ public class SamplingMethodProfilerTest extends TestCase {
 
    public static void slowMethod() {
       Threads.sleep(400);
-      for (int i = 1; i < 1000000; i++) {
+      for (int i = 1; i < 1_000_000; i++) {
          RANDOM.nextLong();
          UUID.randomUUID();
       }

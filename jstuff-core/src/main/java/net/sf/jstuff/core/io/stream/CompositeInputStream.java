@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
-import net.sf.jstuff.core.exception.IOExceptionWithCause;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.types.Composite;
 import net.sf.jstuff.core.validation.Args;
@@ -57,7 +56,7 @@ public class CompositeInputStream extends InputStream implements Composite<Input
             stream.close();
          } catch (final IOException iox) {
             if (ex == null) {
-               ex = new IOExceptionWithCause("Failed to close InputStream with 0-based-index: " + currentStreamIdx, iox);
+               ex = new IOException("Failed to close InputStream with 0-based-index: " + currentStreamIdx, iox);
             } else {
                LOG.error(iox, "Failed to close InputStream with 0-based-index: %s", currentStreamIdx);
             }

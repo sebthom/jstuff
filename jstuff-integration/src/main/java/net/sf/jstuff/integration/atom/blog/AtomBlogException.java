@@ -16,7 +16,6 @@ public class AtomBlogException extends RuntimeException {
    private static final long serialVersionUID = 1L;
 
    public AtomBlogException() {
-      super();
    }
 
    public AtomBlogException(final String message) {

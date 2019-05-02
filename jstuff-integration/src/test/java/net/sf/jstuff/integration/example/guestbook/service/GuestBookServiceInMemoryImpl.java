@@ -62,17 +62,6 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
 
    private final Map<Integer, GuestBookEntryEntity> store = Maps.newHashMap();
 
-   public GuestBookServiceInMemoryImpl() {
-      final AddGuestBookEntryCommand entry1 = new AddGuestBookEntryCommand();
-      entry1.message = "Hello world!";
-      addEntry(entry1);
-
-      final AddGuestBookEntryCommand entry2 = new AddGuestBookEntryCommand();
-      entry2.parentEntryId = 1;
-      entry2.message = "Welcome!";
-      addEntry(entry2);
-   }
-
    @Override
    public int addEntry(final AddGuestBookEntryCommand entry) throws PermissionDeniedException {
       final GuestBookEntryEntity entity = new GuestBookEntryEntity(getCurrentUser());
@@ -87,12 +76,22 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
       return entity.getId();
    }
 
+   protected void init() {
+      final AddGuestBookEntryCommand entry1 = new AddGuestBookEntryCommand();
+      entry1.message = "Hello world!";
+      addEntry(entry1);
+
+      final AddGuestBookEntryCommand entry2 = new AddGuestBookEntryCommand();
+      entry2.parentEntryId = 1;
+      entry2.message = "Welcome!";
+      addEntry(entry2);
+   }
+
    @Override
    public boolean existsEntry(final int entryId) {
       return store.containsKey(entryId);
    }
 
-   @SuppressWarnings("static-method")
    private String getCurrentUser() {
       return "anonymous";
    }

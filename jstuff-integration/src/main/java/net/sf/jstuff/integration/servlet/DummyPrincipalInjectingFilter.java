@@ -163,10 +163,10 @@ public class DummyPrincipalInjectingFilter implements Filter {
       }
 
       // configure based on static default values
-      if (user.getName() == null && DEFAULT_USER_NAME != null) {
+      if (DEFAULT_USER_NAME != null && user.getName() == null) {
          setUsername(DEFAULT_USER_NAME);
       }
-      if (userRoles.size() == 0 && DEFAULT_USER_ROLES != null) {
+      if (DEFAULT_USER_ROLES != null && userRoles.size() == 0) {
          setUserRoles(DEFAULT_USER_ROLES);
       }
 

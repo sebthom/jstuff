@@ -23,11 +23,9 @@ public class AtomBlog implements Serializable {
    private String entriesUrl;
 
    public AtomBlog() {
-      super();
    }
 
    public AtomBlog(final String title, final String entriesUrl) {
-      super();
       this.title = title;
       this.entriesUrl = entriesUrl;
    }

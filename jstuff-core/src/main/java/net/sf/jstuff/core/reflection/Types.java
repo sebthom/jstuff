@@ -449,8 +449,9 @@ public abstract class Types {
    public static boolean isScalar(final Class<?> type) {
       Args.notNull("type", type);
 
-      return type.isPrimitive() || type == Boolean.class || //
+      return type == Boolean.class || //
          type == Character.class || //
+         type.isPrimitive() || //
          Enum.class.isAssignableFrom(type) || //
          Number.class.isAssignableFrom(type) || //
          CharSequence.class.isAssignableFrom(type) || //

@@ -18,7 +18,6 @@ public class FastException extends Exception {
    private static final long serialVersionUID = 1L;
 
    public FastException() {
-      super();
    }
 
    public FastException(final String message, final Throwable cause) {

@@ -9,11 +9,13 @@
  *********************************************************************/
 package net.sf.jstuff.integration.atom.blog;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public class ReceivingAtomBlogsFailedException extends AtomBlogException {
    private static final long serialVersionUID = 1L;
 
    public ReceivingAtomBlogsFailedException() {
-      super();
    }
 
    public ReceivingAtomBlogsFailedException(final String message) {
