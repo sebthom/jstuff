@@ -94,7 +94,7 @@ public abstract class CollectionUtils {
 
       Args.notNull("accept", accept);
 
-      final Collection<T> result = collection instanceof Set ? new HashSet<T>() : new ArrayList<T>();
+      final Collection<T> result = collection instanceof Set ? new HashSet<>() : new ArrayList<>();
       for (final T item : collection)
          if (accept.accept(item)) {
             result.add(item);
@@ -253,21 +253,21 @@ public abstract class CollectionUtils {
    }
 
    public static <K> ArrayList<K> newArrayList() {
-      return new ArrayList<K>();
+      return new ArrayList<>();
    }
 
    public static <K> ArrayList<K> newArrayList(final Collection<K> coll) {
-      return coll == null ? new ArrayList<K>() : new ArrayList<K>(coll);
+      return coll == null ? new ArrayList<>() : new ArrayList<>(coll);
    }
 
    public static <K> ArrayList<K> newArrayList(final int initialSize) {
-      return new ArrayList<K>(initialSize);
+      return new ArrayList<>(initialSize);
    }
 
    @SafeVarargs
    public static <K> ArrayList<K> newArrayList(final K... values) {
       if (values == null || values.length == 0)
-         return new ArrayList<K>();
+         return new ArrayList<>();
 
       final ArrayList<K> l = new ArrayList<>(values.length);
       // faster than Collections.addAll(result, array);
@@ -278,21 +278,21 @@ public abstract class CollectionUtils {
    }
 
    public static <K> HashSet<K> newHashSet() {
-      return new HashSet<K>();
+      return new HashSet<>();
    }
 
    public static <K> HashSet<K> newHashSet(final Collection<K> initialValues) {
-      return initialValues == null ? new HashSet<K>() : new HashSet<K>(initialValues);
+      return initialValues == null ? new HashSet<>() : new HashSet<>(initialValues);
    }
 
    public static <K> HashSet<K> newHashSet(final int initialSize) {
-      return new HashSet<K>(initialSize);
+      return new HashSet<>(initialSize);
    }
 
    @SafeVarargs
    public static <K> HashSet<K> newHashSet(final K... values) {
       if (values == null || values.length == 0)
-         return new HashSet<K>();
+         return new HashSet<>();
 
       final HashSet<K> s = new HashSet<>(values.length);
       for (final K v : values) {
@@ -302,17 +302,17 @@ public abstract class CollectionUtils {
    }
 
    public static <V> LinkedHashSet<V> newLinkedHashSet() {
-      return new LinkedHashSet<V>();
+      return new LinkedHashSet<>();
    }
 
    public static <K> HashSet<K> newLinkedHashSet(final int initialSize) {
-      return new LinkedHashSet<K>(initialSize);
+      return new LinkedHashSet<>(initialSize);
    }
 
    @SafeVarargs
    public static <K> HashSet<K> newLinkedHashSet(final K... values) {
       if (values == null || values.length == 0)
-         return new LinkedHashSet<K>();
+         return new LinkedHashSet<>();
 
       final HashSet<K> s = new LinkedHashSet<>(values.length);
       for (final K v : values) {
@@ -325,7 +325,7 @@ public abstract class CollectionUtils {
       return new ThreadLocal<ArrayList<T>>() {
          @Override
          public ArrayList<T> initialValue() {
-            return new ArrayList<T>();
+            return new ArrayList<>();
          }
       };
    }
@@ -334,7 +334,7 @@ public abstract class CollectionUtils {
       return new ThreadLocal<HashSet<T>>() {
          @Override
          public HashSet<T> initialValue() {
-            return new HashSet<T>();
+            return new HashSet<>();
          }
       };
    }
@@ -343,7 +343,7 @@ public abstract class CollectionUtils {
       return new ThreadLocal<IdentityHashSet<T>>() {
          @Override
          public IdentityHashSet<T> initialValue() {
-            return new IdentityHashSet<T>();
+            return new IdentityHashSet<>();
          }
       };
    }
@@ -352,7 +352,7 @@ public abstract class CollectionUtils {
       return new ThreadLocal<LinkedList<T>>() {
          @Override
          public LinkedList<T> initialValue() {
-            return new LinkedList<T>();
+            return new LinkedList<>();
          }
       };
    }
@@ -361,7 +361,7 @@ public abstract class CollectionUtils {
       return new ThreadLocal<WeakHashSet<T>>() {
          @Override
          public WeakHashSet<T> initialValue() {
-            return new WeakHashSet<T>();
+            return new WeakHashSet<>();
          }
       };
    }
@@ -448,5 +448,12 @@ public abstract class CollectionUtils {
          target.add(op.apply(sourceItem));
       }
       return target;
+   }
+
+   public static <T> T removeLast(final List<T> list) {
+      Args.notNull("list", list);
+      if (list.size() == 0)
+         return null;
+      return list.remove(list.size() - 1);
    }
 }
