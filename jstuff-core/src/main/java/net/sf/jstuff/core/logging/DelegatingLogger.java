@@ -11,357 +11,346 @@ package net.sf.jstuff.core.logging;
 
 import java.lang.reflect.Method;
 
-import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.types.Decorator;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-final class DelegatingLogger extends Logger {
-   private Logger delegate;
+final class DelegatingLogger extends Decorator.Default<LoggerInternal> implements LoggerInternal {
 
    static final String FQCN = DelegatingLogger.class.getName();
 
-   DelegatingLogger(final Logger delegate) {
-      Args.notNull("delegate", delegate);
-      this.delegate = delegate;
+   DelegatingLogger(final LoggerInternal delegate) {
+      super(delegate);
    }
 
    @Override
    public void debug(final String msg) {
-      delegate.debug(msg);
+      wrapped.debug(msg);
    }
 
    @Override
    public void debug(final String messageTemplate, final Object arg) {
-      delegate.debug(messageTemplate, arg);
+      wrapped.debug(messageTemplate, arg);
    }
 
    @Override
    public void debug(final String messageTemplate, final Object arg1, final Object arg2) {
-      delegate.debug(messageTemplate, arg1, arg2);
+      wrapped.debug(messageTemplate, arg1, arg2);
    }
 
    @Override
    public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
-      delegate.debug(messageTemplate, arg1, arg2, arg3);
+      wrapped.debug(messageTemplate, arg1, arg2, arg3);
    }
 
    @Override
    public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
-      delegate.debug(messageTemplate, arg1, arg2, arg3, arg4);
+      wrapped.debug(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
-      delegate.debug(messageTemplate, arg1, arg2, arg3, arg4, arg5);
+      wrapped.debug(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
    @Override
    public void debug(final Throwable ex) {
-      delegate.debug(ex);
+      wrapped.debug(ex);
    }
 
    @Override
    public void debug(final Throwable ex, final String msg) {
-      delegate.debug(ex, msg);
+      wrapped.debug(ex, msg);
    }
 
    @Override
    public void debug(final Throwable ex, final String messageTemplate, final Object... args) {
-      delegate.debug(ex, messageTemplate, args);
+      wrapped.debug(ex, messageTemplate, args);
    }
 
    @Override
    public void debugNew(final Object newInstance) {
-      delegate.debugNew(newInstance);
+      wrapped.debugNew(newInstance);
    }
 
    @Override
    public void error(final String msg) {
-      delegate.error(msg);
+      wrapped.error(msg);
    }
 
    @Override
    public void error(final String messageTemplate, final Object arg) {
-      delegate.error(messageTemplate, arg);
+      wrapped.error(messageTemplate, arg);
    }
 
    @Override
    public void error(final String messageTemplate, final Object arg1, final Object arg2) {
-      delegate.error(messageTemplate, arg1, arg2);
+      wrapped.error(messageTemplate, arg1, arg2);
    }
 
    @Override
    public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
-      delegate.error(messageTemplate, arg1, arg2, arg3);
+      wrapped.error(messageTemplate, arg1, arg2, arg3);
    }
 
    @Override
    public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
-      delegate.error(messageTemplate, arg1, arg2, arg3, arg4);
+      wrapped.error(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
-      delegate.error(messageTemplate, arg1, arg2, arg3, arg4, arg5);
+      wrapped.error(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
    @Override
    public void error(final Throwable ex) {
-      delegate.error(ex);
+      wrapped.error(ex);
    }
 
    @Override
    public void error(final Throwable ex, final String msg) {
-      delegate.error(ex, msg);
+      wrapped.error(ex, msg);
    }
 
    @Override
    public void error(final Throwable ex, final String messageTemplate, final Object... args) {
-      delegate.error(ex, messageTemplate, args);
+      wrapped.error(ex, messageTemplate, args);
    }
 
    @Override
    public void fatal(final Throwable ex) {
-      delegate.fatal(ex);
+      wrapped.fatal(ex);
    }
 
    @Override
    public void fatal(final Throwable ex, final String msg) {
-      delegate.fatal(ex, msg);
+      wrapped.fatal(ex, msg);
    }
 
    @Override
    public void fatal(final Throwable ex, final String messageTemplate, final Object... args) {
-      delegate.fatal(ex, messageTemplate, args);
-   }
-
-   Logger getDelegate() {
-      return delegate;
+      wrapped.fatal(ex, messageTemplate, args);
    }
 
    @Override
    public String getName() {
-      return delegate.getName();
+      return wrapped.getName();
    }
 
    @Override
    public void info(final String msg) {
-      delegate.info(msg);
+      wrapped.info(msg);
    }
 
    @Override
    public void info(final String messageTemplate, final Object arg) {
-      delegate.info(messageTemplate, arg);
+      wrapped.info(messageTemplate, arg);
    }
 
    @Override
    public void info(final String messageTemplate, final Object arg1, final Object arg2) {
-      delegate.info(messageTemplate, arg1, arg2);
+      wrapped.info(messageTemplate, arg1, arg2);
    }
 
    @Override
    public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
-      delegate.info(messageTemplate, arg1, arg2, arg3);
+      wrapped.info(messageTemplate, arg1, arg2, arg3);
    }
 
    @Override
    public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
-      delegate.info(messageTemplate, arg1, arg2, arg3, arg4);
+      wrapped.info(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
-      delegate.info(messageTemplate, arg1, arg2, arg3, arg4, arg5);
+      wrapped.info(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
    @Override
    public void info(final Throwable ex) {
-      delegate.info(ex);
+      wrapped.info(ex);
    }
 
    @Override
    public void info(final Throwable ex, final String msg) {
-      delegate.info(ex, msg);
+      wrapped.info(ex, msg);
    }
 
    @Override
    public void info(final Throwable ex, final String messageTemplate, final Object... args) {
-      delegate.info(ex, messageTemplate, args);
+      wrapped.info(ex, messageTemplate, args);
    }
 
    @Override
    public void infoNew(final Object newInstance) {
-      delegate.infoNew(newInstance);
+      wrapped.infoNew(newInstance);
    }
 
    @Override
    public boolean isDebugEnabled() {
-      return delegate.isDebugEnabled();
+      return wrapped.isDebugEnabled();
    }
 
    @Override
    public boolean isErrorEnabled() {
-      return delegate.isErrorEnabled();
+      return wrapped.isErrorEnabled();
    }
 
    @Override
    public boolean isInfoEnabled() {
-      return delegate.isInfoEnabled();
+      return wrapped.isInfoEnabled();
    }
 
    @Override
    public boolean isTraceEnabled() {
-      return delegate.isTraceEnabled();
+      return wrapped.isTraceEnabled();
    }
 
    @Override
    public boolean isWarnEnabled() {
-      return delegate.isWarnEnabled();
-   }
-
-   void setDelegate(final Logger delegate) {
-      Args.notNull("delegate", delegate);
-      this.delegate = delegate;
+      return wrapped.isWarnEnabled();
    }
 
    @Override
    public String toString() {
-      return super.toString() + "[name=" + getName() + ",delegate=" + delegate + "]";
-   }
-
-   @Override
-   protected void trace(final Method location, final String msg) {
-      delegate.trace(location, msg);
+      return super.toString() + "[name=" + getName() + ",delegate=" + wrapped + "]";
    }
 
    @Override
    public void trace(final String msg) {
-      delegate.trace(msg);
+      wrapped.trace(msg);
    }
 
    @Override
    public void trace(final String messageTemplate, final Object arg) {
-      delegate.trace(messageTemplate, arg);
+      wrapped.trace(messageTemplate, arg);
    }
 
    @Override
    public void trace(final String messageTemplate, final Object arg1, final Object arg2) {
-      delegate.trace(messageTemplate, arg1, arg2);
+      wrapped.trace(messageTemplate, arg1, arg2);
    }
 
    @Override
    public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
-      delegate.trace(messageTemplate, arg1, arg2, arg3);
+      wrapped.trace(messageTemplate, arg1, arg2, arg3);
    }
 
    @Override
    public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
-      delegate.trace(messageTemplate, arg1, arg2, arg3, arg4);
+      wrapped.trace(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
-      delegate.trace(messageTemplate, arg1, arg2, arg3, arg4, arg5);
+      wrapped.trace(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
    @Override
    public void trace(final Throwable ex) {
-      delegate.trace(ex);
+      wrapped.trace(ex);
    }
 
    @Override
    public void trace(final Throwable ex, final String msg) {
-      delegate.trace(ex, msg);
+      wrapped.trace(ex, msg);
    }
 
    @Override
    public void trace(final Throwable ex, final String messageTemplate, final Object... args) {
-      delegate.trace(ex, messageTemplate, args);
+      wrapped.trace(ex, messageTemplate, args);
    }
 
    @Override
    public void entry() {
-      delegate.entry();
+      wrapped.entry();
    }
 
    @Override
    public void entry(final Object arg1) {
-      delegate.entry(arg1);
+      wrapped.entry(arg1);
    }
 
    @Override
    public void entry(final Object arg1, final Object arg2) {
-      delegate.entry(arg1, arg2);
+      wrapped.entry(arg1, arg2);
    }
 
    @Override
    public void entry(final Object arg1, final Object arg2, final Object arg3) {
-      delegate.entry(arg1, arg2, arg3);
+      wrapped.entry(arg1, arg2, arg3);
    }
 
    @Override
    public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
-      delegate.entry(arg1, arg2, arg3, arg4);
+      wrapped.entry(arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
-      delegate.entry(arg1, arg2, arg3, arg4, arg5);
+      wrapped.entry(arg1, arg2, arg3, arg4, arg5);
    }
 
    @Override
    public void exit() {
-      delegate.exit();
+      wrapped.exit();
    }
 
    @Override
    public <T> T exit(final T returnValue) {
-      return delegate.exit(returnValue);
+      return wrapped.exit(returnValue);
    }
 
    @Override
    public void warn(final String msg) {
-      delegate.warn(msg);
+      wrapped.warn(msg);
    }
 
    @Override
    public void warn(final String messageTemplate, final Object arg) {
-      delegate.warn(messageTemplate, arg);
+      wrapped.warn(messageTemplate, arg);
    }
 
    @Override
    public void warn(final String messageTemplate, final Object arg1, final Object arg2) {
-      delegate.warn(messageTemplate, arg1, arg2);
+      wrapped.warn(messageTemplate, arg1, arg2);
    }
 
    @Override
    public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
-      delegate.warn(messageTemplate, arg1, arg2, arg3);
+      wrapped.warn(messageTemplate, arg1, arg2, arg3);
    }
 
    @Override
    public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
-      delegate.warn(messageTemplate, arg1, arg2, arg3, arg4);
+      wrapped.warn(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
-      delegate.warn(messageTemplate, arg1, arg2, arg3, arg4, arg5);
+      wrapped.warn(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
    @Override
    public void warn(final Throwable ex) {
-      delegate.warn(ex);
+      wrapped.warn(ex);
    }
 
    @Override
    public void warn(final Throwable ex, final String msg) {
-      delegate.warn(ex, msg);
+      wrapped.warn(ex, msg);
    }
 
    @Override
    public void warn(final Throwable ex, final String messageTemplate, final Object... args) {
-      delegate.warn(ex, messageTemplate, args);
+      wrapped.warn(ex, messageTemplate, args);
+   }
+
+   @Override
+   public void trace(final Method location, final String msg) {
+      wrapped.trace(location, msg);
    }
 }

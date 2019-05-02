@@ -9,6 +9,7 @@
  *********************************************************************/
 package net.sf.jstuff.core.logging;
 
+import static net.sf.jstuff.core.logging.LoggerUtils.*;
 import static org.slf4j.spi.LocationAwareLogger.*;
 
 import java.lang.reflect.Method;
@@ -24,7 +25,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-final class SLF4JLogger extends Logger {
+final class SLF4JLogger implements LoggerInternal {
 
    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(SLF4JLogger.class);
 
@@ -529,7 +530,7 @@ final class SLF4JLogger extends Logger {
    }
 
    @Override
-   protected void trace(final Method location, String msg) {
+   public void trace(final Method location, String msg) {
       if (LoggerConfig.isDebugMessagePrefixEnabled) {
          msg = location.getName() + "():" + msg;
       }

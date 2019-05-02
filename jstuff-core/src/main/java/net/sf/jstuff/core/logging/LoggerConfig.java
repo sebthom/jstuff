@@ -105,7 +105,7 @@ public final class LoggerConfig {
          // hot replacing the underlying logger infrastructure
          for (final DelegatingLogger logger : LOGGERS) {
             final String name = logger.getName();
-            logger.setDelegate(isUseSFL4J ? new SLF4JLogger(name) : new JULLogger(name));
+            logger.setWrapped(isUseSFL4J ? new SLF4JLogger(name) : new JULLogger(name));
          }
 
          if (isUseSFL4J) {
