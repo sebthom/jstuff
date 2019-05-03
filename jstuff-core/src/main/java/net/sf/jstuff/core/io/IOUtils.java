@@ -55,6 +55,10 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       closeQuietly((Closeable) output);
    }
 
+   public static void closeQuietly(final Reader input) {
+      closeQuietly((Closeable) input);
+   }
+
    public static void closeQuietly(final ZipFile file) {
       if (file != null) {
          try {

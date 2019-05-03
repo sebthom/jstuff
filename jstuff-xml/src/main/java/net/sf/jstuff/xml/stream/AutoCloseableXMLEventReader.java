@@ -7,20 +7,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *********************************************************************/
-package net.sf.jstuff.xml;
+package net.sf.jstuff.xml.stream;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLEventReader;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class StAXUtils {
-   public static String getAttributeValue(final XMLStreamReader reader, final String attrLocalName) {
-      for (int i = 0; i < reader.getAttributeCount(); i++) {
-         final String localName = reader.getAttributeLocalName(i);
-         if (localName.equals(attrLocalName))
-            return reader.getAttributeValue(i);
-      }
-      return null;
-   }
+public interface AutoCloseableXMLEventReader extends XMLEventReader, AutoCloseable {
+
 }
