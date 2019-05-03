@@ -25,7 +25,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
  */
 public final class StartServer {
 
-   public static void main(final String[] args) throws Exception { // CHECKSTYLE:IGNORE UncommentedMain
+   public static void main(final String[] args) throws Exception {
       final Server server = new Server();
       final SocketConnector connector = new SocketConnector();
 

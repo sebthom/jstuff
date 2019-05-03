@@ -260,8 +260,7 @@ public abstract class StAXUtils {
                   return result;
 
                if (pathElemSize.size() > 0) {
-                  //CHECKSTYLE:IGNORE .* FOR NEXT LINE
-                  final int size = pathElemSize.removeLast();
+                  final int size = pathElemSize.removeLast(); //CHECKSTYLE:IGNORE MoveVariableInsideIfCheck
                   if (path.length() > 0) {
                      path.setLength(path.length() - size);
                   }
