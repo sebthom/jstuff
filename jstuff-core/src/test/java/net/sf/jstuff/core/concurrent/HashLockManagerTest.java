@@ -11,6 +11,8 @@ package net.sf.jstuff.core.concurrent;
 
 import static org.junit.Assert.*;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +29,8 @@ import net.sf.jstuff.core.logging.Logger;
 public class HashLockManagerTest extends TestCase {
    private static final Logger LOG = Logger.create();
 
-   private static final int THREADS = 20;
-   private static final int ITERATIONS_PER_THREAD = 10000;
+   private static final int THREADS = 10;
+   private static final int ITERATIONS_PER_THREAD = 40000;
 
    private final ExecutorService es = Executors.newFixedThreadPool(THREADS);
    private int sum = -1;
@@ -48,25 +50,30 @@ public class HashLockManagerTest extends TestCase {
       final StopWatch sw = new StopWatch();
       sw.start();
       sum = 0;
+
       final AtomicBoolean lockCountWasZero = new AtomicBoolean(false);
       final AtomicBoolean lockCountWasGreaterThan1 = new AtomicBoolean(false);
+
+      final CountDownLatch launch = new CountDownLatch(THREADS);
+
       for (int i = 0; i < THREADS; i++) {
-         es.execute(new Runnable() {
+         es.submit((Callable<Void>) () -> {
             // intentionally generated new object to proof synchronization is not based on lock identity but hashcode identity
             final String namedLock = new String("MY_LOCK");
 
-            @Override
-            public void run() {
-               for (int i = 0; i < ITERATIONS_PER_THREAD; i++) {
-                  lockManager.executeWriteLocked(namedLock, calculation);
-                  final int lockCount = lockManager.getLockCount();
-                  if (lockCount == 0) {
-                     lockCountWasZero.set(true);
-                  } else if (lockCount > 1) {
-                     lockCountWasGreaterThan1.set(true);
-                  }
+            launch.countDown();
+            launch.await();
+
+            for (int j = 0; j < ITERATIONS_PER_THREAD; j++) {
+               lockManager.executeWriteLocked(namedLock, calculation);
+               final int lockCount = lockManager.getLockCount();
+               if (lockCount == 0) {
+                  lockCountWasZero.set(true);
+               } else if (lockCount > 1) {
+                  lockCountWasGreaterThan1.set(true);
                }
             }
+            return null;
          });
       }
       es.shutdown();
@@ -86,19 +93,23 @@ public class HashLockManagerTest extends TestCase {
       final StopWatch sw = new StopWatch();
       sw.start();
       sum = 0;
+
+      final CountDownLatch launch = new CountDownLatch(THREADS);
+
       for (int i = 0; i < THREADS; i++) {
-         es.execute(new Runnable() {
+         es.submit((Callable<Void>) () -> {
             final String namedLock = new String("MY_LOCK");
 
-            @Override
-            public void run() {
-               for (int i = 0; i < ITERATIONS_PER_THREAD; i++) {
-                  // this synchronization of course has no effect since the lock object is a different string instance for each thread
-                  synchronized (namedLock) {
-                     calculation.run();
-                  }
+            launch.countDown();
+            launch.await();
+
+            for (int j = 0; j < ITERATIONS_PER_THREAD; j++) {
+               // this synchronization of course has no effect since the lock object is a different string instance for each thread
+               synchronized (namedLock) {
+                  calculation.run();
                }
             }
+            return null;
          });
       }
       es.shutdown();

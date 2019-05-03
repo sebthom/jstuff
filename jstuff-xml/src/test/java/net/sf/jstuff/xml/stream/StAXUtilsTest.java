@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import javax.xml.stream.XMLStreamException;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.xml.stream.StAXUtils.ElementInfo;
 
 /**
@@ -39,12 +38,6 @@ public class StAXUtilsTest extends TestCase {
    }
 
    public void testElementWithAttributeMatch() throws XMLStreamException {
-      final int index = 1;
-      final int size = 4;
-      final int[] arr = {0, 1, 2, 3, 0};
-      System.arraycopy(arr, index, arr, index, size - index - 1);
-      System.out.println(ArrayUtils.toString(arr));
-      System.exit(0);
       assertEquals("<Cat>", findElement(getXml(), "/root/group/item[@id='2']").getText());
       assertEquals("<Cat>", findElement(getXml(), "root/group/item[@id='2']").getText());
       assertEquals("<Cat>", findElement(getXml(), "group/item[@id='2']").getText());

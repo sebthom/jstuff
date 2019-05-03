@@ -35,7 +35,7 @@
       </dependency>
 
       <dependency>
-            <!-- for parameter names in Logger.traceEntry() -->
+         <!-- for parameter names in Logger.traceEntry() -->
          <groupId>com.thoughtworks.paranamer</groupId>
          <artifactId>paranamer</artifactId>
          <optional>true</optional>
