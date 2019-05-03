@@ -10,36 +10,57 @@
 package net.sf.jstuff.core.types;
 
 /**
+ * See https://en.wikipedia.org/wiki/Three-valued_logic
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public enum TriState {
+public enum Trilean {
 
    TRUE,
    FALSE,
    UNKNOWN;
 
-   public static TriState negate(final TriState state) {
-      if (state == null)
+   public static Trilean of(final boolean value) {
+      return value ? TRUE : FALSE;
+   }
+
+   public static Trilean of(final Boolean value) {
+      if (value == null)
+         return UNKNOWN;
+      return value.booleanValue() ? TRUE : FALSE;
+   }
+
+   public static Trilean of(final String value) {
+      if (value == null)
          return UNKNOWN;
 
-      switch (state) {
-         case TRUE:
-            return FALSE;
-         case FALSE:
+      switch (value.toLowerCase()) {
+         case "1":
+         case "true":
+         case "t":
+         case "yes":
+         case "y":
             return TRUE;
+         case "0":
+         case "no":
+         case "n":
+         case "false":
+         case "f":
+            return FALSE;
          default:
             return UNKNOWN;
       }
    }
 
-   public static TriState valueOf(final boolean value) {
-      return value ? TRUE : FALSE;
-   }
-
-   public static TriState valueOf(final Boolean value) {
-      if (value == null)
-         return UNKNOWN;
-      return value.booleanValue() ? TRUE : FALSE;
+   public Trilean and(Trilean state) {
+      if (state == null) {
+         state = UNKNOWN;
+      }
+      if (this == TRUE && state == TRUE)
+         return TRUE;
+      if (this == FALSE || state == FALSE)
+         return FALSE;
+      return UNKNOWN;
    }
 
    public boolean isFalse() {
@@ -56,6 +77,28 @@ public enum TriState {
 
    public boolean isUnknown() {
       return this == UNKNOWN;
+   }
+
+   public Trilean negate() {
+      switch (this) {
+         case TRUE:
+            return FALSE;
+         case FALSE:
+            return TRUE;
+         default:
+            return UNKNOWN;
+      }
+   }
+
+   public Trilean or(Trilean state) {
+      if (state == null) {
+         state = UNKNOWN;
+      }
+      if (this == TRUE || state == TRUE)
+         return TRUE;
+      if (this == UNKNOWN || state == UNKNOWN)
+         return UNKNOWN;
+      return FALSE;
    }
 
    public Boolean toBoolean() {
@@ -134,5 +177,33 @@ public enum TriState {
          default:
             return unknownValue;
       }
+   }
+
+   @Override
+   public String toString() {
+      switch (this) {
+         case TRUE:
+            return "true";
+         case FALSE:
+            return "false";
+         default:
+            return "unknown";
+      }
+   }
+
+   public Trilean xor(Trilean state) {
+      if (state == null) {
+         state = UNKNOWN;
+      }
+      if (this == TRUE && state == TRUE)
+         return FALSE;
+
+      if (this == FALSE && state == FALSE)
+         return FALSE;
+
+      if (this == UNKNOWN || state == UNKNOWN)
+         return UNKNOWN;
+
+      return TRUE;
    }
 }

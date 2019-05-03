@@ -30,7 +30,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
 
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.logging.Logger;
@@ -82,6 +81,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
     * see http://dojo.jot.com/SMD
     * see http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9
     */
+   @SuppressWarnings("deprecation")
    public static String buildSMDTemplate(final Class<?> serviceInterface, final Object service, final Map<String, Method> exportedMethodsByName,
       final boolean pretty) throws JsonProcessingException {
       // build the method descriptors
@@ -94,7 +94,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 
             final List<Object> parameters = newArrayList();
             for (int j = 0; j < method.getParameterTypes().length; j++) {
-               final JsonSchema parameterDescriptor = JSON.generateJsonSchema(method.getParameterTypes()[j]);
+               final com.fasterxml.jackson.databind.jsonschema.JsonSchema parameterDescriptor = JSON.generateJsonSchema(method.getParameterTypes()[j]);
                parameterDescriptor.getSchemaNode().put("name", names[0]);
                parameterDescriptor.getSchemaNode().put("java-type", method.getParameterTypes()[j].getName());
                parameters.add(parameterDescriptor);
@@ -102,7 +102,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
             methodDescriptor.put("parameters", parameters);
          }
          if (!Methods.isReturningVoid(method)) {
-            final JsonSchema returnTypeDescriptor = JSON.generateJsonSchema(method.getReturnType());
+            final com.fasterxml.jackson.databind.jsonschema.JsonSchema returnTypeDescriptor = JSON.generateJsonSchema(method.getReturnType());
             returnTypeDescriptor.getSchemaNode().put("java-type", method.getReturnType().getName());
             methodDescriptor.put("returns", returnTypeDescriptor);
          }
