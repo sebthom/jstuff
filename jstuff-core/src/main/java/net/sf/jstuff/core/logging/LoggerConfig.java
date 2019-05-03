@@ -54,7 +54,7 @@ public final class LoggerConfig {
 
       LOG = create(LoggerConfig.class.getName());
       if (slf4jLinkageError != null) {
-         LOG.debug(slf4jLinkageError);
+         LOG.trace(slf4jLinkageError);
       }
 
       setPreferSLF4J("true".equals(System.getProperty(Logger.class.getName() + ".preferSLF4J", "true")));

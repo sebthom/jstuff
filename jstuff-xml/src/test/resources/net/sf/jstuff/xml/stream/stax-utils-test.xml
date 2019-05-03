@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="http://default_ns" xmlns:ns1="http://ns1">
+   <ns1:group name="a">
+      <item id="1">Dog</item>
+      <item id="2"><![CDATA[<Cat>]]></item>
+   </ns1:group>
+   <ns1:group name="b">
+      <item id="3">
+
+         Beer
+
+         Bike
+
+      </item>
+      <ns1:item anchor="#car" id="4">Car</ns1:item>
+      <item id="5">
+
+         Fast
+      <![CDATA[<Steam>
+
+      Train]]>
+
+      </item>
+   </ns1:group>
+</root>

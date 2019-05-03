@@ -22,7 +22,6 @@
 
    <artifactId>jstuff-xml</artifactId>
 
-
    <dependencies>
       <dependency>
          <groupId>${project.groupId}</groupId>

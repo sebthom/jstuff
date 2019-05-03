@@ -16,7 +16,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import net.sf.jstuff.xml.StAXUtils;
+import net.sf.jstuff.xml.stream.StAXUtils;
 
 public abstract class AtomBlogPostEntryResponseReader {
    private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = new ThreadLocal<XMLInputFactory>() {

@@ -18,7 +18,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import net.sf.jstuff.xml.StAXUtils;
+import net.sf.jstuff.xml.stream.StAXUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
