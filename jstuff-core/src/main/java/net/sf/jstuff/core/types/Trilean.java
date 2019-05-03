@@ -108,8 +108,7 @@ public enum Trilean {
          case FALSE:
             return Boolean.FALSE;
          default:
-            // CHECKSTYLE:IGNORE ReturnNullInsteadOfBooleanCheck FOR NEXT LINE
-            return null;
+            return null; // CHECKSTYLE:IGNORE ReturnNullInsteadOfBooleanCheck
       }
    }
 
