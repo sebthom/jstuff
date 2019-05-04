@@ -22,6 +22,19 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Threads {
+   private static final Logger LOG = Logger.create();
+
+   private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = new java.util.Comparator<Thread>() {
+      @Override
+      public int compare(final Thread t1, final Thread t2) {
+         return t2.getPriority() - t1.getPriority();
+      }
+   };
+
+   private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
+
+   private static ThreadGroup rootTG;
+
    public static Thread[] all() {
       final ThreadGroup root = rootThreadGroup();
       int tmpSize = count() + 1;
@@ -126,18 +139,5 @@ public abstract class Threads {
          handleInterruptedException(ex);
       }
    }
-
-   private static final Logger LOG = Logger.create();
-
-   private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = new java.util.Comparator<Thread>() {
-      @Override
-      public int compare(final Thread t1, final Thread t2) {
-         return t2.getPriority() - t1.getPriority();
-      }
-   };
-
-   private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
-
-   private static ThreadGroup rootTG;
 
 }
