@@ -300,7 +300,10 @@ public abstract class Resources {
             while (!toScan.isEmpty()) {
                final File file = toScan.poll();
                if (file.isDirectory()) {
-                  toScan.addAll(Arrays.asList(file.listFiles()));
+                  final File[] files = file.listFiles();
+                  if (files != null) {
+                     toScan.addAll(Arrays.asList(files));
+                  }
                } else {
                   final String name = rootDirURI.relativize(file.toURI()).toString();
                   if (nameFilter.accept(name)) {
