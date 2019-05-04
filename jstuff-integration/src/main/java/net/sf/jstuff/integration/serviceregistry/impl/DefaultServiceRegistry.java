@@ -10,9 +10,7 @@
 package net.sf.jstuff.integration.serviceregistry.impl;
 
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -233,39 +231,35 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
    protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointState serviceEndpointState,
       final Class<SERVICE_INTERFACE> serviceInterface) {
       final DefaultServiceProxyAdvice<SERVICE_INTERFACE> advice = new DefaultServiceProxyAdvice<>(serviceEndpointState, serviceInterface);
-      final ServiceProxyInternal<SERVICE_INTERFACE> proxy = Proxies.create(new InvocationHandler() {
+      final ServiceProxyInternal<SERVICE_INTERFACE> serviceProxy = Proxies.create((proxy, method, args) -> {
+         final String methodName = method.getName();
+         if (method.getDeclaringClass() == ServiceProxy.class)
+            return method.invoke(advice, args);
+         if (method.getDeclaringClass() == ServiceProxyInternal.class)
+            return method.invoke(advice, args);
 
-         @Override
-         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-            final String methodName = method.getName();
-            if (method.getDeclaringClass() == ServiceProxy.class)
-               return method.invoke(advice, args);
-            if (method.getDeclaringClass() == ServiceProxyInternal.class)
-               return method.invoke(advice, args);
+         final int methodParamCount = method.getParameterTypes().length;
+         if (methodParamCount == 0) {
+            if ("hashCode".equals(methodName))
+               return advice.hashCode();
+            if ("toString".equals(methodName))
+               return advice.toString();
+         } else if (methodParamCount == 1) {
+            if ("equals".equals(methodName))
+               return proxy == args[0];
+         }
 
-            final int methodParamCount = method.getParameterTypes().length;
-            if (methodParamCount == 0) {
-               if ("hashCode".equals(methodName))
-                  return advice.hashCode();
-               if ("toString".equals(methodName))
-                  return advice.toString();
-            } else if (methodParamCount == 1) {
-               if ("equals".equals(methodName))
-                  return proxy == args[0];
-            }
-
-            final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
-            if (service == null)
-               throw new ServiceUnavailableException(advice.serviceEndpointId, serviceInterface);
-            try {
-               return method.invoke(service, args);
-            } catch (final InvocationTargetException ex) {
-               throw ex.getTargetException();
-            }
+         final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
+         if (service == null)
+            throw new ServiceUnavailableException(advice.serviceEndpointId, serviceInterface);
+         try {
+            return method.invoke(service, args);
+         } catch (final InvocationTargetException ex) {
+            throw ex.getTargetException();
          }
       }, ServiceProxyInternal.class, serviceInterface);
-      advice.setProxy(proxy);
-      return proxy;
+      advice.setProxy(serviceProxy);
+      return serviceProxy;
    }
 
    @Override

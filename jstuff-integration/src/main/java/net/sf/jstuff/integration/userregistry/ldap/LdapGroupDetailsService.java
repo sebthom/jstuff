@@ -18,10 +18,8 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.naming.ldap.LdapContext;
 
 import net.sf.jstuff.core.collection.Enumerations;
-import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LdapTemplate;
@@ -52,24 +50,20 @@ public class LdapGroupDetailsService implements GroupDetailsService {
    public GroupDetails getGroupDetailsByGroupDN(final String groupDN) {
       Args.notNull("groupDN", groupDN);
 
-      return (GroupDetails) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
+      return (GroupDetails) ldapTemplate.execute(ctx -> {
+         final Attributes attr = ctx.getAttributes(groupDN, new String[] {groupAttributeDisplayName, groupAttributeGroupId, groupAttributeMember});
 
-         @Override
-         public Object invoke(final LdapContext ctx) throws NamingException {
-            final Attributes attr = ctx.getAttributes(groupDN, new String[] {groupAttributeDisplayName, groupAttributeGroupId, groupAttributeMember});
+         final DefaultGroupDetails groupDetails = new DefaultGroupDetails();
+         groupDetails.setDisplayName((String) attr.get(groupAttributeDisplayName).get());
+         groupDetails.setDistingueshedName(groupDN);
+         groupDetails.setGroupId((String) attr.get(groupAttributeGroupId).get());
 
-            final DefaultGroupDetails groupDetails = new DefaultGroupDetails();
-            groupDetails.setDisplayName((String) attr.get(groupAttributeDisplayName).get());
-            groupDetails.setDistingueshedName(groupDN);
-            groupDetails.setGroupId((String) attr.get(groupAttributeGroupId).get());
-
-            final Set<String> memberDNs = new HashSet<>();
-            for (final Object dn : Enumerations.toIterable(attr.get(groupAttributeMember).getAll())) {
-               memberDNs.add((String) dn);
-            }
-            groupDetails.setMemberDNs(memberDNs.toArray(new String[memberDNs.size()]));
-            return groupDetails;
+         final Set<String> memberDNs = new HashSet<>();
+         for (final Object dn : Enumerations.toIterable(attr.get(groupAttributeMember).getAll())) {
+            memberDNs.add((String) dn);
          }
+         groupDetails.setMemberDNs(memberDNs.toArray(new String[memberDNs.size()]));
+         return groupDetails;
       });
    }
 
@@ -78,19 +72,15 @@ public class LdapGroupDetailsService implements GroupDetailsService {
    public Set<String> getGroupIdsByUserDN(final String userDN) {
       Args.notNull("userDN", userDN);
 
-      return (Set<String>) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
+      return (Set<String>) ldapTemplate.execute(ctx -> {
+         final Set<String> groupIds = new HashSet<>();
 
-         @Override
-         public Object invoke(final LdapContext ctx) throws NamingException {
-            final Set<String> groupIds = new HashSet<>();
-
-            LOG.trace("Performing LDAP Group Search for %s=%s", groupAttributeMember, userDN);
-            for (final SearchResult sr : searchGroup(ctx, groupAttributeMember + "=" + userDN, new String[] {groupAttributeGroupId})) {
-               groupIds.add((String) sr.getAttributes().get(groupAttributeGroupId).get());
-            }
-            LOG.trace("Found %s group(s) for user %s", groupIds.size(), userDN);
-            return groupIds;
+         LOG.trace("Performing LDAP Group Search for %s=%s", groupAttributeMember, userDN);
+         for (final SearchResult sr : searchGroup(ctx, groupAttributeMember + "=" + userDN, new String[] {groupAttributeGroupId})) {
+            groupIds.add((String) sr.getAttributes().get(groupAttributeGroupId).get());
          }
+         LOG.trace("Found %s group(s) for user %s", groupIds.size(), userDN);
+         return groupIds;
       });
    }
 

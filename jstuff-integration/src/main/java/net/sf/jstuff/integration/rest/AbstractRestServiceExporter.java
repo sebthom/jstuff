@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -278,12 +277,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
       }
 
       final List<RestResourceAction> actions = serviceActions.getAllResourceActions();
-      Collections.sort(actions, new Comparator<RestResourceAction>() {
-         @Override
-         public int compare(final RestResourceAction o1, final RestResourceAction o2) {
-            return ObjectUtils.compare(o1.getRequestURITemplate(), o2.getRequestURITemplate());
-         }
-      });
+      Collections.sort(actions, (o1, o2) -> ObjectUtils.compare(o1.getRequestURITemplate(), o2.getRequestURITemplate()));
       serviceDescriptor.setActions(actions);
    }
 }

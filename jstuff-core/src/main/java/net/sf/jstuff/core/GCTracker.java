@@ -80,19 +80,16 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
       init();
    }
 
+   @SuppressWarnings("unchecked")
    private void init() {
-      executor.scheduleWithFixedDelay(new Runnable() {
-         @Override
-         @SuppressWarnings("unchecked")
-         public void run() {
-            GCReference ref;
-            while ((ref = (GCReference) garbageCollectedRefs.poll()) != null) {
-               ref.tracker.monitoredReferences.remove(ref);
-               try {
-                  ref.tracker.onGCEvent(ref.eventToFireOnGC);
-               } catch (final Exception ex) {
-                  LOG.error(ex, "Failed to execute callback.");
-               }
+      executor.scheduleWithFixedDelay(() -> {
+         GCReference ref;
+         while ((ref = (GCReference) garbageCollectedRefs.poll()) != null) {
+            ref.tracker.monitoredReferences.remove(ref);
+            try {
+               ref.tracker.onGCEvent(ref.eventToFireOnGC);
+            } catch (final Exception ex) {
+               LOG.error(ex, "Failed to execute callback.");
             }
          }
       }, intervalMS, intervalMS, TimeUnit.MILLISECONDS);

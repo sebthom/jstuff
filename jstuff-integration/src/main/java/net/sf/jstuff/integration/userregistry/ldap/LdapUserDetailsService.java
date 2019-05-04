@@ -20,10 +20,8 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.naming.ldap.LdapContext;
 
 import net.sf.jstuff.core.collection.Enumerations;
-import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LdapTemplate;
@@ -58,38 +56,34 @@ public class LdapUserDetailsService implements UserDetailsService {
    protected UserDetails getUserDetailsByFilter(final String filter) {
       Args.notNull("filter", filter);
 
-      return (UserDetails) ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
+      return (UserDetails) ldapTemplate.execute(ctx -> {
+         final Iterator<SearchResult> results = searchUser(ctx, filter, new String[] { //
+            userAttributeDisplayName, //
+            userAttributeEMailAdress, //
+            userAttributeLogonName, //
+            userAttributeUserId //
+         }).iterator();
+         if (!results.hasNext())
+            return null;
 
-         @Override
-         public Object invoke(final LdapContext ctx) throws NamingException {
-            final Iterator<SearchResult> results = searchUser(ctx, filter, new String[] { //
-               userAttributeDisplayName, //
-               userAttributeEMailAdress, //
-               userAttributeLogonName, //
-               userAttributeUserId //
-            }).iterator();
-            if (!results.hasNext())
-               return null;
+         final SearchResult sr = results.next();
 
-            final SearchResult sr = results.next();
+         final Attributes attr = sr.getAttributes();
 
-            final Attributes attr = sr.getAttributes();
+         // building the user DN
+         final NameParser parser = ctx.getNameParser("");
+         final Name contextName = parser.parse(ctx.getNameInNamespace());
+         final Name baseName = parser.parse(userSearchBase);
+         final Name entryName = parser.parse(new CompositeName(sr.getName()).get(0));
+         final Name dn = contextName.addAll(baseName).addAll(entryName);
 
-            // building the user DN
-            final NameParser parser = ctx.getNameParser("");
-            final Name contextName = parser.parse(ctx.getNameInNamespace());
-            final Name baseName = parser.parse(userSearchBase);
-            final Name entryName = parser.parse(new CompositeName(sr.getName()).get(0));
-            final Name dn = contextName.addAll(baseName).addAll(entryName);
-
-            return new DefaultUserDetails( //
-               (String) attr.get(userAttributeUserId).get(), //
-               (String) attr.get(userAttributeDisplayName).get(), //
-               (String) attr.get(userAttributeLogonName).get(), //
-               dn.toString(), //
-               (String) attr.get(userAttributeEMailAdress).get()//
-            );
-         }
+         return new DefaultUserDetails( //
+            (String) attr.get(userAttributeUserId).get(), //
+            (String) attr.get(userAttributeDisplayName).get(), //
+            (String) attr.get(userAttributeLogonName).get(), //
+            dn.toString(), //
+            (String) attr.get(userAttributeEMailAdress).get()//
+         );
       });
    }
 

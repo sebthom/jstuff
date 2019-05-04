@@ -9,7 +9,6 @@
  *********************************************************************/
 package net.sf.jstuff.core.io;
 
-import java.beans.ExceptionListener;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.InputStream;
@@ -37,12 +36,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
       final ArrayList<Exception> exList = new ArrayList<>(2);
       final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
       final XMLEncoder encoder = new XMLEncoder(bos);
-      encoder.setExceptionListener(new ExceptionListener() {
-         @Override
-         public void exceptionThrown(final Exception ex) {
-            exList.add(ex);
-         }
-      });
+      encoder.setExceptionListener(ex -> exList.add(ex));
       encoder.writeObject(javaBean);
       encoder.close();
       if (exList.size() > 0)
@@ -78,12 +72,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
       final ArrayList<Exception> exList = new ArrayList<>(2);
       final FastByteArrayInputStream bis = new FastByteArrayInputStream(xmlData.getBytes());
       final XMLDecoder decoder = new XMLDecoder(bis);
-      decoder.setExceptionListener(new ExceptionListener() {
-         @Override
-         public void exceptionThrown(final Exception ex) {
-            exList.add(ex);
-         }
-      });
+      decoder.setExceptionListener(ex -> exList.add(ex));
       @SuppressWarnings("unchecked")
       final T javaBean = (T) decoder.readObject();
       if (exList.size() > 0)

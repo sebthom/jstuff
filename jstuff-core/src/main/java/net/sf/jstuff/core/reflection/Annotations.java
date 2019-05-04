@@ -13,7 +13,6 @@ import static net.sf.jstuff.core.reflection.Members.*;
 import static net.sf.jstuff.core.reflection.Types.*;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
@@ -65,22 +64,19 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
        * try to create the dynamic annotation instance
        */
       try {
-         return Proxies.create(new InvocationHandler() {
-            @Override
-            public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-               final String name = method.getName();
-               if (args == null) {
-                  if ("hashCode".equals(name) && method.getReturnType() == int.class)
-                     return Annotations.hashCode((Annotation) proxy);
-                  if ("toString".equals(name) && method.getReturnType() == String.class)
-                     return Annotations.toString((Annotation) proxy);
-                  if ("annotationType".equals(name) && method.getReturnType() == Class.class)
-                     return annotationType;
-               } else if (args.length == 1 && "equals".equals(name) && method.getReturnType() == boolean.class)
-                  return Annotations.equals((Annotation) proxy, (Annotation) args[0]);
+         return Proxies.create((proxy, method, args) -> {
+            final String name = method.getName();
+            if (args == null) {
+               if ("hashCode".equals(name) && method.getReturnType() == int.class)
+                  return Annotations.hashCode((Annotation) proxy);
+               if ("toString".equals(name) && method.getReturnType() == String.class)
+                  return Annotations.toString((Annotation) proxy);
+               if ("annotationType".equals(name) && method.getReturnType() == Class.class)
+                  return annotationType;
+            } else if (args.length == 1 && "equals".equals(name) && method.getReturnType() == boolean.class)
+               return Annotations.equals((Annotation) proxy, (Annotation) args[0]);
 
-               return attrValues.get(method.getName());
-            }
+            return attrValues.get(method.getName());
          }, annotationType);
       } catch (final Exception ex) {
          throw new ReflectionException("Failed to create an instance of annotation " + annotationType, ex);
@@ -122,13 +118,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
    @SuppressWarnings("unchecked")
    public static <A extends Annotation> A getDefaults(final Class<A> annotation) {
       Args.notNull("annotation", annotation);
-
-      return (A) Proxy.newProxyInstance(annotation.getClassLoader(), new Class[] {annotation}, new InvocationHandler() {
-         @Override
-         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-            return method.getDefaultValue();
-         }
-      });
+      return (A) Proxy.newProxyInstance(annotation.getClassLoader(), new Class[] {annotation}, (proxy, method, args) -> method.getDefaultValue());
    }
 
    /**

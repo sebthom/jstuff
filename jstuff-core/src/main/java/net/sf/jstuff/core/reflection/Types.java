@@ -16,7 +16,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -66,26 +65,22 @@ public abstract class Types {
       Args.notNull("objectInterface", objectInterface);
       Args.notEmpty("mixins", mixins);
 
-      return Proxies.create(new InvocationHandler() {
-         final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<>();
-
-         @Override
-         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-            Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
-            if (mixedInMethod == null) {
-               for (final Object mixin : mixins) {
-                  final Method methodImpl = Methods.findAny(mixin.getClass(), method.getName(), method.getParameterTypes());
-                  if (methodImpl != null) {
-                     mixedInMethod = Tuple2.create(mixin, methodImpl);
-                     mappedMethodsCache.put(method, mixedInMethod);
-                     break;
-                  }
+      final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<>();
+      return Proxies.create((proxy, method, args) -> {
+         Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
+         if (mixedInMethod == null) {
+            for (final Object mixin : mixins) {
+               final Method methodImpl = Methods.findAny(mixin.getClass(), method.getName(), method.getParameterTypes());
+               if (methodImpl != null) {
+                  mixedInMethod = Tuple2.create(mixin, methodImpl);
+                  mappedMethodsCache.put(method, mixedInMethod);
+                  break;
                }
             }
-            if (mixedInMethod == null)
-               throw new UnsupportedOperationException("Method is not implemented.");
-            return Methods.invoke(mixedInMethod.get1(), mixedInMethod.get2(), args);
          }
+         if (mixedInMethod == null)
+            throw new UnsupportedOperationException("Method is not implemented.");
+         return Methods.invoke(mixedInMethod.get1(), mixedInMethod.get2(), args);
       }, objectInterface);
    }
 
@@ -100,12 +95,9 @@ public abstract class Types {
       Args.notNull("objectInterface", objectInterface);
       Args.notNull("object", object);
 
-      return Proxies.create(new InvocationHandler() {
-         @Override
-         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-            synchronized (lock) {
-               return method.invoke(object, args);
-            }
+      return Proxies.create((proxy, method, args) -> {
+         synchronized (lock) {
+            return method.invoke(object, args);
          }
       }, objectInterface);
    }
@@ -114,11 +106,8 @@ public abstract class Types {
       Args.notNull("objectInterface", objectInterface);
       Args.notNull("threadLocal", threadLocal);
 
-      return Proxies.create(new InvocationHandler() {
-         @Override
-         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-            return method.invoke(threadLocal.get(), args);
-         }
+      return Proxies.create((proxy, method, args) -> {
+         return method.invoke(threadLocal.get(), args);
       }, objectInterface);
    }
 

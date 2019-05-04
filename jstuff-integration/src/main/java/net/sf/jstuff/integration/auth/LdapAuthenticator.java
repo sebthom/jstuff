@@ -11,10 +11,7 @@ package net.sf.jstuff.integration.auth;
 
 import javax.inject.Inject;
 import javax.naming.Context;
-import javax.naming.NamingException;
-import javax.naming.ldap.LdapContext;
 
-import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.integration.ldap.LdapException;
 import net.sf.jstuff.integration.ldap.LdapTemplate;
@@ -38,15 +35,12 @@ public class LdapAuthenticator implements Authenticator {
    public boolean authenticate(final String logonName, final String password) {
       LOG.trace("Trying to authenticate user %s", logonName);
       try {
-         ldapTemplate.execute(new Invocable<Object, LdapContext, NamingException>() {
-            @Override
-            public Object invoke(final LdapContext ctx) throws NamingException {
-               final UserDetails userDetails = userDetailsService.getUserDetailsByLogonName(logonName);
-               ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, "simple");
-               ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, userDetails.getDistingueshedName());
-               ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, password);
-               return ctx.lookup(userDetails.getDistingueshedName());
-            }
+         ldapTemplate.execute(ctx -> {
+            final UserDetails userDetails = userDetailsService.getUserDetailsByLogonName(logonName);
+            ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, "simple");
+            ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, userDetails.getDistingueshedName());
+            ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, password);
+            return ctx.lookup(userDetails.getDistingueshedName());
          });
          return true;
       } catch (final LdapException ex) {
