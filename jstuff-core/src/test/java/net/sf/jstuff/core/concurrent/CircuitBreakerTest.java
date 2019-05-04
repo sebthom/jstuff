@@ -39,11 +39,7 @@ public class CircuitBreakerTest extends TestCase {
       for (int i = 0; i < 100; i++) {
          cb.release();
       }
-      assertTrue(cb.tryExecute(new Runnable() {
-         @Override
-         public void run() {
-         }
-      }));
+      assertTrue(cb.tryExecute(() -> { /* */ }));
 
       /*
        * testing open-state
@@ -58,11 +54,7 @@ public class CircuitBreakerTest extends TestCase {
 
       assertEquals(cb.getState(), State.OPEN);
       assertFalse(cb.tryAcquire());
-      assertFalse(cb.tryExecute(new Runnable() {
-         @Override
-         public void run() {
-         }
-      }));
+      assertFalse(cb.tryExecute(() -> { /* */ }));
       assertEquals(cb.getState(), State.OPEN);
 
       /*

@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -56,21 +55,18 @@ public abstract class AbstractCompression implements Compression {
       final PipedOutputStream transfomer = new PipedOutputStream(compressingInputStream);
       final OutputStream compressingOutputStream = createCompressingOutputStream(transfomer);
 
-      EXECUTOR.submit(new Callable<Void>() {
-         @Override
-         public Void call() throws Exception {
-            try {
-               IOUtils.copyLarge(uncompressed, compressingOutputStream);
-               compressingOutputStream.flush();
-            } catch (final IOException ex) {
-               IOUtils.closeQuietly(compressingInputStream);
-            } finally {
-               IOUtils.closeQuietly(uncompressed);
-               IOUtils.closeQuietly(compressingOutputStream);
-               IOUtils.closeQuietly(transfomer);
-            }
-            return null;
+      EXECUTOR.submit(() -> {
+         try {
+            IOUtils.copyLarge(uncompressed, compressingOutputStream);
+            compressingOutputStream.flush();
+         } catch (final IOException ex) {
+            IOUtils.closeQuietly(compressingInputStream);
+         } finally {
+            IOUtils.closeQuietly(uncompressed);
+            IOUtils.closeQuietly(compressingOutputStream);
+            IOUtils.closeQuietly(transfomer);
          }
+         return null;
       });
 
       return compressingInputStream;

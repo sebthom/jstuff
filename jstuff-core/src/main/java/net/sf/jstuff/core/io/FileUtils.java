@@ -203,15 +203,12 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
    public static Collection<File> find(final String searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
       throws IOException {
       final Collection<File> result = new ArrayList<>();
-      find(searchRootPath, globPattern, new EventListener<File>() {
-         @Override
-         public void onEvent(final File file) {
-            if (includeDirectories && file.isDirectory()) {
-               result.add(file);
-            }
-            if (includeFiles && file.isFile()) {
-               result.add(file);
-            }
+      find(searchRootPath, globPattern, file -> {
+         if (includeDirectories && file.isDirectory()) {
+            result.add(file);
+         }
+         if (includeFiles && file.isFile()) {
+            result.add(file);
          }
       });
       return result;

@@ -9,7 +9,6 @@
  *********************************************************************/
 package net.sf.jstuff.core.concurrent;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -87,17 +86,14 @@ public class CrossThreadMethodInvoker {
     */
    @SuppressWarnings("unchecked")
    public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target, final Class<?>... targetInterfaces) {
-      return (CrossThreadProxy<INTERFACE>) Proxies.create(new InvocationHandler() {
-         @Override
-         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-            if (method.getDeclaringClass() == CrossThreadProxy.class) {
-               final String mName = method.getName();
-               if ("get".equals(mName))
-                  return proxy;
-               return CrossThreadMethodInvoker.this;
-            }
-            return CrossThreadMethodInvoker.this.invokeInOwnerThread(target, method, args);
+      return (CrossThreadProxy<INTERFACE>) Proxies.create((proxy, method, args) -> {
+         if (method.getDeclaringClass() == CrossThreadProxy.class) {
+            final String mName = method.getName();
+            if ("get".equals(mName))
+               return proxy;
+            return CrossThreadMethodInvoker.this;
          }
+         return CrossThreadMethodInvoker.this.invokeInOwnerThread(target, method, args);
       }, ArrayUtils.add(targetInterfaces, CrossThreadProxy.class));
    }
 
@@ -107,17 +103,14 @@ public class CrossThreadMethodInvoker {
    @SuppressWarnings("unchecked")
    public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target, final Function<Object, Object> resultTransformer,
       final Class<?>... targetInterfaces) {
-      return (CrossThreadProxy<INTERFACE>) Proxies.create(Thread.currentThread().getContextClassLoader(), new InvocationHandler() {
-         @Override
-         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-            if (method.getDeclaringClass() == CrossThreadProxy.class) {
-               final String mName = method.getName();
-               if ("get".equals(mName))
-                  return proxy;
-               return CrossThreadMethodInvoker.this;
-            }
-            return resultTransformer.apply(CrossThreadMethodInvoker.this.invokeInOwnerThread(target, method, args));
+      return (CrossThreadProxy<INTERFACE>) Proxies.create(Thread.currentThread().getContextClassLoader(), (proxy, method, args) -> {
+         if (method.getDeclaringClass() == CrossThreadProxy.class) {
+            final String mName = method.getName();
+            if ("get".equals(mName))
+               return proxy;
+            return CrossThreadMethodInvoker.this;
          }
+         return resultTransformer.apply(CrossThreadMethodInvoker.this.invokeInOwnerThread(target, method, args));
       }, ArrayUtils.add(targetInterfaces, CrossThreadProxy.class));
    }
 

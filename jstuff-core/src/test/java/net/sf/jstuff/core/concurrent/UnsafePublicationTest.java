@@ -163,7 +163,7 @@ public class UnsafePublicationTest extends TestCase {
    }
 
    public void test1PublicationWithoutIndirection() throws Exception {
-      _testPublication(//
+      _testPublication( //
          true, // expected to fail
          new AbstractPublishingActor() {
             @Override
@@ -180,7 +180,7 @@ public class UnsafePublicationTest extends TestCase {
    }
 
    public void test2PublicationWithBrokenMemoryBarrier() throws Exception {
-      _testPublication(//
+      _testPublication( //
          true, // expected to fail
          new AbstractPublishingActor() {
             @Override
@@ -201,7 +201,7 @@ public class UnsafePublicationTest extends TestCase {
    }
 
    public void test3PublicationWithFinalMemoryBarrier() throws Exception {
-      _testPublication(//
+      _testPublication( //
          false, // not expected to fail
          new AbstractPublishingActor() {
             @Override
@@ -225,7 +225,7 @@ public class UnsafePublicationTest extends TestCase {
    }
 
    public void test4PublicationWithVolatileMemoryBarrier() throws Exception {
-      _testPublication(//
+      _testPublication( //
          false, // not expected to fail
          new AbstractPublishingActor() {
             @Override

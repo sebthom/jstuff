@@ -9,7 +9,6 @@
  *********************************************************************/
 package net.sf.jstuff.core.logging;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -92,26 +91,22 @@ public abstract class LoggerUtils {
          System.arraycopy(secondaryInterfaces, 0, interfaces, 1, secondaryInterfaces.length);
       }
 
-      return (I) Proxy.newProxyInstance(object.getClass().getClassLoader(), interfaces, new InvocationHandler() {
-         LoggerInternal log = (LoggerInternal) Logger.create(object.getClass());
-
-         @Override
-         public Object invoke(final Object proxy, final Method interfaceMethod, final Object[] args) throws Throwable {
-            if (log.isTraceEnabled()) {
-               final long start = System.currentTimeMillis();
-               final Method methodWithParameterNames = Methods.findPublic(object.getClass(), interfaceMethod.getName(), interfaceMethod.getParameterTypes());
-               log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
-               final Object returnValue = interfaceMethod.invoke(object, args);
-               final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
-               if (Methods.isReturningVoid(interfaceMethod)) {
-                  log.trace(methodWithParameterNames, formatTraceExit() + " " + elapsed + "ms");
-               } else {
-                  log.trace(methodWithParameterNames, formatTraceExit(returnValue) + " " + elapsed + "ms");
-               }
-               return returnValue;
+      final LoggerInternal log = (LoggerInternal) Logger.create(object.getClass());
+      return (I) Proxy.newProxyInstance(object.getClass().getClassLoader(), interfaces, (proxy, interfaceMethod, args) -> {
+         if (log.isTraceEnabled()) {
+            final long start = System.currentTimeMillis();
+            final Method methodWithParameterNames = Methods.findPublic(object.getClass(), interfaceMethod.getName(), interfaceMethod.getParameterTypes());
+            log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
+            final Object returnValue = interfaceMethod.invoke(object, args);
+            final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
+            if (Methods.isReturningVoid(interfaceMethod)) {
+               log.trace(methodWithParameterNames, formatTraceExit() + " " + elapsed + "ms");
+            } else {
+               log.trace(methodWithParameterNames, formatTraceExit(returnValue) + " " + elapsed + "ms");
             }
-            return interfaceMethod.invoke(object, args);
+            return returnValue;
          }
+         return interfaceMethod.invoke(object, args);
       });
    }
 

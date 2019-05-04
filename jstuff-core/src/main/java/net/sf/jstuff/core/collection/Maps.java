@@ -319,12 +319,7 @@ public abstract class Maps {
          return map;
 
       final List<Map.Entry<K, V>> entries = new ArrayList<>(map.entrySet());
-      Collections.sort(entries, new Comparator<Map.Entry<K, V>>() {
-         @Override
-         public int compare(final Map.Entry<K, V> o1, final Map.Entry<K, V> o2) {
-            return o1.getValue().compareTo(o2.getValue());
-         }
-      });
+      Collections.sort(entries, (o1, o2) -> o1.getValue().compareTo(o2.getValue()));
 
       final Map<K, V> result = new LinkedHashMap<>();
       for (final Map.Entry<K, V> entry : entries) {
@@ -342,12 +337,7 @@ public abstract class Maps {
       Args.notNull("comparator", comparator);
 
       final List<Map.Entry<K, V>> entries = new ArrayList<>(map.entrySet());
-      Collections.sort(entries, new Comparator<Map.Entry<K, V>>() {
-         @Override
-         public int compare(final Map.Entry<K, V> o1, final Map.Entry<K, V> o2) {
-            return comparator.compare(o1.getValue(), o2.getValue());
-         }
-      });
+      Collections.sort(entries, (o1, o2) -> comparator.compare(o1.getValue(), o2.getValue()));
 
       final Map<K, V> result = new LinkedHashMap<>();
       for (final Map.Entry<K, V> entry : entries) {

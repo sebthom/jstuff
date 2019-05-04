@@ -33,7 +33,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
-import net.sf.jstuff.core.functional.Function;
 import net.sf.jstuff.core.functional.Functions;
 
 /**
@@ -93,14 +92,11 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
     * @return the comments for the given section / property
     */
    public String[] getComments(final String key) {
-      return ArrayUtils.toArray(transform(comments.get(key), new Function<String, String>() {
-
-         @Override
-         public String apply(final String source) {
-            // strip the comment character
-            return source.startsWith("#") || source.startsWith(";") ? "" : source.substring(1);
-         }
-      }), String.class);
+      return ArrayUtils.toArray( //
+         // strip the comment character
+         transform(comments.get(key), source -> source.startsWith("#") || source.startsWith(";") ? "" : source.substring(1)), //
+         String.class //
+      );
    }
 
    /**
