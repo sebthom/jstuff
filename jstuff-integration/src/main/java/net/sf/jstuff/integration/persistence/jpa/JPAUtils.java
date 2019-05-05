@@ -27,7 +27,7 @@ public abstract class JPAUtils {
       final StringBuilder out = new StringBuilder();
       int startSearchAt = 0, foundAt = 0;
 
-      for (int i = 1; (foundAt = queryString.indexOf("?", startSearchAt)) >= 0; i++) {
+      for (int i = 1; (foundAt = queryString.indexOf("?", startSearchAt)) >= 0; i++) { // CHECKSTYLE:IGNORE InnerAssignment
          final String replaceValue = "?" + i;
          out.append(queryString, startSearchAt, foundAt).append(replaceValue);
          startSearchAt = foundAt + 1;

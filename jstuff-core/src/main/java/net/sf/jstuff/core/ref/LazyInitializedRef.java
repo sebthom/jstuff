@@ -26,7 +26,8 @@ public abstract class LazyInitializedRef<T> implements Ref<T> {
             if (result == null) {
                // the JVM guarantees, that accessing a final reference will return the referenced object fully initialized
                // therefore we are passing new object instance to the final wrapper and accessing indirectly via it's final field
-               value = result = new FinalRef<T>(create()).value;
+               result = new FinalRef<>(create()).value;
+               value = result;
             }
          }
       }

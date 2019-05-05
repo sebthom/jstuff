@@ -47,7 +47,7 @@ public class ExceptionsTest extends TestCase {
    }
 
    public void testWrapAs() {
-      final Exception ex = new Exception();
+      final Exception ex = new IOException();
       assertSame(ex, Exceptions.wrapAs(ex, Exception.class));
       assertEquals(RuntimeException.class, Exceptions.wrapAs(ex, RuntimeException.class).getClass());
       assertEquals(ex, Exceptions.wrapAs(ex, RuntimeException.class).getCause());
