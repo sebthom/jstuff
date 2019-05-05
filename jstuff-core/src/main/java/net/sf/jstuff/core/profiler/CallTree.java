@@ -32,7 +32,8 @@ public final class CallTree {
       final CodeLocation codeLocation = new CodeLocation(clazz, method, lineNumber);
       CallTree ct = children.get(codeLocation);
       if (ct == null) {
-         children.put(codeLocation, ct = new CallTree());
+         ct = new CallTree();
+         children.put(codeLocation, ct);
       }
       if (isExecuting) {
          ct.executingSeen++;

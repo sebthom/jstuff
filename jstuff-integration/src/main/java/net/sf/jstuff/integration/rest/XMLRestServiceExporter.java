@@ -12,6 +12,7 @@ package net.sf.jstuff.integration.rest;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.stream.FactoryConfigurationError;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
@@ -74,25 +75,16 @@ public class XMLRestServiceExporter extends AbstractRestServiceExporter {
    }
 
    protected HierarchicalStreamDriver getXStreamDriver() {
-      if (Types.isAvailable("javax.xml.stream.XMLStreamReader")) {
-         try {
-
-            final StaxDriver xmlDriver = new StaxDriver();
-            xmlDriver.getInputFactory();
-            xmlDriver.getOutputFactory();
-            return xmlDriver;
-         } catch (final Exception ex) {
-            LOG.warn(ex, "Failed to use StaxDriver.");
-         } catch (final Error ex) {
-            if ("javax.xml.stream.FactoryConfigurationError".equals(ex.getClass().getName())) {
-               LOG.warn(ex, "Failed to use StaxDriver.");
-            } else
-               throw ex;
-         }
+      try {
+         final StaxDriver xmlDriver = new StaxDriver();
+         xmlDriver.getInputFactory();
+         xmlDriver.getOutputFactory();
+         return xmlDriver;
+      } catch (final Exception | FactoryConfigurationError ex) {
+         LOG.warn(ex, "Failed to use StaxDriver.");
       }
 
-      return Types.isAvailable("org.xmlpull.mxp1.MXParser") ? new XppDriver() : //
-         new DomDriver();
+      return Types.isAvailable("org.xmlpull.mxp1.MXParser") ? new XppDriver() : new DomDriver();
    }
 
    @Override

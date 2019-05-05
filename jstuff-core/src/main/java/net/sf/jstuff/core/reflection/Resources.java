@@ -252,7 +252,7 @@ public abstract class Resources {
          if (fileLocatorClass != null) {
             eclipseBundleResolve = fileLocatorClass.getMethod("resolve", URL.class);
          }
-      } catch (final Throwable ex) {
+      } catch (final Throwable ex) { // CHECKSTYLE:IGNORE IllegalCatch
          LOG.debug(ex);
       }
       ECLIPSE_BUNDLE_RESOLVER = eclipseBundleResolve;

@@ -168,7 +168,7 @@ public abstract class LoggerUtils {
       for (int i = 2, l = stacktrace.length; i < l; i++) {
          final StackTraceElement ste = stacktrace[i];
          final String className = ste.getClassName();
-         if (className.equals("java.lang.reflect.Method")) {
+         if ("java.lang.reflect.Method".equals(className)) {
             continue;
          } else if (className.startsWith("org.springframework.aop.")) {
             continue;

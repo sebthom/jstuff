@@ -60,7 +60,8 @@ public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializabl
          synchronized (this) {
             result = events;
             if (result == null) {
-               events = result = new SyncEventDispatcher<PropertyChangeEvent>();
+               result = new SyncEventDispatcher<>();
+               events = result;
             }
          }
       }

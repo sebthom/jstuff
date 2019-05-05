@@ -52,9 +52,9 @@ public abstract class AtomBlogPostEntryResponseReader {
          return;
 
       final String rel = StAXUtils.getAttributeValue(xmlr, "rel");
-      if (rel.equals("edit")) {
+      if ("edit".equals(rel)) {
          atomBlogEntry.setEditURL(StAXUtils.getAttributeValue(xmlr, "href"));
-      } else if (rel.equals("alternate")) {
+      } else if ("alternate".equals(rel)) {
          atomBlogEntry.setDisplayURL(StAXUtils.getAttributeValue(xmlr, "href"));
       }
    }
