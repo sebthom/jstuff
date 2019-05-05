@@ -207,12 +207,12 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
    public static <TARGET_CLASS, BUILDER_IFACE extends Builder<? extends TARGET_CLASS>> BuilderFactory<TARGET_CLASS, BUILDER_IFACE> //
 
       of(final Class<BUILDER_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {
-      return new BuilderFactory<TARGET_CLASS, BUILDER_IFACE>(builderInterface, targetClass, constructorArgs);
+      return new BuilderFactory<>(builderInterface, targetClass, constructorArgs);
    }
 
    public static <TARGET_CLASS, BUILDER_IFACE extends Builder<? extends TARGET_CLASS>> BuilderFactory<TARGET_CLASS, BUILDER_IFACE> //
       of(final Class<BUILDER_IFACE> builderInterface, final Object... constructorArgs) {
-      return new BuilderFactory<TARGET_CLASS, BUILDER_IFACE>(builderInterface, null, constructorArgs);
+      return new BuilderFactory<>(builderInterface, null, constructorArgs);
    }
 
    private final Class<BUILDER_IFACE> builderInterface;
@@ -224,7 +224,7 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
    protected BuilderFactory(final Class<BUILDER_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {
       Args.notNull("builderInterface", builderInterface);
       if (!builderInterface.isInterface())
-         throw new IllegalArgumentException("[builderInterface] must be an interface!");
+         throw new IllegalArgumentException("[builderInterface] '" + builderInterface.getName() + "' is not an interface!");
 
       this.builderInterface = builderInterface;
 
@@ -233,10 +233,10 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
       Args.notNull("targetClass", this.targetClass);
 
       if (this.targetClass.isInterface())
-         throw new IllegalArgumentException("Target class [" + this.targetClass.getName() + "] is an interface.");
+         throw new IllegalArgumentException("[targetClass] '" + this.targetClass.getName() + "' is an interface.");
 
       if (Types.isAbstract(this.targetClass))
-         throw new IllegalArgumentException("Target class [" + this.targetClass.getName() + "] is abstract.");
+         throw new IllegalArgumentException("[targetClass] '" + this.targetClass.getName() + "' is abstract.");
 
       this.constructorArgs = constructorArgs;
    }
