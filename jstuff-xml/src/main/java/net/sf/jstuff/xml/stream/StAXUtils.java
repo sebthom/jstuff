@@ -26,6 +26,7 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Source;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.IntArrayList;
@@ -79,10 +80,10 @@ public abstract class StAXUtils {
    };
 
    @SuppressWarnings("resource")
-   public static AutoCloseableXMLEventReader createXMLEventReader(final File file) throws FileNotFoundException, XMLStreamException {
-      Args.notNull("file", file);
-      Args.isFileReadable("file", file);
-      final InputStream is = new BufferedInputStream(new FileInputStream(file));
+   public static AutoCloseableXMLEventReader createXMLEventReader(final File xmlFile) throws FileNotFoundException, XMLStreamException {
+      Args.notNull("xmlFile", xmlFile);
+      Args.isFileReadable("xmlFile", xmlFile);
+      final InputStream is = new BufferedInputStream(new FileInputStream(xmlFile));
       final XMLEventReader reader = XML_INPUT_FACTORY.get().createXMLEventReader(is);
       return new DelegatingXMLEventReader(reader) {
          @Override
@@ -94,35 +95,46 @@ public abstract class StAXUtils {
    }
 
    @SuppressWarnings("resource")
-   public static AutoCloseableXMLEventReader createXMLEventReader(final InputStream is) throws XMLStreamException {
-      Args.notNull("is", is);
+   public static AutoCloseableXMLEventReader createXMLEventReader(final InputStream xmlInput) throws XMLStreamException {
+      Args.notNull("xmlInput", xmlInput);
 
-      final XMLEventReader reader = XML_INPUT_FACTORY.get().createXMLEventReader(is instanceof BufferedInputStream ? is : new BufferedInputStream(is));
+      final XMLEventReader reader = XML_INPUT_FACTORY.get().createXMLEventReader(xmlInput instanceof BufferedInputStream ? xmlInput
+         : new BufferedInputStream(xmlInput));
       return new DelegatingXMLEventReader(reader) {
          @Override
          public void close() throws XMLStreamException {
             super.close();
-            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(xmlInput);
          }
       };
    }
 
-   public static AutoCloseableXMLEventReader createXMLEventReader(final Reader reader) throws XMLStreamException {
-      Args.notNull("reader", reader);
-      return new DelegatingXMLEventReader(XML_INPUT_FACTORY.get().createXMLEventReader(reader)) {
+   public static AutoCloseableXMLEventReader createXMLEventReader(final Reader xmlReader) throws XMLStreamException {
+      Args.notNull("xmlReader", xmlReader);
+      return new DelegatingXMLEventReader(XML_INPUT_FACTORY.get().createXMLEventReader(xmlReader)) {
          @Override
          public void close() throws XMLStreamException {
             super.close();
-            IOUtils.closeQuietly(reader);
+            IOUtils.closeQuietly(xmlReader);
+         }
+      };
+   }
+
+   public static AutoCloseableXMLEventReader createXMLEventReader(final Source xmlSource) throws XMLStreamException {
+      Args.notNull("xmlSource", xmlSource);
+      return new DelegatingXMLEventReader(XML_INPUT_FACTORY.get().createXMLEventReader(xmlSource)) {
+         @Override
+         public void close() throws XMLStreamException {
+            super.close();
          }
       };
    }
 
    @SuppressWarnings("resource")
-   public static AutoCloseableXMLStreamReader createXMLStreamReader(final File file) throws FileNotFoundException, XMLStreamException {
-      Args.notNull("file", file);
-      Args.isFileReadable("file", file);
-      final InputStream is = new BufferedInputStream(new FileInputStream(file));
+   public static AutoCloseableXMLStreamReader createXMLStreamReader(final File xmlFile) throws FileNotFoundException, XMLStreamException {
+      Args.notNull("xmlFile", xmlFile);
+      Args.isFileReadable("xmlFile", xmlFile);
+      final InputStream is = new BufferedInputStream(new FileInputStream(xmlFile));
       final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(is);
       return new DelegatingXMLStreamReader(reader) {
          @Override
@@ -134,52 +146,80 @@ public abstract class StAXUtils {
    }
 
    @SuppressWarnings("resource")
-   public static AutoCloseableXMLStreamReader createXMLStreamReader(final InputStream is) throws XMLStreamException {
-      Args.notNull("is", is);
+   public static AutoCloseableXMLStreamReader createXMLStreamReader(final InputStream xmlInput) throws XMLStreamException {
+      Args.notNull("xmlInput", xmlInput);
 
-      final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(is instanceof BufferedInputStream ? is : new BufferedInputStream(is));
+      final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(xmlInput instanceof BufferedInputStream ? xmlInput
+         : new BufferedInputStream(xmlInput));
       return new DelegatingXMLStreamReader(reader) {
          @Override
          public void close() throws XMLStreamException {
             super.close();
-            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(xmlInput);
          }
       };
    }
 
-   public static AutoCloseableXMLStreamReader createXMLStreamReader(final Reader reader) throws XMLStreamException {
-      Args.notNull("reader", reader);
-      return new DelegatingXMLStreamReader(XML_INPUT_FACTORY.get().createXMLStreamReader(reader)) {
+   public static AutoCloseableXMLStreamReader createXMLStreamReader(final Reader xmlReader) throws XMLStreamException {
+      Args.notNull("xmlReader", xmlReader);
+      return new DelegatingXMLStreamReader(XML_INPUT_FACTORY.get().createXMLStreamReader(xmlReader)) {
          @Override
          public void close() throws XMLStreamException {
             super.close();
-            IOUtils.closeQuietly(reader);
+            IOUtils.closeQuietly(xmlReader);
          }
       };
    }
 
-   public static ElementInfo findElement(final File file, final String xpath) throws XMLStreamException, FileNotFoundException {
-      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(file)) {
-         final List<ElementInfo> elems = findElements(reader, xpath, 1);
-         return elems.size() == 0 ? null : elems.get(0);
+   public static AutoCloseableXMLStreamReader createXMLStreamReader(final Source xmlSource) throws XMLStreamException {
+      Args.notNull("xmlSource", xmlSource);
+
+      final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(xmlSource);
+      return new DelegatingXMLStreamReader(reader) {
+         @Override
+         public void close() throws XMLStreamException {
+            super.close();
+         }
+      };
+   }
+
+   public static ElementInfo findElement(final File xmlFile, final String xpath) throws XMLStreamException, FileNotFoundException {
+      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlFile)) {
+         return findElement(reader, xpath);
       }
    }
 
-   public static ElementInfo findElement(final InputStream is, final String xpath) throws XMLStreamException {
-      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(is)) {
-         final List<ElementInfo> elems = findElements(reader, xpath, 1);
-         return elems.size() == 0 ? null : elems.get(0);
+   public static ElementInfo findElement(final InputStream xmlInput, final String xpath) throws XMLStreamException {
+      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlInput)) {
+         return findElement(reader, xpath);
       }
    }
 
-   public static List<ElementInfo> findElements(final File file, final String xpath) throws XMLStreamException, FileNotFoundException {
-      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(file)) {
+   public static ElementInfo findElement(final Source xmlSource, final String xpath) throws XMLStreamException {
+      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlSource)) {
+         return findElement(reader, xpath);
+      }
+   }
+
+   private static ElementInfo findElement(final XMLStreamReader reader, final String xpath) throws XMLStreamException {
+      final List<ElementInfo> elems = findElements(reader, xpath, 1);
+      return elems.size() == 0 ? null : elems.get(0);
+   }
+
+   public static List<ElementInfo> findElements(final File xmlFile, final String xpath) throws XMLStreamException, FileNotFoundException {
+      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlFile)) {
          return findElements(reader, xpath, Integer.MAX_VALUE);
       }
    }
 
-   public static List<ElementInfo> findElements(final InputStream is, final String xpath) throws XMLStreamException {
-      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(is)) {
+   public static List<ElementInfo> findElements(final InputStream xmlInput, final String xpath) throws XMLStreamException {
+      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlInput)) {
+         return findElements(reader, xpath, Integer.MAX_VALUE);
+      }
+   }
+
+   public static List<ElementInfo> findElements(final Source xmlSource, final String xpath) throws XMLStreamException {
+      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlSource)) {
          return findElements(reader, xpath, Integer.MAX_VALUE);
       }
    }
