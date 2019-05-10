@@ -63,7 +63,7 @@ public final class EmptyQueue<E> extends AbstractQueue<E> implements Serializabl
       return null;
    }
 
-   @SuppressWarnings({"static-method", "unused"})
+   @SuppressWarnings("unused")
    private Object readResolve() throws ObjectStreamException {
       return INSTANCE;
    }
