@@ -15,6 +15,8 @@ import net.sf.jstuff.core.validation.Args;
 
 /**
  * Numerical systems calculator: https://www.calculand.com/unit-converter/zahlen.php
+ *
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class NumericalSystem {
 

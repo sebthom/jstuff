@@ -13,6 +13,9 @@ import org.junit.Test;
 
 import junit.framework.TestCase;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public class CharEncodingTest extends TestCase {
 
    private void assertEncoding(final CharEncoding expected, final byte[] data) {

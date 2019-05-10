@@ -11,6 +11,9 @@ package net.sf.jstuff.integration.persistence;
 
 import net.sf.jstuff.core.types.Identifiable;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 @javax.persistence.Entity
 public class Entity extends Identifiable.Default<Integer> {
    private static final long serialVersionUID = 1L;
