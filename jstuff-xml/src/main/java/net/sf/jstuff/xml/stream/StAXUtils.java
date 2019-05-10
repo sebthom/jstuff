@@ -313,12 +313,7 @@ public abstract class StAXUtils {
    }
 
    public static String getAttributeValue(final XMLStreamReader reader, final String attrLocalName) {
-      for (int i = 0; i < reader.getAttributeCount(); i++) {
-         final String localName = reader.getAttributeLocalName(i);
-         if (localName.equals(attrLocalName))
-            return reader.getAttributeValue(i);
-      }
-      return null;
+      return getAttributeValue(reader, attrLocalName, null);
    }
 
    public static String getAttributeValue(final XMLStreamReader reader, final String attrLocalName, final String defaultValue) {
