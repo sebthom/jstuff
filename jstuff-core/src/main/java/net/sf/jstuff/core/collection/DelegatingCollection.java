@@ -18,7 +18,7 @@ import net.sf.jstuff.core.types.Decorator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DelegatingCollection<V> extends Decorator.Default<Collection<V>> implements Collection<V>, Serializable {
+public abstract class DelegatingCollection<V> extends Decorator.Default<Collection<V>> implements Collection<V>, Serializable {
 
    private static final long serialVersionUID = 1L;
 

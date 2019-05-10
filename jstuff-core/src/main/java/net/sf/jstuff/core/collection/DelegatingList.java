@@ -16,7 +16,7 @@ import java.util.ListIterator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DelegatingList<V> extends DelegatingCollection<V> implements List<V> {
+public abstract class DelegatingList<V> extends DelegatingCollection<V> implements List<V> {
 
    private static final long serialVersionUID = 1L;
 
