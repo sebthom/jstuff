@@ -321,6 +321,15 @@ public abstract class StAXUtils {
       return null;
    }
 
+   public static String getAttributeValue(final XMLStreamReader reader, final String attrLocalName, final String defaultValue) {
+      for (int i = 0; i < reader.getAttributeCount(); i++) {
+         final String localName = reader.getAttributeLocalName(i);
+         if (localName.equals(attrLocalName))
+            return reader.getAttributeValue(i);
+      }
+      return defaultValue;
+   }
+
    private static TreeMap<String, String> readAttributes(final XMLStreamReader reader, TreeMap<String, String> reusableMap) {
       if (reusableMap == null) {
          reusableMap = new TreeMap<>();
