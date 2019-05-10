@@ -18,6 +18,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import net.sf.jstuff.xml.stream.StAXUtils;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public abstract class AtomBlogPostEntryResponseReader {
    private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = new ThreadLocal<XMLInputFactory>() {
       @Override

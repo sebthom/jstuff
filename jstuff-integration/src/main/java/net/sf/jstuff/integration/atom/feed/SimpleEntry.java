@@ -13,6 +13,9 @@ import java.util.Date;
 
 import net.sf.jstuff.core.types.Identifiable;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public class SimpleEntry<T> extends Identifiable.Default<T> {
    private static final long serialVersionUID = 1L;
 

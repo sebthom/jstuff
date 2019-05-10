@@ -12,6 +12,9 @@ package net.sf.jstuff.integration.persistence;
 import junit.framework.TestCase;
 import net.sf.jstuff.core.io.SerializationUtils;
 
+/**
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ */
 public class HashCodeManagerTest extends TestCase {
    public static void testManagedHashCode() throws InterruptedException {
       /*

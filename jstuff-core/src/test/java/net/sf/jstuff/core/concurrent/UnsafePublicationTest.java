@@ -41,6 +41,8 @@ import net.sf.jstuff.core.reflection.StackTrace;
  * http://stackoverflow.com/questions/13578087/looking-for-a-test-to-reproduce-broken-double-checked-locking
  * http://cs.oswego.edu/pipermail/concurrency-interest/2015-January/013861.html
  * http://zeroturnaround.com/rebellabs/concurrency-torture-testing-your-code-within-the-java-memory-model/
+ *
+ * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UnsafePublicationTest extends TestCase {
