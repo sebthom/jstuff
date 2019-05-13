@@ -1,3 +1,4 @@
+
 /*********************************************************************
  * Copyright 2010-2019 by Sebastian Thomschke and others.
  *
@@ -24,12 +25,14 @@ public class Base64Test extends TestCase {
       assertEquals("Hell", new String(Base64.decode("SGVsbA=="), "UTF-8"));
       assertEquals("Hell", new String(Base64.decode("SGVsbA="), "UTF-8"));
       assertEquals("Hell", new String(Base64.decode("SGVsbA"), "UTF-8"));
-      assertEquals(null, Base64.decode(null));
+      assertEquals(null, Base64.decode((String) null));
       assertEquals(0, Base64.decode("").length);
-      assertTrue(Arrays.equals(Base64.decode("A_"), Base64.decode("A/")));
-      assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+")));
-      assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+=")));
-      assertTrue(Arrays.equals(Base64.decode("A-"), Base64.decode("A+==")));
+      assertEquals(null, Base64.decode((byte[]) null));
+      assertEquals(0, Base64.decode(new byte[0]).length);
+      assertTrue(Arrays.equals(Base64.urldecode("A_"), Base64.decode("A/")));
+      assertTrue(Arrays.equals(Base64.urldecode("A-"), Base64.decode("A+")));
+      assertTrue(Arrays.equals(Base64.urldecode("A-"), Base64.decode("A+=")));
+      assertTrue(Arrays.equals(Base64.urldecode("A-"), Base64.decode("A+==")));
       try {
          System.out.println(new String(Base64.decode("ÖÄÜ")));
          fail();
