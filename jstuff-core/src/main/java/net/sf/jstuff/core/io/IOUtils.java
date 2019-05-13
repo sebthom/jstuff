@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +56,12 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       closeQuietly((Closeable) output);
    }
 
-   public static void closeQuietly(final Reader input) {
-      closeQuietly((Closeable) input);
+   public static void closeQuietly(final Reader reader) {
+      closeQuietly((Closeable) reader);
+   }
+
+   public static void closeQuietly(final Writer writer) {
+      closeQuietly((Closeable) writer);
    }
 
    public static void closeQuietly(final ZipFile file) {
