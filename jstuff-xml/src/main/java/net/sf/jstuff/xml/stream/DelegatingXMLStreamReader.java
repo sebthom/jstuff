@@ -20,7 +20,7 @@ import net.sf.jstuff.core.types.Decorator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class DelegatingXMLStreamReader extends Decorator.Default<XMLStreamReader> implements AutoCloseableXMLStreamReader {
+public class DelegatingXMLStreamReader extends Decorator.Default<XMLStreamReader> implements AutoCloseableXMLStreamReader {
 
    public DelegatingXMLStreamReader() {
    }
