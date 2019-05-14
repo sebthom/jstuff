@@ -20,7 +20,7 @@ public class LongArrayList {
    private int size;
 
    public LongArrayList() {
-      elems = new long[10];
+      elems = new long[2];
       size = 0;
    }
 
