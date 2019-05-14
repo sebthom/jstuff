@@ -378,6 +378,26 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return isEmpty(str) ? false : str.charAt(str.length() - 1) == ch;
    }
 
+   public static boolean equals(final String left, final String right) {
+      if (left == right)
+         return true;
+
+      if (left == null)
+         return false;
+
+      return left.equals(right);
+   }
+
+   public static boolean equalsIgnoreCase(final String left, final String right) {
+      if (left == right)
+         return true;
+
+      if (left == null)
+         return false;
+
+      return left.equalsIgnoreCase(right);
+   }
+
    /**
     * @return null if input does not contain a new line separator.
     */
