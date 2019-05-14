@@ -22,6 +22,9 @@ public class Base64Test extends TestCase {
 
    public void testDecode() throws UnsupportedEncodingException {
 
+      /*Base64.decode( //
+         "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAM9UjXquRajbqlgDPp+lb7WegOSR/Tmm\nl56S7aTanVvR1sBVWUQZMPpspRuEHZw+FF4Zb2utZnMLdQk3ZL9nCVMCAwEAAQ==");
+      */
       assertEquals("Hello World!", new String(Base64.decode("SGVsbG8gV29ybGQh"), "UTF-8"));
       assertEquals("Hello World!", new String(Base64.decode("SGVsbG8g\nV29ybGQh"), "UTF-8"));
       assertEquals("Hell", new String(Base64.decode("SGVsbA=="), "UTF-8"));
