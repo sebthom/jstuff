@@ -17,7 +17,7 @@ import net.sf.jstuff.core.Strings;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
+public class IndentingXMLStreamWriter extends ExtendedXMLStreamWriter {
 
    private String indention = "  ";
    private int indentionLevel = 0;

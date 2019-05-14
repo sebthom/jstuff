@@ -9,9 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.xml.stream;
 
-import static net.sf.jstuff.xml.stream.StAXUtils.*;
-
 import java.io.InputStream;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,32 +36,48 @@ public class StAXUtilsTest extends TestCase {
       return StAXUtilsTest.class.getResourceAsStream("stax-utils-test.xml");
    }
 
+   private ElementInfo findElement(final String xpath) throws XMLStreamException {
+      try (AutoCloseableXMLStreamReader reader = StAXUtils.createXMLStreamReader(getXml(), true)) {
+         return StAXUtils.findElement(reader, xpath);
+      }
+   }
+
+   private List<ElementInfo> findElements(final String xpath) throws XMLStreamException {
+      try (AutoCloseableXMLStreamReader reader = StAXUtils.createXMLStreamReader(getXml(), true)) {
+         return StAXUtils.findElements(reader, xpath);
+      }
+   }
+
+   private String findElementText(final String xpath) throws XMLStreamException {
+      return findElement(xpath).getText();
+   }
+
    public void testElementWithAttributeMatch() throws XMLStreamException {
-      assertEquals("<Cat>", findElement(getXml(), "/root/group/item[@id='2']").getText());
-      assertEquals("<Cat>", findElement(getXml(), "root/group/item[@id='2']").getText());
-      assertEquals("<Cat>", findElement(getXml(), "group/item[@id='2']").getText());
-      assertEquals("<Cat>", findElement(getXml(), "item[@id='2']").getText());
+      assertEquals("<Cat>", findElementText("/root/group/item[@id='2']"));
+      assertEquals("<Cat>", findElementText("root/group/item[@id='2']"));
+      assertEquals("<Cat>", findElementText("group/item[@id='2']"));
+      assertEquals("<Cat>", findElementText("item[@id='2']"));
 
-      assertEquals("Beer\n\n         Bike", findElement(getXml(), "item[@id='3']").getText().trim());
+      assertEquals("Beer\n\n         Bike", findElementText("item[@id='3']").trim());
 
-      assertEquals("Fast\n      <Steam>\n\n      Train", findElement(getXml(), "item[@id='5']").getText().trim());
+      assertEquals("Fast\n      <Steam>\n\n      Train", findElementText("item[@id='5']").trim());
 
-      assertEquals("Car", findElement(getXml(), "/root/group/item[@id='4']").getText());
-      assertEquals("Car", findElement(getXml(), "root/group/item[@id='4']").getText());
-      assertEquals("Car", findElement(getXml(), "group/item[@id='4']").getText());
-      assertEquals("Car", findElement(getXml(), "item[@id='4']").getText());
+      assertEquals("Car", findElementText("/root/group/item[@id='4']"));
+      assertEquals("Car", findElementText("root/group/item[@id='4']"));
+      assertEquals("Car", findElementText("group/item[@id='4']"));
+      assertEquals("Car", findElementText("item[@id='4']"));
 
-      assertEquals("Car", findElement(getXml(), "/root/group/item[@anchor='#car' and @id='4']").getText());
-      assertEquals("Car", findElement(getXml(), "root/group/item[@anchor='#car' and @id='4']").getText());
-      assertEquals("Car", findElement(getXml(), "group/item[@anchor='#car' and @id='4']").getText());
-      assertEquals("Car", findElement(getXml(), "item[@anchor='#car' and @id='4']").getText());
+      assertEquals("Car", findElementText("/root/group/item[@anchor='#car' and @id='4']"));
+      assertEquals("Car", findElementText("root/group/item[@anchor='#car' and @id='4']"));
+      assertEquals("Car", findElementText("group/item[@anchor='#car' and @id='4']"));
+      assertEquals("Car", findElementText("item[@anchor='#car' and @id='4']"));
 
-      assertEquals("Car", findElement(getXml(), "/root/group/item[@id='4' and @anchor='#car']").getText());
-      assertEquals("Car", findElement(getXml(), "root/group/item[@id='4' and @anchor='#car']").getText());
-      assertEquals("Car", findElement(getXml(), "group/item[@id='4' and @anchor='#car']").getText());
-      assertEquals("Car", findElement(getXml(), "item[@id='4' and @anchor='#car']").getText());
+      assertEquals("Car", findElementText("/root/group/item[@id='4' and @anchor='#car']"));
+      assertEquals("Car", findElementText("root/group/item[@id='4' and @anchor='#car']"));
+      assertEquals("Car", findElementText("group/item[@id='4' and @anchor='#car']"));
+      assertEquals("Car", findElementText("item[@id='4' and @anchor='#car']"));
 
-      final ElementInfo elem = findElement(getXml(), "item[@id='4' and @anchor='#car']");
+      final ElementInfo elem = findElement("item[@id='4' and @anchor='#car']");
       assertEquals("item", elem.localName);
       assertEquals("ns1", elem.nsPrefix);
       assertEquals("http://ns1", elem.nsURI);
@@ -70,20 +85,20 @@ public class StAXUtilsTest extends TestCase {
    }
 
    public void testFindElement() throws XMLStreamException {
-      assertEquals("Dog", findElement(getXml(), "/root/group/item").getText());
-      assertEquals("Dog", findElement(getXml(), "root/group/item").getText());
-      assertEquals("Dog", findElement(getXml(), "group/item").getText());
-      assertEquals("Dog", findElement(getXml(), "item").getText());
-      assertEquals("Dog", findElement(getXml(), "//item").getText());
-      assertEquals("Dog", findElement(getXml(), "/root//item").getText());
+      assertEquals("Dog", findElementText("/root/group/item"));
+      assertEquals("Dog", findElementText("root/group/item"));
+      assertEquals("Dog", findElementText("group/item"));
+      assertEquals("Dog", findElementText("item"));
+      assertEquals("Dog", findElementText("//item"));
+      assertEquals("Dog", findElementText("/root//item"));
    }
 
    public void testFindElements() throws XMLStreamException {
-      assertEquals(5, findElements(getXml(), "/root/group/item").size());
-      assertEquals(5, findElements(getXml(), "root/group/item").size());
-      assertEquals(5, findElements(getXml(), "group/item").size());
-      assertEquals(5, findElements(getXml(), "item").size());
-      assertEquals(5, findElements(getXml(), "//item").size());
-      assertEquals(5, findElements(getXml(), "/root//item").size());
+      assertEquals(5, findElements("/root/group/item").size());
+      assertEquals(5, findElements("root/group/item").size());
+      assertEquals(5, findElements("group/item").size());
+      assertEquals(5, findElements("item").size());
+      assertEquals(5, findElements("//item").size());
+      assertEquals(5, findElements("/root//item").size());
    }
 }

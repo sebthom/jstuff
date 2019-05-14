@@ -10,11 +10,16 @@
 package net.sf.jstuff.xml.stream;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,10 +28,16 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.IntArrayList;
@@ -71,11 +82,17 @@ public abstract class StAXUtils {
 
    private static final Logger LOG = Logger.create();
 
+   private static final ThreadLocal<XMLOutputFactory> XML_OUTPUT_FACTORY = new ThreadLocal<XMLOutputFactory>() {
+      @Override
+      protected XMLOutputFactory initialValue() {
+         return XMLOutputFactory.newInstance();
+      }
+   };
+
    private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = new ThreadLocal<XMLInputFactory>() {
       @Override
       protected XMLInputFactory initialValue() {
-         final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-         return xmlInputFactory;
+         return XMLInputFactory.newInstance();
       }
    };
 
@@ -83,6 +100,7 @@ public abstract class StAXUtils {
    public static AutoCloseableXMLEventReader createXMLEventReader(final File xmlFile) throws FileNotFoundException, XMLStreamException {
       Args.notNull("xmlFile", xmlFile);
       Args.isFileReadable("xmlFile", xmlFile);
+
       final InputStream is = new BufferedInputStream(new FileInputStream(xmlFile));
       final XMLEventReader reader = XML_INPUT_FACTORY.get().createXMLEventReader(is);
       return new DelegatingXMLEventReader(reader) {
@@ -94,49 +112,78 @@ public abstract class StAXUtils {
       };
    }
 
+   /**
+    * @param autoClose if true xmlInput.close() is invoked when XMLStreamReader.close() is called
+    */
    @SuppressWarnings("resource")
-   public static AutoCloseableXMLEventReader createXMLEventReader(final InputStream xmlInput) throws XMLStreamException {
+   public static AutoCloseableXMLEventReader createXMLEventReader(final InputStream xmlInput, final boolean autoClose) throws XMLStreamException {
       Args.notNull("xmlInput", xmlInput);
 
-      final XMLEventReader reader = XML_INPUT_FACTORY.get().createXMLEventReader(xmlInput instanceof BufferedInputStream ? xmlInput
-         : new BufferedInputStream(xmlInput));
-      return new DelegatingXMLEventReader(reader) {
-         @Override
-         public void close() throws XMLStreamException {
-            super.close();
-            IOUtils.closeQuietly(xmlInput);
-         }
-      };
+      final InputStream is = xmlInput instanceof BufferedInputStream ? xmlInput : new BufferedInputStream(xmlInput);
+      final XMLEventReader reader = XML_INPUT_FACTORY.get().createXMLEventReader(is);
+      if (autoClose)
+         return new DelegatingXMLEventReader(reader) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+               IOUtils.closeQuietly(is);
+            }
+         };
+      return new DelegatingXMLEventReader(reader);
    }
 
-   public static AutoCloseableXMLEventReader createXMLEventReader(final Reader xmlReader) throws XMLStreamException {
+   /**
+    * @param autoClose if true xmlReader.close() is invoked when XMLStreamReader.close() is called
+    */
+   public static AutoCloseableXMLEventReader createXMLEventReader(final Reader xmlReader, final boolean autoClose) throws XMLStreamException {
       Args.notNull("xmlReader", xmlReader);
-      return new DelegatingXMLEventReader(XML_INPUT_FACTORY.get().createXMLEventReader(xmlReader)) {
-         @Override
-         public void close() throws XMLStreamException {
-            super.close();
-            IOUtils.closeQuietly(xmlReader);
-         }
-      };
+
+      final XMLEventReader reader = XML_INPUT_FACTORY.get().createXMLEventReader(xmlReader);
+      if (autoClose)
+         return new DelegatingXMLEventReader(reader) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+               IOUtils.closeQuietly(xmlReader);
+            }
+         };
+      return new DelegatingXMLEventReader(reader);
    }
 
    public static AutoCloseableXMLEventReader createXMLEventReader(final Source xmlSource) throws XMLStreamException {
       Args.notNull("xmlSource", xmlSource);
-      return new DelegatingXMLEventReader(XML_INPUT_FACTORY.get().createXMLEventReader(xmlSource)) {
-         @Override
-         public void close() throws XMLStreamException {
-            super.close();
-         }
-      };
+
+      final XMLEventReader reader = XML_INPUT_FACTORY.get().createXMLEventReader(xmlSource);
+      return new DelegatingXMLEventReader(reader);
+   }
+
+   /**
+    * @param autoClose if true xmlSourcegetReader()/getInputStream().close() is invoked when XMLStreamReader.close() is called
+    */
+   public static AutoCloseableXMLEventReader createXMLEventReader(final StreamSource xmlSource, final boolean autoClose) throws XMLStreamException {
+      Args.notNull("xmlSource", xmlSource);
+
+      final XMLEventReader reader = XML_INPUT_FACTORY.get().createXMLEventReader(xmlSource);
+      if (autoClose)
+         return new DelegatingXMLEventReader(reader) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+               IOUtils.closeQuietly(xmlSource.getReader());
+               IOUtils.closeQuietly(xmlSource.getInputStream());
+            }
+         };
+      return new DelegatingXMLEventReader(reader);
    }
 
    @SuppressWarnings("resource")
-   public static AutoCloseableXMLStreamReader createXMLStreamReader(final File xmlFile) throws FileNotFoundException, XMLStreamException {
+   public static AutoCloseableXMLEventWriter createXMLEventWriter(final File xmlFile) throws FileNotFoundException, XMLStreamException {
       Args.notNull("xmlFile", xmlFile);
-      Args.isFileReadable("xmlFile", xmlFile);
-      final InputStream is = new BufferedInputStream(new FileInputStream(xmlFile));
-      final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(is);
-      return new DelegatingXMLStreamReader(reader) {
+      Args.isFileWriteable("xmlFile", xmlFile);
+
+      final OutputStream is = new BufferedOutputStream(new FileOutputStream(xmlFile));
+      final XMLEventWriter writer = XML_OUTPUT_FACTORY.get().createXMLEventWriter(is);
+      return new DelegatingXMLEventWriter(writer) {
          @Override
          public void close() throws XMLStreamException {
             super.close();
@@ -145,86 +192,248 @@ public abstract class StAXUtils {
       };
    }
 
+   /**
+    * @param autoClose if true os.close() is invoked when XMLEventWriter.close() is called
+    */
    @SuppressWarnings("resource")
-   public static AutoCloseableXMLStreamReader createXMLStreamReader(final InputStream xmlInput) throws XMLStreamException {
+   public static AutoCloseableXMLEventWriter createXMLEventWriter(final OutputStream xmlOutput, final Charset encoding, final boolean autoClose)
+      throws XMLStreamException {
+      Args.notNull("xmlOutput", xmlOutput);
+      Args.notNull("encoding", encoding);
+
+      final OutputStream os = xmlOutput instanceof BufferedOutputStream ? xmlOutput : new BufferedOutputStream(xmlOutput);
+      final XMLEventWriter reader = XML_OUTPUT_FACTORY.get().createXMLEventWriter(os, encoding.name());
+      if (autoClose)
+         return new DelegatingXMLEventWriter(reader) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+
+               IOUtils.closeQuietly(os);
+            }
+         };
+      return new DelegatingXMLEventWriter(reader);
+   }
+
+   public static AutoCloseableXMLEventWriter createXMLEventWriter(final Result xmlResult) throws XMLStreamException {
+      Args.notNull("xmlResult", xmlResult);
+
+      final XMLEventWriter writer = XML_OUTPUT_FACTORY.get().createXMLEventWriter(xmlResult);
+      return new DelegatingXMLEventWriter(writer);
+   }
+
+   /**
+    * @param autoClose if true xmlResult.[getWriter()/getOutputStream()].close() is invoked when ExtendedXMLEventWriter.close() is called
+    */
+   public static AutoCloseableXMLEventWriter createXMLEventWriter(final StreamResult xmlResult, final boolean autoClose) throws XMLStreamException {
+      Args.notNull("xmlResult", xmlResult);
+
+      final XMLEventWriter writer = XML_OUTPUT_FACTORY.get().createXMLEventWriter(xmlResult);
+      if (autoClose)
+         return new DelegatingXMLEventWriter(writer) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+               IOUtils.closeQuietly(xmlResult.getWriter());
+               IOUtils.closeQuietly(xmlResult.getOutputStream());
+            }
+         };
+      return new DelegatingXMLEventWriter(writer);
+   }
+
+   /**
+    * @param autoClose if true xmlWriter.close() is invoked when XMLEventWriter.close() is called
+    */
+   public static AutoCloseableXMLEventWriter createXMLEventWriter(final Writer xmlWriter, final boolean autoClose) throws XMLStreamException {
+      Args.notNull("xmlWriter", xmlWriter);
+
+      final XMLEventWriter reader = XML_OUTPUT_FACTORY.get().createXMLEventWriter(xmlWriter);
+      if (autoClose)
+         return new DelegatingXMLEventWriter(reader) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+
+               IOUtils.closeQuietly(xmlWriter);
+            }
+         };
+      return new DelegatingXMLEventWriter(reader);
+   }
+
+   @SuppressWarnings("resource")
+   public static ExtendedXMLStreamReader createXMLStreamReader(final File xmlFile) throws FileNotFoundException, XMLStreamException {
+      Args.notNull("xmlFile", xmlFile);
+      Args.isFileReadable("xmlFile", xmlFile);
+
+      final InputStream is = new BufferedInputStream(new FileInputStream(xmlFile));
+      final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(is);
+      return new ExtendedXMLStreamReader(reader) {
+         @Override
+         public void close() throws XMLStreamException {
+            super.close();
+            IOUtils.closeQuietly(is);
+         }
+      };
+   }
+
+   /**
+    * @param autoClose if true xmlInput.close() is invoked when XMLStreamReader.close() is called
+    */
+   @SuppressWarnings("resource")
+   public static ExtendedXMLStreamReader createXMLStreamReader(final InputStream xmlInput, final boolean autoClose) throws XMLStreamException {
       Args.notNull("xmlInput", xmlInput);
 
-      final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(xmlInput instanceof BufferedInputStream ? xmlInput
-         : new BufferedInputStream(xmlInput));
-      return new DelegatingXMLStreamReader(reader) {
-         @Override
-         public void close() throws XMLStreamException {
-            super.close();
-            IOUtils.closeQuietly(xmlInput);
-         }
-      };
+      final InputStream is = xmlInput instanceof BufferedInputStream ? xmlInput : new BufferedInputStream(xmlInput);
+      final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(is);
+      if (autoClose)
+         return new ExtendedXMLStreamReader(reader) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+
+               IOUtils.closeQuietly(is);
+            }
+         };
+      return new ExtendedXMLStreamReader(reader);
    }
 
-   public static AutoCloseableXMLStreamReader createXMLStreamReader(final Reader xmlReader) throws XMLStreamException {
+   /**
+    * @param autoClose if true xmlReader.close() is invoked when XMLStreamReader.close() is called
+    */
+   public static ExtendedXMLStreamReader createXMLStreamReader(final Reader xmlReader, final boolean autoClose) throws XMLStreamException {
       Args.notNull("xmlReader", xmlReader);
-      return new DelegatingXMLStreamReader(XML_INPUT_FACTORY.get().createXMLStreamReader(xmlReader)) {
-         @Override
-         public void close() throws XMLStreamException {
-            super.close();
-            IOUtils.closeQuietly(xmlReader);
-         }
-      };
+
+      final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(xmlReader);
+      if (autoClose)
+         return new ExtendedXMLStreamReader(reader) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+               IOUtils.closeQuietly(xmlReader);
+            }
+         };
+      return new ExtendedXMLStreamReader(reader);
    }
 
-   public static AutoCloseableXMLStreamReader createXMLStreamReader(final Source xmlSource) throws XMLStreamException {
+   public static ExtendedXMLStreamReader createXMLStreamReader(final Source xmlSource) throws XMLStreamException {
       Args.notNull("xmlSource", xmlSource);
 
       final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(xmlSource);
-      return new DelegatingXMLStreamReader(reader) {
+      return new ExtendedXMLStreamReader(reader);
+   }
+
+   /**
+    * @param autoClose if true xmlSource.[getReader()/getInputStream()].close() is invoked when ExtendedXMLStreamReader.close() is called
+    */
+   public static ExtendedXMLStreamReader createXMLStreamReader(final StreamSource xmlSource, final boolean autoClose) throws XMLStreamException {
+      Args.notNull("xmlSource", xmlSource);
+
+      final XMLStreamReader reader = XML_INPUT_FACTORY.get().createXMLStreamReader(xmlSource);
+      if (autoClose)
+         return new ExtendedXMLStreamReader(reader) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+               IOUtils.closeQuietly(xmlSource.getReader());
+               IOUtils.closeQuietly(xmlSource.getInputStream());
+            }
+         };
+      return new ExtendedXMLStreamReader(reader);
+   }
+
+   @SuppressWarnings("resource")
+   public static ExtendedXMLStreamWriter createXMLStreamWriter(final File xmlFile) throws FileNotFoundException, XMLStreamException {
+      Args.notNull("xmlFile", xmlFile);
+      Args.isFileWriteable("xmlFile", xmlFile);
+
+      final OutputStream is = new BufferedOutputStream(new FileOutputStream(xmlFile));
+      final XMLStreamWriter writer = XML_OUTPUT_FACTORY.get().createXMLStreamWriter(is);
+      return new ExtendedXMLStreamWriter(writer) {
          @Override
          public void close() throws XMLStreamException {
             super.close();
+            IOUtils.closeQuietly(is);
          }
       };
    }
 
-   public static ElementInfo findElement(final File xmlFile, final String xpath) throws XMLStreamException, FileNotFoundException {
-      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlFile)) {
-         return findElement(reader, xpath);
-      }
+   /**
+    * @param autoClose if true os.close() is invoked when XMLStreamWriter.close() is called
+    */
+   @SuppressWarnings("resource")
+   public static ExtendedXMLStreamWriter createXMLStreamWriter(final OutputStream xmlOutput, final Charset encoding, final boolean autoClose)
+      throws XMLStreamException {
+      Args.notNull("xmlOutput", xmlOutput);
+      Args.notNull("encoding", encoding);
+
+      final OutputStream os = xmlOutput instanceof BufferedOutputStream ? xmlOutput : new BufferedOutputStream(xmlOutput);
+      final XMLStreamWriter reader = XML_OUTPUT_FACTORY.get().createXMLStreamWriter(os, encoding.name());
+      if (autoClose)
+         return new ExtendedXMLStreamWriter(reader) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+
+               IOUtils.closeQuietly(os);
+            }
+         };
+      return new ExtendedXMLStreamWriter(reader);
    }
 
-   public static ElementInfo findElement(final InputStream xmlInput, final String xpath) throws XMLStreamException {
-      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlInput)) {
-         return findElement(reader, xpath);
-      }
+   public static ExtendedXMLStreamWriter createXMLStreamWriter(final Result xmlResult) throws XMLStreamException {
+      Args.notNull("xmlResult", xmlResult);
+
+      final XMLStreamWriter writer = XML_OUTPUT_FACTORY.get().createXMLStreamWriter(xmlResult);
+      return new ExtendedXMLStreamWriter(writer);
    }
 
-   public static ElementInfo findElement(final Source xmlSource, final String xpath) throws XMLStreamException {
-      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlSource)) {
-         return findElement(reader, xpath);
-      }
+   /**
+    * @param autoClose if true xmlResult.[getWriter()/getOutputStream()].close() is invoked when ExtendedXMLStreamWriter.close() is called
+    */
+   public static ExtendedXMLStreamWriter createXMLStreamWriter(final StreamResult xmlResult, final boolean autoClose) throws XMLStreamException {
+      Args.notNull("xmlResult", xmlResult);
+
+      final XMLStreamWriter writer = XML_OUTPUT_FACTORY.get().createXMLStreamWriter(xmlResult);
+      if (autoClose)
+         return new ExtendedXMLStreamWriter(writer) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+               IOUtils.closeQuietly(xmlResult.getWriter());
+               IOUtils.closeQuietly(xmlResult.getOutputStream());
+            }
+         };
+      return new ExtendedXMLStreamWriter(writer);
    }
 
-   private static ElementInfo findElement(final XMLStreamReader reader, final String xpath) throws XMLStreamException {
+   /**
+    * @param autoClose if true xmlWriter.close() is invoked when XMLStreamWriter.close() is called
+    */
+   public static ExtendedXMLStreamWriter createXMLStreamWriter(final Writer xmlWriter, final boolean autoClose) throws XMLStreamException {
+      Args.notNull("xmlWriter", xmlWriter);
+
+      final XMLStreamWriter writer = XML_OUTPUT_FACTORY.get().createXMLStreamWriter(xmlWriter);
+      if (autoClose)
+         return new ExtendedXMLStreamWriter(writer) {
+            @Override
+            public void close() throws XMLStreamException {
+               super.close();
+               IOUtils.closeQuietly(xmlWriter);
+            }
+         };
+      return new ExtendedXMLStreamWriter(writer);
+   }
+
+   public static ElementInfo findElement(final XMLStreamReader reader, final String xpath) throws XMLStreamException {
       final List<ElementInfo> elems = findElements(reader, xpath, 1);
       return elems.size() == 0 ? null : elems.get(0);
    }
 
-   public static List<ElementInfo> findElements(final File xmlFile, final String xpath) throws XMLStreamException, FileNotFoundException {
-      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlFile)) {
-         return findElements(reader, xpath, Integer.MAX_VALUE);
-      }
+   public static List<ElementInfo> findElements(final XMLStreamReader reader, final String xpath) throws XMLStreamException {
+      return findElements(reader, xpath, Integer.MAX_VALUE);
    }
 
-   public static List<ElementInfo> findElements(final InputStream xmlInput, final String xpath) throws XMLStreamException {
-      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlInput)) {
-         return findElements(reader, xpath, Integer.MAX_VALUE);
-      }
-   }
-
-   public static List<ElementInfo> findElements(final Source xmlSource, final String xpath) throws XMLStreamException {
-      try (AutoCloseableXMLStreamReader reader = createXMLStreamReader(xmlSource)) {
-         return findElements(reader, xpath, Integer.MAX_VALUE);
-      }
-   }
-
-   private static List<ElementInfo> findElements(final XMLStreamReader reader, final String xpath, final int max) throws XMLStreamException {
+   public static List<ElementInfo> findElements(final XMLStreamReader reader, final String xpath, final int max) throws XMLStreamException {
       final StringBuilder path = new StringBuilder();
 
       final IntArrayList pathElemSize = new IntArrayList();
@@ -253,7 +462,7 @@ public abstract class StAXUtils {
                         } else {
                            pathElem.append(',');
                         }
-                        pathElem.append("@").append(entry.getKey()).append("='").append(entry.getValue()).append('\'');
+                        pathElem.append('@').append(entry.getKey()).append("='").append(entry.getValue()).append('\'');
                      }
                      pathElem.append(']');
                   }
@@ -325,6 +534,13 @@ public abstract class StAXUtils {
       return defaultValue;
    }
 
+   public static boolean getAttributeValueAsBoolean(final XMLStreamReader reader, final String attrLocalName, final boolean defaultValue) {
+      final String val = getAttributeValue(reader, attrLocalName);
+      if (val == null || Strings.isBlank(val))
+         return defaultValue;
+      return Boolean.parseBoolean(val);
+   }
+
    private static TreeMap<String, String> readAttributes(final XMLStreamReader reader, TreeMap<String, String> reusableMap) {
       if (reusableMap == null) {
          reusableMap = new TreeMap<>();
@@ -374,7 +590,7 @@ public abstract class StAXUtils {
          }
       }
 
-      sb.append("$");
+      sb.append('$');
       return Pattern.compile(sb.toString());
    }
 }

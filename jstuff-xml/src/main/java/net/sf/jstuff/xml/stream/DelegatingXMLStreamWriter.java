@@ -18,7 +18,7 @@ import net.sf.jstuff.core.types.Decorator;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class DelegatingXMLStreamWriter extends Decorator.Default<XMLStreamWriter> implements AutoCloseableXMLStreamWriter {
+public class DelegatingXMLStreamWriter extends Decorator.Default<XMLStreamWriter> implements AutoCloseableXMLStreamWriter {
 
    public DelegatingXMLStreamWriter() {
    }
