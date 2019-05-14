@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2010-2019 by Sebastian Thomschke and others.
@@ -57,6 +59,8 @@
    <properties>
       <java.version>1.8</java.version>
       <slf4j.version>1.7.25</slf4j.version>
+
+      <skip.japicmp.cmp>true</skip.japicmp.cmp>
    </properties>
 
 
@@ -99,6 +103,19 @@
 
 
    <build>
+      <pluginManagement>
+         <plugins>
+            <plugin>
+               <groupId>com.github.siom79.japicmp</groupId>
+               <artifactId>japicmp-maven-plugin</artifactId>
+               <inherited>true</inherited>
+               <configuration>
+
+               </configuration>
+            </plugin>
+         </plugins>
+      </pluginManagement>
+
       <plugins>
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
