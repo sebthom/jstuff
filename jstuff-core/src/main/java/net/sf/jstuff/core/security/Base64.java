@@ -19,6 +19,20 @@ import net.sf.jstuff.core.collection.ArrayUtils;
  */
 public abstract class Base64 {
 
+   public static final byte[] decode(final byte[] encoded) {
+      if (encoded == null)
+         return null;
+      if (encoded.length == 0)
+         return ArrayUtils.EMPTY_BYTE_ARRAY;
+
+      final byte[] bytes = encoded;
+
+      if (isBase64Url(bytes))
+         return urldecode(bytes);
+
+      return java.util.Base64.getDecoder().decode(sanitizeBytes(bytes));
+   }
+
    public static final byte[] decode(final String encoded) {
       if (encoded == null)
          return null;
@@ -26,43 +40,6 @@ public abstract class Base64 {
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
       return decode(encoded.getBytes());
-   }
-
-   public static final byte[] decode(final byte[] encoded) {
-      if (encoded == null)
-         return null;
-      if (encoded.length == 0)
-         return ArrayUtils.EMPTY_BYTE_ARRAY;
-
-      byte[] bytes = encoded;
-
-      if (!isBase64(bytes))
-         return urldecode(bytes);
-
-      // fix padding
-      switch (bytes.length % 4) {
-         case 1:
-            bytes = ArrayUtils.addAll(bytes, (byte) '=', (byte) '=', (byte) '=');
-            break;
-         case 2:
-            bytes = ArrayUtils.addAll(bytes, (byte) '=', (byte) '=');
-            break;
-         case 3:
-            bytes = ArrayUtils.add(bytes, (byte) '=');
-            break;
-         default:
-      }
-
-      return java.util.Base64.getDecoder().decode(bytes);
-   }
-
-   public static String encode(final String plain) {
-      if (plain == null)
-         return null;
-      if (plain.length() == 0)
-         return "";
-
-      return java.util.Base64.getEncoder().encodeToString(plain.getBytes());
    }
 
    public static String encode(final byte[] plain) {
@@ -74,18 +51,20 @@ public abstract class Base64 {
       return java.util.Base64.getEncoder().encodeToString(plain);
    }
 
+   public static String encode(final String plain) {
+      if (plain == null)
+         return null;
+      if (plain.length() == 0)
+         return "";
+
+      return java.util.Base64.getEncoder().encodeToString(plain.getBytes());
+   }
+
    public static boolean isBase64(final byte[] bytes) {
-      for (int i = 0; i < bytes.length; i++) {
-         final byte ch = bytes[i];
-         // test a-z, A-Z
-         if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '+' || ch == '/' || ch == '\r' || ch == '\n') {
+      for (final byte ch : bytes) {
+         // test a-z, A-Z, +, /, \n, \r, =
+         if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '+' || ch == '/' || ch == '\r' || ch == '\n' || ch == '=') {
             continue;
-         }
-         // may end with =
-         if (ch == '=') {
-            if (bytes.length - i < 4) {
-               continue;
-            }
          }
          return false;
 
@@ -94,17 +73,10 @@ public abstract class Base64 {
    }
 
    public static boolean isBase64Url(final byte[] bytes) {
-      for (int i = 0; i < bytes.length; i++) {
-         final byte ch = bytes[i];
-         // test a-z, A-Z
-         if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '-' || ch == '_' || ch == '\r' || ch == '\n') {
+      for (final byte ch : bytes) {
+         // test a-z, A-Z, -, _, \n, \r, =
+         if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '-' || ch == '_' || ch == '\r' || ch == '\n' || ch == '=') {
             continue;
-         }
-         // may end with =
-         if (ch == '=') {
-            if (bytes.length - i < 4) {
-               continue;
-            }
          }
          return false;
 
@@ -112,13 +84,55 @@ public abstract class Base64 {
       return true;
    }
 
-   public static byte[] urldecode(final String encoded) {
-      if (encoded == null)
-         return null;
-      if (encoded.length() == 0)
-         return ArrayUtils.EMPTY_BYTE_ARRAY;
+   private static byte[] sanitizeBytes(final byte[] bytes) {
+      /*
+       * count new line chars
+       */
+      int newLineChars = 0;
+      for (final byte ch : bytes) {
+         if (ch == '\r' || ch == '\n') {
+            newLineChars++;
+         }
+      }
 
-      return java.util.Base64.getUrlDecoder().decode(encoded);
+      final int bytesWithoutNewLines = bytes.length - newLineChars;
+      final byte[] bytesSanitized;
+      /*
+       * fix padding
+       */
+      switch (bytesWithoutNewLines % 4) {
+         case 1:
+            bytesSanitized = new byte[bytesWithoutNewLines + 3];
+            bytesSanitized[bytesWithoutNewLines] = '=';
+            bytesSanitized[bytesWithoutNewLines + 1] = '=';
+            bytesSanitized[bytesWithoutNewLines + 2] = '=';
+            break;
+         case 2:
+            bytesSanitized = new byte[bytesWithoutNewLines + 2];
+            bytesSanitized[bytesWithoutNewLines] = '=';
+            bytesSanitized[bytesWithoutNewLines + 1] = '=';
+            break;
+         case 3:
+            bytesSanitized = new byte[bytesWithoutNewLines + 1];
+            bytesSanitized[bytesWithoutNewLines] = '=';
+            break;
+         default:
+            if (newLineChars == 0)
+               return bytes;
+            bytesSanitized = new byte[bytesWithoutNewLines];
+      }
+
+      /*
+       * remove new line chars
+       */
+      int i = 0;
+      for (final byte ch : bytes) {
+         if (ch != '\r' && ch != '\n') {
+            bytesSanitized[i] = ch;
+            i++;
+         }
+      }
+      return bytesSanitized;
    }
 
    public static byte[] urldecode(final byte[] encoded) {
@@ -127,16 +141,16 @@ public abstract class Base64 {
       if (encoded.length == 0)
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
-      return java.util.Base64.getUrlDecoder().decode(encoded);
+      return java.util.Base64.getUrlDecoder().decode(sanitizeBytes(encoded));
    }
 
-   public static String urlencode(final String plain) {
-      if (plain == null)
+   public static byte[] urldecode(final String encoded) {
+      if (encoded == null)
          return null;
-      if (plain.length() == 0)
-         return "";
+      if (encoded.length() == 0)
+         return ArrayUtils.EMPTY_BYTE_ARRAY;
 
-      return java.util.Base64.getUrlEncoder().encodeToString(plain.getBytes());
+      return urldecode(encoded.getBytes());
    }
 
    public static String urlencode(final byte[] plain) {
@@ -146,5 +160,14 @@ public abstract class Base64 {
          return "";
 
       return java.util.Base64.getUrlEncoder().encodeToString(plain);
+   }
+
+   public static String urlencode(final String plain) {
+      if (plain == null)
+         return null;
+      if (plain.length() == 0)
+         return "";
+
+      return java.util.Base64.getUrlEncoder().encodeToString(plain.getBytes());
    }
 }
