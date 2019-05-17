@@ -20,7 +20,7 @@
 
    <groupId>net.sf.jstuff</groupId>
    <artifactId>jstuff-parent</artifactId>
-   <version>5.1.1-SNAPSHOT</version>
+   <version>5.2.0-SNAPSHOT</version>
    <packaging>pom</packaging>
 
 

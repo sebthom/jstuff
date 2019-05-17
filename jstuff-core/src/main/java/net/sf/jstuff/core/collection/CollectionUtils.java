@@ -75,7 +75,8 @@ public abstract class CollectionUtils {
     * Returns true if the given item is contained in the collection based on identity comparison
     */
    public static <T> boolean containsIdentical(final Collection<T> coll, final T theItem) {
-      Args.notNull("coll", coll);
+      if (coll == null)
+         return false;
 
       for (final T t : coll)
          if (t == theItem)
@@ -88,14 +89,14 @@ public abstract class CollectionUtils {
     *
     * @throws IllegalArgumentException if <code>accept == null</code>
     */
-   public static <T> Collection<T> filter(final Collection<T> collection, final Accept<T> accept) throws IllegalArgumentException {
-      if (collection == null)
+   public static <T> Collection<T> filter(final Iterable<T> coll, final Accept<T> accept) throws IllegalArgumentException {
+      if (coll == null)
          return null;
 
       Args.notNull("accept", accept);
 
-      final Collection<T> result = collection instanceof Set ? new HashSet<>() : new ArrayList<>();
-      for (final T item : collection)
+      final Collection<T> result = coll instanceof Set ? new HashSet<>() : new ArrayList<>();
+      for (final T item : coll)
          if (accept.accept(item)) {
             result.add(item);
          }
@@ -107,14 +108,16 @@ public abstract class CollectionUtils {
     *
     * @throws IllegalArgumentException if <code>accept == null</code>
     */
-   public static <T> List<T> filter(final List<T> collection, final Accept<T> accept) throws IllegalArgumentException {
-      if (collection == null)
+   public static <T> List<T> filter(final List<T> list, final Accept<T> accept) throws IllegalArgumentException {
+      if (list == null)
          return null;
+      if (list.size() == 0)
+         return Collections.emptyList();
 
       Args.notNull("accept", accept);
 
       final List<T> result = new ArrayList<>();
-      for (final T item : collection)
+      for (final T item : list)
          if (accept.accept(item)) {
             result.add(item);
          }
@@ -126,14 +129,16 @@ public abstract class CollectionUtils {
     *
     * @throws IllegalArgumentException if <code>accept == null</code>
     */
-   public static <T> Set<T> filter(final Set<T> collection, final Accept<T> accept) throws IllegalArgumentException {
-      if (collection == null)
+   public static <T> Set<T> filter(final Set<T> set, final Accept<T> accept) throws IllegalArgumentException {
+      if (set == null)
          return null;
+      if (set.size() == 0)
+         return Collections.emptySet();
 
       Args.notNull("accept", accept);
 
       final Set<T> result = new HashSet<>();
-      for (final T item : collection)
+      for (final T item : set)
          if (accept.accept(item)) {
             result.add(item);
          }
@@ -168,7 +173,8 @@ public abstract class CollectionUtils {
     * @return a new list with the first n elements of the input list
     */
    public static <T> List<T> head(final List<T> list, final int n) {
-      Args.notNull("list", list);
+      if (list == null)
+         return null;
 
       if (n < 1)
          return Collections.emptyList();
@@ -191,7 +197,7 @@ public abstract class CollectionUtils {
     */
    @SafeVarargs
    public static <T> List<T> intersect(final List<T>... lists) {
-      if (lists == null)
+      if (lists == null || lists.length == 0)
          return Collections.emptyList();
 
       for (final List<T> list : lists) {
@@ -222,7 +228,7 @@ public abstract class CollectionUtils {
     */
    @SafeVarargs
    public static <T> Set<T> intersect(final Set<T>... sets) {
-      if (sets == null)
+      if (sets == null || sets.length == 0)
          return Collections.emptySet();
 
       for (final Set<T> set : sets) {
@@ -368,6 +374,7 @@ public abstract class CollectionUtils {
 
    public static <T> T remove(final Collection<T> coll, final int index) {
       Args.notNull("coll", coll);
+
       if (coll instanceof List)
          return ((List<T>) coll).remove(index);
       if (index >= coll.size())
@@ -383,6 +390,25 @@ public abstract class CollectionUtils {
          i++;
       }
       throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + coll.size());
+   }
+
+   public static <T> T removeLast(final List<T> list) {
+      Args.notNull("list", list);
+
+      if (list.size() == 0)
+         return null;
+      return list.remove(list.size() - 1);
+   }
+
+   public static <T> List<T> reverse(final List<T> list) {
+      if (list == null)
+         return null;
+      if (list.size() == 0)
+         return Collections.emptyList();
+
+      final List<T> reversed = new ArrayList<>(list);
+      Collections.reverse(reversed);
+      return reversed;
    }
 
    /**
@@ -447,12 +473,5 @@ public abstract class CollectionUtils {
          target.add(op.apply(sourceItem));
       }
       return target;
-   }
-
-   public static <T> T removeLast(final List<T> list) {
-      Args.notNull("list", list);
-      if (list.size() == 0)
-         return null;
-      return list.remove(list.size() - 1);
    }
 }

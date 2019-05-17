@@ -13,7 +13,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -30,14 +29,20 @@ public interface Composite<Component> extends Modifiable {
 
       public Default(final boolean isModifiable, final Collection<? extends Component> components) {
          Args.notNull("components", components);
-         this.components.addAll(components);
+         for (final Component component : components)
+            if (component != null) {
+               this.components.add(component);
+            }
          this.isModifiable = isModifiable;
       }
 
       @SafeVarargs
       public Default(final boolean isModifiable, final Component... components) {
          Args.notNull("components", components);
-         CollectionUtils.addAll(this.components, components);
+         for (final Component component : components)
+            if (component != null) {
+               this.components.add(component);
+            }
          this.isModifiable = isModifiable;
       }
 
