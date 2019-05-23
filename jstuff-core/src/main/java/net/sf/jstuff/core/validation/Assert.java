@@ -14,6 +14,7 @@ import static net.sf.jstuff.core.reflection.StackTrace.*;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 import net.sf.jstuff.core.Strings;
 
@@ -203,6 +204,36 @@ public abstract class Assert {
 
    public static <S extends CharSequence> S notEmpty(final S value, final String errorMessage) {
       if (value == null || value.length() == 0)
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   public static byte notEquals(final byte value, final byte invalidValue, final String errorMessage) {
+      if (value == invalidValue)
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   public static int notEquals(final int value, final byte invalidValue, final String errorMessage) {
+      if (value == invalidValue)
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   public static long notEquals(final long value, final byte invalidValue, final String errorMessage) {
+      if (value == invalidValue)
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   public static Object notEquals(final Object value, final Object invalidValue, final String errorMessage) {
+      if (Objects.equals(value, invalidValue))
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   public static short notEquals(final short value, final byte invalidValue, final String errorMessage) {
+      if (value == invalidValue)
          throw _createIllegalStateException(errorMessage);
       return value;
    }

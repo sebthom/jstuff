@@ -14,6 +14,7 @@ import static net.sf.jstuff.core.reflection.StackTrace.*;
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 import net.sf.jstuff.core.Strings;
 
@@ -286,6 +287,46 @@ public abstract class Args {
 
       if (value.length() == 0)
          throw _createIllegalArgumentException(argumentName, "must not be empty");
+      return value;
+   }
+
+   public static byte notEquals(final String argumentName, final byte value, final byte invalidValue) {
+      _notNull("argumentName", argumentName);
+
+      if (value == invalidValue)
+         throw _createIllegalArgumentException(argumentName, "must not equal " + invalidValue);
+      return value;
+   }
+
+   public static int notEquals(final String argumentName, final int value, final byte invalidValue) {
+      _notNull("argumentName", argumentName);
+
+      if (value == invalidValue)
+         throw _createIllegalArgumentException(argumentName, "must not equal " + invalidValue);
+      return value;
+   }
+
+   public static long notEquals(final String argumentName, final long value, final byte invalidValue) {
+      _notNull("argumentName", argumentName);
+
+      if (value == invalidValue)
+         throw _createIllegalArgumentException(argumentName, "must not equal " + invalidValue);
+      return value;
+   }
+
+   public static Object notEquals(final String argumentName, final Object value, final Object invalidValue) {
+      _notNull("argumentName", argumentName);
+
+      if (Objects.equals(value, invalidValue))
+         throw _createIllegalArgumentException(argumentName, "must not equal " + invalidValue);
+      return value;
+   }
+
+   public static short notEquals(final String argumentName, final short value, final byte invalidValue) {
+      _notNull("argumentName", argumentName);
+
+      if (value == invalidValue)
+         throw _createIllegalArgumentException(argumentName, "must not equal " + invalidValue);
       return value;
    }
 
