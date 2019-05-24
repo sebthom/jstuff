@@ -11,9 +11,11 @@ package net.sf.jstuff.core.collection;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import net.sf.jstuff.core.validation.Args;
 
@@ -23,7 +25,9 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Enumerations {
 
    public static boolean contains(final Enumeration<?> en, final Object searchFor) {
-      Args.notNull("en", en);
+      if (en == null)
+         return false;
+
       while (en.hasMoreElements()) {
          final Object elem = en.nextElement();
          if (Objects.equals(elem, searchFor))
@@ -33,7 +37,9 @@ public abstract class Enumerations {
    }
 
    public static boolean containsIdentical(final Enumeration<?> en, final Object searchFor) {
-      Args.notNull("en", en);
+      if (en == null)
+         return false;
+
       while (en.hasMoreElements())
          if (searchFor == en.nextElement())
             return true;
@@ -42,6 +48,7 @@ public abstract class Enumerations {
 
    public static int size(final Enumeration<?> en) {
       Args.notNull("en", en);
+
       int size = 0;
       while (en.hasMoreElements()) {
          size++;
@@ -77,7 +84,19 @@ public abstract class Enumerations {
    public static <T> List<T> toList(final Enumeration<T> en) {
       if (en == null)
          return null;
+
       final List<T> result = new ArrayList<>();
+      while (en.hasMoreElements()) {
+         result.add(en.nextElement());
+      }
+      return result;
+   }
+
+   public static <T> Set<T> toSet(final Enumeration<T> en) {
+      if (en == null)
+         return null;
+
+      final Set<T> result = new HashSet<>();
       while (en.hasMoreElements()) {
          result.add(en.nextElement());
       }
