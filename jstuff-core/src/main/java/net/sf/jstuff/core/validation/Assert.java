@@ -39,6 +39,36 @@ public abstract class Assert {
       );
    }
 
+   public static byte equals(final byte value, final byte invalidValue, final String errorMessage) {
+      if (value != invalidValue)
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   public static int equals(final int value, final byte invalidValue, final String errorMessage) {
+      if (value != invalidValue)
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   public static long equals(final long value, final byte invalidValue, final String errorMessage) {
+      if (value != invalidValue)
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   public static Object equals(final Object value, final Object invalidValue, final String errorMessage) {
+      if (!Objects.equals(value, invalidValue))
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   public static short equals(final short value, final byte invalidValue, final String errorMessage) {
+      if (value != invalidValue)
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
    /**
     * @throws IllegalStateException if <code>value</code> is <code>true</code>
     */
