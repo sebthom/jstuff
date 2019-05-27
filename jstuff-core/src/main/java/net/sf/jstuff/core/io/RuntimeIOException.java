@@ -7,33 +7,35 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *********************************************************************/
-package net.sf.jstuff.core.concurrent;
+package net.sf.jstuff.core.io;
+
+import java.io.IOException;
 
 import net.sf.jstuff.core.exception.DelegatingRuntimeException;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RuntimeInterruptedException extends DelegatingRuntimeException {
+public class RuntimeIOException extends DelegatingRuntimeException {
    private static final long serialVersionUID = 1L;
 
-   public RuntimeInterruptedException(final InterruptedException cause) {
+   public RuntimeIOException(final IOException cause) {
       super(cause);
    }
 
    @Override
-   public RuntimeInterruptedException fillInStackTrace() {
+   public RuntimeIOException fillInStackTrace() {
       super.fillInStackTrace();
       return this;
    }
 
    @Override
-   public RuntimeInterruptedException getWrapped() {
-      return (RuntimeInterruptedException) super.getWrapped();
+   public IOException getWrapped() {
+      return (IOException) super.getWrapped();
    }
 
    @Override
-   public RuntimeInterruptedException initCause(final Throwable cause) {
+   public RuntimeIOException initCause(final Throwable cause) {
       super.initCause(cause);
       return this;
    }

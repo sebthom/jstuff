@@ -10,6 +10,7 @@
 package net.sf.jstuff.core.exception;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import junit.framework.TestCase;
 
@@ -23,13 +24,13 @@ public class ExceptionsTest extends TestCase {
          Exceptions.throwUnchecked(new IOException());
          fail();
       } catch (final RuntimeException ex) {
-         assertEquals(IOException.class, ex.getCause().getClass());
+         assertEquals(IOException.class, ((DelegatingRuntimeException) ex).getWrapped().getClass());
       }
 
       try {
          throw Exceptions.throwUnchecked(new IOException());
       } catch (final RuntimeException ex) {
-         assertEquals(IOException.class, ex.getCause().getClass());
+         assertEquals(IOException.class, ((DelegatingRuntimeException) ex).getWrapped().getClass());
       }
 
       try {
@@ -47,10 +48,11 @@ public class ExceptionsTest extends TestCase {
    }
 
    public void testWrapAs() {
-      final Exception ex = new IOException();
+      final Exception ex = new IOException(new GeneralSecurityException());
       assertSame(ex, Exceptions.wrapAs(ex, Exception.class));
-      assertEquals(RuntimeException.class, Exceptions.wrapAs(ex, RuntimeException.class).getClass());
-      assertEquals(ex, Exceptions.wrapAs(ex, RuntimeException.class).getCause());
-      ex.printStackTrace();
+
+      final RuntimeException rex = Exceptions.wrapAs(ex, RuntimeException.class);
+      assertEquals(ex.getCause(), rex.getCause());
+      assertEquals(Exceptions.getStackTrace(ex), Exceptions.getStackTrace(rex));
    }
 }
