@@ -101,19 +101,6 @@
 
 
    <build>
-      <pluginManagement>
-         <plugins>
-            <plugin>
-               <groupId>com.github.siom79.japicmp</groupId>
-               <artifactId>japicmp-maven-plugin</artifactId>
-               <inherited>true</inherited>
-               <configuration>
-
-               </configuration>
-            </plugin>
-         </plugins>
-      </pluginManagement>
-
       <plugins>
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
