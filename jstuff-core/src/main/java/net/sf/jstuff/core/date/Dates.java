@@ -28,6 +28,7 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
    private static final Logger LOG = Logger.create();
 
+   private static final FastDateFormat ISO8601_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
    private static final FastDateFormat RFC3399_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
    public static final String DURATION_REGEX = "" + //
@@ -160,6 +161,23 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
          milliseconds += Long.parseLong(msecs);
       }
       return milliseconds;
+   }
+
+   public static String toISO8601(final Date date) {
+      if (date == null)
+         return null;
+
+      return ISO8601_FORMAT.format(date);
+   }
+
+   public static String toISO8601_UTC(final Date date) {
+      if (date == null)
+         return null;
+
+      final Calendar c = Calendar.getInstance();
+      c.setTime(date);
+      c.setTimeZone(TimeZone.getTimeZone("UTC"));
+      return ISO8601_FORMAT.format(c);
    }
 
    public static String toRFC3399(final Date date) {
