@@ -9,6 +9,9 @@
  *********************************************************************/
 package net.sf.jstuff.core.date;
 
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,6 +23,14 @@ public abstract class Millis {
    private static final long HOUR_IN_MILLIS = TimeUnit.HOURS.toMillis(1);
    private static final long MINUTE_IN_MILLIS = TimeUnit.MINUTES.toMillis(1);
    private static final long SECOND_IN_MILLIS = TimeUnit.SECONDS.toMillis(1);
+
+   public static long between(final Date date1, final Date date2) {
+      return Math.abs(date2.getTime() - date1.getTime());
+   }
+
+   public static long between(final Temporal date1, final Temporal date2) {
+      return Math.abs(date1.until(date2, ChronoUnit.MILLIS));
+   }
 
    public static long fromDays(final int days) {
       return days * DAY_IN_MILLIS;
