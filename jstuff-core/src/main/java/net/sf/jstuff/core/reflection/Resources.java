@@ -18,9 +18,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -35,6 +36,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.functional.Accept;
 import net.sf.jstuff.core.io.FileUtils;
@@ -262,29 +264,33 @@ public abstract class Resources {
       throws URISyntaxException, IOException {
       LOG.debug("Scanning classpath entry [%s] of classloader [%s]...", url, cl);
 
-      ClassPathEntryType type = ClassPathEntryType.NOT_SUPPORTED;
+      final ClassPathEntryType classPathEntryType;
       if ("jar".equals(url.getProtocol())) {
-         type = ClassPathEntryType.JAR;
+         classPathEntryType = ClassPathEntryType.JAR;
       } else if ("file".equals(url.getProtocol())) {
          final File file = new File(url.getPath());
          if (!file.exists()) {
-            type = ClassPathEntryType.NOT_EXISTING;
+            classPathEntryType = ClassPathEntryType.NOT_EXISTING;
          } else if (file.isDirectory()) {
-            type = ClassPathEntryType.DIRECTORY;
+            classPathEntryType = ClassPathEntryType.DIRECTORY;
          } else if (url.getPath().endsWith(".jar")) {
-            type = ClassPathEntryType.JAR;
+            classPathEntryType = ClassPathEntryType.JAR;
+         } else {
+            classPathEntryType = ClassPathEntryType.NOT_SUPPORTED;
          }
       } else if (url.getProtocol().startsWith("bundle")) {
          // bundle://         --> Felix, Knopflerfish
          // bundleentry://    --> Equinox
          // bundleresource:// --> Equinox
-         type = ClassPathEntryType.BUNDLE;
+         classPathEntryType = ClassPathEntryType.BUNDLE;
+      } else {
+         classPathEntryType = ClassPathEntryType.NOT_SUPPORTED;
       }
 
-      switch (type) {
+      switch (classPathEntryType) {
          case BUNDLE: {
             if (ECLIPSE_BUNDLE_RESOLVER == null) {
-               LOG.warn("Unsupported classpath entry type [%s]", url);
+               LOG.warn("Unsupported classpath entry type [%s] of classloader [%s]... ", url, cl);
                break;
             }
             final URL resolvedURL = (URL) Methods.invoke(null, ECLIPSE_BUNDLE_RESOLVER, url.getPath());
@@ -293,16 +299,33 @@ public abstract class Resources {
          }
 
          case DIRECTORY: {
+            // prevent bogus classpath entry screwing up the scanning process
+            if ("/".equals(url.getPath())) {
+               LOG.warn("Ignoring classpath entry [%s] of classloader [%s] pointing to filesystem root.", url, cl);
+               break;
+            }
+
             final File rootDir = new File(url.getPath());
             final URI rootDirURI = rootDir.toURI();
             final Queue<File> toScan = new LinkedList<>();
+
+            // to prevent potential endless recursions
+            final Set<File> visitedSymlinks = new HashSet<>();
+
             toScan.add(rootDir);
             while (!toScan.isEmpty()) {
                final File file = toScan.poll();
                if (file.isDirectory()) {
-                  final File[] files = file.listFiles();
-                  if (files != null) {
-                     toScan.addAll(Arrays.asList(files));
+                  if (visitedSymlinks.contains(file)) {
+                     continue;
+                  }
+                  if (Files.isSymbolicLink(file.toPath())) {
+                     visitedSymlinks.add(file);
+                  }
+
+                  final File[] entries = file.listFiles();
+                  if (entries != null && entries.length > 0) {
+                     CollectionUtils.addAll(toScan, entries);
                   }
                } else {
                   final String name = rootDirURI.relativize(file.toURI()).toString();
