@@ -9,8 +9,10 @@
  *********************************************************************/
 package net.sf.jstuff.integration.servlet.session;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -21,7 +23,6 @@ import javax.servlet.http.HttpSession;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.Enumerations;
-import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -75,7 +76,7 @@ public class HttpSessionMap implements SessionMap {
       if (sess == null)
          return Collections.emptySet();
 
-      final Map<String, Object> result = Maps.newHashMap();
+      final Map<String, Object> result = new HashMap<>();
       for (final String key : getValueNames(sess)) {
          result.put(key, sess.getAttribute(key));
       }
@@ -177,7 +178,7 @@ public class HttpSessionMap implements SessionMap {
       if (sess == null)
          return Collections.emptyList();
 
-      final Collection<Object> result = CollectionUtils.newArrayList();
+      final Collection<Object> result = new ArrayList<>();
       for (final String key : getValueNames(sess)) {
          result.add(sess.getAttribute(key));
       }

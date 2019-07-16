@@ -14,8 +14,11 @@ import static net.sf.jstuff.core.collection.CollectionUtils.*;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +34,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.integration.spring.SpringBeanParanamer;
@@ -51,8 +53,8 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
    private static final ObjectWriter JSON_PRETTY_WRITER = JSON.writerWithDefaultPrettyPrinter();
 
    public static Map<String, Method> buildExportedMethodsByName(final Class<?> serviceInterface) {
-      final Map<String, Method> methodsByMethodName = Maps.newTreeMap();
-      final Map<String, Class<?>[]> parameterTypesByMethodName = Maps.newHashMap();
+      final Map<String, Method> methodsByMethodName = new TreeMap<>();
+      final Map<String, Class<?>[]> parameterTypesByMethodName = new HashMap<>();
 
       // loop through the service interface and all super interfaces to collect the public methods
       Class<?> clazz = serviceInterface;
@@ -85,9 +87,9 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
    public static String buildSMDTemplate(final Class<?> serviceInterface, final Object service, final Map<String, Method> exportedMethodsByName,
       final boolean pretty) throws JsonProcessingException {
       // build the method descriptors
-      final Map<String, Object> methodDescriptions = Maps.newLinkedHashMap();
+      final Map<String, Object> methodDescriptions = new LinkedHashMap<>();
       for (final Method method : exportedMethodsByName.values()) {
-         final Map<String, Object> methodDescriptor = Maps.newLinkedHashMap();
+         final Map<String, Object> methodDescriptor = new LinkedHashMap<>();
          if (method.getParameterTypes().length > 0) {
             // for some reason parameter names are not preserved in interfaces, therefore we look them up in the service implementing class instead
             final String[] names = SpringBeanParanamer.getParameterNames(method, service);
@@ -110,7 +112,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
       }
 
       // build the final SMD definition object
-      final Map<String, Object> result = Maps.newLinkedHashMap(2);
+      final Map<String, Object> result = new LinkedHashMap<>(2);
       result.put("SMDVersion", "2.0");
       result.put("id", serviceInterface.getClass().getName());
       result.put("description", "");
@@ -190,7 +192,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
          final Object methodReturnValue = method.invoke(getProxyForService(), methodArguments);
 
          // creating a JSON object containing the method return value
-         final Map<String, Object> result = Maps.newLinkedHashMap(2);
+         final Map<String, Object> result = new LinkedHashMap<>(2);
          result.put("id", requestObject.get("id").asText());
          result.put("result", methodReturnValue);
          JSON.writeValue(response.getWriter(), result);
