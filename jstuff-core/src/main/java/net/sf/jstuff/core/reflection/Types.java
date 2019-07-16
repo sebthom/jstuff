@@ -28,6 +28,7 @@ import java.nio.charset.Charset;
 import java.security.CodeSource;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -174,7 +175,7 @@ public abstract class Types {
       /*
        * traverse the class hierarchy and collect generic variable => concrete variable argument (type) mappings
        */
-      final Map<TypeVariable<?>, Type> genericVariableToArgumentMappings = Maps.newHashMap();
+      final Map<TypeVariable<?>, Type> genericVariableToArgumentMappings = new HashMap<>();
       final ParameterizedType[] searchForType = {null};
 
       visit(searchIn, new ClassVisitorWithTypeArguments() {

@@ -358,7 +358,7 @@ public abstract class Maps {
       Args.notNull("valueSeparator", valueSeparator);
       Args.notNull("assignmentOperator", assignmentOperator);
 
-      final Map<String, String> result = newHashMap();
+      final Map<String, String> result = new HashMap<>();
       for (final String element : Strings.split(valuePairs, valueSeparator)) {
          final String[] valuePairSplitted = Strings.split(element, assignmentOperator);
          result.put(valuePairSplitted[0], valuePairSplitted[1]);
@@ -371,7 +371,7 @@ public abstract class Maps {
       if (keysAndValues == null)
          return null;
 
-      final Map<T, T> result = newHashMap();
+      final Map<T, T> result = new HashMap<>();
       boolean isKey = true;
       T key = null;
       for (final T item : keysAndValues)

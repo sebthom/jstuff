@@ -10,6 +10,7 @@
 package net.sf.jstuff.xml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,15 +18,14 @@ import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 
-import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class MapBasedNamespaceContext implements NamespaceContext {
-   protected final Map<String, List<String>> namespaceURIsByPrefix = Maps.newHashMap(2);
-   protected final Map<String, List<String>> prefixesByNamespaceURI = Maps.newHashMap(2);
+   protected final Map<String, List<String>> namespaceURIsByPrefix = new HashMap<>(2);
+   protected final Map<String, List<String>> prefixesByNamespaceURI = new HashMap<>(2);
    private String defaultNamespaceURI = XMLConstants.NULL_NS_URI;
 
    public void bindDefaultNameSpace(final String namespaceURI) {

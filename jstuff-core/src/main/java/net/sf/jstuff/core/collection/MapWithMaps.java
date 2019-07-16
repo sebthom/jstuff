@@ -10,6 +10,7 @@
 package net.sf.jstuff.core.collection;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -31,7 +32,7 @@ public class MapWithMaps<K, K2, V> extends MapWith<K, Map<K2, V>> {
 
    @Override
    protected Map<K2, V> create(final K key) {
-      return Maps.newHashMap();
+      return new HashMap<>();
    }
 
    @Override
