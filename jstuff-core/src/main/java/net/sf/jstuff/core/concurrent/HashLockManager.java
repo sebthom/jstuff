@@ -44,7 +44,7 @@ public class HashLockManager<KeyType> {
       private ScheduledFuture<?> future;
 
       CleanUpTask(final HashLockManager<T> mgr) {
-         ref = new WeakReference<HashLockManager<T>>(mgr);
+         ref = new WeakReference<>(mgr);
       }
 
       @Override
@@ -233,7 +233,7 @@ public class HashLockManager<KeyType> {
 
          synchronized (lockCandidate) { // exclusive access to the lock object (required because of CleanUpTask)
             lockCandidate.writeLock().lock();
-            // check if the lock instance in the map for the given key is the one we we locked
+            // check if the lock instance in the map for the given key is the one we locked
             if (lockCandidate == locksByKey.putIfAbsent(key, lockCandidate))
                return;
             lockCandidate.writeLock().unlock();
