@@ -245,6 +245,18 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
     */
+   public static byte[] notEmpty(final String argumentName, final byte[] value) {
+      _notNull("argumentName", argumentName);
+      _notNull(argumentName, value);
+
+      if (value.length == 0)
+         throw _createIllegalArgumentException(argumentName, "must not be empty");
+      return value;
+   }
+
+   /**
+    * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
+    */
    public static <A> A[] notEmpty(final String argumentName, final A[] value) {
       _notNull("argumentName", argumentName);
       _notNull(argumentName, value);

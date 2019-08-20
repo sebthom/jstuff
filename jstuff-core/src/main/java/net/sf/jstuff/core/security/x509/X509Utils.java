@@ -9,7 +9,6 @@
  *********************************************************************/
 package net.sf.jstuff.core.security.x509;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,6 +104,28 @@ public abstract class X509Utils {
          return javax.security.cert.X509Certificate.getInstance(cert.getEncoded());
       } catch (final Exception ex) {
          throw new IllegalArgumentException("[cert] " + cert + " is not convertable!", ex);
+      }
+   }
+
+   /**
+    * Constructs a X509Certificate instance from a PEM encoded certificate
+    */
+   @SuppressWarnings("resource")
+   public static X509Certificate getCertificate(final byte[] data) throws GeneralSecurityException {
+      Args.notEmpty("data", data);
+
+      return getCertificate(new FastByteArrayInputStream(data));
+   }
+
+   /**
+    * Constructs a X509Certificate instance from a PEM encoded certificate
+    */
+   public static X509Certificate getCertificate(final InputStream is) throws GeneralSecurityException {
+      Args.notNull("is", is);
+      try {
+         return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(is);
+      } finally {
+         IOUtils.closeQuietly(is);
       }
    }
 
@@ -237,6 +258,7 @@ public abstract class X509Utils {
    /**
     * Constructs a X509CRL instance from a PEM encoded CRL
     */
+   @SuppressWarnings("resource")
    public static X509CRL getCRLFromPEM(final String pemContent) throws GeneralSecurityException {
       Args.notNull("pemContent", pemContent);
       final Matcher m = CRL_PATTERN.matcher(pemContent);
@@ -247,7 +269,7 @@ public abstract class X509Utils {
          certBytes = ("-----BEGIN X509 CRL-----\n" + pemContent + "\n-----END X509 CRL-----").getBytes();
       }
 
-      final CRL cert = CERTIFICATE_FACTORY.generateCRL(new ByteArrayInputStream(certBytes));
+      final CRL cert = CERTIFICATE_FACTORY.generateCRL(new FastByteArrayInputStream(certBytes));
 
       if ("X.509".equals(cert.getType()))
          return (X509CRL) cert;
