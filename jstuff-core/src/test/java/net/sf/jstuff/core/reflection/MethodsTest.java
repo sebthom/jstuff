@@ -12,54 +12,73 @@ package net.sf.jstuff.core.reflection;
 import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
+import net.sf.jstuff.core.reflection.MethodsTestEntities.EntityA;
+import net.sf.jstuff.core.reflection.MethodsTestEntities.EntityB;
+import net.sf.jstuff.core.reflection.exception.ReflectionException;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class MethodsTest extends TestCase {
 
-   static class EntityA {
-      private EntityA property1;
-      private int property2;
-
-      protected EntityA getProperty1() {
-         return property1;
-      }
-
-      protected int getProperty2() {
-         return property2;
-      }
-
-      protected void setProperty1(final EntityA property1) {
-         this.property1 = property1;
-      }
-
-      protected void setProperty2(final int property2) {
-         this.property2 = property2;
-      }
+   @FunctionalInterface
+   interface EntityB_getProperty2_Accessor {
+      int invoke(EntityB entity);
    }
 
-   static class EntityB extends EntityA {
+   @FunctionalInterface
+   interface EntityB_isProperty3_Accessor {
+      boolean invoke(EntityB entity);
+   }
 
-      boolean property3;
+   @FunctionalInterface
+   interface EntityB_setProperty3_Accessor {
+      void invoke(EntityB entity, boolean propertyValue);
+   }
 
-      @Override
-      public EntityA getProperty1() {
-         return super.getProperty1();
+   public void test_createPublicGetterAccessor() {
+      final EntityB entity = new EntityB();
+      entity.setProperty3(true);
+
+      try {
+         Methods.createPublicGetterAccessor(EntityB.class, "property2", int.class).invoke(entity);
+      } catch (final ReflectionException ex) {
+         assertEquals(IllegalAccessException.class, ex.getCause().getClass());
       }
 
-      public boolean isProperty3() {
-         return property3;
+      assertEquals(true, (boolean) Methods.createPublicGetterAccessor(EntityB.class, "property3", boolean.class).invoke(entity));
+   }
+
+   public void test_createPublicMethodAccessor() {
+      final EntityB entity = new EntityB();
+
+      try {
+         Methods.createPublicMethodAccessor(EntityB_getProperty2_Accessor.class, EntityB.class, "getProperty2", int.class).invoke(entity);
+      } catch (final ReflectionException ex) {
+         assertEquals(IllegalAccessException.class, ex.getCause().getClass());
       }
 
-      @Override
-      public void setProperty1(final EntityA property1) {
-         super.setProperty1(property1);
+      entity.setProperty3(true);
+
+      Methods.createPublicMethodAccessor(EntityB_setProperty3_Accessor.class, EntityB.class, "setProperty3", void.class, boolean.class).invoke(entity, false);
+      assertEquals(false, Methods.createPublicMethodAccessor(EntityB_isProperty3_Accessor.class, EntityB.class, "isProperty3", boolean.class).invoke(entity));
+
+      Methods.createPublicMethodAccessor(EntityB_setProperty3_Accessor.class, EntityB.class, "setProperty3").invoke(entity, true);
+      assertEquals(true, Methods.createPublicMethodAccessor(EntityB_isProperty3_Accessor.class, EntityB.class, "isProperty3").invoke(entity));
+   }
+
+   public void test_createPublicSetterAccessor() {
+      final EntityB entity = new EntityB();
+      entity.setProperty3(false);
+
+      try {
+         Methods.createPublicSetterAccessor(EntityB.class, "property2", int.class).invoke(entity, 5);
+      } catch (final ReflectionException ex) {
+         assertEquals(IllegalAccessException.class, ex.getCause().getClass());
       }
 
-      public void setProperty3(final boolean property3) {
-         this.property3 = property3;
-      }
+      Methods.createPublicSetterAccessor(EntityB.class, "property3", boolean.class).invoke(entity, true);
+      assertEquals(true, entity.isProperty3());
    }
 
    public void test_findNonPublicGetterInSuperclass() {

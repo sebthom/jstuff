@@ -11,6 +11,10 @@ package net.sf.jstuff.core.reflection;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,16 +22,93 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.exception.InvokingMethodFailedException;
+import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Methods extends Members {
+
+   @FunctionalInterface
+   public interface GetterAccessor<BEAN_TYPE, PROPERTY_TYPE> {
+      PROPERTY_TYPE invoke(BEAN_TYPE bean);
+   }
+
+   @FunctionalInterface
+   public interface SetterAccessor<BEAN_TYPE, PROPERTY_TYPE> {
+      void invoke(BEAN_TYPE bean, PROPERTY_TYPE propertyValue);
+   }
+
    private static final Logger LOG = Logger.create();
+
+   /**
+    * @param accessor FunctionalInterface where the first parameter is the targetObject followed by the parameters for the target method
+    */
+   public static <ACCESSOR> ACCESSOR createPublicMethodAccessor(final Class<ACCESSOR> accessor, final Class<?> targetClass, final String methodName) {
+      Args.notNull("accessor", accessor);
+
+      if (!accessor.isAnnotationPresent(FunctionalInterface.class))
+         throw new IllegalArgumentException("[accessor] must be an interface annotated with @java.lang.FunctionalInterface!");
+
+      final Method delegatingMethod = Arrays.stream(accessor.getMethods()).filter(m -> isAbstract(m)).findFirst().get();
+
+      return createPublicMethodAccessor(accessor, targetClass, methodName, delegatingMethod.getReturnType(), ArrayUtils.remove(delegatingMethod
+         .getParameterTypes(), 0));
+   }
+
+   /**
+    * @param accessor FunctionalInterface where the first parameter is the targetObject followed by the parameters for the target method
+    */
+   public static <ACCESSOR> ACCESSOR createPublicMethodAccessor(final Class<ACCESSOR> accessor, final Class<?> targetClass, final String methodName,
+      Class<?> methodReturnType, final Class<?>... methodParameterTypes) {
+      Args.notNull("accessor", accessor);
+      Args.notNull("targetClass", targetClass);
+      Args.notNull("methodName", methodName);
+
+      if (!accessor.isAnnotationPresent(FunctionalInterface.class))
+         throw new IllegalArgumentException("[accessor] must be an interface annotated with @java.lang.FunctionalInterface!");
+
+      if (methodReturnType == null) {
+         methodReturnType = void.class;
+      }
+
+      try {
+         final Method delegatingMethod = Arrays.stream(accessor.getMethods()).filter(m -> isAbstract(m)).findFirst().get();
+
+         final MethodHandles.Lookup lookup = MethodHandles.lookup();
+         final CallSite site = LambdaMetafactory.metafactory(lookup, //
+            delegatingMethod.getName(), //
+            MethodType.methodType(accessor), //
+            MethodType.methodType(delegatingMethod.getReturnType(), delegatingMethod.getParameterTypes()), //
+            lookup.findVirtual(targetClass, methodName, MethodType.methodType(methodReturnType, methodParameterTypes)), //
+            MethodType.methodType(methodReturnType, ArrayUtils.insert(0, methodParameterTypes, targetClass))); //
+         return (ACCESSOR) site.getTarget().invoke();
+      } catch (final Throwable ex) { // CHECKSTYLE:IGNORE .*
+         throw new ReflectionException(ex);
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   public static <O, P> GetterAccessor<O, P> createPublicGetterAccessor(final Class<O> beanClass, final String propertyName, final Class<P> propertyType)
+      throws ReflectionException {
+      try {
+         return createPublicMethodAccessor(GetterAccessor.class, beanClass, "is" + Strings.capitalize(propertyName), propertyType);
+      } catch (final Exception ex) {
+         return createPublicMethodAccessor(GetterAccessor.class, beanClass, "get" + Strings.capitalize(propertyName), propertyType);
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   public static <O, P> SetterAccessor<O, P> createPublicSetterAccessor(final Class<O> beanClass, final String propertyName, final Class<P> propertyType)
+      throws ReflectionException {
+      return createPublicMethodAccessor(SetterAccessor.class, beanClass, "set" + Strings.capitalize(propertyName), void.class, propertyType);
+   }
 
    /**
     * Searches for public or non-public method with the exact signature
@@ -597,13 +678,9 @@ public abstract class Methods extends Members {
    }
 
    @SuppressWarnings("unchecked")
-   public static <T> T invoke(final Object obj, final String methodName, final Object... args) throws InvokingMethodFailedException {
+   public static <T> T invoke(final Object obj, final Method method, final Object... args) throws InvokingMethodFailedException {
       Args.notNull("obj", obj);
-      Args.notNull("methodName", methodName);
-
-      final Method method = Methods.findAnyCompatible(obj.getClass(), methodName, args);
-      if (method == null)
-         throw new IllegalArgumentException("No method [" + methodName + "] with compatible signature found.");
+      Args.notNull("method", method);
 
       try {
          ensureAccessible(method);
@@ -614,9 +691,13 @@ public abstract class Methods extends Members {
    }
 
    @SuppressWarnings("unchecked")
-   public static <T> T invoke(final Object obj, final Method method, final Object... args) throws InvokingMethodFailedException {
+   public static <T> T invoke(final Object obj, final String methodName, final Object... args) throws InvokingMethodFailedException {
       Args.notNull("obj", obj);
-      Args.notNull("method", method);
+      Args.notNull("methodName", methodName);
+
+      final Method method = Methods.findAnyCompatible(obj.getClass(), methodName, args);
+      if (method == null)
+         throw new IllegalArgumentException("No method [" + methodName + "] with compatible signature found.");
 
       try {
          ensureAccessible(method);
