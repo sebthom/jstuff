@@ -37,7 +37,7 @@ import net.sf.jstuff.core.validation.Assert;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extends TARGET_CLASS>> {
+public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends TARGET_CLASS>> {
 
    private static final class BuilderImpl implements InvocationHandler {
       final List<Tuple2<String, Object[]>> properties = new ArrayList<>();
@@ -204,24 +204,23 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
    /**
     * @param targetClass if <code>null</code> the builder factory tries to extract the generic argument type information from the builderInterface class
     */
-   public static <TARGET_CLASS, BUILDER_IFACE extends Builder<? extends TARGET_CLASS>> BuilderFactory<TARGET_CLASS, BUILDER_IFACE> //
-
-      of(final Class<BUILDER_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {
+   public static <TARGET_CLASS, BLDR_IFACE extends Builder<? extends TARGET_CLASS>> BuilderFactory<TARGET_CLASS, BLDR_IFACE> //
+      of(final Class<BLDR_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {
       return new BuilderFactory<>(builderInterface, targetClass, constructorArgs);
    }
 
-   public static <TARGET_CLASS, BUILDER_IFACE extends Builder<? extends TARGET_CLASS>> BuilderFactory<TARGET_CLASS, BUILDER_IFACE> //
-      of(final Class<BUILDER_IFACE> builderInterface, final Object... constructorArgs) {
+   public static <TARGET_CLASS, BLDR_IFACE extends Builder<? extends TARGET_CLASS>> BuilderFactory<TARGET_CLASS, BLDR_IFACE> //
+      of(final Class<BLDR_IFACE> builderInterface, final Object... constructorArgs) {
       return new BuilderFactory<>(builderInterface, null, constructorArgs);
    }
 
-   private final Class<BUILDER_IFACE> builderInterface;
+   private final Class<BLDR_IFACE> builderInterface;
    private final Class<TARGET_CLASS> targetClass;
 
    private final Object[] constructorArgs;
 
    @SuppressWarnings("unchecked")
-   protected BuilderFactory(final Class<BUILDER_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {
+   protected BuilderFactory(final Class<BLDR_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {
       Args.notNull("builderInterface", builderInterface);
       if (!builderInterface.isInterface())
          throw new IllegalArgumentException("[builderInterface] '" + builderInterface.getName() + "' is not an interface!");
@@ -241,7 +240,7 @@ public class BuilderFactory<TARGET_CLASS, BUILDER_IFACE extends Builder<? extend
       this.constructorArgs = constructorArgs;
    }
 
-   public BUILDER_IFACE create() {
+   public BLDR_IFACE create() {
       return Proxies.create(new BuilderImpl(builderInterface, targetClass, constructorArgs), builderInterface);
    }
 }

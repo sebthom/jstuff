@@ -59,7 +59,7 @@ final class JULLogger implements LoggerInternal {
          }
          logger.logp(level, caller.getClassName(), methodName, effectiveMessage);
       } else {
-         logger.log(level, message);
+         logger.logp(level, loggerName, null, message);
       }
    }
 
