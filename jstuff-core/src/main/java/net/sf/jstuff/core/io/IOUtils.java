@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.channels.Selector;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,11 +63,15 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       closeQuietly((Closeable) reader);
    }
 
-   public static void closeQuietly(final Socket socket) {
-      closeQuietly((Closeable) socket);
+   public static void closeQuietly(final Selector selector) {
+      closeQuietly((Closeable) selector);
    }
 
    public static void closeQuietly(final ServerSocket socket) {
+      closeQuietly((Closeable) socket);
+   }
+
+   public static void closeQuietly(final Socket socket) {
       closeQuietly((Closeable) socket);
    }
 
