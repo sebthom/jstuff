@@ -14,6 +14,7 @@ import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -37,18 +38,17 @@ public abstract class Threads {
 
    public static Thread[] all() {
       final ThreadGroup root = rootThreadGroup();
-      int tmpSize = count() + 1;
-      Thread[] tmp;
-      int returned = 0;
-      do {
-         tmp = new Thread[tmpSize];
-         returned = root.enumerate(tmp, true);
-         tmpSize *= 2;
+
+      Thread[] tmp = new Thread[count() + 1];
+      while (true) {
+         final int enumerated = root.enumerate(tmp, true);
+         if (enumerated < tmp.length) {
+            final Thread[] result = new Thread[enumerated];
+            System.arraycopy(tmp, 0, result, 0, enumerated);
+            return result;
+         }
+         tmp = new Thread[tmp.length + tmp.length / 2 + 1];
       }
-      while (returned == tmpSize);
-      final Thread[] result = new Thread[returned];
-      System.arraycopy(tmp, 0, result, 0, returned);
-      return result;
    }
 
    public static Thread[] allSortedByPriority() {
@@ -69,6 +69,14 @@ public abstract class Threads {
       if (result == null)
          return ArrayUtils.EMPTY_LONG_ARRAY;
       return result;
+   }
+
+   public static Thread findThreadByName(final String threadName) {
+      for (final Thread t : all()) {
+         if (Strings.equals(threadName, t.getName()))
+            return t;
+      }
+      return null;
    }
 
    public static void handleInterruptedException(final InterruptedException ex) {
