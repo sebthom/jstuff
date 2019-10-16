@@ -368,8 +368,8 @@ public abstract class Resources {
                      //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/classes/"
                      //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/classes!/"
                      //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/classes/!/"
-                     //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/lib/azde-security-token-validation-3.0.1.jar"
-                     //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/lib/azde-security-token-validation-3.0.1.jar!/"
+                     //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/lib/myutils-3.0.1.jar"
+                     //   jar:file:/C:/apps/myapp.jar!/BOOT-INF/lib/myutils-3.0.1.jar!/"
 
                      String entryToExtract = jarURLParts[1];
 
@@ -391,21 +391,25 @@ public abstract class Resources {
                         }
 
                         final File tmpDir = FileUtils.createTempDirectory("jstuff-", ".tmp");
-                        if (jarEntry.isDirectory()) {
-                           // extract the referenced directory
-                           for (final JarEntry entry : Enumerations.toIterable(jarFile.entries())) {
-                              if (!entry.isDirectory() && entry.getName().startsWith(jarEntry.getName())) {
-                                 final File tmpFile = new java.io.File(tmpDir, entry.getName());
-                                 tmpFile.getParentFile().mkdirs();
-                                 FileUtils.writeAndClose(tmpFile, jarFile.getInputStream(entry));
+                        try {
+                           if (jarEntry.isDirectory()) {
+                              // extract the referenced directory
+                              for (final JarEntry entry : Enumerations.toIterable(jarFile.entries())) {
+                                 if (!entry.isDirectory() && entry.getName().startsWith(jarEntry.getName())) {
+                                    final File tmpFile = new java.io.File(tmpDir, entry.getName());
+                                    tmpFile.getParentFile().mkdirs();
+                                    FileUtils.writeAndClose(tmpFile, jarFile.getInputStream(entry));
+                                 }
                               }
+                              _scanClassPathEntry(new File(tmpDir, jarEntry.getName()).toURI().toURL(), nameFilter, cl, result);
+                           } else {
+                              // extract the referenced file
+                              final File tmpFile = new File(tmpDir, StringUtils.replaceChars(jarEntry.getName(), "/", "_"));
+                              FileUtils.writeAndClose(tmpFile, jarFile.getInputStream(jarEntry));
+                              _scanClassPathEntry(tmpFile.toURI().toURL(), nameFilter, cl, result);
                            }
-                           _scanClassPathEntry(new File(tmpDir, jarEntry.getName()).toURI().toURL(), nameFilter, cl, result);
-                        } else {
-                           // extract the referenced file
-                           final File tmpFile = new File(tmpDir, StringUtils.replaceChars(jarEntry.getName(), "/", "_"));
-                           FileUtils.writeAndClose(tmpFile, jarFile.getInputStream(jarEntry));
-                           _scanClassPathEntry(tmpFile.toURI().toURL(), nameFilter, cl, result);
+                        } finally {
+                           FileUtils.deleteQuietly(tmpDir);
                         }
                      } finally {
                         jarFile.close();
