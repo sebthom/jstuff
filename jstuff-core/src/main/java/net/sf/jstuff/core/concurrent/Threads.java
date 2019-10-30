@@ -9,6 +9,7 @@
  *********************************************************************/
 package net.sf.jstuff.core.concurrent;
 
+import java.lang.Thread.State;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
@@ -57,15 +58,28 @@ public abstract class Threads {
       return allThreads;
    }
 
+   /**
+    * @return ids of blocked threads
+    */
+   public static long[] blockedIds() {
+      long[] ids = ArrayUtils.EMPTY_LONG_ARRAY;
+      for (final Thread t : Threads.all()) {
+         if (t.getState() == State.BLOCKED) {
+            ids = ArrayUtils.add(ids, t.getId());
+         }
+      }
+      return ids;
+   }
+
    public static int count() {
       return TMX.getThreadCount();
    }
 
    /**
-    * @return IDs of monitor deadlocked Threads
+    * @return ids of deadlocked threads
     */
-   public static long[] deadlockedIDs() {
-      final long[] result = TMX.findMonitorDeadlockedThreads();
+   public static long[] deadlockedIds() {
+      final long[] result = TMX.findDeadlockedThreads();
       if (result == null)
          return ArrayUtils.EMPTY_LONG_ARRAY;
       return result;
