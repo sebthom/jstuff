@@ -331,7 +331,7 @@ public abstract class Resources {
                   final String name = rootDirURI.relativize(file.toURI()).toString();
                   if (nameFilter.accept(name)) {
                      try {
-                        result.add(new Resource(name, file.toURI().toURL(), cl));
+                        result.add(new Resource(name, cl.getResource(name), cl));
                      } catch (final Exception ex) {
                         LOG.error(ex);
                      }
@@ -345,11 +345,10 @@ public abstract class Resources {
             if ("file".equals(url.getProtocol())) {
                final File jarFile = new File(url.getPath());
                final JarFile jar = new JarFile(jarFile);
-               final String jarFileURI = jarFile.toURI().toString();
                try {
                   for (final JarEntry entry : Enumerations.toIterable(jar.entries())) {
                      if (!entry.isDirectory() && nameFilter.accept(entry.getName())) {
-                        result.add(new Resource(entry.getName(), new URL("jar", "", jarFileURI + "!/" + entry.getName()), cl));
+                        result.add(new Resource(entry.getName(), cl.getResource(entry.getName()), cl));
                      }
                   }
                } finally {

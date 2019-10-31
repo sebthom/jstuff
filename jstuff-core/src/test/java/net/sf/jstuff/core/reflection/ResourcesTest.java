@@ -9,7 +9,11 @@
  *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import junit.framework.TestCase;
+import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.reflection.Resources.Resource;
 
 /**
@@ -17,50 +21,58 @@ import net.sf.jstuff.core.reflection.Resources.Resource;
  */
 public class ResourcesTest extends TestCase {
 
-   public void testResources() {
-      {
-         boolean foundStringsClass = false;
-         for (final Resource r : Resources.findResourcesByGlobPattern("**/*.class", ClassLoader.getSystemClassLoader())) {
-            if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
-               foundStringsClass = true;
-            }
-         }
-         assertTrue(foundStringsClass);
-      }
+   public void testFindClassInDir() throws IOException {
+      boolean foundClass = false;
 
-      {
-         boolean foundStringsClass = false;
-         for (final Resource r : Resources.findResourcesByGlobPattern("**/Strin*.class")) {
-            if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
-               foundStringsClass = true;
-            }
+      for (final Resource r : Resources.findResourcesByGlobPattern("Strings.class")) {
+         if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
+            foundClass = true;
          }
-         assertTrue(foundStringsClass);
       }
+      assertFalse(foundClass);
 
-      {
-         boolean foundStringsClass = false;
-         for (final Resource r : Resources.findResourcesByGlobPattern("Strings.class")) {
-            if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
-               foundStringsClass = true;
+      for (final Resource r : Resources.findResourcesByGlobPattern("**/Strin*.class")) {
+         if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
+            foundClass = true;
+            try (InputStream is = r.url.openStream()) {
+               is.read();
             }
          }
-         assertFalse(foundStringsClass);
       }
+      assertTrue(foundClass);
+   }
 
-      {
-         boolean foundStringsClass = false;
-         boolean foundDayProperties = false;
-         for (final Resource r : Resources.findResourcesByGlobPattern("**/*.properties")) {
-            if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
-               foundStringsClass = true;
-            }
-            if (r.name.equals("net/sf/jstuff/core/date/Day.properties")) {
-               foundDayProperties = true;
+   public void testFindClassInJar() throws IOException {
+      boolean foundClass = false;
+      for (final Resource r : Resources.findResourcesByGlobPattern("**/*.class", ClassLoader.getSystemClassLoader())) {
+         if (r.name.equals("com/thoughtworks/paranamer/Paranamer.class")) {
+            foundClass = true;
+            try (InputStream is = r.url.openStream()) {
+               is.read();
             }
          }
-         assertFalse(foundStringsClass);
-         assertTrue(foundDayProperties);
       }
+      assertTrue(foundClass);
+   }
+
+   public void testFindProperties() throws IOException {
+      boolean foundClass = false;
+      boolean foundDayProperties = false;
+      for (final Resource r : Resources.findResourcesByGlobPattern("**/*.properties")) {
+         if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
+            foundClass = true;
+            try (InputStream is = r.url.openStream()) {
+               is.read();
+            }
+         }
+         if (r.name.equals("net/sf/jstuff/core/date/Day.properties")) {
+            foundDayProperties = true;
+            try (InputStream is = r.url.openStream()) {
+               System.out.println(IOUtils.toString(is));
+            }
+         }
+      }
+      assertFalse(foundClass);
+      assertTrue(foundDayProperties);
    }
 }
