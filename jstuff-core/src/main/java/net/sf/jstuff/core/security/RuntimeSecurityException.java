@@ -19,6 +19,10 @@ import net.sf.jstuff.core.exception.DelegatingRuntimeException;
 public class RuntimeSecurityException extends DelegatingRuntimeException {
    private static final long serialVersionUID = 1L;
 
+   public RuntimeSecurityException(final String message) {
+      super(new GeneralSecurityException(message));
+   }
+
    public RuntimeSecurityException(final GeneralSecurityException cause) {
       super(cause);
    }
