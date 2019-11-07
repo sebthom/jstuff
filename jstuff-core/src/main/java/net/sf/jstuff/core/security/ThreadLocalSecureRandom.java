@@ -14,7 +14,6 @@ import java.io.ObjectOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
-import java.util.Random;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -26,7 +25,7 @@ import net.sf.jstuff.core.fluent.Fluent;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ThreadLocalSecureRandom extends Random {
+public class ThreadLocalSecureRandom extends SecureRandom {
 
    @Builder.Property(required = true)
    public interface ThreadLocalSecureRandomBuilder extends Builder<ThreadLocalSecureRandom> {
@@ -71,11 +70,13 @@ public class ThreadLocalSecureRandom extends Random {
    };
 
    private long reseedMS = -1;
+
    private boolean useStrongInstances = false;
+
    private boolean isInitialized = false;
 
    protected ThreadLocalSecureRandom() {
-      super(0); // CHECKSTYLE:IGNORE .*
+      super(); // CHECKSTYLE:IGNORE .*
       isInitialized = true;
    }
 
@@ -97,6 +98,16 @@ public class ThreadLocalSecureRandom extends Random {
    @Override
    public DoubleStream doubles(final long streamSize, final double randomNumberOrigin, final double randomNumberBound) {
       return instances.get().doubles(streamSize, randomNumberOrigin, randomNumberBound);
+   }
+
+   @Override
+   public byte[] generateSeed(final int numBytes) {
+      return instances.get().generateSeed(numBytes);
+   }
+
+   @Override
+   public String getAlgorithm() {
+      return instances.get().getAlgorithm();
    }
 
    @Override
@@ -192,11 +203,21 @@ public class ThreadLocalSecureRandom extends Random {
       }
    }
 
+   /**
+    * @throws UnsupportedOperationException always
+    */
+   @Override
+   public void setSeed(final byte[] seed) {
+      throw new UnsupportedOperationException();
+   }
+
+   /**
+    * @throws UnsupportedOperationException always
+    */
    @Override
    public void setSeed(final long seed) {
-      if (isInitialized) {
-         instances.get().setSeed(seed);
-      }
+      if (isInitialized)
+         throw new UnsupportedOperationException();
    }
 
    protected void setUseStrongInstances(final boolean value) {

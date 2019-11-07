@@ -12,7 +12,7 @@ package net.sf.jstuff.core.security;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.time.Duration;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -21,13 +21,12 @@ import javax.crypto.SecretKey;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Crypto {
-   private static final class LazyInitialized {
-      private static final SecureRandom _RANDOM = new SecureRandom();
-   }
+
+   private static final ThreadLocalSecureRandom SECURE_RANDOM = ThreadLocalSecureRandom.builder().reseedEvery(Duration.ofMinutes(30)).build();
 
    public static byte[] createRandomBytes(final int numBytes) {
       final byte[] arr = new byte[numBytes];
-      LazyInitialized._RANDOM.nextBytes(arr);
+      SECURE_RANDOM.nextBytes(arr);
       return arr;
    }
 
@@ -45,7 +44,7 @@ public abstract class Crypto {
     */
    public KeyPair newKeyPair(final int keysize, final String algorithm) throws NoSuchAlgorithmException {
       final KeyPairGenerator kg = KeyPairGenerator.getInstance(algorithm);
-      kg.initialize(keysize, LazyInitialized._RANDOM);
+      kg.initialize(keysize, SECURE_RANDOM);
       return kg.genKeyPair();
    }
 
@@ -55,7 +54,7 @@ public abstract class Crypto {
     */
    public SecretKey newSecretKey(final int keysize, final String algorithm) throws NoSuchAlgorithmException {
       final KeyGenerator kg = KeyGenerator.getInstance(algorithm);
-      kg.init(keysize, LazyInitialized._RANDOM);
+      kg.init(keysize, SECURE_RANDOM);
       return kg.generateKey();
    }
 }
