@@ -32,7 +32,7 @@ import net.sf.jstuff.core.fluent.Fluent;
  */
 public class ThreadLocalSecureRandom extends SecureRandom {
 
-   @Builder.Property(required = true)
+   @Builder.Property(required = false)
    public interface ThreadLocalSecureRandomBuilder extends Builder<ThreadLocalSecureRandom> {
 
       @Fluent
