@@ -25,6 +25,8 @@ import net.sf.jstuff.xml.stream.StAXUtils.ElementInfo;
  */
 public class StAXUtilsTest extends TestCase {
 
+   private static final StAXFactory STAX_FACTORY = new StAXFactory();
+
    static {
       for (final Handler handler : Logger.getLogger("").getHandlers()) {
          handler.setLevel(Level.FINE);
@@ -37,13 +39,13 @@ public class StAXUtilsTest extends TestCase {
    }
 
    private ElementInfo findElement(final String xpath) throws XMLStreamException {
-      try (AutoCloseableXMLStreamReader reader = StAXUtils.createXMLStreamReader(getXml(), true)) {
+      try (AutoCloseableXMLStreamReader reader = STAX_FACTORY.createXMLStreamReader(getXml(), true)) {
          return StAXUtils.findElement(reader, xpath);
       }
    }
 
    private List<ElementInfo> findElements(final String xpath) throws XMLStreamException {
-      try (AutoCloseableXMLStreamReader reader = StAXUtils.createXMLStreamReader(getXml(), true)) {
+      try (AutoCloseableXMLStreamReader reader = STAX_FACTORY.createXMLStreamReader(getXml(), true)) {
          return StAXUtils.findElements(reader, xpath);
       }
    }
