@@ -340,7 +340,7 @@
          <groupId>org.aspectj</groupId>
          <artifactId>aspectjweaver</artifactId>
          <!-- Java 5: <= 1.8.9 -->
-         <version>1.9.4</version>
+         <version>1.9.5</version>
          <scope>test</scope>
       </dependency>
       <dependency>
