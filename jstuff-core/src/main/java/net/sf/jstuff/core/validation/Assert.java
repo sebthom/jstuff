@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import net.sf.jstuff.core.Strings;
 
@@ -128,6 +129,14 @@ public abstract class Assert {
    public static boolean isTrue(final boolean value, final String errorMessage, final Object... errorMessageArgs) {
       if (!value)
          throw _createIllegalStateException(errorMessage, errorMessageArgs);
+      return value;
+   }
+
+   public static <S extends CharSequence> S matches(final S value, final Pattern pattern, final String errorMessage) {
+      Args.notNull("pattern", pattern);
+
+      if (value == null || !pattern.matcher(value).matches())
+         throw _createIllegalStateException(errorMessage);
       return value;
    }
 

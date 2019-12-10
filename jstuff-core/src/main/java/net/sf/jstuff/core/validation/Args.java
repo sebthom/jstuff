@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import net.sf.jstuff.core.Strings;
 
@@ -138,6 +139,16 @@ public abstract class Args {
       return file;
    }
 
+   public static <S extends CharSequence> S matches(final String argumentName, final S value, final Pattern pattern) {
+      _notNull("argumentName", argumentName);
+      _notNull(argumentName, value);
+      _notNull("pattern", pattern);
+
+      if (!pattern.matcher(value).matches())
+         throw _createIllegalArgumentException(argumentName, "must match pattern " + pattern);
+      return value;
+   }
+
    public static byte max(final String argumentName, final byte value, final byte max) {
       _notNull("argumentName", argumentName);
 
@@ -170,6 +181,15 @@ public abstract class Args {
       return value;
    }
 
+   public static <S extends CharSequence> S maxLength(final String argumentName, final S value, final int maxLength) {
+      _notNull("argumentName", argumentName);
+      _notNull(argumentName, value);
+
+      if (value.length() > maxLength)
+         throw _createIllegalArgumentException(argumentName, "must not exceed " + maxLength + " chars");
+      return value;
+   }
+
    public static byte min(final String argumentName, final byte value, final byte min) {
       _notNull("argumentName", argumentName);
 
@@ -199,6 +219,15 @@ public abstract class Args {
 
       if (value < min)
          throw _createIllegalArgumentException(argumentName, "must be " + min + " or greater");
+      return value;
+   }
+
+   public static <S extends CharSequence> S minLength(final String argumentName, final S value, final int minLength) {
+      _notNull("argumentName", argumentName);
+      _notNull(argumentName, value);
+
+      if (value.length() < minLength)
+         throw _createIllegalArgumentException(argumentName, "must not have at least " + minLength + " chars");
       return value;
    }
 
@@ -245,7 +274,7 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
     */
-   public static byte[] notEmpty(final String argumentName, final byte[] value) {
+   public static <A> A[] notEmpty(final String argumentName, final A[] value) {
       _notNull("argumentName", argumentName);
       _notNull(argumentName, value);
 
@@ -257,7 +286,7 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
     */
-   public static <A> A[] notEmpty(final String argumentName, final A[] value) {
+   public static byte[] notEmpty(final String argumentName, final byte[] value) {
       _notNull("argumentName", argumentName);
       _notNull(argumentName, value);
 
