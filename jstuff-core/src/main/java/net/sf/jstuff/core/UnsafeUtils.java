@@ -16,6 +16,7 @@ import sun.misc.Unsafe; // CHECKSTYLE:IGNORE IllegalImport
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("restriction")
 public abstract class UnsafeUtils {
 
    private static final Unsafe UNSAFE = Fields.read(null, Fields.find(Unsafe.class, "theUnsafe"));
