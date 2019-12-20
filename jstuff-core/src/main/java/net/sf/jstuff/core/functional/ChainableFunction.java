@@ -9,9 +9,16 @@
  *********************************************************************/
 package net.sf.jstuff.core.functional;
 
+import net.sf.jstuff.core.functional.Functions.And;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@FunctionalInterface
 public interface ChainableFunction<In, Out> extends Function<In, Out> {
-   <NextOut> ChainableFunction<In, NextOut> and(Function<? super Out, NextOut> next);
+
+   default <NextOut> ChainableFunction<In, NextOut> and(final Function<? super Out, NextOut> next) {
+      return new And<>(this, next);
+   }
+
 }

@@ -12,6 +12,8 @@ package net.sf.jstuff.core.functional;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@FunctionalInterface
 public interface Accept<T> {
+
    boolean accept(T obj);
 }

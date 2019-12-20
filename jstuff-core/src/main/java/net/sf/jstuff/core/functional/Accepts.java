@@ -29,20 +29,6 @@ public abstract class Accepts {
       private static final long serialVersionUID = 1L;
 
       @Override
-      public <V extends T> And<V> and(final Accept<? super V> next) {
-         Args.notNull("next", next);
-
-         return new And<>(AbstractAccept.this, next);
-      }
-
-      @Override
-      public <V extends T> Or<V> or(final Accept<? super V> next) {
-         Args.notNull("next", next);
-
-         return new Or<>(AbstractAccept.this, next);
-      }
-
-      @Override
       public String toString() {
          return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
       }

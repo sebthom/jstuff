@@ -24,11 +24,6 @@ public abstract class Functions {
       private static final long serialVersionUID = 1L;
 
       @Override
-      public <NextOut> ChainableFunction<In, NextOut> and(final Function<? super Out, NextOut> next) {
-         return new And<In, Out, NextOut>(this, next);
-      }
-
-      @Override
       public String toString() {
          return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
       }
@@ -126,15 +121,15 @@ public abstract class Functions {
    }
 
    public static <In, Out> CastTo<In, Out> castTo(@SuppressWarnings("unused") final Class<Out> targetType) {
-      return new CastTo<In, Out>();
+      return new CastTo<>();
    }
 
    public static <In> ObjectToString<In> objectToString() {
-      return new ObjectToString<In>();
+      return new ObjectToString<>();
    }
 
    public static <In> Prefix<In> prefix(final String prefix) {
-      return new Prefix<In>(prefix);
+      return new Prefix<>(prefix);
    }
 
    public static StringToInt stringToInt() {
@@ -142,10 +137,10 @@ public abstract class Functions {
    }
 
    public static <In> Suffix<In> suffix(final String suffix) {
-      return new Suffix<In>(suffix);
+      return new Suffix<>(suffix);
    }
 
    public static <In> Trim<In> trim() {
-      return new Trim<In>();
+      return new Trim<>();
    }
 }

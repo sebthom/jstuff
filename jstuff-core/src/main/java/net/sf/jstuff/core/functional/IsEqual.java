@@ -14,13 +14,10 @@ import java.util.Objects;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@FunctionalInterface
 public interface IsEqual<T> {
-   IsEqual<Object> DEFAULT = new IsEqual<Object>() {
-      @Override
-      public boolean isEqual(final Object obj1, final Object obj2) {
-         return Objects.equals(obj1, obj2);
-      }
-   };
+
+   IsEqual<Object> DEFAULT = Objects::equals;
 
    boolean isEqual(T obj1, T obj2);
 }
