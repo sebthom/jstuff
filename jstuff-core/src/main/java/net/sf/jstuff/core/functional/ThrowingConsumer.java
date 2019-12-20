@@ -19,6 +19,10 @@ import net.sf.jstuff.core.exception.Exceptions;
 @FunctionalInterface
 public interface ThrowingConsumer<T, E extends Throwable> extends Consumer<T> {
 
+   static <T> ThrowingConsumer<T, RuntimeException> from(final Consumer<T> consumer) {
+      return value -> consumer.accept(value);
+   }
+
    @Override
    default void accept(final T elem) {
       try {
