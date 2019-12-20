@@ -76,6 +76,20 @@ public abstract class Threads {
       return TMX.getThreadCount();
    }
 
+   public static Thread[] deadlocked() {
+      final long[] deadlockedIds = deadlockedIds();
+      Thread[] result = new Thread[0];
+      for (final Thread t : all()) {
+         for (final long deadlockedId : deadlockedIds) {
+            if (t.getId() == deadlockedId) {
+               result = ArrayUtils.add(result, t);
+               continue;
+            }
+         }
+      }
+      return result;
+   }
+
    /**
     * @return ids of deadlocked threads
     */

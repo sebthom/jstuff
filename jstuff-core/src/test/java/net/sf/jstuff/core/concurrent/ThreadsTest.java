@@ -15,6 +15,7 @@ import junit.framework.TestCase;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ThreadsTest extends TestCase {
+
    public void testSleep() {
       final long now = System.currentTimeMillis();
       Threads.sleep(100);
@@ -22,8 +23,6 @@ public class ThreadsTest extends TestCase {
    }
 
    public void testThreads() {
-      assertEquals(0, Threads.blockedIds().length);
-      assertEquals(0, Threads.deadlockedIds().length);
       assertTrue(Threads.count() > 0);
       assertEquals(Threads.count(), Threads.all().length);
       assertEquals(Threads.count(), Threads.allSortedByPriority().length);
