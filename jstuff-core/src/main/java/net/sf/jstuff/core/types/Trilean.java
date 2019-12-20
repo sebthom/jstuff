@@ -101,6 +101,9 @@ public enum Trilean {
       return FALSE;
    }
 
+   /**
+    * @return null for {@link #UNKNOWN}
+    */
    public Boolean toBoolean() {
       switch (this) {
          case TRUE:
