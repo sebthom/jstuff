@@ -14,6 +14,7 @@ import java.security.GeneralSecurityException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import net.sf.jstuff.core.concurrent.RuntimeInterruptedException;
 import net.sf.jstuff.core.io.RuntimeIOException;
 import net.sf.jstuff.core.io.StringPrintWriter;
 import net.sf.jstuff.core.reflection.StackTrace;
@@ -39,39 +40,18 @@ public abstract class Exceptions extends ExceptionUtils {
       return null;
    }
 
-   @SuppressWarnings("unchecked")
-   private static <T extends Throwable> void throwsUnchecked(final Throwable toThrow) throws T {
-      throw (T) toThrow;
-   }
-
    /**
-    * Throws the given exception wrapped in a new {@link RuntimeIOException} instance if it isn't one itself.
+    * Faster alternative to {@link ExceptionUtils#getStackTrace(Throwable)}
+    * as it uses StringBuilder instead of StringBuffer.
     */
-   public static RuntimeSecurityException throwUnchecked(final GeneralSecurityException ex) {
-      Args.notNull("ex", ex);
-      throw new RuntimeSecurityException(ex);
-   }
+   public static String getStackTrace(final Throwable ex) {
+      if (ex == null)
+         return null;
 
-   /**
-    * Throws the given exception wrapped in a new {@link RuntimeIOException} instance if it isn't one itself.
-    */
-   public static RuntimeIOException throwUnchecked(final IOException ex) {
-      Args.notNull("ex", ex);
-      throw new RuntimeIOException(ex);
-   }
-
-   /**
-    * Throws the given exception wrapped in a new {@link DelegatingRuntimeException} instance if it isn't one itself.
-    */
-   public static DelegatingRuntimeException throwUnchecked(final Throwable ex) {
-      Args.notNull("ex", ex);
-      if (ex instanceof RuntimeException)
-         throw (RuntimeException) ex;
-      if (ex instanceof GeneralSecurityException)
-         throw new RuntimeSecurityException((GeneralSecurityException) ex);
-      if (ex instanceof IOException)
-         throw new RuntimeIOException((IOException) ex);
-      throw new DelegatingRuntimeException(ex);
+      try (StringPrintWriter spw = new StringPrintWriter()) {
+         ex.printStackTrace(spw);
+         return spw.toString();
+      }
    }
 
    /**
@@ -79,40 +59,42 @@ public abstract class Exceptions extends ExceptionUtils {
     * <p>
     * Throws the given exception bypassing the compiler check for checked exceptions.
     * <p>
-    * This is considered a hack. You should prefer using {@link #throwUnchecked(Throwable)}.
+    * This is considered a hack. You should prefer using {@link #wrapAsRuntimeException(Throwable)}.
     */
-   public static RuntimeException throwUncheckedRaw(final Throwable ex) {
+   @SuppressWarnings("unchecked")
+   public static <T extends Throwable> RuntimeException throwSneakily(final Throwable ex) throws T {
       Args.notNull("ex", ex);
 
-      Exceptions.<RuntimeException> throwsUnchecked(ex); // CHECKSTYLE:IGNORE GenericWhitespace
-
-      throw new AssertionError("should never be reached.");
+      throw (T) ex;
    }
 
    /**
     * Wraps the given exception if not of the given type already.
     */
    @SuppressWarnings("unchecked")
-   public static <T extends Throwable> T wrapAs(final Throwable t, final Class<T> type) {
-      if (t == null)
+   public static <T extends Throwable> T wrapAs(final Throwable ex, final Class<T> type) {
+      if (ex == null)
          return null;
-      if (Types.isInstanceOf(t, type))
-         return (T) t;
+
+      if (Types.isInstanceOf(ex, type))
+         return (T) ex;
 
       if (type == RuntimeException.class) {
-         if (t instanceof GeneralSecurityException)
-            return (T) new RuntimeSecurityException((GeneralSecurityException) t);
-         if (t instanceof IOException)
-            return (T) new RuntimeIOException((IOException) t);
-         return (T) new DelegatingRuntimeException(t);
+         if (ex instanceof InterruptedException)
+            return (T) new RuntimeInterruptedException((InterruptedException) ex);
+         if (ex instanceof GeneralSecurityException)
+            return (T) new RuntimeSecurityException((GeneralSecurityException) ex);
+         if (ex instanceof IOException)
+            return (T) new RuntimeIOException((IOException) ex);
+         return (T) new DelegatingRuntimeException(ex);
       }
 
-      final T exception = t.getMessage() == null ? Types.newInstance(type) : Types.newInstance(type, t.getMessage());
-      exception.initCause(t);
+      final T exception = ex.getMessage() == null ? Types.newInstance(type) : Types.newInstance(type, ex.getMessage());
+      exception.initCause(ex);
 
-      if (exception.getStackTrace() != null) {
+      final StackTraceElement[] stack = exception.getStackTrace();
+      if (stack != null) {
          final StackTraceElement caller = StackTrace.getCallerStackTraceElement();
-         final StackTraceElement[] stack = exception.getStackTrace();
          for (int i = 0; i < stack.length; i++) {
             if (stack[i].equals(caller)) {
                final StackTraceElement[] newStack = new StackTraceElement[stack.length - i];
@@ -127,16 +109,9 @@ public abstract class Exceptions extends ExceptionUtils {
    }
 
    /**
-    * Faster alternative to {@link ExceptionUtils#getStackTrace(Throwable)}
-    * as it uses StringBuilder instead of StringBuffer.
+    * Wraps the given exception if not already a runtime exception.
     */
-   public static String getStackTrace(final Throwable t) {
-      if (t == null)
-         return null;
-
-      try (StringPrintWriter spw = new StringPrintWriter()) {
-         t.printStackTrace(spw);
-         return spw.toString();
-      }
+   public static RuntimeException wrapAsRuntimeException(final Throwable t) {
+      return wrapAs(t, RuntimeException.class);
    }
 }
