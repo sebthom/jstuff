@@ -147,7 +147,5 @@ public class ThreadDumperTest extends TestCase {
       }
 
       assertEquals(2, Threads.deadlockedIds().length);
-
-      Threads.sleep(1_000_000_000);
    }
 }
