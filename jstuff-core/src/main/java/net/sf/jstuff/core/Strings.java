@@ -181,6 +181,8 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
    public static final String NEW_LINE = System.getProperty("line.separator");
 
+   public static final String TAB = "\t";
+
    public static CharSequence ansiColorsToHTML(final CharSequence txt) {
       if (isEmpty(txt))
          return txt;
