@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -93,6 +94,61 @@ public abstract class Threads {
       return null;
    }
 
+   /**
+    * https://stackoverflow.com/questions/297804/how-are-java-thread-priorities-translated-to-an-os-thread-priority
+    *
+    * @return 1000 + javaPriority if unknown
+    */
+   public static int guessOSThreadPriority(final Thread thread) {
+      final int prio = thread.getPriority();
+
+      if (SystemUtils.IS_OS_WINDOWS) {
+         // https://docs.microsoft.com/en-us/windows/win32/procthread/scheduling-priorities
+         switch (prio) {
+            case 1:
+            case 2:
+               return -2; // THREAD_PRIORITY_LOWEST
+            case 3:
+            case 4:
+               return -1; // THREAD_PRIORITY_BELOW_NORMAL
+            case 5:
+            case 6:
+               return 0; // THREAD_PRIORITY_NORMAL
+            case 7:
+            case 8:
+               return 1; // THREAD_PRIORITY_ABOVE_NORMAL
+            case 9:
+            case 10:
+               return 2; // THREAD_PRIORITY_HIGHEST
+         }
+      }
+
+      if (SystemUtils.IS_OS_SOLARIS) {
+         switch (prio) {
+            case 1:
+               return 0;
+            case 2:
+               return 32;
+            case 3:
+               return 64;
+            case 4:
+               return 96;
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+               return 127;
+         }
+      }
+
+      if (SystemUtils.IS_OS_UNIX)
+         return 5 - prio;
+
+      return 1_000 + prio;
+   }
+
    public static void handleInterruptedException(final InterruptedException ex) {
       LOG.error(ex, "InterruptedException caught");
       Thread.currentThread().interrupt();
@@ -161,5 +217,4 @@ public abstract class Threads {
          handleInterruptedException(ex);
       }
    }
-
 }
