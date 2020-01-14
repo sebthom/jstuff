@@ -12,8 +12,11 @@ package net.sf.jstuff.core.collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * @deprecated use {@link ConcurrentHashMap#newKeySet()} or {@link Sets#newConcurrentHashSet()}
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@Deprecated
 public class ConcurrentHashSet<E> extends MapBackedSet<E> {
 
    private static final long serialVersionUID = 1L;
