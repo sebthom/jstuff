@@ -27,6 +27,8 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Threads {
    private static final Logger LOG = Logger.create();
 
+   private static final Thread[] EMPTY_THREAD_ARRAY = new Thread[0];
+
    private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = new java.util.Comparator<Thread>() {
       @Override
       public int compare(final Thread t1, final Thread t2) {
@@ -54,9 +56,22 @@ public abstract class Threads {
    }
 
    public static Thread[] allSortedByPriority() {
-      final Thread[] allThreads = all();
-      Arrays.sort(allThreads, THREAD_PRIORITY_COMPARATOR);
-      return allThreads;
+      final Thread[] result = all();
+      Arrays.sort(result, THREAD_PRIORITY_COMPARATOR);
+      return result;
+   }
+
+   /**
+    * @return blocked threads
+    */
+   public static Thread[] blocked() {
+      Thread[] result = EMPTY_THREAD_ARRAY;
+      for (final Thread t : Threads.all()) {
+         if (t.getState() == State.BLOCKED) {
+            result = ArrayUtils.add(result, t);
+         }
+      }
+      return result;
    }
 
    /**
@@ -78,7 +93,7 @@ public abstract class Threads {
 
    public static Thread[] deadlocked() {
       final long[] deadlockedIds = deadlockedIds();
-      Thread[] result = new Thread[0];
+      Thread[] result = EMPTY_THREAD_ARRAY;
       for (final Thread t : all()) {
          for (final long deadlockedId : deadlockedIds) {
             if (t.getId() == deadlockedId) {
