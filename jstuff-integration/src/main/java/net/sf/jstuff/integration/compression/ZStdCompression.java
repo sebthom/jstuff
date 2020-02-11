@@ -26,6 +26,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * https://gregoryszorc.com/blog/2017/03/07/better-compression-with-zstandard/
  * https://code.facebook.com/posts/1658392934479273/smaller-and-faster-data-compression-with-zstandard/
+ * https://quixdb.github.io/squash-benchmark/
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -78,7 +79,8 @@ public class ZStdCompression extends AbstractCompression {
       Args.notNull("output", output);
 
       if (!closeOutput) {
-         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         // prevent unwanted closing of output in case compOS has a finalize method that
+         // closes underlying resource on GC
          output = new DelegatingOutputStream(output, true);
       }
 
@@ -100,7 +102,8 @@ public class ZStdCompression extends AbstractCompression {
       Args.notNull("output", output);
 
       if (!closeOutput) {
-         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
+         // prevent unwanted closing of output in case compOS has a finalize method that
+         // closes underlying resource on GC
          output = new DelegatingOutputStream(output, true);
       }
 
