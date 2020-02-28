@@ -28,7 +28,7 @@
       <!-- Java 5: <= 3.x-->
       <!-- Java 6: <= 4.x-->
       <!-- Java 8: <= 5.x-->
-      <spring.version>5.2.3.RELEASE</spring.version>
+      <spring.version>5.2.4.RELEASE</spring.version>
    </properties>
 
 
