@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2010-2020 by Sebastian Thomschke and others.
@@ -105,7 +107,6 @@
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
-            <version>3.1.0</version>
             <executions>
                <execution>
                   <id>add-license-file-to-jar</id>
@@ -131,9 +132,9 @@
    </build>
 
 
-    <!-- global dependencies -->
+   <!-- global dependencies -->
    <dependencies>
-        <!-- test dependencies -->
+      <!-- test dependencies -->
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
