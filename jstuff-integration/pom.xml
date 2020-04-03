@@ -255,7 +255,7 @@
          <!-- compression https://github.com/luben/zstd-jni -->
          <groupId>com.github.luben</groupId>
          <artifactId>zstd-jni</artifactId>
-         <version>1.4.4-7</version>
+         <version>1.4.4-9</version>
          <optional>true</optional>
       </dependency>
 
