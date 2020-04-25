@@ -33,3 +33,10 @@ jstuff 5.x requires Java 8 or newer.
 ## <a name="license"></a>License
 
 All files are released under the [Eclipse Public License 2.0](LICENSE.txt).
+
+Individual files contain the following tag instead of the full license text:
+```
+SPDX-License-Identifier: EPL-2.0
+```
+
+This enables machine processing of license information based on the SPDX License Identifiers that are available here: https://spdx.org/licenses/.
