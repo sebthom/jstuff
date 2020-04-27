@@ -27,7 +27,7 @@ public interface ThrowingConsumer<T, E extends Throwable> extends Consumer<T> {
    default void accept(final T elem) {
       try {
          acceptOrThrow(elem);
-      } catch (final Throwable t) { // CHECKSTYLE:IGNORE .*
+      } catch (final Throwable t) { // CHECKSTYLE:IGNORE IllegalCatch
          throw Exceptions.wrapAsRuntimeException(t);
       }
    }
