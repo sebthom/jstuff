@@ -529,6 +529,10 @@ public abstract class X509Utils {
       return dn1.equalsIgnoreCase(dn2);
    }
 
+   public static boolean isExpired(final X509Certificate cert) {
+      return cert.getNotAfter().getTime() < System.currentTimeMillis();
+   }
+
    /**
     * Performs a case-insensitive comparison of the issuer DNs.
     */
