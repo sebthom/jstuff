@@ -28,8 +28,23 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
    private static final Logger LOG = Logger.create();
 
-   private static final FastDateFormat ISO8601_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-   private static final FastDateFormat RFC3399_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss'Z'");
+   /**
+    * e.g. 2022-05-03T15:00:00.000+02:00
+    */
+   private static final FastDateFormat ISO8601_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ssXXX");
+
+   /**
+    * e.g. 2022-05-03T15:00:00.000+02:00
+    */
+   private static final FastDateFormat ISO8601_FORMAT_MS = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
+   /**
+    * https://www.ietf.org/rfc/rfc3339.txt
+    * https://medium.com/easyread/understanding-about-rfc-3339-for-datetime-formatting-in-software-engineering-940aa5d5f68a
+    *
+    * e.g. 2022-05-03 15:00:00+02:00
+    */
+   private static final FastDateFormat RFC3399_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ssXXX");
 
    public static final String DURATION_REGEX = "" + //
       "((\\d+)(d((ay)s?)?)+)?" + // 1d, 1day, 2days
@@ -163,11 +178,19 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
       return milliseconds;
    }
 
+   /**
+    * Examples:
+    * 
+    * <pre>
+    * 2022-05-03T15:01:02.350+02:00
+    * 2022-05-03T15:00:00+02:00
+    * </pre>
+    */
    public static String toISO8601(final Date date) {
       if (date == null)
          return null;
 
-      return ISO8601_FORMAT.format(date);
+      return (date.getTime() % 1000 == 0 ? ISO8601_FORMAT : ISO8601_FORMAT_MS).format(date);
    }
 
    public static String toISO8601_UTC(final Date date) {
@@ -177,9 +200,17 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
       final Calendar c = Calendar.getInstance();
       c.setTime(date);
       c.setTimeZone(TimeZone.getTimeZone("UTC"));
-      return ISO8601_FORMAT.format(c);
+      return (date.getTime() % 1000 == 0 ? ISO8601_FORMAT : ISO8601_FORMAT_MS).format(c);
    }
 
+   /**
+    * Examples:
+    * 
+    * <pre>
+    * 2022-05-03 15:01:02.350+02:00
+    * 2022-05-03 15:00:00+02:00
+    * </pre>
+    */
    public static String toRFC3399(final Date date) {
       if (date == null)
          return null;
