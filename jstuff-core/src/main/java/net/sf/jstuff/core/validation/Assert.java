@@ -136,6 +136,16 @@ public abstract class Assert {
    }
 
    /**
+    * @throws IllegalStateException if <code>value</code> is not <code>null</code>
+    */
+   public static <T> T isNull(final T value, final Supplier<String> errorMessageSupplier) {
+      Args.notNull("errorMessageSupplier", errorMessageSupplier);
+      if (value != null)
+         throw _createIllegalStateException(errorMessageSupplier.get());
+      return value;
+   }
+
+   /**
     * @throws IllegalStateException if <code>value</code> is <code>false</code>
     */
    public static boolean isTrue(final boolean value, final String errorMessage) {
@@ -338,6 +348,16 @@ public abstract class Assert {
    public static <T> T notNull(final T value, final String errorMessage) {
       if (value == null)
          throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   /**
+    * @throws IllegalStateException if <code>value</code> is <code>null</code>
+    */
+   public static <T> T notNull(final T value, final Supplier<String> errorMessageSupplier) {
+      Args.notNull("errorMessageSupplier", errorMessageSupplier);
+      if (value == null)
+         throw _createIllegalStateException(errorMessageSupplier.get());
       return value;
    }
 
