@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import net.sf.jstuff.core.Strings;
@@ -89,6 +90,16 @@ public abstract class Assert {
    }
 
    /**
+    * @throws IllegalStateException if <code>value</code> is <code>true</code>
+    */
+   public static boolean isFalse(final boolean value, final Supplier<String> errorMessageSupplier) {
+      Args.notNull("errorMessage", errorMessageSupplier);
+      if (value)
+         throw _createIllegalStateException(errorMessageSupplier.get());
+      return value;
+   }
+
+   /**
     * Ensures file exists, points to a regular file and is readable by the current user.
     *
     * @throws IllegalStateException if <code>value</code> is not readable
@@ -139,6 +150,16 @@ public abstract class Assert {
    public static boolean isTrue(final boolean value, final String errorMessage, final Object... errorMessageArgs) {
       if (!value)
          throw _createIllegalStateException(errorMessage, errorMessageArgs);
+      return value;
+   }
+
+   /**
+    * @throws IllegalStateException if <code>value</code> is <code>false</code>
+    */
+   public static boolean isTrue(final boolean value, final Supplier<String> errorMessageSupplier) {
+      Args.notNull("errorMessage", errorMessageSupplier);
+      if (!value)
+         throw _createIllegalStateException(errorMessageSupplier.get());
       return value;
    }
 
