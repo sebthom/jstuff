@@ -65,7 +65,6 @@
 
 
    <scm>
-      <!-- http://maven.apache.org/scm/subversion.html -->
       <!-- http://maven.apache.org/scm/git.html -->
       <url>https://github.com/sebthom/jstuff</url>
       <connection>scm:git:https://github.com/sebthom/jstuff.git</connection>
