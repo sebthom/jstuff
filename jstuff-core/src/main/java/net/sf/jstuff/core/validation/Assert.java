@@ -108,6 +108,16 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>value</code> is not <code>null</code>
     */
+   public static <T> T isInstanceOf(final T value, final Class<?> type, final String errorMessage) {
+      Args.notNull("type", type);
+      if (!type.isInstance(value))
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   /**
+    * @throws IllegalStateException if <code>value</code> is not <code>null</code>
+    */
    public static <T> T isNull(final T value, final String errorMessage) {
       if (value != null)
          throw _createIllegalStateException(errorMessage);
