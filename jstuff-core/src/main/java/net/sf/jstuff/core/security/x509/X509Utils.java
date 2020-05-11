@@ -34,6 +34,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -486,6 +487,19 @@ public abstract class X509Utils {
    }
 
    /**
+    * Gets the duration (from now) the given certificate is valid.
+    */
+   public static Duration getValidityDuration(final X509Certificate cert) {
+      if (!isValid(cert))
+         return Duration.ZERO;
+
+      final long durationMS = cert.getNotAfter().getTime() - System.currentTimeMillis();
+      if (durationMS < 1)
+         return Duration.ZERO;
+      return Duration.ofMillis(durationMS);
+   }
+
+   /**
     * Performs a case-insensitive comparison of the DNs ignoring whitespaces between name components.
     */
    @SuppressWarnings("null")
@@ -562,6 +576,11 @@ public abstract class X509Utils {
       }
    }
 
+   public static boolean isValidFor(final X509Certificate cert, final Duration duration) {
+      Args.notNull("duration", duration);
+      return getValidityDuration(cert).compareTo(duration) >= 0;
+   }
+
    public static boolean isX509Certificate(final Certificate cert) {
       if (cert == null)
          return false;
@@ -571,10 +590,7 @@ public abstract class X509Utils {
    private static String toPEM(final byte[] data, final String type, final int charsPerLine) {
       final char[] encoded = Base64.encode(data).toCharArray();
       final StringBuilder sb = new StringBuilder(encoded.length + 70);
-      sb.append("-----BEGIN ");
-      sb.append(type);
-      sb.append("-----");
-      sb.append(Strings.NEW_LINE);
+      sb.append("-----BEGIN ").append(type).append("-----").append(Strings.NEW_LINE);
       for (int i = 0; i < encoded.length; i += charsPerLine) {
          if (encoded.length - i < charsPerLine) {
             sb.append(encoded, i, encoded.length - i);
@@ -583,10 +599,7 @@ public abstract class X509Utils {
          }
          sb.append(Strings.NEW_LINE);
       }
-      sb.append("-----END ");
-      sb.append(type);
-      sb.append("-----");
-      sb.append(Strings.NEW_LINE);
+      sb.append("-----END ").append(type).append("-----").append(Strings.NEW_LINE);
       return sb.toString();
    }
 
@@ -608,13 +621,11 @@ public abstract class X509Utils {
 
    private static PrivateKey toPrivateKey(final byte[] pkcs8PrivateKey, final String algorithm) throws GeneralSecurityException {
       final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(pkcs8PrivateKey);
-      final KeyFactory kf = KeyFactory.getInstance(algorithm);
-      return kf.generatePrivate(spec);
+      return KeyFactory.getInstance(algorithm).generatePrivate(spec);
    }
 
    private static PublicKey toPublicKey(final byte[] x509PublicKey, final String algorithm) throws GeneralSecurityException {
       final X509EncodedKeySpec spec = new X509EncodedKeySpec(x509PublicKey);
-      final KeyFactory kf = KeyFactory.getInstance(algorithm);
-      return kf.generatePublic(spec);
+      return KeyFactory.getInstance(algorithm).generatePublic(spec);
    }
 }
