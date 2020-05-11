@@ -356,7 +356,7 @@ public abstract class Types {
                }
 
                if (jarEntryName.endsWith("/pom.properties")) {
-                  try (InputStream is = jar.getInputStream(jarEntry);) {
+                  try (InputStream is = jar.getInputStream(jarEntry)) {
                      final Properties p = new Properties();
                      p.load(is);
                      final String version = Strings.trim(p.getProperty("version"));
