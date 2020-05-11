@@ -9,13 +9,20 @@
  *********************************************************************/
 package net.sf.jstuff.core.collection;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.TreeSet;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import net.sf.jstuff.core.validation.Args;
 
@@ -85,11 +92,7 @@ public abstract class Enumerations {
       if (en == null)
          return null;
 
-      final List<T> result = new ArrayList<>();
-      while (en.hasMoreElements()) {
-         result.add(en.nextElement());
-      }
-      return result;
+      return Collections.list(en);
    }
 
    public static <T> Set<T> toSet(final Enumeration<T> en) {
@@ -103,4 +106,38 @@ public abstract class Enumerations {
       return result;
    }
 
+   public static <T> SortedSet<T> toSortedSet(final Enumeration<T> en) {
+      if (en == null)
+         return null;
+
+      final SortedSet<T> result = new TreeSet<>();
+      while (en.hasMoreElements()) {
+         result.add(en.nextElement());
+      }
+      return result;
+   }
+
+   public static <T> Stream<T> toStream(final Enumeration<T> en) {
+      return StreamSupport.stream(new Spliterators.AbstractSpliterator<T>(Long.MAX_VALUE, Spliterator.ORDERED) {
+         @Override
+         public void forEachRemaining(final Consumer<? super T> action) {
+            if (en == null)
+               return;
+            while (en.hasMoreElements()) {
+               action.accept(en.nextElement());
+            }
+         }
+
+         @Override
+         public boolean tryAdvance(final Consumer<? super T> action) {
+            if (en == null)
+               return false;
+            if (en.hasMoreElements()) {
+               action.accept(en.nextElement());
+               return true;
+            }
+            return false;
+         }
+      }, false);
+   }
 }
