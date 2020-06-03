@@ -9,12 +9,17 @@
  *********************************************************************/
 package net.sf.jstuff.integration.persistence.jpa;
 
+import java.util.function.Supplier;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class JPAUtils {
+
    /**
     * Changes question marks in a query string to positional question marks.
     *
@@ -33,6 +38,44 @@ public abstract class JPAUtils {
          startSearchAt = foundAt + 1;
       }
       return out.append(queryString, startSearchAt, queryString.length()).toString();
+   }
+
+   public static final void executeTransactional(final EntityManager em, final Runnable code) throws Exception {
+      final EntityTransaction tx = em.getTransaction();
+      tx.begin();
+      try {
+         code.run();
+         tx.commit();
+      } catch (final Exception ex) {
+         tx.rollback();
+         throw ex;
+      }
+   }
+
+   public static final <T> T executeTransactional(final EntityManager em, final Supplier<T> code) throws Exception {
+      final EntityTransaction tx = em.getTransaction();
+      tx.begin();
+      try {
+         final T result = code.get();
+         tx.commit();
+         return result;
+      } catch (final Exception ex) {
+         tx.rollback();
+         throw ex;
+      }
+   }
+
+   public static final <T> T mergeTransactional(final EntityManager em, final T entity) throws Exception {
+      final EntityTransaction tx = em.getTransaction();
+      tx.begin();
+      try {
+         final T result = em.merge(entity);
+         tx.commit();
+         return result;
+      } catch (final Exception ex) {
+         tx.rollback();
+         throw ex;
+      }
    }
 
    public static void setParameters(final Query query, final Object... parameters) {
