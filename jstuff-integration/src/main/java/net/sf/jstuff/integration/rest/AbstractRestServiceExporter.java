@@ -107,6 +107,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
       }
    }
 
+   @SuppressWarnings("resource")
    protected void explainService(final HttpServletResponse resp) throws IOException {
       resp.getWriter().println(serializeResponse(serviceDescriptor));
       resp.setStatus(HttpServletResponse.SC_OK);
@@ -137,6 +138,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
    }
 
    @Override
+   @SuppressWarnings("resource")
    public void handleRequest(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
       req.setCharacterEncoding(characterEncoding);
       resp.setCharacterEncoding(characterEncoding);

@@ -55,6 +55,7 @@ public class ZippedBlockInputStream extends FilterInputStream {
    private boolean isClosed = false;
    private boolean isEOF = false;
 
+   @SuppressWarnings("resource")
    public ZippedBlockInputStream(final InputStream is) {
       super(is);
       Args.notNull("is", is);

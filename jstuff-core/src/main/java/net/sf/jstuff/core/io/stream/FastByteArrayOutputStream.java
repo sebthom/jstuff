@@ -158,6 +158,7 @@ public class FastByteArrayOutputStream extends OutputStream {
       System.arraycopy(data, 0, out, offset, count);
    }
 
+   @SuppressWarnings("resource")
    public void writeTo(final OutputStream out) throws IOException {
       Args.notNull("out", out);
 

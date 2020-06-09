@@ -27,6 +27,7 @@ public class JsonRestServiceExporter extends AbstractRestServiceExporter {
    }
 
    @Override
+   @SuppressWarnings("resource")
    protected <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException {
       return JSON.readValue(request.getReader(), targetType);
    }

@@ -144,6 +144,7 @@ public class CloseableReentrantReadWriteLock extends ReentrantReadWriteLock {
    /**
     * Locks the readLock and returns it.
     */
+   @SuppressWarnings("resource")
    public CloseableReadLock lockReadLock() {
       readLock.lockAndGet();
       return readLock;
@@ -152,6 +153,7 @@ public class CloseableReentrantReadWriteLock extends ReentrantReadWriteLock {
    /**
     * Locks the writeLock and returns it.
     */
+   @SuppressWarnings("resource")
    public CloseableWriteLock lockWriteLock() {
       writeLock.lockAndGet();
       return writeLock;

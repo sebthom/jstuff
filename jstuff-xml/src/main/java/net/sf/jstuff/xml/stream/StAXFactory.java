@@ -96,6 +96,7 @@ public class StAXFactory {
    /**
     * @param autoClose if true xmlReader.close() is invoked when XMLStreamReader.close() is called
     */
+   @SuppressWarnings("resource")
    public AutoCloseableXMLEventReader createXMLEventReader(final Reader xmlReader, final boolean autoClose) throws XMLStreamException {
       Args.notNull("xmlReader", xmlReader);
 
@@ -128,6 +129,7 @@ public class StAXFactory {
       if (autoClose)
          return new DelegatingXMLEventReader(reader) {
             @Override
+            @SuppressWarnings("resource")
             public void close() throws XMLStreamException {
                super.close();
                IOUtils.closeQuietly(xmlSource.getReader());
@@ -193,6 +195,7 @@ public class StAXFactory {
       if (autoClose)
          return new DelegatingXMLEventWriter(writer) {
             @Override
+            @SuppressWarnings("resource")
             public void close() throws XMLStreamException {
                super.close();
                IOUtils.closeQuietly(xmlResult.getWriter());
@@ -205,6 +208,7 @@ public class StAXFactory {
    /**
     * @param autoClose if true xmlWriter.close() is invoked when XMLEventWriter.close() is called
     */
+   @SuppressWarnings("resource")
    public AutoCloseableXMLEventWriter createXMLEventWriter(final Writer xmlWriter, final boolean autoClose) throws XMLStreamException {
       Args.notNull("xmlWriter", xmlWriter);
 
@@ -269,6 +273,7 @@ public class StAXFactory {
    /**
     * @param autoClose if true xmlReader.close() is invoked when XMLStreamReader.close() is called
     */
+   @SuppressWarnings("resource")
    public ExtendedXMLStreamReader createXMLStreamReader(final Reader xmlReader, final boolean autoClose) throws XMLStreamException {
       Args.notNull("xmlReader", xmlReader);
 
@@ -301,6 +306,7 @@ public class StAXFactory {
       if (autoClose)
          return new ExtendedXMLStreamReader(reader) {
             @Override
+            @SuppressWarnings("resource")
             public void close() throws XMLStreamException {
                super.close();
                IOUtils.closeQuietly(xmlSource.getReader());
@@ -366,6 +372,7 @@ public class StAXFactory {
       if (autoClose)
          return new ExtendedXMLStreamWriter(writer) {
             @Override
+            @SuppressWarnings("resource")
             public void close() throws XMLStreamException {
                super.close();
                IOUtils.closeQuietly(xmlResult.getWriter());
@@ -378,6 +385,7 @@ public class StAXFactory {
    /**
     * @param autoClose if true xmlWriter.close() is invoked when XMLStreamWriter.close() is called
     */
+   @SuppressWarnings("resource")
    public ExtendedXMLStreamWriter createXMLStreamWriter(final Writer xmlWriter, final boolean autoClose) throws XMLStreamException {
       Args.notNull("xmlWriter", xmlWriter);
 

@@ -152,6 +152,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
     * Processes the incoming JSON request and creates a JSON response..
     */
    @Override
+   @SuppressWarnings("resource")
    public void handleRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
       // on POST requests we invoke a method and return the method value as a JSON string
       if ("POST".equals(request.getMethod())) {
@@ -164,6 +165,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
       }
    }
 
+   @SuppressWarnings("resource")
    private void invokeMethod(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
       // deserializing the object
       final JsonNode requestObject = JSON.readTree(request.getReader());

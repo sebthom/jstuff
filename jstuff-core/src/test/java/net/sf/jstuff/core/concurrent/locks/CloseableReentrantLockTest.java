@@ -16,6 +16,7 @@ import junit.framework.TestCase;
  */
 public class CloseableReentrantLockTest extends TestCase {
 
+   @SuppressWarnings("resource")
    public void testCloseableReentrantLock() {
       final CloseableReentrantLock lock = new CloseableReentrantLock();
 

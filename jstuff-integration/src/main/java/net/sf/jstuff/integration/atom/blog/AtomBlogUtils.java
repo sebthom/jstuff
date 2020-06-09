@@ -9,6 +9,7 @@
  *********************************************************************/
 package net.sf.jstuff.integration.atom.blog;
 
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
@@ -91,13 +92,14 @@ public class AtomBlogUtils {
 
             final int httpStatus = c.executeMethod(getBlogs);
 
-            if (httpStatus < 200 || httpStatus >= 300) {
-               final String response = IOUtils.toString(getBlogs.getResponseBodyAsStream(), getBlogs.getResponseCharSet());
+            try (InputStream responseBodyStream = getBlogs.getResponseBodyAsStream()) {
+               if (httpStatus < 200 || httpStatus >= 300) {
+                  final String response = IOUtils.toString(responseBodyStream, getBlogs.getResponseCharSet());
+                  throw new ReceivingAtomBlogsFailedException("Receiving atom blogs failed with: HTTP Status Code " + httpStatus + "\n" + response);
+               }
 
-               throw new ReceivingAtomBlogsFailedException("Receiving atom blogs failed with: HTTP Status Code " + httpStatus + "\n" + response);
+               return AtomBlogsReader.processStream(responseBodyStream, getBlogs.getResponseCharSet());
             }
-
-            return AtomBlogsReader.processStream(getBlogs.getResponseBodyAsStream(), getBlogs.getResponseCharSet());
          } finally {
             getBlogs.releaseConnection();
          }
@@ -180,23 +182,21 @@ public class AtomBlogUtils {
          postEntry.setRequestEntity(new StringRequestEntity(entryAsXML.toString(), null, null));
          try {
             final int httpStatus = c.executeMethod(postEntry);
+            try (InputStream responseBodyStream = postEntry.getResponseBodyAsStream()) {
+               if (httpStatus < 200 || httpStatus >= 300) {
+                  final String response = IOUtils.toString(responseBodyStream, postEntry.getResponseCharSet());
+                  throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: HTTP Status Code " + httpStatus + "\n" + response);
+               }
 
-            if (httpStatus < 200 || httpStatus >= 300) {
-               final String response = IOUtils.toString(postEntry.getResponseBodyAsStream(), postEntry.getResponseCharSet());
+               final AtomBlogEntry responseAtomBlogEntry = AtomBlogPostEntryResponseReader.processStream(responseBodyStream, postEntry.getResponseCharSet());
 
-               throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: HTTP Status Code " + httpStatus + "\n" + response);
+               if (responseAtomBlogEntry.getId() == null)
+                  throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: No blog entry ID received.");
+
+               atomBlogEntry.setId(responseAtomBlogEntry.getId());
+               atomBlogEntry.setDisplayURL(responseAtomBlogEntry.getDisplayURL());
+               atomBlogEntry.setEditURL(responseAtomBlogEntry.getEditURL());
             }
-
-            final AtomBlogEntry responseAtomBlogEntry = AtomBlogPostEntryResponseReader.processStream(postEntry.getResponseBodyAsStream(), postEntry
-               .getResponseCharSet());
-
-            if (responseAtomBlogEntry.getId() == null)
-               throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: No blog entry ID received.");
-
-            atomBlogEntry.setId(responseAtomBlogEntry.getId());
-            atomBlogEntry.setDisplayURL(responseAtomBlogEntry.getDisplayURL());
-            atomBlogEntry.setEditURL(responseAtomBlogEntry.getEditURL());
-
          } finally {
             // release any connection resources used by the method
             postEntry.releaseConnection();

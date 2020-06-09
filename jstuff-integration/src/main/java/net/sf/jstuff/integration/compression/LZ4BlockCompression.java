@@ -40,6 +40,7 @@ public class LZ4BlockCompression extends AbstractCompression {
    private static final ThreadLocal<Checksum> CHECKSUM = new ThreadLocal<Checksum>() {
 
       @Override
+      @SuppressWarnings("resource")
       protected Checksum initialValue() {
          return XXHashFactory.fastestInstance().newStreamingHash32(0x97_47B_28C).asChecksum();
       }
@@ -102,6 +103,7 @@ public class LZ4BlockCompression extends AbstractCompression {
    }
 
    @Override
+   @SuppressWarnings("resource")
    public void decompress(final InputStream input, final OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("input", input);
       Args.notNull("output", output);

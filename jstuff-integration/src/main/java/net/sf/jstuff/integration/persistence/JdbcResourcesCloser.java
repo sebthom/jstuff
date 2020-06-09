@@ -74,6 +74,7 @@ public class JdbcResourcesCloser {
     *
     * @return the resource
     */
+   @SuppressWarnings("resource")
    public CallableStatement register(final CallableStatement stmt) {
       Args.notNull("stmt", stmt);
 
@@ -88,6 +89,7 @@ public class JdbcResourcesCloser {
     *
     * @return the resource
     */
+   @SuppressWarnings("resource")
    public Connection register(final Connection con) {
       Args.notNull("con", con);
 
@@ -102,6 +104,7 @@ public class JdbcResourcesCloser {
     *
     * @return the resource
     */
+   @SuppressWarnings("resource")
    public PreparedStatement register(final PreparedStatement stmt) {
       Args.notNull("stmt", stmt);
 
@@ -116,6 +119,7 @@ public class JdbcResourcesCloser {
     *
     * @return the resource
     */
+   @SuppressWarnings("resource")
    public ResultSet register(final ResultSet rs) {
       Args.notNull("rs", rs);
 
@@ -130,6 +134,7 @@ public class JdbcResourcesCloser {
     *
     * @return the resource
     */
+   @SuppressWarnings("resource")
    public Statement register(final Statement stmt) {
       Args.notNull("stmt", stmt);
 

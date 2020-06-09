@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -327,6 +328,19 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
          result[i] = new File(filePaths[i]);
       }
       return result;
+   }
+
+   public static void write(final File file, InputStream is) throws IOException {
+      if (!(is instanceof BufferedInputStream)) {
+         is = new BufferedInputStream(is);
+      }
+      try (OutputStream os = new BufferedOutputStream(new FileOutputStream(file))) {
+         IOUtils.copy(is, os);
+      }
+   }
+
+   public static void write(final String file, final InputStream is) throws IOException {
+      write(new File(file), is);
    }
 
    @SuppressWarnings("resource")

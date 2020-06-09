@@ -69,7 +69,7 @@ public class XMLRestServiceExporter extends AbstractRestServiceExporter {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "resource"})
    protected <T> T deserializeRequestBody(final Class<T> targetType, final HttpServletRequest request) throws IOException {
       return (T) xStream.fromXML(request.getInputStream());
    }

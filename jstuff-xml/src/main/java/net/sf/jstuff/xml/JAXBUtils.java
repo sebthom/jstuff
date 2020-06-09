@@ -41,7 +41,7 @@ public abstract class JAXBUtils {
       return baos.toString();
    }
 
-   @SuppressWarnings({"rawtypes", "unchecked"})
+   @SuppressWarnings({"rawtypes", "resource", "unchecked"})
    public static void toXML(final Object obj, final OutputStream out) throws XMLException {
       Args.notNull("obj", obj);
       Args.notNull("out", out);
@@ -74,6 +74,7 @@ public abstract class JAXBUtils {
       return out.toString();
    }
 
+   @SuppressWarnings("resource")
    public static void toXSD(final OutputStream out, final Class<?>... xmlRootClasses) throws XMLException, IOException {
       Args.notNull("xmlRootClasses", xmlRootClasses);
       Args.notNull("out", out);

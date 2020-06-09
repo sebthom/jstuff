@@ -16,6 +16,7 @@ import junit.framework.TestCase;
  */
 public class CloseableReentrantReadWriteLockTest extends TestCase {
 
+   @SuppressWarnings("resource")
    public void testCloseableReentrantReadWriteLock() {
       final CloseableReentrantReadWriteLock lock = new CloseableReentrantReadWriteLock();
 

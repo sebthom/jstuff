@@ -120,6 +120,7 @@ public class ZStdCompression extends AbstractCompression {
    }
 
    @Override
+   @SuppressWarnings("resource")
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
       final ZstdOutputStream out = new ZstdOutputStream(output, compressionLevel);
       out.setCloseFrameOnFlush(true);

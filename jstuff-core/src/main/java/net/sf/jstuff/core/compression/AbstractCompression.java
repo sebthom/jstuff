@@ -104,6 +104,7 @@ public abstract class AbstractCompression implements Compression {
       return baos.size();
    }
 
+   @SuppressWarnings("resource")
    @Override
    public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("compressed", compressed);
@@ -118,13 +119,13 @@ public abstract class AbstractCompression implements Compression {
       }
    }
 
+   @SuppressWarnings("resource")
    @Override
    public void decompress(final InputStream compressed, final OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);
 
       try {
-         @SuppressWarnings("resource")
          final InputStream compIS = createDecompressingInputStream(compressed);
          IOUtils.copyLarge(compIS, output);
       } finally {

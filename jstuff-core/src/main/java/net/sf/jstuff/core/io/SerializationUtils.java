@@ -52,7 +52,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
       return deserialize(bin);
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"resource", "unchecked"})
    public static <T> T deserialize(final InputStream is) throws SerializationException {
       Args.notNull("is", is);
 

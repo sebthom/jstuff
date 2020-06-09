@@ -40,6 +40,7 @@ public class DeflaterInputStream extends FilterInputStream {
       this(source, deflater, 512);
    }
 
+   @SuppressWarnings("resource")
    public DeflaterInputStream(final InputStream source, final Deflater deflater, final int bufSize) {
       super(source);
 

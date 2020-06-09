@@ -954,6 +954,7 @@ public abstract class DOMUtils {
       return bos.toString();
    }
 
+   @SuppressWarnings("resource")
    public static void toXML(final Node root, final OutputStream out) throws XMLException, IOException {
       Args.notNull("root", root);
       Args.notNull("out", out);
@@ -961,6 +962,7 @@ public abstract class DOMUtils {
       toXML(root, out, true, true);
    }
 
+   @SuppressWarnings("resource")
    public static void toXML(final Node root, final OutputStream out, final boolean outputXMLDeclaration, final boolean formatPretty) throws XMLException,
       IOException {
       Args.notNull("root", root);

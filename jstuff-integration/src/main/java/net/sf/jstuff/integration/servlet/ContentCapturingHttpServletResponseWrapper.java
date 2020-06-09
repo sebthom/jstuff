@@ -52,6 +52,7 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
       return outputStream.toByteArray();
    }
 
+   @SuppressWarnings("resource")
    public void copyTo(final OutputStream target) throws IOException {
       Args.notNull("target", target);
 
@@ -69,6 +70,7 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
    }
 
    @Override
+   @SuppressWarnings("resource")
    public ServletOutputStream getOutputStream() {
       Assert.isNull(exposedPrintWriter, "getWriter() was called already!");
 
@@ -104,6 +106,7 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
    }
 
    @Override
+   @SuppressWarnings("resource")
    public PrintWriter getWriter() {
       Assert.isNull(exposedOutputStream, "getOutpuStream() was called already!");
 

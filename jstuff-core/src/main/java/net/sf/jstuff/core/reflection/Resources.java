@@ -397,14 +397,18 @@ public abstract class Resources {
                                  if (!entry.isDirectory() && entry.getName().startsWith(jarEntry.getName())) {
                                     final File tmpFile = new java.io.File(tmpDir, entry.getName());
                                     tmpFile.getParentFile().mkdirs();
-                                    FileUtils.writeAndClose(tmpFile, jarFile.getInputStream(entry));
+                                    try (InputStream is = jarFile.getInputStream(entry)) {
+                                       FileUtils.write(tmpFile, is);
+                                    }
                                  }
                               }
                               _scanClassPathEntry(new File(tmpDir, jarEntry.getName()).toURI().toURL(), nameFilter, cl, result);
                            } else {
                               // extract the referenced file
                               final File tmpFile = new File(tmpDir, StringUtils.replaceChars(jarEntry.getName(), "/", "_"));
-                              FileUtils.writeAndClose(tmpFile, jarFile.getInputStream(jarEntry));
+                              try (InputStream is = jarFile.getInputStream(jarEntry)) {
+                                 FileUtils.write(tmpFile, is);
+                              }
                               _scanClassPathEntry(tmpFile.toURI().toURL(), nameFilter, cl, result);
                            }
                         } finally {

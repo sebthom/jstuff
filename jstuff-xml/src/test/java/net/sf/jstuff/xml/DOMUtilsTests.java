@@ -93,6 +93,7 @@ public class DOMUtilsTests extends TestCase {
       assertEquals(diff.entryValueDiffs.get(1).rightValue.value, "ABCD");
    }
 
+   @SuppressWarnings("resource")
    public void testParseFile() throws XMLException {
       DOMUtils.parseInputSource(new InputSource(DOMUtils.class.getResourceAsStream("wrong-dtd-location.xml")), "wrong-dtd-location.xml", null, (File[]) null);
    }

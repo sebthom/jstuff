@@ -121,6 +121,7 @@ public abstract class X509Utils {
    /**
     * Constructs a X509Certificate instance from a PEM encoded certificate
     */
+   @SuppressWarnings("resource")
    public static X509Certificate getCertificate(final InputStream is) throws GeneralSecurityException {
       Args.notNull("is", is);
       try {
@@ -141,6 +142,7 @@ public abstract class X509Utils {
    /**
     * Constructs a X509Certificate instance from a PEM encoded certificate
     */
+   @SuppressWarnings("resource")
    public static X509Certificate getCertificateFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
       Args.notNull("pemStream", pemStream);
       try {
@@ -247,6 +249,7 @@ public abstract class X509Utils {
    /**
     * Constructs a X509CRL instance from a PEM encoded CRL
     */
+   @SuppressWarnings("resource")
    public static X509CRL getCRLFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
       Args.notNull("pemStream", pemStream);
       try {
@@ -382,6 +385,7 @@ public abstract class X509Utils {
     *
     * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
     */
+   @SuppressWarnings("resource")
    public static PrivateKey getPrivateKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException, IOException {
       Args.notNull("pemStream", pemStream);
       Args.notNull("algorithm", algorithm);
@@ -428,6 +432,7 @@ public abstract class X509Utils {
    /**
     * Constructs a public key instance from PEM encoded public key, NOT from a PEM encoded certificate
     */
+   @SuppressWarnings("resource")
    public static PublicKey getPublicKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException, IOException {
       Args.notNull("pemStream", pemStream);
       Args.notNull("algorithm", algorithm);
@@ -457,6 +462,7 @@ public abstract class X509Utils {
    /**
     * Constructs a private key instance from PEM encoded X509 private key
     */
+   @SuppressWarnings("resource")
    public static RSAPrivateKey getRSAPrivateKeyFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
       Args.notNull("pemStream", pemStream);
       return (RSAPrivateKey) getPrivateKeyFromPEM(pemStream, "RSA");
@@ -473,6 +479,7 @@ public abstract class X509Utils {
    /**
     * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
     */
+   @SuppressWarnings("resource")
    public static RSAPublicKey getRSAPublicKeyFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
       Args.notNull("pemStream", pemStream);
       return (RSAPublicKey) getPublicKeyFromPEM(pemStream, "RSA");

@@ -151,6 +151,7 @@ public class DeflateCompression extends AbstractCompression {
       return new DeflaterOutputStream(output, compressor);
    }
 
+   @SuppressWarnings("resource")
    @Override
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
       Args.notNull("compressed", compressed);
@@ -178,13 +179,13 @@ public class DeflateCompression extends AbstractCompression {
       }
    }
 
+   @SuppressWarnings("resource")
    @Override
    public void decompress(final byte[] compressed, final OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);
 
       try {
-         @SuppressWarnings("resource")
          final InflaterInputStream compIS = new InflaterInputStream(new FastByteArrayInputStream(compressed), decompressor.get());
          IOUtils.copyLarge(compIS, output);
       } finally {
@@ -194,13 +195,13 @@ public class DeflateCompression extends AbstractCompression {
       }
    }
 
+   @SuppressWarnings("resource")
    @Override
    public void decompress(final InputStream compressed, final OutputStream output, final boolean closeOutput) throws IOException {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);
 
       try {
-         @SuppressWarnings("resource")
          final InflaterInputStream compIS = new InflaterInputStream(compressed, decompressor.get());
          IOUtils.copyLarge(compIS, output);
       } finally {

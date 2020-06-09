@@ -20,6 +20,7 @@ import net.sf.jstuff.core.reflection.Types;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("resource")
 public class ContentCapturingRenderResponseWrapperTest extends TestCase {
 
    private static final Logger LOG = Logger.create();

@@ -32,12 +32,14 @@ public class ZippedBlockSocket extends Socket {
       super(host, port);
    }
 
+   @SuppressWarnings("resource")
    @Override
    public synchronized void close() throws IOException {
       getOutputStream().flush();
       super.close();
    }
 
+   @SuppressWarnings("resource")
    @Override
    public InputStream getInputStream() throws IOException {
       if (in == null) {
@@ -46,6 +48,7 @@ public class ZippedBlockSocket extends Socket {
       return in;
    }
 
+   @SuppressWarnings("resource")
    @Override
    public OutputStream getOutputStream() throws IOException {
       if (out == null) {
