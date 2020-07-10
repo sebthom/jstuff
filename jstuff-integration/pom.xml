@@ -155,7 +155,7 @@
          <!-- for TomcatAuthenticator only -->
          <groupId>org.apache.tomcat</groupId>
          <artifactId>tomcat-catalina</artifactId>
-         <version>8.5.56</version>
+         <version>8.5.57</version>
          <optional>true</optional>
          <exclusions>
             <exclusion>
