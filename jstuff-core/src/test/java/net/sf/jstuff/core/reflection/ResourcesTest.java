@@ -19,6 +19,7 @@ import net.sf.jstuff.core.reflection.Resources.Resource;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("deprecation")
 public class ResourcesTest extends TestCase {
 
    public void testFindClassInDir() throws IOException {
