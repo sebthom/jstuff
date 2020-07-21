@@ -46,10 +46,11 @@ import net.sf.jstuff.core.ogn.ObjectGraphNavigatorDefaultImpl;
 import net.sf.jstuff.core.validation.Args;
 
 /**
- * Locates resources in the classpath
+ * Locates resources in the classpath. Use classgraph instead https://github.com/classgraph/classgraph/
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@Deprecated
 public abstract class Resources {
 
    private interface ClassLoaderHandler {
