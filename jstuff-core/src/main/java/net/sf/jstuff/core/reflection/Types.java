@@ -241,7 +241,8 @@ public abstract class Types {
             final CodeSource cs = clazz.getProtectionDomain().getCodeSource();
             if (cs != null && cs.getLocation() != null) {
                uri = cs.getLocation().toURI();
-               return new File(uri);
+               if ("file".equalsIgnoreCase(uri.getScheme()))
+                  return new File(uri);
             }
          } catch (final Exception ex) {
             if (uri == null) {
