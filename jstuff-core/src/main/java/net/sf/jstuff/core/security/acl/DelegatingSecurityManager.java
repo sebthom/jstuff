@@ -18,7 +18,6 @@ import java.security.Permission;
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-@SuppressWarnings("deprecation")
 public class DelegatingSecurityManager extends NoOpSecurityManager {
 
    private SecurityManager wrapped;
@@ -58,6 +57,7 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       }
    }
 
+   @Deprecated
    @Override
    public void checkAwtEventQueueAccess() {
       if (wrapped == null) {
@@ -139,6 +139,7 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       }
    }
 
+   @Deprecated
    @Override
    public void checkMemberAccess(final Class<?> clazz, final int which) {
       if (wrapped == null) {
@@ -275,6 +276,7 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       }
    }
 
+   @Deprecated
    @Override
    public void checkSystemClipboardAccess() {
       if (wrapped == null) {
@@ -284,6 +286,7 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       }
    }
 
+   @Deprecated
    @Override
    public boolean checkTopLevelWindow(final Object window) {
       if (wrapped == null)
