@@ -22,6 +22,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
 
    public static final int MILLION = 1000 * 1000;
    public static final int BILLION = 1000 * MILLION;
+   public static final int TRILLION = 1000 * BILLION;
 
    static final BigInteger INTEGER_MAX_VALUE = BigInteger.valueOf(Integer.MAX_VALUE);
    static final BigInteger INTEGER_MIN_VALUE = BigInteger.valueOf(Integer.MIN_VALUE);
