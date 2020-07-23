@@ -63,7 +63,7 @@ public class TypesTest extends TestCase {
 
    public void testGetVersion() {
       // from META-INF/MANIFEST.MF
-      assertEquals("3.10", Types.getVersion(ObjectUtils.class));
+      assertEquals("3.11", Types.getVersion(ObjectUtils.class));
 
       // from META-INF/maven/.../pom.properties
       assertEquals("2.8", Types.getVersion(Paranamer.class));
