@@ -11,6 +11,9 @@ package net.sf.jstuff.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 import net.sf.jstuff.core.logging.Logger;
 
@@ -19,6 +22,24 @@ import net.sf.jstuff.core.logging.Logger;
  */
 public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    private static final Logger LOG = Logger.create();
+
+   private static Boolean isDockerized = null;
+
+   public static boolean isRunningInsideDocker() {
+      if (isDockerized == null) {
+         if (IS_OS_LINUX) {
+            // see https://stackoverflow.com/a/52581380
+            try (Stream<String> stream = Files.lines(Paths.get("/proc/1/cgroup"))) {
+               isDockerized = stream.anyMatch(line -> line.contains("docker"));
+            } catch (final IOException ex) {
+               isDockerized = false;
+            }
+         } else {
+            isDockerized = false;
+         }
+      }
+      return isDockerized;
+   }
 
    /**
     * opens the given file with the default application handler
