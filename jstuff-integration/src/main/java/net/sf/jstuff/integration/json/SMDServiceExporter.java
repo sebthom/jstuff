@@ -41,8 +41,8 @@ import net.sf.jstuff.integration.spring.SpringBeanParanamer;
 /**
  * JSON-RPC Standard Method Definition
  *
- * http://dojotoolkit.org/reference-guide/1.10/dojox/rpc/smd.html
- * http://dojotoolkit.org/reference-guide/1.10/dojox/rpc/SMDLibrary.html
+ * https://dojotoolkit.org/reference-guide/1.10/dojox/rpc/smd.html
+ * https://dojotoolkit.org/reference-guide/1.10/dojox/rpc/SMDLibrary.html
  *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -80,6 +80,8 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
    }
 
    /**
+    * JSON RPC1 Simple Method Description builder
+    *
     * see http://dojo.jot.com/SMD
     * see http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book9
     */
