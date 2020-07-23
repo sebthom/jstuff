@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -310,6 +312,10 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
 
    public static long getFreeTempSpaceInKB() {
       return getTempDirectory().getUsableSpace() / 1024;
+   }
+
+   public static Path getWorkingDirectory() {
+      return Paths.get("").toAbsolutePath();
    }
 
    public static String readFileToString(final File file) throws IOException {
