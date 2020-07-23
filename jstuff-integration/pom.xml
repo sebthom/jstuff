@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2010-2020 by Sebastian Thomschke and others.
@@ -17,7 +16,7 @@
    <parent>
       <groupId>net.sf.jstuff</groupId>
       <artifactId>jstuff-parent</artifactId>
-      <version>5.7.1-SNAPSHOT</version>
+      <version>5.7.1</version>
    </parent>
 
    <artifactId>jstuff-integration</artifactId>
@@ -28,8 +27,7 @@
 
       <!--
         https://search.maven.org/search?q=g:org.springframework
-        Java 5: <= 3.x
-        Java 6: <= 4.x
+        Java 5: <= 3.x Java 6: <= 4.x
         Java 8: <= 5.x
       -->
       <spring.version>5.2.7.RELEASE</spring.version>
