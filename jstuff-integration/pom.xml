@@ -83,7 +83,7 @@
          <!-- only for ServiceRegistry -->
          <groupId>net.bytebuddy</groupId>
          <artifactId>byte-buddy</artifactId>
-         <version>1.10.13</version>
+         <version>1.10.14</version>
          <optional>true</optional>
       </dependency>
       <dependency>
