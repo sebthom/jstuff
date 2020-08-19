@@ -339,7 +339,7 @@ public abstract class Args {
       return value;
    }
 
-   public static int notEquals(final String argumentName, final int value, final byte invalidValue) {
+   public static int notEquals(final String argumentName, final int value, final int invalidValue) {
       _notNull("argumentName", argumentName);
 
       if (value == invalidValue)
@@ -347,7 +347,7 @@ public abstract class Args {
       return value;
    }
 
-   public static long notEquals(final String argumentName, final long value, final byte invalidValue) {
+   public static long notEquals(final String argumentName, final long value, final long invalidValue) {
       _notNull("argumentName", argumentName);
 
       if (value == invalidValue)
@@ -363,7 +363,7 @@ public abstract class Args {
       return value;
    }
 
-   public static short notEquals(final String argumentName, final short value, final byte invalidValue) {
+   public static short notEquals(final String argumentName, final short value, final short invalidValue) {
       _notNull("argumentName", argumentName);
 
       if (value == invalidValue)
