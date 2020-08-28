@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -322,6 +323,12 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
       return readFileToString(file, Charset.defaultCharset());
    }
 
+   public static String readFileToString(final File file, final Charset charset) throws IOException {
+      try (InputStream in = openInputStream(file)) {
+         return IOUtils.toString(new BufferedInputStream(in), Charsets.toCharset(charset));
+      }
+   }
+
    public static List<String> readLines(final File file) throws IOException {
       return readLines(file, Charset.defaultCharset());
    }
@@ -336,12 +343,10 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
       return result;
    }
 
-   public static void write(final File file, InputStream is) throws IOException {
-      if (!(is instanceof BufferedInputStream)) {
-         is = new BufferedInputStream(is);
-      }
+   @SuppressWarnings("resource")
+   public static void write(final File file, final InputStream is) throws IOException {
       try (OutputStream os = new BufferedOutputStream(new FileOutputStream(file))) {
-         IOUtils.copy(is, os);
+         IOUtils.copy(IOUtils.toBufferedInputStream(is), os);
       }
    }
 
@@ -350,11 +355,8 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
    }
 
    @SuppressWarnings("resource")
-   public static void writeAndClose(final File file, InputStream is) throws IOException {
-      if (!(is instanceof BufferedInputStream)) {
-         is = new BufferedInputStream(is);
-      }
-      IOUtils.copyAndClose(is, new BufferedOutputStream(new FileOutputStream(file)));
+   public static void writeAndClose(final File file, final InputStream is) throws IOException {
+      IOUtils.copyAndClose(IOUtils.toBufferedInputStream(is), new BufferedOutputStream(new FileOutputStream(file)));
    }
 
    public static void writeAndClose(final String file, final InputStream is) throws IOException {

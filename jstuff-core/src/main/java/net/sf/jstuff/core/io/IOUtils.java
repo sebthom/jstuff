@@ -9,7 +9,9 @@
  *********************************************************************/
 package net.sf.jstuff.core.io;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -30,6 +32,7 @@ import java.util.zip.ZipFile;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.concurrent.Threads;
+import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -224,6 +227,26 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
          Threads.sleep(100);
       }
       return result;
+   }
+
+   /**
+    * Wraps the input stream in a {@link BufferedInputStream} except if it is already one or
+    * if it is of type {@link ByteArrayInputStream} or {@link FastByteArrayInputStream}
+    */
+   public static InputStream toBufferedInputStream(final InputStream input) throws IOException {
+      if (input instanceof BufferedInputStream || input instanceof ByteArrayInputStream || input instanceof FastByteArrayInputStream)
+         return input;
+      return new BufferedInputStream(input);
+   }
+
+   /**
+    * Wraps the input stream in a {@link BufferedInputStream} except if it is already one or
+    * if it is of type {@link ByteArrayInputStream} or {@link FastByteArrayInputStream}
+    */
+   public static InputStream toBufferedInputStream(final InputStream input, final int blockSize) throws IOException {
+      if (input instanceof BufferedInputStream || input instanceof ByteArrayInputStream || input instanceof FastByteArrayInputStream)
+         return input;
+      return new BufferedInputStream(input, blockSize);
    }
 
    public static String toString(final InputStream input) throws IOException {

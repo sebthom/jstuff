@@ -109,23 +109,32 @@ public abstract class X509Utils {
    }
 
    /**
-    * Constructs a X509Certificate instance from a PEM encoded certificate
+    * Constructs a X509Certificate instance from a DER or PEM encoded certificate
     */
    @SuppressWarnings("resource")
-   public static X509Certificate getCertificate(final byte[] data) throws GeneralSecurityException {
+   public static X509Certificate getCertificate(final byte[] data) throws GeneralSecurityException, IOException {
       Args.notEmpty("data", data);
-
       return getCertificate(new FastByteArrayInputStream(data));
    }
 
    /**
-    * Constructs a X509Certificate instance from a PEM encoded certificate
+    * Constructs a X509Certificate instance from a DER or PEM encoded certificate
+    */
+   public static X509Certificate getCertificate(final File file) throws GeneralSecurityException, IOException {
+      Args.notNull("file", file);
+      try (InputStream is = FileUtils.openInputStream(file)) {
+         return getCertificate(is);
+      }
+   }
+
+   /**
+    * Constructs a X509Certificate instance from a DER or PEM encoded certificate
     */
    @SuppressWarnings("resource")
-   public static X509Certificate getCertificate(final InputStream is) throws GeneralSecurityException {
+   public static X509Certificate getCertificate(final InputStream is) throws GeneralSecurityException, IOException {
       Args.notNull("is", is);
       try {
-         return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(is);
+         return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(IOUtils.toBufferedInputStream(is));
       } finally {
          IOUtils.closeQuietly(is);
       }
@@ -146,7 +155,7 @@ public abstract class X509Utils {
    public static X509Certificate getCertificateFromPEM(final InputStream pemStream) throws GeneralSecurityException, IOException {
       Args.notNull("pemStream", pemStream);
       try {
-         return getCertificateFromPEM(IOUtils.toString(pemStream));
+         return getCertificateFromPEM(IOUtils.toString(IOUtils.toBufferedInputStream(pemStream)));
       } finally {
          IOUtils.closeQuietly(pemStream);
       }
