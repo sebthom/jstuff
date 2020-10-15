@@ -69,7 +69,7 @@ public class TypesTest extends TestCase {
       assertEquals("2.8", Types.getVersion(Paranamer.class));
 
       // from jar name
-      assertEquals("4.13", Types.getVersion(TestCase.class));
+      assertEquals("4.13.1", Types.getVersion(TestCase.class));
    }
 
    public void testIsAssignableTo() {
