@@ -83,7 +83,7 @@
          <!-- only for ServiceRegistry -->
          <groupId>net.bytebuddy</groupId>
          <artifactId>byte-buddy</artifactId>
-         <version>1.10.17</version>
+         <version>1.10.18</version>
          <optional>true</optional>
       </dependency>
       <dependency>
@@ -258,7 +258,7 @@
          <!-- compression https://github.com/luben/zstd-jni -->
          <groupId>com.github.luben</groupId>
          <artifactId>zstd-jni</artifactId>
-         <version>1.4.5-11</version>
+         <version>1.4.5-12</version>
          <optional>true</optional>
       </dependency>
 
