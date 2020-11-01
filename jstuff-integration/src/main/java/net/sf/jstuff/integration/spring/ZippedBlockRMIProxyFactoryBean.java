@@ -12,8 +12,11 @@ package net.sf.jstuff.integration.spring;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 
 /**
+ * @deprecated as of Spring 5.3 (phasing out serialization-based remoting)
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@Deprecated
 public class ZippedBlockRMIProxyFactoryBean extends RmiProxyFactoryBean {
    private boolean useCompressedRMISocketFactory = true;
 

@@ -19,8 +19,11 @@ import net.sf.jstuff.core.net.ZippedBlockServerSocket;
 import net.sf.jstuff.core.net.ZippedBlockSocket;
 
 /**
+ * @deprecated as of Spring 5.3 (phasing out serialization-based remoting)
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
+@Deprecated
 public class ZippedBlockRMISocketFactory implements RMIServerSocketFactory, RMIClientSocketFactory {
 
    @Override
