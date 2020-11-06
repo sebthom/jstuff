@@ -1,10 +1,9 @@
 # jstuff - toolbox for Java
 
-[![Build Status](https://travis-ci.com/sebthom/jstuff.svg?branch=master)](https://travis-ci.com/sebthom/jstuff)
-[![License](https://img.shields.io/badge/License-Eclipse%20Public%20License%202.0-blue.svg)](LICENSE.txt)
-[![Download](https://api.bintray.com/packages/sebthom/maven/jstuff/images/download.svg)](https://bintray.com/sebthom/maven/jstuff/_latestVersion)
+[![Build Status](https://img.shields.io/github/workflow/status/sebthom/jstuff/Maven%20Publish)](https://github.com/sebthom/jstuff/actions?query=workflow%3A%22Maven+Publish%22)
+[![License](https://img.shields.io/github/license/sebthom/jstuff.svg?color=blue)](LICENSE.txt)
+[![Bintray](https://img.shields.io/bintray/v/sebthom/maven/jstuff?label=jcenter.bintray)](https://bintray.com/sebthom/maven/jstuff/_latestVersion)
 
-[comment]: # (https://img.shields.io/github/license/sebthom/jstuff.svg?label=License)
 
 1. [What is it?](#what-is-it)
 1. [Java Compatibility](#compatibility)

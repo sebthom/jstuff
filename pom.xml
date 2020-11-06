@@ -83,8 +83,8 @@
 
 
    <ciManagement>
-      <system>travis-ci.org</system>
-      <url>https://travis-ci.org/sebthom/jstuff</url>
+      <system>github.com</system>
+      <url>https://github.com/sebthom/jstuff/actions</url>
    </ciManagement>
 
 
