@@ -91,8 +91,8 @@ public class HashLockManagerTest extends TestCase {
 
    public void testWithoutHashLockManager() throws InterruptedException {
 
-      // ignore on travis
-      if ("true".equals(System.getenv("TRAVIS")))
+      // ignore on CI systems, like Travis/GitHub Actions
+      if ("true".equals(System.getenv("CI")))
          return;
 
       final StopWatch sw = new StopWatch();

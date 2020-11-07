@@ -42,6 +42,7 @@ import java.util.zip.ZipFile;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.io.IOUtils;
@@ -260,12 +261,23 @@ public abstract class Types {
       if (location == null)
          return null;
 
-      try {
-         // extract the jar path from: jar:file:/F:/allianz/apps/dev/java/sun_jdk1.5.0_22/jre/lib/rt.jar!/java/lang/String.class
-         return new File(URLDecoder.decode(Strings.substringBetween(location.getPath(), "file:", "!"), Charset.defaultCharset().name()));
-      } catch (final Exception ex) {
-         LOG.warn(ex);
-         return null;
+      switch (location.getProtocol()) {
+         case "jar":
+            try {
+               // extract the jar path from: jar:file:/F:/allianz/apps/dev/java/sun_jdk1.5.0_22/jre/lib/rt.jar!/java/lang/String.class
+               return new File(URLDecoder.decode(Strings.substringBetween(location.getPath(), "file:", "!"), Charset.defaultCharset().name()));
+            } catch (final Exception ex) {
+               LOG.warn(ex, "Failed to parse location: %s", location.getPath());
+               return null;
+            }
+
+         case "jrt": // JDK9+
+            // e.g. "/java.base/java/lang/String.class" -> "<JAVA_HOME>/jmods/java.base.jmod"
+            return new File(SystemUtils.getJavaHome(), "jmods/" + Strings.substringBetween(location.getPath(), "/") + ".jmod");
+
+         default:
+            LOG.warn("Unknown protocol: %s", location);
+            return null;
       }
    }
 

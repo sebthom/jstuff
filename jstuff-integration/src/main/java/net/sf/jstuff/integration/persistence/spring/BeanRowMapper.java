@@ -13,7 +13,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -87,7 +86,7 @@ public class BeanRowMapper<T> implements RowMapper<T> {
 
       try {
          // generate bean instance
-         final T bean = this.getBeanClass().newInstance();
+         final T bean = this.getBeanClass().getDeclaredConstructor().newInstance();
          //copy property from result set to created bean
          for (final DynaProperty dynaProp : rsDynaClass.getDynaProperties()) {
             final String dynaPropName = dynaProp.getName();
@@ -97,13 +96,9 @@ public class BeanRowMapper<T> implements RowMapper<T> {
          }
 
          return bean;
-      } catch (final IllegalAccessException ex) {
-         LOG.error(ex);
-         throw new SQLException(ex.getMessage());
-      } catch (final InstantiationException ex) {
-         LOG.error(ex);
-         throw new SQLException(ex.getMessage());
-      } catch (final InvocationTargetException ex) {
+      } catch (final SQLException | RuntimeException ex) {
+         throw ex;
+      } catch (final Exception ex) {
          LOG.error(ex);
          throw new SQLException(ex.getMessage());
       }

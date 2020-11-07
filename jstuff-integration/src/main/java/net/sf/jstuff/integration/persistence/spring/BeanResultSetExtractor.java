@@ -55,7 +55,7 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
          final DynaBean dynaBean = (DynaBean) it.next();
          T bean = null;
          try {
-            bean = this.getBeanClass().newInstance();
+            bean = this.getBeanClass().getDeclaredConstructor().newInstance();
 
             for (final DynaProperty dynaProp : dynaBean.getDynaClass().getDynaProperties()) {
                final String dynaPropName = dynaProp.getName();

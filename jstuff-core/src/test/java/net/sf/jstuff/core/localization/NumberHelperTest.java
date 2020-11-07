@@ -22,11 +22,13 @@ public class NumberHelperTest extends TestCase {
 
       assertTrue(numberHelper.isValidCurrency("10,00 €"));
       assertTrue(numberHelper.isValidCurrency("1000 €"));
+      assertTrue(numberHelper.isValidCurrency("1000,00 €"));
       assertTrue(numberHelper.isValidCurrency("1.000,00 €"));
       assertTrue(numberHelper.isValidCurrency("1000.00 €"));
 
       assertFalse(numberHelper.isValidCurrency("10,00"));
       assertFalse(numberHelper.isValidCurrency("1000"));
+      assertFalse(numberHelper.isValidCurrency("1000,00"));
       assertFalse(numberHelper.isValidCurrency("1.000,00"));
       assertFalse(numberHelper.isValidCurrency("1000.00"));
 

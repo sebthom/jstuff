@@ -47,6 +47,16 @@ public abstract class Methods extends Members {
 
    private static final Logger LOG = Logger.create();
 
+   @SuppressWarnings("unchecked")
+   public static <O, P> GetterAccessor<O, P> createPublicGetterAccessor(final Class<O> beanClass, final String propertyName, final Class<P> propertyType)
+      throws ReflectionException {
+      try {
+         return createPublicMethodAccessor(GetterAccessor.class, beanClass, "is" + Strings.capitalize(propertyName), propertyType);
+      } catch (final Exception ex) {
+         return createPublicMethodAccessor(GetterAccessor.class, beanClass, "get" + Strings.capitalize(propertyName), propertyType);
+      }
+   }
+
    /**
     * @param accessor FunctionalInterface where the first parameter is the targetObject followed by the parameters for the target method
     */
@@ -91,16 +101,6 @@ public abstract class Methods extends Members {
          return (ACCESSOR) site.getTarget().invoke();
       } catch (final Throwable ex) { // CHECKSTYLE:IGNORE .*
          throw new ReflectionException(ex);
-      }
-   }
-
-   @SuppressWarnings("unchecked")
-   public static <O, P> GetterAccessor<O, P> createPublicGetterAccessor(final Class<O> beanClass, final String propertyName, final Class<P> propertyType)
-      throws ReflectionException {
-      try {
-         return createPublicMethodAccessor(GetterAccessor.class, beanClass, "is" + Strings.capitalize(propertyName), propertyType);
-      } catch (final Exception ex) {
-         return createPublicMethodAccessor(GetterAccessor.class, beanClass, "get" + Strings.capitalize(propertyName), propertyType);
       }
    }
 

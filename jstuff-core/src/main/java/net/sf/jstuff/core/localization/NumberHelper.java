@@ -15,6 +15,9 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -216,7 +219,12 @@ public class NumberHelper implements Serializable {
          return false;
 
       try {
-         getCurrencyFormat(0, 0).parse(value);
+         if (SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_9)) {
+            // https://stackoverflow.com/questions/54579307/numberformat-currency-parsing-failing-unparseable-number
+            getCurrencyFormat(0, 0).parse(value.replace(' ', '\u00a0'));
+         } else {
+            getCurrencyFormat(0, 0).parse(value);
+         }
          return true;
       } catch (final ParseException e) {
          return false;
