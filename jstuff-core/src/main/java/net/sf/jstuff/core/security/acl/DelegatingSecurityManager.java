@@ -10,8 +10,11 @@
 package net.sf.jstuff.core.security.acl;
 
 import java.io.FileDescriptor;
+import java.lang.reflect.Member;
 import java.net.InetAddress;
 import java.security.Permission;
+
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * Security manager that delegates all method invocations to the wrapped security manager instance.
@@ -57,14 +60,12 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       }
    }
 
+   /**
+    * Removed in JDK9
+    */
    @Deprecated
-   @Override
    public void checkAwtEventQueueAccess() {
-      if (wrapped == null) {
-         super.checkAwtEventQueueAccess();
-      } else {
-         wrapped.checkAwtEventQueueAccess();
-      }
+      checkPermission(new java.awt.AWTPermission("accessEventQueue"));
    }
 
    @Override
@@ -139,13 +140,17 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       }
    }
 
+   /**
+    * Removed in JDK9
+    */
    @Deprecated
-   @Override
    public void checkMemberAccess(final Class<?> clazz, final int which) {
-      if (wrapped == null) {
-         super.checkMemberAccess(clazz, which);
-      } else {
-         wrapped.checkMemberAccess(clazz, which);
+      Args.notNull("clazz", clazz);
+      if (which != Member.PUBLIC) {
+         final Class<?>[] stack = getClassContext();
+         if (stack.length < 4 || stack[3].getClassLoader() != clazz.getClassLoader()) {
+            checkPermission(new RuntimePermission("accessDeclaredMembers"));
+         }
       }
    }
 
@@ -276,22 +281,26 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       }
    }
 
+   /**
+    * Removed in JDK9
+    */
    @Deprecated
-   @Override
    public void checkSystemClipboardAccess() {
-      if (wrapped == null) {
-         super.checkSystemClipboardAccess();
-      } else {
-         wrapped.checkSystemClipboardAccess();
-      }
+      checkPermission(new java.awt.AWTPermission("accessClipboard"));
    }
 
+   /**
+    * Removed in JDK9
+    */
    @Deprecated
-   @Override
    public boolean checkTopLevelWindow(final Object window) {
-      if (wrapped == null)
-         return super.checkTopLevelWindow(window);
-      return wrapped.checkTopLevelWindow(window);
+      Args.notNull("window", window);
+      try {
+         checkPermission(new java.awt.AWTPermission("showWindowWithoutWarningBanner"));
+         return true;
+      } catch (final SecurityException ex) {
+         return false;
+      }
    }
 
    @Override
@@ -312,12 +321,12 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       }
    }
 
+   /**
+    * Removed in JDK9
+    */
    @Deprecated
-   @Override
    public boolean getInCheck() {
-      if (wrapped == null)
-         return super.getInCheck();
-      return wrapped.getInCheck();
+      return false;
    }
 
    @Override
