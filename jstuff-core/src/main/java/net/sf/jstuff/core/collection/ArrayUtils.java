@@ -85,8 +85,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
          }
       }
 
-      final T[] result = commonItems.toArray((T[]) Array.newInstance(itemType, commonItems.size()));
-      return result;
+      return commonItems.toArray((T[]) Array.newInstance(itemType, commonItems.size()));
    }
 
    @SuppressWarnings("unchecked")

@@ -20,10 +20,10 @@ import java.util.Locale;
 public class ToStringComparator<T> implements Comparator<T>, Serializable {
    private static final long serialVersionUID = 1L;
 
-   private static final ToStringComparator<?> INSTANCE = new ToStringComparator<Object>();
+   private static final ToStringComparator<?> INSTANCE = new ToStringComparator<>();
 
    public static <T> ToStringComparator<T> create(final Locale locale) {
-      return new ToStringComparator<T>(locale);
+      return new ToStringComparator<>(locale);
    }
 
    @SuppressWarnings("unchecked")

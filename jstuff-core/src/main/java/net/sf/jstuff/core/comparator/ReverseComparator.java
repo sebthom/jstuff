@@ -18,7 +18,7 @@ public class ReverseComparator<T> implements Comparator<T> {
    private final Comparator<T> delegate;
 
    public static <T> ReverseComparator<T> of(final Comparator<T> delegate) {
-      return new ReverseComparator<T>(delegate);
+      return new ReverseComparator<>(delegate);
    }
 
    /**

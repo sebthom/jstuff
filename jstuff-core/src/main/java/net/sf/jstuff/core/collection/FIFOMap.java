@@ -20,7 +20,7 @@ public class FIFOMap<K, V> extends LinkedHashMap<K, V> {
    private static final long serialVersionUID = 1L;
 
    public static <K, V> FIFOMap<K, V> create(final int maxSize) {
-      return new FIFOMap<K, V>(maxSize);
+      return new FIFOMap<>(maxSize);
    }
 
    private final int maxSize;

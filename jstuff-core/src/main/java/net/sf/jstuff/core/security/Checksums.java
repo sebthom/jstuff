@@ -9,8 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.core.security;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -32,11 +32,7 @@ public abstract class Checksums {
    }
 
    public static String md5(final String txt) throws SecurityException {
-      try {
-         return md5(txt.getBytes("UTF-8"));
-      } catch (final UnsupportedEncodingException ex) {
-         throw new SecurityException(ex);
-      }
+      return md5(txt.getBytes(StandardCharsets.UTF_8));
    }
 
    public static String sha1(final byte[] val) throws SecurityException {
@@ -50,11 +46,7 @@ public abstract class Checksums {
    }
 
    public static String sha1(final String txt) throws SecurityException {
-      try {
-         return sha1(txt.getBytes("UTF-8"));
-      } catch (final UnsupportedEncodingException ex) {
-         throw new SecurityException(ex);
-      }
+      return sha1(txt.getBytes(StandardCharsets.UTF_8));
    }
 
    public static String sha256(final byte[] val) throws SecurityException {
@@ -68,10 +60,6 @@ public abstract class Checksums {
    }
 
    public static String sha256(final String txt) throws SecurityException {
-      try {
-         return sha256(txt.getBytes("UTF-8"));
-      } catch (final UnsupportedEncodingException ex) {
-         throw new SecurityException(ex);
-      }
+      return sha256(txt.getBytes(StandardCharsets.UTF_8));
    }
 }

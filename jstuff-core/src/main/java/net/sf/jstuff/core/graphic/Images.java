@@ -69,7 +69,7 @@ public abstract class Images {
       if (keys == null) {
          props = null;
       } else {
-         props = new Hashtable<String, Object>();
+         props = new Hashtable<>();
          for (final String key : keys) {
             props.put(key, image.getProperty(key));
          }

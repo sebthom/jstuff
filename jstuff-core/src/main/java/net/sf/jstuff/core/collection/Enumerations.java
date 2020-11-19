@@ -65,25 +65,20 @@ public abstract class Enumerations {
    }
 
    public static <T> Iterable<T> toIterable(final Enumeration<T> en) {
-      return new Iterable<T>() {
+      return () -> new Iterator<T>() {
          @Override
-         public Iterator<T> iterator() {
-            return new Iterator<T>() {
-               @Override
-               public boolean hasNext() {
-                  return en == null ? false : en.hasMoreElements();
-               }
+         public boolean hasNext() {
+            return en == null ? false : en.hasMoreElements();
+         }
 
-               @Override
-               public T next() {
-                  return en.nextElement();
-               }
+         @Override
+         public T next() {
+            return en.nextElement();
+         }
 
-               @Override
-               public void remove() {
-                  throw new UnsupportedOperationException();
-               }
-            };
+         @Override
+         public void remove() {
+            throw new UnsupportedOperationException();
          }
       };
    }

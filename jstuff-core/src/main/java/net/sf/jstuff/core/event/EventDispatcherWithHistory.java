@@ -50,7 +50,7 @@ public class EventDispatcherWithHistory<EVENT> implements EventDispatcher<EVENT>
 
    protected void initEventHistory() {
       // http://stackoverflow.com/questions/34556989/vector-vs-synchronizedlist-performance
-      eventHistory = new Vector<EVENT>();
+      eventHistory = new Vector<>();
    }
 
    /**

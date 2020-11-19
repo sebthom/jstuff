@@ -22,12 +22,7 @@ import net.sf.jstuff.xml.stream.StAXUtils;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class AtomBlogPostEntryResponseReader {
-   private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = new ThreadLocal<XMLInputFactory>() {
-      @Override
-      protected XMLInputFactory initialValue() {
-         return XMLInputFactory.newInstance();
-      }
-   };
+   private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = ThreadLocal.withInitial(XMLInputFactory::newInstance);
 
    private static AtomBlogEntry processEntry(final XMLStreamReader xmlr) throws XMLStreamException {
       if (xmlr.getEventType() != XMLStreamConstants.START_ELEMENT || !xmlr.getLocalName().equals("entry"))

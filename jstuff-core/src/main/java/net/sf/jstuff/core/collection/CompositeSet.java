@@ -54,9 +54,7 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
          return false;
       try {
          return containsAll(c);
-      } catch (final ClassCastException ignore) {
-         return false;
-      } catch (final NullPointerException ignore) {
+      } catch (final ClassCastException | NullPointerException ignore) {
          return false;
       }
    }

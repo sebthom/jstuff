@@ -65,7 +65,7 @@ public class LdapTemplate {
 
    @PostConstruct
    public void initialize() {
-      ldapSettings = new Hashtable<String, Object>();
+      ldapSettings = new Hashtable<>();
       ldapSettings.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
       ldapSettings.put(Context.PROVIDER_URL, ldapURL);
       ldapSettings.put(Context.REFERRAL, "throw");

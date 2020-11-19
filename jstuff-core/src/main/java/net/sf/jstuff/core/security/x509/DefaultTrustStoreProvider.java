@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.core.security.x509;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
@@ -34,7 +36,9 @@ import net.sf.jstuff.core.event.EventDispatcher;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.event.SyncEventDispatcher;
 import net.sf.jstuff.core.fluent.Fluent;
+import net.sf.jstuff.core.io.RuntimeIOException;
 import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.security.RuntimeSecurityException;
 import net.sf.jstuff.core.types.Modifiable;
 
 /**
@@ -79,8 +83,10 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
          final TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
          tmf.init(trustStore);
          trustManagers = tmf.getTrustManagers();
-      } catch (final Exception ex) {
-         throw new RuntimeException(ex);
+      } catch (final GeneralSecurityException ex) {
+         throw new RuntimeSecurityException(ex);
+      } catch (final IOException ex) {
+         throw new RuntimeIOException(ex);
       }
    }
 
@@ -118,8 +124,8 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
          if (certs.size() > 0) {
             addTrustCerts(certs.toArray(new X509Certificate[certs.size()]));
          }
-      } catch (final Exception ex) {
-         throw new RuntimeException(ex);
+      } catch (final GeneralSecurityException ex) {
+         throw new RuntimeSecurityException(ex);
       }
    }
 
@@ -203,8 +209,10 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
 
          trustStore = newTrustStore;
          trustManagers = tmf.getTrustManagers();
-      } catch (final Exception ex) {
-         throw new RuntimeException(ex);
+      } catch (final GeneralSecurityException ex) {
+         throw new RuntimeSecurityException(ex);
+      } catch (final IOException ex) {
+         throw new RuntimeIOException(ex);
       }
    }
 

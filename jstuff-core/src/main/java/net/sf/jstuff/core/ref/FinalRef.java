@@ -18,7 +18,7 @@ public class FinalRef<T> implements Ref<T>, Serializable {
    private static final long serialVersionUID = 1L;
 
    public static <T> FinalRef<T> of(final T value) {
-      return new FinalRef<T>(value);
+      return new FinalRef<>(value);
    }
 
    final T value;

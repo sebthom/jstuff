@@ -111,7 +111,7 @@ public abstract class CollectionUtils {
    public static <T> List<T> filter(final List<T> list, final Accept<T> accept) throws IllegalArgumentException {
       if (list == null)
          return null;
-      if (list.size() == 0)
+      if (list.isEmpty())
          return Collections.emptyList();
 
       Args.notNull("accept", accept);
@@ -132,7 +132,7 @@ public abstract class CollectionUtils {
    public static <T> Set<T> filter(final Set<T> set, final Accept<T> accept) throws IllegalArgumentException {
       if (set == null)
          return null;
-      if (set.size() == 0)
+      if (set.isEmpty())
          return Collections.emptySet();
 
       Args.notNull("accept", accept);
@@ -201,7 +201,7 @@ public abstract class CollectionUtils {
          return Collections.emptyList();
 
       for (final List<T> list : lists) {
-         if (list == null || list.size() == 0)
+         if (list == null || list.isEmpty())
             return Collections.emptyList();
       }
 
@@ -232,7 +232,7 @@ public abstract class CollectionUtils {
          return Collections.emptySet();
 
       for (final Set<T> set : sets) {
-         if (set == null || set.size() == 0)
+         if (set == null || set.isEmpty())
             return Collections.emptySet();
       }
 
@@ -276,10 +276,7 @@ public abstract class CollectionUtils {
          return new ArrayList<>();
 
       final ArrayList<K> l = new ArrayList<>(values.length);
-      // faster than Collections.addAll(result, array);
-      for (final K v : values) {
-         l.add(v);
-      }
+      Collections.addAll(l, values);
       return l;
    }
 
@@ -301,9 +298,7 @@ public abstract class CollectionUtils {
          return new HashSet<>();
 
       final HashSet<K> s = new HashSet<>(values.length);
-      for (final K v : values) {
-         s.add(v);
-      }
+      Collections.addAll(s, values);
       return s;
    }
 
@@ -311,65 +306,38 @@ public abstract class CollectionUtils {
       return new LinkedHashSet<>();
    }
 
-   public static <K> HashSet<K> newLinkedHashSet(final int initialSize) {
+   public static <K> LinkedHashSet<K> newLinkedHashSet(final int initialSize) {
       return new LinkedHashSet<>(initialSize);
    }
 
    @SafeVarargs
-   public static <K> HashSet<K> newLinkedHashSet(final K... values) {
+   public static <K> LinkedHashSet<K> newLinkedHashSet(final K... values) {
       if (values == null || values.length == 0)
          return new LinkedHashSet<>();
 
-      final HashSet<K> s = new LinkedHashSet<>(values.length);
-      for (final K v : values) {
-         s.add(v);
-      }
+      final LinkedHashSet<K> s = new LinkedHashSet<>(values.length);
+      Collections.addAll(s, values);
       return s;
    }
 
    public static <T> ThreadLocal<ArrayList<T>> newThreadLocalArrayList() {
-      return new ThreadLocal<ArrayList<T>>() {
-         @Override
-         public ArrayList<T> initialValue() {
-            return new ArrayList<>();
-         }
-      };
+      return ThreadLocal.withInitial(ArrayList::new);
    }
 
    public static <T> ThreadLocal<HashSet<T>> newThreadLocalHashSet() {
-      return new ThreadLocal<HashSet<T>>() {
-         @Override
-         public HashSet<T> initialValue() {
-            return new HashSet<>();
-         }
-      };
+      return ThreadLocal.withInitial(HashSet::new);
    }
 
    public static <T> ThreadLocal<IdentityHashSet<T>> newThreadLocalIdentitySet() {
-      return new ThreadLocal<IdentityHashSet<T>>() {
-         @Override
-         public IdentityHashSet<T> initialValue() {
-            return new IdentityHashSet<>();
-         }
-      };
+      return ThreadLocal.withInitial(IdentityHashSet::new);
    }
 
    public static <T> ThreadLocal<LinkedList<T>> newThreadLocalLinkedList() {
-      return new ThreadLocal<LinkedList<T>>() {
-         @Override
-         public LinkedList<T> initialValue() {
-            return new LinkedList<>();
-         }
-      };
+      return ThreadLocal.withInitial(LinkedList::new);
    }
 
    public static <T> ThreadLocal<WeakHashSet<T>> newThreadLocalWeakHashSet() {
-      return new ThreadLocal<WeakHashSet<T>>() {
-         @Override
-         public WeakHashSet<T> initialValue() {
-            return new WeakHashSet<>();
-         }
-      };
+      return ThreadLocal.withInitial(WeakHashSet::new);
    }
 
    public static <T> T remove(final Collection<T> coll, final int index) {
@@ -395,7 +363,7 @@ public abstract class CollectionUtils {
    public static <T> T removeLast(final List<T> list) {
       Args.notNull("list", list);
 
-      if (list.size() == 0)
+      if (list.isEmpty())
          return null;
       return list.remove(list.size() - 1);
    }
@@ -403,7 +371,7 @@ public abstract class CollectionUtils {
    public static <T> List<T> reverse(final List<T> list) {
       if (list == null)
          return null;
-      if (list.size() == 0)
+      if (list.isEmpty())
          return Collections.emptyList();
 
       final List<T> reversed = new ArrayList<>(list);
@@ -434,13 +402,7 @@ public abstract class CollectionUtils {
 
    public static <T> Iterable<T> toIterable(final Iterator<T> it) {
       Args.notNull("it", it);
-
-      return new Iterable<T>() {
-         @Override
-         public Iterator<T> iterator() {
-            return it;
-         }
-      };
+      return () -> it;
    }
 
    public static <T> List<T> toList(final Iterator<T> it) {

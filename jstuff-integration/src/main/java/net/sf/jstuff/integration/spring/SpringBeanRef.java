@@ -22,11 +22,11 @@ public final class SpringBeanRef<T> implements Serializable {
    private static final long serialVersionUID = 1L;
 
    public static <T> SpringBeanRef<T> of(final Class<T> beanType) {
-      return new SpringBeanRef<T>(beanType);
+      return new SpringBeanRef<>(beanType);
    }
 
    public static <T> SpringBeanRef<T> of(final String beanName) {
-      return new SpringBeanRef<T>(beanName);
+      return new SpringBeanRef<>(beanName);
    }
 
    private transient T springBean;

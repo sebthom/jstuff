@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.integration.persistence;
 
+import static org.junit.Assert.*;
+
 import junit.framework.TestCase;
 import net.sf.jstuff.core.io.SerializationUtils;
 
@@ -92,13 +94,13 @@ public class HashCodeManagerTest extends TestCase {
        */
       final Entity server_e3 = new Entity().setLabel("server_e3");
       server_e3.setId(22);
-      assertTrue(server_e3.hashCode() != server_HC);
+      assertNotEquals(server_e3.hashCode(), server_HC);
 
       /*
        * #8 client: receive()
        */
       final Entity client_e3 = SerializationUtils.clone(server_e3);
-      assertFalse(client_e3.hashCode() == client_HC);
+      assertNotEquals(client_e3.hashCode(), client_HC);
 
       assertEquals(1, HashCodeManager.getManagedIdsCount());
       assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());

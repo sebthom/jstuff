@@ -49,8 +49,7 @@ public class TcpTunnelService extends Thread {
                      }
                      out.write(buff, 0, bytesRead);
                   } catch (final SocketTimeoutException ex) {
-                     LOG.info(ex);
-                     continue;
+                     LOG.warn(ex);
                   }
                }
             } catch (final IOException ex) {

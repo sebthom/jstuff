@@ -19,7 +19,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class LRUMap<K, V> extends LinkedHashMap<K, V> {
    public static <K, V> LRUMap<K, V> create(final int maxCapacity) {
-      return new LRUMap<K, V>(maxCapacity);
+      return new LRUMap<>(maxCapacity);
    }
 
    private static final long serialVersionUID = 1L;

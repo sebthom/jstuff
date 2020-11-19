@@ -16,7 +16,7 @@ public class Tuple1<T1> extends Tuple {
    private static final long serialVersionUID = 1L;
 
    public static <T1> Tuple1<T1> create(final T1 value1) {
-      return new Tuple1<T1>(value1);
+      return new Tuple1<>(value1);
    }
 
    public Tuple1(final T1 value1) {

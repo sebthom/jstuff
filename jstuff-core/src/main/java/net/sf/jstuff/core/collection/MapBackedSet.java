@@ -27,7 +27,7 @@ public class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
    private static final long serialVersionUID = 1L;
 
    public static <E> MapBackedSet<E> create(final Map<E, Boolean> emptyMap) {
-      return new MapBackedSet<E>(emptyMap);
+      return new MapBackedSet<>(emptyMap);
    }
 
    private final Map<E, Boolean> map;

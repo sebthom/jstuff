@@ -29,12 +29,7 @@ public class AtomBlogsReader {
       protected String href;
    }
 
-   private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = new ThreadLocal<XMLInputFactory>() {
-      @Override
-      protected XMLInputFactory initialValue() {
-         return XMLInputFactory.newInstance();
-      }
-   };
+   private static final ThreadLocal<XMLInputFactory> XML_INPUT_FACTORY = ThreadLocal.withInitial(XMLInputFactory::newInstance);
 
    private static AtomCollection processCollection(final XMLStreamReader xmlr) throws XMLStreamException {
       if (xmlr.getEventType() != XMLStreamConstants.START_ELEMENT || !xmlr.getLocalName().equals("collection"))

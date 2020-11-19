@@ -33,7 +33,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
       Args.notNull("keyManagers", keyManagers);
       Args.noNulls("keyManagers", keyManagers);
 
-      this.keyManagers = new ArrayList<X509KeyManager>(keyManagers);
+      this.keyManagers = new ArrayList<>(keyManagers);
    }
 
    public CompositeX509KeyManager(final X509KeyManager... keyManagers) {
@@ -79,7 +79,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
       for (final X509KeyManager keyManager : keyManagers) {
          CollectionUtils.addAll(result, keyManager.getClientAliases(keyType, issuers));
       }
-      if (result.size() == 0)
+      if (result.isEmpty())
          return null;
       return result.toArray(new String[result.size()]);
    }
@@ -100,7 +100,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
       for (final X509KeyManager keyManager : keyManagers) {
          CollectionUtils.addAll(result, keyManager.getServerAliases(keyType, issuers));
       }
-      if (result.size() == 0)
+      if (result.isEmpty())
          return null;
       return result.toArray(new String[result.size()]);
    }

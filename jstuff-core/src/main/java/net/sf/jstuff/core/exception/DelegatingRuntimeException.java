@@ -30,7 +30,7 @@ public class DelegatingRuntimeException extends RuntimeException implements Deco
    }
 
    @Override
-   public DelegatingRuntimeException fillInStackTrace() {
+   public synchronized DelegatingRuntimeException fillInStackTrace() {
       // invoked by parent constructor
       if (wrapped != null) {
          wrapped.fillInStackTrace();
@@ -42,7 +42,7 @@ public class DelegatingRuntimeException extends RuntimeException implements Deco
     * @return the cause of the wrapped exception
     */
    @Override
-   public Throwable getCause() {
+   public synchronized Throwable getCause() {
       return wrapped.getCause();
    }
 
@@ -73,7 +73,7 @@ public class DelegatingRuntimeException extends RuntimeException implements Deco
    }
 
    @Override
-   public DelegatingRuntimeException initCause(final Throwable cause) {
+   public synchronized DelegatingRuntimeException initCause(final Throwable cause) {
       wrapped.initCause(cause);
       return this;
    }

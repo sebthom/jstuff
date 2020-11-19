@@ -33,7 +33,7 @@ public class CompositeX509TrustManager implements X509TrustManager {
       Args.notNull("keyManagers", trustManagers);
       Args.noNulls("trustManagers", trustManagers);
 
-      this.trustManagers = new ArrayList<X509TrustManager>(trustManagers);
+      this.trustManagers = new ArrayList<>(trustManagers);
    }
 
    public CompositeX509TrustManager(final X509TrustManager... trustManagers) {

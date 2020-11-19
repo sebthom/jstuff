@@ -29,12 +29,7 @@ public abstract class Threads {
 
    private static final Thread[] EMPTY_THREAD_ARRAY = new Thread[0];
 
-   private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = new java.util.Comparator<Thread>() {
-      @Override
-      public int compare(final Thread t1, final Thread t2) {
-         return t2.getPriority() - t1.getPriority();
-      }
-   };
+   private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = (t1, t2) -> t2.getPriority() - t1.getPriority();
 
    private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
 
@@ -95,12 +90,10 @@ public abstract class Threads {
       final long[] deadlockedIds = deadlockedIds();
       Thread[] result = EMPTY_THREAD_ARRAY;
       for (final Thread t : all()) {
-         for (final long deadlockedId : deadlockedIds) {
+         for (final long deadlockedId : deadlockedIds)
             if (t.getId() == deadlockedId) {
                result = ArrayUtils.add(result, t);
-               continue;
             }
-         }
       }
       return result;
    }

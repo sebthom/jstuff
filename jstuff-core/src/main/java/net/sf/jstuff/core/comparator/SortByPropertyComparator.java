@@ -26,11 +26,6 @@ public class SortByPropertyComparator<T> extends SortByComparator<T, String> {
 
    @Override
    protected Comparator<T> getComparator(final String sortKey) {
-      Comparator<T> comp = comparators.get(sortKey);
-      if (comp == null) {
-         comp = new PropertyComparator<>(sortKey);
-         comparators.put(sortKey, comp);
-      }
-      return comparators.get(sortKey);
+      return comparators.computeIfAbsent(sortKey, PropertyComparator::new);
    }
 }

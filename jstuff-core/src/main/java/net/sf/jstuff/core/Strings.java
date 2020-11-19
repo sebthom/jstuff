@@ -26,6 +26,7 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.CharSequenceReader;
+import net.sf.jstuff.core.io.RuntimeIOException;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
@@ -603,7 +604,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
             }
          }, true);
       } catch (final IOException ex) {
-         throw new RuntimeException(ex);
+         throw new RuntimeIOException(ex);
       }
       return sb;
    }

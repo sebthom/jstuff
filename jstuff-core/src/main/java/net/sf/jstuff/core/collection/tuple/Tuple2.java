@@ -16,7 +16,7 @@ public class Tuple2<T1, T2> extends Tuple {
    private static final long serialVersionUID = 1L;
 
    public static <T1, T2> Tuple2<T1, T2> create(final T1 value1, final T2 value2) {
-      return new Tuple2<T1, T2>(value1, value2);
+      return new Tuple2<>(value1, value2);
    }
 
    public Tuple2(final T1 value1, final T2 value2) {

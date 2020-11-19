@@ -11,6 +11,7 @@ package net.sf.jstuff.core.collection.iterator;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -21,7 +22,7 @@ public class ArrayIterator<T> implements Iterator<T>, Serializable {
 
    @SafeVarargs
    public static <T> ArrayIterator<T> of(final T... array) {
-      return new ArrayIterator<T>(array);
+      return new ArrayIterator<>(array);
    }
 
    private final T[] array;
@@ -39,7 +40,9 @@ public class ArrayIterator<T> implements Iterator<T>, Serializable {
 
    @Override
    public T next() {
-      return array[currentIndex++];
+      if (currentIndex < array.length)
+         return array[currentIndex++];
+      throw new NoSuchElementException();
    }
 
    @Override

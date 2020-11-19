@@ -18,11 +18,11 @@ public class IdentityHashSet<E> extends MapBackedSet<E> implements Cloneable {
    private static final long serialVersionUID = 1L;
 
    public static <E> IdentityHashSet<E> create() {
-      return new IdentityHashSet<E>();
+      return new IdentityHashSet<>();
    }
 
    public static <E> IdentityHashSet<E> create(final int initialCapacity) {
-      return new IdentityHashSet<E>(initialCapacity);
+      return new IdentityHashSet<>(initialCapacity);
    }
 
    public IdentityHashSet() {
@@ -30,7 +30,7 @@ public class IdentityHashSet<E> extends MapBackedSet<E> implements Cloneable {
    }
 
    public IdentityHashSet(final int initialCapacity) {
-      super(new IdentityHashMap<E, Boolean>(initialCapacity));
+      super(new IdentityHashMap<>(initialCapacity));
    }
 
    @Override

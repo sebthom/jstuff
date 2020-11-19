@@ -173,7 +173,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
          final ServiceEndpointState cfg = entry.getValue();
          if (cfg.activeService == null) {
             cfg.checkStrongProxies();
-            if (cfg.issuedServiceProxiesWeak.size() == 0 && cfg.issuedServiceProxiesStrong.size() == 0) {
+            if (cfg.issuedServiceProxiesWeak.isEmpty() && cfg.issuedServiceProxiesStrong.isEmpty()) {
                LOG.debug("Purging endpoint config for [%s]", cfg.serviceEndpointId);
                it.remove();
             }

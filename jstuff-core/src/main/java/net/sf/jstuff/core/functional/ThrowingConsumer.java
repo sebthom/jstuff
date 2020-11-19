@@ -20,7 +20,7 @@ import net.sf.jstuff.core.exception.Exceptions;
 public interface ThrowingConsumer<T, E extends Throwable> extends Consumer<T> {
 
    static <T> ThrowingConsumer<T, RuntimeException> from(final Consumer<T> consumer) {
-      return value -> consumer.accept(value);
+      return consumer::accept;
    }
 
    @Override

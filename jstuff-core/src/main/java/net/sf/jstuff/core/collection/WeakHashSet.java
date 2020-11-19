@@ -41,7 +41,7 @@ public class WeakHashSet<E> extends MapBackedSet<E> implements Cloneable {
    }
 
    public WeakHashSet(final int initialCapacity, final float growthFactor) {
-      super(new WeakHashMap<E, Boolean>(initialCapacity, growthFactor));
+      super(new WeakHashMap<>(initialCapacity, growthFactor));
    }
 
    @Override

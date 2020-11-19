@@ -61,7 +61,7 @@ public class ExceptionsTest extends TestCase {
 
       final CustomException cex = Exceptions.wrapAs(ex, CustomException.class);
       assertEquals(ex.getCause(), cex.getCause().getCause());
-      assertTrue(Exceptions.getStackTrace(ex) != Exceptions.getStackTrace(cex));
+      assertNotSame(Exceptions.getStackTrace(ex), Exceptions.getStackTrace(cex));
 
       final RuntimeException rex = Exceptions.wrapAsRuntimeException(ex);
       assertEquals(ex.getCause(), rex.getCause());

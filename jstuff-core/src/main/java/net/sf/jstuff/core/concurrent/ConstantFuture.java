@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class ConstantFuture<T> implements Future<T> {
 
    public static <T> ConstantFuture<T> of(final T value) {
-      return new ConstantFuture<T>(value);
+      return new ConstantFuture<>(value);
    }
 
    private final T value;

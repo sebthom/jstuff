@@ -157,9 +157,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
                      cummulatedParamAnnos = new HashSet<>();
                      methodParameterAnnotations[i] = cummulatedParamAnnos;
                   }
-                  for (final Annotation anno : paramAnnos) {
-                     cummulatedParamAnnos.add(anno);
-                  }
+                  CollectionUtils.addAll(cummulatedParamAnnos, paramAnnos);
                }
             }
          } catch (final NoSuchMethodException e) {

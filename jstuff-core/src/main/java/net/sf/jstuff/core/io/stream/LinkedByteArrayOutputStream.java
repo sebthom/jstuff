@@ -59,7 +59,7 @@ public class LinkedByteArrayOutputStream extends OutputStream {
 
    protected void nextBlock() {
       if (blocks == null) {
-         blocks = new LinkedList<byte[]>();
+         blocks = new LinkedList<>();
       }
 
       blocks.addLast(block);

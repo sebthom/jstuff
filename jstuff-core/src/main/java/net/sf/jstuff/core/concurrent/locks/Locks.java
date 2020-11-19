@@ -25,7 +25,7 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Locks {
 
    public static void lockAll(final Collection<? extends Lock> locks) {
-      if (locks == null || locks.size() == 0)
+      if (locks == null || locks.isEmpty())
          return;
 
       final List<Lock> locked = new ArrayList<>(locks.size());
@@ -57,7 +57,7 @@ public abstract class Locks {
    }
 
    public static void lockInterruptiblyAll(final Collection<? extends Lock> locks) throws InterruptedException {
-      if (locks == null || locks.size() == 0)
+      if (locks == null || locks.isEmpty())
          return;
 
       final List<Lock> locked = new ArrayList<>(locks.size());
@@ -66,10 +66,7 @@ public abstract class Locks {
             l.lockInterruptibly();
             locked.add(l);
          }
-      } catch (final InterruptedException ex) {
-         unlockAll(locked);
-         throw ex;
-      } catch (final RuntimeException ex) {
+      } catch (final InterruptedException | RuntimeException ex) {
          unlockAll(locked);
          throw ex;
       }
@@ -85,10 +82,7 @@ public abstract class Locks {
             l.lockInterruptibly();
             locked.add(l);
          }
-      } catch (final InterruptedException ex) {
-         unlockAll(locked);
-         throw ex;
-      } catch (final RuntimeException ex) {
+      } catch (final InterruptedException | RuntimeException ex) {
          unlockAll(locked);
          throw ex;
       }
@@ -230,7 +224,7 @@ public abstract class Locks {
    }
 
    public static boolean tryLockAll(final Collection<? extends Lock> locks) {
-      if (locks == null || locks.size() == 0)
+      if (locks == null || locks.isEmpty())
          return true;
 
       final List<Lock> locked = new ArrayList<>(locks.size());
@@ -272,7 +266,7 @@ public abstract class Locks {
    }
 
    public static boolean tryLockAll(final long time, final TimeUnit unit, final Collection<? extends Lock> locks) throws InterruptedException {
-      if (locks == null || locks.size() == 0)
+      if (locks == null || locks.isEmpty())
          return true;
 
       final List<Lock> locked = new ArrayList<>(locks.size());
@@ -287,10 +281,7 @@ public abstract class Locks {
                return false;
             }
          }
-      } catch (final RuntimeException ex) {
-         unlockAll(locked);
-         throw ex;
-      } catch (final InterruptedException ex) {
+      } catch (final InterruptedException | RuntimeException ex) {
          unlockAll(locked);
          throw ex;
       }
@@ -313,10 +304,7 @@ public abstract class Locks {
                return false;
             }
          }
-      } catch (final RuntimeException ex) {
-         unlockAll(locked);
-         throw ex;
-      } catch (final InterruptedException ex) {
+      } catch (final InterruptedException | RuntimeException ex) {
          unlockAll(locked);
          throw ex;
       }

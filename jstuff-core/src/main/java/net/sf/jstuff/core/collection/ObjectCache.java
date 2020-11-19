@@ -133,7 +133,7 @@ public final class ObjectCache<K, V> {
       }
 
       // update MRU list
-      if (maxObjectsToKeep > 0 && (mru.size() == 0 || value != mru.getFirst())) {
+      if (maxObjectsToKeep > 0 && (mru.isEmpty() || value != mru.getFirst())) {
          mru.remove(value);
          mru.addFirst(value);
          if (mru.size() > maxObjectsToKeep) {

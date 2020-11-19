@@ -180,14 +180,13 @@ public class ThreadDumper {
 
    private static final FastDateFormat TIMESTAMP = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 
-   public static final ThrowingConsumer<Appendable, Exception> DEFAULT_HEADER_PRINTER = out -> {
-      out.append(TIMESTAMP.format(System.currentTimeMillis())).append(NEW_LINE) //
-         .append(String.format("Java thread dump %s (%s %s):%s", //
-            System.getProperty("java.vm.name"), //
-            System.getProperty("java.vm.version"), //
-            System.getProperty("java.vm.info"), //
-            NEW_LINE));
-   };
+   public static final ThrowingConsumer<Appendable, Exception> DEFAULT_HEADER_PRINTER = out -> out //
+      .append(TIMESTAMP.format(System.currentTimeMillis())).append(NEW_LINE) //
+      .append(String.format("Java thread dump %s (%s %s):%s", //
+         System.getProperty("java.vm.name"), //
+         System.getProperty("java.vm.version"), //
+         System.getProperty("java.vm.info"), //
+         NEW_LINE));
 
    public static final ThrowingConsumer<Appendable, Exception> DEFAULT_FOOTER_PRINTER = out -> { /* nothing to do */ };
 
@@ -317,7 +316,7 @@ public class ThreadDumper {
          }
       }
 
-      if (deadLocks.size() == 0)
+      if (deadLocks.isEmpty())
          return;
 
       for (final Tuple2<ThreadMeta, ThreadMeta> deadLock : deadLocks) {

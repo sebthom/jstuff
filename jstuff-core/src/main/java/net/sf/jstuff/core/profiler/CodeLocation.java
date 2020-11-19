@@ -27,7 +27,7 @@ public class CodeLocation {
 
    @Override
    public boolean equals(final Object obj) {
-      if (obj == null || !(obj instanceof CodeLocation))
+      if (!(obj instanceof CodeLocation))
          return false;
       final CodeLocation other = (CodeLocation) obj;
       return lineNumber == other.lineNumber && clazz.equals(other.clazz) && method.equals(other.method);

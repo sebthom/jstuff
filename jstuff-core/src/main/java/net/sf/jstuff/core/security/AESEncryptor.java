@@ -11,7 +11,7 @@ package net.sf.jstuff.core.security;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -48,16 +48,13 @@ public class AESEncryptor {
 
    private final Map<String, SecretKey> _cachedAESKeys = new WeakHashMap<>();
 
-   private final ThreadLocal<Cipher> _ciphers = new ThreadLocal<Cipher>() {
-      @Override
-      protected Cipher initialValue() {
-         try {
-            return Cipher.getInstance("AES/CBC/PKCS5Padding");
-         } catch (final GeneralSecurityException ex) {
-            throw new SecurityException(ex);
-         }
+   private final ThreadLocal<Cipher> _ciphers = ThreadLocal.withInitial(() -> {
+      try {
+         return Cipher.getInstance("AES/CBC/PKCS5Padding");
+      } catch (final GeneralSecurityException ex) {
+         throw new SecurityException(ex);
       }
-   };
+   });
 
    private final byte[] _keySalt;
 
@@ -66,11 +63,7 @@ public class AESEncryptor {
    }
 
    public AESEncryptor(final String keySalt) {
-      try {
-         _keySalt = keySalt.getBytes("UTF-8");
-      } catch (final UnsupportedEncodingException ex) {
-         throw new RuntimeException(ex);
-      }
+      _keySalt = keySalt.getBytes(StandardCharsets.UTF_8);
    }
 
    private SecretKey _getKey(final String passphrase) throws NoSuchAlgorithmException, InvalidKeySpecException {

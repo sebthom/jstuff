@@ -23,7 +23,7 @@ public class UnmodifiableComparator<T> implements Comparator<T>, Serializable {
    private final Comparator<T> delegate;
 
    public static <T> UnmodifiableComparator<T> of(final Comparator<T> delegate) {
-      return new UnmodifiableComparator<T>(delegate);
+      return new UnmodifiableComparator<>(delegate);
    }
 
    public UnmodifiableComparator(final Comparator<T> delegate) {

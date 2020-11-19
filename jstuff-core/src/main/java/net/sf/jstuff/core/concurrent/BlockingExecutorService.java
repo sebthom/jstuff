@@ -122,7 +122,7 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
       aquirePermit();
 
       try {
-         return executorService.submit(new CallableWrapper<T>(task, limiter));
+         return executorService.submit(new CallableWrapper<>(task, limiter));
       } catch (final RuntimeException ex) {
          limiter.release();
          throw ex;
@@ -165,7 +165,7 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
 
       final Collection<Callable<T>> result = new ArrayList<>(tasks.size());
       for (final Callable<T> task : tasks) {
-         result.add(new CallableWrapper<T>(task, limiter));
+         result.add(new CallableWrapper<>(task, limiter));
       }
       return result;
    }

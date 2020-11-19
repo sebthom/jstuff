@@ -23,16 +23,16 @@ public abstract class Iterators {
 
    @SafeVarargs
    public static <T> ArrayIterator<T> array(final T... array) {
-      return new ArrayIterator<T>(array);
+      return new ArrayIterator<>(array);
    }
 
    public static <V> CompositeIterator<V> composite(final Collection<? extends Iterator<V>> components) {
-      return new CompositeIterator<V>(components);
+      return new CompositeIterator<>(components);
    }
 
    @SafeVarargs
    public static <V> CompositeIterator<V> composite(final Iterator<V>... components) {
-      return new CompositeIterator<V>(components);
+      return new CompositeIterator<>(components);
    }
 
    public static boolean contains(final Iterator<?> iterator, final Object searchFor) {
@@ -59,7 +59,7 @@ public abstract class Iterators {
    }
 
    public static <T> SingleObjectIterator<T> single(final T object) {
-      return new SingleObjectIterator<T>(object);
+      return new SingleObjectIterator<>(object);
    }
 
    public static int size(final Iterator<?> iterator) {
@@ -73,19 +73,14 @@ public abstract class Iterators {
    }
 
    public static <T> Iterable<T> toIterable(final Iterator<T> it) {
-      return new Iterable<T>() {
-         @Override
-         public Iterator<T> iterator() {
-            return it;
-         }
-      };
+      return () -> it;
    }
 
    public static <T> UnmodifiableIterator<T> unmodifiable(final Iterator<T> delegate) {
-      return new UnmodifiableIterator<T>(delegate);
+      return new UnmodifiableIterator<>(delegate);
    }
 
    public static <T> UnmodifiableListIterator<T> unmodifiable(final ListIterator<T> delegate) {
-      return new UnmodifiableListIterator<T>(delegate);
+      return new UnmodifiableListIterator<>(delegate);
    }
 }
