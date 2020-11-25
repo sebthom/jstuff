@@ -16,15 +16,13 @@ import java.util.Collection;
 import javax.net.ssl.TrustManager;
 
 import net.sf.jstuff.core.event.EventListenable;
+import net.sf.jstuff.core.event.EventListener;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface TrustStoreProvider extends EventListenable<TrustStoreProvider.Event> {
-
-   interface Event {
-      EventType getEventType();
-   }
 
    interface CertificateExpiredEvent extends Event {
       X509Certificate getExpired();
@@ -38,10 +36,39 @@ public interface TrustStoreProvider extends EventListenable<TrustStoreProvider.E
       Collection<X509Certificate> getRemoved();
    }
 
+   interface Event {
+      EventType getEventType();
+   }
+
    enum EventType {
       CERTIFICATE_EXPIRED,
       CERTIFICATES_ADDED,
       CERTIFICATES_REMOVED;
+   }
+
+   static TrustStoreProvider toImmutable(final TrustStoreProvider trustStoreProvider) {
+      Args.notNull("trustStoreProvider", trustStoreProvider);
+      return new TrustStoreProvider() {
+         @Override
+         public TrustManager[] getTrustManagers() {
+            return trustStoreProvider.getTrustManagers();
+         }
+
+         @Override
+         public KeyStore getTrustStore() {
+            return trustStoreProvider.getTrustStore();
+         }
+
+         @Override
+         public boolean subscribe(final EventListener<Event> listener) {
+            return trustStoreProvider.subscribe(listener);
+         }
+
+         @Override
+         public boolean unsubscribe(final EventListener<Event> listener) {
+            return trustStoreProvider.unsubscribe(listener);
+         }
+      };
    }
 
    /**
