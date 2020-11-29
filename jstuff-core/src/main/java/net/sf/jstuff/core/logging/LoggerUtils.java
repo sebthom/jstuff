@@ -24,7 +24,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class LoggerUtils {
+abstract class LoggerUtils {
    private static class ParanamerParamNamesResolver implements Invocable<String[], Method, RuntimeException> {
       final com.thoughtworks.paranamer.Paranamer paranamer = new com.thoughtworks.paranamer.CachingParanamer(
          new com.thoughtworks.paranamer.BytecodeReadingParanamer());
@@ -49,14 +49,7 @@ public abstract class LoggerUtils {
       try {
          // test if paranamer is available on classpath
          paramNamesResolver = new ParanamerParamNamesResolver();
-      } catch (final Exception ex) {
-         paramNamesResolver = new Invocable<String[], Method, RuntimeException>() {
-            @Override
-            public String[] invoke(final Method arg) throws RuntimeException {
-               return ArrayUtils.EMPTY_STRING_ARRAY;
-            }
-         };
-      } catch (final LinkageError err) {
+      } catch (final Exception | LinkageError ex) {
          paramNamesResolver = new Invocable<String[], Method, RuntimeException>() {
             @Override
             public String[] invoke(final Method arg) throws RuntimeException {
