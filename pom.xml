@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2010-2020 by Sebastian Thomschke and others.
@@ -25,8 +27,8 @@
 
 
    <name>jstuff</name>
-   <url>https://sourceforge.net/projects/jstuff/</url>
    <description>Toolbox for Java</description>
+   <url>https://github.com/sebthom/jstuff</url>
    <inceptionYear>2010</inceptionYear>
 
 
@@ -131,18 +133,6 @@
    </build>
 
 
-   <!-- global dependencies -->
-   <dependencies>
-      <!-- test dependencies -->
-      <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <version>4.13.1</version>
-         <scope>test</scope>
-      </dependency>
-   </dependencies>
-
-
    <dependencyManagement>
       <dependencies>
          <dependency>
@@ -163,5 +153,17 @@
          </dependency>
       </dependencies>
    </dependencyManagement>
+
+
+   <!-- global dependencies -->
+   <dependencies>
+      <!-- test dependencies -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.13.1</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
 
 </project>
