@@ -9,6 +9,7 @@
  *********************************************************************/
 package net.sf.jstuff.core.math;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.UUID;
@@ -24,11 +25,12 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
    public static final int BILLION = 1000 * MILLION;
    public static final int TRILLION = 1000 * BILLION;
 
-   static final BigInteger INTEGER_MAX_VALUE = BigInteger.valueOf(Integer.MAX_VALUE);
-   static final BigInteger INTEGER_MIN_VALUE = BigInteger.valueOf(Integer.MIN_VALUE);
+   public static final BigInteger INTEGER_MAX_VALUE = BigInteger.valueOf(Integer.MAX_VALUE);
+   public static final BigInteger INTEGER_MIN_VALUE = BigInteger.valueOf(Integer.MIN_VALUE);
 
-   static final BigInteger LONG_MAX_VALUE = BigInteger.valueOf(Long.MAX_VALUE);
-   static final BigInteger LONG_MIN_VALUE = BigInteger.valueOf(Long.MIN_VALUE);
+   public static final BigInteger LONG_MAX_VALUE = BigInteger.valueOf(Long.MAX_VALUE);
+   public static final BigInteger LONG_MIN_VALUE = BigInteger.valueOf(Long.MIN_VALUE);
+
 
    public static boolean isInteger(final BigInteger number) {
       Args.notNull("number", number);
@@ -38,6 +40,11 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
    public static boolean isLong(final BigInteger number) {
       Args.notNull("number", number);
       return LONG_MAX_VALUE.compareTo(number) >= 0 && LONG_MIN_VALUE.compareTo(number) <= 0;
+   }
+
+   public static boolean isWhole(final BigDecimal number) {
+      Args.notNull("number", number);
+      return number.signum() == 0 || number.scale() <= 0 || number.stripTrailingZeros().scale() <= 0;
    }
 
    public static BigInteger toBigInteger(final UUID uuid) {
