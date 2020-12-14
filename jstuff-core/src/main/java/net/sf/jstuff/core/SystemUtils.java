@@ -11,9 +11,18 @@ package net.sf.jstuff.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.prefs.Preferences;
 import java.util.stream.Stream;
+
+import org.apache.commons.io.IOUtils;
 
 import net.sf.jstuff.core.logging.Logger;
 
@@ -24,6 +33,63 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    private static final Logger LOG = Logger.create();
 
    private static Boolean isDockerized = null;
+   private static Boolean isRunningAsAdmin = null;
+
+   /**
+    * Determines if the current Java process is running with administrative permissions
+    * (in Windows "elevated", in Unix as "root").
+    */
+   public static boolean isRunningAsAdmin() {
+      if (isRunningAsAdmin == null) {
+
+         try {
+            if (IS_OS_WINDOWS) {
+               // https://stackoverflow.com/a/11995662/5116073
+               final Process p = Runtime.getRuntime().exec(new String[] {"net", "session"});
+               p.waitFor(10, TimeUnit.SECONDS);
+               if (!p.isAlive() && p.exitValue() == 0) {
+                  isRunningAsAdmin = true;
+               } else {
+                  p.destroyForcibly();
+                  isRunningAsAdmin = false;
+               }
+
+            } else if (IS_OS_LINUX) {
+               final Process p = Runtime.getRuntime().exec(new String[] {"id", "-u"});
+               p.waitFor(10, TimeUnit.SECONDS);
+               if (!p.isAlive() && p.exitValue() == 0) {
+                  try (InputStream is = p.getInputStream()) {
+                     final List<String> lines = IOUtils.readLines(is, Charset.defaultCharset());
+                     isRunningAsAdmin = !lines.isEmpty() && "0".equals(lines.get(0));
+                  }
+               } else {
+                  p.destroyForcibly();
+                  isRunningAsAdmin = false;
+               }
+
+            } else {
+               final java.util.logging.Logger prefsLogger = LogManager.getLogManager().getLogger("java.util.prefs.WindowsPreferences");
+               prefsLogger.setLevel(Level.SEVERE);
+               try {
+                  // https://stackoverflow.com/a/23538961/5116073
+                  final Preferences prefs = Preferences.systemRoot();
+                  synchronized (prefs) {
+                     prefs.put("foo", "bar"); // SecurityException on Windows
+                     prefs.remove("foo");
+                     prefs.flush(); // BackingStoreException on Linux
+                  }
+                  isRunningAsAdmin = true;
+               } finally {
+                  prefsLogger.setLevel(Level.INFO);
+               }
+            }
+         } catch (final Exception ex) {
+            LOG.debug(ex);
+            isRunningAsAdmin = false;
+         }
+      }
+      return isRunningAsAdmin;
+   }
 
    public static boolean isRunningInsideDocker() {
       if (isDockerized == null) {
