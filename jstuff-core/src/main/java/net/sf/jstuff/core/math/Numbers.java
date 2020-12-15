@@ -13,8 +13,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
-import net.sf.jstuff.core.validation.Args;
+import org.apache.commons.lang3.mutable.MutableByte;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.mutable.MutableLong;
+import org.apache.commons.lang3.mutable.MutableShort;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -31,20 +37,86 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
    public static final BigInteger LONG_MAX_VALUE = BigInteger.valueOf(Long.MAX_VALUE);
    public static final BigInteger LONG_MIN_VALUE = BigInteger.valueOf(Long.MIN_VALUE);
 
+   private static final BigDecimal LONG_MAX_VALUE_BD = BigDecimal.valueOf(Long.MAX_VALUE);
+   private static final BigDecimal LONG_MIN_VALUE_BD = BigDecimal.valueOf(Long.MIN_VALUE);
 
    public static boolean isInteger(final BigInteger number) {
-      Args.notNull("number", number);
+      if (number == null)
+         return false;
+
       return INTEGER_MAX_VALUE.compareTo(number) >= 0 && INTEGER_MIN_VALUE.compareTo(number) <= 0;
    }
 
-   public static boolean isLong(final BigInteger number) {
-      Args.notNull("number", number);
-      return LONG_MAX_VALUE.compareTo(number) >= 0 && LONG_MIN_VALUE.compareTo(number) <= 0;
+   public static boolean isInteger(final long number) {
+      return number <= Integer.MAX_VALUE && number >= Integer.MIN_VALUE;
    }
 
-   public static boolean isWhole(final BigDecimal number) {
-      Args.notNull("number", number);
-      return number.signum() == 0 || number.scale() <= 0 || number.stripTrailingZeros().scale() <= 0;
+   public static boolean isLong(final Number number) {
+      if (number == null)
+         return false;
+
+      if (number instanceof Long || //
+         number instanceof Integer || //
+         number instanceof Short || //
+         number instanceof Byte || //
+         number instanceof AtomicLong || //
+         number instanceof AtomicInteger || //
+         number instanceof LongAdder || //
+         number instanceof MutableLong || //
+         number instanceof MutableInt || //
+         number instanceof MutableShort || //
+         number instanceof MutableByte //
+      )
+         return true;
+
+      if (number instanceof BigInteger)
+         return LONG_MAX_VALUE.compareTo((BigInteger) number) >= 0 && LONG_MIN_VALUE.compareTo((BigInteger) number) <= 0;
+
+      final BigDecimal bd = toBigDecimal(number);
+      if (!isWhole(bd))
+         return false;
+
+      return LONG_MAX_VALUE_BD.compareTo(bd) >= 0 && LONG_MIN_VALUE_BD.compareTo(bd) <= 0;
+   }
+
+   public static boolean isWhole(final Number number) {
+      if (number == null)
+         return false;
+
+      if (number instanceof BigInteger || //
+         number instanceof Long || //
+         number instanceof Integer || //
+         number instanceof Short || //
+         number instanceof Byte || //
+         number instanceof AtomicLong || //
+         number instanceof AtomicInteger || //
+         number instanceof LongAdder || //
+         number instanceof MutableLong || //
+         number instanceof MutableInt || //
+         number instanceof MutableShort || //
+         number instanceof MutableByte //
+      )
+         return true;
+
+      final BigDecimal bd = toBigDecimal(number);
+      return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
+   }
+
+   public static BigDecimal toBigDecimal(final Number number) {
+      if (number == null)
+         return null;
+
+      final BigDecimal bd;
+      if (number instanceof BigDecimal) {
+         bd = (BigDecimal) number;
+      } else if (number instanceof BigInteger) {
+         bd = new BigDecimal((BigInteger) number);
+      } else if (number instanceof Long || number instanceof Integer || number instanceof Short || number instanceof Byte) {
+         bd = BigDecimal.valueOf(number.longValue());
+      } else {
+         bd = BigDecimal.valueOf(number.doubleValue());
+      }
+      return bd;
    }
 
    public static BigInteger toBigInteger(final UUID uuid) {
