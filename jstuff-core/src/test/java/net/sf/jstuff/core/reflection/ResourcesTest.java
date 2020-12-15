@@ -46,7 +46,7 @@ public class ResourcesTest extends TestCase {
    public void testFindClassInJar() throws IOException {
       boolean foundClass = false;
       for (final Resource r : Resources.findResourcesByGlobPattern("**/*.class", ClassLoader.getSystemClassLoader())) {
-         if (r.name.equals("com/thoughtworks/paranamer/Paranamer.class")) {
+         if (r.name.equals("org/apache/commons/lang3/SystemUtils.class")) {
             foundClass = true;
             try (InputStream is = r.url.openStream()) {
                is.read();

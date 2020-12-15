@@ -14,8 +14,6 @@ import java.io.File;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.helpers.NOPLogger;
 
-import com.thoughtworks.paranamer.Paranamer;
-
 import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.ObjectCache;
 
@@ -49,11 +47,7 @@ public class TypesTest extends TestCase {
       assertTrue(library.exists());
 
       // locate anonymous inner class in exploded directory (target/classes)
-      final Runnable r = new Runnable() {
-         @Override
-         public void run() {
-         }
-      };
+      final Runnable r = () -> { /**/ };
       library = Types.findLibrary(r.getClass());
       assertNotNull(library);
       assertTrue(library.isDirectory());
@@ -66,7 +60,7 @@ public class TypesTest extends TestCase {
       assertEquals("3.11", Types.getVersion(ObjectUtils.class));
 
       // from META-INF/maven/.../pom.properties
-      assertEquals("2.8", Types.getVersion(Paranamer.class));
+      //assertEquals("2.8", Types.getVersion(Paranamer.class));
 
       // from jar name
       assertEquals("4.13.1", Types.getVersion(TestCase.class));

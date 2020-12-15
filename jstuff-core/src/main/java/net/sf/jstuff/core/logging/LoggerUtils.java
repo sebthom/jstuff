@@ -10,13 +10,12 @@
 package net.sf.jstuff.core.logging;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sf.jstuff.core.collection.ArrayUtils;
-import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.validation.Args;
@@ -25,40 +24,11 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 abstract class LoggerUtils {
-   private static class ParanamerParamNamesResolver implements Invocable<String[], Method, RuntimeException> {
-      final com.thoughtworks.paranamer.Paranamer paranamer = new com.thoughtworks.paranamer.CachingParanamer(
-         new com.thoughtworks.paranamer.BytecodeReadingParanamer());
-
-      @Override
-      public String[] invoke(final Method method) {
-         if (method == null)
-            return ArrayUtils.EMPTY_STRING_ARRAY;
-         return paranamer.lookupParameterNames(method, false);
-      }
-   }
 
    private static final String METHOD_ENTRY_MARKER = "ENTRY >> (";
    private static final String METHOD_ENTRY_MARKER_NOARGS = METHOD_ENTRY_MARKER + ")";
    private static final String METHOD_EXIT_MARKER = "EXIT  << ";
    private static final String METHOD_EXIT_MARKER_VOID = METHOD_EXIT_MARKER + "*void*";
-
-   private static final Invocable<String[], Method, RuntimeException> PARAM_NAMES_RESOLVER;
-
-   static {
-      Invocable<String[], Method, RuntimeException> paramNamesResolver;
-      try {
-         // test if paranamer is available on classpath
-         paramNamesResolver = new ParanamerParamNamesResolver();
-      } catch (final Exception | LinkageError ex) {
-         paramNamesResolver = new Invocable<String[], Method, RuntimeException>() {
-            @Override
-            public String[] invoke(final Method arg) throws RuntimeException {
-               return ArrayUtils.EMPTY_STRING_ARRAY;
-            }
-         };
-      }
-      PARAM_NAMES_RESOLVER = paramNamesResolver;
-   }
 
    private static String argToString(final Object object) {
       if (object == null)
@@ -109,17 +79,16 @@ abstract class LoggerUtils {
 
       final StringBuilder sb = new StringBuilder(METHOD_ENTRY_MARKER);
 
-      final String[] paramNames = PARAM_NAMES_RESOLVER.invoke(method);
-      final int paramNamesLen = paramNames.length;
-      if (paramNamesLen == 0) {
+      final Parameter[] params = method.getParameters();
+      if (params.length == 0) {
          sb.append(argToString(args[0]));
          for (int i = 1; i < args.length; i++) {
             sb.append(", ").append(argToString(args[i]));
          }
       } else {
-         sb.append(paramNames[0]).append(": ").append(argToString(args[0]));
-         for (int i = 1; i < paramNamesLen; i++) {
-            sb.append(", ").append(paramNames[i]).append(": ").append(argToString(args[i]));
+         sb.append(params[0].getName()).append(": ").append(argToString(args[0]));
+         for (int i = 1; i < params.length; i++) {
+            sb.append(", ").append(params[i].getName()).append(": ").append(argToString(args[i]));
          }
       }
       return sb.append(")").toString();
@@ -132,6 +101,14 @@ abstract class LoggerUtils {
       final Class<?> loggedClass = StackTrace.getCallerClass(DelegatingLogger.FQCN);
       final StackTraceElement loggedSTE = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
       final Method method = Methods.findAnyCompatible(loggedClass, loggedSTE.getMethodName(), args);
+      if (method == null) {
+         final StringBuilder sb = new StringBuilder(METHOD_ENTRY_MARKER);
+         sb.append(argToString(args[0]));
+         for (int i = 1; i < args.length; i++) {
+            sb.append(", ").append(argToString(args[i]));
+         }
+         return sb.append(")").toString();
+      }
       return formatTraceEntry(method, args);
    }
 
@@ -208,5 +185,4 @@ abstract class LoggerUtils {
          sanitizeStackTraces(ex.getCause());
       }
    }
-
 }
