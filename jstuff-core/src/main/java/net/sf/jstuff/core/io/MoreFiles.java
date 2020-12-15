@@ -15,9 +15,13 @@ import java.net.URLConnection;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
@@ -36,6 +40,7 @@ import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.functional.LongBiConsumer;
 import net.sf.jstuff.core.io.channel.DelegatingWritableByteChannel;
 import net.sf.jstuff.core.logging.Logger;
+import net.sf.jstuff.core.math.NumericalSystem;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -64,7 +69,7 @@ public abstract class MoreFiles {
                try {
                   LOG.debug("Deleting %s...", path);
                   forceDelete(path);
-               } catch (final FileNotFoundException ex) {
+               } catch (final FileNotFoundException | NoSuchFileException ex) {
                   // ignore
                } catch (final IOException ex) {
                   LOG.error("Failed to delete file: " + path, ex);
@@ -162,10 +167,17 @@ public abstract class MoreFiles {
          parentDirectory = getWorkingDirectory();
       }
       while (true) {
-         final String dirName = (prefix == null ? "" : prefix) + _FILE_UNIQUE_ID.getAndIncrement() + (extension == null ? extension : "");
+         final String dirName = (prefix == null ? "" : prefix) //
+            + NumericalSystem.BASE16.encode(_FILE_UNIQUE_ID.getAndIncrement()) //
+            + (extension == null ? extension : "");
          final Path dir = parentDirectory.resolve(dirName);
-         if (!Files.exists(dir, NOFOLLOW_LINKS))
-            return Files.createDirectories(dir);
+         if (!Files.exists(dir, NOFOLLOW_LINKS)) {
+            try {
+               return Files.createDirectories(dir);
+            } catch (final FileAlreadyExistsException ex) {
+               // ignore
+            }
+         }
       }
    }
 
@@ -243,12 +255,17 @@ public abstract class MoreFiles {
       return find(searchRootPath, globPattern, true, false);
    }
 
-   public static void forceDelete(final Path fileOrDirectory) throws IOException {
+   /**
+    * Deletes the given file or directory. Directories are deleted recursively.
+    *
+    * @return true if deleted, false if didn't exist
+    */
+   public static boolean forceDelete(final Path fileOrDirectory) throws IOException {
       if (Files.isDirectory(fileOrDirectory, NOFOLLOW_LINKS)) {
          Files.walkFileTree(fileOrDirectory, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
-               if (exc != null && !(exc instanceof FileNotFoundException))
+               if (exc != null && !(exc instanceof NoSuchFileException) && !(exc instanceof FileNotFoundException))
                   throw exc;
                Files.delete(dir);
                return FileVisitResult.CONTINUE;
@@ -260,8 +277,17 @@ public abstract class MoreFiles {
                return FileVisitResult.CONTINUE;
             }
          });
-      } else {
-         Files.deleteIfExists(fileOrDirectory);
+         return true;
+      }
+      return Files.deleteIfExists(fileOrDirectory);
+   }
+
+   public static boolean forceDeleteQuietly(final Path fileOrDirectory) {
+      try {
+         forceDelete(fileOrDirectory);
+         return true;
+      } catch (final IOException e) {
+         return false;
       }
    }
 
@@ -271,11 +297,26 @@ public abstract class MoreFiles {
       _FILES_TO_DELETE_ON_SHUTDOWN.add(fileOrDirectory);
    }
 
+   public static void forceDeleteNowOrOnExit(final Path fileOrDirectory) {
+      Args.notNull("fileOrDirectory", fileOrDirectory);
+
+      try {
+         forceDelete(fileOrDirectory);
+      } catch (final IOException ex) {
+         LOG.debug(ex, "Registering %s for deletion on JVM shutdown...", fileOrDirectory);
+         _FILES_TO_DELETE_ON_SHUTDOWN.add(fileOrDirectory);
+      }
+   }
+
    /**
     * Based on jre/lib/content-types.properties
     */
    public static String getContentTypeByFileExtension(final Path file) {
       return URLConnection.getFileNameMap().getContentTypeFor(file.getFileName().toString());
+   }
+
+   public static String getContentTypeByFileExtension(final String fileName) {
+      return URLConnection.getFileNameMap().getContentTypeFor(fileName);
    }
 
    public static Size getFreeSpace(final Path path) throws IOException {
@@ -294,12 +335,22 @@ public abstract class MoreFiles {
       return Paths.get("").toAbsolutePath();
    }
 
+   public static String readFileToString(final Path file) throws IOException {
+      return new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
+   }
+
+   public static String readFileToString(final Path file, final Charset charset) throws IOException {
+      return new String(Files.readAllBytes(file), charset);
+   }
+
    public static Path[] toPaths(final String... filePaths) {
       Args.notNull("filePaths", filePaths);
 
       final Path[] result = new Path[filePaths.length];
       for (int i = 0, l = filePaths.length; i < l; i++) {
-         result[i] = Paths.get(filePaths[i]);
+         if (filePaths[i] != null) {
+            result[i] = Paths.get(filePaths[i]);
+         }
       }
       return result;
    }

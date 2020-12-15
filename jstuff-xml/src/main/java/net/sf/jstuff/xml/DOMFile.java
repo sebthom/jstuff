@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXParseException;
 
-import net.sf.jstuff.core.io.FileUtils;
+import net.sf.jstuff.core.io.MoreFiles;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
@@ -88,7 +88,7 @@ public class DOMFile {
       } catch (final XMLException ex) {
          // debug code to analyze "Content is not allowed in prolog."
          if (ex.getCause() instanceof SAXParseException) {
-            LOG.debug("Failed to parse file %s with content:\n%s", ex, xmlFile.getAbsolutePath(), FileUtils.readFileToString(xmlFile));
+            LOG.debug("Failed to parse file %s with content:\n%s", ex, xmlFile.getAbsolutePath(), MoreFiles.readFileToString(xmlFile.toPath()));
          }
          throw ex;
       }

@@ -7,13 +7,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *********************************************************************/
-package net.sf.jstuff.core.io;
+package net.sf.jstuff.core.io.stream;
 
 import java.io.IOException;
 import java.util.Objects;
 
 import junit.framework.TestCase;
-import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>

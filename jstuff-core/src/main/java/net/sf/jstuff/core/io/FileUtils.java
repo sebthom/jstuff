@@ -20,8 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -47,25 +46,16 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class FileUtils extends org.apache.commons.io.FileUtils {
    private static final Logger LOG = Logger.create();
 
-   private static final Queue<File> _FILES_TO_DELETE_ON_SHUTDOWN = new ConcurrentLinkedQueue<>();
+   @Deprecated
    private static final Queue<File> _DIRS_TO_DELETE_ON_SHUTDOWN = new ConcurrentLinkedQueue<>();
+
+   @Deprecated
    private static final AtomicLong _FILE_UNIQUE_ID = new AtomicLong();
 
    static {
       Runtime.getRuntime().addShutdownHook(new java.lang.Thread() {
          @Override
          public void run() {
-            for (final File file : _FILES_TO_DELETE_ON_SHUTDOWN) {
-               try {
-                  LOG.debug("Deleting %s...", file);
-                  forceDelete(file);
-               } catch (final FileNotFoundException ex) {
-                  // ignore
-               } catch (final IOException ex) {
-                  LOG.error("Failed to delete file: " + file, ex);
-               }
-            }
-
             for (final File directory : _DIRS_TO_DELETE_ON_SHUTDOWN) {
                try {
                   LOG.debug("Cleaning %s...", directory);
@@ -116,12 +106,20 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
       return null;
    }
 
+   /**
+    * @deprecated use {@link DirectoryCleaner}
+    */
+   @Deprecated
    public static void cleanDirectory(final File directory, final Date deleteFilesOlderThan, final boolean recursive) {
       Args.notNull("directory", directory);
 
       cleanDirectory(directory, deleteFilesOlderThan, recursive, null);
    }
 
+   /**
+    * @deprecated use {@link DirectoryCleaner}
+    */
+   @Deprecated
    public static void cleanDirectory(final File directory, final Date deleteFilesOlderThan, final boolean recursive, final FilenameFilter filenameFilter) {
       Args.notNull("directory", directory);
       Args.notNull("deleteFilesOlderThan", deleteFilesOlderThan);
@@ -142,12 +140,20 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
       }
    }
 
+   /**
+    * @deprecated use {@link DirectoryCleaner}
+    */
+   @Deprecated
    public static void cleanDirectory(final File directory, final int deleteFilesOlderThanXDays, final boolean recursive) {
       Args.notNull("directory", directory);
 
       cleanDirectory(directory, deleteFilesOlderThanXDays, recursive, null);
    }
 
+   /**
+    * @deprecated use {@link net.sf.jstuff.core.io.DirectoryCleaner.Builder#cleanOnExit(boolean)}
+    */
+   @Deprecated
    public static void cleanDirectory(final File directory, final int deleteFilesOlderThanXDays, final boolean recursive, final FilenameFilter filenameFilter) {
       Args.notNull("directory", directory);
 
@@ -157,15 +163,26 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
       cleanDirectory(directory, c.getTime(), recursive, filenameFilter);
    }
 
+   /**
+    * @deprecated use {@link DirectoryCleaner}
+    */
+   @Deprecated
    public static void cleanDirectoryOnExit(final File directory) {
       _DIRS_TO_DELETE_ON_SHUTDOWN.add(directory);
+   }
+
+   public static boolean contentEquals(final File file1, final File file2) throws IOException {
+      return MoreFiles.contentEquals(file1.toPath(), file2.toPath());
    }
 
    /**
     * Creates a temp directory that will be automatically deleted on JVM exit.
     *
-    * @param parentDirectory if null, then create in system temp directory
+    * @param parentDirectory if null, then create in system temp directoryPath
+    *
+    * @deprecated use {@link MoreFiles#createTempDirectory(java.nio.file.Path, String, String)}
     */
+   @Deprecated
    public static File createTempDirectory(final File parentDirectory, final String prefix, final String extension) {
       final File tmpDir = createUniqueDirectory(parentDirectory == null ? getTempDirectory() : parentDirectory, prefix, extension);
       forceDeleteOnExit(tmpDir);
@@ -174,7 +191,10 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
 
    /**
     * Creates a temp directory that will be automatically deleted on JVM exit.
+    *
+    * @deprecated use {@link MoreFiles#createTempDirectory(String, String)}
     */
+   @Deprecated
    public static File createTempDirectory(final String prefix, final String extension) {
       final File tmpDir = createUniqueDirectory(getTempDirectory(), prefix, extension);
       forceDeleteOnExit(tmpDir);
@@ -183,7 +203,10 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
 
    /**
     * @param parentDirectory if null, then create in current directory
+    *
+    * @deprecated use {@link MoreFiles#createUniqueDirectory(java.nio.file.Path, String, String)}
     */
+   @Deprecated
    public static File createUniqueDirectory(final File parentDirectory, final String prefix, final String extension) {
       while (true) {
          final String name = (prefix == null ? "" : prefix) + _FILE_UNIQUE_ID.getAndIncrement() + (extension == null ? extension : "");
@@ -195,7 +218,9 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
 
    /**
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+    * @deprecated use {@link MoreFiles#find(java.nio.file.Path, String, java.util.function.Consumer, java.util.function.Consumer)}
     */
+   @Deprecated
    public static Collection<File> find(final File searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
       throws IOException {
       return find(searchRootPath == null ? null : searchRootPath.getAbsolutePath(), globPattern, includeFiles, includeDirectories);
@@ -203,7 +228,9 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
 
    /**
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+    * @deprecated use {@link MoreFiles#find(java.nio.file.Path, String, java.util.function.Consumer, java.util.function.Consumer)}
     */
+   @Deprecated
    public static Collection<File> find(final String searchRootPath, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
       throws IOException {
       final Collection<File> result = new ArrayList<>();
@@ -220,7 +247,9 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
 
    /**
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+    * @deprecated use {@link MoreFiles#find(java.nio.file.Path, String, boolean, boolean)}
     */
+   @Deprecated
    @SuppressWarnings("unused")
    public static void find(String searchRootPath, final String globPattern, final EventListener<File> onMatch) throws IOException {
       Args.notNull("globPattern", globPattern);
@@ -268,61 +297,88 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
 
    /**
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+    * @deprecated use {@link MoreFiles#findDirectories(java.nio.file.Path, String)}
     */
+   @Deprecated
    public static Collection<File> findDirectories(final File searchRootPath, final String globPattern) throws IOException {
       return find(searchRootPath, globPattern, false, true);
    }
 
    /**
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+    * @deprecated use {@link MoreFiles#findDirectories(java.nio.file.Path, String)}
     */
+   @Deprecated
    public static Collection<File> findDirectories(final String searchRootPath, final String globPattern) throws IOException {
       return find(searchRootPath, globPattern, false, true);
    }
 
    /**
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+    * @deprecated use {@link MoreFiles#findFiles(java.nio.file.Path, String)}
     */
+   @Deprecated
    public static Collection<File> findFiles(final File searchRootPath, final String globPattern) throws IOException {
       return find(searchRootPath, globPattern, true, false);
    }
 
    /**
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+    * @deprecated use {@link MoreFiles#findFiles(java.nio.file.Path, String)}
     */
+   @Deprecated
    public static Collection<File> findFiles(final String searchRootPath, final String globPattern) throws IOException {
       return find(searchRootPath, globPattern, true, false);
    }
 
+   /**
+    * @deprecated use {@link MoreFiles#forceDeleteOnExit(java.nio.file.Path)}
+    */
+   @Deprecated
    public static void forceDeleteOnExit(final File file) {
       Args.notNull("file", file);
-      LOG.debug("Registering %s for deletion on JVM shutdown...", file);
-      _FILES_TO_DELETE_ON_SHUTDOWN.add(file);
+      MoreFiles.forceDeleteOnExit(file.toPath());
    }
 
    /**
     * Based on jre/lib/content-types.properties
+    *
+    * @deprecated use {@link MoreFiles#getContentTypeByFileExtension(String)}
     */
-   public static String getContentTypeByFileExtension(final String file) {
-      return URLConnection.getFileNameMap().getContentTypeFor(file);
+   @Deprecated
+   public static String getContentTypeByFileExtension(final String fileName) {
+      return URLConnection.getFileNameMap().getContentTypeFor(fileName);
    }
 
+   /**
+    * @deprecated use {@link MoreFiles#getFreeSpace(java.nio.file.Path)}
+    */
+   @Deprecated
    public static long getFreeSpaceInKB(final String path) {
       return new File(path).getFreeSpace() / 1024;
    }
 
+   /**
+    * @deprecated use {@link MoreFiles#getFreeTempSpace()}
+    */
+   @Deprecated
    public static long getFreeTempSpaceInKB() {
       return getTempDirectory().getUsableSpace() / 1024;
    }
 
-   public static Path getWorkingDirectory() {
-      return Paths.get("").toAbsolutePath();
-   }
-
+   /**
+    * @deprecated use {@link MoreFiles#readFileToString(java.nio.file.Path)}
+    */
+   @Deprecated
    public static String readFileToString(final File file) throws IOException {
       return readFileToString(file, Charset.defaultCharset());
    }
 
+   /**
+    *
+    * @deprecated use {@link MoreFiles#readFileToString(java.nio.file.Path, Charset)}
+    */
+   @Deprecated
    public static String readFileToString(final File file, final Charset charset) throws IOException {
       try (InputStream in = openInputStream(file)) {
          return IOUtils.toString(new BufferedInputStream(in), Charsets.toCharset(charset));
@@ -343,22 +399,38 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
       return result;
    }
 
+   /**
+    * @deprecated use {@link Files#copy(InputStream, java.nio.file.Path, java.nio.file.CopyOption...)}
+    */
    @SuppressWarnings("resource")
+   @Deprecated
    public static void write(final File file, final InputStream is) throws IOException {
       try (OutputStream os = new BufferedOutputStream(new FileOutputStream(file))) {
          IOUtils.copy(IOUtils.toBufferedInputStream(is), os);
       }
    }
 
+   /**
+    * @deprecated use {@link Files#copy(InputStream, java.nio.file.Path, java.nio.file.CopyOption...)}
+    */
+   @Deprecated
    public static void write(final String file, final InputStream is) throws IOException {
       write(new File(file), is);
    }
 
+   /**
+    * @deprecated use {@link Files#copy(InputStream, java.nio.file.Path, java.nio.file.CopyOption...)}
+    */
+   @Deprecated
    @SuppressWarnings("resource")
    public static void writeAndClose(final File file, final InputStream is) throws IOException {
       IOUtils.copyAndClose(IOUtils.toBufferedInputStream(is), new BufferedOutputStream(new FileOutputStream(file)));
    }
 
+   /**
+    * @deprecated use {@link Files#copy(InputStream, java.nio.file.Path, java.nio.file.CopyOption...)}
+    */
+   @Deprecated
    public static void writeAndClose(final String file, final InputStream is) throws IOException {
       writeAndClose(new File(file), is);
    }

@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -93,7 +94,7 @@ public class DirectoryCleaner {
                      if (cleaner.getDirectory() != null) {
                         cleaner.cleanDirectory();
                      }
-                  } catch (final FileNotFoundException ex) {
+                  } catch (final NoSuchFileException | FileNotFoundException ex) {
                      // ignore
                   } catch (final Exception ex) {
                      LOG.error("Failed to clean directory: " + cleaner.getDirectory(), ex);

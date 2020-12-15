@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -39,8 +40,8 @@ import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.functional.Accept;
-import net.sf.jstuff.core.io.FileUtils;
 import net.sf.jstuff.core.io.IOUtils;
+import net.sf.jstuff.core.io.MoreFiles;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.ogn.ObjectGraphNavigatorDefaultImpl;
 import net.sf.jstuff.core.validation.Args;
@@ -390,30 +391,30 @@ public abstract class Resources {
                            }
                         }
 
-                        final File tmpDir = FileUtils.createTempDirectory("jstuff-", ".tmp");
+                        final Path tmpDir = MoreFiles.createTempDirectory("jstuff-", ".tmp");
                         try {
                            if (jarEntry.isDirectory()) {
                               // extract the referenced directory
                               for (final JarEntry entry : Enumerations.toIterable(jarFile.entries())) {
                                  if (!entry.isDirectory() && entry.getName().startsWith(jarEntry.getName())) {
-                                    final File tmpFile = new java.io.File(tmpDir, entry.getName());
-                                    tmpFile.getParentFile().mkdirs();
+                                    final Path tmpFile = tmpDir.resolve(entry.getName());
+                                    Files.createDirectories(tmpFile.getParent());
                                     try (InputStream is = jarFile.getInputStream(entry)) {
-                                       FileUtils.write(tmpFile, is);
+                                       Files.copy(is, tmpFile);
                                     }
                                  }
                               }
-                              _scanClassPathEntry(new File(tmpDir, jarEntry.getName()).toURI().toURL(), nameFilter, cl, result);
+                              _scanClassPathEntry(tmpDir.resolve(jarEntry.getName()).toUri().toURL(), nameFilter, cl, result);
                            } else {
                               // extract the referenced file
-                              final File tmpFile = new File(tmpDir, StringUtils.replaceChars(jarEntry.getName(), "/", "_"));
+                              final Path tmpFile = tmpDir.resolve(StringUtils.replaceChars(jarEntry.getName(), "/", "_"));
                               try (InputStream is = jarFile.getInputStream(jarEntry)) {
-                                 FileUtils.write(tmpFile, is);
+                                 Files.copy(is, tmpFile);
                               }
-                              _scanClassPathEntry(tmpFile.toURI().toURL(), nameFilter, cl, result);
+                              _scanClassPathEntry(tmpFile.toUri().toURL(), nameFilter, cl, result);
                            }
                         } finally {
-                           FileUtils.deleteQuietly(tmpDir);
+                           MoreFiles.forceDeleteQuietly(tmpDir);
                         }
                      } finally {
                         jarFile.close();

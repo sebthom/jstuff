@@ -12,7 +12,9 @@ package net.sf.jstuff.core.security.x509;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -50,8 +52,8 @@ import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.io.FileUtils;
 import net.sf.jstuff.core.io.IOUtils;
+import net.sf.jstuff.core.io.MoreFiles;
 import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.security.Base64;
@@ -122,7 +124,7 @@ public abstract class X509Utils {
     */
    public static X509Certificate getCertificate(final File file) throws GeneralSecurityException, IOException {
       Args.notNull("file", file);
-      try (InputStream is = FileUtils.openInputStream(file)) {
+      try (InputStream is = Files.newInputStream(file.toPath(), StandardOpenOption.READ)) {
          return getCertificate(is);
       }
    }
@@ -145,7 +147,7 @@ public abstract class X509Utils {
     */
    public static X509Certificate getCertificateFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
       Args.notNull("pemFile", pemFile);
-      return getCertificateFromPEM(FileUtils.readFileToString(pemFile));
+      return getCertificateFromPEM(MoreFiles.readFileToString(pemFile.toPath()));
    }
 
    /**
@@ -252,7 +254,7 @@ public abstract class X509Utils {
     */
    public static X509CRL getCRLFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
       Args.notNull("pemFile", pemFile);
-      return getCRLFromPEM(FileUtils.readFileToString(pemFile));
+      return getCRLFromPEM(MoreFiles.readFileToString(pemFile.toPath()));
    }
 
    /**
@@ -298,49 +300,45 @@ public abstract class X509Utils {
 
       final List<String> crls = new ArrayList<>();
 
-      try {
-         final String crlExtValue = new String(crlExtValueRaw, "UTF-8");
-         int searchPos = 0;
-         final int[] foundAt = new int[4];
-         final int notFound = -1;
-         while (searchPos + 1 < crlExtValue.length()) {
-            foundAt[0] = crlExtValue.indexOf("http", searchPos);
-            foundAt[1] = crlExtValue.indexOf("ldap", searchPos);
-            foundAt[2] = crlExtValue.indexOf("ftp", searchPos);
-            foundAt[3] = crlExtValue.indexOf("file", searchPos);
-            Arrays.sort(foundAt);
+      final String crlExtValue = new String(crlExtValueRaw, StandardCharsets.UTF_8);
+      int searchPos = 0;
+      final int[] foundAt = new int[4];
+      final int notFound = -1;
+      while (searchPos + 1 < crlExtValue.length()) {
+         foundAt[0] = crlExtValue.indexOf("http", searchPos);
+         foundAt[1] = crlExtValue.indexOf("ldap", searchPos);
+         foundAt[2] = crlExtValue.indexOf("ftp", searchPos);
+         foundAt[3] = crlExtValue.indexOf("file", searchPos);
+         Arrays.sort(foundAt);
 
-            int crlStartPos = notFound;
-            for (final int i : foundAt) {
-               if (i > notFound) {
-                  crlStartPos = i;
-                  break;
-               }
-            }
-            if (crlStartPos == notFound) {
+         int crlStartPos = notFound;
+         for (final int i : foundAt) {
+            if (i > notFound) {
+               crlStartPos = i;
                break;
             }
+         }
+         if (crlStartPos == notFound) {
+            break;
+         }
 
-            final int crlEndPos = crlExtValue.indexOf((char) 65533, crlStartPos);
-            if (crlEndPos == notFound) {
-               final String url = crlExtValue.substring(crlStartPos).trim();
-               if (!crls.contains(url)) {
-                  crls.add(url);
-               }
-               break;
-            }
-
-            final String url = crlExtValue.substring(crlStartPos, crlEndPos - 2).trim();
+         final int crlEndPos = crlExtValue.indexOf((char) 65533, crlStartPos);
+         if (crlEndPos == notFound) {
+            final String url = crlExtValue.substring(crlStartPos).trim();
             if (!crls.contains(url)) {
                crls.add(url);
             }
-            searchPos = crlEndPos + 1;
+            break;
          }
 
-         return crls;
-      } catch (final UnsupportedEncodingException ex) {
-         throw new IllegalStateException(ex);
+         final String url = crlExtValue.substring(crlStartPos, crlEndPos - 2).trim();
+         if (!crls.contains(url)) {
+            crls.add(url);
+         }
+         searchPos = crlEndPos + 1;
       }
+
+      return crls;
    }
 
    public static String getFingerprint(final X509Certificate cert) throws CertificateEncodingException {
@@ -363,17 +361,13 @@ public abstract class X509Utils {
          return null;
 
       final String url;
-      try {
-         final String ocspExtValue = new String(ocspExtValueRaw, "US-ASCII");
-         if (ocspExtValue.contains("http")) {
-            url = "http" + Strings.substringAfter(new String(ocspExtValueRaw, "US-ASCII"), "http").trim();
-         } else if (ocspExtValue.contains("ldap")) {
-            url = "ldap" + Strings.substringAfter(new String(ocspExtValueRaw, "US-ASCII"), "ldap").trim();
-         } else {
-            url = null;
-         }
-      } catch (final UnsupportedEncodingException ex) {
-         throw new IllegalStateException(ex);
+      final String ocspExtValue = new String(ocspExtValueRaw, StandardCharsets.US_ASCII);
+      if (ocspExtValue.contains("http")) {
+         url = "http" + Strings.substringAfter(new String(ocspExtValueRaw, StandardCharsets.US_ASCII), "http").trim();
+      } else if (ocspExtValue.contains("ldap")) {
+         url = "ldap" + Strings.substringAfter(new String(ocspExtValueRaw, StandardCharsets.US_ASCII), "ldap").trim();
+      } else {
+         url = null;
       }
       return url;
    }
@@ -386,7 +380,7 @@ public abstract class X509Utils {
    public static PrivateKey getPrivateKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
       Args.notNull("pemFile", pemFile);
       Args.notNull("algorithm", algorithm);
-      return getPrivateKeyFromPEM(FileUtils.readFileToString(pemFile), algorithm);
+      return getPrivateKeyFromPEM(MoreFiles.readFileToString(pemFile.toPath()), algorithm);
    }
 
    /**
@@ -435,7 +429,7 @@ public abstract class X509Utils {
    public static PublicKey getPublicKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
       Args.notNull("pemFile", pemFile);
       Args.notNull("algorithm", algorithm);
-      return getPublicKeyFromPEM(FileUtils.readFileToString(pemFile), algorithm);
+      return getPublicKeyFromPEM(MoreFiles.readFileToString(pemFile.toPath()), algorithm);
    }
 
    /**
@@ -589,9 +583,7 @@ public abstract class X509Utils {
       try {
          cert.checkValidity();
          return true;
-      } catch (final CertificateExpiredException e) {
-         return false;
-      } catch (final CertificateNotYetValidException e) {
+      } catch (final CertificateExpiredException | CertificateNotYetValidException e) {
          return false;
       }
    }
