@@ -116,6 +116,9 @@ public abstract class MoreFiles {
       copyContent(source, target, (bytesWritten, totalBytesWritten) -> { /* ignore */ });
    }
 
+   /**
+    * @param onBytesWritten LongBiConsumer#accept(long bytesWritten, long totalBytesWritten)
+    */
    public static void copyContent(final Path source, final Path target, final LongBiConsumer onBytesWritten) throws IOException {
       Args.notNull("onBytesWritten", onBytesWritten);
       try ( //

@@ -31,6 +31,9 @@ public class DelegatingWritableByteChannel implements WritableByteChannel {
       this(delegate, null);
    }
 
+   /**
+    * @param onBytesWritten LongBiConsumer#accept(long bytesWritten, long totalBytesWritten)
+    */
    @SuppressWarnings("resource")
    public DelegatingWritableByteChannel(final WritableByteChannel delegate, final LongBiConsumer onBytesWritten) {
       Args.notNull("delegate", delegate);

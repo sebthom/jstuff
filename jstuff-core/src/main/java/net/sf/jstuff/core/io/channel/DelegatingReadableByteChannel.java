@@ -31,6 +31,9 @@ public class DelegatingReadableByteChannel implements ReadableByteChannel {
       this(delegate, null);
    }
 
+   /**
+    * @param onBytesRead LongBiConsumer#accept(long bytesRead, long totalBytesRead)
+    */
    @SuppressWarnings("resource")
    public DelegatingReadableByteChannel(final ReadableByteChannel delegate, final LongBiConsumer onBytesRead) {
       Args.notNull("delegate", delegate);
