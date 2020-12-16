@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 
 import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.logging.jul.Levels;
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
@@ -26,12 +27,12 @@ final class JULLogger implements LoggerInternal {
 
    private static final java.util.logging.Logger LOG = java.util.logging.Logger.getLogger(JULLogger.class.getName());
 
-   private static final int L_TRACE = java.util.logging.Level.FINEST.intValue();
-   private static final int L_DEBUG = java.util.logging.Level.FINE.intValue();
+   private static final int L_TRACE = Levels.FINER_INT;
+   private static final int L_DEBUG = Levels.FINE_INT;
+   private static final int L_INFO = Levels.INFO_INT;
+   private static final int L_WARN = Levels.WARNING_INT;
+   private static final int L_ERROR = Levels.SEVERE_INT;
 
-   private static final int L_INFO = java.util.logging.Level.INFO.intValue();
-   private static final int L_WARN = java.util.logging.Level.WARNING.intValue();
-   private static final int L_ERROR = java.util.logging.Level.SEVERE.intValue();
    private final java.util.logging.Logger logger;
    private final String loggerName;
 

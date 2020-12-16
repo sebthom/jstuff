@@ -21,6 +21,7 @@ import java.util.logging.LogRecord;
 
 import junit.framework.TestCase;
 import net.sf.jstuff.core.concurrent.Threads;
+import net.sf.jstuff.core.logging.jul.Loggers;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -47,7 +48,6 @@ public class LoggingTest extends TestCase {
       void methodB();
    }
 
-   private static final java.util.logging.Logger ROOT_LOGGER = java.util.logging.Logger.getLogger("");
    private static final Logger LOG = Logger.create();
    private static final Formatter ROOT_LOGGER_FORMATTER = new Formatter() {
       private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
@@ -107,7 +107,7 @@ public class LoggingTest extends TestCase {
       assertNotNull(LOG);
       assertEquals(LoggingTest.class.getName(), LOG.getName());
 
-      for (final Handler handler : ROOT_LOGGER.getHandlers()) {
+      for (final Handler handler : Loggers.ROOT_LOGGER.getHandlers()) {
          handler.setLevel(java.util.logging.Level.ALL);
       }
 
@@ -126,7 +126,7 @@ public class LoggingTest extends TestCase {
             count[0]++;
          }
       };
-      ROOT_LOGGER.addHandler(h);
+      Loggers.ROOT_LOGGER.addHandler(h);
       try {
          System.out.println("LOGGER LEVEL = DEFAULT (INFO) ****************");
          assertTrue(LOG.isInfoEnabled());
@@ -154,7 +154,7 @@ public class LoggingTest extends TestCase {
 
          Threads.sleep(50);
          System.out.println("LOGGER LEVEL = SEVERE (INHERTIED) ************");
-         ROOT_LOGGER.setLevel(java.util.logging.Level.SEVERE);
+         Loggers.ROOT_LOGGER.setLevel(java.util.logging.Level.SEVERE);
          assertTrue(LOG.isTraceEnabled());
          java.util.logging.Logger.getLogger(LOG.getName()).setLevel(null);
          assertFalse(LOG.isWarnEnabled());
@@ -163,7 +163,7 @@ public class LoggingTest extends TestCase {
          coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
          assertEquals(3, count[0]);
       } finally {
-         ROOT_LOGGER.removeHandler(h);
+         Loggers.ROOT_LOGGER.removeHandler(h);
       }
    }
 
@@ -174,8 +174,8 @@ public class LoggingTest extends TestCase {
       System.out.println("############################################");
       System.out.println("Resetting loggers...");
       System.out.println("############################################");
-      ROOT_LOGGER.setLevel(java.util.logging.Level.INFO);
-      for (final Handler handler : ROOT_LOGGER.getHandlers()) {
+      Loggers.ROOT_LOGGER.setLevel(java.util.logging.Level.INFO);
+      for (final Handler handler : Loggers.ROOT_LOGGER.getHandlers()) {
          handler.setLevel(java.util.logging.Level.INFO);
          if (handler instanceof ConsoleHandler) {
             ((ConsoleHandler) handler).setFormatter(ROOT_LOGGER_FORMATTER);
@@ -213,7 +213,7 @@ public class LoggingTest extends TestCase {
       LoggerConfig.setCompactExceptionLogging(false);
       LoggerConfig.setDebugMessagePrefixEnabled(true);
 
-      for (final Handler handler : ROOT_LOGGER.getHandlers()) {
+      for (final Handler handler : Loggers.ROOT_LOGGER.getHandlers()) {
          handler.setLevel(java.util.logging.Level.ALL);
       }
       java.util.logging.Logger.getLogger(Entity.class.getName()).setLevel(java.util.logging.Level.FINEST);
@@ -246,7 +246,7 @@ public class LoggingTest extends TestCase {
             }
          }
       };
-      ROOT_LOGGER.addHandler(h);
+      Loggers.ROOT_LOGGER.addHandler(h);
       try {
          final Entity entity = new Entity();
          final InterfaceA wrapped = Logger.createLogged(entity, InterfaceA.class, InterfaceB.class);
@@ -254,7 +254,7 @@ public class LoggingTest extends TestCase {
 
          ((InterfaceB) wrapped).methodB();
       } finally {
-         ROOT_LOGGER.removeHandler(h);
+         Loggers.ROOT_LOGGER.removeHandler(h);
       }
    }
 }

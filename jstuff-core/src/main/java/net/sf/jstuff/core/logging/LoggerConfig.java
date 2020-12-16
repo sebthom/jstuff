@@ -40,7 +40,7 @@ public final class LoggerConfig {
     */
    static boolean isDebugMessagePrefixEnabled = false;
 
-   static boolean isCompactExceptionLoggingEnabled = true;
+   static boolean isCompactExceptionLoggingEnabled = false;
 
    static {
       LinkageError slf4jLinkageError = null;
