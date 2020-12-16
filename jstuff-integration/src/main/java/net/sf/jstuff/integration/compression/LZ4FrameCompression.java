@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.lz4.LZ4FrameInputStream;
 import net.jpountz.lz4.LZ4FrameOutputStream;
@@ -33,8 +34,7 @@ class LZ4FrameCompression extends AbstractCompression {
    public static final LZ4FrameCompression INSTANCE = new LZ4FrameCompression();
 
    private static final LZ4FrameOutputStream.BLOCKSIZE DEFAULT_BLOCK_SIZE = LZ4FrameOutputStream.BLOCKSIZE.SIZE_64KB;
-
-   // TODO private static final LZ4Compressor COMP = LZ4Factory.fastestInstance().fastCompressor(); // requires https://github.com/lz4/lz4-java/pull/113
+   private static final LZ4Compressor COMP = LZ4Factory.fastestInstance().fastCompressor();
    private static final LZ4SafeDecompressor DECOMP = LZ4Factory.fastestInstance().safeDecompressor();
    private static final XXHash32 CHECKSUM = XXHashFactory.fastestInstance().hash32();
 
@@ -83,8 +83,7 @@ class LZ4FrameCompression extends AbstractCompression {
 
    @Override
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
-      return new LZ4FrameOutputStream(output, DEFAULT_BLOCK_SIZE, -1L, /* TODO: COMP, CHECKSUM, */
-         LZ4FrameOutputStream.FLG.Bits.BLOCK_INDEPENDENCE);
+      return new LZ4FrameOutputStream(output, DEFAULT_BLOCK_SIZE, -1L, COMP, CHECKSUM, LZ4FrameOutputStream.FLG.Bits.BLOCK_INDEPENDENCE);
    }
 
    @Override

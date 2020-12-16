@@ -21,6 +21,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLInputFactory;
@@ -43,19 +44,8 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class StAXFactory {
 
-   private final ThreadLocal<XMLOutputFactory> xmlOutputFactory = new ThreadLocal<XMLOutputFactory>() {
-      @Override
-      protected XMLOutputFactory initialValue() {
-         return createXMLOutputFactory();
-      }
-   };
-
-   private final ThreadLocal<XMLInputFactory> xmlInputFactory = new ThreadLocal<XMLInputFactory>() {
-      @Override
-      protected XMLInputFactory initialValue() {
-         return createXMLInputFactory();
-      }
-   };
+   private final ThreadLocal<XMLInputFactory> xmlInputFactory = ThreadLocal.withInitial(this::createXMLInputFactory);
+   private final ThreadLocal<XMLOutputFactory> xmlOutputFactory = ThreadLocal.withInitial(this::createXMLOutputFactory);
 
    @SuppressWarnings("resource")
    public AutoCloseableXMLEventReader createXMLEventReader(final File xmlFile) throws FileNotFoundException, XMLStreamException {
@@ -226,7 +216,11 @@ public class StAXFactory {
    }
 
    protected XMLInputFactory createXMLInputFactory() {
-      return XMLInputFactory.newInstance();
+      final XMLInputFactory factory = XMLInputFactory.newInstance();
+      // https://rules.sonarsource.com/java/RSPEC-2755
+      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+      return factory;
    }
 
    protected XMLOutputFactory createXMLOutputFactory() {

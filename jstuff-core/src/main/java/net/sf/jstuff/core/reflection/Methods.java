@@ -66,7 +66,7 @@ public abstract class Methods extends Members {
       if (!accessor.isAnnotationPresent(FunctionalInterface.class))
          throw new IllegalArgumentException("[accessor] must be an interface annotated with @java.lang.FunctionalInterface!");
 
-      final Method delegatingMethod = Arrays.stream(accessor.getMethods()).filter(m -> isAbstract(m)).findFirst().get();
+      final Method delegatingMethod = Arrays.stream(accessor.getMethods()).filter(Members::isAbstract).findFirst().get();
 
       return createPublicMethodAccessor(accessor, targetClass, methodName, delegatingMethod.getReturnType(), ArrayUtils.remove(delegatingMethod
          .getParameterTypes(), 0));
@@ -89,7 +89,7 @@ public abstract class Methods extends Members {
       }
 
       try {
-         final Method delegatingMethod = Arrays.stream(accessor.getMethods()).filter(m -> isAbstract(m)).findFirst().get();
+         final Method delegatingMethod = Arrays.stream(accessor.getMethods()).filter(Members::isAbstract).findFirst().get();
 
          final MethodHandles.Lookup lookup = MethodHandles.lookup();
          final CallSite site = LambdaMetafactory.metafactory(lookup, //
@@ -585,7 +585,7 @@ public abstract class Methods extends Members {
          return Collections.emptyList();
 
       final Set<Class<?>> interfaces = Types.getInterfacesRecursive(method.getDeclaringClass());
-      if (interfaces.size() == 0)
+      if (interfaces.isEmpty())
          return Collections.emptyList();
 
       final String methodName = method.getName();

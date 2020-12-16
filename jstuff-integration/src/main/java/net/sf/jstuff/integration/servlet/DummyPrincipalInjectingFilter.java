@@ -84,7 +84,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
 
             @Override
             public boolean isUserInRole(final String roleName) {
-               return userRoles != null && userRoles.contains(roleName);
+               return userRoles.contains(roleName);
             }
          };
       }
@@ -155,7 +155,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
             setUsername(uname);
          }
       }
-      if (userRoles.size() == 0) {
+      if (userRoles.isEmpty()) {
          final String userRoles = config.getInitParameter("user-roles");
          if (userRoles != null) {
             setUserRoles(userRoles.split(USER_ROLES_SEPARATOR));
@@ -166,7 +166,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
       if (DEFAULT_USER_NAME != null && user.getName() == null) {
          setUsername(DEFAULT_USER_NAME);
       }
-      if (DEFAULT_USER_ROLES != null && userRoles.size() == 0) {
+      if (DEFAULT_USER_ROLES != null && userRoles.isEmpty()) {
          setUserRoles(DEFAULT_USER_ROLES);
       }
 

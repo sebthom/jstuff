@@ -216,21 +216,11 @@ public abstract class Maps {
    }
 
    public static <K, V> ThreadLocal<HashMap<K, V>> newThreadLocalHashMap() {
-      return new ThreadLocal<HashMap<K, V>>() {
-         @Override
-         public HashMap<K, V> initialValue() {
-            return new HashMap<>();
-         }
-      };
+      return ThreadLocal.withInitial(HashMap::new);
    }
 
    public static <K, V> ThreadLocal<WeakHashMap<K, V>> newThreadLocalWeakHashMap() {
-      return new ThreadLocal<WeakHashMap<K, V>>() {
-         @Override
-         public WeakHashMap<K, V> initialValue() {
-            return new WeakHashMap<>();
-         }
-      };
+      return ThreadLocal.withInitial(WeakHashMap::new);
    }
 
    public static <K, V> TreeMap<K, V> newTreeMap() {

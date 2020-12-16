@@ -32,12 +32,7 @@ import net.sf.jstuff.core.io.IOUtils;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class AtomBlogUtils {
-   private static final ThreadLocal<XMLOutputFactory> XML_OUTPUT_FACTORY = new ThreadLocal<XMLOutputFactory>() {
-      @Override
-      protected XMLOutputFactory initialValue() {
-         return XMLOutputFactory.newInstance();
-      }
-   };
+   private static final ThreadLocal<XMLOutputFactory> XML_OUTPUT_FACTORY = ThreadLocal.withInitial(XMLOutputFactory::newInstance);
 
    /**
     * @param blogEntryEditURL e.g. http://myserver/weblogs/services/atom/me@acme.com/entries/24CG0902859327955BED3587DC5B5A0003E8
@@ -58,14 +53,14 @@ public class AtomBlogUtils {
 
             if (httpStatus < 200 || httpStatus >= 300)
                throw new DeletingAtomBlogEntryFailedException("Deleting blog entry failed: HTTP Status Code " + httpStatus + "\n" + response);
-            return;
+
          } finally {
             // release any connection resources used by the method
             deleteEntry.releaseConnection();
          }
+      } catch (final DeletingAtomBlogEntryFailedException ex) {
+         throw ex;
       } catch (final Exception ex) {
-         if (ex instanceof DeletingAtomBlogEntryFailedException)
-            throw (DeletingAtomBlogEntryFailedException) ex;
          throw new DeletingAtomBlogEntryFailedException("Deleting blog entry failed: " + ex.getMessage(), ex);
       }
    }
@@ -103,9 +98,9 @@ public class AtomBlogUtils {
          } finally {
             getBlogs.releaseConnection();
          }
+      } catch (final ReceivingAtomBlogsFailedException ex) {
+         throw ex;
       } catch (final Exception ex) {
-         if (ex instanceof ReceivingAtomBlogsFailedException)
-            throw (ReceivingAtomBlogsFailedException) ex;
          throw new ReceivingAtomBlogsFailedException("Receiving atom blogs failed with: " + ex.getMessage(), ex);
       }
    }
@@ -135,7 +130,7 @@ public class AtomBlogUtils {
             staxWriter.writeNamespace("app", "http://purl.org/atom/app#");
             {
                staxWriter.writeStartElement("id");
-               staxWriter.writeCharacters("urn:uuid:" + UUID.randomUUID().toString().replaceAll("-", "").toUpperCase());
+               staxWriter.writeCharacters("urn:uuid:" + UUID.randomUUID().toString().replace("-", "").toUpperCase());
                staxWriter.writeEndElement();
             }
             {
@@ -201,9 +196,9 @@ public class AtomBlogUtils {
             // release any connection resources used by the method
             postEntry.releaseConnection();
          }
+      } catch (final PublishingAtomBlogEntryFailedException ex) {
+         throw ex;
       } catch (final Exception ex) {
-         if (ex instanceof PublishingAtomBlogEntryFailedException)
-            throw (PublishingAtomBlogEntryFailedException) ex;
          throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: " + ex.getMessage(), ex);
       }
    }

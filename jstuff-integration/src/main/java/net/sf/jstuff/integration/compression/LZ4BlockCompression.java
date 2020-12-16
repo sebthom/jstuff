@@ -37,14 +37,8 @@ public class LZ4BlockCompression extends AbstractCompression {
 
    private static final LZ4Compressor COMP = LZ4Factory.fastestInstance().fastCompressor();
    private static final LZ4FastDecompressor DECOMP = LZ4Factory.fastestInstance().fastDecompressor();
-   private static final ThreadLocal<Checksum> CHECKSUM = new ThreadLocal<Checksum>() {
-
-      @Override
-      @SuppressWarnings("resource")
-      protected Checksum initialValue() {
-         return XXHashFactory.fastestInstance().newStreamingHash32(0x97_47B_28C).asChecksum();
-      }
-   };
+   private static final ThreadLocal<Checksum> CHECKSUM = ThreadLocal.withInitial(() -> XXHashFactory.fastestInstance().newStreamingHash32(0x97_47B_28C)
+      .asChecksum());
 
    @Override
    @SuppressWarnings("resource")
