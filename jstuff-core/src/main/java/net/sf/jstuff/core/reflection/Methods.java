@@ -677,9 +677,11 @@ public abstract class Methods extends Members {
       return result;
    }
 
+   /**
+    * @param obj may be null for invoking static methods
+    */
    @SuppressWarnings("unchecked")
    public static <T> T invoke(final Object obj, final Method method, final Object... args) throws InvokingMethodFailedException {
-      Args.notNull("obj", obj);
       Args.notNull("method", method);
 
       try {
