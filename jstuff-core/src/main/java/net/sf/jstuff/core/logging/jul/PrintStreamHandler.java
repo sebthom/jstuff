@@ -62,6 +62,11 @@ public class PrintStreamHandler extends Handler {
    }
 
    @Override
+   public boolean isLoggable(final LogRecord record) {
+      return record != null && super.isLoggable(record);
+   }
+
+   @Override
    public synchronized void publish(final LogRecord record) {
       if (isLoggable(record)) {
          try {
