@@ -26,6 +26,15 @@ public class DualPrintStreamHandler extends PrintStreamHandler {
    }
 
    @Override
+   public synchronized void close() throws SecurityException {
+      try {
+         super.close();
+      } finally {
+         stderrHandler.close();
+      }
+   }
+
+   @Override
    public synchronized void flush() {
       super.flush();
       stderrHandler.flush();

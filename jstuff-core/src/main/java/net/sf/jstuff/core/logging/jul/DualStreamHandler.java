@@ -28,15 +28,18 @@ public class DualStreamHandler extends StreamHandler {
    }
 
    @Override
-   public synchronized void flush() {
-      super.flush();
-      stderrHandler.flush();
+   public synchronized void close() throws SecurityException {
+      try {
+         super.close();
+      } finally {
+         stderrHandler.close();
+      }
    }
 
    @Override
-   public synchronized void setEncoding(final String encoding) throws SecurityException, UnsupportedEncodingException {
-      super.setEncoding(encoding);
-      stderrHandler.setEncoding(encoding);
+   public synchronized void flush() {
+      super.flush();
+      stderrHandler.flush();
    }
 
    @Override
@@ -50,5 +53,11 @@ public class DualStreamHandler extends StreamHandler {
             super.publish(record);
          }
       }
+   }
+
+   @Override
+   public synchronized void setEncoding(final String encoding) throws SecurityException, UnsupportedEncodingException {
+      super.setEncoding(encoding);
+      stderrHandler.setEncoding(encoding);
    }
 }
