@@ -12,12 +12,14 @@ package net.sf.jstuff.core.io;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLConnection;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileSystem;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -26,10 +28,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.AclFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.DosFileAttributeView;
+import java.nio.file.attribute.DosFileAttributes;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.UserDefinedFileAttributeView;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -143,6 +155,105 @@ public abstract class MoreFiles {
    }
 
    /**
+    * @experimental
+    *
+    * @see java.nio.file.attribute.AclFileAttributeView
+    * @see java.nio.file.attribute.DosFileAttributes
+    * @see java.nio.file.attribute.FileOwnerAttributeView
+    * @see java.nio.file.attribute.PosixFileAttributes
+    * @see java.nio.file.attribute.UserDefinedFileAttributeView
+    */
+   @SuppressWarnings("resource")
+   public static void copyAttributes(final Path source, final Path target, final boolean copyACL) throws IOException {
+      final FileSystem sourceFS = source.getFileSystem();
+      final FileSystem targetFS = target.getFileSystem();
+
+      final FileSystemProvider sourceFSP = sourceFS.provider();
+      final FileSystemProvider targetFSP = targetFS.provider();
+
+      final Set<String> sourceSupportedAttrs = sourceFS.supportedFileAttributeViews();
+      final Set<String> targetSupportedAttrs = targetFS.supportedFileAttributeViews();
+
+      if (sourceSupportedAttrs.contains("dos") && targetSupportedAttrs.contains("dos")) {
+         final DosFileAttributes sourceDosAttrs = sourceFSP.readAttributes(source, DosFileAttributes.class, NOFOLLOW_LINKS);
+         final DosFileAttributeView targetDosAttrs = targetFSP.getFileAttributeView(target, DosFileAttributeView.class, NOFOLLOW_LINKS);
+         targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
+         targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
+         targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
+         targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
+
+         if (copyACL && sourceSupportedAttrs.contains("acl") && targetSupportedAttrs.contains("acl")) {
+            final AclFileAttributeView sourceAclAttrs = sourceFSP.getFileAttributeView(source, AclFileAttributeView.class, NOFOLLOW_LINKS);
+            final AclFileAttributeView targetAclAttrs = targetFSP.getFileAttributeView(target, AclFileAttributeView.class, NOFOLLOW_LINKS);
+            targetAclAttrs.setAcl(sourceAclAttrs.getAcl());
+            if (SystemUtils.isRunningAsAdmin()) {
+               targetAclAttrs.setOwner(sourceAclAttrs.getOwner());
+            }
+         }
+         copyUserAttrs(source, target);
+         copyTimeAttrs(sourceDosAttrs, targetDosAttrs);
+         return;
+      }
+
+      if (sourceSupportedAttrs.contains("posix") && targetSupportedAttrs.contains("posix")) {
+         final PosixFileAttributes sourcePosixAttrs = sourceFSP.readAttributes(source, PosixFileAttributes.class, NOFOLLOW_LINKS);
+         final PosixFileAttributeView targetPosixAttrs = targetFSP.getFileAttributeView(target, PosixFileAttributeView.class, NOFOLLOW_LINKS);
+         if (copyACL) {
+            targetPosixAttrs.setOwner(sourcePosixAttrs.owner());
+            targetPosixAttrs.setGroup(sourcePosixAttrs.group());
+            targetPosixAttrs.setPermissions(sourcePosixAttrs.permissions());
+         }
+         copyUserAttrs(source, target);
+         copyTimeAttrs(sourcePosixAttrs, targetPosixAttrs);
+         return;
+      }
+
+      if (copyACL && sourceSupportedAttrs.contains("owner") && targetSupportedAttrs.contains("owner")) {
+         Files.setOwner(target, Files.getOwner(source, NOFOLLOW_LINKS));
+      }
+      copyUserAttrs(source, target);
+      copyTimeAttrs( //
+         sourceFSP.readAttributes(source, BasicFileAttributes.class, NOFOLLOW_LINKS), //
+         targetFSP.getFileAttributeView(target, BasicFileAttributeView.class, NOFOLLOW_LINKS) //
+      );
+   }
+
+   private static void copyTimeAttrs(final BasicFileAttributes sourceAttrs, final BasicFileAttributeView targetAttrs) throws IOException {
+      targetAttrs.setTimes(sourceAttrs.lastModifiedTime(), sourceAttrs.lastAccessTime(), sourceAttrs.creationTime());
+   }
+
+   @SuppressWarnings("resource")
+   private static void copyUserAttrs(final Path source, final Path target) throws IOException {
+      final FileSystem sourceFS = source.getFileSystem();
+      final FileSystem targetFS = target.getFileSystem();
+
+      final Set<String> sourceSupportedAttrs = sourceFS.supportedFileAttributeViews();
+      final Set<String> targetSupportedAttrs = targetFS.supportedFileAttributeViews();
+      if (sourceSupportedAttrs.contains("user") && targetSupportedAttrs.contains("user")) {
+         final FileSystemProvider sourceFSP = sourceFS.provider();
+
+         final UserDefinedFileAttributeView sourceUserAttrs = sourceFSP.getFileAttributeView(source, UserDefinedFileAttributeView.class, NOFOLLOW_LINKS);
+         final List<String> entries = sourceUserAttrs.list();
+         if (!entries.isEmpty()) {
+            final FileSystemProvider targetFSP = targetFS.provider();
+            final UserDefinedFileAttributeView targetUserAttrs = targetFSP.getFileAttributeView(target, UserDefinedFileAttributeView.class, NOFOLLOW_LINKS);
+            ByteBuffer buf = null;
+            for (final String entry : entries) {
+               final int entrySize = sourceUserAttrs.size(entry);
+               if (buf == null || entrySize > buf.capacity()) {
+                  buf = ByteBuffer.allocate(entrySize);
+               } else {
+                  buf.clear();
+               }
+               sourceUserAttrs.read(entry, buf);
+               buf.flip();
+               targetUserAttrs.write(entry, buf);
+            }
+         }
+      }
+   }
+
+   /**
     * Creates a temp directory that will be automatically deleted on JVM exit.
     *
     * @param parentDirectory if null, then create in system temp directory
@@ -197,7 +308,6 @@ public abstract class MoreFiles {
       } else {
          find(searchRoot, globPattern, null, result::add);
       }
-
       return result;
    }
 
@@ -336,6 +446,17 @@ public abstract class MoreFiles {
 
    public static Path getWorkingDirectory() {
       return Paths.get("").toAbsolutePath();
+   }
+
+   @SuppressWarnings("resource")
+   public static BasicFileAttributes readAttributes(final Path path) throws IOException {
+      Args.notNull("path", path);
+      final FileSystem fs = path.getFileSystem();
+      if (fs.supportedFileAttributeViews().contains("dos"))
+         return Files.readAttributes(path, DosFileAttributes.class, NOFOLLOW_LINKS);
+      if (fs.supportedFileAttributeViews().contains("posix"))
+         return Files.readAttributes(path, PosixFileAttributes.class, NOFOLLOW_LINKS);
+      return Files.readAttributes(path, BasicFileAttributes.class, NOFOLLOW_LINKS);
    }
 
    public static String readFileToString(final Path file) throws IOException {
