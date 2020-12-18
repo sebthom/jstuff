@@ -63,19 +63,21 @@ public class PrintStreamHandler extends Handler {
 
    @Override
    public synchronized void publish(final LogRecord record) {
-      try {
-         final String msg = getFormatter().format(record);
+      if (isLoggable(record)) {
          try {
-            if (!isHeaderPrinted) {
-               out.print(getFormatter().getHead(this));
-               isHeaderPrinted = true;
+            final String msg = getFormatter().format(record);
+            try {
+               if (!isHeaderPrinted) {
+                  out.print(getFormatter().getHead(this));
+                  isHeaderPrinted = true;
+               }
+               out.print(msg);
+            } catch (final Exception ex) {
+               reportError(null, ex, ErrorManager.WRITE_FAILURE);
             }
-            out.print(msg);
          } catch (final Exception ex) {
-            reportError(null, ex, ErrorManager.WRITE_FAILURE);
+            reportError(null, ex, ErrorManager.FORMAT_FAILURE);
          }
-      } catch (final Exception ex) {
-         reportError(null, ex, ErrorManager.FORMAT_FAILURE);
       }
    }
 

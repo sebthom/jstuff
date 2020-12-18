@@ -41,12 +41,14 @@ public class DualStreamHandler extends StreamHandler {
 
    @Override
    public synchronized void publish(final LogRecord record) {
-      if (record.getLevel().intValue() > Levels.INFO_INT) {
-         super.flush();
-         stderrHandler.publish(record);
-         stderrHandler.flush();
-      } else {
-         super.publish(record);
+      if (isLoggable(record)) {
+         if (record.getLevel().intValue() > Levels.INFO_INT) {
+            super.flush();
+            stderrHandler.publish(record);
+            stderrHandler.flush();
+         } else {
+            super.publish(record);
+         }
       }
    }
 }
