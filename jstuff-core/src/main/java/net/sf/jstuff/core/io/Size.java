@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
@@ -106,11 +107,9 @@ public final class Size implements Serializable, Comparable<Size> {
       if (getClass() != obj.getClass())
          return false;
       final Size other = (Size) obj;
-      if (bytes == null) {
-         if (other.bytes != null)
-            return false;
-      } else if (!bytes.equals(other.bytes))
+      if (!Objects.equals(bytes, other.bytes)) {
          return false;
+      }
       return true;
    }
 

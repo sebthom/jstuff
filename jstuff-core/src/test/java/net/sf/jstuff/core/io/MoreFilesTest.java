@@ -9,22 +9,25 @@
  *********************************************************************/
 package net.sf.jstuff.core.io;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MoreFilesTest extends TestCase {
+public class MoreFilesTest {
 
    private void _testFind(final String rootPath, final String globPattern, final int exceptedFiles, final int exceptedFolders) throws IOException {
-      assertEquals(exceptedFiles, MoreFiles.findFiles(Paths.get(rootPath), globPattern).size());
-      assertEquals(exceptedFolders, MoreFiles.findDirectories(Paths.get(rootPath), globPattern).size());
-      assertEquals(exceptedFiles + exceptedFolders, MoreFiles.find(Paths.get(rootPath), globPattern, true, true).size());
+      assertThat(MoreFiles.findFiles(Paths.get(rootPath), globPattern)).hasSize(exceptedFiles);
+      assertThat(MoreFiles.findDirectories(Paths.get(rootPath), globPattern)).hasSize(exceptedFolders);
+      assertThat(MoreFiles.find(Paths.get(rootPath), globPattern, true, true)).hasSize(exceptedFiles + exceptedFolders);
    }
 
+   @Test
    public void testFind() throws IOException {
       _testFind("", "**/FileUtils.java", 1, 0);
       _testFind(".", "**/FileUtils.java", 1, 0);

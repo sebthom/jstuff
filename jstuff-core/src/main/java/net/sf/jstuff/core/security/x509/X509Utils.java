@@ -172,9 +172,9 @@ public abstract class X509Utils {
       final Matcher m = CERTIFICATE_PATTERN.matcher(pemContent);
       final byte[] certBytes;
       if (m.find()) {
-         certBytes = pemContent.getBytes();
+         certBytes = pemContent.getBytes(StandardCharsets.UTF_8);
       } else {
-         certBytes = ("-----BEGIN CERTIFICATE-----\n" + pemContent + "\n-----END CERTIFICATE-----").getBytes();
+         certBytes = ("-----BEGIN CERTIFICATE-----\n" + pemContent + "\n-----END CERTIFICATE-----").getBytes(StandardCharsets.UTF_8);
       }
       final Certificate cert = CERTIFICATE_FACTORY.generateCertificate(new FastByteArrayInputStream(certBytes));
 
@@ -279,9 +279,9 @@ public abstract class X509Utils {
       final Matcher m = CRL_PATTERN.matcher(pemContent);
       final byte[] certBytes;
       if (m.find()) {
-         certBytes = pemContent.getBytes();
+         certBytes = pemContent.getBytes(StandardCharsets.UTF_8);
       } else {
-         certBytes = ("-----BEGIN X509 CRL-----\n" + pemContent + "\n-----END X509 CRL-----").getBytes();
+         certBytes = ("-----BEGIN X509 CRL-----\n" + pemContent + "\n-----END X509 CRL-----").getBytes(StandardCharsets.UTF_8);
       }
 
       final CRL cert = CERTIFICATE_FACTORY.generateCRL(new FastByteArrayInputStream(certBytes));
@@ -516,7 +516,7 @@ public abstract class X509Utils {
    public static boolean isEqualDN(String dn1, String dn2) {
       if (dn1 == dn2)
          return true;
-      if (dn1 == null && dn2 != null || dn1 != null && dn2 == null)
+      if (dn1 == null ? dn2 != null : dn2 == null)
          return false;
       if (dn1.equalsIgnoreCase(dn2))
          return true;
@@ -583,7 +583,7 @@ public abstract class X509Utils {
       try {
          cert.checkValidity();
          return true;
-      } catch (final CertificateExpiredException | CertificateNotYetValidException e) {
+      } catch (final CertificateExpiredException | CertificateNotYetValidException ex) {
          return false;
       }
    }

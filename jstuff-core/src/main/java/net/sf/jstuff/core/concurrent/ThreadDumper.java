@@ -36,6 +36,7 @@ import net.sf.jstuff.core.builder.BuilderFactory;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.fluent.Fluent;
 import net.sf.jstuff.core.functional.ThrowingConsumer;
+import net.sf.jstuff.core.io.RuntimeIOException;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -230,7 +231,7 @@ public class ThreadDumper {
          dumpThreads((Appendable) out);
       } catch (final IOException ex) {
          // should never happen
-         throw new RuntimeException(ex);
+         throw new RuntimeIOException(ex);
       }
    }
 
@@ -242,7 +243,7 @@ public class ThreadDumper {
          dumpThreads((Appendable) out);
       } catch (final IOException ex) {
          // should never happen
-         throw new RuntimeException(ex);
+         throw new RuntimeIOException(ex);
       }
    }
 

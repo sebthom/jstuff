@@ -9,25 +9,25 @@
  *********************************************************************/
 package net.sf.jstuff.core;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+
+import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class GCTrackerTest extends TestCase {
+public class GCTrackerTest {
    private static final Logger LOG = Logger.create();
 
    private volatile int garbageCollected;
 
+   @Test
    public void testGCTracker() throws InterruptedException {
-      final EventListener<Void> countGC = new EventListener<Void>() {
-         @Override
-         public void onEvent(final Void event) {
-            garbageCollected++;
-         }
-      };
+      final EventListener<Void> countGC = event -> garbageCollected++;
 
       final GCTracker<Void> tracker = new GCTracker<>(100);
       tracker.subscribe(countGC);
@@ -56,11 +56,11 @@ public class GCTrackerTest extends TestCase {
       t1.join();
       t2.join();
       System.gc();
-      Thread.sleep(1000);
+      Threads.sleep(1000);
       System.gc();
-      Thread.sleep(1000);
+      Threads.sleep(1000);
       System.gc();
-      Thread.sleep(1000);
-      assertEquals(2 * objects, garbageCollected);
+      Threads.sleep(1000);
+      assertThat(garbageCollected).isEqualTo(2 * objects);
    }
 }

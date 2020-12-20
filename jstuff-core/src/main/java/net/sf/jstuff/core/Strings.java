@@ -378,7 +378,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    public static boolean endsWith(final CharSequence str, final char ch) {
-      return isEmpty(str) ? false : str.charAt(str.length() - 1) == ch;
+      return isNotEmpty(str) && str.charAt(str.length() - 1) == ch;
    }
 
    public static boolean equals(final String left, final String right) {
@@ -848,7 +848,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    public static boolean startsWith(final CharSequence str, final char ch) {
-      return isEmpty(str) ? false : str.charAt(0) == ch;
+      return isNotEmpty(str) && str.charAt(0) == ch;
    }
 
    public static String stripAnsiEscapeSequences(final String in) {

@@ -9,22 +9,24 @@
  *********************************************************************/
 package net.sf.jstuff.integration.spring;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.junit.Test;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import junit.framework.TestCase;
-
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanInjectorTest extends TestCase {
+public class SpringBeanInjectorTest {
 
    public static class Entity implements InitializingBean, DisposableBean {
       @Autowired
@@ -60,10 +62,11 @@ public class SpringBeanInjectorTest extends TestCase {
       }
    }
 
+   @Test
    public void testSpringBeanInjector() throws Exception {
       try {
          SpringBeanInjector.get(); // must fail, since the spring context is not yet opened
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
          // expected
       }
@@ -74,26 +77,26 @@ public class SpringBeanInjectorTest extends TestCase {
 
       final Entity e = new Entity();
       injector.inject(e);
-      assertNotNull(e.springBean);
-      assertNotNull(e.springBean2);
-      assertFalse(e.postConstructCalled);
-      assertFalse(e.afterPropertiesSetCalled);
+      assertThat(e.springBean).isNotNull();
+      assertThat(e.springBean2).isNotNull();
+      assertThat(e.postConstructCalled).isFalse();
+      assertThat(e.afterPropertiesSetCalled).isFalse();
 
       final Entity e2 = new Entity();
       injector.registerSingleton("myBean", e2);
-      assertNotNull(e2.springBean);
-      assertNotNull(e2.springBean2);
-      assertTrue(e2.postConstructCalled);
-      assertTrue(e2.afterPropertiesSetCalled);
+      assertThat(e2.springBean).isNotNull();
+      assertThat(e2.springBean2).isNotNull();
+      assertThat(e2.postConstructCalled).isTrue();
+      assertThat(e2.afterPropertiesSetCalled).isTrue();
 
       ctx.close();
 
-      assertTrue(e2.preDestroyCalled);
-      assertTrue(e2.destroyCalled);
+      assertThat(e2.preDestroyCalled).isTrue();
+      assertThat(e2.destroyCalled).isTrue();
 
       try {
          SpringBeanInjector.get(); // must fail, since the spring context is closed
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
          // expected
       }

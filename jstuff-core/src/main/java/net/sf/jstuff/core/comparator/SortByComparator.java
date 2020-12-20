@@ -9,6 +9,7 @@
  *********************************************************************/
 package net.sf.jstuff.core.comparator;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import net.sf.jstuff.core.validation.Args;
@@ -16,11 +17,13 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class SortByComparator<T, SortKeyType> implements Comparator<T> {
+public abstract class SortByComparator<T, SortKeyType> implements Comparator<T>, Serializable {
+   private static final long serialVersionUID = 1L;
+
    private SortBy<SortKeyType>[] sortBy;
 
    @SafeVarargs
-   public SortByComparator(final SortBy<SortKeyType>... sortBy) {
+   protected SortByComparator(final SortBy<SortKeyType>... sortBy) {
       setSortBy(sortBy);
    }
 

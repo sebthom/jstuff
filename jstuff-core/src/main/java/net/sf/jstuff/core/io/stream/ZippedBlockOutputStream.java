@@ -44,9 +44,9 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
    /**
     * Number of bytes currently held by the input buffer
     */
-   private int blockSize = 0;
+   private int blockSize;
 
-   private boolean isClosed = false;
+   private boolean isClosed;
 
    /**
     * @param os the underlying output stream to send the data in compressed form to
@@ -84,7 +84,7 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
 
       Args.notNull("os", os);
       Args.min("blockSize", blockSize, 1);
-      Args.inRange("compressionLevel", compressionLevel, 0, 9);
+      Args.inRange("compressionLevel", compressionLevel, Deflater.DEFAULT_COMPRESSION, Deflater.BEST_COMPRESSION);
 
       compressor = new Deflater(compressionLevel);
       isUseDefaultCompressor = true;

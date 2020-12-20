@@ -23,7 +23,7 @@ public abstract class PropertyChangeEvent implements Serializable {
    public final JBean<?> bean;
    public final PropertyDescriptor<?> property;
 
-   public PropertyChangeEvent(final JBean<?> bean, final PropertyDescriptor<?> property) {
+   protected PropertyChangeEvent(final JBean<?> bean, final PropertyDescriptor<?> property) {
       this.bean = bean;
       this.property = property;
    }

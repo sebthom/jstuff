@@ -18,11 +18,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 
+import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.validation.Args;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class StringToMapConverter extends AbstractConverter {
-   private static final String ENTRY_SEPARATOR = ";";
+   private static final char ENTRY_SEPARATOR = ';';
    private static final String VALUE_ASSIGNMENT = "=>";
 
    public StringToMapConverter() {
@@ -35,8 +38,8 @@ public class StringToMapConverter extends AbstractConverter {
    @Override
    @SuppressWarnings("unchecked")
    public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
-      if (source == null)
-         return null;
+      Args.notNull("targetType", targetType);
+
       final String sourceString = (String) source;
       if (StringUtils.isBlank(sourceString))
          return Collections.emptyMap();
@@ -44,14 +47,15 @@ public class StringToMapConverter extends AbstractConverter {
       @SuppressWarnings("rawtypes")
       final Map result = new HashMap();
 
-      for (final String entry : sourceString.split(ENTRY_SEPARATOR)) {
-         final String[] entryArr = entry.split(VALUE_ASSIGNMENT);
+      for (final String entry : Strings.split(sourceString, ENTRY_SEPARATOR)) {
+         final String[] entryArr = Strings.splitByWholeSeparator(entry, VALUE_ASSIGNMENT);
          final String key = entryArr[0].trim();
          final String value = entryArr[1].trim();
 
-         final Object targetKey = conversionService.convert(key, sourceType, targetType.getMapKeyTypeDescriptor(key));
-
-         result.put(targetKey, conversionService.convert(value, sourceType, targetType.getMapValueTypeDescriptor()));
+         result.put( //
+            conversionService.convert(key, sourceType, targetType.getMapKeyTypeDescriptor(key)), //
+            conversionService.convert(value, sourceType, targetType.getMapValueTypeDescriptor()) //
+         );
       }
 
       return result;

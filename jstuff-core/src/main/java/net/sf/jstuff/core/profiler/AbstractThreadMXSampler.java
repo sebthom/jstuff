@@ -35,7 +35,7 @@ public abstract class AbstractThreadMXSampler {
    private ScheduledExecutorService executor;
    private final int samplingInterval;
    private final ThreadMXBean threadMBean;
-   private boolean isWarningLogged = false;
+   private boolean isWarningLogged;
 
    private final Queue<ThreadInfo[]> samples = new ConcurrentLinkedQueue<>();
    private final Callable<Void> aggregator = new Callable<Void>() {
@@ -67,12 +67,12 @@ public abstract class AbstractThreadMXSampler {
       }
    };
 
-   public AbstractThreadMXSampler(final int samplingIntervalInMS) {
+   protected AbstractThreadMXSampler(final int samplingIntervalInMS) {
       samplingInterval = samplingIntervalInMS;
       threadMBean = TMX;
    }
 
-   public AbstractThreadMXSampler(final int samplingIntervalInMS, final ThreadMXBean mbean) {
+   protected AbstractThreadMXSampler(final int samplingIntervalInMS, final ThreadMXBean mbean) {
       samplingInterval = samplingIntervalInMS;
       threadMBean = mbean;
    }

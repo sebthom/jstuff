@@ -32,7 +32,7 @@ public abstract class JPAUtils {
       final StringBuilder out = new StringBuilder();
       int startSearchAt = 0, foundAt = 0;
 
-      for (int i = 1; (foundAt = queryString.indexOf("?", startSearchAt)) >= 0; i++) { // CHECKSTYLE:IGNORE InnerAssignment
+      for (int i = 1; (foundAt = queryString.indexOf('?', startSearchAt)) >= 0; i++) { // CHECKSTYLE:IGNORE InnerAssignment
          final String replaceValue = "?" + i;
          out.append(queryString, startSearchAt, foundAt).append(replaceValue);
          startSearchAt = foundAt + 1;
@@ -40,39 +40,39 @@ public abstract class JPAUtils {
       return out.append(queryString, startSearchAt, queryString.length()).toString();
    }
 
-   public static final void executeTransactional(final EntityManager em, final Runnable code) throws Exception {
+   public static final void executeTransactional(final EntityManager em, final Runnable code) {
       final EntityTransaction tx = em.getTransaction();
       tx.begin();
       try {
          code.run();
          tx.commit();
-      } catch (final Exception ex) {
+      } catch (final RuntimeException ex) {
          tx.rollback();
          throw ex;
       }
    }
 
-   public static final <T> T executeTransactional(final EntityManager em, final Supplier<T> code) throws Exception {
+   public static final <T> T executeTransactional(final EntityManager em, final Supplier<T> code) {
       final EntityTransaction tx = em.getTransaction();
       tx.begin();
       try {
          final T result = code.get();
          tx.commit();
          return result;
-      } catch (final Exception ex) {
+      } catch (final RuntimeException ex) {
          tx.rollback();
          throw ex;
       }
    }
 
-   public static final <T> T mergeTransactional(final EntityManager em, final T entity) throws Exception {
+   public static final <T> T mergeTransactional(final EntityManager em, final T entity) {
       final EntityTransaction tx = em.getTransaction();
       tx.begin();
       try {
          final T result = em.merge(entity);
          tx.commit();
          return result;
-      } catch (final Exception ex) {
+      } catch (final RuntimeException ex) {
          tx.rollback();
          throw ex;
       }

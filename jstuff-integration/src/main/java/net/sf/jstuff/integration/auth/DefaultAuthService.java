@@ -71,7 +71,7 @@ public class DefaultAuthService implements AuthService {
             LOG.trace("%s matches %s", uri, uriPattern);
 
             final Collection<String> roles = entry.getValue();
-            if (roles.size() == 0) {
+            if (roles.isEmpty()) {
                continue;
             }
 

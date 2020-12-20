@@ -9,29 +9,27 @@
  *********************************************************************/
 package net.sf.jstuff.core.event;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AsyncEventDispatcherTest extends TestCase {
+public class AsyncEventDispatcherTest {
 
+   @Test
    public void testAsyncEventDispatcher() throws InterruptedException, ExecutionException {
       final EventDispatcher<String> em = new AsyncEventDispatcher<>();
 
       final AtomicLong listener1Count = new AtomicLong();
-      final EventListener<String> listener1 = new EventListener<String>() {
-         @Override
-         public void onEvent(final String event) {
-            listener1Count.incrementAndGet();
-         }
-      };
+      final EventListener<String> listener1 = event -> listener1Count.incrementAndGet();
 
-      assertTrue(em.subscribe(listener1));
-      assertFalse(em.subscribe(listener1));
+      assertThat(em.subscribe(listener1)).isTrue();
+      assertThat(em.subscribe(listener1)).isFalse();
 
       final AtomicLong listener2Count = new AtomicLong();
       final EventListener<String> listener2 = new FilteringEventListener<String>() {
@@ -46,13 +44,13 @@ public class AsyncEventDispatcherTest extends TestCase {
          }
       };
 
-      assertTrue(em.subscribe(listener2));
-      assertFalse(em.subscribe(listener2));
+      assertThat(em.subscribe(listener2)).isTrue();
+      assertThat(em.subscribe(listener2)).isFalse();
 
-      assertEquals(2, em.fire("123").get().intValue());
-      assertEquals(1, em.fire("1234567890").get().intValue());
+      assertThat(em.fire("123").get()).isEqualTo(2);
+      assertThat(em.fire("1234567890").get()).isEqualTo(1);
       Thread.yield();
-      assertEquals(2, listener1Count.get());
-      assertEquals(1, listener2Count.get());
+      assertThat(listener1Count.get()).isEqualTo(2);
+      assertThat(listener2Count.get()).isEqualTo(1);
    }
 }

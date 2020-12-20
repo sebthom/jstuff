@@ -32,8 +32,8 @@ import net.sf.jstuff.core.logging.Logger;
 public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    private static final Logger LOG = Logger.create();
 
-   private static Boolean isDockerized = null;
-   private static Boolean isRunningAsAdmin = null;
+   private static Boolean isDockerized;
+   private static Boolean isRunningAsAdmin;
 
    /**
     * Determines if the current Java process is running with administrative permissions

@@ -61,6 +61,7 @@ public abstract class AbstractCompression implements Compression {
             compressingOutputStream.flush();
          } catch (final IOException ex) {
             IOUtils.closeQuietly(compressingInputStream);
+            throw ex;
          } finally {
             IOUtils.closeQuietly(uncompressed);
             IOUtils.closeQuietly(compressingOutputStream);
@@ -90,18 +91,19 @@ public abstract class AbstractCompression implements Compression {
    }
 
    @Override
-   @SuppressWarnings("resource")
    public int decompress(final byte[] compressed, final byte[] output) throws IOException {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);
 
-      final FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
-      final InputStream compIS = createDecompressingInputStream(new FastByteArrayInputStream(compressed));
-      IOUtils.copyLarge(compIS, baos);
-      if (baos.size() > output.length)
-         throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
-      baos.writeTo(output);
-      return baos.size();
+      try (FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
+           InputStream compIS = createDecompressingInputStream(new FastByteArrayInputStream(compressed)) //
+      ) {
+         IOUtils.copyLarge(compIS, baos);
+         if (baos.size() > output.length)
+            throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
+         baos.writeTo(output);
+         return baos.size();
+      }
    }
 
    @SuppressWarnings("resource")

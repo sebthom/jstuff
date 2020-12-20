@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.core.concurrent;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
@@ -17,9 +19,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import junit.framework.TestCase;
 import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.localization.NumberHelper;
 import net.sf.jstuff.core.logging.Logger;
@@ -45,7 +47,7 @@ import net.sf.jstuff.core.reflection.StackTrace;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UnsafePublicationTest extends TestCase {
+public class UnsafePublicationTest {
    private abstract static class AbstractConsumingActor implements Runnable {
       protected abstract Subject getSubject();
 
@@ -159,12 +161,13 @@ public class UnsafePublicationTest extends TestCase {
       LOG.info(methodName + "() -> " + new NumberHelper().getWholeNumberFormatted(FAILURES) + " accesses to not fully initialized objects seen");
 
       if (isExpectedToFail) {
-         assertTrue(FAILURES.get() > 0);
+         assertThat(FAILURES.get() > 0).isTrue();
       } else {
-         assertEquals(0, FAILURES.get());
+         assertThat(FAILURES.get()).isZero();
       }
    }
 
+   @Test
    public void test1PublicationWithoutIndirection() throws Exception {
       _testPublication( //
          true, // expected to fail
@@ -182,6 +185,7 @@ public class UnsafePublicationTest extends TestCase {
          });
    }
 
+   @Test
    public void test2PublicationWithBrokenMemoryBarrier() throws Exception {
       _testPublication( //
          true, // expected to fail
@@ -203,6 +207,7 @@ public class UnsafePublicationTest extends TestCase {
          });
    }
 
+   @Test
    public void test3PublicationWithFinalMemoryBarrier() throws Exception {
       _testPublication( //
          false, // not expected to fail
@@ -227,6 +232,7 @@ public class UnsafePublicationTest extends TestCase {
          });
    }
 
+   @Test
    public void test4PublicationWithVolatileMemoryBarrier() throws Exception {
       _testPublication( //
          false, // not expected to fail

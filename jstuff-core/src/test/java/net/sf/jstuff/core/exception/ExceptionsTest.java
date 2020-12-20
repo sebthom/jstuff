@@ -9,15 +9,18 @@
  *********************************************************************/
 package net.sf.jstuff.core.exception;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ExceptionsTest extends TestCase {
+public class ExceptionsTest {
 
    private static final class CustomException extends Exception {
 
@@ -36,36 +39,37 @@ public class ExceptionsTest extends TestCase {
       }
    }
 
+   @Test
    public void testThrowSneakily() {
       final IOException ex = new IOException();
       try {
          Exceptions.throwSneakily(ex);
-         fail();
+         failBecauseExceptionWasNotThrown(IOException.class);
       } catch (final Exception e) {
-         assertEquals(ex, e);
+         assertThat(e).isEqualTo(ex);
       }
 
       try {
          throw Exceptions.throwSneakily(ex);
       } catch (final Exception e) {
-         assertEquals(ex, e);
+         assertThat(e).isEqualTo(ex);
       }
    }
 
+   @Test
    public void testWrapAs() {
       final IOException ex = new IOException(new GeneralSecurityException());
-      assertSame(ex, Exceptions.wrapAs(ex, IOException.class));
-      assertSame(ex, Exceptions.wrapAs(ex, Exception.class));
-      assertSame(ex, Exceptions.wrapAs(ex, Throwable.class));
-      assertNotSame(ex, Exceptions.wrapAs(ex, GeneralSecurityException.class));
+      assertThat(Exceptions.wrapAs(ex, IOException.class)).isSameAs(ex);
+      assertThat(Exceptions.wrapAs(ex, Exception.class)).isSameAs(ex);
+      assertThat(Exceptions.wrapAs(ex, Throwable.class)).isSameAs(ex);
+      assertThat(Exceptions.wrapAs(ex, GeneralSecurityException.class)).isNotSameAs(ex);
 
       final CustomException cex = Exceptions.wrapAs(ex, CustomException.class);
-      assertEquals(ex.getCause(), cex.getCause().getCause());
-      assertNotSame(Exceptions.getStackTrace(ex), Exceptions.getStackTrace(cex));
+      assertThat(cex.getCause().getCause()).isEqualTo(ex.getCause());
+      assertThat(Exceptions.getStackTrace(cex)).isNotSameAs(Exceptions.getStackTrace(ex));
 
       final RuntimeException rex = Exceptions.wrapAsRuntimeException(ex);
-      assertEquals(ex.getCause(), rex.getCause());
-      assertEquals(Exceptions.getStackTrace(ex), Exceptions.getStackTrace(rex));
+      assertThat(rex.getCause()).isEqualTo(ex.getCause());
+      assertThat(Exceptions.getStackTrace(rex)).isEqualTo(Exceptions.getStackTrace(ex));
    }
-
 }

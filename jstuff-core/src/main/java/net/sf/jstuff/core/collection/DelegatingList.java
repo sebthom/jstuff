@@ -22,7 +22,7 @@ public abstract class DelegatingList<V> extends DelegatingCollection<V> implemen
 
    private final List<V> delegate;
 
-   public DelegatingList(final List<V> delegate) {
+   protected DelegatingList(final List<V> delegate) {
       super(delegate);
       this.delegate = delegate;
    }

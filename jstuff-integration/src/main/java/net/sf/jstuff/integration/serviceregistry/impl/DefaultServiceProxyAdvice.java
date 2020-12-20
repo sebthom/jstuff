@@ -107,7 +107,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
          final ServiceListener<SERVICE_INTERFACE>[] listeners;
          listeners_READ.lock();
          try {
-            if (this.listeners.size() == 0)
+            if (this.listeners.isEmpty())
                return;
             listeners = this.listeners.toArray(new ServiceListener[this.listeners.size()]);
          } finally {
@@ -130,7 +130,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
          final ServiceListener<SERVICE_INTERFACE>[] listeners;
          listeners_READ.lock();
          try {
-            if (this.listeners.size() == 0)
+            if (this.listeners.isEmpty())
                return;
             listeners = this.listeners.toArray(new ServiceListener[this.listeners.size()]);
          } finally {

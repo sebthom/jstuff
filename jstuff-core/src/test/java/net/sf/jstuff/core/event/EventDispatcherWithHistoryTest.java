@@ -9,33 +9,31 @@
  *********************************************************************/
 package net.sf.jstuff.core.event;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EventDispatcherWithHistoryTest extends TestCase {
+public class EventDispatcherWithHistoryTest {
 
+   @Test
    public void testEventDispatcherWithHistory() throws InterruptedException, ExecutionException {
       final EventDispatcherWithHistory<String> em = new EventDispatcherWithHistory<>(new SyncEventDispatcher<String>());
 
-      assertEquals(0, em.fire("123").get().intValue());
-      assertEquals(0, em.fire("1234567890").get().intValue());
+      assertThat(em.fire("123").get()).isZero();
+      assertThat(em.fire("1234567890").get()).isZero();
 
       final AtomicLong listener1Count = new AtomicLong();
-      final EventListener<String> listener1 = new EventListener<String>() {
-         @Override
-         public void onEvent(final String event) {
-            listener1Count.incrementAndGet();
-         }
-      };
+      final EventListener<String> listener1 = event -> listener1Count.incrementAndGet();
 
-      assertTrue(em.subscribe(listener1));
-      assertFalse(em.subscribe(listener1));
-      assertEquals(0, listener1Count.get());
+      assertThat(em.subscribe(listener1)).isTrue();
+      assertThat(em.subscribe(listener1)).isFalse();
+      assertThat(listener1Count.get()).isZero();
 
       final AtomicLong listener2Count = new AtomicLong();
       final EventListener<String> listener2 = new FilteringEventListener<String>() {
@@ -50,8 +48,8 @@ public class EventDispatcherWithHistoryTest extends TestCase {
          }
       };
 
-      assertTrue(em.subscribeAndReplayHistory(listener2));
-      assertFalse(em.subscribeAndReplayHistory(listener2));
-      assertEquals(2, listener2Count.get());
+      assertThat(em.subscribeAndReplayHistory(listener2)).isTrue();
+      assertThat(em.subscribeAndReplayHistory(listener2)).isFalse();
+      assertThat(listener2Count.get()).isEqualTo(2);
    }
 }

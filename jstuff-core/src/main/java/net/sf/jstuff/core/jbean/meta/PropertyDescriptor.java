@@ -46,8 +46,7 @@ public final class PropertyDescriptor<P> implements Serializable {
          p.unique = unique;
          p.container = container;
          p.description = description == null ? "" : description;
-         p.properties = Maps.newHashMap(properties);
-         p.propertiesReadOnly = unmodifiableMap(p.properties);
+         p.properties = unmodifiableMap(Maps.newHashMap(properties));
          metaClass.addProperty(p);
          return p;
       }
@@ -65,7 +64,6 @@ public final class PropertyDescriptor<P> implements Serializable {
    private transient boolean unique;
    private transient boolean writable;
    private transient Map<String, ? extends Serializable> properties;
-   private transient Map<String, ? extends Serializable> propertiesReadOnly;
 
    private PropertyDescriptor() {
    }
@@ -88,7 +86,7 @@ public final class PropertyDescriptor<P> implements Serializable {
    }
 
    public Map<String, ? extends Serializable> getProperties() {
-      return propertiesReadOnly;
+      return properties;
    }
 
    public Class<P> getType() {

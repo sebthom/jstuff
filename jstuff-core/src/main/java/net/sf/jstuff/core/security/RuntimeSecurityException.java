@@ -28,7 +28,7 @@ public class RuntimeSecurityException extends DelegatingRuntimeException {
    }
 
    @Override
-   public RuntimeSecurityException fillInStackTrace() {
+   public synchronized RuntimeSecurityException fillInStackTrace() {
       super.fillInStackTrace();
       return this;
    }
@@ -39,7 +39,7 @@ public class RuntimeSecurityException extends DelegatingRuntimeException {
    }
 
    @Override
-   public RuntimeSecurityException initCause(final Throwable cause) {
+   public synchronized RuntimeSecurityException initCause(final Throwable cause) {
       super.initCause(cause);
       return this;
    }

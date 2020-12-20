@@ -21,7 +21,7 @@ public abstract class StackTrace {
       private static final CallerResolver INSTANCE = new CallerResolver();
 
       @Override
-      protected Class<?>[] getClassContext() {
+      public Class<?>[] getClassContext() {
          return super.getClassContext();
       }
    }

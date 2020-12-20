@@ -20,8 +20,7 @@ import java.util.Locale;
 public class StringComparator implements Comparator<String>, Serializable {
    private static final long serialVersionUID = 1L;
 
-   // collator is only serializable starting Java 6
-   private transient Collator collator;
+   private Collator collator;
    private final Locale locale;
 
    public StringComparator() {
@@ -32,18 +31,18 @@ public class StringComparator implements Comparator<String>, Serializable {
       this.locale = locale;
    }
 
-   private Collator _getCollator() {
-      if (collator == null) {
-         collator = Collator.getInstance(locale);
-      }
-      return collator;
-   }
-
    @Override
    public int compare(final String o1, final String o2) {
       if (o1 == o2)
          return 0;
-      return _getCollator().compare(o1, o2);
+      return getCollator().compare(o1, o2);
+   }
+
+   private Collator getCollator() {
+      if (collator == null) {
+         collator = Collator.getInstance(locale);
+      }
+      return collator;
    }
 
    public Locale getLocale() {

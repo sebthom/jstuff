@@ -48,16 +48,16 @@ import net.sf.jstuff.core.validation.Assert;
 public final class SpringBeanInjector {
    private static final Logger LOG = Logger.create();
 
-   private static SpringBeanInjector _INSTANCE;
+   private static SpringBeanInjector instance;
 
    /**
     * @return the default instance (the last instantiated one by any spring context)
     */
    public static SpringBeanInjector get() {
-      Assert.notNull(_INSTANCE, "No SpringBeanInjector instance created yet. Add <bean class=\"" + SpringBeanInjector.class.getName()
+      Assert.notNull(instance, "No SpringBeanInjector instance created yet. Add <bean class=\"" + SpringBeanInjector.class.getName()
          + "\" /> to your spring configuration!");
 
-      return _INSTANCE;
+      return instance;
    }
 
    private final ObjectCache<String, Object> registeredSingletons = new ObjectCache<>(true);
@@ -69,11 +69,11 @@ public final class SpringBeanInjector {
    private List<DestructionAwareBeanPostProcessor> destructors;
 
    private SpringBeanInjector() {
-      Assert.isNull(_INSTANCE, "A instance of " + getClass().getName() + " already exists.");
+      Assert.isNull(instance, "A instance of " + getClass().getName() + " already exists.");
 
       LOG.infoNew(this);
 
-      _INSTANCE = this;
+      instance = this;
    }
 
    /**
@@ -119,7 +119,7 @@ public final class SpringBeanInjector {
             LOG.error(ex);
          }
       }
-      _INSTANCE = null;
+      instance = null;
    }
 
    /**

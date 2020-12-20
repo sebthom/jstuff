@@ -28,7 +28,7 @@ public class FileModificationMonitor extends Observable {
 
    private final File file;
    private long pollingInterval = 1000;
-   private boolean isMonitoring = false;
+   private boolean isMonitoring;
 
    private long lastModified;
    private final Timer timer = new Timer();

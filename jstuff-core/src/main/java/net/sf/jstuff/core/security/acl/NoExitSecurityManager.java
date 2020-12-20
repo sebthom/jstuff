@@ -48,26 +48,23 @@ public class NoExitSecurityManager extends DelegatingSecurityManagerWithThreadLo
 
    @Override
    public void checkExit(final int status) {
-      if (isEnabledForThread.get())
+      if (isEnabledForCurrentThread())
          throw new ExitNotAllowedException(status);
       super.checkExit(status);
    }
 
    @Override
    public void checkPermission(final Permission perm) {
-      if (isEnabledForThread.get()) {
-         if (perm instanceof RuntimePermission && "exitVM".equals(perm.getName()))
-            throw new ExitNotAllowedException();
-      }
+      if (isEnabledForCurrentThread() && perm instanceof RuntimePermission && "exitVM".equals(perm.getName()))
+         throw new ExitNotAllowedException();
       super.checkPermission(perm);
+
    }
 
    @Override
    public void checkPermission(final Permission perm, final Object context) {
-      if (isEnabledForThread.get()) {
-         if (perm instanceof RuntimePermission && "exitVM".equals(perm.getName()))
-            throw new ExitNotAllowedException();
-      }
+      if (isEnabledForCurrentThread() && perm instanceof RuntimePermission && "exitVM".equals(perm.getName()))
+         throw new ExitNotAllowedException();
       super.checkPermission(perm, context);
    }
 }

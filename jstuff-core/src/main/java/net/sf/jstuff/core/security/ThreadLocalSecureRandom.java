@@ -165,13 +165,12 @@ public class ThreadLocalSecureRandom extends SecureRandom {
 
    private long reseedMS = -1;
 
-   private String algorithm = null;
-   private Object algorithmProvider = null;
-   private boolean useStrongInstances = false;
-   private boolean isInitialized = false;
+   private String algorithm;
+   private Object algorithmProvider;
+   private boolean useStrongInstances;
+   private final boolean isInitialized;
 
    protected ThreadLocalSecureRandom() {
-      super(); // CHECKSTYLE:IGNORE .*
       isInitialized = true;
    }
 
@@ -286,7 +285,7 @@ public class ThreadLocalSecureRandom extends SecureRandom {
    }
 
    @SuppressWarnings("unused")
-   private void readObject(final java.io.ObjectInputStream ois) throws java.io.IOException, ClassNotFoundException {
+   private void readObject(final java.io.ObjectInputStream ois) throws IOException, ClassNotFoundException {
       throw new UnsupportedOperationException();
    }
 

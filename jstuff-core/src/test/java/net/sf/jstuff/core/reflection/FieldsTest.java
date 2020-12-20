@@ -9,12 +9,14 @@
  *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FieldsTest extends TestCase {
+public class FieldsTest {
 
    static class Entity {
       final String name;
@@ -24,11 +26,12 @@ public class FieldsTest extends TestCase {
       }
    }
 
+   @Test
    public void testWriteIgnoringFinal() {
       final Entity e = new Entity("foo");
-      assertEquals("foo", e.name);
+      assertThat(e.name).isEqualTo("foo");
 
       Fields.writeIgnoringFinal(e, "name", "bar");
-      assertEquals("bar", e.name);
+      assertThat(e.name).isEqualTo("bar");
    }
 }

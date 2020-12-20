@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.validation.Args;
@@ -106,7 +107,11 @@ public class FastByteArrayOutputStream extends OutputStream {
 
    @Override
    public String toString() {
-      return new String(data, 0, count);
+      return new String(data, 0, count, Charset.defaultCharset());
+   }
+
+   public String toString(final Charset charset) {
+      return new String(data, 0, count, charset);
    }
 
    public String toString(final String charsetName) throws UnsupportedEncodingException {

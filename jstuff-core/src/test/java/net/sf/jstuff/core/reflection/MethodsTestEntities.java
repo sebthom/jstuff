@@ -12,7 +12,7 @@ package net.sf.jstuff.core.reflection;
 /**
  * Test classes are placed in a separate place because of
  * https://stackoverflow.com/questions/34763339/methodhandle-private-method-called-using-findvirtual
- * 
+ *
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class MethodsTestEntities {

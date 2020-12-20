@@ -27,7 +27,7 @@ public enum Trilean {
    public static Trilean of(final Boolean value) {
       if (value == null)
          return UNKNOWN;
-      return value.booleanValue() ? TRUE : FALSE;
+      return value ? TRUE : FALSE;
    }
 
    public static Trilean of(final String value) {

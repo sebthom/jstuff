@@ -9,42 +9,47 @@
  *********************************************************************/
 package net.sf.jstuff.core.collection;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeListTest extends TestCase {
+public class CompositeListTest {
 
+   @Test
    public void testCompositeList() {
       final List<String> l1 = Arrays.asList("a", "b");
       final List<String> l2 = Arrays.asList("c", "d");
 
       final List<String> cl = new CompositeList<>(l1, l2);
-      assertEquals(4, cl.size());
-      assertEquals("a", cl.get(0));
-      assertEquals("b", cl.get(1));
-      assertEquals("c", cl.get(2));
-      assertEquals("d", cl.get(3));
+      assertThat(cl).hasSize(4);
+      assertThat(cl.get(0)).isEqualTo("a");
+      assertThat(cl.get(1)).isEqualTo("b");
+      assertThat(cl.get(2)).isEqualTo("c");
+      assertThat(cl.get(3)).isEqualTo("d");
       try {
          cl.get(10);
+         failBecauseExceptionWasNotThrown(IndexOutOfBoundsException.class);
       } catch (final IndexOutOfBoundsException ex) {
-         assertEquals("Index: 10, Size: 4", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("Index: 10, Size: 4");
       }
 
       try {
          cl.add("foo");
-         fail();
+         failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
       } catch (final UnsupportedOperationException ex) {
          // expected
       }
 
       try {
          cl.remove(2);
-         fail();
+         failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
       } catch (final UnsupportedOperationException ex) {
          // expected
       }

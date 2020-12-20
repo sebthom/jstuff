@@ -10,11 +10,13 @@
 package net.sf.jstuff.xml;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -174,21 +176,18 @@ public abstract class DOMUtils {
       }
    };
 
-   protected static final ThreadLocal<TransformerFactory> TRANSFORMER_FACTORY = new ThreadLocal<TransformerFactory>() {
-      @Override
-      protected TransformerFactory initialValue() {
-         return TransformerFactory.newInstance();
-      }
-   };
+   protected static final ThreadLocal<TransformerFactory> TRANSFORMER_FACTORY = ThreadLocal.withInitial(() -> {
+      final TransformerFactory factory = TransformerFactory.newInstance();
+      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+      return factory;
+   });
 
-   protected static final ThreadLocal<XPath> XPATH = new ThreadLocal<XPath>() {
-      @Override
-      protected XPath initialValue() {
-         final XPath xpath = XPathFactory.newInstance().newXPath();
-         xpath.setNamespaceContext(NAMESPACE_CONTEXT);
-         return xpath;
-      }
-   };
+   protected static final ThreadLocal<XPath> XPATH = ThreadLocal.withInitial(() -> {
+      final XPath xpath = XPathFactory.newInstance().newXPath();
+      xpath.setNamespaceContext(NAMESPACE_CONTEXT);
+      return xpath;
+   });
 
    private static List<Attr> _getIdAttributes(final Element elem, final XPathNodeConfiguration cfg) {
       final NamedNodeMap nodeMap = elem.getAttributes();
@@ -201,13 +200,13 @@ public abstract class DOMUtils {
             }
          }
       }
-      if (result.size() == 0 && cfg.idAttributesByXMLTagName.size() > 0) {
+      if (result.isEmpty() && cfg.idAttributesByXMLTagName.size() > 0) {
          for (final String idAttrName : cfg.getIdAttributesForXMLTagName(elem.getTagName()))
             if (elem.hasAttribute(idAttrName)) {
                result.add(elem.getAttributeNode(idAttrName));
                break;
             }
-         if (result.size() == 0) {
+         if (result.isEmpty()) {
             for (final String idAttrName : cfg.getIdAttributesForXMLTagName("*"))
                if (elem.hasAttribute(idAttrName)) {
                   result.add(elem.getAttributeNode(idAttrName));
@@ -284,16 +283,13 @@ public abstract class DOMUtils {
     * @return a thread-safe xpath expression object
     */
    public static XPathExpression compileXPath(final String xPathExpression) {
-      return Types.createThreadLocalized(XPathExpression.class, new ThreadLocal<XPathExpression>() {
-         @Override
-         protected XPathExpression initialValue() {
-            try {
-               return XPATH.get().compile(xPathExpression);
-            } catch (final XPathExpressionException ex) {
-               throw new XMLException(ex);
-            }
+      return Types.createThreadLocalized(XPathExpression.class, ThreadLocal.withInitial(() -> {
+         try {
+            return XPATH.get().compile(xPathExpression);
+         } catch (final XPathExpressionException ex) {
+            throw new XMLException(ex);
          }
-      });
+      }));
    }
 
    public static Comment createCommentBefore(final Node sibling, final String commentString) {
@@ -670,7 +666,8 @@ public abstract class DOMUtils {
          // IBM JDK: org.apache.xerces.jaxp.DocumentBuilderFactoryImpl
          // Sun JDK: com.sun.org.apache.xerces.jaxp.DocumentBuilderFactoryImpl
          final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-
+         domFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+         domFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
          domFactory.setCoalescing(true);
          domFactory.setIgnoringComments(false);
          domFactory.setXIncludeAware(true); // domFactory.setFeature("http://apache.org/xml/features/xinclude", true);
@@ -743,14 +740,10 @@ public abstract class DOMUtils {
             domDocument = domBuilder.parse(new InputSource(new StringReader(newXML)));
          }
 
-         Assert.isTrue(errorHandler.violations.size() == 0, errorHandler.violations.size() + " XML schema violation(s) detected in [" + inputId + "]:\n\n => "
+         Assert.isTrue(errorHandler.violations.isEmpty(), errorHandler.violations.size() + " XML schema violation(s) detected in [" + inputId + "]:\n\n => "
             + Strings.join(errorHandler.violations, "\n => "));
          return domDocument;
-      } catch (final ParserConfigurationException ex) {
-         throw new XMLException(ex);
-      } catch (final SAXException ex) {
-         throw new XMLException(ex);
-      } catch (final IOException ex) {
+      } catch (final ParserConfigurationException | SAXException | IOException ex) {
          throw new XMLException(ex);
       }
    }
@@ -843,10 +836,10 @@ public abstract class DOMUtils {
          transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
          transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 
-         final FileWriter fw = new FileWriter(targetFile);
-         transformer.transform(new DOMSource(root), new StreamResult(fw));
-         fw.flush();
-         fw.close();
+         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8)) {
+            transformer.transform(new DOMSource(root), new StreamResult(writer));
+            writer.flush();
+         }
       } catch (final TransformerException ex) {
          throw new XMLException(ex);
       }
@@ -901,33 +894,30 @@ public abstract class DOMUtils {
          children.add(node);
       }
 
-      Collections.sort(children, new Comparator<Node>() {
-         @Override
-         public int compare(final Node n1, final Node n2) {
-            final NamedNodeMap m1 = n1.getAttributes();
-            final NamedNodeMap m2 = n2.getAttributes();
-            for (final String attrName : attributeNames) {
-               final Attr a1 = (Attr) m1.getNamedItem(attrName);
-               final Attr a2 = (Attr) m2.getNamedItem(attrName);
-               final String v1 = a1 == null ? null : a1.getValue();
-               final String v2 = a2 == null ? null : a2.getValue();
-               final int rc;
-               // perform numeric sort if both values are integers
-               if (StringUtils.isNumeric(v1) && StringUtils.isNumeric(v2)) {
-                  final int i1 = Integer.parseInt(v1, 10);
-                  final int i2 = Integer.parseInt(v2, 10);
-                  rc = i1 < i2 ? -1 : i1 == i2 ? 0 : 1;
-               } else {
-                  rc = ObjectUtils.compare(v1, v2, false);
-               }
-
-               if (rc == 0) {
-                  continue;
-               }
-               return ascending ? rc : -1 * rc;
+      Collections.sort(children, (n1, n2) -> {
+         final NamedNodeMap m1 = n1.getAttributes();
+         final NamedNodeMap m2 = n2.getAttributes();
+         for (final String attrName : attributeNames) {
+            final Attr a1 = (Attr) m1.getNamedItem(attrName);
+            final Attr a2 = (Attr) m2.getNamedItem(attrName);
+            final String v1 = a1 == null ? null : a1.getValue();
+            final String v2 = a2 == null ? null : a2.getValue();
+            final int rc;
+            // perform numeric sort if both values are integers
+            if (StringUtils.isNumeric(v1) && StringUtils.isNumeric(v2)) {
+               final int i1 = Integer.parseInt(v1, 10);
+               final int i2 = Integer.parseInt(v2, 10);
+               rc = i1 < i2 ? -1 : i1 == i2 ? 0 : 1;
+            } else {
+               rc = ObjectUtils.compare(v1, v2, false);
             }
-            return 0;
+
+            if (rc == 0) {
+               continue;
+            }
+            return ascending ? rc : -1 * rc;
          }
+         return 0;
       });
 
       for (final Node n : children) {
@@ -981,8 +971,8 @@ public abstract class DOMUtils {
 
             // because of a bug in Xalan omitting new line characters after the <?xml...> declaration header, we output the header own our own
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".getBytes());
-            out.write(Strings.NEW_LINE.getBytes());
+            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".getBytes(StandardCharsets.UTF_8));
+            out.write(Strings.NEW_LINE.getBytes(StandardCharsets.UTF_8));
          } else {
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
          }

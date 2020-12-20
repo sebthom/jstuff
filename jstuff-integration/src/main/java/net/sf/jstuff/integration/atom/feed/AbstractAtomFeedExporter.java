@@ -42,7 +42,7 @@ public abstract class AbstractAtomFeedExporter extends RemotingSupport implement
    private final String feedTitle = "Recent entries";
    private final String feedSubTitle = "";
 
-   public AbstractAtomFeedExporter() {
+   protected AbstractAtomFeedExporter() {
       xstream.registerConverter(new AtomTextConverter());
       xstream.processAnnotations(AtomFeed.class);
       xstream.processAnnotations(AtomLink.class);

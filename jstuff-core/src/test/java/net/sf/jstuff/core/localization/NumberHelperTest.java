@@ -9,30 +9,34 @@
  *********************************************************************/
 package net.sf.jstuff.core.localization;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NumberHelperTest extends TestCase {
+public class NumberHelperTest {
+
+   @Test
    public void testIsValidCurrency() {
       final NumberHelper numberHelper = new NumberHelper(Locale.GERMANY);
 
-      assertTrue(numberHelper.isValidCurrency("10,00 €"));
-      assertTrue(numberHelper.isValidCurrency("1000 €"));
-      assertTrue(numberHelper.isValidCurrency("1000,00 €"));
-      assertTrue(numberHelper.isValidCurrency("1.000,00 €"));
-      assertTrue(numberHelper.isValidCurrency("1000.00 €"));
+      assertThat(numberHelper.isValidCurrency("10,00 €")).isTrue();
+      assertThat(numberHelper.isValidCurrency("1000 €")).isTrue();
+      assertThat(numberHelper.isValidCurrency("1000,00 €")).isTrue();
+      assertThat(numberHelper.isValidCurrency("1.000,00 €")).isTrue();
+      assertThat(numberHelper.isValidCurrency("1000.00 €")).isTrue();
 
-      assertFalse(numberHelper.isValidCurrency("10,00"));
-      assertFalse(numberHelper.isValidCurrency("1000"));
-      assertFalse(numberHelper.isValidCurrency("1000,00"));
-      assertFalse(numberHelper.isValidCurrency("1.000,00"));
-      assertFalse(numberHelper.isValidCurrency("1000.00"));
+      assertThat(numberHelper.isValidCurrency("10,00")).isFalse();
+      assertThat(numberHelper.isValidCurrency("1000")).isFalse();
+      assertThat(numberHelper.isValidCurrency("1000,00")).isFalse();
+      assertThat(numberHelper.isValidCurrency("1.000,00")).isFalse();
+      assertThat(numberHelper.isValidCurrency("1000.00")).isFalse();
 
-      assertFalse(numberHelper.isValidCurrency("10,00.00 €"));
-      assertFalse(numberHelper.isValidCurrency(" €"));
+      assertThat(numberHelper.isValidCurrency("10,00.00 €")).isFalse();
+      assertThat(numberHelper.isValidCurrency(" €")).isFalse();
    }
 }

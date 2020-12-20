@@ -23,11 +23,11 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
 
    private final Map<K, V> map;
 
-   public MapWith() {
+   protected MapWith() {
       map = createBackingMap(16);
    }
 
-   public MapWith(final int initialCapacity) {
+   protected MapWith(final int initialCapacity) {
       map = createBackingMap(initialCapacity);
    }
 
@@ -57,7 +57,7 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
    }
 
    @Override
-   public Set<java.util.Map.Entry<K, V>> entrySet() {
+   public Set<Map.Entry<K, V>> entrySet() {
       return map.entrySet();
    }
 

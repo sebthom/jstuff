@@ -22,10 +22,10 @@ public class ConcurrentHashSet<E> extends MapBackedSet<E> {
    private static final long serialVersionUID = 1L;
 
    public ConcurrentHashSet() {
-      super(new ConcurrentHashMap<E, Boolean>());
+      super(new ConcurrentHashMap<>());
    }
 
    public ConcurrentHashSet(final int initialCapacity) {
-      super(new ConcurrentHashMap<E, Boolean>(initialCapacity));
+      super(new ConcurrentHashMap<>(initialCapacity));
    }
 }

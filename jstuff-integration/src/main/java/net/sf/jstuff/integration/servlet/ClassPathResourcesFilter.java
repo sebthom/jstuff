@@ -84,8 +84,6 @@ public class ClassPathResourcesFilter implements Filter {
       }
 
       final HttpServletRequest req = (HttpServletRequest) request;
-      final HttpServletResponse resp = (HttpServletResponse) response;
-
       String resourcePath = req.getServletPath();
       if (resourcePath == null) {
          resourcePath = req.getPathInfo();
@@ -119,6 +117,7 @@ public class ClassPathResourcesFilter implements Filter {
       final long now = System.currentTimeMillis();
       final long expires = now + maxAgeInSeconds * 1000;
 
+      final HttpServletResponse resp = (HttpServletResponse) response;
       if (ifModifiedSince > 0 && ifModifiedSince <= lastModified) {
          resp.setDateHeader("Expires", expires);
          resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);

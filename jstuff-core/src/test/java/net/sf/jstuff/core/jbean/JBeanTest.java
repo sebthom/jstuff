@@ -9,9 +9,12 @@
  *********************************************************************/
 package net.sf.jstuff.core.jbean;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Objects;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.jbean.changelog.PropertyChangelog;
 import net.sf.jstuff.core.jbean.changelog.UndoMarker;
@@ -22,7 +25,8 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TestJBean extends TestCase {
+public class JBeanTest {
+
    private static final class MyEntity extends AbstractJBean {
       private static final long serialVersionUID = 1L;
 
@@ -77,28 +81,29 @@ public class TestJBean extends TestCase {
       }
    }
 
+   @Test
    public void testJBean() {
       final PropertyChangelog changeLog = new PropertyChangelog();
 
       final MyEntity entity = new MyEntity();
       entity._subscribe(changeLog);
 
-      assertFalse(changeLog.isDirty(entity));
+      assertThat(changeLog.isDirty(entity)).isFalse();
 
       entity.setComment("STEP1");
 
-      assertTrue(changeLog.isDirty(entity));
+      assertThat(changeLog.isDirty(entity)).isTrue();
 
       final UndoMarker marker = changeLog.undoMarker();
 
       entity.setComment("STEP2");
-      assertEquals("STEP2", entity.getComment());
+      assertThat(entity.getComment()).isEqualTo("STEP2");
 
       changeLog.undo(marker);
-      assertEquals("STEP1", entity.getComment());
-      assertTrue(changeLog.isDirty(entity));
+      assertThat(entity.getComment()).isEqualTo("STEP1");
+      assertThat(changeLog.isDirty(entity)).isTrue();
 
       changeLog.undo();
-      assertFalse(changeLog.isDirty(entity));
+      assertThat(changeLog.isDirty(entity)).isFalse();
    }
 }

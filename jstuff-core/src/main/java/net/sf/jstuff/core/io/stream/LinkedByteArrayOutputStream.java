@@ -12,6 +12,7 @@ package net.sf.jstuff.core.io.stream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 
 import net.sf.jstuff.core.validation.Args;
@@ -95,7 +96,11 @@ public class LinkedByteArrayOutputStream extends OutputStream {
 
    @Override
    public String toString() {
-      return new String(toByteArray());
+      return new String(toByteArray(), Charset.defaultCharset());
+   }
+
+   public String toString(final Charset charset) {
+      return new String(toByteArray(), charset);
    }
 
    public String toString(final String charsetName) throws UnsupportedEncodingException {

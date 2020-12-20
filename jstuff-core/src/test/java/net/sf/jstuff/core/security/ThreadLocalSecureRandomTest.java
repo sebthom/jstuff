@@ -9,20 +9,24 @@
  *********************************************************************/
 package net.sf.jstuff.core.security;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.Duration;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ThreadLocalSecureRandomTest extends TestCase {
+public class ThreadLocalSecureRandomTest {
 
+   @Test
    public void testThreadLocalSecureRandom() {
       final ThreadLocalSecureRandom rand = ThreadLocalSecureRandom.builder() //
          .reseedEvery(Duration.ofMinutes(30)) //
          .useStrongInstances(true) //
          .build();
+      assertThat(rand).isNotNull();
 
       rand.nextBoolean();
    }

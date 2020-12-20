@@ -22,7 +22,7 @@ public class RuntimeInterruptedException extends DelegatingRuntimeException {
    }
 
    @Override
-   public RuntimeInterruptedException fillInStackTrace() {
+   public synchronized RuntimeInterruptedException fillInStackTrace() {
       super.fillInStackTrace();
       return this;
    }
@@ -33,7 +33,7 @@ public class RuntimeInterruptedException extends DelegatingRuntimeException {
    }
 
    @Override
-   public RuntimeInterruptedException initCause(final Throwable cause) {
+   public synchronized RuntimeInterruptedException initCause(final Throwable cause) {
       super.initCause(cause);
       return this;
    }

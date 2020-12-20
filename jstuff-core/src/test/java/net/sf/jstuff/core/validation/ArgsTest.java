@@ -9,76 +9,82 @@
  *********************************************************************/
 package net.sf.jstuff.core.validation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ArgsTest extends TestCase {
+public class ArgsTest {
 
+   @Test
    public void testArgs_NotEmpty() {
       try {
          Args.notEmpty("password", (String) null);
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
       } catch (final IllegalArgumentException ex) {
-         assertEquals("[password] must not be null", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("[password] must not be null");
       }
 
       try {
          Args.notEmpty("password", "");
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
       } catch (final IllegalArgumentException ex) {
-         assertEquals("[password] must not be empty", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("[password] must not be empty");
       }
 
       Args.notEmpty("password", "secret");
 
       try {
          Args.notEmpty("values", (String[]) null);
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
       } catch (final IllegalArgumentException ex) {
-         assertEquals("[values] must not be null", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("[values] must not be null");
       }
 
       try {
          Args.notEmpty("values", new String[0]);
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
       } catch (final IllegalArgumentException ex) {
-         assertEquals("[values] must not be empty", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("[values] must not be empty");
       }
 
       Args.notEmpty("values", new String[] {"dfd"});
 
    }
 
+   @Test
    public void testArgs_NotNull() {
       try {
          Args.notNull("password", null);
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
       } catch (final IllegalArgumentException ex) {
-         assertEquals("[password] must not be null", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("[password] must not be null");
       }
 
       Args.notNull("password", "");
       Args.notNull("password", "secret");
    }
 
+   @Test
    public void testArgs_IsFileReadable() throws IOException {
       try {
          Args.isFileReadable("file", new File("foo"));
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
       } catch (final IllegalArgumentException ex) {
-         assertTrue(ex.getMessage().contains("does not exist"));
+         assertThat(ex.getMessage()).contains("does not exist");
       }
 
       try {
          Args.isFileReadable("file", File.createTempFile("foo", "bar").getParentFile());
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
       } catch (final IllegalArgumentException ex) {
-         assertTrue(ex.getMessage().contains("is not a regular file"));
+         assertThat(ex.getMessage()).contains("is not a regular file");
       }
    }
 }

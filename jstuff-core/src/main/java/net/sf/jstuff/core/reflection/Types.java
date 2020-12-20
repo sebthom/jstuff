@@ -108,9 +108,7 @@ public abstract class Types {
       Args.notNull("objectInterface", objectInterface);
       Args.notNull("threadLocal", threadLocal);
 
-      return Proxies.create((proxy, method, args) -> {
-         return method.invoke(threadLocal.get(), args);
-      }, objectInterface);
+      return Proxies.create((proxy, method, args) -> method.invoke(threadLocal.get(), args), objectInterface);
    }
 
    /**
@@ -288,7 +286,7 @@ public abstract class Types {
    public static Set<Class<?>> getInterfacesRecursive(final Class<?> clazz) {
       Args.notNull("clazz", clazz);
 
-      return getInterfacesRecursive(clazz, new HashSet<Class<?>>(2));
+      return getInterfacesRecursive(clazz, new HashSet<>(2));
    }
 
    private static Set<Class<?>> getInterfacesRecursive(Class<?> clazz, final Set<Class<?>> result) {
@@ -329,7 +327,7 @@ public abstract class Types {
       if (void.class == primitive)
          return Void.class;
 
-      throw new RuntimeException("Unknown primitive type [" + primitive + "]");
+      throw new IllegalArgumentException("Unknown primitive type [" + primitive + "]");
    }
 
    /**

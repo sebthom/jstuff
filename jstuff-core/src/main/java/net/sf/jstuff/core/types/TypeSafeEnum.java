@@ -35,17 +35,10 @@ import net.sf.jstuff.core.reflection.Types;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class TypeSafeEnum<ID> implements Serializable {
-   private static final Comparator<TypeSafeEnum<?>> ORDINAL_COMPARATOR = new Comparator<TypeSafeEnum<?>>() {
-      @Override
-      public int compare(final TypeSafeEnum<?> o1, final TypeSafeEnum<?> o2) {
-         return o1.ordinal == o2.ordinal ? 0 : o1.ordinal < o2.ordinal ? -1 : 1;
-      }
-   };
-
    private static final long serialVersionUID = 1L;
 
    private static final ConcurrentMap<Class<? extends TypeSafeEnum<?>>, ConcurrentMap<?, ? extends TypeSafeEnum<?>>> ENUMS_BY_TYPE = new ConcurrentHashMap<>();
-
+   private static final Comparator<TypeSafeEnum<?>> ORDINAL_COMPARATOR = (o1, o2) -> o1.ordinal == o2.ordinal ? 0 : o1.ordinal < o2.ordinal ? -1 : 1;
    private static final AtomicInteger ORDINAL_COUNTER = new AtomicInteger();
 
    public static <V, T extends TypeSafeEnum<V>> T getEnum(final Class<T> enumType, final V id) {

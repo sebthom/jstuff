@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2010-2020 by Sebastian Thomschke and others.
@@ -61,6 +63,9 @@
       <slf4j.version>1.7.30</slf4j.version>
 
       <skip.japicmp.cmp>true</skip.japicmp.cmp>
+
+      <!-- TODO https://github.com/sevntu-checkstyle/sevntu.checkstyle/pull/827 -->
+      <checkstyle.violation.ignore>RequireFailForTryCatchInJunit</checkstyle.violation.ignore>
    </properties>
 
 
@@ -155,6 +160,11 @@
          <artifactId>junit</artifactId>
          <version>4.13.1</version>
          <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.assertj</groupId>
+         <artifactId>assertj-core</artifactId>
+         <version>3.18.1</version>
       </dependency>
    </dependencies>
 

@@ -43,7 +43,7 @@ public abstract class FilenameUtils extends org.apache.commons.io.FilenameUtils 
       try {
          return new File(".").getCanonicalPath();
       } catch (final IOException ex) {
-         throw new RuntimeException(ex);
+         throw new RuntimeIOException(ex);
       }
    }
 

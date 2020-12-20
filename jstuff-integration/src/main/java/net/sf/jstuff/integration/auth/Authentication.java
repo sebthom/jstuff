@@ -16,7 +16,7 @@ import net.sf.jstuff.integration.userregistry.UserDetails;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Authentication {
+public interface Authentication extends Serializable {
    String getPassword();
 
    Serializable getProperty(String name);

@@ -65,7 +65,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
 
    @Version
    @Column(nullable = false)
-   private final int _version = 0;
+   private int _version = 0;
 
    protected AbstractJPAEntity() {
       _hashCodeTrackingId = HashCodeManager.onEntityInstantiated(this);
@@ -145,12 +145,12 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
    public CharSequence toDebugString() {
       final StringBuilder sb = new StringBuilder(64);
       Class<?> currClazz = getClass();
-      String intend = "";
+      final StringBuilder intend = new StringBuilder("");
 
       try {
          while (currClazz != Object.class) {
             sb.append(intend).append(currClazz).append(" *** START ***").append(NEW_LINE);
-            intend += "  ";
+            intend.append("  ");
             for (final Field field : currClazz.getDeclaredFields())
                if (!Fields.isStatic(field) && !field.getName().startsWith("class$")) {
                   final Object fieldValue = Fields.read(this, field);

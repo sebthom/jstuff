@@ -31,11 +31,6 @@ public class ZippedBlockInputStream extends FilterInputStream {
    private byte[] blockCompressed;
 
    /**
-    * Number of bytes currently held in the <code>blockCompressed</code> byte array (may be less than the actual size of the array)
-    */
-   private int blockCompressedSize;
-
-   /**
     * Reusable buffer holding the uncompressed data
     */
    private byte[] block;
@@ -52,8 +47,8 @@ public class ZippedBlockInputStream extends FilterInputStream {
 
    private final Inflater decompressor = new Inflater();
 
-   private boolean isClosed = false;
-   private boolean isEOF = false;
+   private boolean isClosed;
+   private boolean isEOF;
 
    @SuppressWarnings("resource")
    public ZippedBlockInputStream(final InputStream is) {
@@ -123,7 +118,7 @@ public class ZippedBlockInputStream extends FilterInputStream {
          }
       }
 
-      return block[blockOffset++];
+      return block[blockOffset++] & 0xFF;
    }
 
    @Override
@@ -166,7 +161,7 @@ public class ZippedBlockInputStream extends FilterInputStream {
 
    protected void readBlockAndDecompress() throws IOException {
       // read the size of the compressed data
-      blockCompressedSize = IOUtils.readInt(in);
+      final int blockCompressedSize = IOUtils.readInt(in);
 
       // read the size of the uncompressed data
       blockSize = IOUtils.readInt(in);

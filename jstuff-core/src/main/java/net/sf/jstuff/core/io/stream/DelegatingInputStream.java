@@ -20,7 +20,7 @@ import net.sf.jstuff.core.types.Decorator;
 public class DelegatingInputStream extends InputStream implements Decorator<InputStream> {
 
    protected InputStream wrapped;
-   protected boolean ignoreClose = false;
+   protected boolean ignoreClose;
 
    public DelegatingInputStream(final InputStream wrapped) {
       this.wrapped = wrapped;
@@ -43,7 +43,7 @@ public class DelegatingInputStream extends InputStream implements Decorator<Inpu
    }
 
    @Override
-   public void mark(final int readlimit) {
+   public synchronized void mark(final int readlimit) {
       wrapped.mark(readlimit);
    }
 
@@ -74,7 +74,7 @@ public class DelegatingInputStream extends InputStream implements Decorator<Inpu
    }
 
    @Override
-   public void reset() throws IOException {
+   public synchronized void reset() throws IOException {
       wrapped.reset();
    }
 

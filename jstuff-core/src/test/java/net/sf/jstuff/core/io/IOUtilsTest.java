@@ -9,21 +9,24 @@
  *********************************************************************/
 package net.sf.jstuff.core.io;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class IOUtilsTest extends TestCase {
+public class IOUtilsTest {
+
+   @Test
    public void testReadBytes() throws IOException {
       final ByteArrayInputStream is = new ByteArrayInputStream("Hello World!".getBytes());
-      assertEquals(5, IOUtils.readBytes(is, 5).length);
+      assertThat(IOUtils.readBytes(is, 5)).hasSize(5);
 
       is.reset();
-      assertEquals("Hello World!", new String(IOUtils.readBytes(is, 12)));
+      assertThat(new String(IOUtils.readBytes(is, 12))).isEqualTo("Hello World!");
    }
-
 }

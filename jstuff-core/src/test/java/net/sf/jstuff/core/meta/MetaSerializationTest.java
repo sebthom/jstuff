@@ -9,9 +9,12 @@
  *********************************************************************/
 package net.sf.jstuff.core.meta;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.Serializable;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.io.SerializationUtils;
 import net.sf.jstuff.core.jbean.meta.ClassDescriptor;
@@ -21,7 +24,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MetaSerializationTest extends TestCase {
+public class MetaSerializationTest {
    public static class Entity<SELF_TYPE extends Entity<SELF_TYPE>> {
       public static final ClassDescriptor<EntityMeta> META_CLASS = EntityMeta.META_CLASS;
 
@@ -69,10 +72,11 @@ public class MetaSerializationTest extends TestCase {
          ));
    }
 
+   @Test
    public void testSerialization() {
-      assertNotNull(Entity.META_CLASS);
-      assertSame(Entity.META_CLASS, SerializationUtils.clone(Entity.META_CLASS));
-      assertSame(Entity.META_CLASS, SerializationUtils.clone(EntityMeta.PROP_comment.getMetaClass()));
-      assertSame(EntityMeta.PROP_comment, SerializationUtils.clone(EntityMeta.PROP_comment));
+      assertThat(Entity.META_CLASS).isNotNull();
+      assertThat(SerializationUtils.clone(Entity.META_CLASS)).isSameAs(Entity.META_CLASS);
+      assertThat(SerializationUtils.clone(EntityMeta.PROP_comment.getMetaClass())).isSameAs(Entity.META_CLASS);
+      assertThat(SerializationUtils.clone(EntityMeta.PROP_comment)).isSameAs(EntityMeta.PROP_comment);
    }
 }

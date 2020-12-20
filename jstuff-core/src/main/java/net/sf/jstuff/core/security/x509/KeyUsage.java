@@ -42,7 +42,7 @@ public enum KeyUsage {
             usages.add(getByRFCBit(i));
          }
       }
-      return usages.size() == 0 ? Collections.emptySet() : usages;
+      return usages.isEmpty() ? Collections.emptySet() : usages;
    }
 
    private static KeyUsage getByRFCBit(final int bit) {

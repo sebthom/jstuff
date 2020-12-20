@@ -21,8 +21,8 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class CharSequenceReader extends Reader {
    private CharSequence text;
-   private int next = 0;
-   private int mark = 0;
+   private int next;
+   private int mark;
 
    public CharSequenceReader(final CharSequence input) {
       text = input;

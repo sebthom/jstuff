@@ -20,7 +20,7 @@ import net.sf.jstuff.core.types.Decorator;
 public class DelegatingOutputStream extends OutputStream implements Decorator<OutputStream> {
 
    protected OutputStream wrapped;
-   protected boolean ignoreClose = false;
+   protected boolean ignoreClose;
 
    public DelegatingOutputStream(final OutputStream wrapped) {
       this.wrapped = wrapped;

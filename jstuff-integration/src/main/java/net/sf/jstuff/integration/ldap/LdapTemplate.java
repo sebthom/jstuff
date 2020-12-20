@@ -18,7 +18,6 @@ import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
-import javax.net.ssl.SSLSession;
 
 import net.sf.jstuff.core.functional.Invocable;
 
@@ -43,8 +42,7 @@ public class LdapTemplate {
          ctx = new InitialLdapContext(ldapSettings, null);
          if (useStartTSL) {
             tls = (StartTlsResponse) ctx.extendedOperation(new StartTlsRequest());
-            @SuppressWarnings("unused")
-            final SSLSession sess = tls.negotiate();
+            tls.negotiate();
          }
          return callback.invoke(ctx);
       } catch (final Exception ex) {

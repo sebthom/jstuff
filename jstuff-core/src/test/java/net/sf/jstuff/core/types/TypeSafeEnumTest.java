@@ -9,15 +9,17 @@
  *********************************************************************/
 package net.sf.jstuff.core.types;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.jstuff.core.io.SerializationUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TypeSafeEnumTest extends TestCase {
+public class TypeSafeEnumTest {
+
    public static final class MyEnum extends TypeSafeEnum<String> {
       private static final long serialVersionUID = 1L;
 
@@ -29,16 +31,17 @@ public class TypeSafeEnumTest extends TestCase {
       }
    }
 
+   @Test
    public void testItemOrder() {
-      assertEquals(2, TypeSafeEnum.getEnums(MyEnum.class).size());
-      assertSame(MyEnum.ITEM1, TypeSafeEnum.getEnums(MyEnum.class).get(0));
-      assertSame(MyEnum.ITEM2, TypeSafeEnum.getEnums(MyEnum.class).get(1));
-
+      assertThat(TypeSafeEnum.getEnums(MyEnum.class)).hasSize(2);
+      assertThat(TypeSafeEnum.getEnums(MyEnum.class).get(0)).isSameAs(MyEnum.ITEM1);
+      assertThat(TypeSafeEnum.getEnums(MyEnum.class).get(1)).isSameAs(MyEnum.ITEM2);
    }
 
+   @Test
    public void testSerialization() {
-      assertNotEquals(MyEnum.ITEM1.ordinal, MyEnum.ITEM2.ordinal);
+      assertThat(MyEnum.ITEM1.ordinal).isNotEqualTo(MyEnum.ITEM2.ordinal);
       final MyEnum deserializedItem = (MyEnum) SerializationUtils.deserialize(SerializationUtils.serialize(MyEnum.ITEM1));
-      assertSame(deserializedItem, MyEnum.ITEM1);
+      assertThat(deserializedItem).isSameAs(MyEnum.ITEM1);
    }
 }

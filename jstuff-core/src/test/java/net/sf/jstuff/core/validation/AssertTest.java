@@ -9,94 +9,102 @@
  *********************************************************************/
 package net.sf.jstuff.core.validation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AssertTest extends TestCase {
+public class AssertTest {
 
+   @Test
    public void testAssert_IsFalse() {
       try {
          Assert.isFalse(true, "foo");
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
-         assertEquals("foo", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("foo");
       }
 
       Assert.isFalse(false, "foo");
    }
 
+   @Test
    public void testAssert_IsFileReadable() throws IOException {
       try {
          Assert.isFileReadable(new File("foo"));
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
-         assertTrue(ex.getMessage().contains("does not exist"));
+         assertThat(ex.getMessage()).contains("does not exist");
       }
 
       try {
          Assert.isFileReadable(File.createTempFile("foo", "bar").getParentFile());
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
-         assertTrue(ex.getMessage().contains("is not a regular file"));
+         assertThat(ex.getMessage()).contains("is not a regular file");
       }
    }
 
+   @Test
    public void testAssert_IsTrue() {
       try {
          Assert.isTrue(false, "foo");
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
-         assertEquals("foo", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("foo");
       }
 
       Assert.isTrue(true, "foo");
    }
 
+   @Test
    public void testAssert_NotEmpty() {
       try {
          Assert.notEmpty("", "foo");
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
-         assertEquals("foo", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("foo");
       }
 
       try {
          Assert.notEmpty((String) null, "foo");
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
-         assertEquals("foo", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("foo");
       }
 
       Assert.notEmpty("value", "foo");
 
       try {
          Assert.notEmpty(new String[0], "foo");
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
-         assertEquals("foo", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("foo");
       }
 
       try {
          Assert.notEmpty((String[]) null, "foo");
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
-         assertEquals("foo", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("foo");
       }
 
       Assert.notEmpty(new String[] {"value"}, "foo");
    }
 
+   @Test
    public void testAssert_NotNull() {
       try {
          Assert.notNull(null, "foo");
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
-         assertEquals("foo", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("foo");
       }
 
       Assert.notNull("value", "foo");

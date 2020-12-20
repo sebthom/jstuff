@@ -19,12 +19,12 @@ public class TrustAllTrustManager implements javax.net.ssl.X509TrustManager {
    private static final X509Certificate[] NO_CERTS = new X509Certificate[0];
 
    @Override
-   public void checkClientTrusted(final java.security.cert.X509Certificate[] certs, final String authType) {
+   public void checkClientTrusted(final X509Certificate[] certs, final String authType) {
       // trust all
    }
 
    @Override
-   public void checkServerTrusted(final java.security.cert.X509Certificate[] certs, final String authType) {
+   public void checkServerTrusted(final X509Certificate[] certs, final String authType) {
       // trust all
    }
 

@@ -51,7 +51,7 @@ public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
    protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointState serviceEndpointState,
       final Class<SERVICE_INTERFACE> serviceInterface) {
 
-      final MethodDelegation interceptor = MethodDelegation.to(new ByteBuddyServiceInterceptor<SERVICE_INTERFACE>(serviceEndpointState, serviceInterface));
+      final MethodDelegation interceptor = MethodDelegation.to(new ByteBuddyServiceInterceptor<>(serviceEndpointState, serviceInterface));
 
       DynamicType.Builder builder = new ByteBuddy() //
          .subclass(DefaultServiceProxyAdvice.class, ConstructorStrategy.Default.IMITATE_SUPER_CLASS_PUBLIC) //

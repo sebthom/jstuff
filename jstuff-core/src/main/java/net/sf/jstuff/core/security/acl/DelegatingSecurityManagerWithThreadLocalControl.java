@@ -19,7 +19,7 @@ public abstract class DelegatingSecurityManagerWithThreadLocalControl extends De
    /**
     * Determines if custom security checks implemented by this class are executed or if calls are only delegated to the underlying security manager
     */
-   protected final ThreadLocal<Boolean> isEnabledForThread = new ThreadLocal<Boolean>() {
+   private final ThreadLocal<Boolean> isEnabledForThread = new ThreadLocal<Boolean>() {
       @Override
       public Boolean get() {
          final Boolean enabled = super.get();
@@ -29,15 +29,19 @@ public abstract class DelegatingSecurityManagerWithThreadLocalControl extends De
       }
    };
 
-   public DelegatingSecurityManagerWithThreadLocalControl() {
+   protected DelegatingSecurityManagerWithThreadLocalControl() {
    }
 
-   public DelegatingSecurityManagerWithThreadLocalControl(final SecurityManager wrapped) {
+   protected DelegatingSecurityManagerWithThreadLocalControl(final SecurityManager wrapped) {
       super(wrapped);
    }
 
    public boolean isEnabledByDefault() {
       return isEnabledByDefault;
+   }
+
+   public boolean isEnabledForCurrentThread() {
+      return isEnabledForThread.get();
    }
 
    public void setEnabledByDefault(final boolean enabledByDefault) {

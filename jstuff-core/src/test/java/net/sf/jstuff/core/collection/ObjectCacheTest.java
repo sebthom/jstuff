@@ -9,13 +9,18 @@
  *********************************************************************/
 package net.sf.jstuff.core.collection;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+
+import net.sf.jstuff.core.concurrent.Threads;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObjectCacheTest extends TestCase {
-   public void testObjectCache_SoftRef_NoValuesToKeep() throws InterruptedException {
+public class ObjectCacheTest {
+   @Test
+   public void testObjectCache_SoftRef_NoValuesToKeep() {
       final ObjectCache<String, Object> cache = new ObjectCache<>();
       cache.put("1", new Object());
       cache.put("2", new Object());
@@ -24,13 +29,14 @@ public class ObjectCacheTest extends TestCase {
       cache.get("2");
       cache.get("3");
       System.gc();
-      Thread.sleep(500);
-      assertTrue(cache.contains("1"));
-      assertTrue(cache.contains("2"));
-      assertTrue(cache.contains("3"));
+      Threads.sleep(500);
+      assertThat(cache.contains("1")).isTrue();
+      assertThat(cache.contains("2")).isTrue();
+      assertThat(cache.contains("3")).isTrue();
    }
 
-   public void testObjectCache_WeakRef_NoValuesToKeep() throws InterruptedException {
+   @Test
+   public void testObjectCache_WeakRef_NoValuesToKeep() {
       final ObjectCache<String, Object> cache = new ObjectCache<>(true);
       cache.put("1", new Object());
       cache.put("2", new Object());
@@ -39,13 +45,14 @@ public class ObjectCacheTest extends TestCase {
       cache.get("2");
       cache.get("3");
       System.gc();
-      Thread.sleep(500);
-      assertFalse(cache.contains("1"));
-      assertFalse(cache.contains("2"));
-      assertFalse(cache.contains("3"));
+      Threads.sleep(500);
+      assertThat(cache.contains("1")).isFalse();
+      assertThat(cache.contains("2")).isFalse();
+      assertThat(cache.contains("3")).isFalse();
    }
 
-   public void testObjectCache_WeakRef_Last2ValuesToKeep() throws InterruptedException {
+   @Test
+   public void testObjectCache_WeakRef_Last2ValuesToKeep() {
       final ObjectCache<String, Object> cache = new ObjectCache<>(2, true);
       cache.put("1", new Object());
       cache.put("2", new Object());
@@ -54,9 +61,9 @@ public class ObjectCacheTest extends TestCase {
       cache.get("2");
       cache.get("3");
       System.gc();
-      Thread.sleep(500);
-      assertFalse(cache.contains("1"));
-      assertTrue(cache.contains("2"));
-      assertTrue(cache.contains("3"));
+      Threads.sleep(500);
+      assertThat(cache.contains("1")).isFalse();
+      assertThat(cache.contains("2")).isTrue();
+      assertThat(cache.contains("3")).isTrue();
    }
 }

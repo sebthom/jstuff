@@ -10,6 +10,7 @@
 package net.sf.jstuff.core.date;
 
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -67,7 +68,7 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
    }
 
    public static int getCurrentYear() {
-      return Calendar.getInstance().get(Calendar.YEAR);
+      return LocalDate.now().getYear();
    }
 
    /**
@@ -180,7 +181,7 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
 
    /**
     * Examples:
-    * 
+    *
     * <pre>
     * 2022-05-03T15:01:02.350+02:00
     * 2022-05-03T15:00:00+02:00
@@ -205,7 +206,7 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
 
    /**
     * Examples:
-    * 
+    *
     * <pre>
     * 2022-05-03 15:01:02.350+02:00
     * 2022-05-03 15:00:00+02:00

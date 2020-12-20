@@ -9,31 +9,35 @@
  *********************************************************************/
 package net.sf.jstuff.core.io.stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.jstuff.core.io.IOUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeInputStreamTest extends TestCase {
+public class CompositeInputStreamTest {
 
+   @Test
    @SuppressWarnings("resource")
    public void testCompositeInputStream() throws IOException {
       final FastByteArrayInputStream bis1 = new FastByteArrayInputStream("Hello ".getBytes());
       final FastByteArrayInputStream bis2 = new FastByteArrayInputStream("World!".getBytes());
 
-      assertEquals("Hello World!", new String(IOUtils.readBytes(new CompositeInputStream(bis1, bis2))));
+      assertThat(new String(IOUtils.readBytes(new CompositeInputStream(bis1, bis2)))).isEqualTo("Hello World!");
       bis1.reset();
       bis2.reset();
 
-      assertEquals("Hello", new String(IOUtils.readBytes(new CompositeInputStream(bis1, bis2), 5)));
+      assertThat(new String(IOUtils.readBytes(new CompositeInputStream(bis1, bis2), 5))).isEqualTo("Hello");
       bis1.reset();
       bis2.reset();
 
       final CompositeInputStream cis = new CompositeInputStream(bis1, bis2);
-      assertEquals(7, cis.skip(7));
-      assertEquals("orld!", new String(IOUtils.readBytes(cis)));
+      assertThat(cis.skip(7)).isEqualTo(7);
+      assertThat(new String(IOUtils.readBytes(cis))).isEqualTo("orld!");
    }
 }

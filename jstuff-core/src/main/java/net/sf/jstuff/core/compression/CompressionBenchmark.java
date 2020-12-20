@@ -10,6 +10,7 @@
 package net.sf.jstuff.core.compression;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -59,28 +60,36 @@ public class CompressionBenchmark {
       }
    }
 
-   public static class CompressSpeedComparator implements Comparator<BenchmarkResult> {
+   public static class CompressSpeedComparator implements Comparator<BenchmarkResult>, Serializable {
+      private static final long serialVersionUID = 1L;
+
       @Override
       public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
          return o1.compressTimeMS < o2.compressTimeMS ? -1 : o1.compressTimeMS == o2.compressTimeMS ? 0 : 1;
       }
    }
 
-   public static class DecompressSpeedComparator implements Comparator<BenchmarkResult> {
+   public static class DecompressSpeedComparator implements Comparator<BenchmarkResult>, Serializable {
+      private static final long serialVersionUID = 1L;
+
       @Override
       public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
          return o1.decompressTimeMS < o2.decompressTimeMS ? -1 : o1.decompressTimeMS == o2.decompressTimeMS ? 0 : 1;
       }
    }
 
-   public static class SizeComparator implements Comparator<BenchmarkResult> {
+   public static class SizeComparator implements Comparator<BenchmarkResult>, Serializable {
+      private static final long serialVersionUID = 1L;
+
       @Override
       public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
          return o1.compressedSize < o2.compressedSize ? -1 : o1.compressedSize == o2.compressedSize ? 0 : 1;
       }
    }
 
-   public static class SpeedComparator implements Comparator<BenchmarkResult> {
+   public static class SpeedComparator implements Comparator<BenchmarkResult>, Serializable {
+      private static final long serialVersionUID = 1L;
+
       @Override
       public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
          return o1.compressTimeMS + o1.decompressTimeMS < o2.compressTimeMS + o2.decompressTimeMS ? -1
@@ -92,7 +101,7 @@ public class CompressionBenchmark {
 
    private final Set<Compression> compressions = new HashSet<>();
    private byte[] uncompressed = ArrayUtils.EMPTY_BYTE_ARRAY;
-   private int iterations = 0;
+   private int iterations;
 
    public CompressionBenchmark addCompression(final Compression compression) {
       Args.notNull("compression", compression);

@@ -9,7 +9,7 @@
  *********************************************************************/
 package net.sf.jstuff.core.concurrent;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -19,14 +19,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.junit.Test;
 
-import junit.framework.TestCase;
 import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class HashLockManagerTest extends TestCase {
+public class HashLockManagerTest {
    private static final Logger LOG = Logger.create();
 
    private static final int THREADS = 10;
@@ -35,15 +35,13 @@ public class HashLockManagerTest extends TestCase {
    private final ExecutorService es = Executors.newFixedThreadPool(THREADS);
    private int sum = -1;
 
-   final Runnable calculation = new Runnable() {
-      @Override
-      public void run() {
-         sum++;
-         sum = sum * 2;
-         sum = sum / 2;
-      }
+   final Runnable calculation = () -> {
+      sum++;
+      sum = sum * 2;
+      sum = sum / 2;
    };
 
+   @Test
    public void testWithHashLockManager() throws InterruptedException {
       final HashLockManager<String> lockManager = new HashLockManager<>(100);
 
@@ -80,15 +78,16 @@ public class HashLockManagerTest extends TestCase {
       es.awaitTermination(60, TimeUnit.SECONDS);
       sw.stop();
 
-      assertFalse(lockCountWasZero.get());
-      assertFalse(lockCountWasGreaterThan1.get());
+      assertThat(lockCountWasZero.get()).isFalse();
+      assertThat(lockCountWasGreaterThan1.get()).isFalse();
 
       LOG.info(THREADS * ITERATIONS_PER_THREAD + " thread-safe iterations took " + sw + " sum=" + sum);
-      assertEquals(THREADS * ITERATIONS_PER_THREAD, sum);
+      assertThat(sum).isEqualTo(THREADS * ITERATIONS_PER_THREAD);
       Threads.sleep(200); // wait for cleanup thread
-      assertEquals(0, lockManager.getLockCount());
+      assertThat(lockManager.getLockCount()).isZero();
    }
 
+   @Test
    public void testWithoutHashLockManager() throws InterruptedException {
 
       // ignore on CI systems, like Travis/GitHub Actions
@@ -121,6 +120,6 @@ public class HashLockManagerTest extends TestCase {
       es.awaitTermination(60, TimeUnit.SECONDS);
       sw.stop();
       LOG.info(THREADS * ITERATIONS_PER_THREAD + " thread-unsafe iterations took " + sw + " sum=" + sum);
-      assertNotEquals(THREADS * ITERATIONS_PER_THREAD, sum);
+      assertThat(sum).isNotEqualTo(THREADS * ITERATIONS_PER_THREAD);
    }
 }

@@ -9,33 +9,37 @@
  *********************************************************************/
 package net.sf.jstuff.integration.spring;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.io.Serializable;
 
+import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import junit.framework.TestCase;
 import net.sf.jstuff.core.io.SerializationUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanRefTest extends TestCase {
+public class SpringBeanRefTest {
+
    public static class Entity implements Serializable {
       private static final long serialVersionUID = 1L;
 
       public SpringBeanRef<Object> springBean = SpringBeanRef.of("springBean");
    }
 
+   @Test
    public void testSpringBeanRef() {
 
       final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml", SpringBeanRefTest.class);
 
       final Entity e = new Entity();
-      assertNotNull(e.springBean);
-      assertNotNull(e.springBean.get());
+      assertThat(e.springBean).isNotNull();
+      assertThat(e.springBean.get()).isNotNull();
       final Entity e2 = SerializationUtils.clone(e);
-      assertNotNull(e2.springBean);
-      assertNotNull(e2.springBean.get());
+      assertThat(e2.springBean).isNotNull();
+      assertThat(e2.springBean.get()).isNotNull();
 
       ctx.close();
    }

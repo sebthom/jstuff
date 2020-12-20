@@ -9,13 +9,16 @@
  *********************************************************************/
 package net.sf.jstuff.core.builder;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.Test;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class BuilderTest extends TestCase {
+public class BuilderTest {
 
    public static class EntityA {
 
@@ -83,9 +86,9 @@ public class BuilderTest extends TestCase {
       public void setPropertyD(final String value) {
          propertyD = value + "_setWithSetter";
       }
-
    }
 
+   @Test
    public void testEntityABuilder() {
       EntityA.builder() //
          .propertyA("foo") //
@@ -95,25 +98,25 @@ public class BuilderTest extends TestCase {
       try {
          EntityA.builder() //
             .build();
-         fail();
+         failBecauseExceptionWasNotThrown(Exception.class);
       } catch (final Exception ex) {
-         assertEquals("Setting EntityABuilder.propertyA(...) is required.", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("Setting EntityABuilder.propertyA(...) is required.");
       }
 
       try {
          EntityA.builder() //
             .propertyA(null) //
             .build();
-         fail();
+         failBecauseExceptionWasNotThrown(Exception.class);
       } catch (final Exception ex) {
-         assertEquals(ex.getMessage(), "EntityABuilder.propertyA(...) must not be set to null.");
+         assertThat(ex.getMessage()).isEqualTo("EntityABuilder.propertyA(...) must not be set to null.");
       }
 
       try {
          EntityA.builder() //
             .propertyA("foo") //
             .build();
-         fail();
+         failBecauseExceptionWasNotThrown(Exception.class);
       } catch (final Exception ex) { /* expected */ }
 
       try {
@@ -121,10 +124,11 @@ public class BuilderTest extends TestCase {
             .propertyA("foo") //
             .propertyB(-1) //
             .build();
-         fail();
+         failBecauseExceptionWasNotThrown(Exception.class);
       } catch (final Exception ex) { /* expected */ }
    }
 
+   @Test
    public void testEntityBBuilder() {
       final EntityB entity = EntityB.builder() //
          .propertyA("foo") //
@@ -136,7 +140,7 @@ public class BuilderTest extends TestCase {
          .withMethodCall("dog", 33) //
          .build();
 
-      assertEquals(2, entity.methodCallCount);
+      assertThat(entity.methodCallCount).isEqualTo(2);
 
       try {
          EntityB.builder() //
@@ -145,9 +149,9 @@ public class BuilderTest extends TestCase {
             .propertyD("bar") //
             .withPropertyE("ee") //
             .build();
-         fail();
+         failBecauseExceptionWasNotThrown(Exception.class);
       } catch (final Exception ex) {
-         assertEquals("Setting EntityBBuilder.propertyA(...) is required.", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("Setting EntityBBuilder.propertyA(...) is required.");
       }
 
       try {
@@ -158,9 +162,9 @@ public class BuilderTest extends TestCase {
             .propertyD("bar") //
             .withPropertyE("ee") //
             .build();
-         fail();
+         failBecauseExceptionWasNotThrown(Exception.class);
       } catch (final Exception ex) {
-         assertEquals(ex.getMessage(), "EntityBBuilder.propertyA(...) must not be set to null.");
+         assertThat(ex.getMessage()).isEqualTo("EntityBBuilder.propertyA(...) must not be set to null.");
       }
 
       try {
@@ -168,7 +172,7 @@ public class BuilderTest extends TestCase {
             .propertyC(3L) //
             .propertyD("bar") //
             .build();
-         fail();
+         failBecauseExceptionWasNotThrown(Exception.class);
       } catch (final Exception ex) { /* expected */ }
       try {
          EntityB.builder() //
@@ -177,7 +181,7 @@ public class BuilderTest extends TestCase {
             .propertyC(-1L) //
             .propertyD("bar") //
             .build();
-         fail();
+         failBecauseExceptionWasNotThrown(Exception.class);
       } catch (final Exception ex) { /* expected */ }
 
       try {
@@ -187,9 +191,9 @@ public class BuilderTest extends TestCase {
             .propertyC(1L) //
             .propertyD("foo") //
             .build();
-         fail();
+         failBecauseExceptionWasNotThrown(Exception.class);
       } catch (final Exception ex) {
-         assertEquals("Setting EntityBBuilder.withPropertyE(...) is required.", ex.getMessage());
+         assertThat(ex.getMessage()).isEqualTo("Setting EntityBBuilder.withPropertyE(...) is required.");
       }
 
       EntityB.builder() //

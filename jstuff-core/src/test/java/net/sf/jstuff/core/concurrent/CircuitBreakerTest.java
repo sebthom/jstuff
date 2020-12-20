@@ -9,17 +9,21 @@
  *********************************************************************/
 package net.sf.jstuff.core.concurrent;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.rmi.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.jstuff.core.concurrent.CircuitBreaker.State;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CircuitBreakerTest extends TestCase {
+public class CircuitBreakerTest {
 
+   @Test
    public void testCircuitBreaker() {
       @SuppressWarnings("unchecked")
       final CircuitBreaker cb = CircuitBreaker.builder() //
@@ -34,53 +38,53 @@ public class CircuitBreakerTest extends TestCase {
        * testing best case scenario
        */
       for (int i = 0; i < 100; i++) {
-         assertTrue(cb.tryAcquire());
+         assertThat(cb.tryAcquire()).isTrue();
       }
       for (int i = 0; i < 100; i++) {
          cb.release();
       }
-      assertTrue(cb.tryExecute(() -> { /* */ }));
+      assertThat(cb.tryExecute(() -> { /* */ })).isTrue();
 
       /*
        * testing open-state
        */
-      assertTrue(cb.tryAcquire());
+      assertThat(cb.tryAcquire()).isTrue();
       cb.reportFailure(new IllegalArgumentException()); // 1st error
       cb.release();
 
-      assertTrue(cb.tryAcquire());
+      assertThat(cb.tryAcquire()).isTrue();
       cb.reportFailure(new IllegalArgumentException()); // 2nd error
       cb.release();
 
-      assertEquals(cb.getState(), State.OPEN);
-      assertFalse(cb.tryAcquire());
-      assertFalse(cb.tryExecute(() -> { /* */ }));
-      assertEquals(cb.getState(), State.OPEN);
+      assertThat(cb.getState()).isEqualTo(State.OPEN);
+      assertThat(cb.tryAcquire()).isFalse();
+      assertThat(cb.tryExecute(() -> { /* */ })).isFalse();
+      assertThat(cb.getState()).isEqualTo(State.OPEN);
 
       /*
        * testing half-open state
        */
       Threads.sleep(3 * 1000);
-      assertEquals(cb.getState(), State.HALF_OPEN);
+      assertThat(cb.getState()).isEqualTo(State.HALF_OPEN);
 
-      assertTrue(cb.tryAcquire());
-      assertEquals(cb.getState(), State.HALF_OPEN);
-      assertFalse(cb.tryAcquire());
+      assertThat(cb.tryAcquire()).isTrue();
+      assertThat(cb.getState()).isEqualTo(State.HALF_OPEN);
+      assertThat(cb.tryAcquire()).isFalse();
       // not reporting success or failure, thus releasing the permit does not change the circuit breaker's state
       cb.release();
-      assertEquals(cb.getState(), State.HALF_OPEN);
+      assertThat(cb.getState()).isEqualTo(State.HALF_OPEN);
 
-      assertTrue(cb.tryAcquire());
+      assertThat(cb.tryAcquire()).isTrue();
       cb.reportSuccess();
       cb.release();
-      assertEquals(cb.getState(), State.CLOSE);
+      assertThat(cb.getState()).isEqualTo(State.CLOSE);
 
       /*
        * testing instant state switch
        */
-      assertTrue(cb.tryAcquire());
+      assertThat(cb.tryAcquire()).isTrue();
       cb.reportFailure(new UnknownHostException("foo.bar"));
       cb.release();
-      assertEquals(cb.getState(), State.OPEN);
+      assertThat(cb.getState()).isEqualTo(State.OPEN);
    }
 }

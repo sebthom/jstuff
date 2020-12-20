@@ -9,7 +9,11 @@
  *********************************************************************/
 package net.sf.jstuff.core.concurrent;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
+import org.junit.Test;
+
 import net.sf.jstuff.core.concurrent.CrossThreadMethodInvoker.CrossThreadProxy;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -17,7 +21,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CrossThreadMethodInvokerTest extends TestCase {
+public class CrossThreadMethodInvokerTest {
    public interface IService {
       String work(String input);
    }
@@ -42,6 +46,7 @@ public class CrossThreadMethodInvokerTest extends TestCase {
 
    private static final Logger LOG = Logger.create();
 
+   @Test
    public void testCrossThreadMethodInvoker() {
       final Service service = new Service();
 
@@ -50,9 +55,9 @@ public class CrossThreadMethodInvokerTest extends TestCase {
 
       try {
          methodInvoker.waitForBackgroundThreads();
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
-         assertTrue(ex.getMessage().endsWith("is not started!"));
+         assertThat(ex.getMessage()).endsWith("is not started!");
       }
 
       methodInvoker.start(2);
@@ -62,20 +67,20 @@ public class CrossThreadMethodInvokerTest extends TestCase {
          public void run() {
             try {
                final IService srv = serviceProxy.get();
-               assertEquals("foofoo", srv.work("foo"));
+               assertThat(srv.work("foo")).isEqualTo("foofoo");
                try {
                   service.work(null);
-                  fail();
+                  failBecauseExceptionWasNotThrown(Exception.class);
                } catch (final Exception ex) {
-                  assertEquals("[input] must not be null", ex.getMessage());
+                  assertThat(ex.getMessage()).isEqualTo("[input] must not be null");
                }
                try {
                   service.work("oops");
-                  fail();
+                  failBecauseExceptionWasNotThrown(Exception.class);
                } catch (final Exception ex) {
-                  assertEquals("wrong thread!", ex.getMessage());
+                  assertThat(ex.getMessage()).isEqualTo("wrong thread!");
                }
-               assertEquals("barbar", srv.work("bar"));
+               assertThat(srv.work("bar")).isEqualTo("barbar");
             } finally {
                methodInvoker.backgroundThreadDone();
             }
@@ -87,18 +92,18 @@ public class CrossThreadMethodInvokerTest extends TestCase {
          public void run() {
             try {
                final IService srv = serviceProxy.get();
-               assertEquals("heyhey", srv.work("hey"));
-               assertEquals("hoohoo", srv.work("hoo"));
+               assertThat(srv.work("hey")).isEqualTo("heyhey");
+               assertThat(srv.work("hoo")).isEqualTo("hoohoo");
             } finally {
                methodInvoker.backgroundThreadDone();
             }
          }
       }.start();
 
-      assertEquals(methodInvoker, serviceProxy.getCrossThreadMethodInvoker());
+      assertThat(serviceProxy.getCrossThreadMethodInvoker()).isEqualTo(methodInvoker);
 
       methodInvoker.waitForBackgroundThreads();
 
-      assertEquals(4, service.invocations);
+      assertThat(service.invocations).isEqualTo(4);
    }
 }

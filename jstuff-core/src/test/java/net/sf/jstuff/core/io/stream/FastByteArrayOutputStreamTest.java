@@ -9,54 +9,60 @@
  *********************************************************************/
 package net.sf.jstuff.core.io.stream;
 
-import java.io.IOException;
-import java.util.Objects;
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
-import junit.framework.TestCase;
+import java.io.IOException;
+
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FastByteArrayOutputStreamTest extends TestCase {
+public class FastByteArrayOutputStreamTest {
 
+   @Test
    @SuppressWarnings({"resource", "unused"})
    public void testFastByteArrayOutputStream() throws IOException {
 
       try {
          new FastByteArrayOutputStream(-1);
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
       } catch (final IllegalArgumentException expected) {
          //expected
       }
 
       final FastByteArrayOutputStream os = new FastByteArrayOutputStream(0);
-      assertEquals(0, os.size());
+      assertThat(os.size()).isZero();
       os.write(new byte[] {1, 2, 3});
       os.write(new byte[] {4, 5});
       os.write(6);
-      assertEquals(6, os.size());
-      assertTrue(Objects.deepEquals(new byte[] {1, 2, 3, 4, 5, 6}, os.toByteArray()));
+      assertThat(os.size()).isEqualTo(6);
+      assertThat(os.toByteArray()).isEqualTo(new byte[] {1, 2, 3, 4, 5, 6});
 
       final FastByteArrayOutputStream os2 = new FastByteArrayOutputStream();
       os.writeTo(os2);
-      assertEquals(6, os2.size());
-      assertTrue(Objects.deepEquals(os.toByteArray(), os2.toByteArray()));
+      assertThat(os2.size()).isEqualTo(6);
+      assertThat(os2.toByteArray()).isEqualTo(os2.toByteArray());
 
       os.reset();
-      assertEquals(0, os.size());
+      assertThat(os.size()).isZero();
 
-      os.write("äÄüÜöÖß!€".getBytes("UTF-8"));
-      assertEquals("äÄüÜöÖß!€", os.toString("UTF-8"));
-      assertFalse("äÄüÜöÖß!€".equals(os.toString("ISO-8859-1")));
-
-      os.reset();
-      os.write("äÄüÜöÖß!€".getBytes("ISO-8859-1"));
-      assertFalse("äÄüÜöÖß!€".equals(os.toString("UTF-8")));
-      assertFalse("äÄüÜöÖß!€".equals(os.toString("ISO-8859-1"))); // € not part of ISO-8859-1
+      final String utf8text = "äÄüÜöÖß!€";
+      os.write(utf8text.getBytes(UTF_8));
+      assertThat(os.toString(UTF_8)).isEqualTo(utf8text);
+      assertThat(os.toString(ISO_8859_1)).isNotEqualTo(utf8text);
 
       os.reset();
-      os.write("äÄüÜöÖß!€".getBytes("ISO-8859-15"));
-      assertFalse("äÄüÜöÖß!€".equals(os.toString("UTF-8")));
-      assertEquals("äÄüÜöÖß!€", os.toString("ISO-8859-15"));
+      os.write(utf8text.getBytes("ISO-8859-1"));
+      assertThat(os.toString(UTF_8)).isNotEqualTo(utf8text);
+      assertThat(os.toString(ISO_8859_1)).isNotEqualTo(utf8text); // € not part of ISO-8859-1
+
+      os.reset();
+      os.write(utf8text.getBytes("ISO-8859-15"));
+      assertThat(os.toString(UTF_8)).isNotEqualTo(utf8text);
+      assertThat(os.toString("ISO-8859-15")).isEqualTo(utf8text);
    }
 }

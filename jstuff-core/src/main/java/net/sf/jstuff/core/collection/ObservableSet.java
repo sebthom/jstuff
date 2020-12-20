@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public class ObservableSet<E> extends ObservableCollection<E, Set<E>> implements Set<E> {
    public static <E> ObservableSet<E> of(final Set<E> set) {
-      return new ObservableSet<E>(set);
+      return new ObservableSet<>(set);
    }
 
    public ObservableSet(final Set<E> set) {

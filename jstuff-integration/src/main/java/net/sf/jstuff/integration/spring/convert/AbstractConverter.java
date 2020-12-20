@@ -14,6 +14,8 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
 
+import net.sf.jstuff.core.validation.Args;
+
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -21,10 +23,10 @@ public abstract class AbstractConverter implements ConditionalGenericConverter {
    @Autowired
    protected ConversionService conversionService;
 
-   public AbstractConverter() {
+   protected AbstractConverter() {
    }
 
-   public AbstractConverter(final ConversionService conversionService) {
+   protected AbstractConverter(final ConversionService conversionService) {
       this.conversionService = conversionService;
    }
 
@@ -34,6 +36,8 @@ public abstract class AbstractConverter implements ConditionalGenericConverter {
 
    @Override
    public boolean matches(final TypeDescriptor sourceType, final TypeDescriptor targetType) {
+      Args.notNull("targetType", targetType);
+
       if (!conversionService.canConvert(sourceType, targetType.getMapKeyTypeDescriptor()))
          return false;
 

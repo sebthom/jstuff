@@ -22,7 +22,7 @@ public abstract class DelegatingCollection<V> extends Decorator.Default<Collecti
 
    private static final long serialVersionUID = 1L;
 
-   public DelegatingCollection(final Collection<V> delegate) {
+   protected DelegatingCollection(final Collection<V> delegate) {
       super(delegate);
    }
 

@@ -9,14 +9,16 @@
  *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DuckTypesTest extends TestCase {
+public class DuckTypesTest {
 
    private interface Duck {
       void walk();
@@ -30,17 +32,19 @@ public class DuckTypesTest extends TestCase {
       }
    }
 
+   @Test
    public void testDuckTyping() {
-      assertFalse(DuckTypes.isDuckType(new Object(), Duck.class));
+      assertThat(DuckTypes.isDuckType(new Object(), Duck.class)).isFalse();
 
       final DuckLike duckLike = new DuckLike();
-      assertTrue(DuckTypes.isDuckType(duckLike, Duck.class));
-      assertEquals(0, duckLike.count);
+      assertThat(DuckTypes.isDuckType(duckLike, Duck.class)).isTrue();
+      assertThat(duckLike.count).isZero();
       final Duck duckTyped = DuckTypes.duckType(duckLike, Duck.class);
       duckTyped.walk();
-      assertEquals(1, duckLike.count);
+      assertThat(duckLike.count).isEqualTo(1);
    }
 
+   @Test
    public void testDuckTypingWithAnonymousInnerClass() {
       final AtomicInteger count = new AtomicInteger();
       final Object duckLike = new Object() {
@@ -49,9 +53,9 @@ public class DuckTypesTest extends TestCase {
             count.incrementAndGet();
          }
       };
-      assertEquals(0, count.get());
+      assertThat(count.get()).isZero();
       final Duck duckTyped = DuckTypes.duckType(duckLike, Duck.class);
       duckTyped.walk();
-      assertEquals(1, count.get());
+      assertThat(count.get()).isEqualTo(1);
    }
 }

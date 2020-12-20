@@ -9,17 +9,21 @@
  *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Map;
 
 import org.junit.Ignore;
+import org.junit.Test;
 
-import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.Maps;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AnnotationsTest extends TestCase {
+public class AnnotationsTest {
+
+   @Test
    public void testCreate() {
       final Map<String, Object> m1 = Maps.newHashMap("value", "hello!");
       final Map<String, Object> m2 = Maps.newHashMap("value", "hi!");
@@ -28,9 +32,10 @@ public class AnnotationsTest extends TestCase {
       final Ignore a1b = Annotations.create(Ignore.class, m1);
       final Ignore a2 = Annotations.create(Ignore.class, m2);
 
-      assertEquals(a1a, a1b);
-      assertFalse(a1a.equals(a2));
-      assertEquals("@org.junit.Ignore(value=hello!)", a1a.toString());
-      assertEquals("@org.junit.Ignore(value=hi!)", a2.toString());
+      assertThat(a1b) //
+         .isEqualTo(a1a) //
+         .isNotEqualTo(a2);
+      assertThat(a1a).hasToString("@org.junit.Ignore(value=hello!)");
+      assertThat(a2).hasToString("@org.junit.Ignore(value=hi!)");
    }
 }

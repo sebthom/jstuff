@@ -26,7 +26,7 @@ public class ArrayIterator<T> implements Iterator<T>, Serializable {
    }
 
    private final T[] array;
-   private int currentIndex = 0;
+   private int currentIndex;
 
    @SafeVarargs
    public ArrayIterator(final T... array) {

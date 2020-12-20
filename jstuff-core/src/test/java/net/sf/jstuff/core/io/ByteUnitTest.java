@@ -10,98 +10,104 @@
 package net.sf.jstuff.core.io;
 
 import static net.sf.jstuff.core.io.ByteUnit.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.math.RoundingMode;
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.jstuff.core.math.Rounding;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ByteUnitTest extends TestCase {
+public class ByteUnitTest {
 
+   @Test
    public void testToBytes() {
-      assertEquals(0L, BYTES.toBytes(0).longValue());
-      assertEquals(0L, KIBIBYTES.toBytes(0).longValue());
-      assertEquals(0L, MEBIBYTES.toBytes(0).longValue());
-      assertEquals(0L, GIBIBYTES.toBytes(0).longValue());
-      assertEquals(0L, TEBIBYTES.toBytes(0).longValue());
+      assertThat(BYTES.toBytes(0).longValue()).isZero();
+      assertThat(KIBIBYTES.toBytes(0).longValue()).isZero();
+      assertThat(MEBIBYTES.toBytes(0).longValue()).isZero();
+      assertThat(GIBIBYTES.toBytes(0).longValue()).isZero();
+      assertThat(TEBIBYTES.toBytes(0).longValue()).isZero();
 
-      assertEquals(1L, BYTES.toBytes(1).longValue());
-      assertEquals(1L * 1024, KIBIBYTES.toBytes(1).longValue());
-      assertEquals(1L * 1024 * 1024, MEBIBYTES.toBytes(1).longValue());
-      assertEquals(1L * 1024 * 1024 * 1024, GIBIBYTES.toBytes(1).longValue());
-      assertEquals(1L * 1024 * 1024 * 1024 * 1024, TEBIBYTES.toBytes(1).longValue());
+      assertThat(BYTES.toBytes(1).longValue()).isEqualTo(1L);
+      assertThat(KIBIBYTES.toBytes(1).longValue()).isEqualTo(1L * 1024);
+      assertThat(MEBIBYTES.toBytes(1).longValue()).isEqualTo(1L * 1024 * 1024);
+      assertThat(GIBIBYTES.toBytes(1).longValue()).isEqualTo(1L * 1024 * 1024 * 1024);
+      assertThat(TEBIBYTES.toBytes(1).longValue()).isEqualTo(1L * 1024 * 1024 * 1024 * 1024);
 
-      assertEquals(1024L, BYTES.toBytes(1024).longValue());
-      assertEquals(1024L * 1024, KIBIBYTES.toBytes(1024).longValue());
-      assertEquals(1024L * 1024 * 1024, MEBIBYTES.toBytes(1024).longValue());
-      assertEquals(1024L * 1024 * 1024 * 1024, GIBIBYTES.toBytes(1024).longValue());
-      assertEquals(1024L * 1024 * 1024 * 1024 * 1024, TEBIBYTES.toBytes(1024).longValue());
+      assertThat(BYTES.toBytes(1024).longValue()).isEqualTo(1024L);
+      assertThat(KIBIBYTES.toBytes(1024).longValue()).isEqualTo(1024L * 1024);
+      assertThat(MEBIBYTES.toBytes(1024).longValue()).isEqualTo(1024L * 1024 * 1024);
+      assertThat(GIBIBYTES.toBytes(1024).longValue()).isEqualTo(1024L * 1024 * 1024 * 1024);
+      assertThat(TEBIBYTES.toBytes(1024).longValue()).isEqualTo(1024L * 1024 * 1024 * 1024 * 1024);
 
-      assertEquals(-1L, BYTES.toBytes(-1).longValue());
-      assertEquals(-1L * 1024, KIBIBYTES.toBytes(-1).longValue());
-      assertEquals(-1L * 1024 * 1024, MEBIBYTES.toBytes(-1).longValue());
-      assertEquals(-1L * 1024 * 1024 * 1024, GIBIBYTES.toBytes(-1).longValue());
-      assertEquals(-1L * 1024 * 1024 * 1024 * 1024, TEBIBYTES.toBytes(-1).longValue());
+      assertThat(BYTES.toBytes(-1).longValue()).isEqualTo(-1L);
+      assertThat(KIBIBYTES.toBytes(-1).longValue()).isEqualTo(-1L * 1024);
+      assertThat(MEBIBYTES.toBytes(-1).longValue()).isEqualTo(-1L * 1024 * 1024);
+      assertThat(GIBIBYTES.toBytes(-1).longValue()).isEqualTo(-1L * 1024 * 1024 * 1024);
+      assertThat(TEBIBYTES.toBytes(-1).longValue()).isEqualTo(-1L * 1024 * 1024 * 1024 * 1024);
 
-      assertEquals(-1024L, BYTES.toBytes(-1024).longValue());
-      assertEquals(-1024L * 1024, KIBIBYTES.toBytes(-1024).longValue());
-      assertEquals(-1024L * 1024 * 1024, MEBIBYTES.toBytes(-1024).longValue());
-      assertEquals(-1024L * 1024 * 1024 * 1024, GIBIBYTES.toBytes(-1024).longValue());
-      assertEquals(-1024L * 1024 * 1024 * 1024 * 1024, TEBIBYTES.toBytes(-1024).longValue());
+      assertThat(BYTES.toBytes(-1024).longValue()).isEqualTo(-1024L);
+      assertThat(KIBIBYTES.toBytes(-1024).longValue()).isEqualTo(-1024L * 1024);
+      assertThat(MEBIBYTES.toBytes(-1024).longValue()).isEqualTo(-1024L * 1024 * 1024);
+      assertThat(GIBIBYTES.toBytes(-1024).longValue()).isEqualTo(-1024L * 1024 * 1024 * 1024);
+      assertThat(TEBIBYTES.toBytes(-1024).longValue()).isEqualTo(-1024L * 1024 * 1024 * 1024 * 1024);
    }
 
+   @Test
    public void testKiBFrom() {
-      assertEquals(0L, KIBIBYTES.of(0, BYTES));
-      assertEquals(0L, KIBIBYTES.of(0, KIBIBYTES));
-      assertEquals(0L, KIBIBYTES.of(0, MEBIBYTES));
-      assertEquals(0L, KIBIBYTES.of(0, GIBIBYTES));
-      assertEquals(0L, KIBIBYTES.of(0, TEBIBYTES));
+      assertThat(KIBIBYTES.of(0, BYTES)).isZero();
+      assertThat(KIBIBYTES.of(0, KIBIBYTES)).isZero();
+      assertThat(KIBIBYTES.of(0, MEBIBYTES)).isZero();
+      assertThat(KIBIBYTES.of(0, GIBIBYTES)).isZero();
+      assertThat(KIBIBYTES.of(0, TEBIBYTES)).isZero();
 
-      assertEquals(0L, KIBIBYTES.of(1, BYTES));
-      assertEquals(1L, KIBIBYTES.of(1, KIBIBYTES));
-      assertEquals(1L * 1024, KIBIBYTES.of(1, MEBIBYTES));
-      assertEquals(1L * 1024 * 1024, KIBIBYTES.of(1, GIBIBYTES));
-      assertEquals(1L * 1024 * 1024 * 1024, KIBIBYTES.of(1, TEBIBYTES));
+      assertThat(KIBIBYTES.of(1, BYTES)).isZero();
+      assertThat(KIBIBYTES.of(1, KIBIBYTES)).isEqualTo(1L);
+      assertThat(KIBIBYTES.of(1, MEBIBYTES)).isEqualTo(1L * 1024);
+      assertThat(KIBIBYTES.of(1, GIBIBYTES)).isEqualTo(1L * 1024 * 1024);
+      assertThat(KIBIBYTES.of(1, TEBIBYTES)).isEqualTo(1L * 1024 * 1024 * 1024);
 
-      assertEquals(1L, KIBIBYTES.of(1024, BYTES));
-      assertEquals(1024L, KIBIBYTES.of(1024, KIBIBYTES));
-      assertEquals(1024L * 1024, KIBIBYTES.of(1024, MEBIBYTES));
-      assertEquals(1024L * 1024 * 1024, KIBIBYTES.of(1024, GIBIBYTES));
-      assertEquals(1024L * 1024 * 1024 * 1024, KIBIBYTES.of(1024, TEBIBYTES));
+      assertThat(KIBIBYTES.of(1024, BYTES)).isEqualTo(1L);
+      assertThat(KIBIBYTES.of(1024, KIBIBYTES)).isEqualTo(1024L);
+      assertThat(KIBIBYTES.of(1024, MEBIBYTES)).isEqualTo(1024L * 1024);
+      assertThat(KIBIBYTES.of(1024, GIBIBYTES)).isEqualTo(1024L * 1024 * 1024);
+      assertThat(KIBIBYTES.of(1024, TEBIBYTES)).isEqualTo(1024L * 1024 * 1024 * 1024);
 
-      assertEquals(0L, KIBIBYTES.of(-1, BYTES));
-      assertEquals(-1L, KIBIBYTES.of(-1, KIBIBYTES));
-      assertEquals(-1L * 1024, KIBIBYTES.of(-1, MEBIBYTES));
-      assertEquals(-1L * 1024 * 1024, KIBIBYTES.of(-1, GIBIBYTES));
-      assertEquals(-1L * 1024 * 1024 * 1024, KIBIBYTES.of(-1, TEBIBYTES));
+      assertThat(KIBIBYTES.of(-1, BYTES)).isZero();
+      assertThat(KIBIBYTES.of(-1, KIBIBYTES)).isEqualTo(-1L);
+      assertThat(KIBIBYTES.of(-1, MEBIBYTES)).isEqualTo(-1L * 1024);
+      assertThat(KIBIBYTES.of(-1, GIBIBYTES)).isEqualTo(-1L * 1024 * 1024);
+      assertThat(KIBIBYTES.of(-1, TEBIBYTES)).isEqualTo(-1L * 1024 * 1024 * 1024);
 
-      assertEquals(-1L, KIBIBYTES.of(-1024, BYTES));
-      assertEquals(-1024L, KIBIBYTES.of(-1024, KIBIBYTES));
-      assertEquals(-1024L * 1024, KIBIBYTES.of(-1024, MEBIBYTES));
-      assertEquals(-1024L * 1024 * 1024, KIBIBYTES.of(-1024, GIBIBYTES));
-      assertEquals(-1024L * 1024 * 1024 * 1024, KIBIBYTES.of(-1024, TEBIBYTES));
+      assertThat(KIBIBYTES.of(-1024, BYTES)).isEqualTo(-1L);
+      assertThat(KIBIBYTES.of(-1024, KIBIBYTES)).isEqualTo(-1024L);
+      assertThat(KIBIBYTES.of(-1024, MEBIBYTES)).isEqualTo(-1024L * 1024);
+      assertThat(KIBIBYTES.of(-1024, GIBIBYTES)).isEqualTo(-1024L * 1024 * 1024);
+      assertThat(KIBIBYTES.of(-1024, TEBIBYTES)).isEqualTo(-1024L * 1024 * 1024 * 1024);
+
    }
 
+   @Test
    public void testToHumanReadableString() {
       final Rounding rounding = new Rounding(2, RoundingMode.HALF_UP);
-      assertEquals(/*   */ "999 B", BYTES.toHumanReadableString(999, rounding, Locale.US));
-      assertEquals(/* */ "999 KiB", BYTES.toHumanReadableString(999 * 1024, rounding, Locale.US));
-      assertEquals(/* */ "999 MiB", BYTES.toHumanReadableString(999 * 1024 * 1024, rounding, Locale.US));
+      assertThat(BYTES.toHumanReadableString(999, rounding, Locale.US)).isEqualTo("999 B");
+      assertThat(BYTES.toHumanReadableString(999 * 1024, rounding, Locale.US)).isEqualTo("999 KiB");
+      assertThat(BYTES.toHumanReadableString(999 * 1024 * 1024, rounding, Locale.US)).isEqualTo("999 MiB");
 
-      assertEquals(/**/ "0.98 KiB", BYTES.toHumanReadableString(1000, rounding, Locale.US));
-      assertEquals(/**/ "0.98 MiB", BYTES.toHumanReadableString(1000 * 1024, rounding, Locale.US));
-      assertEquals(/**/ "0.98 GiB", BYTES.toHumanReadableString(1000 * 1024 * 1024, rounding, Locale.US));
+      assertThat(BYTES.toHumanReadableString(1000, rounding, Locale.US)).isEqualTo("0.98 KiB");
+      assertThat(BYTES.toHumanReadableString(1000 * 1024, rounding, Locale.US)).isEqualTo("0.98 MiB");
+      assertThat(BYTES.toHumanReadableString(1000 * 1024 * 1024, rounding, Locale.US)).isEqualTo("0.98 GiB");
 
-      assertEquals(/*   */ "1 GiB", KIBIBYTES.toHumanReadableString(1 * 1024 * 1024, rounding, Locale.US));
-      assertEquals(/* */ "999 GiB", KIBIBYTES.toHumanReadableString(999 * 1024 * 1024, rounding, Locale.US));
-      assertEquals(/**/ "0.98 TiB", KIBIBYTES.toHumanReadableString(1000 * 1024 * 1024, rounding, Locale.US));
+      assertThat(KIBIBYTES.toHumanReadableString(1 * 1024 * 1024, rounding, Locale.US)).isEqualTo("1 GiB");
+      assertThat(KIBIBYTES.toHumanReadableString(999 * 1024 * 1024, rounding, Locale.US)).isEqualTo("999 GiB");
+      assertThat(KIBIBYTES.toHumanReadableString(1000 * 1024 * 1024, rounding, Locale.US)).isEqualTo("0.98 TiB");
 
-      assertEquals(/*   */ "1 TiB", MEBIBYTES.toHumanReadableString(1 * 1024 * 1024, rounding, Locale.US));
-      assertEquals(/* */ "999 TiB", MEBIBYTES.toHumanReadableString(999 * 1024 * 1024, rounding, Locale.US));
-      assertEquals(/**/ "0.98 PiB", MEBIBYTES.toHumanReadableString(1000 * 1024 * 1024, rounding, Locale.US));
+      assertThat(MEBIBYTES.toHumanReadableString(1 * 1024 * 1024, rounding, Locale.US)).isEqualTo("1 TiB");
+      assertThat(MEBIBYTES.toHumanReadableString(999 * 1024 * 1024, rounding, Locale.US)).isEqualTo("999 TiB");
+      assertThat(MEBIBYTES.toHumanReadableString(1000 * 1024 * 1024, rounding, Locale.US)).isEqualTo("0.98 PiB");
    }
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
@@ -45,13 +46,13 @@ public abstract class StAXUtils {
       public final String nsPrefix;
       public final String nsURI;
       private String text;
-      public final TreeMap<String, String> attrs;
+      public final SortedMap<String, String> attrs;
 
       private ElementInfo(//
          final String localName, //
          final String nsPrefix, //
          final String nsURI, //
-         final TreeMap<String, String> attrs //
+         final SortedMap<String, String> attrs //
       ) {
          this.localName = localName;
          this.nsPrefix = nsPrefix;
@@ -249,7 +250,7 @@ public abstract class StAXUtils {
 
    public static ElementInfo findElement(final XMLStreamReader reader, final String xpath) throws XMLStreamException {
       final List<ElementInfo> elems = findElements(reader, xpath, 1);
-      return elems.size() == 0 ? null : elems.get(0);
+      return elems.isEmpty() ? null : elems.get(0);
    }
 
    public static List<ElementInfo> findElements(final XMLStreamReader reader, final String xpath) throws XMLStreamException {
@@ -262,7 +263,7 @@ public abstract class StAXUtils {
       final IntArrayList pathElemSize = new IntArrayList();
       final StringBuilder pathElem = new StringBuilder();
       final boolean evaluteAttributes = Strings.contains(xpath, '[');
-      TreeMap<String, String> attrs = null;
+      SortedMap<String, String> attrs = null;
       final Pattern xpathPattern = xpathToPattern(xpath);
 
       final List<ElementInfo> result = new ArrayList<>(max < 10 ? max : 10);
@@ -364,7 +365,7 @@ public abstract class StAXUtils {
       return Boolean.parseBoolean(val);
    }
 
-   private static TreeMap<String, String> readAttributes(final XMLStreamReader reader, TreeMap<String, String> reusableMap) {
+   private static SortedMap<String, String> readAttributes(final XMLStreamReader reader, SortedMap<String, String> reusableMap) {
       if (reusableMap == null) {
          reusableMap = new TreeMap<>();
       } else {

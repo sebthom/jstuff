@@ -28,7 +28,7 @@ public abstract class AbstractServer {
    protected final int portNumber;
    protected ServerSocket socketListener;
 
-   public AbstractServer(final int portNumber, final int numberOfThreads) {
+   protected AbstractServer(final int portNumber, final int numberOfThreads) {
       this.portNumber = portNumber;
       executor = Executors.newFixedThreadPool(numberOfThreads);
    }
@@ -73,7 +73,7 @@ public abstract class AbstractServer {
                               handleConnection(socket);
                               socket.close();
                            } catch (final IOException ex) {
-                              ex.printStackTrace();
+                              LOG.error(ex);
                            }
                         });
                      } else {

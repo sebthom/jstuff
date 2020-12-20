@@ -9,9 +9,13 @@
  *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
-import static net.sf.jstuff.core.reflection.Types.*;
-import static org.apache.commons.lang3.ArrayUtils.*;
-import static org.junit.Assert.*;
+import static net.sf.jstuff.core.reflection.Types.findGenericTypeArguments;
+import static net.sf.jstuff.core.reflection.Types.isAssignableTo;
+import static net.sf.jstuff.core.reflection.Types.resolveUnderlyingClass;
+import static org.apache.commons.lang3.ArrayUtils.EMPTY_CLASS_ARRAY;
+import static org.apache.commons.lang3.ArrayUtils.toArray;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -25,15 +29,15 @@ import java.util.Queue;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.junit.Test;
 
-import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TypesGenericsTest extends TestCase {
+public class TypesGenericsTest {
    public static class ClassA_1 {
    }
 
@@ -176,95 +180,97 @@ public class TypesGenericsTest extends TestCase {
    }
 
    public <T> void assertEquals(final List<T> actual, @SuppressWarnings("unchecked") final T... expected) {
-      assertEquals(new ArrayList<>(actual), Arrays.asList(expected));
+      assertThat(Arrays.asList(expected)).isEqualTo(new ArrayList<>(actual));
    }
 
+   @Test
    @SuppressWarnings({"unchecked", "rawtypes"})
    public void testGenerics() {
       // CLASSES: good behavior tests
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_1.class, ClassA_1.class));
+      assertThat(findGenericTypeArguments(ClassA_1.class, ClassA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_2.class, ClassA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_2.class, ClassA_1.class));
+      assertThat(findGenericTypeArguments(ClassA_2.class, ClassA_2.class)).isEqualTo(toArray((Class<?>) null));
+      assertThat(findGenericTypeArguments(ClassA_2.class, ClassA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(toArray(null, null), findGenericTypeArguments(ClassA_3.class, ClassA_3.class));
-      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_3.class, ClassA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_3.class, ClassA_1.class));
+      assertThat(findGenericTypeArguments(ClassA_3.class, ClassA_3.class)).isEqualTo(toArray(null, null));
+      assertThat(findGenericTypeArguments(ClassA_3.class, ClassA_2.class)).isEqualTo(toArray((Class<?>) null));
+      assertThat(findGenericTypeArguments(ClassA_3.class, ClassA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, ClassA_4.class));
-      assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_4.class, ClassA_3.class));
-      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_4.class, ClassA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, ClassA_1.class));
+      assertThat(findGenericTypeArguments(ClassA_4.class, ClassA_4.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(ClassA_4.class, ClassA_3.class)).isEqualTo(toArray(String.class, Integer.class));
+      assertThat(findGenericTypeArguments(ClassA_4.class, ClassA_2.class)).isEqualTo(toArray(String.class));
+      assertThat(findGenericTypeArguments(ClassA_4.class, ClassA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, ClassA_5.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, ClassA_4.class));
-      assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_5.class, ClassA_3.class));
-      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_5.class, ClassA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, ClassA_1.class));
+      assertThat(findGenericTypeArguments(ClassA_5.class, ClassA_5.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(ClassA_5.class, ClassA_4.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(ClassA_5.class, ClassA_3.class)).isEqualTo(toArray(String.class, Integer.class));
+      assertThat(findGenericTypeArguments(ClassA_5.class, ClassA_2.class)).isEqualTo(toArray(String.class));
+      assertThat(findGenericTypeArguments(ClassA_5.class, ClassA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
       // CLASSES: bad behavior tests
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(Long.class, Number.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(Byte.class, byte.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(byte.class, Byte.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(byte.class, Number.class));
+      assertThat(findGenericTypeArguments(Long.class, Number.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(Byte.class, byte.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(byte.class, Byte.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(byte.class, Number.class)).isEqualTo(EMPTY_CLASS_ARRAY);
       try {
          findGenericTypeArguments((Class) ClassA_5.class, (Class) ClassB.class);
-         fail("IllegalArgumentException expected.");
+         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
       } catch (final IllegalArgumentException ex) { /* expected */ }
 
       // INTERFACES: good behavior tests
-      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_2.class, InterfaceA_5.class));
-      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_2.class, InterfaceA_4.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_2.class, InterfaceA_3.class));
-      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_2.class, InterfaceA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_2.class, InterfaceA_1.class));
+      assertThat(findGenericTypeArguments(ClassA_2.class, InterfaceA_5.class)).isEqualTo(toArray((Class<?>) null));
+      assertThat(findGenericTypeArguments(ClassA_2.class, InterfaceA_4.class)).isEqualTo(toArray((Class<?>) null));
+      assertThat(findGenericTypeArguments(ClassA_2.class, InterfaceA_3.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(ClassA_2.class, InterfaceA_2.class)).isEqualTo(toArray(Double.class));
+      assertThat(findGenericTypeArguments(ClassA_2.class, InterfaceA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_3.class, InterfaceA_5.class));
-      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(ClassA_3.class, InterfaceA_4.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_3.class, InterfaceA_3.class));
-      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_3.class, InterfaceA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_3.class, InterfaceA_1.class));
+      assertThat(findGenericTypeArguments(ClassA_3.class, InterfaceA_5.class)).isEqualTo(toArray((Class<?>) null));
+      assertThat(findGenericTypeArguments(ClassA_3.class, InterfaceA_4.class)).isEqualTo(toArray((Class<?>) null));
+      assertThat(findGenericTypeArguments(ClassA_3.class, InterfaceA_3.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(ClassA_3.class, InterfaceA_2.class)).isEqualTo(toArray(Double.class));
+      assertThat(findGenericTypeArguments(ClassA_3.class, InterfaceA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_4.class, InterfaceA_5.class));
-      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_4.class, InterfaceA_4.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, InterfaceA_3.class));
-      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_4.class, InterfaceA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, InterfaceA_1.class));
+      assertThat(findGenericTypeArguments(ClassA_4.class, InterfaceA_5.class)).isEqualTo(toArray(String.class));
+      assertThat(findGenericTypeArguments(ClassA_4.class, InterfaceA_4.class)).isEqualTo(toArray(String.class));
+      assertThat(findGenericTypeArguments(ClassA_4.class, InterfaceA_3.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(ClassA_4.class, InterfaceA_2.class)).isEqualTo(toArray(Double.class));
+      assertThat(findGenericTypeArguments(ClassA_4.class, InterfaceA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_5.class, InterfaceA_5.class));
-      assertArrayEquals(toArray(String.class), findGenericTypeArguments(ClassA_5.class, InterfaceA_4.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, InterfaceA_3.class));
-      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, InterfaceA_1.class));
+      assertThat(findGenericTypeArguments(ClassA_5.class, InterfaceA_5.class)).isEqualTo(toArray(String.class));
+      assertThat(findGenericTypeArguments(ClassA_5.class, InterfaceA_4.class)).isEqualTo(toArray(String.class));
+      assertThat(findGenericTypeArguments(ClassA_5.class, InterfaceA_3.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(ClassA_5.class, InterfaceA_2.class)).isEqualTo(toArray(Double.class));
+      assertThat(findGenericTypeArguments(ClassA_5.class, InterfaceA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(toArray(null, null), findGenericTypeArguments(ClassA_3.class, InterfaceB.class));
-      assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_4.class, InterfaceB.class));
-      assertArrayEquals(toArray(String.class, Integer.class), findGenericTypeArguments(ClassA_5.class, InterfaceB.class));
+      assertThat(findGenericTypeArguments(ClassA_3.class, InterfaceB.class)).isEqualTo(toArray(null, null));
+      assertThat(findGenericTypeArguments(ClassA_4.class, InterfaceB.class)).isEqualTo(toArray(String.class, Integer.class));
+      assertThat(findGenericTypeArguments(ClassA_5.class, InterfaceB.class)).isEqualTo(toArray(String.class, Integer.class));
 
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_4.class, InterfaceC.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(ClassA_5.class, InterfaceC.class));
+      assertThat(findGenericTypeArguments(ClassA_4.class, InterfaceC.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(ClassA_5.class, InterfaceC.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_1.class, InterfaceA_1.class));
+      assertThat(findGenericTypeArguments(InterfaceA_1.class, InterfaceA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_2.class, InterfaceA_1.class));
-      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_2.class, InterfaceA_2.class));
+      assertThat(findGenericTypeArguments(InterfaceA_2.class, InterfaceA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(InterfaceA_2.class, InterfaceA_2.class)).isEqualTo(toArray((Class<?>) null));
 
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_3.class, InterfaceA_1.class));
-      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(InterfaceA_3.class, InterfaceA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_3.class, InterfaceA_3.class));
+      assertThat(findGenericTypeArguments(InterfaceA_3.class, InterfaceA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(InterfaceA_3.class, InterfaceA_2.class)).isEqualTo(toArray(Double.class));
+      assertThat(findGenericTypeArguments(InterfaceA_3.class, InterfaceA_3.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_4.class, InterfaceA_1.class));
-      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(InterfaceA_4.class, InterfaceA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_4.class, InterfaceA_3.class));
-      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_4.class, InterfaceA_4.class));
+      assertThat(findGenericTypeArguments(InterfaceA_4.class, InterfaceA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(InterfaceA_4.class, InterfaceA_2.class)).isEqualTo(toArray(Double.class));
+      assertThat(findGenericTypeArguments(InterfaceA_4.class, InterfaceA_3.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(InterfaceA_4.class, InterfaceA_4.class)).isEqualTo(toArray((Class<?>) null));
 
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_5.class, InterfaceA_1.class));
-      assertArrayEquals(toArray(Double.class), findGenericTypeArguments(InterfaceA_5.class, InterfaceA_2.class));
-      assertArrayEquals(EMPTY_CLASS_ARRAY, findGenericTypeArguments(InterfaceA_5.class, InterfaceA_3.class));
-      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_5.class, InterfaceA_4.class));
-      assertArrayEquals(toArray((Class<?>) null), findGenericTypeArguments(InterfaceA_5.class, InterfaceA_5.class));
+      assertThat(findGenericTypeArguments(InterfaceA_5.class, InterfaceA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(InterfaceA_5.class, InterfaceA_2.class)).isEqualTo(toArray(Double.class));
+      assertThat(findGenericTypeArguments(InterfaceA_5.class, InterfaceA_3.class)).isEqualTo(EMPTY_CLASS_ARRAY);
+      assertThat(findGenericTypeArguments(InterfaceA_5.class, InterfaceA_4.class)).isEqualTo(toArray((Class<?>) null));
+      assertThat(findGenericTypeArguments(InterfaceA_5.class, InterfaceA_5.class)).isEqualTo(toArray((Class<?>) null));
    }
 
+   @Test
    public void testPerformance() {
       final int iterations = 10000;
       final StopWatch sw = new StopWatch();

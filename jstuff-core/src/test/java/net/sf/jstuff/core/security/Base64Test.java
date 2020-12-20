@@ -7,39 +7,45 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *********************************************************************/
+
 package net.sf.jstuff.core.security;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
-import junit.framework.TestCase;
+import java.nio.charset.StandardCharsets;
+
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class Base64Test extends TestCase {
+public class Base64Test {
 
-   public void testDecode() throws UnsupportedEncodingException {
+   @Test
+   public void testDecode() {
 
-      /*Base64.decode( //
-         "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAM9UjXquRajbqlgDPp+lb7WegOSR/Tmm\nl56S7aTanVvR1sBVWUQZMPpspRuEHZw+FF4Zb2utZnMLdQk3ZL9nCVMCAwEAAQ==");
-      */
-      assertEquals("Hello World!", new String(Base64.decode("SGVsbG8gV29ybGQh"), "UTF-8"));
-      assertEquals("Hello World!", new String(Base64.decode("SGVsbG8g\nV29ybGQh"), "UTF-8"));
-      assertEquals("Hell", new String(Base64.decode("SGVsbA=="), "UTF-8"));
-      assertEquals("Hell", new String(Base64.decode("SGVsbA="), "UTF-8"));
-      assertEquals("Hell", new String(Base64.decode("SGVsbA"), "UTF-8"));
-      assertEquals(null, Base64.decode((String) null));
-      assertEquals(0, Base64.decode("").length);
-      assertEquals(null, Base64.decode((byte[]) null));
-      assertEquals(0, Base64.decode(new byte[0]).length);
-      assertTrue(Arrays.equals(Base64.urldecode("A_"), Base64.decode("A/")));
-      assertTrue(Arrays.equals(Base64.urldecode("A-"), Base64.decode("A+")));
-      assertTrue(Arrays.equals(Base64.urldecode("A-"), Base64.decode("A+=")));
-      assertTrue(Arrays.equals(Base64.urldecode("A-="), Base64.decode("A+==")));
+      /*
+       * Base64.decode( //
+       * "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAM9UjXquRajbqlgDPp+lb7WegOSR/Tmm\nl56S7aTanVvR1sBVWUQZMPpspRuEHZw+FF4Zb2utZnMLdQk3ZL9nCVMCAwEAAQ=="
+       * );
+       */
+      assertThat(new String(Base64.decode("SGVsbG8gV29ybGQh"), StandardCharsets.UTF_8)).isEqualTo("Hello World!");
+      assertThat(new String(Base64.decode("SGVsbG8g\nV29ybGQh"), StandardCharsets.UTF_8)).isEqualTo("Hello World!");
+      assertThat(new String(Base64.decode("SGVsbA=="), StandardCharsets.UTF_8)).isEqualTo("Hell");
+      assertThat(new String(Base64.decode("SGVsbA="), StandardCharsets.UTF_8)).isEqualTo("Hell");
+      assertThat(new String(Base64.decode("SGVsbA"), StandardCharsets.UTF_8)).isEqualTo("Hell");
+      assertThat(Base64.decode((String) null)).isNull();
+      assertThat(Base64.decode("")).isEmpty();
+      assertThat(Base64.decode((byte[]) null)).isNull();
+      assertThat(Base64.decode(new byte[0])).isEmpty();
+      assertThat(Base64.urldecode("A_")).isEqualTo(Base64.decode("A/"));
+      assertThat(Base64.urldecode("A-")).isEqualTo(Base64.decode("A+"));
+      assertThat(Base64.urldecode("A-")).isEqualTo(Base64.decode("A+="));
+      assertThat(Base64.urldecode("A-=")).isEqualTo(Base64.decode("A+=="));
       try {
          System.out.println(new String(Base64.decode("ÖÄÜ")));
-         fail();
+         failBecauseExceptionWasNotThrown(Exception.class);
       } catch (final Exception ex) {
          // expected
       }

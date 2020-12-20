@@ -35,19 +35,16 @@ public class ScalingThreadPoolExecutor extends ThreadPoolExecutor {
       }
    }
 
-   private static final RejectedExecutionHandler FORCE_QUEUE_POLICY = new RejectedExecutionHandler() {
-      @Override
-      public void rejectedExecution(final Runnable r, final ThreadPoolExecutor executor) {
-         if (executor.isShutdown())
-            throw new RejectedExecutionException(executor + " has been shutdown.");
+   private static final RejectedExecutionHandler FORCE_QUEUE_POLICY = (runnable, executor) -> {
+      if (executor.isShutdown())
+         throw new RejectedExecutionException(executor + " has been shutdown.");
 
-         try {
-            // block if queue is full instead of throwing an exception
-            executor.getQueue().put(r);
-         } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new RejectedExecutionException(ex);
-         }
+      try {
+         // block if queue is full instead of throwing an exception
+         executor.getQueue().put(runnable);
+      } catch (final InterruptedException ex) {
+         Thread.currentThread().interrupt();
+         throw new RejectedExecutionException(ex);
       }
    };
 

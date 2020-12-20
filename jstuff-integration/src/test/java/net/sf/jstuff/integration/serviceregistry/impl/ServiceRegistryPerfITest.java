@@ -10,13 +10,14 @@
 package net.sf.jstuff.integration.serviceregistry.impl;
 
 import org.apache.commons.lang3.time.StopWatch;
-
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ServiceRegistryPerfITest extends TestCase {
+public class ServiceRegistryPerfITest {
 
    public interface MyService {
       String getGreeting();
@@ -46,18 +47,19 @@ public class ServiceRegistryPerfITest extends TestCase {
       System.out.println(label + ": " + sw.toString());
    }
 
-   @Override
-   protected void setUp() throws Exception {
+   @Before
+   public void setup() throws Exception {
       byteBuddyRegistry = new ByteBuddyServiceRegistry();
       jdkProxyRegistry = new DefaultServiceRegistry();
    }
 
-   @Override
-   protected void tearDown() throws Exception {
+   @After
+   public void tearDown() throws Exception {
       byteBuddyRegistry = null;
       jdkProxyRegistry = null;
    }
 
+   @Test
    public void testPerformance() {
       byteBuddyRegistry.addService("MyService", MyService.class, MY_SERVICE);
       jdkProxyRegistry.addService("MyService", MyService.class, MY_SERVICE);

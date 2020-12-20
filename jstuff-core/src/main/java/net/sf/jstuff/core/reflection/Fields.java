@@ -143,6 +143,9 @@ public abstract class Fields extends Members {
       Args.notNull("fieldName", fieldName);
 
       final Field field = findRecursive(clazz, fieldName);
+      if (field == null)
+         throw new ReflectionException("Static field with name [" + fieldName + "] not found in class [" + clazz.getName() + "]");
+
       write(null, field, value);
    }
 
@@ -173,6 +176,8 @@ public abstract class Fields extends Members {
       Args.notNull("fieldName", fieldName);
 
       final Field field = findRecursive(clazz, fieldName);
+      if (field == null)
+         throw new IllegalArgumentException("Field with name " + fieldName + " not found in class " + clazz.getName());
       writeIgnoringFinal(null, field, value);
    }
 

@@ -9,10 +9,13 @@
  *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.reflection.Resources.Resource;
 
@@ -20,8 +23,9 @@ import net.sf.jstuff.core.reflection.Resources.Resource;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 @SuppressWarnings("deprecation")
-public class ResourcesTest extends TestCase {
+public class ResourcesTest {
 
+   @Test
    public void testFindClassInDir() throws IOException {
       boolean foundClass = false;
 
@@ -30,7 +34,7 @@ public class ResourcesTest extends TestCase {
             foundClass = true;
          }
       }
-      assertFalse(foundClass);
+      assertThat(foundClass).isFalse();
 
       for (final Resource r : Resources.findResourcesByGlobPattern("**/Strin*.class")) {
          if (r.name.equals("net/sf/jstuff/core/Strings.class")) {
@@ -40,9 +44,10 @@ public class ResourcesTest extends TestCase {
             }
          }
       }
-      assertTrue(foundClass);
+      assertThat(foundClass).isTrue();
    }
 
+   @Test
    public void testFindClassInJar() throws IOException {
       boolean foundClass = false;
       for (final Resource r : Resources.findResourcesByGlobPattern("**/*.class", ClassLoader.getSystemClassLoader())) {
@@ -53,9 +58,10 @@ public class ResourcesTest extends TestCase {
             }
          }
       }
-      assertTrue(foundClass);
+      assertThat(foundClass).isTrue();
    }
 
+   @Test
    public void testFindProperties() throws IOException {
       boolean foundClass = false;
       boolean foundDayProperties = false;
@@ -73,7 +79,7 @@ public class ResourcesTest extends TestCase {
             }
          }
       }
-      assertFalse(foundClass);
-      assertTrue(foundDayProperties);
+      assertThat(foundClass).isFalse();
+      assertThat(foundDayProperties).isTrue();
    }
 }

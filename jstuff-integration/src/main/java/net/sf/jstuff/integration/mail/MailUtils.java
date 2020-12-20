@@ -131,15 +131,15 @@ public abstract class MailUtils {
          };
 
          for (final File file : mail.attachments) {
-            final MimeBodyPart file_part = new MimeBodyPart();
+            final MimeBodyPart filePart = new MimeBodyPart();
             final FileDataSource fds = new FileDataSource(file);
             fds.setFileTypeMap(fileTypeMap);
             final DataHandler dh = new DataHandler(fds);
-            file_part.setFileName(file.getName());
-            file_part.setDisposition(Part.ATTACHMENT);
-            file_part.setDescription("Attached file: " + file.getName());
-            file_part.setDataHandler(dh);
-            mp.addBodyPart(file_part);
+            filePart.setFileName(file.getName());
+            filePart.setDisposition(Part.ATTACHMENT);
+            filePart.setDescription("Attached file: " + file.getName());
+            filePart.setDataHandler(dh);
+            mp.addBodyPart(filePart);
          }
       }
       msg.setContent(mp);

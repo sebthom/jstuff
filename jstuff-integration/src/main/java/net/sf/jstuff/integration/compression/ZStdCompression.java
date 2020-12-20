@@ -38,7 +38,7 @@ public class ZStdCompression extends AbstractCompression {
    public static final int LEVEL_SMALL_AS_DEFLATE_6 = 5;
    public static final int LEVEL_SMALL_AS_DEFLATE_9 = 5;
 
-   private boolean useChecksum = false;
+   private boolean useChecksum;
    private int compressionLevel = 3;
 
    public ZStdCompression() {

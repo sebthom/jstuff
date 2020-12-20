@@ -17,6 +17,7 @@ import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
 
 import net.sf.jstuff.core.io.IOUtils;
+import net.sf.jstuff.core.io.RuntimeIOException;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 
 /**
@@ -32,8 +33,8 @@ public class GZIPCompressingInputStream extends DeflaterInputStream {
          final GZIPOutputStream gzip = new GZIPOutputStream(out, 16);
          GZIP_HEADER = out.toByteArray();
          gzip.close();
-      } catch (final Exception ex) {
-         throw new RuntimeException(ex);
+      } catch (final IOException ex) {
+         throw new RuntimeIOException(ex);
       }
    }
 
@@ -43,7 +44,7 @@ public class GZIPCompressingInputStream extends DeflaterInputStream {
     * buffer that either holds the gzip header or trailer
     */
    private byte[] buf = GZIP_HEADER;
-   private int bufPos = 0;
+   private int bufPos;
    private int bufLen = GZIP_HEADER.length;
    private boolean bufContainsHeader = true;
 

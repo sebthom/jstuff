@@ -9,31 +9,36 @@
  *********************************************************************/
 package net.sf.jstuff.integration.spring;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanLocatorTest extends TestCase {
+public class SpringBeanLocatorTest {
+
+   @Test
    public void testSpringBeanLocator() {
       try {
          SpringBeanLocator.get().byClass(Object.class); // must fail, since the spring context is not yet opened
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
          // expected
       }
       final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml", SpringBeanLocatorTest.class);
 
-      assertNotNull(SpringBeanLocator.get().byClass(SpringBeanLocator.class));
-      assertNotNull(SpringBeanLocator.get().byName("springBean"));
+      assertThat(SpringBeanLocator.get().byClass(SpringBeanLocator.class)).isNotNull();
+      final Object bean = SpringBeanLocator.get().byName("springBean");
+      assertThat(bean).isNotNull();
 
       ctx.close();
 
       try {
          SpringBeanLocator.get().byClass(Object.class); // must fail, since the spring context is closed
-         fail();
+         failBecauseExceptionWasNotThrown(IllegalStateException.class);
       } catch (final IllegalStateException ex) {
          // expected
       }

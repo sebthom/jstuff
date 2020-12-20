@@ -9,15 +9,18 @@
  *********************************************************************/
 package net.sf.jstuff.core.concurrent;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.concurrent.locks.ReentrantLock;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import net.sf.jstuff.core.Strings;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ThreadDumperTest extends TestCase {
+public class ThreadDumperTest {
 
    private void startThreads() {
 
@@ -86,12 +89,13 @@ public class ThreadDumperTest extends TestCase {
    /*
     * https://blog.tier1app.com/2014/11/26/thread-dump-analysis/
     */
+   @Test
    @SuppressWarnings("deprecation")
    public void testDumpThreads() {
       startThreads();
 
-      assertEquals(4, Threads.deadlockedIds().length);
-      assertEquals(4, Threads.deadlocked().length);
+      assertThat(Threads.deadlockedIds()).hasSize(4);
+      assertThat(Threads.deadlocked()).hasSize(4);
 
       {
          final StringBuilder out = new StringBuilder();
@@ -103,10 +107,10 @@ public class ThreadDumperTest extends TestCase {
 
          System.out.println(out);
 
-         assertTrue(Strings.contains(out, "Finalizer"));
+         assertThat(Strings.contains(out, "Finalizer")).isTrue();
 
-         assertTrue(Strings.contains(out, "Found 2 deadlocks."));
-         assertTrue(Strings.endsWith(out, "#### THREAD DUMP END ####"));
+         assertThat(Strings.contains(out, "Found 2 deadlocks.")).isTrue();
+         assertThat(Strings.endsWith(out, "#### THREAD DUMP END ####")).isTrue();
       }
 
       {
@@ -118,10 +122,10 @@ public class ThreadDumperTest extends TestCase {
             .build();
          threadDumper.dumpThreads(out);
 
-         assertFalse(Strings.contains(out, "Finalizer"));
+         assertThat(Strings.contains(out, "Finalizer")).isFalse();
 
-         assertFalse(Strings.contains(out, "Found 2 deadlocks."));
-         assertTrue(Strings.endsWith(out, "#### THREAD DUMP END ####"));
+         assertThat(Strings.contains(out, "Found 2 deadlocks.")).isFalse();
+         assertThat(Strings.endsWith(out, "#### THREAD DUMP END ####")).isTrue();
       }
 
       // end threads that deadlock on "Lock.lock()"
@@ -140,12 +144,12 @@ public class ThreadDumperTest extends TestCase {
 
          System.out.println(out);
 
-         assertFalse(Strings.contains(out, "Finalizer"));
+         assertThat(Strings.contains(out, "Finalizer")).isFalse();
 
-         assertTrue(Strings.contains(out, "Found 1 deadlock."));
-         assertTrue(Strings.endsWith(out, "#### THREAD DUMP END ####"));
+         assertThat(Strings.contains(out, "Found 1 deadlock.")).isTrue();
+         assertThat(Strings.endsWith(out, "#### THREAD DUMP END ####")).isTrue();
       }
 
-      assertEquals(2, Threads.deadlockedIds().length);
+      assertThat(Threads.deadlockedIds()).hasSize(2);
    }
 }

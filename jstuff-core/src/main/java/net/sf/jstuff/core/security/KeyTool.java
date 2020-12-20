@@ -135,7 +135,6 @@ public abstract class KeyTool {
       }
    }
 
-   @SuppressWarnings("resource")
    public static String run(final String... args) throws IllegalArgumentException {
       Assert.notNull(keyToolClass, "KeyTool class not found!");
       Assert.notNull(keyToolRunMethod, "KeyTool run method not found!");
@@ -146,10 +145,11 @@ public abstract class KeyTool {
       }
 
       synchronized (SEC_MAN) {
-         try {
+         try (FastByteArrayOutputStream result = new FastByteArrayOutputStream();
+              PrintStream ps = new PrintStream(result) //
+         ) {
             installNoExitSecurityManager();
-            final FastByteArrayOutputStream result = new FastByteArrayOutputStream();
-            Methods.invoke(kt, keyToolRunMethod, args, new PrintStream(result));
+            Methods.invoke(kt, keyToolRunMethod, args, ps);
             return result.toString();
          } catch (final InvokingMethodFailedException ex) {
             if (Exceptions.getCauseOfType(ex, ExitNotAllowedException.class) != null)

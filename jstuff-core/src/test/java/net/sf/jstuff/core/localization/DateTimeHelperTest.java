@@ -9,64 +9,68 @@
  *********************************************************************/
 package net.sf.jstuff.core.localization;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DateTimeHelperTest extends TestCase {
+public class DateTimeHelperTest {
+
+   @Test
    public void testIsValidDate() {
       DateTimeHelper c;
       DateFormat df;
 
       // testing Validator with german locale
       c = new DateTimeHelper(Locale.GERMANY);
-      assertTrue(c.isValidDate("26.12.02")); //SHORT
-      assertTrue(c.isValidDate("26.12.2002")); //MEDIUM
-      assertTrue(c.isValidDate("26. Dezember 2002")); //LONG
-      assertTrue(c.isValidDate("Donnerstag, 26. Dezember 2002")); //FULL
+      assertThat(c.isValidDate("26.12.02")).isTrue(); //SHORT
+      assertThat(c.isValidDate("26.12.2002")).isTrue(); //MEDIUM
+      assertThat(c.isValidDate("26. Dezember 2002")).isTrue(); //LONG
+      assertThat(c.isValidDate("Donnerstag, 26. Dezember 2002")).isTrue(); //FULL
 
       df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.GERMANY);
-      assertTrue(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isTrue();
       df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.GERMANY);
-      assertTrue(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isTrue();
       df = DateFormat.getDateInstance(DateFormat.LONG, Locale.GERMANY);
-      assertTrue(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isTrue();
       df = DateFormat.getDateInstance(DateFormat.FULL, Locale.GERMANY);
-      assertTrue(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isTrue();
 
       df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
-      assertFalse(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isFalse();
       df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
-      assertFalse(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isFalse();
       df = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
-      assertFalse(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isFalse();
       df = DateFormat.getDateInstance(DateFormat.FULL, Locale.US);
-      assertFalse(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isFalse();
 
       // testing Validator with us locale
       c = new DateTimeHelper(Locale.US);
       df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.US);
-      assertTrue(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isTrue();
       df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
-      assertTrue(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isTrue();
       df = DateFormat.getDateInstance(DateFormat.LONG, Locale.US);
-      assertTrue(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isTrue();
       df = DateFormat.getDateInstance(DateFormat.FULL, Locale.US);
-      assertTrue(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isTrue();
 
       df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.GERMANY);
-      assertFalse(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isFalse();
       df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.GERMANY);
-      assertFalse(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isFalse();
       df = DateFormat.getDateInstance(DateFormat.LONG, Locale.GERMANY);
-      assertFalse(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isFalse();
       df = DateFormat.getDateInstance(DateFormat.FULL, Locale.GERMANY);
-      assertFalse(c.isValidDate(df.format(new Date())));
+      assertThat(c.isValidDate(df.format(new Date()))).isFalse();
    }
 
    public void testIsValidDateTime() {
@@ -75,48 +79,48 @@ public class DateTimeHelperTest extends TestCase {
 
       // testing Validator with german locale
       c = new DateTimeHelper(Locale.GERMANY);
-      /*assertTrue(c.isValidDate("26.12.02"));  //SHORT
-      assertTrue(c.isValidDate("26.12.2002"));  //MEDIUM
-      assertTrue(c.isValidDate("26. Dezember 2002"));  //LONG
-      assertTrue(c.isValidDate("Donnerstag, 26. Dezember 2002")); //FULL
+      /*assertThat(c.isValidDate("26.12.02")).isTrue();  //SHORT
+      assertThat(c.isValidDate("26.12.2002")).isTrue();  //MEDIUM
+      assertThat(c.isValidDate("26. Dezember 2002")).isTrue();  //LONG
+      assertThat(c.isValidDate("Donnerstag, 26. Dezember 2002")).isTrue(); //FULL
       */
       df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.GERMANY);
-      assertTrue(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isTrue();
       df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.GERMANY);
-      assertTrue(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isTrue();
       df = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.GERMANY);
-      assertTrue(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isTrue();
       df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Locale.GERMANY);
-      assertTrue(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isTrue();
 
       df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.US);
-      assertFalse(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isFalse();
       df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.US);
-      assertFalse(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isFalse();
       df = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.US);
-      assertFalse(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isFalse();
       df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Locale.US);
-      assertFalse(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isFalse();
 
       // testing Validator with us locale
       c = new DateTimeHelper(Locale.US);
       df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.US);
-      assertTrue(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isTrue();
       df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.US);
-      assertTrue(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isTrue();
       df = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.US);
-      assertTrue(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isTrue();
       df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Locale.US);
-      assertTrue(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isTrue();
 
       df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.GERMANY);
-      assertFalse(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isFalse();
       df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.GERMANY);
-      assertFalse(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isFalse();
       df = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.GERMANY);
-      assertFalse(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isFalse();
       df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, Locale.GERMANY);
-      assertFalse(c.isValidDateTime(df.format(new Date())));
+      assertThat(c.isValidDateTime(df.format(new Date()))).isFalse();
    }
 
    public void testIsValidTime() {
@@ -125,55 +129,55 @@ public class DateTimeHelperTest extends TestCase {
 
       // testing Validator with german locale
       c = new DateTimeHelper(Locale.GERMANY);
-      assertTrue(c.isValidTime("21:45")); //SHORT
-      assertTrue(c.isValidTime("21:45:30")); //MEDIUM
-      assertTrue(c.isValidTime("21:45:43 CET")); //LONG
-      assertTrue(c.isValidTime("21:46 Uhr CET")); //FULL
+      assertThat(c.isValidTime("21:45")).isTrue(); //SHORT
+      assertThat(c.isValidTime("21:45:30")).isTrue(); //MEDIUM
+      assertThat(c.isValidTime("21:45:43 CET")).isTrue(); //LONG
+      assertThat(c.isValidTime("21:46 Uhr CET")).isTrue(); //FULL
 
       df = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.GERMANY);
-      assertTrue(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isTrue();
       df = DateFormat.getTimeInstance(DateFormat.MEDIUM, Locale.GERMANY);
-      assertTrue(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isTrue();
       df = DateFormat.getTimeInstance(DateFormat.LONG, Locale.GERMANY);
-      assertTrue(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isTrue();
       /*
        * the next one fails if summer time CEST is enabled on the client
       df = DateFormat.getTimeInstance(DateFormat.FULL, Locale.GERMANY);
-      assertTrue(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isTrue();
       */
       /*
       the next tests are problematic because 9:42 PM will be
       interpreted as 09:42 and no error will arrise:
       ----------------------------------------------
       df = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
-      assertFalse(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isFalse();
       df = DateFormat.getTimeInstance(DateFormat.MEDIUM, Locale.US);
-      assertFalse(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isFalse();
       df = DateFormat.getTimeInstance(DateFormat.LONG, Locale.US);
-      assertFalse(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isFalse();
       df = DateFormat.getTimeInstance(DateFormat.FULL, Locale.US);
-      assertFalse(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isFalse();
       */
 
       // testing Validator with us locale
       c = new DateTimeHelper(Locale.US);
       df = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
-      assertTrue(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isTrue();
       df = DateFormat.getTimeInstance(DateFormat.MEDIUM, Locale.US);
-      assertTrue(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isTrue();
       df = DateFormat.getTimeInstance(DateFormat.LONG, Locale.US);
-      assertTrue(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isTrue();
       df = DateFormat.getTimeInstance(DateFormat.FULL, Locale.US);
-      assertTrue(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isTrue();
 
       df = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.GERMANY);
-      assertFalse(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isFalse();
       df = DateFormat.getTimeInstance(DateFormat.MEDIUM, Locale.GERMANY);
-      assertFalse(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isFalse();
       df = DateFormat.getTimeInstance(DateFormat.LONG, Locale.GERMANY);
-      assertFalse(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isFalse();
       df = DateFormat.getTimeInstance(DateFormat.FULL, Locale.GERMANY);
-      assertFalse(c.isValidTime(df.format(new Date())));
+      assertThat(c.isValidTime(df.format(new Date()))).isFalse();
    }
 
 }

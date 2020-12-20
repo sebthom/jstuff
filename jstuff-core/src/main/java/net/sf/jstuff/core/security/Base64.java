@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.core.security;
 
+import java.nio.charset.StandardCharsets;
+
 import net.sf.jstuff.core.collection.ArrayUtils;
 
 /**
@@ -39,7 +41,7 @@ public abstract class Base64 {
       if (encoded.length() == 0)
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
-      return decode(encoded.getBytes());
+      return decode(encoded.getBytes(StandardCharsets.UTF_8));
    }
 
    public static String encode(final byte[] plain) {
@@ -57,7 +59,7 @@ public abstract class Base64 {
       if (plain.length() == 0)
          return "";
 
-      return java.util.Base64.getEncoder().encodeToString(plain.getBytes());
+      return java.util.Base64.getEncoder().encodeToString(plain.getBytes(StandardCharsets.UTF_8));
    }
 
    public static boolean isBase64(final byte[] bytes) {
@@ -150,7 +152,7 @@ public abstract class Base64 {
       if (encoded.length() == 0)
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
-      return urldecode(encoded.getBytes());
+      return urldecode(encoded.getBytes(StandardCharsets.UTF_8));
    }
 
    public static String urlencode(final byte[] plain) {
@@ -168,6 +170,6 @@ public abstract class Base64 {
       if (plain.length() == 0)
          return "";
 
-      return java.util.Base64.getUrlEncoder().encodeToString(plain.getBytes());
+      return java.util.Base64.getUrlEncoder().encodeToString(plain.getBytes(StandardCharsets.UTF_8));
    }
 }

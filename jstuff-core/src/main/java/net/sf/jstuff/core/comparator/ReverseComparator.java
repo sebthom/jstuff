@@ -9,12 +9,15 @@
  *********************************************************************/
 package net.sf.jstuff.core.comparator;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ReverseComparator<T> implements Comparator<T> {
+public class ReverseComparator<T> implements Comparator<T>, Serializable {
+   private static final long serialVersionUID = 1L;
+
    private final Comparator<T> delegate;
 
    public static <T> ReverseComparator<T> of(final Comparator<T> delegate) {

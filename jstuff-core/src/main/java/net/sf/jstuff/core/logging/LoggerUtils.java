@@ -138,11 +138,10 @@ abstract class LoggerUtils {
       for (int i = 2, l = stacktrace.length; i < l; i++) {
          final StackTraceElement ste = stacktrace[i];
          final String className = ste.getClassName();
-         if ("java.lang.reflect.Method".equals(className)) {
-            continue;
-         } else if (className.startsWith("org.springframework.aop.")) {
-            continue;
-         } else if (className.startsWith("sun.reflect.")) {
+         if ("java.lang.reflect.Method".equals(className) || //
+            className.startsWith("org.springframework.aop.") || //
+            className.startsWith("sun.reflect.") //
+         ) {
             continue;
          } else if (className.startsWith("com.")) {
             if (className.startsWith("sun.proxy.$Proxy", 4)) { // com.sun.proxy.$Proxy
@@ -163,15 +162,15 @@ abstract class LoggerUtils {
                }
             }
          } else if (className.startsWith("org.codehaus.groovy.")) {
-            if (className.startsWith("runtime.", 20)) { // org.codehaus.groovy.runtime.
-               continue;
-            } else if (className.startsWith("reflection.", 20)) { // org.codehaus.groovy.runtime.reflection.
+            if (className.startsWith("runtime.", 20) || // org.codehaus.groovy.runtime.
+               className.startsWith("reflection.", 20) // org.codehaus.groovy.runtime.reflection.
+            ) {
                continue;
             }
          } else if (className.startsWith("groovy.lang.")) {
-            if (className.startsWith("Meta", 12)) { // groovy.lang.Meta
-               continue;
-            } else if (className.startsWith("Closure", 12)) { // groovy.lang.Closure
+            if (className.startsWith("Meta", 12) || // groovy.lang.Meta
+               className.startsWith("Closure", 12) // groovy.lang.Closure
+            ) {
                continue;
             }
          }

@@ -25,8 +25,8 @@ public class BooleanComparator implements Comparator<Boolean>, Serializable {
 
    @Override
    public int compare(final Boolean o1, final Boolean o2) {
-      final boolean b1 = o1.booleanValue();
-      final boolean b2 = o1.booleanValue();
+      final boolean b1 = o1;
+      final boolean b2 = o2;
 
       return b1 == b2 ? 0 : b1 ? 1 : -1;
    }

@@ -9,12 +9,14 @@
  *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TypesMixinTest extends TestCase {
+public class TypesMixinTest {
    protected interface TestEntity {
       String createGreeting(String name);
 
@@ -33,6 +35,7 @@ public class TypesMixinTest extends TestCase {
       }
    }
 
+   @Test
    public void testMixin() {
       final TestEntityImpl delegate = new TestEntityImpl();
       final TestEntity proxy = Types.createMixin(TestEntity.class, new Object() {
@@ -41,7 +44,7 @@ public class TypesMixinTest extends TestCase {
             return delegate.createGreeting(name) + " How are you?";
          }
       }, delegate);
-      assertEquals("Hello John! How are you?", proxy.createGreeting("John"));
-      assertEquals("Goodbye John.", proxy.createClosing("John"));
+      assertThat(proxy.createGreeting("John")).isEqualTo("Hello John! How are you?");
+      assertThat(proxy.createClosing("John")).isEqualTo("Goodbye John.");
    }
 }

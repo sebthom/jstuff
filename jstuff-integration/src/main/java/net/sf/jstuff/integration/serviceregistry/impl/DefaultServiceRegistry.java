@@ -43,8 +43,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
    public final class ServiceEndpointState {
       private final String serviceEndpointId;
 
-      protected Object activeService;
-      protected Class<?> activeServiceInterface;
+      Object activeService;
+      Class<?> activeServiceInterface;
 
       /**
        * All service proxy instances handed out to service consumers for the given end point and still referenced somewhere in the JVM
@@ -232,12 +232,12 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
       final Class<SERVICE_INTERFACE> serviceInterface) {
       final DefaultServiceProxyAdvice<SERVICE_INTERFACE> advice = new DefaultServiceProxyAdvice<>(serviceEndpointState, serviceInterface);
       final ServiceProxyInternal<SERVICE_INTERFACE> serviceProxy = Proxies.create((proxy, method, args) -> {
-         final String methodName = method.getName();
          if (method.getDeclaringClass() == ServiceProxy.class)
             return method.invoke(advice, args);
          if (method.getDeclaringClass() == ServiceProxyInternal.class)
             return method.invoke(advice, args);
 
+         final String methodName = method.getName();
          final int methodParamCount = method.getParameterTypes().length;
          if (methodParamCount == 0) {
             if ("hashCode".equals(methodName))

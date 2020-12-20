@@ -9,29 +9,32 @@
  *********************************************************************/
 package net.sf.jstuff.core.math;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RoundingTest extends TestCase {
+public class RoundingTest {
 
    private void testRounding(final long expected, final long input, final Rounding rounding) {
-      assertEquals(expected, rounding.round(input));
-      assertEquals((double) expected, rounding.round((double) input));
-      assertEquals(BigDecimal.valueOf(expected), rounding.round(BigDecimal.valueOf(input)));
-      assertEquals(BigInteger.valueOf(expected), rounding.round(BigInteger.valueOf(input)));
+      assertThat(rounding.round(input)).isEqualTo(expected);
+      assertThat(rounding.round((double) input)).isEqualTo(expected);
+      assertThat(rounding.round(BigDecimal.valueOf(input))).isEqualTo(BigDecimal.valueOf(expected));
+      assertThat(rounding.round(BigInteger.valueOf(input))).isEqualTo(BigInteger.valueOf(expected));
    }
 
    private void testRounding(final double expected, final double input, final Rounding rounding) {
-      assertEquals(expected, rounding.round(input));
-      assertEquals(BigDecimal.valueOf(expected).stripTrailingZeros(), rounding.round(BigDecimal.valueOf(input)));
+      assertThat(rounding.round(input)).isEqualTo(expected);
+      assertThat(rounding.round(BigDecimal.valueOf(input))).isEqualTo(BigDecimal.valueOf(expected).stripTrailingZeros());
    }
 
+   @Test
    public void testIntegerRounding() {
       {
          final Rounding rounding = new Rounding(-2, RoundingMode.UP);
@@ -72,6 +75,7 @@ public class RoundingTest extends TestCase {
       }
    }
 
+   @Test
    public void testDecimalRounding() {
       {
          final Rounding rounding = new Rounding(2, RoundingMode.UP);

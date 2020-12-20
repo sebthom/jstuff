@@ -24,11 +24,11 @@ public final class CallTree {
 
    private static final int INDENT = 2;
 
-   private long idleSeen = 0;
-   private long executingSeen = 0;
+   private long idleSeen;
+   private long executingSeen;
    private final Map<CodeLocation, CallTree> children = new HashMap<>(32);
 
-   protected CallTree markSeen(final String clazz, final String method, final int lineNumber, final boolean isExecuting) {
+   CallTree markSeen(final String clazz, final String method, final int lineNumber, final boolean isExecuting) {
       final CodeLocation codeLocation = new CodeLocation(clazz, method, lineNumber);
       CallTree ct = children.get(codeLocation);
       if (ct == null) {
@@ -68,7 +68,6 @@ public final class CallTree {
       }
 
       for (final Map.Entry<CodeLocation, CallTree> childEntry : tree.children.entrySet()) {
-
          final CallTree childTree = childEntry.getValue();
          final long childPercentage = (childTree.idleSeen + childTree.executingSeen) * percent / totalSeen;
          if (childPercentage > 0 && childPercentage > minPercent) {
@@ -85,7 +84,6 @@ public final class CallTree {
 
             toString(out, childTree, indent + INDENT, childPercentage, maxDepth, minPercent);
          }
-
       }
    }
 
@@ -94,5 +92,4 @@ public final class CallTree {
       out.append("---------------------------------------").append(Strings.NEW_LINE);
       toString(out, this, 0, 100, maxDepth == 0 ? -1 : maxDepth, minPercent);
    }
-
 }

@@ -159,10 +159,8 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       return bytes;
    }
 
-   @SuppressWarnings("resource")
    public static byte[] readBytesAndClose(final InputStream is) throws IOException {
-      final FastByteArrayOutputStream os = new FastByteArrayOutputStream();
-      try {
+      try (FastByteArrayOutputStream os = new FastByteArrayOutputStream()) {
          copyLarge(is, os);
          return os.toByteArray();
       } finally {
@@ -177,7 +175,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       final int readLen = is.read(buff);
       if (readLen == IOUtils.EOF)
          return "";
-      return new String(buff, 0, readLen);
+      return new String(buff, 0, readLen, Charset.defaultCharset());
    }
 
    /**
@@ -190,11 +188,15 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       final int ch4 = is.read();
       if ((ch1 | ch2 | ch3 | ch4) < 0)
          throw new EOFException("Unexpected end of input stream reached.");
-      return (ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0);
+      return (ch1 << 24) + (ch2 << 16) + (ch3 << 8) + ch4;
    }
 
    public static List<String> readLines(final InputStream in) throws IOException {
       return readLines(new InputStreamReader(in));
+   }
+
+   public static List<String> readLines(final InputStream in, final Charset charset) throws IOException {
+      return readLines(new InputStreamReader(in, charset));
    }
 
    public static List<String> readLines(final Reader reader) throws IOException {
@@ -233,7 +235,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
     * Wraps the input stream in a {@link BufferedInputStream} except if it is already one or
     * if it is of type {@link ByteArrayInputStream} or {@link FastByteArrayInputStream}
     */
-   public static InputStream toBufferedInputStream(final InputStream input) throws IOException {
+   public static InputStream toBufferedInputStream(final InputStream input) {
       if (input instanceof BufferedInputStream || input instanceof ByteArrayInputStream || input instanceof FastByteArrayInputStream)
          return input;
       return new BufferedInputStream(input);
@@ -243,7 +245,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
     * Wraps the input stream in a {@link BufferedInputStream} except if it is already one or
     * if it is of type {@link ByteArrayInputStream} or {@link FastByteArrayInputStream}
     */
-   public static InputStream toBufferedInputStream(final InputStream input, final int blockSize) throws IOException {
+   public static InputStream toBufferedInputStream(final InputStream input, final int blockSize) {
       if (input instanceof BufferedInputStream || input instanceof ByteArrayInputStream || input instanceof FastByteArrayInputStream)
          return input;
       return new BufferedInputStream(input, blockSize);

@@ -9,9 +9,15 @@
  *********************************************************************/
 package net.sf.jstuff.core.collection;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Objects;
 import java.util.Set;
 
+import org.junit.Test;
+
 import junit.framework.TestCase;
+import net.sf.jstuff.core.concurrent.Threads;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
@@ -42,57 +48,55 @@ public class WeakIdentityHashSetTest extends TestCase {
          if (getClass() != obj.getClass())
             return false;
          final Entity other = (Entity) obj;
-         if (name == null) {
-            if (other.name != null)
-               return false;
-         } else if (!name.equals(other.name))
+         if (!Objects.equals(name, other.name))
             return false;
          return true;
       }
    }
 
-   public void testWeakIdentityHashSet() throws InterruptedException {
+   @Test
+   public void testWeakIdentityHashSet() {
       final WeakIdentityHashSet<Entity> identitySet = WeakIdentityHashSet.create();
 
       Entity e1 = new Entity().setName("aa");
       Entity e2 = new Entity().setName("aa");
 
-      assertEquals(e1, e2);
-      assertNotSame(e1, e2);
+      assertThat(e2).isEqualTo(e1).isNotSameAs(e1);
 
       identitySet.add(e1);
       identitySet.add(e2);
 
-      assertEquals(2, identitySet.size());
-      assertTrue(identitySet.contains(e1));
-      assertTrue(identitySet.contains(e2));
-      assertEquals(2, identitySet.toArray().length);
+      assertThat(identitySet).hasSize(2).contains(e1).contains(e2);
+      assertThat(identitySet.toArray()).hasSize(2);
 
       System.gc();
-      Thread.sleep(1000);
+      Threads.sleep(1000);
 
-      assertEquals(2, identitySet.size());
-      assertTrue(identitySet.contains(e1));
-      assertTrue(identitySet.contains(e2));
+      assertThat(identitySet) //
+         .hasSize(2) //
+         .contains(e1) //
+         .contains(e2);
 
       final Set<Entity> identitySet2 = WeakIdentityHashSet.create();
       identitySet2.add(e1);
       identitySet2.add(e2);
 
-      assertEquals(identitySet, identitySet2);
+      assertThat(identitySet2).isEqualTo(identitySet);
 
       identitySet2.remove(e2);
-      assertTrue(identitySet2.contains(e1));
-      assertFalse(identitySet2.contains(e2));
-      assertFalse(identitySet.equals(identitySet2));
+      assertThat(identitySet2) //
+         .hasSize(1) //
+         .contains(e1);
+      assertThat(identitySet2.contains(e2)).isFalse();
+      assertThat(identitySet).isNotEqualTo(identitySet2);
 
       e1 = null;
       e2 = null;
 
       System.gc();
-      Thread.sleep(1000);
+      Threads.sleep(1000);
 
-      assertEquals(0, identitySet.size());
-      assertEquals(0, identitySet2.size());
+      assertThat(identitySet).isEmpty();
+      assertThat(identitySet2).isEmpty();
    }
 }

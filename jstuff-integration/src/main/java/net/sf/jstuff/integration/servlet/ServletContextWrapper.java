@@ -43,17 +43,17 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
-   public javax.servlet.FilterRegistration.Dynamic addFilter(final String filterName, final Class<? extends Filter> filterClass) {
+   public FilterRegistration.Dynamic addFilter(final String filterName, final Class<? extends Filter> filterClass) {
       return delegate.addFilter(filterName, filterClass);
    }
 
    @Override
-   public javax.servlet.FilterRegistration.Dynamic addFilter(final String filterName, final Filter filter) {
+   public FilterRegistration.Dynamic addFilter(final String filterName, final Filter filter) {
       return delegate.addFilter(filterName, filter);
    }
 
    @Override
-   public javax.servlet.FilterRegistration.Dynamic addFilter(final String filterName, final String className) {
+   public FilterRegistration.Dynamic addFilter(final String filterName, final String className) {
       return delegate.addFilter(filterName, className);
    }
 

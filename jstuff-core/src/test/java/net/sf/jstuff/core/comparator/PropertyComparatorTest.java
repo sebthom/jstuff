@@ -9,14 +9,16 @@
  *********************************************************************/
 package net.sf.jstuff.core.comparator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.TreeSet;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class PropertyComparatorTest extends TestCase {
+public class PropertyComparatorTest {
    private static final class Entity {
       String name;
 
@@ -33,6 +35,7 @@ public class PropertyComparatorTest extends TestCase {
       }
    }
 
+   @Test
    public void testPropertyComparator() {
       final Entity e1 = new Entity("444");
       final Entity e2 = new Entity("222");
@@ -46,10 +49,10 @@ public class PropertyComparatorTest extends TestCase {
          set.add(e4);
 
          final Entity[] orderedEntities = set.toArray(new Entity[4]);
-         assertEquals(e2, orderedEntities[0]);
-         assertEquals(e3, orderedEntities[1]);
-         assertEquals(e1, orderedEntities[2]);
-         assertEquals(e4, orderedEntities[3]);
+         assertThat(orderedEntities[0]).isEqualTo(e2);
+         assertThat(orderedEntities[1]).isEqualTo(e3);
+         assertThat(orderedEntities[2]).isEqualTo(e1);
+         assertThat(orderedEntities[3]).isEqualTo(e4);
       }
       e1.child = new Entity("AAA");
       e2.child = new Entity("CCC");
@@ -63,10 +66,10 @@ public class PropertyComparatorTest extends TestCase {
          set.add(e4);
 
          final Entity[] orderedEntities = set.toArray(new Entity[4]);
-         assertEquals(e1, orderedEntities[0]);
-         assertEquals(e4, orderedEntities[1]);
-         assertEquals(e2, orderedEntities[2]);
-         assertEquals(e3, orderedEntities[3]);
+         assertThat(orderedEntities[0]).isEqualTo(e1);
+         assertThat(orderedEntities[1]).isEqualTo(e4);
+         assertThat(orderedEntities[2]).isEqualTo(e2);
+         assertThat(orderedEntities[3]).isEqualTo(e3);
       }
    }
 }

@@ -9,14 +9,17 @@
  *********************************************************************/
 package net.sf.jstuff.core.collection;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Objects;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class IdentityHashSetTest extends TestCase {
+public class IdentityHashSetTest {
    private static class Entity {
       private String name;
 
@@ -42,15 +45,13 @@ public class IdentityHashSetTest extends TestCase {
          if (getClass() != obj.getClass())
             return false;
          final Entity other = (Entity) obj;
-         if (name == null) {
-            if (other.name != null)
-               return false;
-         } else if (!name.equals(other.name))
+         if (!Objects.equals(name, other.name))
             return false;
          return true;
       }
    }
 
+   @Test
    public void testIdentityHashSet() {
       final Set<Entity> ihs = IdentityHashSet.create();
       final Set<Entity> hs = CollectionUtils.newHashSet();
@@ -58,25 +59,26 @@ public class IdentityHashSetTest extends TestCase {
       final Entity e1 = new Entity().setName("aa");
       final Entity e2 = new Entity().setName("aa");
 
-      assertEquals(e1, e2);
-      assertNotSame(e1, e2);
+      assertThat(e2) //
+         .isEqualTo(e1) //
+         .isNotSameAs(e1);
 
       ihs.add(e1);
       ihs.add(e2);
-      assertTrue(ihs.contains(e1));
-      assertTrue(ihs.contains(e2));
+      assertThat(ihs.contains(e1)).isTrue();
+      assertThat(ihs.contains(e2)).isTrue();
 
       hs.add(e1);
       hs.add(e2);
 
-      assertEquals(2, ihs.size());
-      assertEquals(1, hs.size());
+      assertThat(ihs).hasSize(2);
+      assertThat(hs).hasSize(1);
 
       final Set<Entity> ihs2 = IdentityHashSet.create();
       ihs2.add(e1);
       ihs2.add(e2);
-      assertEquals(ihs, ihs2);
+      assertThat(ihs2).isEqualTo(ihs);
       ihs2.remove(e2);
-      assertFalse(ihs.equals(ihs2));
+      assertThat(ihs.equals(ihs2)).isFalse();
    }
 }

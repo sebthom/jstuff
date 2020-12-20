@@ -68,7 +68,7 @@ public abstract class Enumerations {
       return () -> new Iterator<T>() {
          @Override
          public boolean hasNext() {
-            return en == null ? false : en.hasMoreElements();
+            return en != null && en.hasMoreElements();
          }
 
          @Override

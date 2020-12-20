@@ -9,22 +9,25 @@
  *********************************************************************/
 package net.sf.jstuff.core.io;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FileUtilsTest extends TestCase {
+public class FileUtilsTest {
 
    @SuppressWarnings("deprecation")
    private void _testFind(final String rootPath, final String globPattern, final int exceptedFiles, final int exceptedFolders) throws IOException {
-      assertEquals(exceptedFiles, FileUtils.findFiles(rootPath, globPattern).size());
-      assertEquals(exceptedFolders, FileUtils.findDirectories(rootPath, globPattern).size());
-      assertEquals(exceptedFiles + exceptedFolders, FileUtils.find(rootPath, globPattern, true, true).size());
+      assertThat(FileUtils.findFiles(rootPath, globPattern)).hasSize(exceptedFiles);
+      assertThat(FileUtils.findDirectories(rootPath, globPattern)).hasSize(exceptedFolders);
+      assertThat(FileUtils.find(rootPath, globPattern, true, true)).hasSize(exceptedFiles + exceptedFolders);
    }
 
+   @Test
    public void testFind() throws IOException {
       _testFind(null, "**/FileUtils.java", 1, 0);
       _testFind("", "**/FileUtils.java", 1, 0);

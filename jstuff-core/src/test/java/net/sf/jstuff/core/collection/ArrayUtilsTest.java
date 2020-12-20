@@ -9,43 +9,44 @@
  *********************************************************************/
 package net.sf.jstuff.core.collection;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.lang3.RandomStringUtils;
-
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ArrayUtilsTest extends TestCase {
+public class ArrayUtilsTest {
 
+   @Test
    public void testFilter() {
-      final String[] filtered = ArrayUtils.filter(obj -> "foo".equals(obj) || "bar".equals(obj), new String[] {"dog", "foo", "bar", "cat"});
+      final String[] filtered = ArrayUtils.filter(obj -> "foo".equals(obj) || "bar".equals(obj), "dog", "foo", "bar", "cat");
 
-      assertEquals(2, filtered.length);
-      assertEquals("foo", filtered[0]);
-      assertEquals("bar", filtered[1]);
+      assertThat(filtered).hasSize(2);
+      assertThat(filtered[0]).isEqualTo("foo");
+      assertThat(filtered[1]).isEqualTo("bar");
    }
 
+   @Test
    public void testIntersect() {
-      assertEquals(0, ArrayUtils.intersect((Object[]) null).length);
-      assertEquals(0, ArrayUtils.intersect(ArrayUtils.EMPTY_OBJECT_ARRAY).length);
-      assertEquals(0, ArrayUtils.intersect(ArrayUtils.EMPTY_OBJECT_ARRAY, null).length);
+      assertThat(ArrayUtils.intersect((Object[]) null)).isEmpty();
+      assertThat(ArrayUtils.intersect(ArrayUtils.EMPTY_OBJECT_ARRAY)).isEmpty();
+      assertThat(ArrayUtils.intersect(ArrayUtils.EMPTY_OBJECT_ARRAY, null)).isEmpty();
 
       final String[] arr1 = new String[] {"foo", "bar", "dog"};
       final String[] arr2 = new String[] {"cat", "bar", "foo"};
 
-      assertEquals(2, ArrayUtils.intersect(arr1, arr2).length);
-      assertEquals("foo", ArrayUtils.intersect(arr1, arr2)[0]);
-      assertEquals("bar", ArrayUtils.intersect(arr1, arr2)[1]);
+      assertThat(ArrayUtils.intersect(arr1, arr2)).hasSize(2);
+      assertThat(ArrayUtils.intersect(arr1, arr2)[0]).isEqualTo("foo");
+      assertThat(ArrayUtils.intersect(arr1, arr2)[1]).isEqualTo("bar");
    }
 
-   public void testToByteArray() throws UnsupportedEncodingException {
+   @Test
+   public void testToByteArray() {
       final String str = RandomStringUtils.random(250);
-      assertArrayEquals(str.getBytes("UTF-8"), ArrayUtils.toByteArray(str.toCharArray(), Charset.forName("UTF-8")));
+      assertThat(ArrayUtils.toByteArray(str.toCharArray(), StandardCharsets.UTF_8)).isEqualTo(str.getBytes(StandardCharsets.UTF_8));
    }
 }

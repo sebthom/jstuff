@@ -75,6 +75,36 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
+   public void entry() {
+      wrapped.entry();
+   }
+
+   @Override
+   public void entry(final Object arg1) {
+      wrapped.entry(arg1);
+   }
+
+   @Override
+   public void entry(final Object arg1, final Object arg2) {
+      wrapped.entry(arg1, arg2);
+   }
+
+   @Override
+   public void entry(final Object arg1, final Object arg2, final Object arg3) {
+      wrapped.entry(arg1, arg2, arg3);
+   }
+
+   @Override
+   public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+      wrapped.entry(arg1, arg2, arg3, arg4);
+   }
+
+   @Override
+   public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+      wrapped.entry(arg1, arg2, arg3, arg4, arg5);
+   }
+
+   @Override
    public void error(final String msg) {
       wrapped.error(msg);
    }
@@ -117,6 +147,16 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    @Override
    public void error(final Throwable ex, final String messageTemplate, final Object... args) {
       wrapped.error(ex, messageTemplate, args);
+   }
+
+   @Override
+   public void exit() {
+      wrapped.exit();
+   }
+
+   @Override
+   public <T> T exit(final T returnValue) {
+      return wrapped.exit(returnValue);
    }
 
    @Override
@@ -220,6 +260,11 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
+   public void trace(final Method location, final String msg) {
+      wrapped.trace(location, msg);
+   }
+
+   @Override
    public void trace(final String msg) {
       wrapped.trace(msg);
    }
@@ -265,46 +310,6 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void entry() {
-      wrapped.entry();
-   }
-
-   @Override
-   public void entry(final Object arg1) {
-      wrapped.entry(arg1);
-   }
-
-   @Override
-   public void entry(final Object arg1, final Object arg2) {
-      wrapped.entry(arg1, arg2);
-   }
-
-   @Override
-   public void entry(final Object arg1, final Object arg2, final Object arg3) {
-      wrapped.entry(arg1, arg2, arg3);
-   }
-
-   @Override
-   public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
-      wrapped.entry(arg1, arg2, arg3, arg4);
-   }
-
-   @Override
-   public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
-      wrapped.entry(arg1, arg2, arg3, arg4, arg5);
-   }
-
-   @Override
-   public void exit() {
-      wrapped.exit();
-   }
-
-   @Override
-   public <T> T exit(final T returnValue) {
-      return wrapped.exit(returnValue);
-   }
-
-   @Override
    public void warn(final String msg) {
       wrapped.warn(msg);
    }
@@ -347,10 +352,5 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    @Override
    public void warn(final Throwable ex, final String messageTemplate, final Object... args) {
       wrapped.warn(ex, messageTemplate, args);
-   }
-
-   @Override
-   public void trace(final Method location, final String msg) {
-      wrapped.trace(location, msg);
    }
 }

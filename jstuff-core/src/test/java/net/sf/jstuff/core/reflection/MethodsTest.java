@@ -9,12 +9,15 @@
  *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
+import org.junit.Test;
 
-import junit.framework.TestCase;
 import net.sf.jstuff.core.reflection.MethodsTestEntities.EntityA;
 import net.sf.jstuff.core.reflection.MethodsTestEntities.EntityB;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
@@ -22,7 +25,7 @@ import net.sf.jstuff.core.reflection.exception.ReflectionException;
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MethodsTest extends TestCase {
+public class MethodsTest {
 
    @FunctionalInterface
    interface EntityB_getProperty2_Accessor {
@@ -39,45 +42,51 @@ public class MethodsTest extends TestCase {
       void invoke(EntityB entity, boolean propertyValue);
    }
 
+   @Test
    public void test_createPublicGetterAccessor() {
       final EntityB entity = new EntityB();
       entity.setProperty3(true);
 
       try {
          Methods.createPublicGetterAccessor(EntityB.class, "property2", int.class).invoke(entity);
+         failBecauseExceptionWasNotThrown(ReflectionException.class);
       } catch (final ReflectionException ex) {
-         assertEquals(IllegalAccessException.class, ex.getCause().getClass());
+         assertThat(ex.getCause().getClass()).isEqualTo(IllegalAccessException.class);
       }
 
-      assertEquals(true, (boolean) Methods.createPublicGetterAccessor(EntityB.class, "property3", boolean.class).invoke(entity));
+      assertThat(Methods.createPublicGetterAccessor(EntityB.class, "property3", boolean.class).invoke(entity)).isTrue();
    }
 
+   @Test
    public void test_createPublicMethodAccessor() {
       final EntityB entity = new EntityB();
 
       try {
          Methods.createPublicMethodAccessor(EntityB_getProperty2_Accessor.class, EntityB.class, "getProperty2", int.class).invoke(entity);
+         failBecauseExceptionWasNotThrown(ReflectionException.class);
       } catch (final ReflectionException ex) {
-         assertEquals(IllegalAccessException.class, ex.getCause().getClass());
+         assertThat(ex.getCause().getClass()).isEqualTo(IllegalAccessException.class);
       }
 
       entity.setProperty3(true);
 
       Methods.createPublicMethodAccessor(EntityB_setProperty3_Accessor.class, EntityB.class, "setProperty3", void.class, boolean.class).invoke(entity, false);
-      assertEquals(false, Methods.createPublicMethodAccessor(EntityB_isProperty3_Accessor.class, EntityB.class, "isProperty3", boolean.class).invoke(entity));
+      assertThat(Methods.createPublicMethodAccessor(EntityB_isProperty3_Accessor.class, EntityB.class, "isProperty3", boolean.class).invoke(entity)).isFalse();
 
       Methods.createPublicMethodAccessor(EntityB_setProperty3_Accessor.class, EntityB.class, "setProperty3").invoke(entity, true);
-      assertEquals(true, Methods.createPublicMethodAccessor(EntityB_isProperty3_Accessor.class, EntityB.class, "isProperty3").invoke(entity));
+      assertThat(Methods.createPublicMethodAccessor(EntityB_isProperty3_Accessor.class, EntityB.class, "isProperty3").invoke(entity)).isTrue();
    }
 
+   @Test
    public void test_createPublicSetterAccessor() {
       final EntityB entity = new EntityB();
       entity.setProperty3(false);
 
       try {
          Methods.createPublicSetterAccessor(EntityB.class, "property2", int.class).invoke(entity, 5);
+         failBecauseExceptionWasNotThrown(ReflectionException.class);
       } catch (final ReflectionException ex) {
-         assertEquals(IllegalAccessException.class, ex.getCause().getClass());
+         assertThat(ex.getCause().getClass()).isEqualTo(IllegalAccessException.class);
       }
 
       if (SystemUtils.isJavaVersionAtMost(JavaVersion.JAVA_10)) {
@@ -92,198 +101,206 @@ public class MethodsTest extends TestCase {
            see https://stackoverflow.com/questions/55532055/java-casting-java-11-throws-lambdaconversionexception-while-1-8-does-not
           */
          Methods.createPublicSetterAccessor(EntityB.class, "property3", boolean.class).invoke(entity, true);
-         assertEquals(true, entity.isProperty3());
+         assertThat(entity.isProperty3()).isTrue();
       }
    }
 
+   @Test
    public void test_findNonPublicGetterInSuperclass() {
       {
          final Method m = Methods.findAnyGetter(EntityB.class, "property2");
-         assertNotNull(m);
-         assertEquals("getProperty2", m.getName());
-         assertEquals(EntityA.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("getProperty2");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityA.class);
       }
 
       {
          final Method m = Methods.findAnyGetter(EntityB.class, "property2", Integer.class);
-         assertNotNull(m);
-         assertEquals("getProperty2", m.getName());
-         assertEquals(EntityA.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("getProperty2");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityA.class);
       }
 
       {
          final Method m = Methods.findAnyGetter(EntityB.class, "property2", int.class);
-         assertNotNull(m);
-         assertEquals("getProperty2", m.getName());
-         assertEquals(EntityA.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("getProperty2");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityA.class);
       }
 
       {
          final Method m = Methods.findAnyGetter(EntityB.class, "property2", String.class);
-         assertNull(m);
+         assertThat(m).isNull();
       }
    }
 
+   @Test
    public void test_findNonPublicSetterInSuperclass() {
       {
          final Method m = Methods.findAnySetter(EntityB.class, "property2");
-         assertNotNull(m);
-         assertEquals("setProperty2", m.getName());
-         assertEquals(EntityA.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("setProperty2");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityA.class);
       }
 
       {
          final Method m = Methods.findAnySetter(EntityB.class, "property2", Integer.class);
-         assertNotNull(m);
-         assertEquals("setProperty2", m.getName());
-         assertEquals(EntityA.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("setProperty2");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityA.class);
       }
 
       {
          final Method m = Methods.findAnySetter(EntityB.class, "property2", int.class);
-         assertNotNull(m);
-         assertEquals("setProperty2", m.getName());
-         assertEquals(EntityA.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("setProperty2");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityA.class);
       }
 
       {
          final Method m = Methods.findAnySetter(EntityB.class, "property2", String.class);
-         assertNull(m);
+         assertThat(m).isNull();
       }
    }
 
+   @Test
    public void test_findPublicNonOverloadedGetter() {
-
       {
          final Method m = Methods.findAnyGetter(EntityB.class, "property3");
-         assertNotNull(m);
-         assertEquals("isProperty3", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("isProperty3");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findAnyGetter(EntityB.class, "property3", Boolean.class);
-         assertNotNull(m);
-         assertEquals("isProperty3", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("isProperty3");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findAnyGetter(EntityB.class, "property3", boolean.class);
-         assertNotNull(m);
-         assertEquals("isProperty3", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("isProperty3");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findAnyGetter(EntityB.class, "property3", String.class);
-         assertNull(m);
+         assertThat(m).isNull();
       }
    }
 
+   @Test
    public void test_findPublicNonOverloadedSetter() {
-
       {
          final Method m = Methods.findAnySetter(EntityB.class, "property3");
-         assertNotNull(m);
-         assertEquals("setProperty3", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("setProperty3");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findAnySetter(EntityB.class, "property3", Boolean.class);
-         assertNotNull(m);
-         assertEquals("setProperty3", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("setProperty3");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findAnySetter(EntityB.class, "property3", boolean.class);
-         assertNotNull(m);
-         assertEquals("setProperty3", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("setProperty3");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findAnySetter(EntityB.class, "property3", String.class);
-         assertNull(m);
+         assertThat(m).isNull();
       }
    }
 
+   @Test
    public void test_findPublicOverloadedGetter() {
       {
          final Method m = Methods.findPublicGetter(EntityB.class, "property1");
-         assertNotNull(m);
-         assertEquals("getProperty1", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("getProperty1");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findPublicGetter(EntityB.class, "property1", EntityA.class);
-         assertNotNull(m);
-         assertEquals("getProperty1", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("getProperty1");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findPublicGetter(EntityB.class, "property1", Integer.class);
-         assertNull(m);
+         assertThat(m).isNull();
       }
    }
 
+   @Test
    public void test_findPublicOverloadedSetter() {
       {
          final Method m = Methods.findPublicSetter(EntityB.class, "property1");
-         assertNotNull(m);
-         assertEquals("setProperty1", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("setProperty1");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findPublicSetter(EntityB.class, "property1", EntityA.class);
-         assertNotNull(m);
-         assertEquals("setProperty1", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("setProperty1");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findPublicSetter(EntityB.class, "property1", EntityB.class); // assignable check
-         assertNotNull(m);
-         assertEquals("setProperty1", m.getName());
-         assertEquals(EntityB.class, m.getDeclaringClass());
+         assertThat(m).isNotNull();
+         assertThat(m.getName()).isEqualTo("setProperty1");
+         assertThat(m.getDeclaringClass()).isEqualTo(EntityB.class);
       }
 
       {
          final Method m = Methods.findPublicSetter(EntityB.class, "property1", Integer.class);
-         assertNull(m);
+         assertThat(m).isNull();
       }
    }
 
+   @Test
    public void test_getAllGetters() {
-      assertEquals(2 + 1 /*Object#getClass()*/, Methods.getAllGetters(EntityA.class).size());
-      assertEquals(3 + 1 /*Object#getClass()*/, Methods.getAllGetters(EntityB.class).size());
+      assertThat(Methods.getAllGetters(EntityA.class).size()).isEqualTo(2 + 1 /*Object#getClass()*/);
+      assertThat(Methods.getAllGetters(EntityB.class).size()).isEqualTo(3 + 1 /*Object#getClass()*/);
    }
 
+   @Test
    public void test_getAllSetters() {
-      assertEquals(2, Methods.getAllSetters(EntityA.class).size());
-      assertEquals(3, Methods.getAllSetters(EntityB.class).size());
+      assertThat(Methods.getAllSetters(EntityA.class)).hasSize(2);
+      assertThat(Methods.getAllSetters(EntityB.class)).hasSize(3);
    }
 
+   @Test
    public void test_getPublicGetters() {
-      assertEquals(0 + 1 /*Object#getClass()*/, Methods.getPublicGetters(EntityA.class).size());
-      assertEquals(2 + 1 /*Object#getClass()*/, Methods.getPublicGetters(EntityB.class).size());
-      assertEquals(1, Methods.getPublicGetters(EntityB.class, Boolean.class).size());
-      assertEquals(1, Methods.getPublicGetters(EntityB.class, boolean.class).size());
-      assertEquals(1, Methods.getPublicGetters(EntityB.class, EntityA.class).size());
-      assertEquals(1, Methods.getPublicGetters(EntityB.class, EntityB.class).size());
+      assertThat(Methods.getPublicGetters(EntityA.class).size()).isEqualTo(0 + 1 /*Object#getClass()*/);
+      assertThat(Methods.getPublicGetters(EntityB.class).size()).isEqualTo(2 + 1 /*Object#getClass()*/);
+      assertThat(Methods.getPublicGetters(EntityB.class, Boolean.class)).hasSize(1);
+      assertThat(Methods.getPublicGetters(EntityB.class, boolean.class)).hasSize(1);
+      assertThat(Methods.getPublicGetters(EntityB.class, EntityA.class)).hasSize(1);
+      assertThat(Methods.getPublicGetters(EntityB.class, EntityB.class)).hasSize(1);
    }
 
+   @Test
    public void test_getPublicSetters() {
-      assertEquals(0, Methods.getPublicSetters(EntityA.class).size());
-      assertEquals(2, Methods.getPublicSetters(EntityB.class).size());
-      assertEquals(1, Methods.getPublicSetters(EntityB.class, Boolean.class).size());
-      assertEquals(1, Methods.getPublicSetters(EntityB.class, boolean.class).size());
-      assertEquals(1, Methods.getPublicSetters(EntityB.class, EntityA.class).size());
-      assertEquals(1, Methods.getPublicSetters(EntityB.class, EntityB.class).size());
+      assertThat(Methods.getPublicSetters(EntityA.class)).isEmpty();
+      assertThat(Methods.getPublicSetters(EntityB.class)).hasSize(2);
+      assertThat(Methods.getPublicSetters(EntityB.class, Boolean.class)).hasSize(1);
+      assertThat(Methods.getPublicSetters(EntityB.class, boolean.class)).hasSize(1);
+      assertThat(Methods.getPublicSetters(EntityB.class, EntityA.class)).hasSize(1);
+      assertThat(Methods.getPublicSetters(EntityB.class, EntityB.class)).hasSize(1);
    }
 }

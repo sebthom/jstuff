@@ -9,6 +9,10 @@
  *********************************************************************/
 package net.sf.jstuff.core.date;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
+
 import junit.framework.TestCase;
 
 /**
@@ -16,10 +20,11 @@ import junit.framework.TestCase;
  */
 public class MillisTest extends TestCase {
 
+   @Test
    public void testMillis() {
-      assertEquals(Millis.fromDays(1), Millis.fromHours(24));
-      assertEquals(Millis.fromHours(1), Millis.fromMinutes(60));
-      assertEquals(Millis.fromMinutes(1), Millis.fromSeconds(60));
-      assertEquals(Millis.fromSeconds(1), 1_000);
+      assertThat(Millis.fromHours(24)).isEqualTo(Millis.fromDays(1));
+      assertThat(Millis.fromMinutes(60)).isEqualTo(Millis.fromHours(1));
+      assertThat(Millis.fromSeconds(60)).isEqualTo(Millis.fromMinutes(1));
+      assertThat(Millis.fromSeconds(1)).isEqualTo(1_000);
    }
 }

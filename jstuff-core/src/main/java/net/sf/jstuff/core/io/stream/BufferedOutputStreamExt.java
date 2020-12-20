@@ -14,6 +14,9 @@ import static net.sf.jstuff.core.Strings.*;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * Extended BufferedOutputStream with write(String) and writeLine(String) methods.
@@ -21,11 +24,23 @@ import java.io.OutputStream;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class BufferedOutputStreamExt extends BufferedOutputStream {
+
+   private Charset charset;
+
    /**
     * @param out the underlying output stream
     */
    public BufferedOutputStreamExt(final OutputStream out) {
       super(out);
+   }
+
+   /**
+    * @param out the underlying output stream
+    */
+   public BufferedOutputStreamExt(final OutputStream out, final Charset charset) {
+      super(out);
+      Args.notNull("charset", charset);
+      this.charset = charset;
    }
 
    /**
@@ -38,13 +53,24 @@ public class BufferedOutputStreamExt extends BufferedOutputStream {
    }
 
    /**
+    * @param out the underlying output stream
+    * @param size the buffer size
+    * @throws IllegalArgumentException if size <= 0.
+    */
+   public BufferedOutputStreamExt(final OutputStream out, final int size, final Charset charset) {
+      super(out, size);
+      Args.notNull("charset", charset);
+      this.charset = charset;
+   }
+
+   /**
     * Writes a string.
     *
     * @param str The <code>CharSequence</code> to be written.
     * @throws IOException - if an I/O error occurs
     */
    public void write(final CharSequence str) throws IOException {
-      write(str.toString().getBytes());
+      write(str.toString().getBytes(charset));
    }
 
    /**
@@ -56,7 +82,7 @@ public class BufferedOutputStreamExt extends BufferedOutputStream {
     * @throws IOException - if an I/O error occurs
     */
    public void writeLine() throws IOException {
-      write(NEW_LINE.getBytes());
+      write(NEW_LINE.getBytes(charset));
    }
 
    /**

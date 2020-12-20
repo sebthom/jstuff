@@ -20,6 +20,8 @@ import net.sf.jstuff.integration.userregistry.UserDetails;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 class DefaultAuthentication implements Authentication {
+   private static final long serialVersionUID = 1L;
+
    public static final Authentication UNBOUND = new DefaultAuthentication(new DefaultUserDetails("anonymous", "anonymous", null, null, null), null);
 
    private String password;

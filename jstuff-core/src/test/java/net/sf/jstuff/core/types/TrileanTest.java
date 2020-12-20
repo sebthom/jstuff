@@ -9,69 +9,76 @@
  *********************************************************************/
 package net.sf.jstuff.core.types;
 
-import static net.sf.jstuff.core.types.Trilean.*;
+import static net.sf.jstuff.core.types.Trilean.FALSE;
+import static net.sf.jstuff.core.types.Trilean.TRUE;
+import static net.sf.jstuff.core.types.Trilean.UNKNOWN;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TrileanTest extends TestCase {
+public class TrileanTest {
 
+   @Test
    public void testNegate() {
-      assertEquals(FALSE, TRUE.negate());
-      assertEquals(TRUE, FALSE.negate());
-      assertEquals(UNKNOWN, UNKNOWN.negate());
+      assertThat(TRUE.negate()).isEqualTo(FALSE);
+      assertThat(FALSE.negate()).isEqualTo(TRUE);
+      assertThat(UNKNOWN.negate()).isEqualTo(UNKNOWN);
    }
 
+   @Test
    public void testAnd() {
-      assertEquals(TRUE, TRUE.and(TRUE));
-      assertEquals(FALSE, TRUE.and(FALSE));
-      assertEquals(UNKNOWN, TRUE.and(UNKNOWN));
-      assertEquals(UNKNOWN, TRUE.and(null));
+      assertThat(TRUE.and(TRUE)).isEqualTo(TRUE);
+      assertThat(TRUE.and(FALSE)).isEqualTo(FALSE);
+      assertThat(TRUE.and(UNKNOWN)).isEqualTo(UNKNOWN);
+      assertThat(TRUE.and(null)).isEqualTo(UNKNOWN);
 
-      assertEquals(FALSE, FALSE.and(TRUE));
-      assertEquals(FALSE, FALSE.and(FALSE));
-      assertEquals(FALSE, FALSE.and(UNKNOWN));
-      assertEquals(FALSE, FALSE.and(null));
+      assertThat(FALSE.and(TRUE)).isEqualTo(FALSE);
+      assertThat(FALSE.and(FALSE)).isEqualTo(FALSE);
+      assertThat(FALSE.and(UNKNOWN)).isEqualTo(FALSE);
+      assertThat(FALSE.and(null)).isEqualTo(FALSE);
 
-      assertEquals(UNKNOWN, UNKNOWN.and(TRUE));
-      assertEquals(FALSE, UNKNOWN.and(FALSE));
-      assertEquals(UNKNOWN, UNKNOWN.and(UNKNOWN));
-      assertEquals(UNKNOWN, UNKNOWN.and(null));
+      assertThat(UNKNOWN.and(TRUE)).isEqualTo(UNKNOWN);
+      assertThat(UNKNOWN.and(FALSE)).isEqualTo(FALSE);
+      assertThat(UNKNOWN.and(UNKNOWN)).isEqualTo(UNKNOWN);
+      assertThat(UNKNOWN.and(null)).isEqualTo(UNKNOWN);
    }
 
+   @Test
    public void testOr() {
-      assertEquals(TRUE, TRUE.or(TRUE));
-      assertEquals(TRUE, TRUE.or(FALSE));
-      assertEquals(TRUE, TRUE.or(UNKNOWN));
-      assertEquals(TRUE, TRUE.or(null));
+      assertThat(TRUE.or(TRUE)).isEqualTo(TRUE);
+      assertThat(TRUE.or(FALSE)).isEqualTo(TRUE);
+      assertThat(TRUE.or(UNKNOWN)).isEqualTo(TRUE);
+      assertThat(TRUE.or(null)).isEqualTo(TRUE);
 
-      assertEquals(TRUE, FALSE.or(TRUE));
-      assertEquals(FALSE, FALSE.or(FALSE));
-      assertEquals(UNKNOWN, FALSE.or(UNKNOWN));
-      assertEquals(UNKNOWN, FALSE.or(null));
+      assertThat(FALSE.or(TRUE)).isEqualTo(TRUE);
+      assertThat(FALSE.or(FALSE)).isEqualTo(FALSE);
+      assertThat(FALSE.or(UNKNOWN)).isEqualTo(UNKNOWN);
+      assertThat(FALSE.or(null)).isEqualTo(UNKNOWN);
 
-      assertEquals(TRUE, UNKNOWN.or(TRUE));
-      assertEquals(UNKNOWN, UNKNOWN.or(FALSE));
-      assertEquals(UNKNOWN, UNKNOWN.or(UNKNOWN));
-      assertEquals(UNKNOWN, UNKNOWN.or(null));
+      assertThat(UNKNOWN.or(TRUE)).isEqualTo(TRUE);
+      assertThat(UNKNOWN.or(FALSE)).isEqualTo(UNKNOWN);
+      assertThat(UNKNOWN.or(UNKNOWN)).isEqualTo(UNKNOWN);
+      assertThat(UNKNOWN.or(null)).isEqualTo(UNKNOWN);
    }
 
+   @Test
    public void testXor() {
-      assertEquals(FALSE, TRUE.xor(TRUE));
-      assertEquals(TRUE, TRUE.xor(FALSE));
-      assertEquals(UNKNOWN, TRUE.xor(UNKNOWN));
-      assertEquals(UNKNOWN, TRUE.xor(null));
+      assertThat(TRUE.xor(TRUE)).isEqualTo(FALSE);
+      assertThat(TRUE.xor(FALSE)).isEqualTo(TRUE);
+      assertThat(TRUE.xor(UNKNOWN)).isEqualTo(UNKNOWN);
+      assertThat(TRUE.xor(null)).isEqualTo(UNKNOWN);
 
-      assertEquals(TRUE, FALSE.xor(TRUE));
-      assertEquals(FALSE, FALSE.xor(FALSE));
-      assertEquals(UNKNOWN, FALSE.xor(UNKNOWN));
-      assertEquals(UNKNOWN, FALSE.xor(null));
+      assertThat(FALSE.xor(TRUE)).isEqualTo(TRUE);
+      assertThat(FALSE.xor(FALSE)).isEqualTo(FALSE);
+      assertThat(FALSE.xor(UNKNOWN)).isEqualTo(UNKNOWN);
+      assertThat(FALSE.xor(null)).isEqualTo(UNKNOWN);
 
-      assertEquals(UNKNOWN, UNKNOWN.xor(TRUE));
-      assertEquals(UNKNOWN, UNKNOWN.xor(FALSE));
-      assertEquals(UNKNOWN, UNKNOWN.xor(UNKNOWN));
-      assertEquals(UNKNOWN, UNKNOWN.xor(null));
+      assertThat(UNKNOWN.xor(TRUE)).isEqualTo(UNKNOWN);
+      assertThat(UNKNOWN.xor(FALSE)).isEqualTo(UNKNOWN);
+      assertThat(UNKNOWN.xor(UNKNOWN)).isEqualTo(UNKNOWN);
+      assertThat(UNKNOWN.xor(null)).isEqualTo(UNKNOWN);
    }
 }

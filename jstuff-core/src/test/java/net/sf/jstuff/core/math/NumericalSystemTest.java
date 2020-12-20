@@ -9,115 +9,123 @@
  *********************************************************************/
 package net.sf.jstuff.core.math;
 
-import static net.sf.jstuff.core.math.NumericalSystem.*;
+import static net.sf.jstuff.core.math.NumericalSystem.BASE16;
+import static net.sf.jstuff.core.math.NumericalSystem.BASE36;
+import static net.sf.jstuff.core.math.NumericalSystem.BASE62;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigInteger;
 
 import org.apache.commons.lang3.time.StopWatch;
-
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NumericalSystemTest extends TestCase {
-
+public class NumericalSystemTest {
+   @Test
    public void testBase16Decode() {
-      assertEquals(0, BASE16.decodeAsLong("0"));
-      assertEquals(1, BASE16.decodeAsLong("1"));
-      assertEquals(123_456_789, BASE16.decodeAsLong(BASE16.encode(123_456_789)));
-      assertEquals(Long.MAX_VALUE, BASE16.decodeAsLong(BASE16.encode(Long.MAX_VALUE)));
+      assertThat(BASE16.decodeAsLong("0")).isZero();
+      assertThat(BASE16.decodeAsLong("1")).isEqualTo(1);
+      assertThat(BASE16.decodeAsLong(BASE16.encode(123_456_789))).isEqualTo(123_456_789);
+      assertThat(BASE16.decodeAsLong(BASE16.encode(Long.MAX_VALUE))).isEqualTo(Long.MAX_VALUE);
 
-      assertEquals(0, BASE16.decodeAsBigInteger("0").longValue());
-      assertEquals(1, BASE16.decodeAsBigInteger("1").longValue());
-      assertEquals(123_456_789, BASE16.decodeAsBigInteger(BASE16.encode(123_456_789)).longValue());
-      assertEquals(Long.MAX_VALUE, BASE16.decodeAsBigInteger(BASE16.encode(Long.MAX_VALUE)).longValue());
+      assertThat(BASE16.decodeAsBigInteger("0").longValue()).isZero();
+      assertThat(BASE16.decodeAsBigInteger("1").longValue()).isEqualTo(1);
+      assertThat(BASE16.decodeAsBigInteger(BASE16.encode(123_456_789)).longValue()).isEqualTo(123_456_789);
+      assertThat(BASE16.decodeAsBigInteger(BASE16.encode(Long.MAX_VALUE)).longValue()).isEqualTo(Long.MAX_VALUE);
    }
 
+   @Test
    public void testBase36Decode() {
-      assertEquals(0, BASE36.decodeAsLong("0"));
-      assertEquals(1, BASE36.decodeAsLong("1"));
-      assertEquals(123_456_789, BASE36.decodeAsLong(BASE36.encode(123_456_789)));
-      assertEquals(Long.MAX_VALUE, BASE36.decodeAsLong(BASE36.encode(Long.MAX_VALUE)));
+      assertThat(BASE36.decodeAsLong("0")).isZero();
+      assertThat(BASE36.decodeAsLong("1")).isEqualTo(1);
+      assertThat(BASE36.decodeAsLong(BASE36.encode(123_456_789))).isEqualTo(123_456_789);
+      assertThat(BASE36.decodeAsLong(BASE36.encode(Long.MAX_VALUE))).isEqualTo(Long.MAX_VALUE);
 
-      assertEquals(0, BASE36.decodeAsBigInteger("0").longValue());
-      assertEquals(1, BASE36.decodeAsBigInteger("1").longValue());
-      assertEquals(123_456_789, BASE36.decodeAsBigInteger(BASE36.encode(123_456_789)).longValue());
-      assertEquals(Long.MAX_VALUE, BASE36.decodeAsBigInteger(BASE36.encode(Long.MAX_VALUE)).longValue());
+      assertThat(BASE36.decodeAsBigInteger("0").longValue()).isZero();
+      assertThat(BASE36.decodeAsBigInteger("1").longValue()).isEqualTo(1);
+      assertThat(BASE36.decodeAsBigInteger(BASE36.encode(123_456_789)).longValue()).isEqualTo(123_456_789);
+      assertThat(BASE36.decodeAsBigInteger(BASE36.encode(Long.MAX_VALUE)).longValue()).isEqualTo(Long.MAX_VALUE);
    }
 
+   @Test
    public void testBase62Decode() {
-      assertEquals(0, BASE62.decodeAsLong("0"));
-      assertEquals(1, BASE62.decodeAsLong("1"));
-      assertEquals(123_456_789, BASE62.decodeAsLong(BASE62.encode(123_456_789)));
-      assertEquals(Long.MAX_VALUE, BASE62.decodeAsLong(BASE62.encode(Long.MAX_VALUE)));
+      assertThat(BASE62.decodeAsLong("0")).isZero();
+      assertThat(BASE62.decodeAsLong("1")).isEqualTo(1);
+      assertThat(BASE62.decodeAsLong(BASE62.encode(123_456_789))).isEqualTo(123_456_789);
+      assertThat(BASE62.decodeAsLong(BASE62.encode(Long.MAX_VALUE))).isEqualTo(Long.MAX_VALUE);
 
-      assertEquals(0, BASE62.decodeAsBigInteger("0").longValue());
-      assertEquals(1, BASE62.decodeAsBigInteger("1").longValue());
-      assertEquals(123_456_789, BASE62.decodeAsBigInteger(BASE62.encode(123_456_789)).longValue());
-      assertEquals(Long.MAX_VALUE, BASE62.decodeAsBigInteger(BASE62.encode(Long.MAX_VALUE)).longValue());
+      assertThat(BASE62.decodeAsBigInteger("0").longValue()).isZero();
+      assertThat(BASE62.decodeAsBigInteger("1").longValue()).isEqualTo(1);
+      assertThat(BASE62.decodeAsBigInteger(BASE62.encode(123_456_789)).longValue()).isEqualTo(123_456_789);
+      assertThat(BASE62.decodeAsBigInteger(BASE62.encode(Long.MAX_VALUE)).longValue()).isEqualTo(Long.MAX_VALUE);
    }
 
+   @Test
    public void testToBase16Encode() {
-      assertEquals("0", BASE16.encode(0));
-      assertEquals("1", BASE16.encode(1));
-      assertEquals("f", BASE16.encode(15));
-      assertEquals("23", BASE16.encode(35));
-      assertEquals("24", BASE16.encode(36));
-      assertEquals("3d", BASE16.encode(61));
+      assertThat(BASE16.encode(0)).isEqualTo("0");
+      assertThat(BASE16.encode(1)).isEqualTo("1");
+      assertThat(BASE16.encode(15)).isEqualTo("f");
+      assertThat(BASE16.encode(35)).isEqualTo("23");
+      assertThat(BASE16.encode(36)).isEqualTo("24");
+      assertThat(BASE16.encode(61)).isEqualTo("3d");
 
-      assertEquals("0", BASE16.encode(BigInteger.valueOf(0)));
-      assertEquals("1", BASE16.encode(BigInteger.valueOf(1)));
-      assertEquals("f", BASE16.encode(BigInteger.valueOf(15)));
-      assertEquals("23", BASE16.encode(BigInteger.valueOf(35)));
-      assertEquals("24", BASE16.encode(BigInteger.valueOf(36)));
-      assertEquals("3d", BASE16.encode(BigInteger.valueOf(61)));
+      assertThat(BASE16.encode(BigInteger.valueOf(0))).isEqualTo("0");
+      assertThat(BASE16.encode(BigInteger.valueOf(1))).isEqualTo("1");
+      assertThat(BASE16.encode(BigInteger.valueOf(15))).isEqualTo("f");
+      assertThat(BASE16.encode(BigInteger.valueOf(35))).isEqualTo("23");
+      assertThat(BASE16.encode(BigInteger.valueOf(36))).isEqualTo("24");
+      assertThat(BASE16.encode(BigInteger.valueOf(61))).isEqualTo("3d");
 
-      assertEquals(BigInteger.valueOf(123_456_789).toString(16), BASE16.encode(123_456_789));
+      assertThat(BASE16.encode(123_456_789)).isEqualTo(BigInteger.valueOf(123_456_789).toString(16));
    }
 
+   @Test
    public void testToBase36Encode() {
-      assertEquals("0", BASE36.encode(0));
-      assertEquals("1", BASE36.encode(1));
-      assertEquals("f", BASE36.encode(15));
-      assertEquals("z", BASE36.encode(35));
-      assertEquals("10", BASE36.encode(36));
-      assertEquals("1p", BASE36.encode(61));
+      assertThat(BASE36.encode(0)).isEqualTo("0");
+      assertThat(BASE36.encode(1)).isEqualTo("1");
+      assertThat(BASE36.encode(15)).isEqualTo("f");
+      assertThat(BASE36.encode(35)).isEqualTo("z");
+      assertThat(BASE36.encode(36)).isEqualTo("10");
+      assertThat(BASE36.encode(61)).isEqualTo("1p");
 
-      assertEquals("0", BASE36.encode(BigInteger.valueOf(0)));
-      assertEquals("1", BASE36.encode(BigInteger.valueOf(1)));
-      assertEquals("f", BASE36.encode(BigInteger.valueOf(15)));
-      assertEquals("z", BASE36.encode(BigInteger.valueOf(35)));
-      assertEquals("10", BASE36.encode(BigInteger.valueOf(36)));
-      assertEquals("1p", BASE36.encode(BigInteger.valueOf(61)));
+      assertThat(BASE36.encode(BigInteger.valueOf(0))).isEqualTo("0");
+      assertThat(BASE36.encode(BigInteger.valueOf(1))).isEqualTo("1");
+      assertThat(BASE36.encode(BigInteger.valueOf(15))).isEqualTo("f");
+      assertThat(BASE36.encode(BigInteger.valueOf(35))).isEqualTo("z");
+      assertThat(BASE36.encode(BigInteger.valueOf(36))).isEqualTo("10");
+      assertThat(BASE36.encode(BigInteger.valueOf(61))).isEqualTo("1p");
 
-      assertEquals(BigInteger.valueOf(123_456_789).toString(36), BASE36.encode(123_456_789));
+      assertThat(BASE36.encode(123_456_789)).isEqualTo(BigInteger.valueOf(123_456_789).toString(36));
    }
 
+   @Test
    public void testToBase62Encode() {
-      assertEquals("0", BASE62.encode(0));
-      assertEquals("1", BASE62.encode(1));
-      assertEquals("f", BASE62.encode(15));
-      assertEquals("z", BASE62.encode(35));
-      assertEquals("A", BASE62.encode(36));
-      assertEquals("Z", BASE62.encode(61));
+      assertThat(BASE62.encode(0)).isEqualTo("0");
+      assertThat(BASE62.encode(1)).isEqualTo("1");
+      assertThat(BASE62.encode(15)).isEqualTo("f");
+      assertThat(BASE62.encode(35)).isEqualTo("z");
+      assertThat(BASE62.encode(36)).isEqualTo("A");
+      assertThat(BASE62.encode(61)).isEqualTo("Z");
 
-      assertEquals("0", BASE62.encode(BigInteger.valueOf(0)));
-      assertEquals("1", BASE62.encode(BigInteger.valueOf(1)));
-      assertEquals("f", BASE62.encode(BigInteger.valueOf(15)));
-      assertEquals("z", BASE62.encode(BigInteger.valueOf(35)));
-      assertEquals("A", BASE62.encode(BigInteger.valueOf(36)));
-      assertEquals("Z", BASE62.encode(BigInteger.valueOf(61)));
+      assertThat(BASE62.encode(BigInteger.valueOf(0))).isEqualTo("0");
+      assertThat(BASE62.encode(BigInteger.valueOf(1))).isEqualTo("1");
+      assertThat(BASE62.encode(BigInteger.valueOf(15))).isEqualTo("f");
+      assertThat(BASE62.encode(BigInteger.valueOf(35))).isEqualTo("z");
+      assertThat(BASE62.encode(BigInteger.valueOf(36))).isEqualTo("A");
+      assertThat(BASE62.encode(BigInteger.valueOf(61))).isEqualTo("Z");
 
       // Max Radix for BigInteger is 36, thus the following test would fail
-      // assertEquals(BigInteger.valueOf(123_456_789).toString(62), BASE36.encode(123_456_789));
+      // assertThat(BASE36.encode(123_456_789)).isEqualTo(BigInteger.valueOf(123_456_789).toString(62));
    }
 
+   @Test
    public void testToBase62EncodeBigIntPerf() {
 
       final BigInteger number = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(Long.MAX_VALUE));
 
-      assertEquals(NumericalSystem.BASE62.encode(number), NumericalSystem.BASE62.encode_slow(number));
+      assertThat(NumericalSystem.BASE62.encode_slow(number)).isEqualTo(NumericalSystem.BASE62.encode(number));
 
       final int iterations = 1_000_000;
       final StopWatch sw = new StopWatch();

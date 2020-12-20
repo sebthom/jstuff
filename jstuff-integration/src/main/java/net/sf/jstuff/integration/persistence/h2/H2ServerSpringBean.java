@@ -29,8 +29,8 @@ public class H2ServerSpringBean {
    private boolean enabled = true;
    private int tcpPort = 10040;
    private Server tcpServer;
-   private boolean webAllowOthers = false;
-   private boolean webEnabled = false;
+   private boolean webAllowOthers;
+   private boolean webEnabled;
    private int webPort = 8040;
    private Server webServer;
 
@@ -64,17 +64,18 @@ public class H2ServerSpringBean {
    public void initialize() {
       if (enabled) {
          try {
-            tcpServer = Server.createTcpServer(new String[] { //
+            tcpServer = Server.createTcpServer( //
                "-tcpPort", Integer.toString(tcpPort), //
-               "-baseDir", dataDir});
+               "-baseDir", dataDir //
+            );
             tcpServer.start();
             LOG.info("Embedded H2 Databases are now available via: jdbc:h2:tcp://localhost:" + tcpPort + "/<DATABASE_NAME>");
 
             if (webEnabled) {
-               webServer = Server.createWebServer(new String[] { //
+               webServer = Server.createWebServer( //
                   "-webPort", Integer.toString(webPort), //
                   "-webAllowOthers", Boolean.toString(webAllowOthers) //
-               });
+               );
                webServer.start();
                LOG.info("H2 UI is now available via: http://localhost:" + webPort);
             }

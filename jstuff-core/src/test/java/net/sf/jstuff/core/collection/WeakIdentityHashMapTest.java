@@ -9,14 +9,19 @@
  *********************************************************************/
 package net.sf.jstuff.core.collection;
 
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import junit.framework.TestCase;
+import java.util.Map;
+import java.util.Objects;
+
+import org.junit.Test;
+
+import net.sf.jstuff.core.concurrent.Threads;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class WeakIdentityHashMapTest extends TestCase {
+public class WeakIdentityHashMapTest {
    private static class Entity {
       private String name;
 
@@ -42,46 +47,44 @@ public class WeakIdentityHashMapTest extends TestCase {
          if (getClass() != obj.getClass())
             return false;
          final Entity other = (Entity) obj;
-         if (name == null) {
-            if (other.name != null)
-               return false;
-         } else if (!name.equals(other.name))
+         if (!Objects.equals(name, other.name))
             return false;
          return true;
       }
    }
 
-   public void testWeakIdentityHashMap() throws InterruptedException {
+   @Test
+   public void testWeakIdentityHashMap() {
       final Map<Entity, Object> identityMap = WeakIdentityHashMap.create();
 
       Entity e1 = new Entity().setName("aa");
       Entity e2 = new Entity().setName("aa");
 
-      assertEquals(e1, e2);
-      assertNotSame(e1, e2);
+      assertThat(e2).isEqualTo(e1).isNotSameAs(e1);
 
       identityMap.put(e1, Boolean.TRUE);
       identityMap.put(e2, Boolean.TRUE);
       identityMap.put(null, Boolean.TRUE);
 
-      assertEquals(3, identityMap.size());
-      assertTrue(identityMap.containsKey(e1));
-      assertTrue(identityMap.containsKey(e2));
-      assertTrue(identityMap.containsKey(null));
-      assertEquals(3, identityMap.entrySet().size());
-      assertEquals(3, identityMap.keySet().size());
-      assertEquals(3, identityMap.values().size());
+      assertThat(identityMap) //
+         .hasSize(3).containsKey(e1) //
+         .containsKey(e2) //
+         .containsKey(null);
+      assertThat(identityMap.entrySet()).hasSize(3);
+      assertThat(identityMap.keySet()).hasSize(3);
+      assertThat(identityMap.values()).hasSize(3);
 
       System.gc();
-      Thread.sleep(1000);
+      Threads.sleep(1000);
 
-      assertEquals(3, identityMap.size());
-      assertTrue(identityMap.containsKey(e1));
-      assertTrue(identityMap.containsKey(e2));
-      assertTrue(identityMap.containsKey(null));
-      assertEquals(3, identityMap.entrySet().size());
-      assertEquals(3, identityMap.keySet().size());
-      assertEquals(3, identityMap.values().size());
+      assertThat(identityMap) //
+         .hasSize(3) //
+         .containsKey(e1) //
+         .containsKey(e2) //
+         .containsKey(null);
+      assertThat(identityMap.entrySet()).hasSize(3);
+      assertThat(identityMap.keySet()).hasSize(3);
+      assertThat(identityMap.values()).hasSize(3);
 
       final Map<Entity, Object> identityMap2 = WeakIdentityHashMap.create();
 
@@ -89,24 +92,25 @@ public class WeakIdentityHashMapTest extends TestCase {
       identityMap2.put(e2, Boolean.TRUE);
       identityMap2.put(null, Boolean.TRUE);
 
-      assertEquals(identityMap, identityMap2);
+      assertThat(identityMap2).isEqualTo(identityMap);
 
       identityMap2.remove(e2);
-      assertTrue(identityMap2.containsKey(e1));
-      assertFalse(identityMap2.containsKey(e2));
-      assertFalse(identityMap.equals(identityMap2));
+      assertThat(identityMap2) //
+         .containsKey(e1) //
+         .doesNotContainKey(e2);
+      assertThat(identityMap).isNotEqualTo(identityMap2);
 
       e1 = null;
       e2 = null;
 
       System.gc();
-      Thread.sleep(1000);
+      Threads.sleep(1000);
 
-      assertEquals(1, identityMap.size());
-      assertEquals(1, identityMap2.size());
+      assertThat(identityMap).hasSize(1);
+      assertThat(identityMap2).hasSize(1);
 
       identityMap.remove(null);
 
-      assertEquals(0, identityMap.size());
+      assertThat(identityMap).isEmpty();
    }
 }

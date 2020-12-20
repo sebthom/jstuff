@@ -102,12 +102,9 @@ public class LZ4BlockCompression extends AbstractCompression {
       Args.notNull("input", input);
       Args.notNull("output", output);
 
-      try {
-         @SuppressWarnings("resource")
-         final LZ4BlockInputStream compIS = new LZ4BlockInputStream(input, DECOMP, CHECKSUM.get());
+      try (LZ4BlockInputStream compIS = new LZ4BlockInputStream(input, DECOMP, CHECKSUM.get())) {
          IOUtils.copyLarge(compIS, output);
       } finally {
-         IOUtils.closeQuietly(input);
          if (closeOutput) {
             IOUtils.closeQuietly(output);
          }

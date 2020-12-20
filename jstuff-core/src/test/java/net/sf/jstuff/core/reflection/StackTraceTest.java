@@ -9,27 +9,29 @@
  *********************************************************************/
 package net.sf.jstuff.core.reflection;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class StackTraceTest extends TestCase {
+public class StackTraceTest {
    private static class Outer {
       private static class Inner {
          private void ensureEquals(final Object a, final Object b) {
-            assertEquals(a, b);
+            assertThat(b).isEqualTo(a);
          }
 
          public void innerMethod() {
             ensureEquals("net.sf.jstuff.core.reflection.StackTraceTest$Outer$Inner", StackTrace.getThisStackTraceElement().getClassName());
             ensureEquals("innerMethod", StackTrace.getThisMethodName());
             ensureEquals("innerMethod", StackTrace.getThisStackTraceElement().getMethodName());
-            ensureEquals(28, StackTrace.getThisLineNumber());
+            ensureEquals(30, StackTrace.getThisLineNumber());
             ensureEquals("StackTraceTest.java", StackTrace.getThisFileName());
 
             ensureEquals("outerMethod", StackTrace.getCallerMethodName());
-            ensureEquals(42, StackTrace.getCallerLineNumber());
+            ensureEquals(44, StackTrace.getCallerLineNumber());
             ensureEquals("StackTraceTest.java", StackTrace.getCallerFileName());
             ensureEquals(Outer.class.getName(), StackTrace.getCallerClassName());
             ensureEquals(Outer.class, StackTrace.getCallerClass());
@@ -43,6 +45,7 @@ public class StackTraceTest extends TestCase {
       }
    }
 
+   @Test
    public void testStackTrace() {
       new Outer().outerMethod();
    }

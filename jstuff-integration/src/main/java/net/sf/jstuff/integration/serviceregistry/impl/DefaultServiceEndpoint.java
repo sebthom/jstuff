@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.integration.serviceregistry.impl;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.ObjectUtils;
 
 import net.sf.jstuff.integration.serviceregistry.ServiceEndpoint;
@@ -36,6 +38,26 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
    }
 
    @Override
+   public boolean equals(final Object obj) {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      final DefaultServiceEndpoint other = (DefaultServiceEndpoint) obj;
+      if (!Objects.equals(serviceEndpointId, other.serviceEndpointId)) {
+         return false;
+      }
+      if (serviceInterface == null) {
+         if (other.serviceInterface != null)
+            return false;
+      } else if (serviceInterface != other.serviceInterface)
+         return false;
+      return true;
+   }
+
+   @Override
    public String getServiceEndpointId() {
       return serviceEndpointId;
    }
@@ -43,6 +65,15 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
    @Override
    public Class<?> getServiceInterface() {
       return serviceInterface;
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (serviceEndpointId == null ? 0 : serviceEndpointId.hashCode());
+      result = prime * result + (serviceInterface == null ? 0 : serviceInterface.getName().hashCode());
+      return result;
    }
 
    @Override

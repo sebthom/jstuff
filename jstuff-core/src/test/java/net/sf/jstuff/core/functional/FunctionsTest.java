@@ -9,14 +9,20 @@
  *********************************************************************/
 package net.sf.jstuff.core.functional;
 
-import static net.sf.jstuff.core.functional.Functions.*;
+import static net.sf.jstuff.core.functional.Functions.castTo;
+import static net.sf.jstuff.core.functional.Functions.objectToString;
+import static net.sf.jstuff.core.functional.Functions.stringToInt;
+import static net.sf.jstuff.core.functional.Functions.trim;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FunctionsTest extends TestCase {
+public class FunctionsTest {
+
+   @Test
    public void testConverts() {
       final Function<Object, Integer> t1 = objectToString()//
          .and(stringToInt())//
@@ -25,7 +31,7 @@ public class FunctionsTest extends TestCase {
          .and(trim()) //
          .and(stringToInt());
 
-      assertEquals(null, t1.apply(null));
-      assertEquals(Integer.valueOf(1), t1.apply("1"));
+      assertThat(t1.apply(null)).isNull();
+      assertThat(t1.apply("1")).isEqualTo(Integer.valueOf(1));
    }
 }

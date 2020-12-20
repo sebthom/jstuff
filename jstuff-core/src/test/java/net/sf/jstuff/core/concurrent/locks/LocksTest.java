@@ -9,27 +9,30 @@
  *********************************************************************/
 package net.sf.jstuff.core.concurrent.locks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.concurrent.locks.ReentrantLock;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class LocksTest extends TestCase {
+public class LocksTest {
 
+   @Test
    @SuppressWarnings("resource")
    public void testLockAsCloseable() {
       final ReentrantLock lock = new ReentrantLock();
       final CloseableLock closeable = Locks.toCloseable(lock);
 
-      assertFalse(lock.isHeldByCurrentThread());
+      assertThat(lock.isHeldByCurrentThread()).isFalse();
       try (CloseableLock l = closeable.lockAndGet()) {
-         assertTrue(lock.isHeldByCurrentThread());
+         assertThat(lock.isHeldByCurrentThread()).isTrue();
       }
-      assertFalse(lock.isHeldByCurrentThread());
+      assertThat(lock.isHeldByCurrentThread()).isFalse();
 
-      assertSame(closeable.lockAndGet(), closeable.lockAndGet());
+      assertThat(closeable.lockAndGet()).isSameAs(closeable.lockAndGet());
 
       closeable.close();
    }

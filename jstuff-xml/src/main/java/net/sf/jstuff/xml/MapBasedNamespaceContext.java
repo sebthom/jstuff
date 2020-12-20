@@ -40,15 +40,13 @@ public class MapBasedNamespaceContext implements NamespaceContext {
          defaultNamespaceURI = namespaceURI;
       }
 
-      if (!namespaceURIsByPrefix.containsKey(prefix)) {
-         namespaceURIsByPrefix.put(prefix, new ArrayList<String>(2));
-      }
-      namespaceURIsByPrefix.get(prefix).add(namespaceURI);
+      namespaceURIsByPrefix //
+         .computeIfAbsent(prefix, unused -> new ArrayList<>(2)) //
+         .add(namespaceURI);
 
-      if (!prefixesByNamespaceURI.containsKey(namespaceURI)) {
-         prefixesByNamespaceURI.put(namespaceURI, new ArrayList<String>(2));
-      }
-      prefixesByNamespaceURI.get(namespaceURI).add(prefix);
+      prefixesByNamespaceURI //
+         .computeIfAbsent(namespaceURI, unused -> new ArrayList<>(2)) //
+         .add(prefix);
    }
 
    @Override

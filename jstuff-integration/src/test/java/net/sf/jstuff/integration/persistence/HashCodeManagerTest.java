@@ -9,24 +9,29 @@
  *********************************************************************/
 package net.sf.jstuff.integration.persistence;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
+import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.io.SerializationUtils;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class HashCodeManagerTest extends TestCase {
-   public static void testManagedHashCode() throws InterruptedException {
+public class HashCodeManagerTest {
+
+   @Test
+   public void testManagedHashCode() {
       /*
        * #1 client: new()
        */
       Entity client_e = new Entity().setLabel("client_e");
       final int client_HC = client_e.hashCode();
 
-      assertEquals(0, HashCodeManager.getManagedIdsCount());
-      assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());
+      assertThat(HashCodeManager.getManagedIdsCount()).isZero();
+      assertThat(HashCodeManager.getManagedTrackingIdsCount()).isEqualTo(1);
 
       /*
        * #2 server: deserialize()
@@ -35,46 +40,46 @@ public class HashCodeManagerTest extends TestCase {
       server_e.setLabel("server_e");
       final int server_HC = server_e.hashCode();
 
-      assertEquals(0, HashCodeManager.getManagedIdsCount());
-      assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());
+      assertThat(HashCodeManager.getManagedIdsCount()).isZero();
+      assertThat(HashCodeManager.getManagedTrackingIdsCount()).isEqualTo(1);
 
       /*
        * #3 server: persist()
        */
       server_e.setId(22);
-      assertEquals(server_e.hashCode(), server_HC);
+      assertThat(server_HC).isEqualTo(server_e.hashCode());
 
-      assertEquals(1, HashCodeManager.getManagedIdsCount());
-      assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());
+      assertThat(HashCodeManager.getManagedIdsCount()).isEqualTo(1);
+      assertThat(HashCodeManager.getManagedTrackingIdsCount()).isEqualTo(1);
 
       /*
        * #4 client: applyId()
        */
       client_e.setId(22);
-      assertEquals(server_e.hashCode(), client_HC);
+      assertThat(client_HC).isEqualTo(server_e.hashCode());
 
-      assertEquals(1, HashCodeManager.getManagedIdsCount());
-      assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());
+      assertThat(HashCodeManager.getManagedIdsCount()).isEqualTo(1);
+      assertThat(HashCodeManager.getManagedTrackingIdsCount()).isEqualTo(1);
 
       /*
        * #5 server: loadFromDB()
        */
       Entity server_e2 = new Entity().setLabel("server_e2");
       server_e2.setId(22);
-      assertEquals(server_e.hashCode(), server_e2.hashCode());
+      assertThat(server_e2.hashCode()).hasSameHashCodeAs(server_e.hashCode());
 
-      assertEquals(1, HashCodeManager.getManagedIdsCount());
-      assertEquals(2, HashCodeManager.getManagedTrackingIdsCount());
+      assertThat(HashCodeManager.getManagedIdsCount()).isEqualTo(1);
+      assertThat(HashCodeManager.getManagedTrackingIdsCount()).isEqualTo(2);
 
       /*
        * #6 client: receive()
        */
       Entity client_e2 = SerializationUtils.clone(server_e2);
       client_e2.setLabel("client_e2");
-      assertEquals(client_e.hashCode(), client_e2.hashCode());
+      assertThat(client_e2.hashCode()).hasSameHashCodeAs(client_e.hashCode());
 
-      assertEquals(1, HashCodeManager.getManagedIdsCount());
-      assertEquals(2, HashCodeManager.getManagedTrackingIdsCount());
+      assertThat(HashCodeManager.getManagedIdsCount()).isEqualTo(1);
+      assertThat(HashCodeManager.getManagedTrackingIdsCount()).isEqualTo(2);
 
       client_e = null;
       client_e2 = null;
@@ -82,12 +87,12 @@ public class HashCodeManagerTest extends TestCase {
       server_e2 = null;
 
       System.gc();
-      Thread.sleep(500);
+      Threads.sleep(500);
       System.gc();
-      Thread.sleep(500);
+      Threads.sleep(500);
 
-      assertEquals(0, HashCodeManager.getManagedIdsCount());
-      assertEquals(0, HashCodeManager.getManagedTrackingIdsCount());
+      assertThat(HashCodeManager.getManagedIdsCount()).isZero();
+      assertThat(HashCodeManager.getManagedTrackingIdsCount()).isZero();
 
       /*
        * #7 server: loadFromDB()
@@ -102,7 +107,7 @@ public class HashCodeManagerTest extends TestCase {
       final Entity client_e3 = SerializationUtils.clone(server_e3);
       assertNotEquals(client_e3.hashCode(), client_HC);
 
-      assertEquals(1, HashCodeManager.getManagedIdsCount());
-      assertEquals(1, HashCodeManager.getManagedTrackingIdsCount());
+      assertThat(HashCodeManager.getManagedIdsCount()).isEqualTo(1);
+      assertThat(HashCodeManager.getManagedTrackingIdsCount()).isEqualTo(1);
    }
 }

@@ -9,12 +9,12 @@
  *********************************************************************/
 package net.sf.jstuff.xml;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class JAXBUtilsTest extends TestCase {
+public class JAXBUtilsTest {
 
    public static class MyEntity {
       private MyEntity child;
@@ -37,6 +37,7 @@ public class JAXBUtilsTest extends TestCase {
       }
    }
 
+   @Test
    public void testToXML() {
       final MyEntity e = new MyEntity();
       e.name = "a";
@@ -45,6 +46,7 @@ public class JAXBUtilsTest extends TestCase {
       System.out.println(JAXBUtils.toXML(e));
    }
 
+   @Test
    public void testToXSD() {
       System.out.println(JAXBUtils.toXSD(MyEntity.class));
    }

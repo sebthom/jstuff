@@ -9,23 +9,25 @@
  *********************************************************************/
 package net.sf.jstuff.core.security;
 
-import java.util.Arrays;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AESEncryptorTest extends TestCase {
+public class AESEncryptorTest {
+
+   @Test
    public void testAES() {
       final byte[] plain = "Hello World!".getBytes();
 
       AESEncryptor aes = new AESEncryptor("mySalt");
       final byte[] encrypted = aes.encrypt(plain, "mySecretKey");
-      assertFalse(Arrays.equals(plain, encrypted));
+      assertThat(plain).isNotEqualTo(encrypted);
 
       aes = new AESEncryptor("mySalt");
       final byte[] decrypted = aes.decrypt(encrypted, "mySecretKey");
-      assertTrue(Arrays.equals(plain, decrypted));
+      assertThat(plain).isEqualTo(decrypted);
    }
 }

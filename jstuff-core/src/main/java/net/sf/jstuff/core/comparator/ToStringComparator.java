@@ -43,18 +43,18 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable {
       this.locale = locale;
    }
 
-   private Collator _getCollator() {
-      if (collator == null) {
-         collator = Collator.getInstance(locale);
-      }
-      return collator;
-   }
-
    @Override
    public int compare(final T o1, final T o2) {
       if (o1 == o2)
          return 0;
-      return _getCollator().compare(o1 == null ? null : o1.toString(), o2 == null ? null : o2.toString());
+      return getCollator().compare(o1 == null ? null : o1.toString(), o2 == null ? null : o2.toString());
+   }
+
+   private Collator getCollator() {
+      if (collator == null) {
+         collator = Collator.getInstance(locale);
+      }
+      return collator;
    }
 
    public Locale getLocale() {

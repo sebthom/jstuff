@@ -9,6 +9,7 @@
  *********************************************************************/
 package net.sf.jstuff.integration.persistence;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -16,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import net.sf.jstuff.core.GCTracker;
 import net.sf.jstuff.core.collection.WeakIdentityHashSet;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.types.Identifiable;
 import net.sf.jstuff.core.validation.Args;
 
@@ -30,6 +32,7 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public final class HashCodeManager {
+
    private static final class FQId {
       private final Object id;
       private final Object realm;
@@ -47,17 +50,9 @@ public final class HashCodeManager {
           * if (getClass() != obj.getClass()) return false;
           */
          final FQId other = (FQId) obj;
-         if (id == null) {
-            if (other.id != null)
-               return false;
-         } else if (!id.equals(other.id))
+         if (!Objects.equals(id, other.id))
             return false;
-         if (realm == null) {
-            if (other.realm != null)
-               return false;
-         } else if (!realm.equals(other.realm))
-            return false;
-         return true;
+         return Objects.equals(realm, other.realm);
       }
 
       @Override
@@ -71,9 +66,9 @@ public final class HashCodeManager {
    }
 
    private static final class HashCodeAssignment {
-      protected final int hashCode;
-      protected FQId id;
-      protected final WeakIdentityHashSet<Identifiable<?>> identifiables = WeakIdentityHashSet.create();
+      final int hashCode;
+      FQId id;
+      final WeakIdentityHashSet<Identifiable<?>> identifiables = WeakIdentityHashSet.create();
 
       protected HashCodeAssignment(final int hashCode) {
          this.hashCode = hashCode;
@@ -81,6 +76,8 @@ public final class HashCodeManager {
    }
 
    private static final GCTracker<String> GC_TRACKER = new GCTracker<String>(100) {
+      private final Logger log = Logger.create();
+
       @Override
       protected void onGCEvent(final String trackingId) {
          try {
@@ -89,7 +86,7 @@ public final class HashCodeManager {
                return;
 
             synchronized (ida.identifiables) {
-               if (ida.identifiables.size() == 0) {
+               if (ida.identifiables.isEmpty()) {
                   HASHCODE_ASSIGNMENT_BY_TRACKING_ID.remove(trackingId, ida);
                }
             }
@@ -99,13 +96,13 @@ public final class HashCodeManager {
             final HashCodeAssignment ida2 = HASHCODE_ASSIGNMENT_BY_ID.get(ida.id);
             if (ida2 != null) {
                synchronized (ida2.identifiables) {
-                  if (ida2.identifiables.size() == 0) {
+                  if (ida2.identifiables.isEmpty()) {
                      HASHCODE_ASSIGNMENT_BY_ID.remove(ida2.id, ida2);
                   }
                }
             }
          } catch (final Exception ex) {
-            ex.printStackTrace();
+            log.error(ex);
          }
       }
    };

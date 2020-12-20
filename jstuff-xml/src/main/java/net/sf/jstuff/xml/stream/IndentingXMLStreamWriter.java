@@ -20,7 +20,7 @@ import net.sf.jstuff.core.Strings;
 public class IndentingXMLStreamWriter extends ExtendedXMLStreamWriter {
 
    private String indention = "  ";
-   private int indentionLevel = 0;
+   private int indentionLevel;
    private boolean indentEndTag = true;
 
    public IndentingXMLStreamWriter() {

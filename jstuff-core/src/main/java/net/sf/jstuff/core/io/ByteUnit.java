@@ -134,7 +134,7 @@ public enum ByteUnit {
 
       final BigDecimal bd = Numbers.toBigDecimal(value);
 
-      if (BigDecimal.ZERO.equals(value))
+      if (BigDecimal.ZERO.equals(bd))
          return BYTES.toString(0);
 
       if (Numbers.isWhole(bd) && bd.abs().compareTo(THOUSAND) < 0)

@@ -30,7 +30,7 @@ public class URLClassLoaderExt extends URLClassLoader {
 
    private static final Logger LOG = Logger.create();
 
-   private boolean parentLast = false;
+   private boolean parentLast;
 
    public URLClassLoaderExt() {
       super(new URL[0]);

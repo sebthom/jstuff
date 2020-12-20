@@ -12,6 +12,7 @@ package net.sf.jstuff.integration.servlet;
 import java.io.IOException;
 import java.security.cert.X509Certificate;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,11 +24,11 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class ServletUtils {
 
    @SuppressWarnings("unchecked")
-   public static <T> T getAttribute(final HttpServletRequest request, final String name) {
+   public static <T> T getAttribute(final ServletRequest request, final String name) {
       return (T) request.getAttribute(name);
    }
 
-   public static X509Certificate getClientCertificate(final HttpServletRequest request) {
+   public static X509Certificate getClientCertificate(final ServletRequest request) {
       Args.notNull("request", request);
 
       final X509Certificate[] certChain = getAttribute(request, "javax.servlet.request.X509Certificate");

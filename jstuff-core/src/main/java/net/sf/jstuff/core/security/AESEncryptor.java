@@ -46,35 +46,22 @@ public class AESEncryptor {
       }
    }
 
-   private final Map<String, SecretKey> _cachedAESKeys = new WeakHashMap<>();
-
-   private final ThreadLocal<Cipher> _ciphers = ThreadLocal.withInitial(() -> {
+   private final Map<String, SecretKey> cachedAESKeys = new WeakHashMap<>();
+   private final ThreadLocal<Cipher> ciphers = ThreadLocal.withInitial(() -> {
       try {
          return Cipher.getInstance("AES/CBC/PKCS5Padding");
       } catch (final GeneralSecurityException ex) {
          throw new SecurityException(ex);
       }
    });
-
-   private final byte[] _keySalt;
+   private final byte[] keySalt;
 
    public AESEncryptor(final byte[] keySalt) {
-      _keySalt = keySalt;
+      this.keySalt = keySalt;
    }
 
    public AESEncryptor(final String keySalt) {
-      _keySalt = keySalt.getBytes(StandardCharsets.UTF_8);
-   }
-
-   private SecretKey _getKey(final String passphrase) throws NoSuchAlgorithmException, InvalidKeySpecException {
-      SecretKey key = _cachedAESKeys.get(passphrase);
-      if (key == null) {
-         final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-         final KeySpec spec = new PBEKeySpec(passphrase.toCharArray(), _keySalt, 1024, 128);
-         key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
-         _cachedAESKeys.put(passphrase, key);
-      }
-      return key;
+      this.keySalt = keySalt.getBytes(StandardCharsets.UTF_8);
    }
 
    /**
@@ -84,8 +71,8 @@ public class AESEncryptor {
       Args.notNull("data", data);
 
       try {
-         final SecretKey key = _getKey(passphrase);
-         final Cipher cipher = _ciphers.get();
+         final SecretKey key = getKey(passphrase);
+         final Cipher cipher = ciphers.get();
          // the first 16 bytes are the initial vector
          final byte[] iv = ArrayUtils.subarray(data, 0, 16);
          final byte[] encrypted = ArrayUtils.subarray(data, 16, data.length);
@@ -108,8 +95,8 @@ public class AESEncryptor {
       Args.notNull("data", data);
 
       try {
-         final SecretKey key = _getKey(passphrase);
-         final Cipher cipher = _ciphers.get();
+         final SecretKey key = getKey(passphrase);
+         final Cipher cipher = ciphers.get();
          // generate a new initial vector for each encryption
          final byte[] iv = Crypto.createRandomBytes(16);
          cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
@@ -121,12 +108,23 @@ public class AESEncryptor {
       }
    }
 
+   private SecretKey getKey(final String passphrase) throws NoSuchAlgorithmException, InvalidKeySpecException {
+      SecretKey key = cachedAESKeys.get(passphrase);
+      if (key == null) {
+         final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+         final KeySpec spec = new PBEKeySpec(passphrase.toCharArray(), keySalt, 1024, 128);
+         key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+         cachedAESKeys.put(passphrase, key);
+      }
+      return key;
+   }
+
    public AESSealedObject seal(final Serializable object, final String passphrase) throws SecurityException {
       Args.notNull("object", object);
 
       try {
-         final SecretKey key = _getKey(passphrase);
-         final Cipher cipher = _ciphers.get();
+         final SecretKey key = getKey(passphrase);
+         final Cipher cipher = ciphers.get();
          // generate a new initial vector on each invocation
          final byte[] iv = Crypto.createRandomBytes(16);
          cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
@@ -147,8 +145,8 @@ public class AESEncryptor {
       Args.notNull("object", object);
 
       try {
-         final SecretKey key = _getKey(passphrase);
-         final Cipher cipher = _ciphers.get();
+         final SecretKey key = getKey(passphrase);
+         final Cipher cipher = ciphers.get();
          cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(object.iv));
          return (T) object.getObject(cipher);
       } catch (final Exception ex) {

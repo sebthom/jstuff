@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.core.profiler;
 
+import java.util.Objects;
+
 import net.sf.jstuff.core.Strings;
 
 /**
@@ -27,19 +29,31 @@ public class CodeLocation {
 
    @Override
    public boolean equals(final Object obj) {
-      if (!(obj instanceof CodeLocation))
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
          return false;
       final CodeLocation other = (CodeLocation) obj;
-      return lineNumber == other.lineNumber && clazz.equals(other.clazz) && method.equals(other.method);
+      if (!Objects.equals(clazz, other.clazz)) {
+         return false;
+      }
+      if (lineNumber != other.lineNumber)
+         return false;
+      if (!Objects.equals(method, other.method)) {
+         return false;
+      }
+      return true;
    }
 
    @Override
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + clazz.hashCode();
-      result = prime * result + method.hashCode();
+      result = prime * result + (clazz == null ? 0 : clazz.hashCode());
       result = prime * result + lineNumber;
+      result = prime * result + (method == null ? 0 : method.hashCode());
       return result;
    }
 

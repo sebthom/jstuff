@@ -26,7 +26,7 @@ public class PropertyChangelog implements EventListener<PropertyChangeEvent>, Se
 
    private final List<PropertyChangeEvent> propertyChanges = new ArrayList<>();
 
-   private boolean undoing = false;
+   private boolean undoing;
 
    public void clear() {
       propertyChanges.clear();

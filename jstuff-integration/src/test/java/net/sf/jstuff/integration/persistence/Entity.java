@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.integration.persistence;
 
+import java.util.Objects;
+
 import net.sf.jstuff.core.types.Identifiable;
 
 /**
@@ -38,11 +40,9 @@ public class Entity extends Identifiable.Default<Integer> {
       if (getClass() != obj.getClass())
          return false;
       final Entity other = (Entity) obj;
-      if (id == null) {
-         if (other.id != null)
-            return false;
-      } else if (!id.equals(other.id))
+      if (!Objects.equals(id, other.id)) {
          return false;
+      }
       return true;
    }
 

@@ -62,8 +62,8 @@ public class DummyPrincipalInjectingFilter implements Filter {
    public static final String USER_ROLES_SEPARATOR = ",";
 
    // CHECKSTYLE:IGNORE StaticVariableName FOR NEXT 2 LINES
-   public static String DEFAULT_USER_NAME = null;
-   public static String[] DEFAULT_USER_ROLES = null;
+   public static String DEFAULT_USER_NAME;
+   public static String[] DEFAULT_USER_ROLES;
 
    private final ThreadLocal<HttpServletRequestWrapper> requestWrapper = new ThreadLocal<HttpServletRequestWrapper>() {
       final HttpServletRequest init = Types.createMixin(HttpServletRequest.class, new Object());

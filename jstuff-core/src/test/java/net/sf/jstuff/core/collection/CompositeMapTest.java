@@ -9,42 +9,46 @@
  *********************************************************************/
 package net.sf.jstuff.core.collection;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeMapTest extends TestCase {
+public class CompositeMapTest {
 
+   @Test
    public void testCompositeList() {
       final Map<String, String> m1 = Maps.toMap("a=1;b=2;c=3", ";", "=");
       final Map<String, String> m2 = Maps.toMap("c=4;d=5;e=6", ";", "=");
 
       final CompositeMap<String, String> cm = CompositeMap.of(m1, m2);
-      assertEquals(5, cm.size());
-      assertEquals(5, cm.keySet().size());
-      assertEquals(5, cm.values().size());
-      assertEquals("1", cm.get("a"));
-      assertEquals("3", cm.get("c"));
+      assertThat(cm).hasSize(5);
+      assertThat(cm.keySet()).hasSize(5);
+      assertThat(cm.values()).hasSize(5);
+      assertThat(cm.get("a")).isEqualTo("1");
+      assertThat(cm.get("c")).isEqualTo("3");
 
       m1.put("a", "X");
       m1.put("d", "Y");
       m2.put("f", "Z");
-      assertEquals(6, cm.size());
-      assertEquals(6, cm.keySet().size());
-      assertEquals(6, cm.values().size());
+      assertThat(cm).hasSize(6);
+      assertThat(cm.keySet()).hasSize(6);
+      assertThat(cm.values()).hasSize(6);
       try {
          cm.put("f", "f");
-         fail();
+         failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
       } catch (final UnsupportedOperationException ex) {
          // expected
       }
 
       try {
          cm.remove("a");
-         fail();
+         failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
       } catch (final UnsupportedOperationException ex) {
          // expected
       }

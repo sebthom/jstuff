@@ -9,28 +9,31 @@
  *********************************************************************/
 package net.sf.jstuff.core.math;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.math.BigInteger;
 import java.util.UUID;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NumbersTest extends TestCase {
+public class NumbersTest {
 
+   @Test
    public void testIsLong() {
-      assertEquals(true, Numbers.isLong(BigInteger.ZERO));
-      assertEquals(true, Numbers.isLong(BigInteger.TEN));
-      assertEquals(true, Numbers.isLong(BigInteger.valueOf(Long.MAX_VALUE)));
-      assertEquals(true, Numbers.isLong(BigInteger.valueOf(Long.MIN_VALUE)));
-      assertEquals(false, Numbers.isLong(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.valueOf(1))));
-      assertEquals(false, Numbers.isLong(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.valueOf(1))));
+      assertThat(Numbers.isLong(BigInteger.ZERO)).isTrue();
+      assertThat(Numbers.isLong(BigInteger.TEN)).isTrue();
+      assertThat(Numbers.isLong(BigInteger.valueOf(Long.MAX_VALUE))).isTrue();
+      assertThat(Numbers.isLong(BigInteger.valueOf(Long.MIN_VALUE))).isTrue();
+      assertThat(Numbers.isLong(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.valueOf(1)))).isFalse();
+      assertThat(Numbers.isLong(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.valueOf(1)))).isFalse();
    }
 
+   @Test
    public void testUuidToBigInteger() {
       final UUID uuid = UUID.randomUUID();
-      assertEquals(new BigInteger(uuid.toString().replaceAll("-", ""), 16), Numbers.toBigInteger(uuid));
+      assertThat(new BigInteger(uuid.toString().replaceAll("-", ""), 16)).isEqualTo(Numbers.toBigInteger(uuid));
    }
-
 }

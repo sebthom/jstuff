@@ -38,36 +38,43 @@ public class ImmutableDate extends Date {
       return new ImmutableDate(this);
    }
 
+   @Deprecated
    @Override
    public void setDate(final int date) throws UnsupportedOperationException {
       throw new UnsupportedOperationException();
    }
 
+   @Deprecated
    @Override
    public void setHours(final int i) throws UnsupportedOperationException {
       throw new UnsupportedOperationException();
    }
 
+   @Deprecated
    @Override
    public void setMinutes(final int i) throws UnsupportedOperationException {
       throw new UnsupportedOperationException();
    }
 
+   @Deprecated
    @Override
    public void setMonth(final int month) throws UnsupportedOperationException {
       throw new UnsupportedOperationException();
    }
 
+   @Deprecated
    @Override
    public void setSeconds(final int i) throws UnsupportedOperationException {
       throw new UnsupportedOperationException();
    }
 
+   @Deprecated
    @Override
    public void setTime(final long date) throws UnsupportedOperationException {
       throw new UnsupportedOperationException();
    }
 
+   @Deprecated
    @Override
    public void setYear(final int year) throws UnsupportedOperationException {
       throw new UnsupportedOperationException();

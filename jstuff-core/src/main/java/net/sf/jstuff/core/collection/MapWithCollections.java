@@ -23,19 +23,19 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
    protected int initialCapacityOfCollection = 2;
    protected float growthFactorOfCollection = 0.75f;
 
-   public MapWithCollections() {
+   protected MapWithCollections() {
    }
 
-   public MapWithCollections(final int initialCapacity) {
+   protected MapWithCollections(final int initialCapacity) {
       super(initialCapacity);
    }
 
-   public MapWithCollections(final int initialCapacity, final int initialCapacityOfCollection) {
+   protected MapWithCollections(final int initialCapacity, final int initialCapacityOfCollection) {
       super(initialCapacity);
       this.initialCapacityOfCollection = initialCapacityOfCollection;
    }
 
-   public MapWithCollections(final int initialCapacity, final int initialCapacityOfCollection, final float growthFactorOfCollection) {
+   protected MapWithCollections(final int initialCapacity, final int initialCapacityOfCollection, final float growthFactorOfCollection) {
       super(initialCapacity);
 
       this.initialCapacityOfCollection = initialCapacityOfCollection;
@@ -105,7 +105,7 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
 
    public boolean removeValue(final K key, final V value) {
       final C values = get(key);
-      return values == null ? false : values.remove(value);
+      return values != null && values.remove(value);
    }
 
    public int size(final K key) {

@@ -9,31 +9,37 @@
  *********************************************************************/
 package net.sf.jstuff.core.net;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NetUtilsTest extends TestCase {
+public class NetUtilsTest {
+
+   @Test
    public void testIsKnownHost() {
-      assertTrue(NetUtils.isKnownHost("localhost"));
-      //assertFalse(NetUtils.isKnownHost("qwerwerdfsdfwer"));
+      assertThat(NetUtils.isKnownHost("localhost")).isTrue();
+      //assertThat(NetUtils.isKnownHost("qwerwerdfsdfwer")).isFalse();
    }
 
+   @Test
    public void testIsPortOpen() throws IOException {
       try (ServerSocket serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort())) {
-         assertTrue(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort()));
+         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort())).isTrue();
 
          NetUtils.closeQuietly(serverSocket);
-         assertFalse(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort()));
+         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort())).isFalse();
       }
    }
 
+   @Test
    public void testIsReachable() {
-      assertTrue(NetUtils.isHostReachable("localhost", 2000));
-      assertFalse(NetUtils.isHostReachable("qwerwerdfsdfwer", 2000));
+      assertThat(NetUtils.isHostReachable("localhost", 2000)).isTrue();
+      assertThat(NetUtils.isHostReachable("qwerwerdfsdfwer", 2000)).isFalse();
    }
 }

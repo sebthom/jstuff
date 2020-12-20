@@ -24,7 +24,7 @@ public class RuntimeIOException extends DelegatingRuntimeException {
    }
 
    @Override
-   public RuntimeIOException fillInStackTrace() {
+   public synchronized RuntimeIOException fillInStackTrace() {
       super.fillInStackTrace();
       return this;
    }
@@ -35,7 +35,7 @@ public class RuntimeIOException extends DelegatingRuntimeException {
    }
 
    @Override
-   public RuntimeIOException initCause(final Throwable cause) {
+   public synchronized RuntimeIOException initCause(final Throwable cause) {
       super.initCause(cause);
       return this;
    }

@@ -66,7 +66,7 @@ public class TeePrintStream extends PrintStream {
 
    @Override
    public boolean checkError() {
-      return super.checkError() | original.checkError();
+      return super.checkError() || original.checkError();
    }
 
    @Override

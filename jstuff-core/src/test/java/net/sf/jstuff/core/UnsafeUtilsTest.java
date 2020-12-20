@@ -9,24 +9,23 @@
  *********************************************************************/
 package net.sf.jstuff.core;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class UnsafeUtilsTest extends TestCase {
+public class UnsafeUtilsTest {
 
+   @Test
    public void testAddressOf() {
       final Object obj1 = new Object();
-      assertTrue(UnsafeUtils.addressOf(obj1) > 0);
-
-      assertEquals(UnsafeUtils.addressOf(obj1), UnsafeUtils.addressOf(obj1));
+      assertThat(UnsafeUtils.addressOf(obj1)).isPositive();
+      assertThat(UnsafeUtils.addressOf(obj1)).isEqualTo(UnsafeUtils.addressOf(obj1));
 
       final Object obj2 = new Object();
-      assertTrue(UnsafeUtils.addressOf(obj2) > 0);
-
-      assertNotEquals(UnsafeUtils.addressOf(obj1), UnsafeUtils.addressOf(obj2));
+      assertThat(UnsafeUtils.addressOf(obj2)).isPositive();
+      assertThat(UnsafeUtils.addressOf(obj1)).isNotEqualTo(UnsafeUtils.addressOf(obj2));
    }
 }

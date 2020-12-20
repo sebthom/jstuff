@@ -142,6 +142,7 @@ public abstract class Threads {
             case 9:
             case 10:
                return 2; // THREAD_PRIORITY_HIGHEST
+            default:
          }
       }
 
@@ -162,6 +163,7 @@ public abstract class Threads {
             case 9:
             case 10:
                return 127;
+            default:
          }
       }
 

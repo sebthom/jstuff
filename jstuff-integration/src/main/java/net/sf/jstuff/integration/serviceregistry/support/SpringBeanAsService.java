@@ -36,8 +36,8 @@ import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class SpringBeanAsService<T> implements InitializingBean, DisposableBean {
-   private boolean isInitialized = false;
 
+   private boolean isInitialized;
    private ServiceRegistry serviceRegistry;
 
    /**

@@ -24,10 +24,10 @@ public interface Composite<Component> extends Modifiable {
 
       protected final Collection<Component> components = createCollection();
 
-      public Default() {
+      protected Default() {
       }
 
-      public Default(final boolean isModifiable, final Collection<? extends Component> components) {
+      protected Default(final boolean isModifiable, final Collection<? extends Component> components) {
          Args.notNull("components", components);
          for (final Component component : components)
             if (component != null) {
@@ -37,7 +37,7 @@ public interface Composite<Component> extends Modifiable {
       }
 
       @SafeVarargs
-      public Default(final boolean isModifiable, final Component... components) {
+      protected Default(final boolean isModifiable, final Component... components) {
          Args.notNull("components", components);
          for (final Component component : components)
             if (component != null) {
@@ -46,12 +46,12 @@ public interface Composite<Component> extends Modifiable {
          this.isModifiable = isModifiable;
       }
 
-      public Default(final Collection<? extends Component> components) {
+      protected Default(final Collection<? extends Component> components) {
          this(true, components);
       }
 
       @SafeVarargs
-      public Default(final Component... components) {
+      protected Default(final Component... components) {
          this(true, components);
       }
 

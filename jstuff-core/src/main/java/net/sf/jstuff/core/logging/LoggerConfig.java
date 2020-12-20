@@ -26,21 +26,17 @@ public final class LoggerConfig {
    private static final Set<DelegatingLogger> LOGGERS = new WeakIdentityHashSet<>(64);
 
    private static final boolean isSLF4JAvailable; // CHECKSTYLE:IGNORE ConstantName
-
-   private static boolean isPreferSLF4J = false;
-
+   private static boolean isPreferSLF4J;
    static boolean isSanitizeStrackTracesEnabled = true;
-
-   private static boolean isUseSFL4J = false;
+   private static boolean isUseSFL4J;
 
    /**
     * If set to true, method name and line number are added to the log message.
     * This is esp. helpful in environments where you have no control over the used logger pattern by the underlying logger infrastructure (e.g. in an JEE
     * container).
     */
-   static boolean isDebugMessagePrefixEnabled = false;
-
-   static boolean isCompactExceptionLoggingEnabled = false;
+   static boolean isDebugMessagePrefixEnabled;
+   static boolean isCompactExceptionLoggingEnabled;
 
    static {
       LinkageError slf4jLinkageError = null;
@@ -97,7 +93,7 @@ public final class LoggerConfig {
    public static synchronized void setPreferSLF4J(final boolean value) {
       isPreferSLF4J = value;
       final boolean old = isUseSFL4J;
-      isUseSFL4J = isSLF4JAvailable ? isPreferSLF4J : false;
+      isUseSFL4J = isSLF4JAvailable && isPreferSLF4J;
       if (old == isUseSFL4J)
          return;
 

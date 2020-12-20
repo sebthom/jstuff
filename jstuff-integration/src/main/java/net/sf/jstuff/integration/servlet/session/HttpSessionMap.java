@@ -71,7 +71,7 @@ public class HttpSessionMap implements SessionMap {
    }
 
    @Override
-   public Set<java.util.Map.Entry<String, Object>> entrySet() {
+   public Set<Map.Entry<String, Object>> entrySet() {
       final HttpSession sess = request.getSession(false);
       if (sess == null)
          return Collections.emptySet();

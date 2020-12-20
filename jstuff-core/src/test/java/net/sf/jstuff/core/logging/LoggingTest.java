@@ -9,6 +9,8 @@
  *********************************************************************/
 package net.sf.jstuff.core.logging;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;
@@ -19,14 +21,16 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.logging.jul.Loggers;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class LoggingTest extends TestCase {
+public class LoggingTest {
    private static class Entity implements InterfaceA, InterfaceB {
       @Override
       public Object[] methodA(final int a, final String b, final String... c) {
@@ -104,8 +108,8 @@ public class LoggingTest extends TestCase {
    }
 
    private void genericLoggerTest() {
-      assertNotNull(LOG);
-      assertEquals(LoggingTest.class.getName(), LOG.getName());
+      assertThat(LOG).isNotNull();
+      assertThat(LOG.getName()).isEqualTo(LoggingTest.class.getName());
 
       for (final Handler handler : Loggers.ROOT_LOGGER.getHandlers()) {
          handler.setLevel(java.util.logging.Level.ALL);
@@ -129,46 +133,46 @@ public class LoggingTest extends TestCase {
       Loggers.ROOT_LOGGER.addHandler(h);
       try {
          System.out.println("LOGGER LEVEL = DEFAULT (INFO) ****************");
-         assertTrue(LOG.isInfoEnabled());
-         assertFalse(LOG.isDebugEnabled());
+         assertThat(LOG.isInfoEnabled()).isTrue();
+         assertThat(LOG.isDebugEnabled()).isFalse();
          count[0] = 0;
          coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
-         assertEquals(5, count[0]);
+         assertThat(count[0]).isEqualTo(5);
 
          Threads.sleep(50);
          System.out.println("LOGGER LEVEL = INFO **************************");
          java.util.logging.Logger.getLogger(LOG.getName()).setLevel(java.util.logging.Level.INFO);
-         assertTrue(LOG.isInfoEnabled());
-         assertFalse(LOG.isDebugEnabled());
+         assertThat(LOG.isInfoEnabled()).isTrue();
+         assertThat(LOG.isDebugEnabled()).isFalse();
          count[0] = 0;
          coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
-         assertEquals(5, count[0]);
+         assertThat(count[0]).isEqualTo(5);
 
          Threads.sleep(50);
          System.out.println("LOGGER LEVEL = FINEST **************************");
          java.util.logging.Logger.getLogger(LOG.getName()).setLevel(java.util.logging.Level.FINEST);
-         assertTrue(LOG.isTraceEnabled());
+         assertThat(LOG.isTraceEnabled()).isTrue();
          count[0] = 0;
          coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
-         assertEquals(12, count[0]);
+         assertThat(count[0]).isEqualTo(12);
 
          Threads.sleep(50);
          System.out.println("LOGGER LEVEL = SEVERE (INHERTIED) ************");
          Loggers.ROOT_LOGGER.setLevel(java.util.logging.Level.SEVERE);
-         assertTrue(LOG.isTraceEnabled());
+         assertThat(LOG.isTraceEnabled()).isTrue();
          java.util.logging.Logger.getLogger(LOG.getName()).setLevel(null);
-         assertFalse(LOG.isWarnEnabled());
-         assertTrue(LOG.isErrorEnabled());
+         assertThat(LOG.isWarnEnabled()).isFalse();
+         assertThat(LOG.isErrorEnabled()).isTrue();
          count[0] = 0;
          coolMethod("hello", 5, true, Void.class, Integer.valueOf(42));
-         assertEquals(3, count[0]);
+         assertThat(count[0]).isEqualTo(3);
       } finally {
          Loggers.ROOT_LOGGER.removeHandler(h);
       }
    }
 
-   @Override
-   protected void setUp() throws Exception {
+   @Before
+   public void setUp() throws Exception {
       System.out.println(LOG.isDebugEnabled());
 
       System.out.println("############################################");
@@ -186,16 +190,17 @@ public class LoggingTest extends TestCase {
       Threads.sleep(50);
    }
 
+   @Test
    public void test1LoggingJUL() {
       LoggerConfig.setPreferSLF4J(false);
       LoggerConfig.setCompactExceptionLogging(true);
       LoggerConfig.setDebugMessagePrefixEnabled(true);
 
-      assertTrue(((DelegatingLogger) LOG).getWrapped() instanceof JULLogger);
-
+      assertThat(((DelegatingLogger) LOG).getWrapped()).isInstanceOf(JULLogger.class);
       genericLoggerTest();
    }
 
+   @Test
    public void test2LoggingSLF4J() {
       System.out.println(LOG.isDebugEnabled());
 
@@ -203,11 +208,12 @@ public class LoggingTest extends TestCase {
       LoggerConfig.setCompactExceptionLogging(false);
       LoggerConfig.setDebugMessagePrefixEnabled(false);
 
-      assertTrue(((DelegatingLogger) LOG).getWrapped() instanceof SLF4JLogger);
+      assertThat(((DelegatingLogger) LOG).getWrapped()).isInstanceOf(SLF4JLogger.class);
 
       genericLoggerTest();
    }
 
+   @Test
    public void testCreateLogged() {
       LoggerConfig.setPreferSLF4J(false);
       LoggerConfig.setCompactExceptionLogging(false);
@@ -232,16 +238,16 @@ public class LoggingTest extends TestCase {
             count[0]++;
             switch (count[0]) {
                case 1:
-                  assertEquals("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])", record.getMessage());
+                  assertThat(record.getMessage()).isEqualTo("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])");
                   break;
                case 2:
-                  assertTrue(record.getMessage().startsWith("methodA():EXIT  << [foo, [bar]] "));
+                  assertThat(record.getMessage()).startsWith("methodA():EXIT  << [foo, [bar]] ");
                   break;
                case 3:
-                  assertEquals("methodB():ENTRY >> ()", record.getMessage());
+                  assertThat(record.getMessage()).isEqualTo("methodB():ENTRY >> ()");
                   break;
                case 4:
-                  assertTrue(record.getMessage().startsWith("methodB():EXIT  << *void* "));
+                  assertThat(record.getMessage()).startsWith("methodB():EXIT  << *void* ");
                   break;
             }
          }

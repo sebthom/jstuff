@@ -13,7 +13,9 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.SerializationException;
 
@@ -29,19 +31,19 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
    /**
     * @see XMLEncoder
     */
-   @SuppressWarnings("resource")
    public static String bean2xml(final Object javaBean) throws SerializationException {
       Args.notNull("javaBean", javaBean);
 
-      final ArrayList<Exception> exceptions = new ArrayList<>(2);
-      final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
-      final XMLEncoder encoder = new XMLEncoder(bos);
-      encoder.setExceptionListener(ex -> exceptions.add(ex));
-      encoder.writeObject(javaBean);
-      encoder.close();
-      if (exceptions.size() > 0)
+      final List<Exception> exceptions = new ArrayList<>(2);
+      try (FastByteArrayOutputStream bos = new FastByteArrayOutputStream()) {
+         try (XMLEncoder encoder = new XMLEncoder(bos)) {
+            encoder.setExceptionListener(exceptions::add);
+            encoder.writeObject(javaBean);
+         }
+         if (exceptions.isEmpty())
+            return bos.toString();
          throw new SerializationException("An error occured during XML serialization", exceptions.get(0));
-      return bos.toString();
+      }
    }
 
    @SuppressWarnings({"resource"})
@@ -66,18 +68,19 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
    /**
     * @see XMLDecoder
     */
-   @SuppressWarnings("resource")
    public static <T> T xml2bean(final String xmlData) throws SerializationException {
       Args.notNull("xmlData", xmlData);
 
-      final ArrayList<Exception> exceptions = new ArrayList<>(2);
-      final FastByteArrayInputStream bis = new FastByteArrayInputStream(xmlData.getBytes());
-      final XMLDecoder decoder = new XMLDecoder(bis);
-      decoder.setExceptionListener(ex -> exceptions.add(ex));
-      @SuppressWarnings("unchecked")
-      final T javaBean = (T) decoder.readObject();
-      if (exceptions.size() > 0)
+      try (FastByteArrayInputStream bis = new FastByteArrayInputStream(xmlData.getBytes(Charset.defaultCharset()));
+           XMLDecoder decoder = new XMLDecoder(bis) //
+      ) {
+         final List<Exception> exceptions = new ArrayList<>(2);
+         decoder.setExceptionListener(exceptions::add);
+         @SuppressWarnings("unchecked")
+         final T javaBean = (T) decoder.readObject();
+         if (exceptions.isEmpty())
+            return javaBean;
          throw new SerializationException("An error occured during XML deserialization", exceptions.get(0));
-      return javaBean;
+      }
    }
 }

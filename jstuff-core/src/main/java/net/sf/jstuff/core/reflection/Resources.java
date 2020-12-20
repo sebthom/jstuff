@@ -97,7 +97,7 @@ public abstract class Resources {
       public boolean equals(final Object o) {
          if (this == o)
             return true;
-         if (o == null || !(o instanceof Resource))
+         if (!(o instanceof Resource))
             return false;
          final Resource other = (Resource) o;
          return name.equals(other.name) && uri.equals(other.uri);
@@ -346,15 +346,12 @@ public abstract class Resources {
          case JAR: {
             if ("file".equals(url.getProtocol())) {
                final File jarFile = new File(url.getPath());
-               final JarFile jar = new JarFile(jarFile);
-               try {
+               try (JarFile jar = new JarFile(jarFile)) {
                   for (final JarEntry entry : Enumerations.toIterable(jar.entries())) {
                      if (!entry.isDirectory() && nameFilter.accept(entry.getName())) {
                         result.add(new Resource(entry.getName(), cl.getResource(entry.getName()), cl));
                      }
                   }
-               } finally {
-                  jar.close();
                }
             } else {
                try {
@@ -378,8 +375,7 @@ public abstract class Resources {
                      // i.e. instead of "jar:file:c:/apps/myapp.jar!/BOOT-INF/classes!/" use "jar:file:c:/apps/myapp.jar!"
                      jarConn = (JarURLConnection) new URL(jarURLParts[0] + "!/").openConnection();
 
-                     final JarFile jarFile = jarConn.getJarFile();
-                     try {
+                     try (JarFile jarFile = jarConn.getJarFile()) {
                         JarEntry jarEntry = jarFile.getJarEntry(entryToExtract);
 
                         if (!jarEntry.isDirectory()) { // not reliable, we test again by adding / to the entry name
@@ -416,8 +412,6 @@ public abstract class Resources {
                         } finally {
                            MoreFiles.forceDeleteQuietly(tmpDir);
                         }
-                     } finally {
-                        jarFile.close();
                      }
                   }
                } catch (final Exception ex) {

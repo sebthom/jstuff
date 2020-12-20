@@ -17,6 +17,8 @@ import java.util.Map;
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
 public class SortByPropertyComparator<T> extends SortByComparator<T, String> {
+   private static final long serialVersionUID = 1L;
+
    private final Map<String, Comparator<T>> comparators = new HashMap<>();
 
    @SafeVarargs

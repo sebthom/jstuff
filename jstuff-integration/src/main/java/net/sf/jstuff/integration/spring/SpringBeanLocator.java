@@ -43,25 +43,25 @@ import net.sf.jstuff.core.validation.Assert;
 public final class SpringBeanLocator {
    private static final Logger LOG = Logger.create();
 
-   private static SpringBeanLocator _INSTANCE;
+   private static SpringBeanLocator instance;
 
    /**
     * @return the default instance (the last instantiated one by any spring context)
     */
    public static SpringBeanLocator get() {
-      Assert.notNull(_INSTANCE, "Spring context not initialized yet.");
-      return _INSTANCE;
+      Assert.notNull(instance, "Spring context not initialized yet.");
+      return instance;
    }
 
    @Autowired
    private ListableBeanFactory factory;
 
    private SpringBeanLocator() {
-      Assert.isNull(_INSTANCE, "A instance of " + getClass().getName() + " already exists.");
+      Assert.isNull(instance, "A instance of " + getClass().getName() + " already exists.");
 
       LOG.infoNew(this);
 
-      _INSTANCE = this;
+      instance = this;
    }
 
    /**
@@ -76,13 +76,14 @@ public final class SpringBeanLocator {
       Args.notNull("beanType", beanType);
 
       final Map<?, ?> beans = factory.getBeansOfType(beanType, true, true);
-
-      if (beans == null || beans.isEmpty())
+      if (beans.isEmpty())
          throw new IllegalArgumentException("No Spring managed bean for type '" + beanType.getName() //
             + "' was found.");
+
       if (beans.size() > 1)
          throw new IllegalStateException("More than one Spring managed bean for type '" + beanType.getName() //
             + "' was found.");
+
       return (T) beans.values().iterator().next();
    }
 
@@ -109,6 +110,6 @@ public final class SpringBeanLocator {
 
    @PreDestroy
    private void onDestroy() {
-      _INSTANCE = null;
+      instance = null;
    }
 }

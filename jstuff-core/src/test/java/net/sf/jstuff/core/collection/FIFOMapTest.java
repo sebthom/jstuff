@@ -9,28 +9,32 @@
  *********************************************************************/
 package net.sf.jstuff.core.collection;
 
-import junit.framework.TestCase;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FIFOMapTest extends TestCase {
+public class FIFOMapTest {
+
+   @Test
    public void testFIFOMap() {
       final FIFOMap<String, String> map = FIFOMap.create(3);
       map.put("1", "1");
       map.put("2", "2");
       map.put("3", "3");
       map.put("4", "4");
-      assertEquals(3, map.size());
-      assertTrue(map.containsKey("2"));
-      assertTrue(map.containsKey("3"));
-      assertTrue(map.containsKey("4"));
+      assertThat(map).hasSize(3);
+      assertThat(map.containsKey("2")).isTrue();
+      assertThat(map.containsKey("3")).isTrue();
+      assertThat(map.containsKey("4")).isTrue();
 
-      assertEquals("2", map.get("2"));
+      assertThat(map.get("2")).isEqualTo("2");
       map.put("5", "5");
 
-      assertTrue(map.containsKey("3"));
-      assertTrue(map.containsKey("4"));
-      assertTrue(map.containsKey("5"));
+      assertThat(map.containsKey("3")).isTrue();
+      assertThat(map.containsKey("4")).isTrue();
+      assertThat(map.containsKey("5")).isTrue();
    }
 }

@@ -9,42 +9,46 @@
  *********************************************************************/
 package net.sf.jstuff.core.collection;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeCollectionTest extends TestCase {
+public class CompositeCollectionTest {
 
+   @Test
    public void testCompositeCollection() {
       final List<String> l1 = Arrays.asList("a", "b");
       final List<String> l2 = Arrays.asList("c", "d");
 
       final Collection<String> cc = CompositeCollection.of(l1, l2);
-      assertEquals(4, cc.size());
+      assertThat(cc).hasSize(4);
 
       final List<String> l3 = new ArrayList<>(cc);
-      assertEquals("a", l3.get(0));
-      assertEquals("b", l3.get(1));
-      assertEquals("c", l3.get(2));
-      assertEquals("d", l3.get(3));
-      assertEquals(4, l3.size());
+      assertThat(l3.get(0)).isEqualTo("a");
+      assertThat(l3.get(1)).isEqualTo("b");
+      assertThat(l3.get(2)).isEqualTo("c");
+      assertThat(l3.get(3)).isEqualTo("d");
+      assertThat(l3).hasSize(4);
 
       try {
          cc.add("foo");
-         fail();
+         failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
       } catch (final UnsupportedOperationException ex) {
          // expected
       }
 
       try {
          cc.remove("a");
-         fail();
+         failBecauseExceptionWasNotThrown(UnsupportedOperationException.class);
       } catch (final UnsupportedOperationException ex) {
          // expected
       }

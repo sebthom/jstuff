@@ -128,7 +128,6 @@ public class FieldInstantiatingPlugin extends AbstractPlugin {
             for (final CPluginCustomization pc : findCustomizations(fieldDef.getPropertyInfo().getCustomizations(), CUSTOMIZATION_ENABLED_TAG)) {
                pc.markAsAcknowledged();
                doInstantiate = true;
-               break;
             }
 
             // initialize field

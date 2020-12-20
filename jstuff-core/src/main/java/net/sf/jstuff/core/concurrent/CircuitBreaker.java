@@ -154,7 +154,7 @@ public class CircuitBreaker implements EventListenable<State> {
    protected CircuitBreaker() {
    }
 
-   protected int activePermits = 0;
+   protected int activePermits;
 
    protected EventDispatcher<State> eventDispatcher;
    protected int failureThreshold;
@@ -167,7 +167,7 @@ public class CircuitBreaker implements EventListenable<State> {
    protected long resetPeriodMS;
    protected State state = State.CLOSE;
    protected Object synchronizer = new Object();
-   protected int tripCount = 0;
+   protected int tripCount;
 
    public int getActivePermits() {
       return activePermits;
@@ -264,7 +264,6 @@ public class CircuitBreaker implements EventListenable<State> {
          if (ex != null && isFatalException(ex)) {
             LOG.warn("[%s] Hard tripping [%s] because of fatal exception [%s]...", name, State.OPEN, ex);
             switchToOPEN(now);
-            return;
          }
       }
    }
@@ -463,7 +462,7 @@ public class CircuitBreaker implements EventListenable<State> {
     * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
     */
    public <A, E extends Exception> boolean tryExecute(final Invocable<?, A, E> invocable, final A args, final int errorTimeout, final TimeUnit timeUnit)
-      throws Exception {
+      throws E {
       Args.notNull("invocable", invocable);
       Args.notNull("timeUnit", timeUnit);
 
@@ -517,7 +516,7 @@ public class CircuitBreaker implements EventListenable<State> {
     *
     * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
     */
-   public boolean tryExecute(final Runnable runnable, final int errorTimeout, final TimeUnit timeUnit) throws Exception {
+   public boolean tryExecute(final Runnable runnable, final int errorTimeout, final TimeUnit timeUnit) {
       Args.notNull("runnable", runnable);
       Args.notNull("timeUnit", timeUnit);
 

@@ -300,7 +300,7 @@ public class INIFileConfiguration extends AbstractFileConfiguration {
                final String value = (String) subset.getProperty(key);
                bw.write(key);
                bw.write('=');
-               if (value.indexOf("#") > -1 || value.indexOf(";") > -1 || value.indexOf(" ") > -1) {
+               if (value.indexOf('#') > -1 || value.indexOf(';') > -1 || value.indexOf(' ') > -1) {
                   // add quotes around the specified value if it contains a comment character
                   bw.write('"');
                   bw.write(Strings.replace(value, "\"", "\\\""));
