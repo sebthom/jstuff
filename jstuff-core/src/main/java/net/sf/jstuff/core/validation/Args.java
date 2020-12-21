@@ -12,6 +12,9 @@ package net.sf.jstuff.core.validation;
 import static net.sf.jstuff.core.reflection.StackTrace.*;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -41,6 +44,30 @@ public abstract class Args {
             ) //
          );
       return value;
+   }
+
+   /**
+    * Ensures file exists.
+    */
+   public static File exists(final String argumentName, final File file) {
+      _notNull("argumentName", argumentName);
+      _notNull(argumentName, file);
+
+      if (!file.exists())
+         throw _createIllegalArgumentException(argumentName, "File [" + file.getAbsolutePath() + "] does not exist.");
+      return file;
+   }
+
+   /**
+    * Ensures path exists.
+    */
+   public static Path exists(final String argumentName, final Path path, final LinkOption... options) {
+      _notNull("argumentName", argumentName);
+      _notNull(argumentName, path);
+
+      if (!Files.exists(path, options))
+         throw _createIllegalArgumentException(argumentName, "Path [" + path + "] does not exist.");
+      return path;
    }
 
    public static byte greaterThan(final String argumentName, final byte value, final byte bound) {
