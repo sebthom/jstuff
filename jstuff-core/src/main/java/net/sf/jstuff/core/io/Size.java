@@ -11,10 +11,13 @@ package net.sf.jstuff.core.io;
 
 import static net.sf.jstuff.core.io.ByteUnit.*;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -67,6 +70,13 @@ public final class Size implements Serializable, Comparable<Size> {
       return new Size(unit.toBytes(value));
    }
 
+   public static Size of(final Path path) throws IOException {
+      Args.notNull("path", path);
+      if (!Files.exists(path))
+         throw new IllegalArgumentException("[path] does not exist: " + path);
+      return of(Files.size(path), BYTES);
+   }
+
    public static Size ofBytes(final long value) {
       return of(value, BYTES);
    }
@@ -107,9 +117,8 @@ public final class Size implements Serializable, Comparable<Size> {
       if (getClass() != obj.getClass())
          return false;
       final Size other = (Size) obj;
-      if (!Objects.equals(bytes, other.bytes)) {
+      if (!Objects.equals(bytes, other.bytes))
          return false;
-      }
       return true;
    }
 
@@ -141,6 +150,10 @@ public final class Size implements Serializable, Comparable<Size> {
       return result;
    }
 
+   public String toHumanReadableString() {
+      return BYTES.toHumanReadableString(bytes, ROUNDING_2_HALFUP);
+   }
+
    public String toHumanReadableString(final Rounding rounding) {
       return BYTES.toHumanReadableString(bytes, rounding);
    }
@@ -151,7 +164,7 @@ public final class Size implements Serializable, Comparable<Size> {
 
    @Override
    public String toString() {
-      return BYTES.toHumanReadableString(bytes, ROUNDING_2_HALFUP);
+      return toHumanReadableString();
    }
 
    public String toString(final ByteUnit targetUnit, final Rounding rounding) {
