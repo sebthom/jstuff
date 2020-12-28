@@ -114,7 +114,7 @@ public abstract class X509Utils {
     * Constructs a X509Certificate instance from a DER or PEM encoded certificate
     */
    @SuppressWarnings("resource")
-   public static X509Certificate getCertificate(final byte[] data) throws GeneralSecurityException, IOException {
+   public static X509Certificate getCertificate(final byte[] data) throws GeneralSecurityException {
       Args.notEmpty("data", data);
       return getCertificate(new FastByteArrayInputStream(data));
    }
@@ -133,7 +133,7 @@ public abstract class X509Utils {
     * Constructs a X509Certificate instance from a DER or PEM encoded certificate
     */
    @SuppressWarnings("resource")
-   public static X509Certificate getCertificate(final InputStream is) throws GeneralSecurityException, IOException {
+   public static X509Certificate getCertificate(final InputStream is) throws GeneralSecurityException {
       Args.notNull("is", is);
       try {
          return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(IOUtils.toBufferedInputStream(is));
