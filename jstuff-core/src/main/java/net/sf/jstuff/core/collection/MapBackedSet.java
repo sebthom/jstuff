@@ -12,18 +12,21 @@ package net.sf.jstuff.core.collection;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
+public class MapBackedSet<E> implements Set<E>, Serializable {
    private static final long serialVersionUID = 1L;
 
    public static <E> MapBackedSet<E> create(final Map<E, Boolean> emptyMap) {
@@ -31,7 +34,6 @@ public class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
    }
 
    private final Map<E, Boolean> map;
-
    private transient Set<E> keys;
 
    public MapBackedSet(final Map<E, Boolean> emptyMap) {
@@ -46,6 +48,16 @@ public class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
    @Override
    public boolean add(final E e) {
       return map.put(e, Boolean.TRUE) == null;
+   }
+
+   @Override
+   public boolean addAll(final Collection<? extends E> c) {
+      boolean modified = false;
+      for (final E e : c)
+         if (add(e)) {
+            modified = true;
+         }
+      return modified;
    }
 
    @Override
@@ -65,21 +77,12 @@ public class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
 
    @Override
    public boolean equals(final Object o) {
-      if (o == null)
-         return false;
-      if (o == this)
-         return true;
-      if (!(o instanceof Set))
-         return false;
+      return o == this || keys.equals(o);
+   }
 
-      final Set<?> otherSet = (Set<?>) o;
-      if (otherSet.size() != size())
-         return false;
-
-      for (final E key : keys)
-         if (!otherSet.contains(key))
-            return false;
-      return true;
+   @Override
+   public void forEach(final Consumer<? super E> action) {
+      keys.forEach(action);
    }
 
    @Override
@@ -95,6 +98,11 @@ public class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
    @Override
    public Iterator<E> iterator() {
       return keys.iterator();
+   }
+
+   @Override
+   public Stream<E> parallelStream() {
+      return keys.parallelStream();
    }
 
    private void readObject(final ObjectInputStream ois) throws IOException, ClassNotFoundException {
@@ -113,6 +121,11 @@ public class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
    }
 
    @Override
+   public boolean removeIf(final Predicate<? super E> filter) {
+      return keys.removeIf(filter);
+   }
+
+   @Override
    public boolean retainAll(final Collection<?> c) {
       return keys.retainAll(c);
    }
@@ -120,6 +133,16 @@ public class MapBackedSet<E> extends AbstractSet<E> implements Serializable {
    @Override
    public int size() {
       return map.size();
+   }
+
+   @Override
+   public Spliterator<E> spliterator() {
+      return keys.spliterator();
+   }
+
+   @Override
+   public Stream<E> stream() {
+      return keys.stream();
    }
 
    @Override
