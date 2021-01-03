@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -17,7 +17,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import net.sf.jstuff.core.validation.Args;
 
 /**
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Functions {
    public abstract static class AbstractFunction<In, Out> implements ChainableFunction<In, Out>, Serializable {

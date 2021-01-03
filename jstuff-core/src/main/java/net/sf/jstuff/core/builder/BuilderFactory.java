@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -35,7 +35,7 @@ import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends TARGET_CLASS>> {
 

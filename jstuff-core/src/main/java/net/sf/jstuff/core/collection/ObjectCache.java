@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Thread-safe in-memory object cache.
  *
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public final class ObjectCache<K, V> {
    private static final class SoftValueReference<K, V> extends SoftReference<V> implements ValueReference<K, V> {

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -24,7 +24,7 @@ import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
    private static final Logger LOG = Logger.create();

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -44,7 +44,7 @@ import net.sf.jstuff.integration.spring.SpringBeanParanamer;
  * https://dojotoolkit.org/reference-guide/1.10/dojox/rpc/smd.html
  * https://dojotoolkit.org/reference-guide/1.10/dojox/rpc/SMDLibrary.html
  *
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class SMDServiceExporter extends RemoteExporter implements HttpRequestHandler, InitializingBean {
    private static final Logger LOG = Logger.create();

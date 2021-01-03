@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Comparator;
 
 /**
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class CompositeComparator<T> extends net.sf.jstuff.core.types.Composite.Default<Comparator<T>> implements Comparator<T> {
    private static final long serialVersionUID = 1L;

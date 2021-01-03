@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -32,7 +32,7 @@ import net.sf.jstuff.core.types.Identifiable;
 import net.sf.jstuff.integration.persistence.HashCodeManager;
 
 /**
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @MappedSuperclass
 public abstract class AbstractJPAEntity<KeyType extends Serializable> implements Serializable, Identifiable<KeyType> {

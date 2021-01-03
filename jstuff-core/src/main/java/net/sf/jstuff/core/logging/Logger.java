@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -21,7 +21,7 @@ import net.sf.jstuff.core.validation.Args;
  * <li>{@link Logger#fatal}() always logs the full stacktrace
  * <li>Defaults to SLF4J as logging infrastructure and falls back to java.util.logging if SLF4J is not available.
  *
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @ThreadSafe
 public interface Logger {

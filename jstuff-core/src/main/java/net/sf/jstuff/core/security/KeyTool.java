@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -40,7 +40,7 @@ import net.sf.jstuff.core.validation.Assert;
  *
  * During execution this class tries to install a custom security manager to prevent JVM exist calls by the underlying KeyTool class implementation.
  *
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class KeyTool {
 

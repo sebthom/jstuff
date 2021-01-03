@@ -27,7 +27,7 @@ import net.sf.jstuff.core.security.x509.X509Utils;
  * A servlet {@link Filter} that transforms the {@code "X-Forwarded-Client-Cert"} HTTP header to the {@code "javax.servlet.request.X509Certificate"} Servlet
  * attribute.
  *
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ForwardedClientCertificateFilter implements Filter {
 

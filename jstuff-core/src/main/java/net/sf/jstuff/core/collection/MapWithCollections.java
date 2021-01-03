@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -15,7 +15,7 @@ import java.util.Iterator;
 import net.sf.jstuff.core.collection.iterator.Iterators;
 
 /**
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class MapWithCollections<K, V, C extends Collection<V>> extends MapWith<K, C> {
    private static final long serialVersionUID = 1L;

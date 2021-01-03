@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -44,7 +44,7 @@ import net.sf.jstuff.core.reflection.StackTrace;
  * http://cs.oswego.edu/pipermail/concurrency-interest/2015-January/013861.html
  * http://zeroturnaround.com/rebellabs/concurrency-torture-testing-your-code-within-the-java-memory-model/
  *
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UnsafePublicationTest {

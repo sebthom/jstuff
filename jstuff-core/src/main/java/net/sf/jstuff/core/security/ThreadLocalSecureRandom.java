@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -28,7 +28,7 @@ import net.sf.jstuff.core.fluent.Fluent;
 /**
  * Tries to use /dev/urandom (NativePRNGNonBlocking) by default on Unix.
  *
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ThreadLocalSecureRandom extends SecureRandom {
 

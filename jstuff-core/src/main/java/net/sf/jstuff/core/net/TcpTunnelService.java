@@ -21,7 +21,7 @@ import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class TcpTunnelService extends Thread {
 

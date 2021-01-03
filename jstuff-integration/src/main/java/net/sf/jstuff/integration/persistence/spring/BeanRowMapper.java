@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright 2010-2020 by Sebastian Thomschke and others.
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -34,7 +34,7 @@ import net.sf.jstuff.core.validation.Args;
  * Class represent a mapper that map column values of rows to bean properties
  * This implementation use schema: columnname(lowercase) --> bean property name
  *
- * @author <a href="http://sebthom.de/">Sebastian Thomschke</a>
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class BeanRowMapper<T> implements RowMapper<T> {
    private static final Logger LOG = Logger.create();
