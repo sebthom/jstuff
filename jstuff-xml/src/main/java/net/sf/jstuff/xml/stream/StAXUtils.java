@@ -32,7 +32,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.collection.IntArrayList;
+import net.sf.jstuff.core.collection.primitive.IntArrayList;
 import net.sf.jstuff.core.logging.Logger;
 
 /**
@@ -332,7 +332,7 @@ public abstract class StAXUtils {
                if (result.size() == max)
                   return result;
 
-               if (pathElemSize.size() > 0) {
+               if (!pathElemSize.isEmpty()) {
                   final int size = pathElemSize.removeLast(); //CHECKSTYLE:IGNORE MoveVariableInsideIfCheck
                   if (path.length() > 0) {
                      path.setLength(path.length() - size);
