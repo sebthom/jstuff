@@ -1,6 +1,6 @@
 # jstuff - toolbox for Java
 
-[![Build Status](https://img.shields.io/github/workflow/status/sebthom/jstuff/Maven%20Publish)](https://github.com/sebthom/jstuff/actions?query=workflow%3A%22Maven+Publish%22)
+[![Build Status](https://img.shields.io/github/workflow/status/sebthom/jstuff/Build)](https://github.com/sebthom/jstuff/actions?query=workflow%3A%22Build%22)
 [![License](https://img.shields.io/github/license/sebthom/jstuff.svg?color=blue)](LICENSE.txt)
 [![Bintray](https://img.shields.io/bintray/v/sebthom/maven/jstuff?label=jcenter.bintray)](https://bintray.com/sebthom/maven/jstuff/_latestVersion)
 
