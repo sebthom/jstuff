@@ -24,7 +24,7 @@
 
 
    <properties>
-      <jetty.version>7.6.21.v20160908</jetty.version>
+      <jetty.version>8.2.0.v20160908</jetty.version>
 
       <!--
         https://search.maven.org/search?q=g:org.springframework
