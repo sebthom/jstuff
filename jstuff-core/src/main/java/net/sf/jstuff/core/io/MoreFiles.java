@@ -24,6 +24,7 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
@@ -65,9 +66,8 @@ public abstract class MoreFiles {
    private static final Queue<Path> _FILES_TO_DELETE_ON_SHUTDOWN = new ConcurrentLinkedQueue<>();
 
    private static final LinkOption[] NOFOLLOW_LINKS = {LinkOption.NOFOLLOW_LINKS};
-
-   private static final StandardOpenOption[] FILE_READ_OPTIONS = {StandardOpenOption.READ};
-   private static final StandardOpenOption[] FILE_WRITE_OPTIONS = { //
+   private static final OpenOption[] DEFAULT_FILE_READ_OPTIONS = {StandardOpenOption.READ};
+   private static final OpenOption[] DEFAULT_FILE_WRITE_OPTIONS = { //
       StandardOpenOption.CREATE, //
       StandardOpenOption.TRUNCATE_EXISTING, //
       StandardOpenOption.WRITE //
@@ -116,41 +116,11 @@ public abstract class MoreFiles {
       if (Files.isSameFile(file1, file2))
          return true;
 
-      try (FileChannel file1Ch = FileChannel.open(file1, FILE_READ_OPTIONS);
-           FileChannel file2Ch = FileChannel.open(file2, FILE_READ_OPTIONS)) {
+      try (FileChannel file1Ch = FileChannel.open(file1, DEFAULT_FILE_READ_OPTIONS);
+           FileChannel file2Ch = FileChannel.open(file2, DEFAULT_FILE_READ_OPTIONS)) {
          final MappedByteBuffer buff1 = file1Ch.map(FileChannel.MapMode.READ_ONLY, 0, file1Ch.size());
          final MappedByteBuffer buff2 = file2Ch.map(FileChannel.MapMode.READ_ONLY, 0, file2Ch.size());
          return buff1.equals(buff2);
-      }
-   }
-
-   public static void copyContent(final Path source, final Path target) throws IOException {
-      copyContent(source, target, (bytesWritten, totalBytesWritten) -> { /* ignore */ });
-   }
-
-   /**
-    * @param onBytesWritten LongBiConsumer#accept(long bytesWritten, long totalBytesWritten)
-    */
-   public static void copyContent(final Path source, final Path target, final LongBiConsumer onBytesWritten) throws IOException {
-      Args.notNull("onBytesWritten", onBytesWritten);
-      try ( //
-           FileChannel inCh = FileChannel.open(source, FILE_READ_OPTIONS);
-           WritableByteChannel outCh = new DelegatingWritableByteChannel(FileChannel.open(target, FILE_WRITE_OPTIONS), onBytesWritten) //
-      ) {
-         final long size = inCh.size();
-         long position = 0;
-
-         if (SystemUtils.IS_OS_WINDOWS) {
-            // using a fixed buffer with 64Mb - 32Kb is for some reason slightly faster on Windows (even on Win 10x64)
-            // see also https://stackoverflow.com/q/7379469/5116073
-            while (position < size) {
-               position += inCh.transferTo(position, (long) 64 * 1024 * 1024 - 32 * 1024, outCh);
-            }
-         } else {
-            while (position < size) {
-               position += inCh.transferTo(position, size - position, outCh);
-            }
-         }
       }
    }
 
@@ -216,6 +186,53 @@ public abstract class MoreFiles {
          sourceFSP.readAttributes(source, BasicFileAttributes.class, NOFOLLOW_LINKS), //
          targetFSP.getFileAttributeView(target, BasicFileAttributeView.class, NOFOLLOW_LINKS) //
       );
+   }
+
+   /**
+    * @param onBytesWritten LongBiConsumer#accept(long bytesWritten, long totalBytesWritten)
+    */
+   @SuppressWarnings("resource")
+   public static void copyContent(final FileChannel source, final FileChannel target, final LongBiConsumer onBytesWritten) throws IOException {
+      Args.notNull("onBytesWritten", onBytesWritten);
+      Args.notNull("source", source);
+      Args.notNull("target", target);
+
+      try ( //
+           WritableByteChannel outCh = new DelegatingWritableByteChannel(target, onBytesWritten) //
+      ) {
+         final long size = source.size();
+         long position = 0;
+
+         if (SystemUtils.IS_OS_WINDOWS) {
+            // using a fixed buffer with 64Mb - 32Kb is for some reason slightly faster on Windows (even on Win 10x64)
+            // see also https://stackoverflow.com/q/7379469/5116073
+            while (position < size) {
+               position += source.transferTo(position, (long) 64 * 1024 * 1024 - 32 * 1024, outCh);
+            }
+         } else {
+            while (position < size) {
+               position += source.transferTo(position, size - position, outCh);
+            }
+         }
+      }
+   }
+
+   public static void copyContent(final Path source, final Path target) throws IOException {
+      copyContent(source, target, (bytesWritten, totalBytesWritten) -> { /* ignore */ });
+   }
+
+   /**
+    * @param onBytesWritten LongBiConsumer#accept(long bytesWritten, long totalBytesWritten)
+    */
+   public static void copyContent(final Path source, final Path target, final LongBiConsumer onBytesWritten) throws IOException {
+      Args.notNull("onBytesWritten", onBytesWritten);
+      Args.notNull("source", source);
+      Args.notNull("target", target);
+
+      try (FileChannel sourceCh = FileChannel.open(source, DEFAULT_FILE_READ_OPTIONS);
+           FileChannel targetCh = FileChannel.open(target, DEFAULT_FILE_WRITE_OPTIONS)) {
+         copyContent(sourceCh, targetCh, onBytesWritten);
+      }
    }
 
    private static void copyTimeAttrs(final BasicFileAttributes sourceAttrs, final BasicFileAttributeView targetAttrs) throws IOException {
@@ -395,12 +412,14 @@ public abstract class MoreFiles {
       return Files.deleteIfExists(fileOrDirectory);
    }
 
-   public static boolean forceDeleteQuietly(final Path fileOrDirectory) {
+   public static void forceDeleteNowOrOnExit(final Path fileOrDirectory) {
+      Args.notNull("fileOrDirectory", fileOrDirectory);
+
       try {
          forceDelete(fileOrDirectory);
-         return true;
-      } catch (final IOException e) {
-         return false;
+      } catch (final IOException ex) {
+         LOG.debug(ex, "Registering %s for deletion on JVM shutdown...", fileOrDirectory);
+         _FILES_TO_DELETE_ON_SHUTDOWN.add(fileOrDirectory);
       }
    }
 
@@ -410,14 +429,12 @@ public abstract class MoreFiles {
       _FILES_TO_DELETE_ON_SHUTDOWN.add(fileOrDirectory);
    }
 
-   public static void forceDeleteNowOrOnExit(final Path fileOrDirectory) {
-      Args.notNull("fileOrDirectory", fileOrDirectory);
-
+   public static boolean forceDeleteQuietly(final Path fileOrDirectory) {
       try {
          forceDelete(fileOrDirectory);
-      } catch (final IOException ex) {
-         LOG.debug(ex, "Registering %s for deletion on JVM shutdown...", fileOrDirectory);
-         _FILES_TO_DELETE_ON_SHUTDOWN.add(fileOrDirectory);
+         return true;
+      } catch (final IOException e) {
+         return false;
       }
    }
 
