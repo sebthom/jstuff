@@ -32,6 +32,8 @@ public abstract class AbstractCompression implements Compression {
    @Override
    @SuppressWarnings("resource")
    public byte[] compress(final byte[] uncompressed) throws IOException {
+      Args.notNull("uncompressed", uncompressed);
+
       final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream();
       compress(uncompressed, bytesOS, true);
       return bytesOS.toByteArray();
@@ -41,6 +43,7 @@ public abstract class AbstractCompression implements Compression {
    @SuppressWarnings("resource")
    public InputStream createCompressingInputStream(final byte[] uncompressed) throws IOException {
       Args.notNull("uncompressed", uncompressed);
+
       final FastByteArrayOutputStream output = new FastByteArrayOutputStream();
       compress(uncompressed, output, true);
       return output.toInputStream();
@@ -77,6 +80,7 @@ public abstract class AbstractCompression implements Compression {
    @SuppressWarnings("resource")
    public InputStream createDecompressingInputStream(final byte[] compressed) throws IOException {
       Args.notNull("compressed", compressed);
+
       return createDecompressingInputStream(new FastByteArrayInputStream(compressed));
    }
 
