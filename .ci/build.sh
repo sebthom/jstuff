@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright 2010-2021 by Sebastian Thomschke and others.
+# Copyright 2010-2021 by Sebastian Thomschke and contributors.
 # SPDX-License-Identifier: EPL-2.0
 #
 # @author Sebastian Thomschke, https://sebthom.de/

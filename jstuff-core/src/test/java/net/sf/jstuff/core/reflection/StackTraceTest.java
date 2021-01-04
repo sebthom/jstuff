@@ -1,15 +1,10 @@
-/*********************************************************************
- * Copyright 2010-2021 by Sebastian Thomschke and others.
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
+/*
+ * Copyright 2010-2021 by Sebastian Thomschke and contributors.
  * SPDX-License-Identifier: EPL-2.0
- *********************************************************************/
+ */
 package net.sf.jstuff.core.reflection;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 
@@ -27,11 +22,11 @@ public class StackTraceTest {
             ensureEquals("net.sf.jstuff.core.reflection.StackTraceTest$Outer$Inner", StackTrace.getThisStackTraceElement().getClassName());
             ensureEquals("innerMethod", StackTrace.getThisMethodName());
             ensureEquals("innerMethod", StackTrace.getThisStackTraceElement().getMethodName());
-            ensureEquals(30, StackTrace.getThisLineNumber());
+            ensureEquals(25, StackTrace.getThisLineNumber());
             ensureEquals("StackTraceTest.java", StackTrace.getThisFileName());
 
             ensureEquals("outerMethod", StackTrace.getCallerMethodName());
-            ensureEquals(44, StackTrace.getCallerLineNumber());
+            ensureEquals(39, StackTrace.getCallerLineNumber());
             ensureEquals("StackTraceTest.java", StackTrace.getCallerFileName());
             ensureEquals(Outer.class.getName(), StackTrace.getCallerClassName());
             ensureEquals(Outer.class, StackTrace.getCallerClass());
