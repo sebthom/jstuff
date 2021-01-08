@@ -5,7 +5,6 @@
 package net.sf.jstuff.core.compression;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -44,7 +43,7 @@ public class CompressionBenchmark {
       @Override
       public String toString() {
          final NumberFormat nf = NumberFormat.getIntegerInstance(Locale.ENGLISH);
-         return String.format("%d x %7s bytes -> %7s bytes in  compr: %s  decompr: %s  total: %s  %s", //
+         return String.format("%d x %s bytes -> %s bytes in  comp: %s  decomp: %s  total: %s  %s", //
             iterations, //
             nf.format(uncompressedSize), //
             nf.format(compressedSize), //
@@ -55,42 +54,15 @@ public class CompressionBenchmark {
       }
    }
 
-   public static class CompressSpeedComparator implements Comparator<BenchmarkResult>, Serializable {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
-         return o1.compressTimeMS < o2.compressTimeMS ? -1 : o1.compressTimeMS == o2.compressTimeMS ? 0 : 1;
-      }
-   }
-
-   public static class DecompressSpeedComparator implements Comparator<BenchmarkResult>, Serializable {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
-         return o1.decompressTimeMS < o2.decompressTimeMS ? -1 : o1.decompressTimeMS == o2.decompressTimeMS ? 0 : 1;
-      }
-   }
-
-   public static class SizeComparator implements Comparator<BenchmarkResult>, Serializable {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
-         return o1.compressedSize < o2.compressedSize ? -1 : o1.compressedSize == o2.compressedSize ? 0 : 1;
-      }
-   }
-
-   public static class SpeedComparator implements Comparator<BenchmarkResult>, Serializable {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public int compare(final BenchmarkResult o1, final BenchmarkResult o2) {
-         return o1.compressTimeMS + o1.decompressTimeMS < o2.compressTimeMS + o2.decompressTimeMS ? -1
-            : o1.compressTimeMS + o1.decompressTimeMS == o2.compressTimeMS + o2.decompressTimeMS ? 0 : 1;
-      }
-   }
+   public static final Comparator<BenchmarkResult> COMPARATOR_COMPRESS_SPEED = //
+      (o1, o2) -> o1.compressTimeMS < o2.compressTimeMS ? -1 : o1.compressTimeMS == o2.compressTimeMS ? 0 : 1;
+   public static final Comparator<BenchmarkResult> COMPARATOR_DECOMPRESS_SPEED = //
+      (o1, o2) -> o1.decompressTimeMS < o2.decompressTimeMS ? -1 : o1.decompressTimeMS == o2.decompressTimeMS ? 0 : 1;
+   public static final Comparator<BenchmarkResult> COMPARATOR_RATIO = //
+      (o1, o2) -> o1.compressedSize < o2.compressedSize ? -1 : o1.compressedSize == o2.compressedSize ? 0 : 1;
+   public static final Comparator<BenchmarkResult> COMPARATOR_ROUNDTRIP_SPEED = //
+      (o1, o2) -> o1.compressTimeMS + o1.decompressTimeMS < o2.compressTimeMS + o2.decompressTimeMS ? -1
+         : o1.compressTimeMS + o1.decompressTimeMS == o2.compressTimeMS + o2.decompressTimeMS ? 0 : 1;
 
    private static final Logger LOG = Logger.create();
 
@@ -110,7 +82,7 @@ public class CompressionBenchmark {
       for (final Compression cmp : compressions) {
          final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
          final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
-         cmp.compress(uncompressedIS, compressedOS, true);
+         cmp.compress(uncompressedIS, compressedOS);
 
          final BenchmarkResult res = new BenchmarkResult();
          res.compression = cmp;
@@ -131,16 +103,15 @@ public class CompressionBenchmark {
          for (int i = 0; i < 50; i++) {
             final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
             final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
-            cmp.compress(uncompressedIS, compressedOS, true);
+            cmp.compress(uncompressedIS, compressedOS);
 
             final FastByteArrayInputStream compressedIS = new FastByteArrayInputStream(ArrayUtils.EMPTY_BYTE_ARRAY);
             compressedIS.setData(compressedOS.toByteArray());
 
             final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
-            cmp.decompress(compressedIS, uncompressedOS, true);
+            cmp.decompress(compressedIS, uncompressedOS);
             if (!Objects.deepEquals(uncompressed, uncompressedOS.toByteArray()))
                throw new IOException("Compression [" + cmp + "] is buggy!");
-
          }
       }
 
@@ -164,7 +135,7 @@ public class CompressionBenchmark {
          for (int i = 0; i < iterations; i++) {
             uncompressedIS.reset();
             compressedOS.reset();
-            cmp.compress(uncompressedIS, compressedOS, true);
+            cmp.compress(uncompressedIS, compressedOS);
          }
          sw.stop();
          result.get(cmp).compressTimeMS = sw.getTime();
@@ -180,7 +151,7 @@ public class CompressionBenchmark {
          final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
          final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
          final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
-         cmp.compress(uncompressedIS, compressedOS, true);
+         cmp.compress(uncompressedIS, compressedOS);
 
          final FastByteArrayInputStream compressedIS = new FastByteArrayInputStream(ArrayUtils.EMPTY_BYTE_ARRAY);
          compressedIS.setData(compressedOS.toByteArray());
@@ -190,7 +161,7 @@ public class CompressionBenchmark {
          for (int i = 0; i < iterations; i++) {
             compressedIS.reset();
             uncompressedOS.reset();
-            cmp.decompress(compressedIS, uncompressedOS, true);
+            cmp.decompress(compressedIS, uncompressedOS);
          }
          sw.stop();
          result.get(cmp).decompressTimeMS = sw.getTime();
@@ -200,7 +171,7 @@ public class CompressionBenchmark {
 
       LOG.info("Done.");
 
-      return Maps.sortByValue(result, new CompressSpeedComparator());
+      return Maps.sortByValue(result, COMPARATOR_ROUNDTRIP_SPEED);
    }
 
    public CompressionBenchmark setIterations(final int iterations) {

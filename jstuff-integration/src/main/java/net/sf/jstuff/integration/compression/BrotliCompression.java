@@ -1,24 +1,30 @@
-/*
- * Copyright 2010-2021 by Sebastian Thomschke and contributors.
+/*********************************************************************
+ * Copyright 2010-2021 by Sebastian Thomschke and others.
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
  * SPDX-License-Identifier: EPL-2.0
- */
+ *********************************************************************/
 package net.sf.jstuff.integration.compression;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.meteogroup.jbrotli.BrotliDeCompressor;
-import org.meteogroup.jbrotli.BrotliException;
-import org.meteogroup.jbrotli.io.BrotliInputStream;
-import org.meteogroup.jbrotli.io.BrotliOutputStream;
-import org.meteogroup.jbrotli.libloader.BrotliLibraryLoader;
+import com.aayushatharva.brotli4j.Brotli4jLoader;
+import com.aayushatharva.brotli4j.decoder.BrotliInputStream;
+import com.aayushatharva.brotli4j.decoder.Decoder;
+import com.aayushatharva.brotli4j.decoder.DecoderJNI;
+import com.aayushatharva.brotli4j.decoder.DirectDecompress;
+import com.aayushatharva.brotli4j.encoder.BrotliOutputStream;
+import com.aayushatharva.brotli4j.encoder.Encoder;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.compression.AbstractCompression;
-import net.sf.jstuff.core.io.IOUtils;
-import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
+import net.sf.jstuff.core.validation.Assert;
 
 /**
  * Or: https://github.com/google/brotli/blob/master/java/org/brotli/wrapper/enc/BrotliOutputStream.java
@@ -27,90 +33,67 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class BrotliCompression extends AbstractCompression {
 
+   public static final int LEVEL_SMALL_AS_DEFLATE_4 = 2;
+   public static final int LEVEL_SMALL_AS_DEFLATE_6 = 4;
+   public static final int LEVEL_SMALL_AS_DEFLATE_9 = 4;
+
+   public static final BrotliCompression INSTANCE = new BrotliCompression(LEVEL_SMALL_AS_DEFLATE_4);
+
    static {
-      BrotliLibraryLoader.loadBrotli();
+      Assert.isTrue(Brotli4jLoader.isAvailable(), "Failed to load Brotli native library!");
    }
 
-   public static final BrotliCompression INSTANCE = new BrotliCompression();
+   private final int compressionLevel;
+   private final Encoder.Parameters encoderParams;
 
-   private final BrotliDeCompressor decompressor;
-
-   public BrotliCompression() {
-      decompressor = new BrotliDeCompressor();
+   /**
+    * @param compressionLevel 0-11 or -1
+    */
+   public BrotliCompression(final int compressionLevel) {
+      this.compressionLevel = compressionLevel;
+      encoderParams = new Encoder.Parameters();
+      encoderParams.setQuality(compressionLevel);
    }
 
    @Override
-   @SuppressWarnings("resource")
-   public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
+   public byte[] compress(final byte[] uncompressed) throws IOException {
       Args.notNull("uncompressed", uncompressed);
-      Args.notNull("output", output);
 
-      if (!closeOutput) {
-         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-         output = new DelegatingOutputStream(output, true);
-      }
-
-      try {
-         final OutputStream compOS = createCompressingOutputStream(output);
-         compOS.write(uncompressed);
-         compOS.flush();
-      } finally {
-         if (closeOutput) {
-            IOUtils.closeQuietly(output);
-         }
-      }
+      return Encoder.compress(uncompressed, encoderParams);
    }
 
    @Override
    @SuppressWarnings("resource")
-   public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
-      Args.notNull("input", input);
+   public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
       Args.notNull("output", output);
 
-      if (!closeOutput) {
-         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-         output = new DelegatingOutputStream(output, true);
-      }
-
-      try {
-         final OutputStream compOS = createCompressingOutputStream(output);
-         IOUtils.copyLarge(input, compOS);
-         compOS.flush();
-      } finally {
-         IOUtils.closeQuietly(input);
-         if (closeOutput) {
-            IOUtils.closeQuietly(output);
-         }
-      }
+      return new BrotliOutputStream(output, encoderParams);
    }
 
    @Override
-   public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
-      return new BrotliOutputStream(output);
-   }
-
-   @Override
+   @SuppressWarnings("resource")
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+      Args.notNull("compressed", compressed);
+
       return new BrotliInputStream(compressed);
    }
 
    @Override
-   public int decompress(final byte[] compressed, final byte[] output) throws IOException {
+   public byte[] decompress(final byte[] compressed) throws IOException {
       Args.notNull("compressed", compressed);
-      Args.notNull("output", output);
 
-      try {
-         return decompressor.deCompress(compressed, output);
-      } catch (final BrotliException ex) {
-         if (ex.getMessage().contains("Error code: -14"))
-            throw new IndexOutOfBoundsException("[output] byte array of size " + output.length + " is too small for given input.");
-         throw new IOException(ex);
-      }
+      final DirectDecompress result = Decoder.decompress(compressed);
+      if (result.getResultStatus() != DecoderJNI.Status.DONE)
+         throw new IOException("Decompression via Brotli native library failed with: " + result.getResultStatus());
+      return result.getDecompressedData();
+   }
+
+   public int getCompressionLevel() {
+      return compressionLevel;
    }
 
    @Override
    public String toString() {
-      return Strings.toString(this);
+      return Strings.toString(this, "compressionLevel", compressionLevel);
    }
-
 }

@@ -21,6 +21,11 @@ public class DelegatingInputStream extends InputStream implements Decorator<Inpu
       this.wrapped = wrapped;
    }
 
+   public DelegatingInputStream(final InputStream wrapped, final boolean ignoreClose) {
+      this.wrapped = wrapped;
+      this.ignoreClose = ignoreClose;
+   }
+
    @Override
    public int available() throws IOException {
       return wrapped.available();

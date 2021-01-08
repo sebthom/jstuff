@@ -16,15 +16,14 @@ import net.jpountz.lz4.LZ4SafeDecompressor;
 import net.jpountz.xxhash.XXHash32;
 import net.jpountz.xxhash.XXHashFactory;
 import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.compression.AbstractCompression;
-import net.sf.jstuff.core.io.IOUtils;
-import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-class LZ4FrameCompression extends AbstractCompression {
+public class LZ4FrameCompression extends AbstractCompression {
 
    public static final LZ4FrameCompression INSTANCE = new LZ4FrameCompression();
 
@@ -33,62 +32,28 @@ class LZ4FrameCompression extends AbstractCompression {
    private static final LZ4SafeDecompressor DECOMP = LZ4Factory.fastestInstance().safeDecompressor();
    private static final XXHash32 CHECKSUM = XXHashFactory.fastestInstance().hash32();
 
-   @Override
-   @SuppressWarnings("resource")
-   public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-      Args.notNull("uncompressed", uncompressed);
-      Args.notNull("output", output);
-
-      if (!closeOutput) {
-         output = new DelegatingOutputStream(output, true);
-      }
-
-      try {
-         final OutputStream compOS = createCompressingOutputStream(output);
-         compOS.write(uncompressed);
-         compOS.close(); // writes end-mark
-      } finally {
-         if (closeOutput) {
-            IOUtils.closeQuietly(output);
-         }
-      }
+   protected LZ4FrameCompression() {
+      // prevent instantiation
    }
 
    @Override
    @SuppressWarnings("resource")
-   public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-      Args.notNull("uncompressed", uncompressed);
-      Args.notNull("output", output);
-
-      if (!closeOutput) {
-         output = new DelegatingOutputStream(output, true);
-      }
-
-      try {
-         final OutputStream compOS = createCompressingOutputStream(output);
-         IOUtils.copyLarge(uncompressed, compOS);
-         compOS.close(); // writes end-mark
-      } finally {
-         IOUtils.closeQuietly(uncompressed);
-         if (closeOutput) {
-            IOUtils.closeQuietly(output);
-         }
-      }
-   }
-
-   @Override
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
+      Args.notNull("output", output);
+
       return new LZ4FrameOutputStream(output, DEFAULT_BLOCK_SIZE, -1L, COMP, CHECKSUM, LZ4FrameOutputStream.FLG.Bits.BLOCK_INDEPENDENCE);
    }
 
    @Override
+   @SuppressWarnings("resource")
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+      Args.notNull("compressed", compressed);
+
       return new LZ4FrameInputStream(compressed, DECOMP, CHECKSUM);
    }
 
    @Override
    public String toString() {
-      return Strings.toString(this, new Object[0]);
+      return Strings.toString(this, ArrayUtils.EMPTY_OBJECT_ARRAY);
    }
-
 }

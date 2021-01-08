@@ -15,16 +15,9 @@ public interface Compression {
 
    byte[] compress(byte[] uncompressed) throws IOException;
 
-   /**
-    * @param closeOutput if output shall be closed, if false output may also not be flushed automatically
-    */
-   void compress(byte[] uncompressed, OutputStream output, boolean closeOutput) throws IOException;
+   void compress(byte[] uncompressed, OutputStream output) throws IOException;
 
-   /**
-    * @param uncompressed will be closed
-    * @param closeOutput if output shall be closed, if false output may also not be flushed automatically
-    */
-   void compress(InputStream uncompressed, OutputStream output, boolean closeOutput) throws IOException;
+   void compress(InputStream uncompressed, OutputStream output) throws IOException;
 
    InputStream createCompressingInputStream(byte[] uncompressed) throws IOException;
 
@@ -40,14 +33,7 @@ public interface Compression {
 
    int decompress(byte[] compressed, byte[] output) throws IOException;
 
-   /**
-    * @param closeOutput if output shall be closed, if false output may also not be flushed automatically
-    */
-   void decompress(byte[] compressed, OutputStream output, boolean closeOutput) throws IOException;
+   void decompress(byte[] compressed, OutputStream output) throws IOException;
 
-   /**
-    * @param compressed will be closed
-    * @param closeOutput if output shall be closed, if false output may also not be flushed automatically
-    */
-   void decompress(InputStream compressed, OutputStream output, boolean closeOutput) throws IOException;
+   void decompress(InputStream compressed, OutputStream output) throws IOException;
 }

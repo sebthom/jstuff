@@ -12,9 +12,8 @@ import org.xerial.snappy.SnappyInputStream;
 import org.xerial.snappy.SnappyOutputStream;
 
 import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.compression.AbstractCompression;
-import net.sf.jstuff.core.io.IOUtils;
-import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -26,64 +25,28 @@ public class SnappyCompression extends AbstractCompression {
 
    public static final SnappyCompression INSTANCE = new SnappyCompression();
 
-   @Override
-   @SuppressWarnings("resource")
-   public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-      Args.notNull("uncompressed", uncompressed);
-      Args.notNull("output", output);
-
-      if (!closeOutput) {
-         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-         output = new DelegatingOutputStream(output, true);
-      }
-
-      try {
-         final OutputStream compOS = createCompressingOutputStream(output);
-         compOS.write(uncompressed);
-         compOS.flush();
-      } finally {
-         if (closeOutput) {
-            IOUtils.closeQuietly(output);
-         }
-      }
+   protected SnappyCompression() {
+      // prevent instantiation
    }
 
    @Override
    @SuppressWarnings("resource")
-   public void compress(final InputStream uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-      Args.notNull("uncompressed", uncompressed);
-      Args.notNull("output", output);
-
-      if (!closeOutput) {
-         // prevent unwanted closing of output in case compOS has a finalize method that closes underlying resource on GC
-         output = new DelegatingOutputStream(output, true);
-      }
-
-      try {
-         final OutputStream compOS = createCompressingOutputStream(output);
-         IOUtils.copyLarge(uncompressed, compOS);
-         compOS.flush();
-      } finally {
-         IOUtils.closeQuietly(uncompressed);
-         if (closeOutput) {
-            IOUtils.closeQuietly(output);
-         }
-      }
-   }
-
-   @Override
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+      Args.notNull("compressed", compressed);
+
       return new SnappyInputStream(compressed);
    }
 
    @Override
+   @SuppressWarnings("resource")
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
+      Args.notNull("output", output);
+
       return new SnappyOutputStream(output, DEFAULT_BLOCK_SIZE);
    }
 
    @Override
    public String toString() {
-      return Strings.toString(this, new Object[0]);
+      return Strings.toString(this, ArrayUtils.EMPTY_OBJECT_ARRAY);
    }
-
 }

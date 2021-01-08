@@ -14,8 +14,6 @@ import com.github.luben.zstd.ZstdOutputStream;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.compression.AbstractCompression;
-import net.sf.jstuff.core.io.IOUtils;
-import net.sf.jstuff.core.io.stream.DelegatingOutputStream;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -27,20 +25,17 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class ZStdCompression extends AbstractCompression {
 
-   public static final ZStdCompression INSTANCE = new ZStdCompression();
-
    public static final int LEVEL_SMALL_AS_DEFLATE_4 = 2;
-   public static final int LEVEL_SMALL_AS_DEFLATE_6 = 5;
-   public static final int LEVEL_SMALL_AS_DEFLATE_9 = 5;
+   public static final int LEVEL_SMALL_AS_DEFLATE_6 = 3;
+   public static final int LEVEL_SMALL_AS_DEFLATE_9 = 3;
 
-   private boolean useChecksum;
-   private int compressionLevel = 3;
+   public static final ZStdCompression INSTANCE = new ZStdCompression(LEVEL_SMALL_AS_DEFLATE_4, false);
 
-   public ZStdCompression() {
-   }
+   private final boolean useChecksum;
+   private final int compressionLevel;
 
    public ZStdCompression(final int compressionLevel) {
-      this.compressionLevel = compressionLevel;
+      this(compressionLevel, false);
    }
 
    public ZStdCompression(final int compressionLevel, final boolean useChecksum) {
@@ -69,54 +64,9 @@ public class ZStdCompression extends AbstractCompression {
 
    @Override
    @SuppressWarnings("resource")
-   public void compress(final byte[] uncompressed, OutputStream output, final boolean closeOutput) throws IOException {
-      Args.notNull("uncompressed", uncompressed);
-      Args.notNull("output", output);
-
-      if (!closeOutput) {
-         // prevent unwanted closing of output in case compOS has a finalize method that
-         // closes underlying resource on GC
-         output = new DelegatingOutputStream(output, true);
-      }
-
-      try {
-         final OutputStream compOS = createCompressingOutputStream(output);
-         compOS.write(uncompressed);
-         compOS.flush();
-      } finally {
-         if (closeOutput) {
-            IOUtils.closeQuietly(output);
-         }
-      }
-   }
-
-   @Override
-   @SuppressWarnings("resource")
-   public void compress(final InputStream input, OutputStream output, final boolean closeOutput) throws IOException {
-      Args.notNull("input", input);
-      Args.notNull("output", output);
-
-      if (!closeOutput) {
-         // prevent unwanted closing of output in case compOS has a finalize method that
-         // closes underlying resource on GC
-         output = new DelegatingOutputStream(output, true);
-      }
-
-      try {
-         final OutputStream compOS = createCompressingOutputStream(output);
-         IOUtils.copyLarge(input, compOS);
-         compOS.flush();
-      } finally {
-         IOUtils.closeQuietly(input);
-         if (closeOutput) {
-            IOUtils.closeQuietly(output);
-         }
-      }
-   }
-
-   @Override
-   @SuppressWarnings("resource")
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
+      Args.notNull("output", output);
+
       final ZstdOutputStream out = new ZstdOutputStream(output, compressionLevel);
       out.setCloseFrameOnFlush(true);
       out.setChecksum(useChecksum);
@@ -124,7 +74,10 @@ public class ZStdCompression extends AbstractCompression {
    }
 
    @Override
+   @SuppressWarnings("resource")
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
+      Args.notNull("compressed", compressed);
+
       return new ZstdInputStream(compressed);
    }
 
@@ -142,9 +95,16 @@ public class ZStdCompression extends AbstractCompression {
       return (int) rc;
    }
 
+   public int getCompressionLevel() {
+      return compressionLevel;
+   }
+
+   public boolean isUseChecksum() {
+      return useChecksum;
+   }
+
    @Override
    public String toString() {
       return Strings.toString(this, "compressionLevel", compressionLevel);
    }
-
 }

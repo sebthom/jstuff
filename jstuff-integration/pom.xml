@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2010-2021 by Sebastian Thomschke  and contributors.
@@ -21,18 +22,6 @@
       <!-- https://search.maven.org/artifact/org.springframework/spring-beans -->
       <spring.version>5.3.2</spring.version>
    </properties>
-
-
-   <repositories>
-      <repository>
-         <id>bintray-nitram509-jbrotli</id>
-         <name>bintray</name>
-         <url>http://dl.bintray.com/nitram509/jbrotli</url>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-      </repository>
-   </repositories>
 
 
    <build>
@@ -248,14 +237,6 @@
       </dependency>
 
       <dependency>
-         <!-- compression https://github.com/shevek/lzo-java -->
-         <groupId>org.anarres.lzo</groupId>
-         <artifactId>lzo-core</artifactId>
-         <version>1.0.6</version>
-         <optional>true</optional>
-      </dependency>
-
-      <dependency>
          <!-- compression https://github.com/luben/zstd-jni -->
          <groupId>com.github.luben</groupId>
          <artifactId>zstd-jni</artifactId>
@@ -272,10 +253,18 @@
       </dependency>
 
       <dependency>
-         <!-- compression https://github.com/MeteoGroup/jbrotli -->
-         <groupId>org.meteogroup.jbrotli</groupId>
-         <artifactId>jbrotli</artifactId>
-         <version>0.5.0</version>
+         <!-- compression https://github.com/hyperxpro/Brotli4j -->
+         <groupId>com.aayushatharva.brotli4j</groupId>
+         <artifactId>brotli4j</artifactId>
+         <version>1.2.2</version>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/ning/compress -->
+         <groupId>com.ning</groupId>
+         <artifactId>compress-lzf</artifactId>
+         <version>1.1</version>
          <optional>true</optional>
       </dependency>
 
