@@ -9,6 +9,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.function.BooleanSupplier;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.SystemUtils;
@@ -49,6 +50,12 @@ public abstract class Threads {
       final Thread[] result = all();
       Arrays.sort(result, THREAD_PRIORITY_COMPARATOR);
       return result;
+   }
+
+   public static void await(final BooleanSupplier condition, final int checkIntervallMS) {
+      while (!condition.getAsBoolean()) {
+         Threads.sleep(checkIntervallMS);
+      }
    }
 
    /**
