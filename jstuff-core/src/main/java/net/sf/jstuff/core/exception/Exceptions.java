@@ -9,6 +9,7 @@ import java.security.GeneralSecurityException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.concurrent.RuntimeInterruptedException;
 import net.sf.jstuff.core.io.RuntimeIOException;
 import net.sf.jstuff.core.io.StringPrintWriter;
@@ -61,6 +62,23 @@ public abstract class Exceptions extends ExceptionUtils {
       Args.notNull("ex", ex);
 
       throw (T) ex;
+   }
+
+   public static String toString(final StackTraceElement[] stacktrace) {
+      return toString(stacktrace, "");
+   }
+
+   public static String toString(final StackTraceElement[] stacktrace, final String indention) {
+      if (stacktrace == null)
+         return null;
+
+      final StringBuilder sb = new StringBuilder();
+      for (final StackTraceElement element : stacktrace) {
+         sb.append(indention);
+         sb.append(element);
+         sb.append(Strings.NEW_LINE);
+      }
+      return sb.toString();
    }
 
    /**
