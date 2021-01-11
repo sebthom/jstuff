@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.net;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -19,16 +19,16 @@ public class NetUtilsTest {
    @Test
    public void testIsKnownHost() {
       assertThat(NetUtils.isKnownHost("localhost")).isTrue();
-      //assertThat(NetUtils.isKnownHost("qwerwerdfsdfwer")).isFalse();
+      assertThat(NetUtils.isKnownHost("qwerwerdfsdfwer")).isFalse();
    }
 
    @Test
    public void testIsPortOpen() throws IOException {
       try (ServerSocket serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort())) {
-         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort())).isTrue();
+         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000)).isTrue();
 
          NetUtils.closeQuietly(serverSocket);
-         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort())).isFalse();
+         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000)).isFalse();
       }
    }
 

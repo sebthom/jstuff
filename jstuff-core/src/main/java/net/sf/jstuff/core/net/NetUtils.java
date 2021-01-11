@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
@@ -154,7 +155,7 @@ public abstract class NetUtils {
       try {
          return InetAddress.getByName(hostname).isReachable(timeoutInMS);
       } catch (final IOException ex) {
-         LOG.trace("Failed to reach host [%s].", ex, hostname);
+         LOG.debug("Failed to reach host [%s].", ex, hostname);
          return false;
       }
    }
@@ -164,7 +165,7 @@ public abstract class NetUtils {
       try {
          return InetAddress.getByName(hostname) != null;
       } catch (final UnknownHostException ex) {
-         LOG.trace("Host [%s] is unknown.", hostname);
+         LOG.debug("Host [%s] is unknown.", hostname);
          return false;
       }
    }
@@ -178,9 +179,24 @@ public abstract class NetUtils {
       }
    }
 
+   /**
+    * @deprecated use {@link #isRemotePortOpen(String, int, int)}
+    */
+   @Deprecated
    public static boolean isRemotePortOpen(final String hostname, final int port) {
       Args.notNull("hostname", hostname);
       try (Socket socket = new Socket(hostname, port)) {
+         return true;
+      } catch (final IOException ex) {
+         return false;
+      }
+   }
+
+   public static boolean isRemotePortOpen(final String hostname, final int port, final int connectTimeoutInMS) {
+      Args.notNull("hostname", hostname);
+      try (Socket socket = new Socket()) {
+         socket.setReuseAddress(true);
+         socket.connect(new InetSocketAddress(hostname, port), connectTimeoutInMS);
          return true;
       } catch (final IOException ex) {
          return false;
