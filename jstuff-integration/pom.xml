@@ -19,7 +19,7 @@
 
    <properties>
       <!-- https://search.maven.org/artifact/org.springframework/spring-beans -->
-      <spring.version>5.3.2</spring.version>
+      <spring.version>5.3.3</spring.version>
    </properties>
 
 
