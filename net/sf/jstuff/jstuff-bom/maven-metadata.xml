@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>net.sf.jstuff</groupId>
+  <artifactId>jstuff-bom</artifactId>
+  <versioning>
+    <versions>
+      <version>5.12.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20210122210235</lastUpdated>
+  </versioning>
+</metadata>
