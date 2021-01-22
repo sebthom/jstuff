@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <!--
+   Copyright 2010-2021 by Sebastian Thomschke and contributors.
+   SPDX-License-Identifier: EPL-2.0
+   -->
+
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>net.sf.jstuff</groupId>
+      <artifactId>jstuff-parent</artifactId>
+      <version>5.12.1-SNAPSHOT</version>
+   </parent>
+
+   <artifactId>jstuff-xml</artifactId>
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>net.sf.jstuff</groupId>
+            <artifactId>jstuff-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
+   <dependencies>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jstuff-core</artifactId>
+      </dependency>
+
+      <dependency>
+         <!-- for XSD JAXB code generation -->
+         <groupId>com.sun.xml.bind</groupId>
+         <artifactId>jaxb-xjc</artifactId>
+         <version>2.3.3</version>
+         <scope>compile</scope>
+         <optional>true</optional>
+      </dependency>
+   </dependencies>
+</project>
