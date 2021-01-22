@@ -1,0 +1,297 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <!--
+   Copyright 2010-2021 by Sebastian Thomschke  and contributors.
+   SPDX-License-Identifier: EPL-2.0
+   -->
+
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>net.sf.jstuff</groupId>
+      <artifactId>jstuff-parent</artifactId>
+      <version>5.12.1-SNAPSHOT</version>
+   </parent>
+
+   <artifactId>jstuff-integration</artifactId>
+
+   <build>
+      <plugins>
+         <plugin>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>ban-duplicate-classes@validate</id>
+                  <configuration>
+                     <rules>
+                        <banDuplicateClasses>
+                           <ignoreClasses>
+                              <ignoreClass>org.aspectj.*</ignoreClass>
+                           </ignoreClasses>
+                        </banDuplicateClasses>
+                     </rules>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>net.sf.jstuff</groupId>
+            <artifactId>jstuff-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
+   <dependencies>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jstuff-core</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>jstuff-xml</artifactId>
+      </dependency>
+      <dependency>
+         <!-- https://search.maven.org/search?q=g:net.bytebuddy -->
+         <!-- only for ServiceRegistry -->
+         <groupId>net.bytebuddy</groupId>
+         <artifactId>byte-buddy</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>javax.servlet-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>javax.portlet</groupId>
+         <artifactId>portlet-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- SpringBeanParanamer -->
+         <groupId>com.thoughtworks.paranamer</groupId>
+         <artifactId>paranamer</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- @PostConstruct -->
+         <groupId>javax.annotation</groupId>
+         <artifactId>jsr250-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- @Inject -->
+         <groupId>javax.inject</groupId>
+         <artifactId>javax.inject</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <optional>true</optional>
+         <exclusions>
+            <exclusion>
+               <groupId>org.springframework</groupId>
+               <artifactId>spring-jcl</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-web</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-jdbc</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>javax.mail</groupId>
+         <artifactId>javax.mail-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>javax.activation</groupId>
+         <artifactId>javax.activation-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- for TomcatAuthenticator only -->
+         <groupId>org.apache.tomcat</groupId>
+         <artifactId>tomcat-catalina</artifactId>
+         <optional>true</optional>
+         <exclusions>
+            <exclusion>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>tomcat-annotations-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>tomcat-juli</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>tomcat-servlet-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>tomcat-jaspic-api</artifactId>
+            </exclusion>
+            <exclusion>
+               <groupId>org.apache.tomcat</groupId>
+               <artifactId>tomcat-jsp-api</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+          <!-- https://search.maven.org/artifact/commons-configuration/commons-configuration -->
+         <groupId>commons-configuration</groupId>
+         <artifactId>commons-configuration</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- only for Spring BeanRowMapper -->
+         <groupId>commons-beanutils</groupId>
+         <artifactId>commons-beanutils</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>org.hibernate.javax.persistence</groupId>
+         <artifactId>hibernate-jpa-2.0-api</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- only for H2ServerSpringBean -->
+         <groupId>com.h2database</groupId>
+         <artifactId>h2</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- for ATOM only -->
+         <groupId>commons-httpclient</groupId>
+         <artifactId>commons-httpclient</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <!-- for ATOM only -->
+         <groupId>com.thoughtworks.xstream</groupId>
+         <artifactId>xstream</artifactId>
+         <optional>true</optional>
+         <exclusions>
+            <exclusion>
+               <groupId>xpp3</groupId>
+               <artifactId>xpp3_min</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <!-- JSON only -->
+         <groupId>com.fasterxml.jackson.core</groupId>
+         <artifactId>jackson-databind</artifactId>
+         <optional>true</optional>
+      </dependency>
+      <dependency>
+         <groupId>com.fasterxml.jackson.dataformat</groupId>
+         <artifactId>jackson-dataformat-yaml</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/lz4/lz4-java -->
+         <groupId>org.lz4</groupId>
+         <artifactId>lz4-java</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/luben/zstd-jni -->
+         <groupId>com.github.luben</groupId>
+         <artifactId>zstd-jni</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/xerial/snappy-java -->
+         <groupId>org.xerial.snappy</groupId>
+         <artifactId>snappy-java</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/hyperxpro/Brotli4j -->
+         <groupId>com.aayushatharva.brotli4j</groupId>
+         <artifactId>brotli4j</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+      <dependency>
+         <!-- compression https://github.com/ning/compress -->
+         <groupId>com.ning</groupId>
+         <artifactId>compress-lzf</artifactId>
+         <optional>true</optional>
+      </dependency>
+
+
+      <!--
+      ==================================================================
+      Test dependencies
+      ==================================================================
+      -->
+      <dependency>
+         <!-- to generate test data -->
+         <!-- https://github.com/andygibson/datafactory -->
+         <!-- https://github.com/DiUS/java-faker -->
+         <!-- https://github.com/Devskiller/jfairy -->
+         <groupId>com.github.javafaker</groupId>
+         <artifactId>javafaker</artifactId>
+         <version>1.0.2</version>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-simple</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+      <dependency>
+         <groupId>org.eclipse.jetty</groupId>
+         <artifactId>jetty-webapp</artifactId>
+         <version>9.4.35.v20201120</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjrt</artifactId>
+         <version>1.9.6</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjweaver</artifactId>
+         <version>1.9.6</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>1.2.3</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+</project>
