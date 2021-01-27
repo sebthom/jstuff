@@ -6,8 +6,7 @@ package net.sf.jstuff.integration.serviceregistry.impl;
 
 import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
-
+import net.sf.jstuff.core.comparator.StringComparator;
 import net.sf.jstuff.integration.serviceregistry.ServiceEndpoint;
 
 /**
@@ -26,10 +25,10 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
    public int compareTo(final DefaultServiceEndpoint other) {
       if (other == null)
          return 1;
-      final int res = ObjectUtils.compare(serviceEndpointId, other.serviceEndpointId, false);
+      final int res = StringComparator.INSTANCE.compare(serviceEndpointId, other.serviceEndpointId);
       if (res != 0)
          return res;
-      return ObjectUtils.compare(serviceInterface.getName(), other.serviceInterface.getName());
+      return StringComparator.INSTANCE.compare(serviceInterface.getName(), other.serviceInterface.getName());
    }
 
    @Override
@@ -41,9 +40,8 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
       if (getClass() != obj.getClass())
          return false;
       final DefaultServiceEndpoint other = (DefaultServiceEndpoint) obj;
-      if (!Objects.equals(serviceEndpointId, other.serviceEndpointId)) {
+      if (!Objects.equals(serviceEndpointId, other.serviceEndpointId))
          return false;
-      }
       if (serviceInterface == null) {
          if (other.serviceInterface != null)
             return false;

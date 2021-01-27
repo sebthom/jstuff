@@ -14,9 +14,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.io.CharEncoding;
 import net.sf.jstuff.core.logging.Logger;

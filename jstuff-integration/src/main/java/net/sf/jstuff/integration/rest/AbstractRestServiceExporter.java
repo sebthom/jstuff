@@ -14,12 +14,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.remoting.support.RemoteExporter;
 import org.springframework.web.HttpRequestHandler;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.comparator.StringComparator;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Beans;
 
@@ -274,7 +274,7 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
       }
 
       final List<RestResourceAction> actions = serviceActions.getAllResourceActions();
-      Collections.sort(actions, (o1, o2) -> ObjectUtils.compare(o1.getRequestURITemplate(), o2.getRequestURITemplate()));
+      Collections.sort(actions, (o1, o2) -> StringComparator.INSTANCE.compare(o1.getRequestURITemplate(), o2.getRequestURITemplate()));
       serviceDescriptor.setActions(actions);
    }
 }

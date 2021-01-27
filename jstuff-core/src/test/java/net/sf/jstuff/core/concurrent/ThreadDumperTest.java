@@ -4,13 +4,11 @@
  */
 package net.sf.jstuff.core.concurrent;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.Test;
-
-import net.sf.jstuff.core.Strings;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -100,12 +98,9 @@ public class ThreadDumperTest {
             .build();
          threadDumper.dumpThreads(out);
 
-         System.out.println(out);
-
-         assertThat(Strings.contains(out, "Finalizer")).isTrue();
-
-         assertThat(Strings.contains(out, "Found 2 deadlocks.")).isTrue();
-         assertThat(Strings.endsWith(out, "#### THREAD DUMP END ####")).isTrue();
+         assertThat(out).contains("Finalizer");
+         assertThat(out).contains("Found 2 deadlocks.");
+         assertThat(out).endsWith("#### THREAD DUMP END ####");
       }
 
       {
@@ -117,10 +112,9 @@ public class ThreadDumperTest {
             .build();
          threadDumper.dumpThreads(out);
 
-         assertThat(Strings.contains(out, "Finalizer")).isFalse();
-
-         assertThat(Strings.contains(out, "Found 2 deadlocks.")).isFalse();
-         assertThat(Strings.endsWith(out, "#### THREAD DUMP END ####")).isTrue();
+         assertThat(out).doesNotContain("Finalizer");
+         assertThat(out).doesNotContain("Found 2 deadlocks.");
+         assertThat(out).endsWith("#### THREAD DUMP END ####");
       }
 
       // end threads that deadlock on "Lock.lock()"
@@ -137,12 +131,9 @@ public class ThreadDumperTest {
             .build();
          threadDumper.dumpThreads(out);
 
-         System.out.println(out);
-
-         assertThat(Strings.contains(out, "Finalizer")).isFalse();
-
-         assertThat(Strings.contains(out, "Found 1 deadlock.")).isTrue();
-         assertThat(Strings.endsWith(out, "#### THREAD DUMP END ####")).isTrue();
+         assertThat(out).doesNotContain("Finalizer");
+         assertThat(out).contains("Found 1 deadlock.");
+         assertThat(out).endsWith("#### THREAD DUMP END ####");
       }
 
       assertThat(Threads.deadlockedIds()).hasSize(2);

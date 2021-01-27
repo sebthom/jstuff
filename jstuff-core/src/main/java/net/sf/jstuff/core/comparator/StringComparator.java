@@ -15,6 +15,8 @@ import java.util.Locale;
 public class StringComparator implements Comparator<String>, Serializable {
    private static final long serialVersionUID = 1L;
 
+   public static final StringComparator INSTANCE = new StringComparator();
+
    private Collator collator;
    private final Locale locale;
 

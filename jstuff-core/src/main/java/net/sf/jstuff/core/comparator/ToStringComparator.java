@@ -26,7 +26,6 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable {
       return (ToStringComparator<T>) INSTANCE;
    }
 
-   // collator is only serializable starting Java 6
    private transient Collator collator;
    private final Locale locale;
 

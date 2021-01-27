@@ -7,8 +7,6 @@ package net.sf.jstuff.xml.xjc;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlElementRefs;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 
@@ -55,7 +53,8 @@ public class MakeJAXB21CompatiblePlugin extends AbstractPlugin {
 
    private void removeRequiredAttribute(final JFieldVar fieldDecl) {
       for (final JAnnotationUse a : fieldDecl.annotations()) {
-         if (XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName())) {
+         if ("javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName()) || //
+            jakarta.xml.bind.annotation.XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName())) {
             for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) a.getAnnotationMembers().get("value")).annotations()) {
                final JAnnotationValue requiredAttribute = xmlElementRefAnno.getAnnotationMembers().get("required");
                if (requiredAttribute != null) {
