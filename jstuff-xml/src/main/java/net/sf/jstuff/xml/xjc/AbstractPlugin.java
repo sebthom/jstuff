@@ -7,8 +7,8 @@ package net.sf.jstuff.xml.xjc;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 
 import com.sun.tools.xjc.Plugin;
@@ -35,7 +35,7 @@ public abstract class AbstractPlugin extends Plugin {
       final CCustomizations result = new CCustomizations();
       for (final CPluginCustomization cpc : cc) {
          final Element e = cpc.element;
-         if (StringUtils.equals(getCustomizationNS(), e.getNamespaceURI()) && e.getLocalName().equals(name)) {
+         if (Objects.equals(getCustomizationNS(), e.getNamespaceURI()) && e.getLocalName().equals(name)) {
             result.add(cpc);
          }
       }

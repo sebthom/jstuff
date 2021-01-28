@@ -39,8 +39,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
@@ -58,6 +56,7 @@ import org.xml.sax.SAXParseException;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.MapWithLists;
+import net.sf.jstuff.core.comparator.StringComparator;
 import net.sf.jstuff.core.io.CharSequenceReader;
 import net.sf.jstuff.core.io.FileUtils;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
@@ -899,12 +898,12 @@ public abstract class DOMUtils {
             final String v2 = a2 == null ? null : a2.getValue();
             final int rc;
             // perform numeric sort if both values are integers
-            if (StringUtils.isNumeric(v1) && StringUtils.isNumeric(v2)) {
+            if (Strings.isNumeric(v1) && Strings.isNumeric(v2)) {
                final int i1 = Integer.parseInt(v1, 10);
                final int i2 = Integer.parseInt(v2, 10);
                rc = i1 < i2 ? -1 : i1 == i2 ? 0 : 1;
             } else {
-               rc = ObjectUtils.compare(v1, v2, false);
+               rc = StringComparator.INSTANCE.compare(v1, v2);
             }
 
             if (rc == 0) {
