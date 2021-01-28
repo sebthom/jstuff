@@ -18,7 +18,7 @@ jstuff is a collection of utility libraries
 
 1. [jstuff-core](/jstuff-core/src/main/java/net/sf/jstuff/core) - core utility classes for the Java SE standard library.
 
-1. [jstuff-integration](/jstuff-integration/src/main/java/net/sf/jstuff/integration) - utility classes for Java EE (Servlet, JPA, ...) and 3rd party frameworks.
+1. [jstuff-integration](/jstuff-integration/src/main/java/net/sf/jstuff/integration) - utility classes for Java EE (Servlet, JPA, ...) and 3rd party frameworks (Spring, Jackson).
 
 1. [jstuff-xml](/jstuff-xml/src/main/java/net/sf/jstuff/xml) - contains supporting classes for XML processing.
 
@@ -60,11 +60,27 @@ You need to add this repository to your Maven `settings.xml`:
 Then you can add the required jstuff module as a dependency to your `pom.xml`:
 
 ```xml
-<dependency>
-  <groupId>net.sf.jstuff</groupId>
-  <artifactId>jstuff-[MODULE_GOES_HERE]</artifactId>
-  <version>[VERSION_GOES_HERE]</version>
-</dependency>
+<project>
+
+  <!-- ... -->
+
+  <dependencyManagement>
+    <dependency>
+      <groupId>net.sf.jstuff</groupId>
+      <artifactId>jstuff-parent</artifactId>
+      <version>[VERSION_GOES_HERE]</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.sf.jstuff</groupId>
+      <artifactId>jstuff-[MODULE_GOES_HERE]</artifactId>
+    </dependency>
+  </dependencies>
+</project>
 ```
 
 
