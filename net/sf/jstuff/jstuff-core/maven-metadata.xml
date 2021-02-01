@@ -4,8 +4,8 @@
   <artifactId>jstuff-core</artifactId>
   <versioning>
     <versions>
-      <version>5.12.1-SNAPSHOT</version>
+      <version>5.13.2-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20210127210714</lastUpdated>
+    <lastUpdated>20210201111334</lastUpdated>
   </versioning>
 </metadata>
