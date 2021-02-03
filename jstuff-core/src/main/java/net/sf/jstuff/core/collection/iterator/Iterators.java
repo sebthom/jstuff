@@ -32,6 +32,7 @@ public abstract class Iterators {
 
    public static boolean contains(final Iterator<?> iterator, final Object searchFor) {
       Args.notNull("iterator", iterator);
+
       while (iterator.hasNext()) {
          final Object elem = iterator.next();
          if (Objects.equals(elem, searchFor))
@@ -42,10 +43,56 @@ public abstract class Iterators {
 
    public static boolean containsIdentical(final Iterator<?> iterator, final Object searchFor) {
       Args.notNull("iterator", iterator);
+
       while (iterator.hasNext())
          if (searchFor == iterator.next())
             return true;
       return false;
+   }
+
+   public static <T> Iterator<T> cycling(final Collection<T> items) {
+      Args.notNull("items", items);
+
+      return new Iterator<T>() {
+         Iterator<T> it = items.iterator();
+
+         @Override
+         public boolean hasNext() {
+            if (it.hasNext())
+               return true;
+            it = items.iterator();
+            return it.hasNext();
+         }
+
+         @Override
+         public T next() {
+            return it.next();
+         }
+      };
+   }
+
+   @SafeVarargs
+   public static <T> Iterator<T> cycling(final T... items) {
+      Args.notNull("items", items);
+
+      final int size = items.length;
+
+      if (size == 0)
+         return empty();
+
+      return new Iterator<T>() {
+         int i = 0;
+
+         @Override
+         public boolean hasNext() {
+            return true;
+         }
+
+         @Override
+         public T next() {
+            return items[i++ % size];
+         }
+      };
    }
 
    @SuppressWarnings("unchecked")
@@ -59,6 +106,7 @@ public abstract class Iterators {
 
    public static int size(final Iterator<?> iterator) {
       Args.notNull("iterator", iterator);
+
       int size = 0;
       while (iterator.hasNext()) {
          size++;
