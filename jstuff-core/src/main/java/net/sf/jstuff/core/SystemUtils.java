@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +28,7 @@ import net.sf.jstuff.core.logging.Logger;
 public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    private static final Logger LOG = Logger.create();
 
+   private static Boolean isContainerized;
    private static Boolean isDockerized;
    private static Boolean isRunningAsAdmin;
 
@@ -86,18 +88,51 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
       return isRunningAsAdmin;
    }
 
+   public static boolean isRunningInsideContainer() {
+      if (isContainerized == null) {
+         if (IS_OS_LINUX) {
+            // see http://docs.podman.io/en/latest/markdown/podman-run.1.html#description
+            final Path containerenv = Paths.get("/run/.containerenv");
+            if (Files.exists(containerenv)) {
+               isContainerized = true;
+               return true;
+            }
+            final Path cgroup = Paths.get("/proc/1/cgroup");
+            if (Files.exists(cgroup)) {
+               // see https://stackoverflow.com/a/52581380
+               try (Stream<String> stream = Files.lines(cgroup)) {
+                  final String[] searchFor = {"/docker", "/lxc", "/kubepods", "/garden"};
+                  isContainerized = stream.anyMatch(line -> Strings.containsAny(line, searchFor));
+                  return isContainerized;
+               } catch (final IOException ex) {
+                  LOG.debug(ex);
+               }
+            }
+         }
+         isContainerized = false;
+         return false;
+      }
+      return isContainerized;
+   }
+
    public static boolean isRunningInsideDocker() {
       if (isDockerized == null) {
          if (IS_OS_LINUX) {
             // see https://stackoverflow.com/a/52581380
-            try (Stream<String> stream = Files.lines(Paths.get("/proc/1/cgroup"))) {
-               isDockerized = stream.anyMatch(line -> line.contains("docker"));
-            } catch (final IOException ex) {
-               isDockerized = false;
+            final Path cgroup = Paths.get("/proc/1/cgroup");
+            if (Files.exists(cgroup)) {
+               try (Stream<String> stream = Files.lines(cgroup)) {
+                  if (stream.anyMatch(line -> line.contains("/docker"))) {
+                     isContainerized = true;
+                     isDockerized = true;
+                     return true;
+                  }
+               } catch (final IOException ex) {
+                  LOG.debug(ex);
+               }
             }
-         } else {
-            isDockerized = false;
          }
+         isDockerized = false;
       }
       return isDockerized;
    }
