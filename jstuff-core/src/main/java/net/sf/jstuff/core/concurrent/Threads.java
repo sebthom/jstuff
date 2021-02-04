@@ -9,6 +9,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
 import net.sf.jstuff.core.Strings;
@@ -227,6 +228,17 @@ public abstract class Threads {
          Thread.sleep(millis, nanos);
       } catch (final InterruptedException ex) {
          handleInterruptedException(ex);
+      }
+   }
+
+   /**
+    * Handles InterruptedException correctly.
+    */
+   public static void sleep(final long time, final TimeUnit timeUnit) throws RuntimeInterruptedException {
+      if (timeUnit == TimeUnit.NANOSECONDS) {
+         sleep(time / 1_000, (int) (time % 1_000));
+      } else {
+         sleep(timeUnit.toMillis(time));
       }
    }
 
