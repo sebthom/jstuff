@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    Copyright 2010-2021 by Sebastian Thomschke and contributors.
@@ -15,6 +16,47 @@
    </parent>
 
    <artifactId>jstuff-xml</artifactId>
+
+   <properties>
+      <!-- https://search.maven.org/search?q=g:org.glassfish.jaxb -->
+      <jaxb.version>3.0.0</jaxb.version>
+   </properties>
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jstuff-core</artifactId>
+            <version>${project.version}</version>
+            <scope>import</scope>
+            <type>pom</type>
+         </dependency>
+         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jstuff-xml</artifactId>
+            <version>${project.version}</version>
+         </dependency>
+
+         <!--
+         ==================================================================
+         JAXB
+         https://stackoverflow.com/questions/26413431/which-artifacts-should-i-use-for-jaxb-ri-in-my-maven-project
+         ==================================================================
+         -->
+         <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-bom</artifactId>
+            <version>${jaxb.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>codemodel</artifactId>
+            <version>${jaxb.version}</version>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
 
    <dependencies>
       <dependency>
