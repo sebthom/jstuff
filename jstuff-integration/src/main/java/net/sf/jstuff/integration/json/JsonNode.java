@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.RawValue;
 
@@ -42,67 +43,95 @@ public final class JsonNode extends ObjectNode {
 
    @Override
    public JsonNode put(final String fieldName, final BigDecimal v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final BigInteger v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final boolean v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final Boolean v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final byte[] v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
+   }
+
+   /**
+    * Method that will set specified field, replacing old value, if any.
+    *
+    * @param value to set field to; if null, will be converted
+    *           to a {@link NullNode} first (to remove field entry, call
+    *           {@link #remove} instead)
+    *
+    * @return This node (to allow chaining)
+    */
+   @Override
+   public JsonNode put(final String fieldName, final com.fasterxml.jackson.databind.JsonNode value) {
+      set(fieldName, value);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final double v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final Double v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final float v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final Float v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final int v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final Integer v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final long v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final Long v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    public JsonNode put(final String fieldName, final Object obj) {
@@ -112,84 +141,118 @@ public final class JsonNode extends ObjectNode {
 
    @Override
    public JsonNode put(final String fieldName, final short v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final Short v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode put(final String fieldName, final String v) {
-      return (JsonNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public JsonNode putNull(final String fieldName) {
-      return (JsonNode) super.putNull(fieldName);
+      super.putNull(fieldName);
+      return this;
    }
 
    @Override
    public JsonNode putPOJO(final String fieldName, final Object pojo) {
-      return (JsonNode) super.putPOJO(fieldName, pojo);
+      super.putPOJO(fieldName, pojo);
+      return this;
    }
 
    @Override
    public JsonNode putRawValue(final String fieldName, final RawValue raw) {
-      return (JsonNode) super.putRawValue(fieldName, raw);
+      super.putRawValue(fieldName, raw);
+      return this;
    }
 
    @Override
    public JsonNode remove(final Collection<String> fieldNames) {
-      return (JsonNode) super.remove(fieldNames);
+      super.remove(fieldNames);
+      return this;
    }
 
+   /**
+    * <b>IMPORTANT:</b> Does NOT return this node for chaining.
+    * <p>
+    * {@inheritDoc}
+    */
    @Override
-   public JsonNode remove(final String fieldName) {
-      return (JsonNode) super.remove(fieldName);
+   public com.fasterxml.jackson.databind.JsonNode remove(final String fieldName) {
+      final com.fasterxml.jackson.databind.JsonNode removedValue = super.remove(fieldName);
+      return removedValue;
    }
 
    @Override
    public JsonNode removeAll() {
-      return (JsonNode) super.removeAll();
+      super.removeAll();
+      return this;
+   }
+
+   /**
+    * <b>IMPORTANT:</b> Does NOT return this node for chaining.
+    * <p>
+    * {@inheritDoc}
+    */
+   @Override
+   public com.fasterxml.jackson.databind.JsonNode replace(final String fieldName, final com.fasterxml.jackson.databind.JsonNode value) {
+      final com.fasterxml.jackson.databind.JsonNode replacedValue = super.replace(fieldName, value);
+      return replacedValue;
    }
 
    @Override
    public JsonNode retain(final Collection<String> fieldNames) {
-      return (JsonNode) super.retain(fieldNames);
+      super.retain(fieldNames);
+      return this;
    }
 
    @Override
    public JsonNode retain(final String... fieldNames) {
-      return (JsonNode) super.retain(fieldNames);
+      super.retain(fieldNames);
+      return this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public JsonNode set(final String fieldName, final com.fasterxml.jackson.databind.JsonNode value) {
-      return (JsonNode) super.set(fieldName, value);
+      super.set(fieldName, value);
+      return this;
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public <T extends com.fasterxml.jackson.databind.JsonNode> T setAll(final Map<String, ? extends com.fasterxml.jackson.databind.JsonNode> properties) {
-      return super.setAll(properties);
+      super.setAll(properties);
+      return (T) this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public JsonNode setAll(final ObjectNode other) {
-      return (JsonNode) super.setAll(other);
+      super.setAll(other);
+      return this;
    }
 
    @Override
+   @SuppressWarnings("unchecked")
    public <T extends com.fasterxml.jackson.databind.JsonNode> T without(final Collection<String> fieldNames) {
-      return super.without(fieldNames);
+      super.without(fieldNames);
+      return (T) this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public JsonNode without(final String fieldName) {
-      return (JsonNode) super.without(fieldName);
+      super.without(fieldName);
+      return this;
    }
 }
