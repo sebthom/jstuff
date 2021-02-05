@@ -90,7 +90,7 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
 
    public static boolean isRunningInsideContainer() {
       if (isContainerized == null) {
-         if (IS_OS_LINUX) {
+         if (IS_OS_UNIX) {
             // see http://docs.podman.io/en/latest/markdown/podman-run.1.html#description
             final Path containerenv = Paths.get("/run/.containerenv");
             if (Files.exists(containerenv)) {
@@ -117,7 +117,7 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
 
    public static boolean isRunningInsideDocker() {
       if (isDockerized == null) {
-         if (IS_OS_LINUX) {
+         if (IS_OS_UNIX) {
             // see https://stackoverflow.com/a/52581380
             final Path cgroup = Paths.get("/proc/1/cgroup");
             if (Files.exists(cgroup)) {
