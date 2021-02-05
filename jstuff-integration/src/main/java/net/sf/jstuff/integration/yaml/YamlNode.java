@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.RawValue;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -50,67 +50,95 @@ public final class YamlNode extends ObjectNode {
 
    @Override
    public YamlNode put(final String fieldName, final BigDecimal v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final BigInteger v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final boolean v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final Boolean v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final byte[] v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
+   }
+
+   /**
+    * Method that will set specified field, replacing old value, if any.
+    *
+    * @param value to set field to; if null, will be converted
+    *           to a {@link NullNode} first (to remove field entry, call
+    *           {@link #remove} instead)
+    *
+    * @return This node (to allow chaining)
+    */
+   @Override
+   public YamlNode put(final String fieldName, final com.fasterxml.jackson.databind.JsonNode value) {
+      set(fieldName, value);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final double v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final Double v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final float v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final Float v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final int v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final Integer v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final long v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final Long v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    public YamlNode put(final String fieldName, final Object obj) {
@@ -120,76 +148,107 @@ public final class YamlNode extends ObjectNode {
 
    @Override
    public YamlNode put(final String fieldName, final short v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final Short v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode put(final String fieldName, final String v) {
-      return (YamlNode) super.put(fieldName, v);
+      super.put(fieldName, v);
+      return this;
    }
 
    @Override
    public YamlNode putNull(final String fieldName) {
-      return (YamlNode) super.putNull(fieldName);
+      super.putNull(fieldName);
+      return this;
    }
 
    @Override
    public YamlNode putPOJO(final String fieldName, final Object pojo) {
-      return (YamlNode) super.putPOJO(fieldName, pojo);
+      super.putPOJO(fieldName, pojo);
+      return this;
    }
 
    @Override
    public YamlNode putRawValue(final String fieldName, final RawValue raw) {
-      return (YamlNode) super.putRawValue(fieldName, raw);
+      super.putRawValue(fieldName, raw);
+      return this;
    }
 
    @Override
    public YamlNode remove(final Collection<String> fieldNames) {
-      return (YamlNode) super.remove(fieldNames);
+      super.remove(fieldNames);
+      return this;
    }
 
+   /**
+    * <b>IMPORTANT:</b> Does NOT return this node for chaining.
+    * <p>
+    * {@inheritDoc}
+    */
    @Override
-   public YamlNode remove(final String fieldName) {
-      return (YamlNode) super.remove(fieldName);
+   public com.fasterxml.jackson.databind.JsonNode remove(final String fieldName) {
+      final com.fasterxml.jackson.databind.JsonNode removedValue = super.remove(fieldName);
+      return removedValue;
    }
 
    @Override
    public YamlNode removeAll() {
-      return (YamlNode) super.removeAll();
+      super.removeAll();
+      return this;
+   }
+
+   /**
+    * <b>IMPORTANT:</b> Does NOT return this node for chaining.
+    * <p>
+    * {@inheritDoc}
+    */
+   @Override
+   public com.fasterxml.jackson.databind.JsonNode replace(final String fieldName, final com.fasterxml.jackson.databind.JsonNode value) {
+      final com.fasterxml.jackson.databind.JsonNode replacedValue = super.replace(fieldName, value);
+      return replacedValue;
    }
 
    @Override
    public YamlNode retain(final Collection<String> fieldNames) {
-      return (YamlNode) super.retain(fieldNames);
+      super.retain(fieldNames);
+      return this;
    }
 
    @Override
    public YamlNode retain(final String... fieldNames) {
-      return (YamlNode) super.retain(fieldNames);
+      super.retain(fieldNames);
+      return this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public YamlNode set(final String fieldName, final JsonNode value) {
-      return (YamlNode) super.set(fieldName, value);
+   public YamlNode set(final String fieldName, final com.fasterxml.jackson.databind.JsonNode value) {
+      super.set(fieldName, value);
+      return this;
    }
 
    @Override
-   public <T extends JsonNode> T setAll(final Map<String, ? extends JsonNode> properties) {
-      return super.setAll(properties);
+   @SuppressWarnings("unchecked")
+   public <T extends com.fasterxml.jackson.databind.JsonNode> T setAll(final Map<String, ? extends com.fasterxml.jackson.databind.JsonNode> properties) {
+      super.setAll(properties);
+      return (T) this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public YamlNode setAll(final ObjectNode other) {
-      return (YamlNode) super.setAll(other);
+      super.setAll(other);
+      return this;
    }
-
+   
    @Override
    public String toPrettyString() {
       try {
@@ -205,13 +264,16 @@ public final class YamlNode extends ObjectNode {
    }
 
    @Override
-   public <T extends JsonNode> T without(final Collection<String> fieldNames) {
-      return super.without(fieldNames);
+   @SuppressWarnings("unchecked")
+   public <T extends com.fasterxml.jackson.databind.JsonNode> T without(final Collection<String> fieldNames) {
+      super.without(fieldNames);
+      return (T) this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public YamlNode without(final String fieldName) {
-      return (YamlNode) super.without(fieldName);
+      super.without(fieldName);
+      return this;
    }
 }
