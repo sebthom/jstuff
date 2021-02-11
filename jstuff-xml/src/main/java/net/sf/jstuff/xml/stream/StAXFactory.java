@@ -213,8 +213,15 @@ public class StAXFactory {
    protected XMLInputFactory createXMLInputFactory() {
       final XMLInputFactory factory = XMLInputFactory.newInstance();
       // https://rules.sonarsource.com/java/RSPEC-2755
-      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+      if (factory.isPropertySupported(XMLConstants.ACCESS_EXTERNAL_DTD)) {
+         factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      }
+      if (factory.isPropertySupported(XMLConstants.ACCESS_EXTERNAL_SCHEMA)) {
+         factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+      }
+      if (factory.isPropertySupported(XMLConstants.ACCESS_EXTERNAL_STYLESHEET)) {
+         factory.setProperty(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+      }
       return factory;
    }
 
