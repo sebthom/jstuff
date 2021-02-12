@@ -67,7 +67,7 @@ Then you can add the required jstuff module as a dependency to your `pom.xml`:
   <dependencyManagement>
     <dependency>
       <groupId>net.sf.jstuff</groupId>
-      <artifactId>jstuff-parent</artifactId>
+      <artifactId>jstuff-[MODULE_GOES_HERE]</artifactId>
       <version>[VERSION_GOES_HERE]</version>
       <type>pom</type>
       <scope>import</scope>
