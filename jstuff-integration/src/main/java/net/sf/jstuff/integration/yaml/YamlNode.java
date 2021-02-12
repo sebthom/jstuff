@@ -248,7 +248,7 @@ public final class YamlNode extends ObjectNode {
       super.setAll(other);
       return this;
    }
-   
+
    @Override
    public String toPrettyString() {
       try {
