@@ -4,15 +4,15 @@
  */
 package net.sf.jstuff.core.reflection;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 
+import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.lang3.ObjectUtils;
 import org.junit.Test;
 import org.slf4j.helpers.NOPLogger;
 
-import junit.framework.TestCase;
 import net.sf.jstuff.core.collection.ObjectCache;
 
 /**
@@ -56,10 +56,10 @@ public class TypesTest {
       assertThat(Types.getVersion(ObjectUtils.class)).isEqualTo("3.11");
 
       // from META-INF/maven/.../pom.properties
-      //assertThat(Types.getVersion(Paranamer.class)).isEqualTo("2.8");
+      assertThat(Types.getVersion(JXPathContext.class)).isEqualTo("1.3");
 
       // from jar name
-      assertThat(Types.getVersion(TestCase.class)).isEqualTo("4.13.1");
+      // assertThat(Types.getVersion(TestCase.class)).isEqualTo("4.13.2");
    }
 
    @Test
