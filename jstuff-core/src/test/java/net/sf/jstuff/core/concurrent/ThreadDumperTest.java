@@ -122,6 +122,8 @@ public class ThreadDumperTest {
          deadlocked.stop(); // does not end threads that deadlock on "synchronized(lock)"
       }
 
+      Threads.sleep(1000);
+
       {
          final StringBuilder out = new StringBuilder();
          final ThreadDumper threadDumper = ThreadDumper.builder() //
