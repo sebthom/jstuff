@@ -4,8 +4,8 @@
   <artifactId>jstuff-xml</artifactId>
   <versioning>
     <versions>
-      <version>5.14.1-SNAPSHOT</version>
+      <version>5.14.2-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20210218094648</lastUpdated>
+    <lastUpdated>20210222081329</lastUpdated>
   </versioning>
 </metadata>
