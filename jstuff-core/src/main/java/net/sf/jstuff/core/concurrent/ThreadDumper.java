@@ -72,14 +72,14 @@ public class ThreadDumper {
       ThreadDumperBuilder withHeaderPrinter(ThrowingConsumer<Appendable, Exception> value);
 
       /**
-       * Only dump threads that match the given filter. Default is {@link ThreadDumper#SORT_THREADS_BY_NAME}
+       * Only dump threads that match the given filter.
        */
       @Fluent
       @Builder.Property
       ThreadDumperBuilder withThreadFilter(Predicate<ThreadMeta> value);
 
       /**
-       * Sort threads with the given comparator
+       * Sort threads with the given comparator. Default is {@link ThreadDumper#SORT_THREADS_BY_NAME}
        */
       @Fluent
       @Builder.Property
