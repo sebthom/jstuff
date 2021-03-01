@@ -56,6 +56,8 @@
 
       <!-- TODO https://github.com/sevntu-checkstyle/sevntu.checkstyle/pull/827 -->
       <checkstyle.violation.ignore>RequireFailForTryCatchInJunit</checkstyle.violation.ignore>
+
+      <nexus-staging-maven-plugin.nexusUrl>https://s01.oss.sonatype.org/</nexus-staging-maven-plugin.nexusUrl>
    </properties>
 
 
@@ -68,25 +70,16 @@
    </scm>
 
 
-   <distributionManagement>
-      <downloadUrl>https://jcenter.bintray.com/</downloadUrl>
-      <repository>
-         <id>bintray-release-uploads</id>
-         <url>https://api.bintray.com/maven/sebthom/maven/jstuff/;publish=1</url>
-      </repository>
-   </distributionManagement>
+   <issueManagement>
+      <system>github.com</system>
+      <url>https://github.com/sebthom/jstuff/issues</url>
+   </issueManagement>
 
 
    <ciManagement>
       <system>github.com</system>
       <url>https://github.com/sebthom/jstuff/actions</url>
    </ciManagement>
-
-
-   <issueManagement>
-      <system>github.com</system>
-      <url>https://github.com/sebthom/jstuff/issues</url>
-   </issueManagement>
 
 
    <modules>

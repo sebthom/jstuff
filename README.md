@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/github/license/sebthom/jstuff.svg?color=blue)](LICENSE.txt)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7559e7b3c129d5ecc4db/maintainability)](https://codeclimate.com/github/sebthom/jstuff/maintainability)
 [![Bintray](https://img.shields.io/bintray/v/sebthom/maven/jstuff?label=jcenter.bintray)](https://bintray.com/sebthom/maven/jstuff/_latestVersion)
+[![Maven Central](https://img.shields.io/maven-central/v/net.sf.stuff/jstuff-parent)](https://search.maven.org/artifact/net.sf.stuff/jstuff-parent)
 
 
 1. [What is it?](#what-is-it)
@@ -32,32 +33,9 @@ jstuff 5.x requires Java 8 or newer.
 
 ## <a name="binaries"></a>Binaries
 
-Binaries are available via the [Bintray JCenter](https://bintray.com/bintray/jcenter) Maven repository.
+Releases of this project are available at https://search.maven.org/search?q=g:net.sf.jstuff
 
-You need to add this repository to your Maven `settings.xml`:
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
-  <profiles>
-    <profile>
-      <repositories>
-        <repository>
-          <id>central</id>
-          <name>bintray</name>
-          <url>https://jcenter.bintray.com</url>
-          <snapshots><enabled>false</enabled></snapshots>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-  <activeProfiles>
-    <activeProfile>bintray</activeProfile>
-  </activeProfiles>
-</settings>
-```
-
-Then you can add the required jstuff module as a dependency to your `pom.xml`:
+You can add the required jstuff module as a dependency to your `pom.xml`:
 
 ```xml
 <project>
