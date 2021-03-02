@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/sebthom/jstuff.svg?color=blue)](LICENSE.txt)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7559e7b3c129d5ecc4db/maintainability)](https://codeclimate.com/github/sebthom/jstuff/maintainability)
 [![Bintray](https://img.shields.io/bintray/v/sebthom/maven/jstuff?label=jcenter.bintray)](https://bintray.com/sebthom/maven/jstuff/_latestVersion)
-[![Maven Central](https://img.shields.io/maven-central/v/net.sf.stuff/jstuff-parent)](https://search.maven.org/artifact/net.sf.stuff/jstuff-parent)
+[![Maven Central](https://img.shields.io/maven-central/v/net.sf.jstuff/jstuff-parent)](https://search.maven.org/artifact/net.sf.jstuff/jstuff-parent)
 
 
 1. [What is it?](#what-is-it)
