@@ -53,7 +53,7 @@ public class TypesTest {
    @Test
    public void testGetVersion() {
       // from META-INF/MANIFEST.MF
-      assertThat(Types.getVersion(ObjectUtils.class)).isEqualTo("3.11");
+      assertThat(Types.getVersion(ObjectUtils.class)).isEqualTo("3.12.0");
 
       // from META-INF/maven/.../pom.properties
       assertThat(Types.getVersion(JXPathContext.class)).isEqualTo("1.3");
