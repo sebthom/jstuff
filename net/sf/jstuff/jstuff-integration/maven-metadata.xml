@@ -4,8 +4,8 @@
   <artifactId>jstuff-integration</artifactId>
   <versioning>
     <versions>
-      <version>5.14.2-SNAPSHOT</version>
+      <version>5.14.3-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20210301122507</lastUpdated>
+    <lastUpdated>20210308152718</lastUpdated>
   </versioning>
 </metadata>
