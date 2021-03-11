@@ -93,6 +93,9 @@ public class StAXUtilsTest {
       assertThat(findElementText("item")).isEqualTo("Dog");
       assertThat(findElementText("//item")).isEqualTo("Dog");
       assertThat(findElementText("/root//item")).isEqualTo("Dog");
+
+      assertThat(findElement("/root").location.getLineNumber()).isEqualTo(2);
+      assertThat(findElement("/root/group/item").location.getLineNumber()).isEqualTo(4);
    }
 
    @Test

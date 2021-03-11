@@ -19,6 +19,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Result;
@@ -40,18 +41,21 @@ public abstract class StAXUtils {
 
       public final String nsPrefix;
       public final String nsURI;
+      public final Location location;
       private String text;
       public final SortedMap<String, String> attrs;
 
-      private ElementInfo(//
+      private ElementInfo( //
          final String localName, //
          final String nsPrefix, //
          final String nsURI, //
+         final Location location, //
          final SortedMap<String, String> attrs //
       ) {
          this.localName = localName;
          this.nsPrefix = nsPrefix;
          this.nsURI = nsURI;
+         this.location = location;
          this.attrs = attrs;
       }
 
@@ -304,6 +308,7 @@ public abstract class StAXUtils {
                      reader.getLocalName(), //
                      reader.getPrefix(), //
                      reader.getNamespaceURI(), //
+                     reader.getLocation(), //
                      evaluteAttributes ? attrs : readAttributes(reader, attrs) //
                   );
                   attrs = null;
