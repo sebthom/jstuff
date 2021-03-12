@@ -49,16 +49,11 @@
    </developers>
 
 
-   <properties>
-      <java.version>8</java.version>
-
-      <skip.japicmp.cmp>true</skip.japicmp.cmp>
-
-      <!-- TODO https://github.com/sevntu-checkstyle/sevntu.checkstyle/pull/827 -->
-      <checkstyle.violation.ignore>RequireFailForTryCatchInJunit</checkstyle.violation.ignore>
-
-      <nexus-staging-maven-plugin.nexusUrl>https://s01.oss.sonatype.org/</nexus-staging-maven-plugin.nexusUrl>
-   </properties>
+   <modules>
+      <module>jstuff-core</module>
+      <module>jstuff-integration</module>
+      <module>jstuff-xml</module>
+   </modules>
 
 
    <scm>
@@ -82,11 +77,16 @@
    </ciManagement>
 
 
-   <modules>
-      <module>jstuff-core</module>
-      <module>jstuff-integration</module>
-      <module>jstuff-xml</module>
-   </modules>
+   <properties>
+      <java.version>8</java.version>
+
+      <skip.japicmp.cmp>true</skip.japicmp.cmp>
+
+      <!-- TODO https://github.com/sevntu-checkstyle/sevntu.checkstyle/pull/827 -->
+      <checkstyle.violation.ignore>RequireFailForTryCatchInJunit</checkstyle.violation.ignore>
+
+      <nexus-staging-maven-plugin.nexusUrl>https://s01.oss.sonatype.org/</nexus-staging-maven-plugin.nexusUrl>
+   </properties>
 
 
    <!-- global dependencies -->
@@ -106,6 +106,7 @@
          <scope>test</scope>
       </dependency>
    </dependencies>
+
 
    <build>
       <plugins>
