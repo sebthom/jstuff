@@ -635,6 +635,10 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return txt == null ? "" : txt;
    }
 
+   public static String pluralize(final int count, final String singluar, final String plural) {
+      return count == 1 ? singluar : plural;
+   }
+
    /**
     * <p>
     * Repeat a String <code>repeat</code> times to form a new String.
