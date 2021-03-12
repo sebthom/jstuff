@@ -11,7 +11,7 @@
    <parent>
       <groupId>net.sf.jstuff</groupId>
       <artifactId>jstuff-parent</artifactId>
-      <version>5.14.3-SNAPSHOT</version>
+      <version>5.14.3</version>
    </parent>
 
    <artifactId>jstuff-xml</artifactId>
