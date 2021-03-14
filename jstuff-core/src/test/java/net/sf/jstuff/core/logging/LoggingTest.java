@@ -189,7 +189,7 @@ public class LoggingTest {
    public void test1LoggingJUL() {
       LoggerConfig.setPreferSLF4J(false);
       LoggerConfig.setCompactExceptionLogging(true);
-      LoggerConfig.setDebugMessagePrefixEnabled(true);
+      LoggerConfig.setAddLocationToDebugMessages(true);
 
       assertThat(((DelegatingLogger) LOG).getWrapped()).isInstanceOf(JULLogger.class);
       genericLoggerTest();
@@ -201,7 +201,7 @@ public class LoggingTest {
 
       LoggerConfig.setPreferSLF4J(true);
       LoggerConfig.setCompactExceptionLogging(false);
-      LoggerConfig.setDebugMessagePrefixEnabled(false);
+      LoggerConfig.setAddLocationToDebugMessages(false);
 
       assertThat(((DelegatingLogger) LOG).getWrapped()).isInstanceOf(SLF4JLogger.class);
 
@@ -212,7 +212,7 @@ public class LoggingTest {
    public void testCreateLogged() {
       LoggerConfig.setPreferSLF4J(false);
       LoggerConfig.setCompactExceptionLogging(false);
-      LoggerConfig.setDebugMessagePrefixEnabled(true);
+      LoggerConfig.setAddLocationToDebugMessages(true);
 
       for (final Handler handler : Loggers.ROOT_LOGGER.getHandlers()) {
          handler.setLevel(java.util.logging.Level.ALL);

@@ -43,7 +43,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    private void _log(final int level, final String message) {
       final String effectiveMessage;
-      if (LoggerConfig.isDebugMessagePrefixEnabled && logger.isDebugEnabled()) {
+      if (LoggerConfig.isAddLocationToDebugMessages && logger.isDebugEnabled()) {
          final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
          if (caller == null) { // should never happen
             LOG.error("Unexpected stacktrace " + Strings.join(Thread.currentThread().getStackTrace(), "\n"));
@@ -94,7 +94,7 @@ final class SLF4JLogger implements LoggerInternal {
       if (logger.isDebugEnabled()) {
          effectiveMessage = message == null || message.length() == 0 ? "Catched " : message;
          effectiveException = ex;
-         if (LoggerConfig.isDebugMessagePrefixEnabled) {
+         if (LoggerConfig.isAddLocationToDebugMessages) {
             final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
             if (caller == null) { // should never happen
                LOG.error("Unexpected stacktrace " + Strings.join(Thread.currentThread().getStackTrace(), "\n"));
@@ -526,7 +526,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void trace(final Method location, String msg) {
-      if (LoggerConfig.isDebugMessagePrefixEnabled) {
+      if (LoggerConfig.isAddLocationToDebugMessages) {
          msg = location.getName() + "():" + msg;
       }
       logger.trace(msg);

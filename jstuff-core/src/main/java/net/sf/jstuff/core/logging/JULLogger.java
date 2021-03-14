@@ -50,7 +50,7 @@ final class JULLogger implements LoggerInternal {
          }
          final String methodName = caller.getMethodName();
          String effectiveMessage = message;
-         if (LoggerConfig.isDebugMessagePrefixEnabled) {
+         if (LoggerConfig.isAddLocationToDebugMessages) {
             effectiveMessage = methodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
          }
          logger.logp(level, caller.getClassName(), methodName, effectiveMessage);
@@ -86,7 +86,7 @@ final class JULLogger implements LoggerInternal {
          final String sourceClassName = caller.getClassName();
          final String sourceMethodName = caller.getMethodName();
 
-         if (LoggerConfig.isDebugMessagePrefixEnabled) {
+         if (LoggerConfig.isAddLocationToDebugMessages) {
             effectiveMessage = sourceMethodName + "():" + caller.getLineNumber() + " " + effectiveMessage;
          }
          logger.logp(level, sourceClassName, sourceMethodName, effectiveMessage, ex);
@@ -553,7 +553,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void trace(final Method location, String msg) {
-      if (LoggerConfig.isDebugMessagePrefixEnabled) {
+      if (LoggerConfig.isAddLocationToDebugMessages) {
          msg = location.getName() + "():" + msg;
       }
       logger.logp(Level.FINEST, location.getDeclaringClass().getName(), location.getName(), msg);
