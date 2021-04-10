@@ -137,7 +137,7 @@ public class CircuitBreaker implements EventListenable<State> {
       /**
        * No permits are issued.
        */
-      OPEN;
+      OPEN
    }
 
    private static final Logger LOG = Logger.create();

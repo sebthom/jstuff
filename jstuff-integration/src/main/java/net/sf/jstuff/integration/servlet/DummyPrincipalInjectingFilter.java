@@ -28,23 +28,23 @@ import net.sf.jstuff.core.reflection.Types;
  *
  * <pre>
  * {@code
-<filter>
-    <filter-name>DummyPrincipalInjectingFilter</filter-name>
-    <filter-class>net.sf.jstuff.integration.servlet.DummyPrincipalInjectingFilter</filter-class>
-    <init-param>
-        <param-name>username</param-name>
-        <param-value>john</param-value>
-    </init-param>
-    <init-param>
-        <param-name>user-roles</param-name>
-        <param-value>admin,monitor</param-value>
-    </init-param>
-</filter>
-<filter-mapping>
-    <filter-name>DummyPrincipalInjectingFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-</filter-mapping>
-}
+ * <filter>
+ *     <filter-name>DummyPrincipalInjectingFilter</filter-name>
+ *     <filter-class>net.sf.jstuff.integration.servlet.DummyPrincipalInjectingFilter</filter-class>
+ *     <init-param>
+ *         <param-name>username</param-name>
+ *         <param-value>john</param-value>
+ *     </init-param>
+ *     <init-param>
+ *         <param-name>user-roles</param-name>
+ *         <param-value>admin,monitor</param-value>
+ *     </init-param>
+ * </filter>
+ * <filter-mapping>
+ *     <filter-name>DummyPrincipalInjectingFilter</filter-name>
+ *     <url-pattern>/*</url-pattern>
+ * </filter-mapping>
+ * }
  * </pre>
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>

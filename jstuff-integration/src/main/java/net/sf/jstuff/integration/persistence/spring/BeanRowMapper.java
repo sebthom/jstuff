@@ -37,7 +37,7 @@ public class BeanRowMapper<T> implements RowMapper<T> {
    private static final BeanUtilsBean BUB;
 
    static {
-      /**
+      /*
        * to avoid
        * org.apache.commons.beanutils.ConversionException: No value specified for 'Date'
        * at org.apache.commons.beanutils.converters.AbstractConverter.handleMissing(AbstractConverter.java:325)

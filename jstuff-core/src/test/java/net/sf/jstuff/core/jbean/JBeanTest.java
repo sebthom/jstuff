@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.jbean;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Objects;
 

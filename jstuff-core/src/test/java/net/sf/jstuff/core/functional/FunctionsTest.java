@@ -4,11 +4,8 @@
  */
 package net.sf.jstuff.core.functional;
 
-import static net.sf.jstuff.core.functional.Functions.castTo;
-import static net.sf.jstuff.core.functional.Functions.objectToString;
-import static net.sf.jstuff.core.functional.Functions.stringToInt;
-import static net.sf.jstuff.core.functional.Functions.trim;
-import static org.assertj.core.api.Assertions.assertThat;
+import static net.sf.jstuff.core.functional.Functions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 

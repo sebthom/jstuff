@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.collection;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Map;
 import java.util.Objects;

@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.logging;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -52,26 +52,26 @@ public class LoggingTest {
       private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 
       @Override
-      public synchronized String format(final LogRecord record) {
+      public synchronized String format(final LogRecord entry) {
          final StringBuilder sb = new StringBuilder(1000);
-         sb.append(df.format(new Date(record.getMillis()))).append(" ");
-         sb.append(record.getLevel().getName().charAt(0)).append(" ");
+         sb.append(df.format(new Date(entry.getMillis()))).append(" ");
+         sb.append(entry.getLevel().getName().charAt(0)).append(" ");
          {
             sb.append("[");
-            if (record.getSourceClassName() != null) {
-               sb.append(record.getSourceClassName());
+            if (entry.getSourceClassName() != null) {
+               sb.append(entry.getSourceClassName());
             } else {
-               sb.append(record.getLoggerName());
+               sb.append(entry.getLoggerName());
             }
-            if (record.getSourceMethodName() != null) {
-               sb.append("#").append(record.getSourceMethodName()).append("()");
+            if (entry.getSourceMethodName() != null) {
+               sb.append("#").append(entry.getSourceMethodName()).append("()");
             }
             sb.append("] ");
          }
-         sb.append(formatMessage(record));
-         if (record.getThrown() != null) {
+         sb.append(formatMessage(entry));
+         if (entry.getThrown() != null) {
             final StringWriter errors = new StringWriter();
-            record.getThrown().printStackTrace(new PrintWriter(errors));
+            entry.getThrown().printStackTrace(new PrintWriter(errors));
             sb.append(errors);
          }
          sb.append("\n");
@@ -121,7 +121,7 @@ public class LoggingTest {
          }
 
          @Override
-         public void publish(final LogRecord record) {
+         public void publish(final LogRecord entry) {
             count[0]++;
          }
       };
@@ -229,20 +229,20 @@ public class LoggingTest {
          }
 
          @Override
-         public void publish(final LogRecord record) {
+         public void publish(final LogRecord entry) {
             count[0]++;
             switch (count[0]) {
                case 1:
-                  assertThat(record.getMessage()).isEqualTo("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])");
+                  assertThat(entry.getMessage()).isEqualTo("methodA():ENTRY >> (a: 1, b: \"foo\", c: [bar])");
                   break;
                case 2:
-                  assertThat(record.getMessage()).startsWith("methodA():EXIT  << [foo, [bar]] ");
+                  assertThat(entry.getMessage()).startsWith("methodA():EXIT  << [foo, [bar]] ");
                   break;
                case 3:
-                  assertThat(record.getMessage()).isEqualTo("methodB():ENTRY >> ()");
+                  assertThat(entry.getMessage()).isEqualTo("methodB():ENTRY >> ()");
                   break;
                case 4:
-                  assertThat(record.getMessage()).startsWith("methodB():EXIT  << *void* ");
+                  assertThat(entry.getMessage()).startsWith("methodB():EXIT  << *void* ");
                   break;
             }
          }

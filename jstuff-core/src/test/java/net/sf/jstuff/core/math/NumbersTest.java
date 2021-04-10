@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.math;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigInteger;
 import java.util.UUID;
@@ -29,6 +29,6 @@ public class NumbersTest {
    @Test
    public void testUuidToBigInteger() {
       final UUID uuid = UUID.randomUUID();
-      assertThat(new BigInteger(uuid.toString().replaceAll("-", ""), 16)).isEqualTo(Numbers.toBigInteger(uuid));
+      assertThat(new BigInteger(uuid.toString().replace("-", ""), 16)).isEqualTo(Numbers.toBigInteger(uuid));
    }
 }

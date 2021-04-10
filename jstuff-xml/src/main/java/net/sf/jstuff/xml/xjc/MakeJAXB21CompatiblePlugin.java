@@ -53,8 +53,9 @@ public class MakeJAXB21CompatiblePlugin extends AbstractPlugin {
 
    private void removeRequiredAttribute(final JFieldVar fieldDecl) {
       for (final JAnnotationUse a : fieldDecl.annotations()) {
-         if ("javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName()) || //
-            jakarta.xml.bind.annotation.XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName())) {
+         if (jakarta.xml.bind.annotation.XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName()) //
+            || "javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName()) //
+         ) {
             for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) a.getAnnotationMembers().get("value")).annotations()) {
                final JAnnotationValue requiredAttribute = xmlElementRefAnno.getAnnotationMembers().get("required");
                if (requiredAttribute != null) {

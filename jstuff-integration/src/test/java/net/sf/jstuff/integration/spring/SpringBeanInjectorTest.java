@@ -4,8 +4,7 @@
  */
 package net.sf.jstuff.integration.spring;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.assertj.core.api.Assertions.*;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

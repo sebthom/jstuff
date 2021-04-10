@@ -22,7 +22,7 @@ public class AsyncHandler extends DelegatingHandler {
    public enum State {
       RUNNING,
       CLOSING,
-      CLOSED;
+      CLOSED
    }
 
    private final BlockingQueue<Tuple2<String, LogRecord>> backlog = new LinkedBlockingQueue<>();
@@ -91,16 +91,16 @@ public class AsyncHandler extends DelegatingHandler {
    }
 
    @Override
-   public void publish(final LogRecord record) {
+   public void publish(final LogRecord entry) {
       if (state != State.RUNNING) {
          reportError("Not in required state [" + State.RUNNING + "] but [" + state + "]", null, ErrorManager.WRITE_FAILURE);
          return;
       }
 
-      if (!isLoggable(record))
+      if (!isLoggable(entry))
          return;
 
-      record.getSourceMethodName(); // force execution of inferCaller
-      backlog.add(Tuple2.create(Thread.currentThread().getName(), record));
+      entry.getSourceMethodName(); // force execution of inferCaller
+      backlog.add(Tuple2.create(Thread.currentThread().getName(), entry));
    }
 }

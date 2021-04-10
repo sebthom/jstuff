@@ -370,7 +370,6 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
    }
 
    /**
-    *
     * @deprecated use {@link MoreFiles#readFileToString(java.nio.file.Path, Charset)}
     */
    @Deprecated

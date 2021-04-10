@@ -43,8 +43,8 @@ public abstract class ServletUtils {
       url.append(scheme); // http, https
       url.append("://");
       url.append(request.getServerName());
-      if (port != 80 && "http".equals(scheme) || //
-         port != 443 && "https".equals(scheme) //
+      if (port != 80 && "http".equals(scheme) //
+         || port != 443 && "https".equals(scheme) //
       ) {
          url.append(':');
          url.append(request.getServerPort());

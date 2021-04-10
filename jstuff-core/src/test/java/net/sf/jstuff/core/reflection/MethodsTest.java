@@ -4,8 +4,7 @@
  */
 package net.sf.jstuff.core.reflection;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.assertj.core.api.Assertions.*;
 
 import java.lang.reflect.Method;
 

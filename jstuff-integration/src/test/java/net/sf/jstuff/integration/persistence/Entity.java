@@ -35,9 +35,8 @@ public class Entity extends Identifiable.Default<Integer> {
       if (getClass() != obj.getClass())
          return false;
       final Entity other = (Entity) obj;
-      if (!Objects.equals(id, other.id)) {
+      if (!Objects.equals(id, other.id))
          return false;
-      }
       return true;
    }
 

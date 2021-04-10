@@ -755,8 +755,8 @@ public abstract class Methods extends Members {
       if (methodParameterTypes.length != 1)
          return false;
 
-      if (!isReturningVoid(method) && //
-         !Types.isAssignableTo(method.getReturnType(), method.getDeclaringClass()) // in case of fluent-api
+      if (!isReturningVoid(method) //
+         && !Types.isAssignableTo(method.getReturnType(), method.getDeclaringClass()) // in case of fluent-api
       )
          return false;
 

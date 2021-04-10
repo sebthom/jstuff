@@ -136,11 +136,11 @@ public class DateTimeHelper implements Serializable {
 
       if (isValidDate(DateFormatStyle.SHORT, date))
          return DateFormatStyle.SHORT;
-      else if (isValidDate(DateFormatStyle.MEDIUM, date))
+      if (isValidDate(DateFormatStyle.MEDIUM, date))
          return DateFormatStyle.MEDIUM;
-      else if (isValidDate(DateFormatStyle.LONG, date))
+      if (isValidDate(DateFormatStyle.LONG, date))
          return DateFormatStyle.LONG;
-      else if (isValidDate(DateFormatStyle.FULL, date))
+      if (isValidDate(DateFormatStyle.FULL, date))
          return DateFormatStyle.FULL;
       return null;
    }
@@ -163,11 +163,11 @@ public class DateTimeHelper implements Serializable {
 
       if (isValidDateTime(DateFormatStyle.SHORT, style))
          return DateFormatStyle.SHORT;
-      else if (isValidDateTime(DateFormatStyle.MEDIUM, style))
+      if (isValidDateTime(DateFormatStyle.MEDIUM, style))
          return DateFormatStyle.MEDIUM;
-      else if (isValidDateTime(DateFormatStyle.LONG, style))
+      if (isValidDateTime(DateFormatStyle.LONG, style))
          return DateFormatStyle.LONG;
-      else if (isValidDateTime(DateFormatStyle.FULL, style))
+      if (isValidDateTime(DateFormatStyle.FULL, style))
          return DateFormatStyle.FULL;
       return null;
    }
@@ -187,11 +187,11 @@ public class DateTimeHelper implements Serializable {
 
       if (isValidTime(DateFormatStyle.SHORT, style))
          return DateFormatStyle.SHORT;
-      else if (isValidTime(DateFormatStyle.MEDIUM, style))
+      if (isValidTime(DateFormatStyle.MEDIUM, style))
          return DateFormatStyle.MEDIUM;
-      else if (isValidTime(DateFormatStyle.LONG, style))
+      if (isValidTime(DateFormatStyle.LONG, style))
          return DateFormatStyle.LONG;
-      else if (isValidTime(DateFormatStyle.FULL, style))
+      if (isValidTime(DateFormatStyle.FULL, style))
          return DateFormatStyle.FULL;
       return null;
    }

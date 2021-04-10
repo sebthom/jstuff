@@ -31,14 +31,12 @@ public class CodeLocation {
       if (getClass() != obj.getClass())
          return false;
       final CodeLocation other = (CodeLocation) obj;
-      if (!Objects.equals(clazz, other.clazz)) {
+      if (!Objects.equals(clazz, other.clazz))
          return false;
-      }
       if (lineNumber != other.lineNumber)
          return false;
-      if (!Objects.equals(method, other.method)) {
+      if (!Objects.equals(method, other.method))
          return false;
-      }
       return true;
    }
 

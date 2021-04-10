@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.security.x509;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;

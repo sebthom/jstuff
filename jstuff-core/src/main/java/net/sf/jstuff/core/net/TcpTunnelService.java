@@ -66,10 +66,10 @@ public class TcpTunnelService extends Thread {
 
       protected TcpTunnel(final Socket clientSocket) throws SocketException {
          this.clientSocket = clientSocket;
-         tunnelName = clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort() + " > " + //
-            clientSocket.getLocalAddress().getHostName() + ":" + clientSocket.getLocalPort() + " > " + //
-            (Strings.isBlank(proxyAddress) ? "" : proxyAddress + ":" + proxyPort + " > ") + //
-            targetAddress + ":" + targetPort;
+         tunnelName = clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort() + " > " //
+            + clientSocket.getLocalAddress().getHostName() + ":" + clientSocket.getLocalPort() + " > " //
+            + (Strings.isBlank(proxyAddress) ? "" : proxyAddress + ":" + proxyPort + " > ") //
+            + targetAddress + ":" + targetPort;
 
          if (Strings.isBlank(proxyAddress)) {
             targetSocket = new Socket();

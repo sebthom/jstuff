@@ -4,13 +4,9 @@
  */
 package net.sf.jstuff.core.reflection;
 
-import static net.sf.jstuff.core.reflection.Types.findGenericTypeArguments;
-import static net.sf.jstuff.core.reflection.Types.isAssignableTo;
-import static net.sf.jstuff.core.reflection.Types.resolveUnderlyingClass;
-import static org.apache.commons.lang3.ArrayUtils.EMPTY_CLASS_ARRAY;
-import static org.apache.commons.lang3.ArrayUtils.toArray;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+import static net.sf.jstuff.core.reflection.Types.*;
+import static org.apache.commons.lang3.ArrayUtils.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

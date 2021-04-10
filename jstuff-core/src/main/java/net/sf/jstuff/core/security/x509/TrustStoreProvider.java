@@ -38,7 +38,7 @@ public interface TrustStoreProvider extends EventListenable<TrustStoreProvider.E
    enum EventType {
       CERTIFICATE_EXPIRED,
       CERTIFICATES_ADDED,
-      CERTIFICATES_REMOVED;
+      CERTIFICATES_REMOVED
    }
 
    static TrustStoreProvider toImmutable(final TrustStoreProvider trustStoreProvider) {

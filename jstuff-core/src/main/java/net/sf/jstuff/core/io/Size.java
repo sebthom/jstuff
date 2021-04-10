@@ -47,17 +47,17 @@ public final class Size implements Serializable, Comparable<Size> {
          if (value instanceof BigInteger)
             return new Size((BigInteger) value);
 
-         if (value instanceof Long || //
-            value instanceof Integer || //
-            value instanceof Short || //
-            value instanceof Byte || //
-            value instanceof AtomicLong || //
-            value instanceof AtomicInteger || //
-            value instanceof LongAdder || //
-            value instanceof MutableLong || //
-            value instanceof MutableInt || //
-            value instanceof MutableShort || //
-            value instanceof MutableByte //
+         if (value instanceof Long //
+            || value instanceof Integer //
+            || value instanceof Short //
+            || value instanceof Byte //
+            || value instanceof AtomicLong //
+            || value instanceof AtomicInteger //
+            || value instanceof LongAdder //
+            || value instanceof MutableLong //
+            || value instanceof MutableInt //
+            || value instanceof MutableShort //
+            || value instanceof MutableByte //
          )
             return new Size(BigInteger.valueOf(value.longValue()));
       }

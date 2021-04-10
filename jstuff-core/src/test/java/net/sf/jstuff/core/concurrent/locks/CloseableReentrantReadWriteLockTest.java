@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.concurrent.locks;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 

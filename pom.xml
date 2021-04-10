@@ -82,9 +82,6 @@
 
       <skip.japicmp.cmp>true</skip.japicmp.cmp>
 
-      <!-- TODO https://github.com/sevntu-checkstyle/sevntu.checkstyle/pull/827 -->
-      <checkstyle.violation.ignore>RequireFailForTryCatchInJunit</checkstyle.violation.ignore>
-
       <nexus-staging-maven-plugin.nexusUrl>https://s01.oss.sonatype.org/</nexus-staging-maven-plugin.nexusUrl>
    </properties>
 

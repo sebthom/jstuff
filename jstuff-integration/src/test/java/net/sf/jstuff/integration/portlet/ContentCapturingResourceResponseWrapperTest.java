@@ -4,9 +4,9 @@
  */
 package net.sf.jstuff.integration.portlet;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.UnsupportedEncodingException;
 

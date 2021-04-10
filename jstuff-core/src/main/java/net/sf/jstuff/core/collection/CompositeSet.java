@@ -1,5 +1,4 @@
 /*********************************************************************
-
  * Copyright 2010-2021 by Sebastian Thomschke and others.
  *
  * This program and the accompanying materials are made

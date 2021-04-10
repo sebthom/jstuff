@@ -5,7 +5,8 @@
 package net.sf.jstuff.core.functional;
 
 import static net.sf.jstuff.core.functional.Accepts.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import static net.sf.jstuff.core.functional.Accepts.not;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 

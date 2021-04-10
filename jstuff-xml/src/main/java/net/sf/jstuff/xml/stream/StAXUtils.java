@@ -296,12 +296,12 @@ public abstract class StAXUtils {
 
                final boolean isMatch = xpathPattern.matcher(path).matches();
                if (LOG.isDebugEnabled()) {
-                  LOG.debug("\n--------------------------------\n" + //
-                     "    PATH: " + path + "\n" + //
-                     "   XPATH: " + xpath + "\n" + //
-                     "   REGEX: " + xpathPattern + "\n" + //
-                     "IS_MATCH: " + isMatch + "\n" + //
-                     "--------------------------------");
+                  LOG.debug("\n--------------------------------\n" //
+                     + "    PATH: " + path + "\n" //
+                     + "   XPATH: " + xpath + "\n" //
+                     + "   REGEX: " + xpathPattern + "\n" //
+                     + "IS_MATCH: " + isMatch + "\n" //
+                     + "--------------------------------");
                }
                if (isMatch) {
                   elem = new ElementInfo( //

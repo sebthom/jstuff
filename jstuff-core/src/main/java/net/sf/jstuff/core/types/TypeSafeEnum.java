@@ -84,7 +84,6 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
    }
 
    /**
-    *
     * For bean-style access.
     */
    public final ID getId() {
@@ -92,7 +91,6 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
    }
 
    /**
-    *
     * For bean-style access.
     */
    public final int getOrdinal() {

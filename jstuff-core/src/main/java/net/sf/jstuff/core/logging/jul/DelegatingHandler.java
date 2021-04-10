@@ -61,13 +61,13 @@ public class DelegatingHandler extends Handler {
    }
 
    @Override
-   public boolean isLoggable(final LogRecord record) {
-      return wrapped.isLoggable(record);
+   public boolean isLoggable(final LogRecord entry) {
+      return wrapped.isLoggable(entry);
    }
 
    @Override
-   public void publish(final LogRecord record) {
-      wrapped.publish(record);
+   public void publish(final LogRecord entry) {
+      wrapped.publish(entry);
    }
 
    @Override

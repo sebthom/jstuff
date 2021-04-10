@@ -147,9 +147,7 @@ public enum CharEncoding {
             ubuf[ubufIdx] = (char) (unsignedByte(buf[i]) + 256 * buf[i + 1]);
          }
 
-         if (ubuf[ubufIdx] == 0xfffe || //
-            ubuf[ubufIdx] < 128 && TEXT_CHARS[ubuf[ubufIdx]] != T //
-         )
+         if (ubuf[ubufIdx] == 0xfffe || ubuf[ubufIdx] < 128 && TEXT_CHARS[ubuf[ubufIdx]] != T)
             return 0;
 
          ubufIdx++;
@@ -232,10 +230,10 @@ public enum CharEncoding {
    }
 
    private static boolean looks_utf8_with_bom(final byte[] buf) {
-      if (buf.length > 3 && //
-         unsignedByte(buf[0]) == 0xef && //
-         unsignedByte(buf[1]) == 0xbb && //
-         unsignedByte(buf[2]) == 0xbf //
+      if (buf.length > 3 //
+         && unsignedByte(buf[0]) == 0xef //
+         && unsignedByte(buf[1]) == 0xbb //
+         && unsignedByte(buf[2]) == 0xbf //
       )
          return looks_utf8(buf, 3) > 0;
       return false;

@@ -4,10 +4,8 @@
  */
 package net.sf.jstuff.core.math;
 
-import static net.sf.jstuff.core.math.NumericalSystem.BASE16;
-import static net.sf.jstuff.core.math.NumericalSystem.BASE36;
-import static net.sf.jstuff.core.math.NumericalSystem.BASE62;
-import static org.assertj.core.api.Assertions.assertThat;
+import static net.sf.jstuff.core.math.NumericalSystem.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigInteger;
 

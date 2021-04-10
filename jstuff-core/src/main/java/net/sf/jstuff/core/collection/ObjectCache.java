@@ -160,9 +160,9 @@ public final class ObjectCache<K, V> {
    }
 
    public void put(final K key, final V value) {
-      cache.put(key, useWeakReferences ? //
-         new WeakValueReference<>(key, value, garbageCollectedRefs) : //
-         new SoftValueReference<>(key, value, garbageCollectedRefs) //
+      cache.put(key, useWeakReferences //
+         ? new WeakValueReference<>(key, value, garbageCollectedRefs) //
+         : new SoftValueReference<>(key, value, garbageCollectedRefs) //
       );
    }
 

@@ -4,10 +4,8 @@
  */
 package net.sf.jstuff.core.types;
 
-import static net.sf.jstuff.core.types.Trilean.FALSE;
-import static net.sf.jstuff.core.types.Trilean.TRUE;
-import static net.sf.jstuff.core.types.Trilean.UNKNOWN;
-import static org.assertj.core.api.Assertions.assertThat;
+import static net.sf.jstuff.core.types.Trilean.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 

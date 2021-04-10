@@ -57,15 +57,15 @@ public class PrintStreamHandler extends Handler {
    }
 
    @Override
-   public boolean isLoggable(final LogRecord record) {
-      return record != null && super.isLoggable(record);
+   public boolean isLoggable(final LogRecord entry) {
+      return entry != null && super.isLoggable(entry);
    }
 
    @Override
-   public synchronized void publish(final LogRecord record) {
-      if (isLoggable(record)) {
+   public synchronized void publish(final LogRecord entry) {
+      if (isLoggable(entry)) {
          try {
-            final String msg = getFormatter().format(record);
+            final String msg = getFormatter().format(entry);
             try {
                if (!isHeaderPrinted) {
                   out.print(getFormatter().getHead(this));

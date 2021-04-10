@@ -27,19 +27,19 @@ import net.sf.jstuff.core.net.NetUtils;
  *
  * <pre>
  * {@code
-<filter>
-    <filter-name>ClassPathResourcesFilter</filter-name>
-    <filter-class>net.sf.jstuff.integration.servlet.ClassPathResourcesFilter</filter-class>
-    <init-param>
-        <param-name>max-age-in-seconds</param-name>
-        <param-value>3600</param-value>
-    </init-param>
-</filter>
-<filter-mapping>
-    <filter-name>ClassPathResourcesFilter</filter-name>
-    <url-pattern>*.jpg</url-pattern>
-</filter-mapping>
-}
+ * <filter>
+ *     <filter-name>ClassPathResourcesFilter</filter-name>
+ *     <filter-class>net.sf.jstuff.integration.servlet.ClassPathResourcesFilter</filter-class>
+ *     <init-param>
+ *         <param-name>max-age-in-seconds</param-name>
+ *         <param-value>3600</param-value>
+ *     </init-param>
+ * </filter>
+ * <filter-mapping>
+ *     <filter-name>ClassPathResourcesFilter</filter-name>
+ *     <url-pattern>*.jpg</url-pattern>
+ * </filter-mapping>
+ * }
  * </pre>
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>

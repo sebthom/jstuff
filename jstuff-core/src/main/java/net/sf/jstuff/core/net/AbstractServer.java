@@ -38,7 +38,6 @@ public abstract class AbstractServer {
    protected abstract void handleConnection(Socket clientConnection) throws IOException;
 
    /**
-    *
     * @return if the server is currently listening to a socket
     */
    public boolean isRunning() {

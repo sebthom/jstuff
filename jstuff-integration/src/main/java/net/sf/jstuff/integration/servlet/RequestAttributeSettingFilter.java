@@ -24,23 +24,23 @@ import net.sf.jstuff.core.logging.Logger;
  *
  * <pre>
  * {@code
-<filter>
-    <filter-name>RequestAttributeSettingFilter</filter-name>
-    <filter-class>net.sf.jstuff.integration.servlet.RequestAttributeSettingFilter</filter-class>
-    <init-param>
-        <param-name>attribute1</param-name>
-        <param-value>value1</param-value>
-    </init-param>
-    <init-param>
-        <param-name>attribute1</param-name>
-        <param-value>value1</param-value>
-    </init-param>
-</filter>
-<filter-mapping>
-    <filter-name>RequestAttributeSettingFilter</filter-name>
-    <url-pattern>/services/*</url-pattern>
-</filter-mapping>
-}
+ * <filter>
+ *     <filter-name>RequestAttributeSettingFilter</filter-name>
+ *     <filter-class>net.sf.jstuff.integration.servlet.RequestAttributeSettingFilter</filter-class>
+ *     <init-param>
+ *         <param-name>attribute1</param-name>
+ *         <param-value>value1</param-value>
+ *     </init-param>
+ *     <init-param>
+ *         <param-name>attribute1</param-name>
+ *         <param-value>value1</param-value>
+ *     </init-param>
+ * </filter>
+ * <filter-mapping>
+ *     <filter-name>RequestAttributeSettingFilter</filter-name>
+ *     <url-pattern>/services/*</url-pattern>
+ * </filter-mapping>
+ * }
  * </pre>
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>

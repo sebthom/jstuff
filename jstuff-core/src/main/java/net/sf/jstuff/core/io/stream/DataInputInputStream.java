@@ -24,10 +24,7 @@ public class DataInputInputStream extends InputStream {
    public int read() throws IOException {
       try {
          return input.readInt();
-      } catch (final IndexOutOfBoundsException ex) {
-         // e.g. in io.netty.buffer.AbstractByteBuf.readInt()
-         return -1;
-      } catch (final EOFException ex) {
+      } catch (final EOFException | IndexOutOfBoundsException /* e.g. in io.netty.buffer.AbstractByteBuf.readInt() */ ex) {
          return -1;
       }
    }

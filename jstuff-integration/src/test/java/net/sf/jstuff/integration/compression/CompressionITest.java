@@ -37,12 +37,12 @@ public class CompressionITest {
       for (int i = 0; i < 1000; i++) {
          final Faker faker = new Faker(Locale.ENGLISH);
          sb.append(//
-            faker.address().firstName() + ", " + //
-               faker.address().lastName() + ", " + //
-               faker.address().streetAddress(true) + ", " + //
-               faker.address().cityPrefix() + faker.address().citySuffix() + ", " + //
-               faker.address().country() + ", " + //
-               faker.chuckNorris().fact() + "\n" //
+            faker.address().firstName() + ", " //
+               + faker.address().lastName() + ", " //
+               + faker.address().streetAddress(true) + ", " //
+               + faker.address().cityPrefix() + faker.address().citySuffix() + ", " //
+               + faker.address().country() + ", " //
+               + faker.chuckNorris().fact() + "\n" //
          );
       }
       TEST_TEXT_BYTES = sb.toString().getBytes();

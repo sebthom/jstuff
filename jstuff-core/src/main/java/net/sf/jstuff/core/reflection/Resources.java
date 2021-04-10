@@ -58,7 +58,7 @@ public abstract class Resources {
       DIRECTORY,
       JAR,
       NOT_SUPPORTED,
-      NOT_EXISTING;
+      NOT_EXISTING
    }
 
    /**
