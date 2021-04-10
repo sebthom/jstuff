@@ -11,6 +11,8 @@ import java.net.ServerSocket;
 
 import org.junit.Test;
 
+import net.sf.jstuff.core.concurrent.Threads;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -25,9 +27,11 @@ public class NetUtilsTest {
    @Test
    public void testIsPortOpen() throws IOException {
       try (ServerSocket serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort())) {
+         Threads.sleep(1000);
          assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000)).isTrue();
 
          NetUtils.closeQuietly(serverSocket);
+         Threads.sleep(1000);
          assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000)).isFalse();
       }
    }
