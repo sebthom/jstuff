@@ -7,6 +7,7 @@ package net.sf.jstuff.core.net;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 
 import org.junit.Test;
@@ -26,8 +27,8 @@ public class NetUtilsTest {
 
    @Test
    public void testIsPortOpen() throws IOException {
-      try (ServerSocket serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort())) {
-         Threads.sleep(1000);
+      try (ServerSocket serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort(), 5, InetAddress.getLoopbackAddress())) {
+         Threads.sleep(100);
          assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000)).isTrue();
 
          NetUtils.closeQuietly(serverSocket);
