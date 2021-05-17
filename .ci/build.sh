@@ -31,7 +31,7 @@ fi
 echo "  -> GIT Branch: $GIT_BRANCH"; echo
 
 
-MAVEN_VERSION=3.6.3 # https://maven.apache.org/download.cgi
+MAVEN_VERSION=3.8.1 # https://maven.apache.org/download.cgi
 if [[ ! -e $HOME/.m2/bin/apache-maven-$MAVEN_VERSION ]]; then
    echo
    echo "###################################################"
@@ -39,8 +39,8 @@ if [[ ! -e $HOME/.m2/bin/apache-maven-$MAVEN_VERSION ]]; then
    echo "###################################################"
    mkdir -p $HOME/.m2/bin/
    maven_download_url="https://repo1.maven.org/maven2/org/apache/maven/apache-maven/${MAVEN_VERSION}/apache-maven-${MAVEN_VERSION}-bin.tar.gz"
-   echo "Downloading [$maven_download_url]..." && \
-   curl -fL $maven_download_url | tar zxv -C $HOME/.m2/bin/
+   echo "Downloading [$maven_download_url]..."
+   curl -fsSL $maven_download_url | tar zxv -C $HOME/.m2/bin/
 fi
 export M2_HOME=$HOME/.m2/bin/apache-maven-$MAVEN_VERSION
 export PATH=$M2_HOME/bin:$PATH
