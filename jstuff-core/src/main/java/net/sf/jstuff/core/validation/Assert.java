@@ -36,32 +36,32 @@ public abstract class Assert {
       );
    }
 
-   public static byte equals(final byte value, final byte invalidValue, final String errorMessage) {
-      if (value != invalidValue)
+   public static byte equals(final byte value, final byte expectedValue, final String errorMessage) {
+      if (value != expectedValue)
          throw _createIllegalStateException(errorMessage);
       return value;
    }
 
-   public static int equals(final int value, final byte invalidValue, final String errorMessage) {
-      if (value != invalidValue)
+   public static int equals(final int value, final byte expectedValue, final String errorMessage) {
+      if (value != expectedValue)
          throw _createIllegalStateException(errorMessage);
       return value;
    }
 
-   public static long equals(final long value, final byte invalidValue, final String errorMessage) {
-      if (value != invalidValue)
+   public static long equals(final long value, final byte expectedValue, final String errorMessage) {
+      if (value != expectedValue)
          throw _createIllegalStateException(errorMessage);
       return value;
    }
 
-   public static Object equals(final Object value, final Object invalidValue, final String errorMessage) {
-      if (!Objects.equals(value, invalidValue))
+   public static Object equals(final Object value, final Object expectedValue, final String errorMessage) {
+      if (!Objects.equals(value, expectedValue))
          throw _createIllegalStateException(errorMessage);
       return value;
    }
 
-   public static short equals(final short value, final byte invalidValue, final String errorMessage) {
-      if (value != invalidValue)
+   public static short equals(final short value, final byte expectedValue, final String errorMessage) {
+      if (value != expectedValue)
          throw _createIllegalStateException(errorMessage);
       return value;
    }
