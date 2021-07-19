@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -24,10 +25,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.regex.Pattern;
 
 import org.apache.commons.io.Charsets;
-import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import net.sf.jstuff.core.Strings;
@@ -245,49 +244,12 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
     * @deprecated use {@link MoreFiles#find(java.nio.file.Path, String, boolean, boolean)}
     */
    @Deprecated
-   @SuppressWarnings("unused")
    public static void find(String searchRootPath, final String globPattern, final EventListener<File> onMatch) throws IOException {
-      Args.notNull("globPattern", globPattern);
-      Args.notNull("onMatch", onMatch);
-
       if (Strings.isEmpty(searchRootPath)) {
          searchRootPath = "."; // current directory
       }
-      final File searchRoot = new File(new File(searchRootPath).getCanonicalPath());
-      searchRootPath = searchRoot.getAbsolutePath();
-      final int searchRootLen = searchRootPath.length();
 
-      final String searchRegEx = Strings.globToRegex(globPattern).toString();
-      LOG.debug("\n  glob:  %s\n  regex: %s\n  searchRoot: %s", globPattern, searchRegEx, searchRootPath);
-      final Pattern filePattern = Pattern.compile("^" + searchRegEx);
-      new DirectoryWalker<File>() {
-         {
-            walk(searchRoot, null);
-         }
-
-         @Override
-         protected boolean handleDirectory(final File directory, final int depth, final Collection<File> results) throws IOException {
-            if (depth == 0)
-               return true;
-            String folderPath = directory.getAbsolutePath().replace('\\', '/');
-            folderPath = folderPath.substring(searchRootLen + 1);
-            final boolean isMatch = filePattern.matcher(folderPath).find();
-            if (isMatch) {
-               onMatch.onEvent(directory);
-            }
-            return true;
-         }
-
-         @Override
-         protected void handleFile(final File file, final int depth, final java.util.Collection<File> results) throws IOException {
-            String filePath = file.getAbsolutePath().replace('\\', '/');
-            filePath = filePath.substring(searchRootLen + 1);
-            final boolean isMatch = filePattern.matcher(filePath).find();
-            if (isMatch) {
-               onMatch.onEvent(file);
-            }
-         }
-      };
+      MoreFiles.find(Paths.get(searchRootPath), globPattern, p -> onMatch.onEvent(p.toFile()), p -> onMatch.onEvent(p.toFile()));
    }
 
    /**
@@ -451,5 +413,9 @@ public abstract class FileUtils extends org.apache.commons.io.FileUtils {
 
    public static void writeStringToFile(final String file, final CharSequence data, final String encoding, final boolean append) throws IOException {
       write(new File(file), data, encoding, append);
+   }
+
+   @SuppressWarnings("deprecation")
+   protected FileUtils() {
    }
 }
