@@ -6,7 +6,6 @@ package net.sf.jstuff.core.collection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,9 +17,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.Maps.MapDiff.EntryValueDiff;
+import net.sf.jstuff.core.comparator.SortDirection;
 import net.sf.jstuff.core.functional.IsEqual;
+import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -75,8 +78,8 @@ public abstract class Maps {
 
       @Override
       public String toString() {
-         return MapDiff.class.getSimpleName() + " [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries=" + leftOnlyEntries + ", rightOnlyEntries="
-            + rightOnlyEntries + "]";
+         return MapDiff.class.getSimpleName() + " [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries=" + leftOnlyEntries
+            + ", rightOnlyEntries=" + rightOnlyEntries + "]";
       }
    }
 
@@ -153,8 +156,8 @@ public abstract class Maps {
 
       final StringBuilder sb = new StringBuilder();
 
-      for (final Iterator<Map.Entry<K, V>> it = values.entrySet().iterator(); it.hasNext();) {
-         final Map.Entry<K, V> entry = it.next();
+      for (final Iterator<Entry<K, V>> it = values.entrySet().iterator(); it.hasNext();) {
+         final Entry<K, V> entry = it.next();
          sb.append(entry.getKey());
          sb.append(assignmentOperator);
          sb.append(entry.getValue());
@@ -173,7 +176,8 @@ public abstract class Maps {
       return new HashMap<>(initialSize);
    }
 
-   public static <K, V, KK extends K, VV extends V> HashMap<K, V> newHashMap(final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues) {
+   public static <K, V, KK extends K, VV extends V> HashMap<K, V> newHashMap(final KK firstKey, final VV firstValue,
+      final Object... moreInitialKeysAndValues) {
       final HashMap<K, V> m = new HashMap<>(1 + moreInitialKeysAndValues.length / 2);
       return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
    }
@@ -226,20 +230,22 @@ public abstract class Maps {
       return new TreeMap<>(keyComparator);
    }
 
-   public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator, final KK firstKey, final VV firstValue,
-      final Object... moreInitialKeysAndValues) {
+   public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator, final KK firstKey,
+      final VV firstValue, final Object... moreInitialKeysAndValues) {
       final TreeMap<K, V> m = new TreeMap<>(keyComparator);
       return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
    }
 
-   public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator, final Object[] initialKeysAndValues) {
+   public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator,
+      final Object[] initialKeysAndValues) {
       if (initialKeysAndValues == null)
          return new TreeMap<>(keyComparator);
 
       return putAll(new TreeMap<K, V>(keyComparator), initialKeysAndValues);
    }
 
-   public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue, final Object... moreInitialKeysAndValues) {
+   public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue,
+      final Object... moreInitialKeysAndValues) {
       final TreeMap<K, V> m = new TreeMap<>();
       return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
    }
@@ -297,20 +303,44 @@ public abstract class Maps {
       return map;
    }
 
-   public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(final Map<K, V> map) {
+   public static <K, V extends Comparable<V>> Map<K, V> sortByValue(final Map<K, V> map) {
+      return sortByValue(map, SortDirection.ASC);
+   }
+
+   public static <K, V extends Comparable<V>> Map<K, V> sortByValue(final Map<K, V> map, final SortDirection direction) {
       if (map == null)
          return null;
       if (map.isEmpty())
          return map;
 
-      final List<Map.Entry<K, V>> entries = new ArrayList<>(map.entrySet());
-      Collections.sort(entries, (o1, o2) -> o1.getValue().compareTo(o2.getValue()));
+      Args.notNull("direction", direction);
 
-      final Map<K, V> result = new LinkedHashMap<>();
-      for (final Map.Entry<K, V> entry : entries) {
-         result.put(entry.getKey(), entry.getValue());
+      final List<Entry<K, V>> entries = new ArrayList<>(map.entrySet());
+      entries.sort((o1, o2) -> {
+         final int valueCmp = ObjectUtils.compare(o1.getValue(), o2.getValue());
+         if (valueCmp == 0) {
+            final Object k1 = o1.getKey();
+            final Object k2 = o2.getKey();
+            if (k1 == null)
+               return direction == SortDirection.ASC ? -1 : 1;
+            if (k2 == null)
+               return direction == SortDirection.ASC ? 1 : -1;
+
+            if (k1 instanceof Comparable && Types.isAssignableTo(k2.getClass(), k1.getClass())) {
+               @SuppressWarnings({"rawtypes", "unchecked"})
+               final int keyCmp = ObjectUtils.compare((Comparable) k1, (Comparable) k2);
+               return direction == SortDirection.ASC ? keyCmp : -keyCmp;
+            }
+            return 0;
+         }
+         return direction == SortDirection.ASC ? valueCmp : -valueCmp;
+      });
+
+      final Map<K, V> sortedMap = new LinkedHashMap<>();
+      for (final Entry<K, V> e : entries) {
+         sortedMap.put(e.getKey(), e.getValue());
       }
-      return result;
+      return sortedMap;
    }
 
    public static <K, V> Map<K, V> sortByValue(final Map<K, V> map, final Comparator<V> comparator) {
@@ -321,14 +351,14 @@ public abstract class Maps {
 
       Args.notNull("comparator", comparator);
 
-      final List<Map.Entry<K, V>> entries = new ArrayList<>(map.entrySet());
-      Collections.sort(entries, (o1, o2) -> comparator.compare(o1.getValue(), o2.getValue()));
+      final List<Entry<K, V>> entries = new ArrayList<>(map.entrySet());
+      entries.sort((o1, o2) -> comparator.compare(o1.getValue(), o2.getValue()));
 
-      final Map<K, V> result = new LinkedHashMap<>();
-      for (final Map.Entry<K, V> entry : entries) {
-         result.put(entry.getKey(), entry.getValue());
+      final Map<K, V> sortedMap = new LinkedHashMap<>();
+      for (final Entry<K, V> e : entries) {
+         sortedMap.put(e.getKey(), e.getValue());
       }
-      return result;
+      return sortedMap;
    }
 
    /**
