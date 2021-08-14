@@ -7,9 +7,9 @@ package net.sf.jstuff.core.collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @deprecated use {@link ConcurrentHashMap#newKeySet()} or {@link Sets#newConcurrentHashSet()}
- *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
+ *
+ * @deprecated use {@link ConcurrentHashMap#newKeySet()} or {@link Sets#newConcurrentHashSet()}
  */
 @Deprecated
 public class ConcurrentHashSet<E> extends MapBackedSet<E> {
