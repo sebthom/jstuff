@@ -68,11 +68,14 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
                for (final String ext : WINDOWS_EXE_FILE_EXTENSIONS) {
                   try {
                      Path programPath = path.resolve(program + ext);
+                     if (Files.exists(programPath)) {
+                        continue;
+                     }
                      programPath = resolveSymlinks ? programPath.toRealPath() : programPath.toRealPath(LinkOption.NOFOLLOW_LINKS);
                      if (MoreFiles.isExecutableFile(programPath))
                         return programPath;
                   } catch (final Exception ex) {
-                     LOG.error(ex);
+                     LOG.debug(ex);
                   }
                }
             }
@@ -92,11 +95,14 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
       for (final String pathAsString : paths) {
          try {
             Path programPath = Paths.get(pathAsString).resolve(program);
+            if (Files.exists(programPath)) {
+               continue;
+            }
             programPath = resolveSymlinks ? programPath.toRealPath() : programPath.toRealPath(LinkOption.NOFOLLOW_LINKS);
             if (MoreFiles.isExecutableFile(programPath))
                return programPath;
          } catch (final Exception ex) {
-            LOG.error(ex);
+            LOG.debug(ex);
          }
       }
 
