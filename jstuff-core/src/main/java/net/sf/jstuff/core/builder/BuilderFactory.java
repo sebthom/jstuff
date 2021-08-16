@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -86,7 +87,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
          }
 
          // collecting @OnPostBuild methods
-         final Set<String> overridablePostBuildMethodNames = newHashSet(2);
+         final Set<String> overridablePostBuildMethodNames = new HashSet<>(2);
          Types.visit(targetClass, new DefaultClassVisitor() {
             @Override
             public boolean isVisitingFields(final Class<?> clazz) {
@@ -159,14 +160,16 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
                      if (propName.equals(property.get1())) {
                         final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
                         if (!isNullable && (property.get2() == null || property.get2()[0] == null))
-                           throw new IllegalArgumentException(builderInterface.getSimpleName() + "." + propName + "(...) must not be set to null.");
+                           throw new IllegalArgumentException(builderInterface.getSimpleName() + "." + propName
+                              + "(...) must not be set to null.");
                         found = true;
                      }
                   }
                   if (!found) {
                      final boolean isRequired = propConfig == null ? propertyDefaults.required() : propConfig.required();
                      if (isRequired)
-                        throw new IllegalStateException("Setting " + builderInterface.getSimpleName() + "." + propName + "(...) is required.");
+                        throw new IllegalStateException("Setting " + builderInterface.getSimpleName() + "." + propName
+                           + "(...) is required.");
                   }
                }
             }
@@ -215,14 +218,16 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
    private final Object[] constructorArgs;
 
    @SuppressWarnings("unchecked")
-   protected BuilderFactory(final Class<BLDR_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {
+   protected BuilderFactory(final Class<BLDR_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass,
+      final Object... constructorArgs) {
       Args.notNull("builderInterface", builderInterface);
       if (!builderInterface.isInterface())
          throw new IllegalArgumentException("[builderInterface] '" + builderInterface.getName() + "' is not an interface!");
 
       this.builderInterface = builderInterface;
 
-      this.targetClass = targetClass == null ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0] : targetClass;
+      this.targetClass = targetClass == null ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0]
+         : targetClass;
 
       Args.notNull("targetClass", this.targetClass);
 

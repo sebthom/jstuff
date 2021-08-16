@@ -5,6 +5,9 @@
 package net.sf.jstuff.core.collection;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,5 +41,45 @@ public abstract class Sets {
       final Set<T> set = ConcurrentHashMap.newKeySet(items.length);
       CollectionUtils.addAll(set, items);
       return set;
+   }
+
+   public static <K> HashSet<K> newHashSet() {
+      return new HashSet<>();
+   }
+
+   public static <K> HashSet<K> newHashSet(final Collection<K> initialValues) {
+      return initialValues == null ? new HashSet<>() : new HashSet<>(initialValues);
+   }
+
+   public static <K> HashSet<K> newHashSet(final int initialSize) {
+      return new HashSet<>(initialSize);
+   }
+
+   @SafeVarargs
+   public static <K> HashSet<K> newHashSet(final K... values) {
+      if (values == null || values.length == 0)
+         return new HashSet<>();
+
+      final HashSet<K> s = new HashSet<>(values.length);
+      Collections.addAll(s, values);
+      return s;
+   }
+
+   public static <V> LinkedHashSet<V> newLinkedHashSet() {
+      return new LinkedHashSet<>();
+   }
+
+   public static <K> LinkedHashSet<K> newLinkedHashSet(final int initialSize) {
+      return new LinkedHashSet<>(initialSize);
+   }
+
+   @SafeVarargs
+   public static <K> LinkedHashSet<K> newLinkedHashSet(final K... values) {
+      if (values == null || values.length == 0)
+         return new LinkedHashSet<>();
+
+      final LinkedHashSet<K> s = new LinkedHashSet<>(values.length);
+      Collections.addAll(s, values);
+      return s;
    }
 }

@@ -275,18 +275,34 @@ public abstract class CollectionUtils {
       return l;
    }
 
+   /**
+    * use {@link Sets#newHashSet()}
+    */
+   @Deprecated
    public static <K> HashSet<K> newHashSet() {
       return new HashSet<>();
    }
 
+   /**
+    * use {@link Sets#newHashSet()}
+    */
+   @Deprecated
    public static <K> HashSet<K> newHashSet(final Collection<K> initialValues) {
       return initialValues == null ? new HashSet<>() : new HashSet<>(initialValues);
    }
 
+   /**
+    * use {@link Sets#newHashSet()}
+    */
+   @Deprecated
    public static <K> HashSet<K> newHashSet(final int initialSize) {
       return new HashSet<>(initialSize);
    }
 
+   /**
+    * use {@link Sets#newHashSet()}
+    */
+   @Deprecated
    @SafeVarargs
    public static <K> HashSet<K> newHashSet(final K... values) {
       if (values == null || values.length == 0)
@@ -297,14 +313,26 @@ public abstract class CollectionUtils {
       return s;
    }
 
+   /**
+    * use {@link Sets#newLinkedHashSet()}
+    */
+   @Deprecated
    public static <V> LinkedHashSet<V> newLinkedHashSet() {
       return new LinkedHashSet<>();
    }
 
+   /**
+    * use {@link Sets#newLinkedHashSet()}
+    */
+   @Deprecated
    public static <K> LinkedHashSet<K> newLinkedHashSet(final int initialSize) {
       return new LinkedHashSet<>(initialSize);
    }
 
+   /**
+    * use {@link Sets#newHashSet()}
+    */
+   @Deprecated
    @SafeVarargs
    public static <K> LinkedHashSet<K> newLinkedHashSet(final K... values) {
       if (values == null || values.length == 0)

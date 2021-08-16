@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -93,7 +94,7 @@ public abstract class Maps {
       Args.notNull("isEqual", isEqual);
 
       final MapDiff<K, V> mapDiff = new MapDiff<>(leftMap, rightMap);
-      final Set<K> processedLeftKeys = CollectionUtils.newHashSet(Math.max(leftMap.size(), rightMap.size()));
+      final Set<K> processedLeftKeys = new HashSet<>(Math.max(leftMap.size(), rightMap.size()));
 
       /*
        * process the entries of the left map

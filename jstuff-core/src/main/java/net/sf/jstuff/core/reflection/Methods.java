@@ -13,6 +13,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -43,8 +44,8 @@ public abstract class Methods extends Members {
    private static final Logger LOG = Logger.create();
 
    @SuppressWarnings("unchecked")
-   public static <O, P> GetterAccessor<O, P> createPublicGetterAccessor(final Class<O> beanClass, final String propertyName, final Class<P> propertyType)
-      throws ReflectionException {
+   public static <O, P> GetterAccessor<O, P> createPublicGetterAccessor(final Class<O> beanClass, final String propertyName,
+      final Class<P> propertyType) throws ReflectionException {
       try {
          return createPublicMethodAccessor(GetterAccessor.class, beanClass, "is" + Strings.capitalize(propertyName), propertyType);
       } catch (final Exception ex) {
@@ -55,7 +56,8 @@ public abstract class Methods extends Members {
    /**
     * @param accessor FunctionalInterface where the first parameter is the targetObject followed by the parameters for the target method
     */
-   public static <ACCESSOR> ACCESSOR createPublicMethodAccessor(final Class<ACCESSOR> accessor, final Class<?> targetClass, final String methodName) {
+   public static <ACCESSOR> ACCESSOR createPublicMethodAccessor(final Class<ACCESSOR> accessor, final Class<?> targetClass,
+      final String methodName) {
       Args.notNull("accessor", accessor);
 
       if (!accessor.isAnnotationPresent(FunctionalInterface.class))
@@ -63,15 +65,15 @@ public abstract class Methods extends Members {
 
       final Method delegatingMethod = Arrays.stream(accessor.getMethods()).filter(Members::isAbstract).findFirst().get();
 
-      return createPublicMethodAccessor(accessor, targetClass, methodName, delegatingMethod.getReturnType(), ArrayUtils.remove(delegatingMethod
-         .getParameterTypes(), 0));
+      return createPublicMethodAccessor(accessor, targetClass, methodName, delegatingMethod.getReturnType(), ArrayUtils.remove(
+         delegatingMethod.getParameterTypes(), 0));
    }
 
    /**
     * @param accessor FunctionalInterface where the first parameter is the targetObject followed by the parameters for the target method
     */
-   public static <ACCESSOR> ACCESSOR createPublicMethodAccessor(final Class<ACCESSOR> accessor, final Class<?> targetClass, final String methodName,
-      Class<?> methodReturnType, final Class<?>... methodParameterTypes) {
+   public static <ACCESSOR> ACCESSOR createPublicMethodAccessor(final Class<ACCESSOR> accessor, final Class<?> targetClass,
+      final String methodName, Class<?> methodReturnType, final Class<?>... methodParameterTypes) {
       Args.notNull("accessor", accessor);
       Args.notNull("targetClass", targetClass);
       Args.notNull("methodName", methodName);
@@ -100,9 +102,10 @@ public abstract class Methods extends Members {
    }
 
    @SuppressWarnings("unchecked")
-   public static <O, P> SetterAccessor<O, P> createPublicSetterAccessor(final Class<O> beanClass, final String propertyName, final Class<P> propertyType)
-      throws ReflectionException {
-      return createPublicMethodAccessor(SetterAccessor.class, beanClass, "set" + Strings.capitalize(propertyName), void.class, propertyType);
+   public static <O, P> SetterAccessor<O, P> createPublicSetterAccessor(final Class<O> beanClass, final String propertyName,
+      final Class<P> propertyType) throws ReflectionException {
+      return createPublicMethodAccessor(SetterAccessor.class, beanClass, "set" + Strings.capitalize(propertyName), void.class,
+         propertyType);
    }
 
    /**
@@ -513,7 +516,7 @@ public abstract class Methods extends Members {
     * Recursively collects all getters (public and non-public), excluding references to overridden methods.
     */
    public static List<Method> getAllGetters(final Class<?> clazz) {
-      final Set<String> overridableGetterNames = CollectionUtils.newHashSet();
+      final Set<String> overridableGetterNames = new HashSet<>();
       final List<Method> result = CollectionUtils.newArrayList();
 
       Class<?> currentClass = clazz;
@@ -543,7 +546,7 @@ public abstract class Methods extends Members {
     * Recursively collects all setters (public and non-public), excluding references to overridden methods.
     */
    public static List<Method> getAllSetters(final Class<?> clazz) {
-      final Set<String> overridableSetterNames = CollectionUtils.newHashSet();
+      final Set<String> overridableSetterNames = new HashSet<>();
       final List<Method> result = CollectionUtils.newArrayList();
 
       Class<?> currentClass = clazz;

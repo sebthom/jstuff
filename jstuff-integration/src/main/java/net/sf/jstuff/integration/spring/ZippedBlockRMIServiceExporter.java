@@ -11,9 +11,9 @@ import org.springframework.remoting.rmi.RmiServiceExporter;
 import net.sf.jstuff.core.logging.Logger;
 
 /**
- * @deprecated as of Spring 5.3 (phasing out serialization-based remoting)
- *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
+ *
+ * @deprecated as of Spring 5.3 (phasing out serialization-based remoting)
  */
 @Deprecated
 public class ZippedBlockRMIServiceExporter implements InitializingBean, DisposableBean {

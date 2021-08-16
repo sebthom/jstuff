@@ -6,6 +6,7 @@ package net.sf.jstuff.core.collection;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -49,7 +50,7 @@ public class IdentityHashSetTest {
    @Test
    public void testIdentityHashSet() {
       final Set<Entity> ihs = IdentityHashSet.create();
-      final Set<Entity> hs = CollectionUtils.newHashSet();
+      final Set<Entity> hs = new HashSet<>();
 
       final Entity e1 = new Entity().setName("aa");
       final Entity e2 = new Entity().setName("aa");
