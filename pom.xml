@@ -10,12 +10,12 @@
    <parent>
       <groupId>com.vegardit.maven</groupId>
       <artifactId>vegardit-maven-parent</artifactId>
-      <version>2.4.31</version>
+      <version>RELEASE</version>
    </parent>
 
    <groupId>net.sf.jstuff</groupId>
    <artifactId>jstuff-parent</artifactId>
-   <version>5.14.4</version>
+   <version>5.14.5-SNAPSHOT</version>
    <packaging>pom</packaging>
 
 
@@ -61,7 +61,7 @@
       <url>https://github.com/sebthom/jstuff</url>
       <connection>scm:git:https://github.com/sebthom/jstuff.git</connection>
       <developerConnection>scm:git:https://github.com/sebthom/jstuff.git</developerConnection>
-      <tag>5.14.4</tag>
+      <tag>HEAD</tag>
    </scm>
 
 
