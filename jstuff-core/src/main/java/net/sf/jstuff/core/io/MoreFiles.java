@@ -162,7 +162,8 @@ public abstract class MoreFiles {
 
       if (sourceSupportedAttrs.contains("posix") && targetSupportedAttrs.contains("posix")) {
          final PosixFileAttributes sourcePosixAttrs = sourceFSP.readAttributes(source, PosixFileAttributes.class, NOFOLLOW_LINKS);
-         final PosixFileAttributeView targetPosixAttrs = targetFSP.getFileAttributeView(target, PosixFileAttributeView.class, NOFOLLOW_LINKS);
+         final PosixFileAttributeView targetPosixAttrs = targetFSP.getFileAttributeView(target, PosixFileAttributeView.class,
+            NOFOLLOW_LINKS);
          if (copyACL) {
             targetPosixAttrs.setOwner(sourcePosixAttrs.owner());
             targetPosixAttrs.setGroup(sourcePosixAttrs.group());
@@ -187,7 +188,8 @@ public abstract class MoreFiles {
     * @param onBytesWritten LongBiConsumer#accept(long bytesWritten, long totalBytesWritten)
     */
    @SuppressWarnings("resource")
-   public static void copyContent(final FileChannel source, final FileChannel target, final LongBiConsumer onBytesWritten) throws IOException {
+   public static void copyContent(final FileChannel source, final FileChannel target, final LongBiConsumer onBytesWritten)
+      throws IOException {
       Args.notNull("onBytesWritten", onBytesWritten);
       Args.notNull("source", source);
       Args.notNull("target", target);
@@ -244,11 +246,13 @@ public abstract class MoreFiles {
       if (sourceSupportedAttrs.contains("user") && targetSupportedAttrs.contains("user")) {
          final FileSystemProvider sourceFSP = sourceFS.provider();
 
-         final UserDefinedFileAttributeView sourceUserAttrs = sourceFSP.getFileAttributeView(source, UserDefinedFileAttributeView.class, NOFOLLOW_LINKS);
+         final UserDefinedFileAttributeView sourceUserAttrs = sourceFSP.getFileAttributeView(source, UserDefinedFileAttributeView.class,
+            NOFOLLOW_LINKS);
          final List<String> entries = sourceUserAttrs.list();
          if (!entries.isEmpty()) {
             final FileSystemProvider targetFSP = targetFS.provider();
-            final UserDefinedFileAttributeView targetUserAttrs = targetFSP.getFileAttributeView(target, UserDefinedFileAttributeView.class, NOFOLLOW_LINKS);
+            final UserDefinedFileAttributeView targetUserAttrs = targetFSP.getFileAttributeView(target, UserDefinedFileAttributeView.class,
+               NOFOLLOW_LINKS);
             ByteBuffer buf = null;
             for (final String entry : entries) {
                final int entrySize = sourceUserAttrs.size(entry);
@@ -310,8 +314,8 @@ public abstract class MoreFiles {
    /**
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
     */
-   public static Collection<Path> find(final Path searchRoot, final String globPattern, final boolean includeFiles, final boolean includeDirectories)
-      throws IOException {
+   public static Collection<Path> find(final Path searchRoot, final String globPattern, final boolean includeFiles,
+      final boolean includeDirectories) throws IOException {
       final Collection<Path> result = new ArrayList<>();
       if (includeFiles && includeDirectories) {
          find(searchRoot, globPattern, result::add, result::add);
@@ -326,7 +330,8 @@ public abstract class MoreFiles {
    /**
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
     */
-   public static void find(Path searchRoot, final String globPattern, final Consumer<Path> onDirMatch, final Consumer<Path> onFileMatch) throws IOException {
+   public static void find(Path searchRoot, final String globPattern, final Consumer<Path> onDirMatch, final Consumer<Path> onFileMatch)
+      throws IOException {
       Args.notNull("searchRoot", searchRoot);
       Args.notNull("globPattern", globPattern);
 
@@ -458,6 +463,16 @@ public abstract class MoreFiles {
 
    public static Path getWorkingDirectory() {
       return Paths.get("").toAbsolutePath();
+   }
+
+   /**
+    * @return true if the given path points to a regular file that is executable by this JVM process.
+    */
+   public static boolean isExecutableFile(final Path path) {
+      if (path == null)
+         return false;
+
+      return Files.isRegularFile(path) && Files.isExecutable(path);
    }
 
    @SuppressWarnings("resource")

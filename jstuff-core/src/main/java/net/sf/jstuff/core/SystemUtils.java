@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -20,6 +23,8 @@ import java.util.stream.Stream;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.io.MoreFiles;
 import net.sf.jstuff.core.logging.Logger;
 
 /**
@@ -31,6 +36,72 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    private static Boolean isContainerized;
    private static Boolean isDockerized;
    private static Boolean isRunningAsAdmin;
+
+   private static final Collection<String> WINDOWS_EXE_FILE_EXTENSIONS = Arrays.asList(Strings.splitByWholeSeparator( //
+      IS_OS_WINDOWS //
+         ? System.getenv("PATHEXT") //
+         : ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC", //
+      ";" //
+   ));
+
+   /**
+    * Searches for the given program on PATH
+    */
+   public static Path findExecutable(final String program, final boolean resolveSymlinks) {
+      if (Strings.isEmpty(program))
+         return null;
+
+      final String[] paths = Strings.splitByWholeSeparator(System.getenv("PATH"), File.pathSeparator);
+
+      if (IS_OS_WINDOWS) {
+         boolean programHasExeFileExtension = false;
+         for (final String ext : WINDOWS_EXE_FILE_EXTENSIONS) {
+            if (Strings.endsWithIgnoreCase(program, ext)) {
+               programHasExeFileExtension = true;
+               break;
+            }
+         }
+
+         if (!programHasExeFileExtension) {
+            for (final String pathAsString : paths) {
+               final Path path = Paths.get(pathAsString);
+               for (final String ext : WINDOWS_EXE_FILE_EXTENSIONS) {
+                  try {
+                     Path programPath = path.resolve(program + ext);
+                     programPath = resolveSymlinks ? programPath.toRealPath() : programPath.toRealPath(LinkOption.NOFOLLOW_LINKS);
+                     if (MoreFiles.isExecutableFile(programPath))
+                        return programPath;
+                  } catch (final Exception ex) {
+                     LOG.error(ex);
+                  }
+               }
+            }
+         }
+
+      } else if (IS_OS_MAC) {
+         final Path pathFile = Paths.get("/etc/paths");
+         if (Files.exists(pathFile)) {
+            try {
+               ArrayUtils.addAll(paths, Files.readAllLines(pathFile));
+            } catch (final IOException ex) {
+               LOG.debug(ex);
+            }
+         }
+      }
+
+      for (final String pathAsString : paths) {
+         try {
+            Path programPath = Paths.get(pathAsString).resolve(program);
+            programPath = resolveSymlinks ? programPath.toRealPath() : programPath.toRealPath(LinkOption.NOFOLLOW_LINKS);
+            if (MoreFiles.isExecutableFile(programPath))
+               return programPath;
+         } catch (final Exception ex) {
+            LOG.error(ex);
+         }
+      }
+
+      return null;
+   }
 
    /**
     * Determines if the current Java process is running with administrative permissions
