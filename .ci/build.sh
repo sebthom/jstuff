@@ -7,18 +7,20 @@
 
 set -e # abort script at first error
 set -o pipefail # causes a pipeline to return the exit status of the last command in the pipe that returned a non-zero return value
+set -o nounset # treat undefined variables as errors
 
 if [[ -f .ci/release-trigger.sh ]]; then
    echo "Sourcing [.ci/release-trigger.sh]..."
    source .ci/release-trigger.sh
 fi
 
+cd $(dirname $0)/..
 
 echo
 echo "###################################################"
 echo "# Determining GIT branch......                    #"
 echo "###################################################"
-if [[ $CI == "true" && $TRAVIS == "true" && $USER == "travis" ]]; then
+if [[ $CI == "true" && ${TRAVIS:-false} == "true" && $USER == "travis" ]]; then
    # https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
    if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
       GIT_BRANCH="$TRAVIS_BRANCH"
@@ -112,7 +114,7 @@ if [[ ${projectVersion:-foo} == ${POM_CURRENT_VERSION:-bar} && ${MAY_CREATE_RELE
    cp -f .ci/maven-settings.xml $HOME/.m2/settings.xml
    cp -f .ci/maven-toolchains.xml $HOME/.m2/toolchains.xml
 
-   if [[ "$TRAVIS" == "true" ]]; then
+   if [[ "${TRAVIS:-false}" == "true" ]]; then
       # workaround for "Git fatal: ref HEAD is not a symbolic ref" during release on Travis CI
       git checkout ${GIT_BRANCH}
    fi
