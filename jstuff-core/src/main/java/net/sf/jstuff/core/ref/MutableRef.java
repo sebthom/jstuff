@@ -4,13 +4,10 @@
  */
 package net.sf.jstuff.core.ref;
 
-import java.io.Serializable;
-
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MutableRef<T> implements Ref<T>, Serializable {
-   private static final long serialVersionUID = 1L;
+public class MutableRef<T> implements Ref<T> {
 
    public static <T> MutableRef<T> of(final T value) {
       return new MutableRef<>(value);
