@@ -1,0 +1,70 @@
+/*
+ * Copyright 2010-2021 by Sebastian Thomschke and contributors.
+ * SPDX-License-Identifier: EPL-2.0
+ */
+package net.sf.jstuff.core.concurrent;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.function.BooleanSupplier;
+
+import net.sf.jstuff.core.validation.Args;
+
+/**
+ * Await methods safe against spurious wake-ups.
+ * <p>
+ * See https://errorprone.info/bugpattern/WaitNotInLoop and https://rules.sonarsource.com/java/tag/multi-threading/RSPEC-2274
+ *
+ * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
+ */
+public abstract class SafeAwait {
+
+   /**
+    * @param condition condition to await for
+    * @param timeoutMS the maximum time to wait in milliseconds
+    * @return value from {@link Condition#await(long, TimeUnit)}
+    */
+   public static boolean await(final Condition condition, final long timeoutMS) throws InterruptedException {
+      Args.notNull("condition", condition);
+
+      long waitForMS = timeoutMS;
+      final long started = System.currentTimeMillis();
+      while (waitForMS > 0) {
+         if (condition.await(waitForMS, TimeUnit.MILLISECONDS))
+            return true;
+         waitForMS = waitForMS - (started - System.currentTimeMillis());
+      }
+      return false;
+   }
+
+   public static void await(final BooleanSupplier condition, final Object waitObject) throws InterruptedException {
+      Args.notNull("condition", condition);
+      Args.notNull("waitObject", waitObject);
+
+      synchronized (waitObject) {
+         while (!condition.getAsBoolean()) {
+            waitObject.wait();
+         }
+      }
+   }
+
+   /**
+    * @return if condition was met
+    */
+   public static boolean await(final BooleanSupplier condition, final Object waitObject, final long timeoutMS) throws InterruptedException {
+      Args.notNull("condition", condition);
+      Args.notNull("waitObject", waitObject);
+
+      synchronized (waitObject) {
+         long waitForMS = timeoutMS;
+         final long started = System.currentTimeMillis();
+         while (waitForMS > 0) {
+            if (condition.getAsBoolean())
+               return true;
+            waitObject.wait(waitForMS);
+            waitForMS = waitForMS - (started - System.currentTimeMillis());
+         }
+         return condition.getAsBoolean();
+      }
+   }
+}
