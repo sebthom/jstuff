@@ -5,11 +5,8 @@
 package net.sf.jstuff.core.ref;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -28,9 +25,8 @@ public class ObservableRef<E> extends MutableRef<E> {
       return new ObservableRef<>(value);
    }
 
-   private E value;
-   private final ReadWriteLock lock = new ReentrantReadWriteLock();
-   private List<Object> observers;
+   private final CopyOnWriteArraySet<Object> observers = new CopyOnWriteArraySet<>();
+   private volatile E value;
 
    public ObservableRef() {
    }
@@ -40,24 +36,12 @@ public class ObservableRef<E> extends MutableRef<E> {
    }
 
    protected void clearObservers() {
-      lock.writeLock().lock();
-      try {
-         if (observers != null) {
-            observers.clear();
-         }
-      } finally {
-         lock.writeLock().unlock();
-      }
+      observers.clear();
    }
 
    @Override
    public E get() {
-      lock.readLock().lock();
-      try {
-         return value;
-      } finally {
-         lock.readLock().unlock();
-      }
+      return value;
    }
 
    protected boolean isModification(final E oldValue, final E newValue) {
@@ -84,54 +68,32 @@ public class ObservableRef<E> extends MutableRef<E> {
    }
 
    public boolean isObserved() {
-      lock.readLock().lock();
-      try {
-         if (observers == null)
-            return false;
-         return !observers.isEmpty();
-      } finally {
-         lock.readLock().unlock();
-      }
+      return !observers.isEmpty();
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public void set(final E newValue) {
-      final E oldValue;
-      lock.writeLock().lock();
-      try {
-         oldValue = value;
+      final E oldValue = value;
 
-         // do nothing if value is the same object
-         if (!isModification(oldValue, newValue))
-            return;
+      // do nothing if value is the same object
+      if (!isModification(oldValue, newValue))
+         return;
 
-         value = newValue;
+      value = newValue;
 
-         // downgrade writelock to readlock
-         lock.readLock().lock();
-      } finally {
-         lock.writeLock().unlock();
-      }
-
-      try {
-         if (observers != null) {
-            for (final Object observer : observers) {
-               try {
-                  if (observer instanceof Runnable) {
-                     ((Runnable) observer).run();
-                  } else if (observer instanceof Consumer) {
-                     ((Consumer<E>) observer).accept(newValue);
-                  } else if (observer instanceof BiConsumer) {
-                     ((BiConsumer<E, E>) observer).accept(oldValue, newValue);
-                  }
-               } catch (final Exception ex) {
-                  LOG.error(ex);
-               }
+      for (final Object observer : observers) {
+         try {
+            if (observer instanceof Runnable) {
+               ((Runnable) observer).run();
+            } else if (observer instanceof Consumer) {
+               ((Consumer<E>) observer).accept(newValue);
+            } else if (observer instanceof BiConsumer) {
+               ((BiConsumer<E, E>) observer).accept(oldValue, newValue);
             }
+         } catch (final Exception ex) {
+            LOG.error(ex);
          }
-      } finally {
-         lock.readLock().unlock();
       }
    }
 
@@ -146,17 +108,8 @@ public class ObservableRef<E> extends MutableRef<E> {
    private void subscribe(final Object observer) {
       if (observer == null)
          return;
-      lock.writeLock().lock();
-      try {
-         if (observers == null) {
-            observers = new ArrayList<>();
-            observers.add(observer);
-         } else if (!observers.contains(observer)) {
-            observers.add(observer);
-         }
-      } finally {
-         lock.writeLock().unlock();
-      }
+
+      observers.add(observer);
    }
 
    public void subscribe(final Runnable observer) {
@@ -174,14 +127,8 @@ public class ObservableRef<E> extends MutableRef<E> {
    private void unsubscribe(final Object observer) {
       if (observer == null)
          return;
-      lock.writeLock().lock();
-      try {
-         if (observers != null) {
-            observers.remove(observer);
-         }
-      } finally {
-         lock.writeLock().unlock();
-      }
+
+      observers.remove(observer);
    }
 
    public void unsubscribe(final Runnable observer) {
