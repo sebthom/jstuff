@@ -35,11 +35,19 @@ public class ObservableRefTest {
          counter.incrementAndGet();
       });
 
+      // set different value
       assertThat(ref.isObserved()).isTrue();
       ref.set("bar");
       assertThat(ref.get()).isEqualTo("bar");
       assertThat(counter.get()).isEqualTo(3);
 
+      // set same value
+      counter.set(0);
+      ref.set("bar");
+      assertThat(ref.get()).isEqualTo("bar");
+      assertThat(counter.get()).isEqualTo(0);
+
+      // set value without observers
       ref.clearObservers();
       counter.set(0);
       assertThat(ref.isObserved()).isFalse();

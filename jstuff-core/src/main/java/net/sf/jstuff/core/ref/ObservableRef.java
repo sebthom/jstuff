@@ -4,8 +4,10 @@
  */
 package net.sf.jstuff.core.ref;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiConsumer;
@@ -58,6 +60,29 @@ public class ObservableRef<E> extends MutableRef<E> {
       }
    }
 
+   protected boolean isModification(final E oldValue, final E newValue) {
+      if (newValue == oldValue)
+         return false;
+
+      if (isScalarValue(newValue) //
+         && isScalarValue(oldValue) //
+         && Objects.equals(newValue, oldValue))
+         return false;
+
+      return true;
+   }
+
+   protected boolean isScalarValue(final E value) {
+      return value == null //
+         || value instanceof String //
+         || value instanceof BigInteger //
+         || value instanceof Long //
+         || value instanceof Integer //
+         || value instanceof Short //
+         || value instanceof Byte //
+         || value instanceof Character;
+   }
+
    public boolean isObserved() {
       lock.readLock().lock();
       try {
@@ -71,26 +96,34 @@ public class ObservableRef<E> extends MutableRef<E> {
 
    @Override
    @SuppressWarnings("unchecked")
-   public void set(final E value) {
+   public void set(final E newValue) {
       final E oldValue;
       lock.writeLock().lock();
       try {
-         oldValue = this.value;
-         this.value = value;
+         oldValue = value;
+
+         // do nothing if value is the same object
+         if (!isModification(oldValue, newValue))
+            return;
+
+         value = newValue;
 
          // downgrade writelock to readlock
          lock.readLock().lock();
+      } finally {
          lock.writeLock().unlock();
+      }
 
+      try {
          if (observers != null) {
             for (final Object observer : observers) {
                try {
                   if (observer instanceof Runnable) {
                      ((Runnable) observer).run();
                   } else if (observer instanceof Consumer) {
-                     ((Consumer<E>) observer).accept(value);
+                     ((Consumer<E>) observer).accept(newValue);
                   } else if (observer instanceof BiConsumer) {
-                     ((BiConsumer<E, E>) observer).accept(oldValue, value);
+                     ((BiConsumer<E, E>) observer).accept(oldValue, newValue);
                   }
                } catch (final Exception ex) {
                   LOG.error(ex);
