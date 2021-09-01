@@ -16,7 +16,8 @@ import org.junit.Test;
  */
 public class MoreFilesTest {
 
-   private void _testFind(final String rootPath, final String globPattern, final int exceptedFiles, final int exceptedFolders) throws IOException {
+   private void _testFind(final String rootPath, final String globPattern, final int exceptedFiles, final int exceptedFolders)
+      throws IOException {
       assertThat(MoreFiles.findFiles(Paths.get(rootPath), globPattern)).hasSize(exceptedFiles);
       assertThat(MoreFiles.findDirectories(Paths.get(rootPath), globPattern)).hasSize(exceptedFolders);
       assertThat(MoreFiles.find(Paths.get(rootPath), globPattern, true, true)).hasSize(exceptedFiles + exceptedFolders);
@@ -24,9 +25,9 @@ public class MoreFilesTest {
 
    @Test
    public void testFind() throws IOException {
-      _testFind("", "**/FileUtils.java", 1, 0);
-      _testFind(".", "**/FileUtils.java", 1, 0);
-      _testFind("./", "**/FileUtils.java", 1, 0);
+      _testFind("", "**/MoreFiles.java", 1, 0);
+      _testFind(".", "**/MoreFiles.java", 1, 0);
+      _testFind("./", "**/MoreFiles.java", 1, 0);
 
       // match children of rootfolder
       _testFind("", "src/test/resources/rootfolder/*", 0, 2);

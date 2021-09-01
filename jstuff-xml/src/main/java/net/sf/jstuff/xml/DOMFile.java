@@ -83,7 +83,7 @@ public class DOMFile {
       } catch (final XMLException ex) {
          // debug code to analyze "Content is not allowed in prolog."
          if (ex.getCause() instanceof SAXParseException) {
-            LOG.debug("Failed to parse file %s with content:\n%s", ex, xmlFile.getAbsolutePath(), MoreFiles.readFileToString(xmlFile.toPath()));
+            LOG.debug("Failed to parse file %s with content:\n%s", ex, xmlFile.getAbsolutePath(), MoreFiles.readAsString(xmlFile.toPath()));
          }
          throw ex;
       }
@@ -131,7 +131,8 @@ public class DOMFile {
       return DOMUtils.createElementBefore(sibling, tagName, tagAttributes);
    }
 
-   public Element createElementWithText(final Node parent, final String tagName, final Map<String, String> tagAttributes, final Object text) {
+   public Element createElementWithText(final Node parent, final String tagName, final Map<String, String> tagAttributes,
+      final Object text) {
       final Element elem = createElement(parent, tagName, tagAttributes);
       createTextNode(elem, text);
       return elem;
@@ -143,7 +144,8 @@ public class DOMFile {
       return elem;
    }
 
-   public Element createElementWithTextBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes, final Object text) {
+   public Element createElementWithTextBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes,
+      final Object text) {
       final Element elem = createElementBefore(sibling, tagName, tagAttributes);
       createTextNode(elem, text);
       return elem;

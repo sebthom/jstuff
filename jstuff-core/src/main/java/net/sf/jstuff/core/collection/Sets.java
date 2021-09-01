@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -81,5 +82,16 @@ public abstract class Sets {
       final LinkedHashSet<K> s = new LinkedHashSet<>(values.length);
       Collections.addAll(s, values);
       return s;
+   }
+
+   public static <S, T> Set<T> transform(final Set<S> source, final Function<? super S, ? extends T> op) {
+      if (source == null)
+         return null;
+
+      final Set<T> target = Sets.newHashSet(source.size());
+      for (final S sourceItem : source) {
+         target.add(op.apply(sourceItem));
+      }
+      return target;
    }
 }

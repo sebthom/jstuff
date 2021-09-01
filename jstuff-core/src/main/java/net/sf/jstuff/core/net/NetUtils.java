@@ -179,19 +179,6 @@ public abstract class NetUtils {
       }
    }
 
-   /**
-    * @deprecated use {@link #isRemotePortOpen(String, int, int)}
-    */
-   @Deprecated
-   public static boolean isRemotePortOpen(final String hostname, final int port) {
-      Args.notNull("hostname", hostname);
-      try (Socket socket = new Socket(hostname, port)) {
-         return true;
-      } catch (final IOException ex) {
-         return false;
-      }
-   }
-
    public static boolean isRemotePortOpen(final String hostname, final int port, final int connectTimeoutInMS) {
       Args.notNull("hostname", hostname);
       try (Socket socket = new Socket()) {

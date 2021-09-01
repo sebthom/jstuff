@@ -161,6 +161,52 @@ public abstract class Args {
       return file;
    }
 
+   /**
+    * Ensures file exists, points to a regular file and is readable by the current user.
+    */
+   public static Path isFileReadable(final String argumentName, final Path file) {
+      _notNull("argumentName", argumentName);
+      _notNull(argumentName, file);
+
+      if (!Files.exists(file))
+         throw _createIllegalArgumentException(argumentName, "File [" + file.toAbsolutePath() + "] does not exist.");
+      if (!Files.isRegularFile(file))
+         throw _createIllegalArgumentException(argumentName, "Resource [" + file.toAbsolutePath() + "] is not a regular file.");
+      if (!Files.isReadable(file))
+         throw _createIllegalArgumentException(argumentName, "File [" + file.toAbsolutePath() + "] is not readable.");
+      return file;
+   }
+
+   /**
+    * Ensures file either does not exists or points to a regular file and it's path is writeable by the current user.
+    */
+   public static Path isFileWriteable(final String argumentName, final Path file) {
+      _notNull("argumentName", argumentName);
+      _notNull(argumentName, file);
+
+      if (Files.exists(file) && !Files.isRegularFile(file))
+         throw _createIllegalArgumentException(argumentName, "Resource [" + file.toAbsolutePath() + "] is not a regular file.");
+      if (!Files.isWritable(file))
+         throw _createIllegalArgumentException(argumentName, "File [" + file.toAbsolutePath() + "] is not readable.");
+      return file;
+   }
+
+   /**
+    * Ensures file exists, points to a regular file and is readable by the current user.
+    */
+   public static Path isDir(final String argumentName, final Path file) {
+      _notNull("argumentName", argumentName);
+      _notNull(argumentName, file);
+
+      if (!Files.exists(file))
+         throw _createIllegalArgumentException(argumentName, "Directory [" + file.toAbsolutePath() + "] does not exist.");
+      if (!Files.isDirectory(file))
+         throw _createIllegalArgumentException(argumentName, "Resource [" + file.toAbsolutePath() + "] is not a directory.");
+      if (!Files.isReadable(file))
+         throw _createIllegalArgumentException(argumentName, "File [" + file.toAbsolutePath() + "] is not readable.");
+      return file;
+   }
+
    public static <S extends CharSequence> S matches(final String argumentName, final S value, final Pattern pattern) {
       _notNull("argumentName", argumentName);
       _notNull(argumentName, value);

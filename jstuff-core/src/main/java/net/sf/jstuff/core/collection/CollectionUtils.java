@@ -275,74 +275,6 @@ public abstract class CollectionUtils {
       return l;
    }
 
-   /**
-    * use {@link Sets#newHashSet()}
-    */
-   @Deprecated
-   public static <K> HashSet<K> newHashSet() {
-      return new HashSet<>();
-   }
-
-   /**
-    * use {@link Sets#newHashSet()}
-    */
-   @Deprecated
-   public static <K> HashSet<K> newHashSet(final Collection<K> initialValues) {
-      return initialValues == null ? new HashSet<>() : new HashSet<>(initialValues);
-   }
-
-   /**
-    * use {@link Sets#newHashSet()}
-    */
-   @Deprecated
-   public static <K> HashSet<K> newHashSet(final int initialSize) {
-      return new HashSet<>(initialSize);
-   }
-
-   /**
-    * use {@link Sets#newHashSet()}
-    */
-   @Deprecated
-   @SafeVarargs
-   public static <K> HashSet<K> newHashSet(final K... values) {
-      if (values == null || values.length == 0)
-         return new HashSet<>();
-
-      final HashSet<K> s = new HashSet<>(values.length);
-      Collections.addAll(s, values);
-      return s;
-   }
-
-   /**
-    * use {@link Sets#newLinkedHashSet()}
-    */
-   @Deprecated
-   public static <V> LinkedHashSet<V> newLinkedHashSet() {
-      return new LinkedHashSet<>();
-   }
-
-   /**
-    * use {@link Sets#newLinkedHashSet()}
-    */
-   @Deprecated
-   public static <K> LinkedHashSet<K> newLinkedHashSet(final int initialSize) {
-      return new LinkedHashSet<>(initialSize);
-   }
-
-   /**
-    * use {@link Sets#newHashSet()}
-    */
-   @Deprecated
-   @SafeVarargs
-   public static <K> LinkedHashSet<K> newLinkedHashSet(final K... values) {
-      if (values == null || values.length == 0)
-         return new LinkedHashSet<>();
-
-      final LinkedHashSet<K> s = new LinkedHashSet<>(values.length);
-      Collections.addAll(s, values);
-      return s;
-   }
-
    public static <T> ThreadLocal<ArrayList<T>> newThreadLocalArrayList() {
       return ThreadLocal.withInitial(ArrayList::new);
    }
@@ -449,14 +381,4 @@ public abstract class CollectionUtils {
       return target;
    }
 
-   public static <S, T> Set<T> transform(final Set<S> source, final Function<? super S, ? extends T> op) {
-      if (source == null)
-         return null;
-
-      final Set<T> target = newHashSet(source.size());
-      for (final S sourceItem : source) {
-         target.add(op.apply(sourceItem));
-      }
-      return target;
-   }
 }

@@ -4,14 +4,19 @@
  */
 package net.sf.jstuff.core.io;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystem;
@@ -42,6 +47,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.SystemUtils;
@@ -84,6 +92,44 @@ public abstract class MoreFiles {
             }
          }
       });
+   }
+
+   /**
+    * Creates a backup of the given file if it exists, otherwise returns with null.
+    *
+    * @return a File object representing the backup copy or null if no backup was created because the file to backup did not exist
+    */
+   public static File backupFile(final Path fileToBackup) throws IOException {
+      Args.notNull("fileToBackup", fileToBackup);
+
+      return backupFile(fileToBackup, fileToBackup.getParent());
+   }
+
+   /**
+    * Creates a backup of the given file if it exists, otherwise returns with null.
+    *
+    * @return a File object representing the backup copy or null if no backup was created because the file to backup did not exist
+    */
+   public static File backupFile(final Path fileToBackup, final Path backupFolder) throws IOException {
+      Args.notNull("fileToBackup", fileToBackup);
+      Args.notNull("backupFolder", backupFolder);
+
+      Args.isDir("backupFolder", backupFolder);
+
+      if (Files.exists(fileToBackup)) {
+         Args.isFileReadable("fileToBackup", fileToBackup); // ensure it is actually a file
+
+         final File backupFile = new File( //
+            backupFolder.toFile(), //
+            FilenameUtils.getBaseName(fileToBackup) //
+               + "_" + DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd_hhmmss") //
+               + "." + FilenameUtils.getExtension(fileToBackup) //
+         );
+         LOG.debug("Backing up [%s] to [%s]", fileToBackup, backupFile);
+         FileUtils.copyFile(fileToBackup.toFile(), backupFile, true);
+         return backupFile;
+      }
+      return null;
    }
 
    public static boolean contentEquals(final Path file1, final Path file2) throws IOException {
@@ -475,6 +521,14 @@ public abstract class MoreFiles {
       return Files.isRegularFile(path) && Files.isExecutable(path);
    }
 
+   public static String readAsString(final Path file) throws IOException {
+      return new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
+   }
+
+   public static String readAsString(final Path file, final Charset charset) throws IOException {
+      return new String(Files.readAllBytes(file), charset);
+   }
+
    @SuppressWarnings("resource")
    public static BasicFileAttributes readAttributes(final Path path) throws IOException {
       Args.notNull("path", path);
@@ -486,23 +540,36 @@ public abstract class MoreFiles {
       return Files.readAttributes(path, BasicFileAttributes.class, NOFOLLOW_LINKS);
    }
 
-   public static String readFileToString(final Path file) throws IOException {
-      return new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
-   }
+   public static void write(final Path file, final CharSequence text, final Charset charset, final OpenOption... options)
+      throws IOException {
+      Args.notNull("file", file);
+      Args.notNull("charset", charset);
 
-   public static String readFileToString(final Path file, final Charset charset) throws IOException {
-      return new String(Files.readAllBytes(file), charset);
-   }
-
-   public static Path[] toPaths(final String... filePaths) {
-      Args.notNull("filePaths", filePaths);
-
-      final Path[] result = new Path[filePaths.length];
-      for (int i = 0, l = filePaths.length; i < l; i++) {
-         if (filePaths[i] != null) {
-            result[i] = Paths.get(filePaths[i]);
+      final CharsetEncoder encoder = charset.newEncoder();
+      try (OutputStream out = Files.newOutputStream(file, options);
+           Writer writer = new OutputStreamWriter(out, encoder)) {
+         if (text == null) {
+            writer.write("null");
+            return;
+         }
+         final int len = text.length();
+         if (len <= 10) {
+            writer.write(text.toString(), 0, len);
+            return;
+         }
+         final char[] buff = new char[10];
+         final String str = text.toString();
+         int charsWritten = 0;
+         while (charsWritten < len) {
+            final int charsToWrite = Math.min(10, len - charsWritten);
+            str.getChars(charsWritten, charsWritten + charsToWrite, buff, 0);
+            writer.write(buff, 0, charsToWrite);
+            charsWritten += charsToWrite;
          }
       }
-      return result;
+   }
+
+   public static void write(final Path file, final CharSequence text, final OpenOption... options) throws IOException {
+      write(file, text, StandardCharsets.UTF_8, options);
    }
 }

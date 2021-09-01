@@ -65,9 +65,12 @@ public abstract class X509Utils {
    public static final CertificateFactory CERTIFICATE_FACTORY;
 
    private static final Pattern CRL_PATTERN = Pattern.compile("BEGIN X509 CRL-+\r?\n?(.*[^-])\r?\n?-+END X509 CRL", Pattern.DOTALL);
-   private static final Pattern CERTIFICATE_PATTERN = Pattern.compile("BEGIN .*CERTIFICATE-+\r?\n?(.*[^-])\r?\n?-+END .*CERTIFICATE", Pattern.DOTALL);
-   private static final Pattern PRIVATE_KEY_PATTERN = Pattern.compile("BEGIN .*PRIVATE KEY-+\r?\n?(.*[^-])\r?\n?-+END .*PRIVATE KEY", Pattern.DOTALL);
-   private static final Pattern PUBLIC_KEY_PATTERN = Pattern.compile("BEGIN .*PUBLIC KEY-+\r?\n?(.*[^-])\r?\n?-+END .*PUBLIC KEY", Pattern.DOTALL);
+   private static final Pattern CERTIFICATE_PATTERN = Pattern.compile("BEGIN .*CERTIFICATE-+\r?\n?(.*[^-])\r?\n?-+END .*CERTIFICATE",
+      Pattern.DOTALL);
+   private static final Pattern PRIVATE_KEY_PATTERN = Pattern.compile("BEGIN .*PRIVATE KEY-+\r?\n?(.*[^-])\r?\n?-+END .*PRIVATE KEY",
+      Pattern.DOTALL);
+   private static final Pattern PUBLIC_KEY_PATTERN = Pattern.compile("BEGIN .*PUBLIC KEY-+\r?\n?(.*[^-])\r?\n?-+END .*PUBLIC KEY",
+      Pattern.DOTALL);
 
    static {
       try {
@@ -142,7 +145,7 @@ public abstract class X509Utils {
     */
    public static X509Certificate getCertificateFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
       Args.notNull("pemFile", pemFile);
-      return getCertificateFromPEM(MoreFiles.readFileToString(pemFile.toPath()));
+      return getCertificateFromPEM(MoreFiles.readAsString(pemFile.toPath()));
    }
 
    /**
@@ -249,7 +252,7 @@ public abstract class X509Utils {
     */
    public static X509CRL getCRLFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
       Args.notNull("pemFile", pemFile);
-      return getCRLFromPEM(MoreFiles.readFileToString(pemFile.toPath()));
+      return getCRLFromPEM(MoreFiles.readAsString(pemFile.toPath()));
    }
 
    /**
@@ -375,7 +378,7 @@ public abstract class X509Utils {
    public static PrivateKey getPrivateKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
       Args.notNull("pemFile", pemFile);
       Args.notNull("algorithm", algorithm);
-      return getPrivateKeyFromPEM(MoreFiles.readFileToString(pemFile.toPath()), algorithm);
+      return getPrivateKeyFromPEM(MoreFiles.readAsString(pemFile.toPath()), algorithm);
    }
 
    /**
@@ -384,7 +387,8 @@ public abstract class X509Utils {
     * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
     */
    @SuppressWarnings("resource")
-   public static PrivateKey getPrivateKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException, IOException {
+   public static PrivateKey getPrivateKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException,
+      IOException {
       Args.notNull("pemStream", pemStream);
       Args.notNull("algorithm", algorithm);
       try {
@@ -424,14 +428,15 @@ public abstract class X509Utils {
    public static PublicKey getPublicKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
       Args.notNull("pemFile", pemFile);
       Args.notNull("algorithm", algorithm);
-      return getPublicKeyFromPEM(MoreFiles.readFileToString(pemFile.toPath()), algorithm);
+      return getPublicKeyFromPEM(MoreFiles.readAsString(pemFile.toPath()), algorithm);
    }
 
    /**
     * Constructs a public key instance from PEM encoded public key, NOT from a PEM encoded certificate
     */
    @SuppressWarnings("resource")
-   public static PublicKey getPublicKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException, IOException {
+   public static PublicKey getPublicKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException,
+      IOException {
       Args.notNull("pemStream", pemStream);
       Args.notNull("algorithm", algorithm);
       try {

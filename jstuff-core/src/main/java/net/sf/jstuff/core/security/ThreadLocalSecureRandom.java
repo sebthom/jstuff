@@ -81,7 +81,8 @@ public class ThreadLocalSecureRandom extends SecureRandom {
       return random;
    }
 
-   public static ThreadLocalSecureRandom getInstance(final String algorithm, final String provider) throws NoSuchAlgorithmException, NoSuchProviderException {
+   public static ThreadLocalSecureRandom getInstance(final String algorithm, final String provider) throws NoSuchAlgorithmException,
+      NoSuchProviderException {
       final ThreadLocalSecureRandom random = builder().algorithm(algorithm, provider).build();
       try {
          random.instances.get();
@@ -105,11 +106,6 @@ public class ThreadLocalSecureRandom extends SecureRandom {
          throw ex;
       }
       return random;
-   }
-
-   @Deprecated
-   public static byte[] getSeed(final int numBytes) {
-      return SecureRandom.getSeed(numBytes);
    }
 
    private final ThreadLocal<SecureRandom> instances = new ThreadLocal<SecureRandom>() {

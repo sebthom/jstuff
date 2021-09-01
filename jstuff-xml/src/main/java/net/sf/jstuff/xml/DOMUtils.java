@@ -58,7 +58,7 @@ import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.MapWithLists;
 import net.sf.jstuff.core.comparator.StringComparator;
 import net.sf.jstuff.core.io.CharSequenceReader;
-import net.sf.jstuff.core.io.FileUtils;
+import net.sf.jstuff.core.io.MoreFiles;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Types;
@@ -339,7 +339,8 @@ public abstract class DOMUtils {
       return elem;
    }
 
-   public static Element createElementWithText(final Node parent, final String tagName, final Map<String, String> tagAttributes, final Object text) {
+   public static Element createElementWithText(final Node parent, final String tagName, final Map<String, String> tagAttributes,
+      final Object text) {
       final Element elem = createElement(parent, tagName, tagAttributes);
       createTextNode(elem, text);
       return elem;
@@ -351,7 +352,8 @@ public abstract class DOMUtils {
       return elem;
    }
 
-   public static Element createElementWithTextBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes, final Object text) {
+   public static Element createElementWithTextBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes,
+      final Object text) {
       final Element elem = createElementBefore(sibling, tagName, tagAttributes);
       createTextNode(elem, text);
       return elem;
@@ -629,7 +631,8 @@ public abstract class DOMUtils {
       Args.notNull("xmlFile", xmlFile);
       Assert.isFileReadable(xmlFile);
 
-      return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), defaultNamespace, xmlSchemaFiles);
+      return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), defaultNamespace,
+         xmlSchemaFiles);
    }
 
    /**
@@ -650,8 +653,8 @@ public abstract class DOMUtils {
     * @param defaultNamespace optional, may be null
     * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
     */
-   public static Document parseInputSource(final InputSource input, final String inputId, final String defaultNamespace, final File... xmlSchemaFiles)
-      throws XMLException {
+   public static Document parseInputSource(final InputSource input, final String inputId, final String defaultNamespace,
+      final File... xmlSchemaFiles) throws XMLException {
       Args.notNull("input", input);
 
       try {
@@ -734,8 +737,8 @@ public abstract class DOMUtils {
             domDocument = domBuilder.parse(new InputSource(new StringReader(newXML)));
          }
 
-         Assert.isTrue(errorHandler.violations.isEmpty(), errorHandler.violations.size() + " XML schema violation(s) detected in [" + inputId + "]:\n\n => "
-            + Strings.join(errorHandler.violations, "\n => "));
+         Assert.isTrue(errorHandler.violations.isEmpty(), errorHandler.violations.size() + " XML schema violation(s) detected in ["
+            + inputId + "]:\n\n => " + Strings.join(errorHandler.violations, "\n => "));
          return domDocument;
       } catch (final ParserConfigurationException | SAXException | IOException ex) {
          throw new XMLException(ex);
@@ -764,8 +767,8 @@ public abstract class DOMUtils {
     * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
     */
    @SuppressWarnings("resource")
-   public static Document parseString(final CharSequence input, final String inputId, final String defaultNamespace, final File... xmlSchemaFiles)
-      throws XMLException {
+   public static Document parseString(final CharSequence input, final String inputId, final String defaultNamespace,
+      final File... xmlSchemaFiles) throws XMLException {
       Args.notNull("input", input);
 
       return parseInputSource(new InputSource(new CharSequenceReader(input)), inputId, defaultNamespace, xmlSchemaFiles);
@@ -846,7 +849,7 @@ public abstract class DOMUtils {
       Args.notNull("root", root);
       Args.notNull("targetFile", targetFile);
 
-      FileUtils.backupFile(targetFile);
+      MoreFiles.backupFile(targetFile.toPath());
 
       saveToFile(root, targetFile);
    }
@@ -947,8 +950,8 @@ public abstract class DOMUtils {
    }
 
    @SuppressWarnings("resource")
-   public static void toXML(final Node root, final OutputStream out, final boolean outputXMLDeclaration, final boolean formatPretty) throws XMLException,
-      IOException {
+   public static void toXML(final Node root, final OutputStream out, final boolean outputXMLDeclaration, final boolean formatPretty)
+      throws XMLException, IOException {
       Args.notNull("root", root);
       Args.notNull("out", out);
 

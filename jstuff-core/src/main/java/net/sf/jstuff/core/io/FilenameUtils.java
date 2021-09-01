@@ -6,6 +6,7 @@ package net.sf.jstuff.core.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,6 +35,10 @@ public abstract class FilenameUtils extends org.apache.commons.io.FilenameUtils 
       return getBaseName(file.getName());
    }
 
+   public static String getBaseName(final Path file) {
+      return getBaseName(file.getFileName().toString());
+   }
+
    public static String getCurrentPath() {
       try {
          return new File(".").getCanonicalPath();
@@ -44,5 +49,9 @@ public abstract class FilenameUtils extends org.apache.commons.io.FilenameUtils 
 
    public static String getExtension(final File file) {
       return getExtension(file.getName());
+   }
+
+   public static String getExtension(final Path file) {
+      return getExtension(file.getFileName().toString());
    }
 }
