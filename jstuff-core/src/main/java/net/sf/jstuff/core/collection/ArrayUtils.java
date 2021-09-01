@@ -11,9 +11,9 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-import net.sf.jstuff.core.functional.Accept;
-import net.sf.jstuff.core.functional.Function;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -35,15 +35,15 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     * @throws IllegalArgumentException if <code>accept == null</code>
     */
    @SuppressWarnings({"unchecked"})
-   public static <T> T[] filter(final Accept<? super T> accept, final T... array) throws IllegalArgumentException {
+   public static <T> T[] filter(final Predicate<? super T> filter, final T... array) throws IllegalArgumentException {
       if (array == null)
          return null;
       if (array.length == 0)
          return array;
-      Args.notNull("accept", accept);
+      Args.notNull("filter", filter);
       final ArrayList<T> result = CollectionUtils.newArrayList();
       for (final T item : array)
-         if (accept.accept(item)) {
+         if (filter.test(item)) {
             result.add(item);
          }
 

@@ -7,6 +7,8 @@ package net.sf.jstuff.core.functional;
 import static net.sf.jstuff.core.functional.Functions.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.function.Function;
+
 import org.junit.Test;
 
 /**
@@ -17,11 +19,11 @@ public class FunctionsTest {
    @Test
    public void testConverts() {
       final Function<Object, Integer> t1 = objectToString()//
-         .and(stringToInt())//
-         .and(castTo(Number.class))//
-         .and(objectToString())//
-         .and(trim()) //
-         .and(stringToInt());
+         .andThen(stringToInt())//
+         .andThen(castTo(Number.class))//
+         .andThen(objectToString())//
+         .andThen(trim()) //
+         .andThen(stringToInt());
 
       assertThat(t1.apply(null)).isNull();
       assertThat(t1.apply("1")).isEqualTo(Integer.valueOf(1));

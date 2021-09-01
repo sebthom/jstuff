@@ -7,6 +7,7 @@ package net.sf.jstuff.core.functional;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -19,8 +20,8 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class Accepts {
-   public abstract static class AbstractAccept<T> implements ChainableAccept<T>, Serializable {
+public abstract class Predicates {
+   public abstract static class AbstractPredicate<T> implements Predicate2<T>, Serializable {
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -29,16 +30,16 @@ public abstract class Accepts {
       }
    }
 
-   public abstract static class AbstractCaseSensitiveAccept<V> extends AbstractAccept<V> {
+   public abstract static class AbstractCaseSensitivePredicate<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
       protected Locale ignoreCaseLocale;
 
-      public ChainableAccept<V> ignoreCase() {
+      public Predicate<V> ignoreCase() {
          return ignoreCase(null);
       }
 
-      public abstract ChainableAccept<V> ignoreCase(Locale locale);
+      public abstract Predicate<V> ignoreCase(Locale locale);
 
       protected final String stringify(final Object obj) {
          if (ignoreCaseLocale == null)
@@ -47,13 +48,13 @@ public abstract class Accepts {
       }
    }
 
-   public static class And<V> extends AbstractAccept<V> {
+   public static class And<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
-      public final Accept<? super V> first;
-      public final Accept<? super V> second;
+      public final Predicate<? super V> first;
+      public final Predicate<? super V> second;
 
-      public And(final Accept<? super V> first, final Accept<? super V> second) {
+      public And(final Predicate<? super V> first, final Predicate<? super V> second) {
          Args.notNull("first", first);
          Args.notNull("second", second);
 
@@ -62,8 +63,8 @@ public abstract class Accepts {
       }
 
       @Override
-      public boolean accept(final V obj) {
-         return first.accept(obj) && second.accept(obj);
+      public boolean test(final V obj) {
+         return first.test(obj) && second.test(obj);
       }
 
       @Override
@@ -72,18 +73,18 @@ public abstract class Accepts {
       }
    }
 
-   public static class Anything<V> extends AbstractAccept<V> {
+   public static class Anything<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
       private static final Anything<?> INSTANCE = new Anything<>();
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          return true;
       }
    }
 
-   public static class Contains<V> extends AbstractCaseSensitiveAccept<V> {
+   public static class Contains<V> extends AbstractCaseSensitivePredicate<V> {
       private static final long serialVersionUID = 1L;
 
       public final String searchFor;
@@ -95,7 +96,7 @@ public abstract class Accepts {
       }
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          if (obj == null)
             return false;
          return stringify(obj).indexOf(searchFor) > -1;
@@ -112,7 +113,7 @@ public abstract class Accepts {
       }
    }
 
-   public static class EndingWith<V> extends AbstractCaseSensitiveAccept<V> {
+   public static class EndingWith<V> extends AbstractCaseSensitivePredicate<V> {
       private static final long serialVersionUID = 1L;
 
       public final String suffix;
@@ -124,7 +125,7 @@ public abstract class Accepts {
       }
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          if (obj == null)
             return false;
          return stringify(obj).endsWith(suffix);
@@ -141,7 +142,7 @@ public abstract class Accepts {
       }
    }
 
-   public static class EqualTo<V> extends AbstractAccept<V> {
+   public static class EqualTo<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
       public final V equivalent;
@@ -151,12 +152,12 @@ public abstract class Accepts {
       }
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          return Objects.equals(obj, equivalent);
       }
    }
 
-   public static class GreaterThan<V extends Comparable<V>> extends AbstractAccept<V> {
+   public static class GreaterThan<V extends Comparable<V>> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
       public final V compareTo;
@@ -166,12 +167,12 @@ public abstract class Accepts {
       }
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          return ObjectUtils.compare(obj, compareTo) > 0;
       }
    }
 
-   public static class InstanceOf<V> extends AbstractAccept<V> {
+   public static class InstanceOf<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
       public final Class<?> type;
@@ -181,12 +182,12 @@ public abstract class Accepts {
       }
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          return type.isInstance(obj);
       }
    }
 
-   public static class LessThan<V extends Comparable<V>> extends AbstractAccept<V> {
+   public static class LessThan<V extends Comparable<V>> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
       public final V compareTo;
@@ -196,14 +197,14 @@ public abstract class Accepts {
       }
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          if (obj == null)
             return false;
          return ObjectUtils.compare(obj, compareTo) < 0;
       }
    }
 
-   public static class Matches<V> extends AbstractAccept<V> {
+   public static class Matches<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
       public final Pattern pattern;
@@ -214,27 +215,27 @@ public abstract class Accepts {
       }
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          if (obj == null)
             return false;
          return pattern.matcher(obj.toString()).matches();
       }
    }
 
-   public static class Not<V> extends AbstractAccept<V> {
+   public static class Not<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
-      public final Accept<? super V> accept;
+      public final Predicate<? super V> accept;
 
-      public Not(final Accept<? super V> accept) {
+      public Not(final Predicate<? super V> accept) {
          Args.notNull("accept", accept);
 
          this.accept = accept;
       }
 
       @Override
-      public boolean accept(final V obj) {
-         return !accept.accept(obj);
+      public boolean test(final V obj) {
+         return !accept.test(obj);
       }
 
       @Override
@@ -243,42 +244,42 @@ public abstract class Accepts {
       }
    }
 
-   public static class Nothing<V> extends AbstractAccept<V> {
+   public static class Nothing<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
       private static final Nothing<?> INSTANCE = new Nothing<>();
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          return false;
       }
    }
 
-   public static class NotNull<V> extends AbstractAccept<V> {
+   public static class NotNull<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          return obj != null;
       }
    }
 
-   public static class Null<V> extends AbstractAccept<V> {
+   public static class Null<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          return obj == null;
       }
    }
 
-   public static class Or<V> extends AbstractAccept<V> {
+   public static class Or<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
-      public final Accept<? super V> first;
-      public final Accept<? super V> second;
+      public final Predicate<? super V> first;
+      public final Predicate<? super V> second;
 
-      public Or(final Accept<? super V> first, final Accept<? super V> second) {
+      public Or(final Predicate<? super V> first, final Predicate<? super V> second) {
          Args.notNull("first", first);
          Args.notNull("second", second);
 
@@ -287,8 +288,8 @@ public abstract class Accepts {
       }
 
       @Override
-      public boolean accept(final V obj) {
-         return first.accept(obj) || second.accept(obj);
+      public boolean test(final V obj) {
+         return first.test(obj) || second.test(obj);
       }
 
       @Override
@@ -297,13 +298,13 @@ public abstract class Accepts {
       }
    }
 
-   public static class Property<V, PropertyType> extends AbstractAccept<V> {
+   public static class Property<V, PropertyType> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
-      public final Accept<PropertyType> accept;
+      public final Predicate<PropertyType> accept;
       public final String propertyPath;
 
-      public Property(final String propertyPath, final Accept<PropertyType> accept) {
+      public Property(final String propertyPath, final Predicate<PropertyType> accept) {
          Args.notNull("propertyPath", propertyPath);
          Args.notNull("accept", accept);
 
@@ -313,16 +314,16 @@ public abstract class Accepts {
 
       @Override
       @SuppressWarnings("unchecked")
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          try {
-            return accept.accept((PropertyType) ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(obj, propertyPath));
+            return accept.test((PropertyType) ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(obj, propertyPath));
          } catch (final ClassCastException ex) {
             return false;
          }
       }
    }
 
-   public static class StartingWith<V> extends AbstractCaseSensitiveAccept<V> {
+   public static class StartingWith<V> extends AbstractCaseSensitivePredicate<V> {
       private static final long serialVersionUID = 1L;
 
       public final String prefix;
@@ -334,7 +335,7 @@ public abstract class Accepts {
       }
 
       @Override
-      public boolean accept(final V obj) {
+      public boolean test(final V obj) {
          if (obj == null)
             return false;
          return stringify(obj).startsWith(prefix);
@@ -351,7 +352,7 @@ public abstract class Accepts {
       }
    }
 
-   public static <V> And<V> and(final Accept<? super V> first, final Accept<? super V> second) {
+   public static <V> And<V> and(final Predicate<? super V> first, final Predicate<? super V> second) {
       return new And<>(first, second);
    }
 
@@ -392,7 +393,7 @@ public abstract class Accepts {
       return new Matches<>(pattern);
    }
 
-   public static <V> Not<V> not(final Accept<? super V> accept) {
+   public static <V> Not<V> not(final Predicate<? super V> accept) {
       return new Not<>(accept);
    }
 
@@ -405,16 +406,16 @@ public abstract class Accepts {
       return new NotNull<>();
    }
 
-   public static <V> Or<V> or(final Accept<? super V> first, final Accept<? super V> second) {
+   public static <V> Or<V> or(final Predicate<? super V> first, final Predicate<? super V> second) {
       return new Or<>(first, second);
    }
 
-   public static <V, PropertyType> Property<V, PropertyType> property(@SuppressWarnings("unused") final Class<V> castingHelper, final String propertyPath,
-      final Accept<PropertyType> accept) {
+   public static <V, PropertyType> Property<V, PropertyType> property(@SuppressWarnings("unused") final Class<V> castingHelper,
+      final String propertyPath, final Predicate<PropertyType> accept) {
       return new Property<>(propertyPath, accept);
    }
 
-   public static <V, PropertyType> Property<V, PropertyType> property(final String propertyPath, final Accept<PropertyType> accept) {
+   public static <V, PropertyType> Property<V, PropertyType> property(final String propertyPath, final Predicate<PropertyType> accept) {
       return new Property<>(propertyPath, accept);
    }
 

@@ -5,7 +5,7 @@
 package net.sf.jstuff.integration.example.guestbook.service;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
-import static net.sf.jstuff.core.functional.Accepts.*;
+import static net.sf.jstuff.core.functional.Predicates.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -120,7 +120,8 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
 
       return new PagedListWithSortBy<>(//
          GuestBookEntry.class, //
-         slice(sortInPlace(toEntries(filter(store.values(), property(GuestBookEntryEntity.class, "createdBy", equalTo(createdBy))))), start - 1, max), //
+         slice(sortInPlace(toEntries(filter(store.values(), property(GuestBookEntryEntity.class, "createdBy", equalTo(createdBy))))), start
+            - 1, max), //
          start, //
          store.size() //
       );
@@ -148,8 +149,8 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
 
    @Override
    @SuppressWarnings("unchecked")
-   public PagedListWithSortBy<GuestBookEntry, String> getResponses(final int entryId, final int start, final int max, final SortBy<String>... sortBy)
-      throws PermissionDeniedException {
+   public PagedListWithSortBy<GuestBookEntry, String> getResponses(final int entryId, final int start, final int max,
+      final SortBy<String>... sortBy) throws PermissionDeniedException {
       Args.notNull("entryId", entryId);
 
       final GuestBookEntryEntity entity = store.get(entryId);
@@ -204,7 +205,8 @@ public class GuestBookServiceInMemoryImpl implements GuestBookService {
    public int removeEntriesOfAuthor(final String createdBy) throws PermissionDeniedException {
       Args.notNull("createdBy", createdBy);
 
-      final Collection<GuestBookEntryEntity> entities = filter(store.values(), property(GuestBookEntryEntity.class, "createdBy", equalTo(createdBy)));
+      final Collection<GuestBookEntryEntity> entities = filter(store.values(), property(GuestBookEntryEntity.class, "createdBy", equalTo(
+         createdBy)));
       for (final GuestBookEntryEntity e : entities) {
          remove(e);
       }

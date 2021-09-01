@@ -13,9 +13,9 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-import net.sf.jstuff.core.functional.Accept;
-import net.sf.jstuff.core.functional.Function;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -30,7 +30,7 @@ public abstract class CollectionUtils {
     * @throws IllegalArgumentException if <code>collection == null</code>
     */
    @SafeVarargs
-   public static <T> int addAll(final Collection<T> collection, final Accept<T> filter, final T... items) {
+   public static <T> int addAll(final Collection<T> collection, final Predicate<T> filter, final T... items) {
       Args.notNull("collection", collection);
       Args.notNull("filter", filter);
 
@@ -39,7 +39,7 @@ public abstract class CollectionUtils {
 
       int count = 0;
       for (final T item : items)
-         if (filter.accept(item) && collection.add(item)) {
+         if (filter.test(item) && collection.add(item)) {
             count++;
          }
       return count;
@@ -84,15 +84,15 @@ public abstract class CollectionUtils {
     *
     * @throws IllegalArgumentException if <code>accept == null</code>
     */
-   public static <T> Collection<T> filter(final Iterable<T> coll, final Accept<T> accept) throws IllegalArgumentException {
+   public static <T> Collection<T> filter(final Iterable<T> coll, final Predicate<T> filter) throws IllegalArgumentException {
       if (coll == null)
          return null;
 
-      Args.notNull("accept", accept);
+      Args.notNull("filter", filter);
 
       final Collection<T> result = coll instanceof Set ? new HashSet<>() : new ArrayList<>();
       for (final T item : coll)
-         if (accept.accept(item)) {
+         if (filter.test(item)) {
             result.add(item);
          }
       return result;
@@ -103,17 +103,17 @@ public abstract class CollectionUtils {
     *
     * @throws IllegalArgumentException if <code>accept == null</code>
     */
-   public static <T> List<T> filter(final List<T> list, final Accept<T> accept) throws IllegalArgumentException {
+   public static <T> List<T> filter(final List<T> list, final Predicate<T> filter) throws IllegalArgumentException {
       if (list == null)
          return null;
       if (list.isEmpty())
          return Collections.emptyList();
 
-      Args.notNull("accept", accept);
+      Args.notNull("filter", filter);
 
       final List<T> result = new ArrayList<>();
       for (final T item : list)
-         if (accept.accept(item)) {
+         if (filter.test(item)) {
             result.add(item);
          }
       return result;
@@ -124,17 +124,17 @@ public abstract class CollectionUtils {
     *
     * @throws IllegalArgumentException if <code>accept == null</code>
     */
-   public static <T> Set<T> filter(final Set<T> set, final Accept<T> accept) throws IllegalArgumentException {
+   public static <T> Set<T> filter(final Set<T> set, final Predicate<T> filter) throws IllegalArgumentException {
       if (set == null)
          return null;
       if (set.isEmpty())
          return Collections.emptySet();
 
-      Args.notNull("accept", accept);
+      Args.notNull("filter", filter);
 
       final Set<T> result = new HashSet<>();
       for (final T item : set)
-         if (accept.accept(item)) {
+         if (filter.test(item)) {
             result.add(item);
          }
       return result;
@@ -146,16 +146,16 @@ public abstract class CollectionUtils {
     * @return number of items removed
     * @throws IllegalArgumentException if <code>accept == null</code>
     */
-   public static <T> int filterInPlace(final Collection<T> collection, final Accept<T> accept) throws IllegalArgumentException {
+   public static <T> int filterInPlace(final Collection<T> collection, final Predicate<T> filter) throws IllegalArgumentException {
       if (collection == null)
          return 0;
 
-      Args.notNull("accept", accept);
+      Args.notNull("filter", filter);
 
       int count = 0;
       for (final Iterator<T> it = collection.iterator(); it.hasNext();) {
          final T item = it.next();
-         if (!accept.accept(item)) {
+         if (!filter.test(item)) {
             it.remove();
             count++;
          }

@@ -5,6 +5,7 @@
 package net.sf.jstuff.core.functional;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -15,7 +16,7 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Functions {
-   public abstract static class AbstractFunction<In, Out> implements ChainableFunction<In, Out>, Serializable {
+   public abstract static class AbstractFunction<In, Out> implements Function<In, Out>, Serializable {
       private static final long serialVersionUID = 1L;
 
       @Override
