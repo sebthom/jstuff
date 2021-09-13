@@ -23,6 +23,48 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class CollectionUtils {
 
+   public static int addAll(final Collection<Byte> collection, final byte... items) throws IllegalArgumentException {
+      Args.notNull("collection", collection);
+
+      if (items == null)
+         return 0;
+
+      int count = 0;
+      for (final byte item : items)
+         if (collection.add(item)) {
+            count++;
+         }
+      return count;
+   }
+
+   public static int addAll(final Collection<Integer> collection, final int... items) throws IllegalArgumentException {
+      Args.notNull("collection", collection);
+
+      if (items == null)
+         return 0;
+
+      int count = 0;
+      for (final int item : items)
+         if (collection.add(item)) {
+            count++;
+         }
+      return count;
+   }
+
+   public static int addAll(final Collection<Long> collection, final long... items) throws IllegalArgumentException {
+      Args.notNull("collection", collection);
+
+      if (items == null)
+         return 0;
+
+      int count = 0;
+      for (final long item : items)
+         if (collection.add(item)) {
+            count++;
+         }
+      return count;
+   }
+
    /**
     * adds all items to the collection accepted by the filter
     *
@@ -69,11 +111,11 @@ public abstract class CollectionUtils {
    /**
     * Returns true if the given item is contained in the collection based on identity comparison
     */
-   public static <T> boolean containsIdentical(final Collection<T> coll, final T theItem) {
-      if (coll == null)
+   public static <T> boolean containsIdentical(final Collection<T> collection, final T theItem) {
+      if (collection == null)
          return false;
 
-      for (final T t : coll)
+      for (final T t : collection)
          if (t == theItem)
             return true;
       return false;
@@ -84,14 +126,14 @@ public abstract class CollectionUtils {
     *
     * @throws IllegalArgumentException if <code>accept == null</code>
     */
-   public static <T> Collection<T> filter(final Iterable<T> coll, final Predicate<T> filter) throws IllegalArgumentException {
-      if (coll == null)
+   public static <T> Collection<T> filter(final Iterable<T> iterable, final Predicate<T> filter) throws IllegalArgumentException {
+      if (iterable == null)
          return null;
 
       Args.notNull("filter", filter);
 
-      final Collection<T> result = coll instanceof Set ? new HashSet<>() : new ArrayList<>();
-      for (final T item : coll)
+      final Collection<T> result = iterable instanceof Set ? new HashSet<>() : new ArrayList<>();
+      for (final T item : iterable)
          if (filter.test(item)) {
             result.add(item);
          }
@@ -249,16 +291,16 @@ public abstract class CollectionUtils {
       return commonItems;
    }
 
-   public static boolean isEmpty(final Collection<?> coll) {
-      return coll == null || coll.isEmpty();
+   public static boolean isEmpty(final Collection<?> collection) {
+      return collection == null || collection.isEmpty();
    }
 
    public static <K> ArrayList<K> newArrayList() {
       return new ArrayList<>();
    }
 
-   public static <K> ArrayList<K> newArrayList(final Collection<K> coll) {
-      return coll == null ? new ArrayList<>() : new ArrayList<>(coll);
+   public static <K> ArrayList<K> newArrayList(final Collection<K> collection) {
+      return collection == null ? new ArrayList<>() : new ArrayList<>(collection);
    }
 
    public static <K> ArrayList<K> newArrayList(final int initialSize) {
@@ -295,16 +337,16 @@ public abstract class CollectionUtils {
       return ThreadLocal.withInitial(WeakHashSet::new);
    }
 
-   public static <T> T remove(final Collection<T> coll, final int index) {
-      Args.notNull("coll", coll);
+   public static <T> T remove(final Collection<T> collection, final int index) {
+      Args.notNull("collection", collection);
 
-      if (coll instanceof List)
-         return ((List<T>) coll).remove(index);
-      if (index >= coll.size())
-         throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + coll.size());
+      if (collection instanceof List)
+         return ((List<T>) collection).remove(index);
+      if (index >= collection.size())
+         throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + collection.size());
 
       int i = 0;
-      for (final Iterator<T> it = coll.iterator(); it.hasNext();) {
+      for (final Iterator<T> it = collection.iterator(); it.hasNext();) {
          final T item = it.next(); // CHECKSTYLE:IGNORE MoveVariableInsideIfCheck
          if (i == index) {
             it.remove();
@@ -312,7 +354,7 @@ public abstract class CollectionUtils {
          }
          i++;
       }
-      throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + coll.size());
+      throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + collection.size());
    }
 
    public static <T> T removeLast(final List<T> list) {
@@ -357,6 +399,7 @@ public abstract class CollectionUtils {
 
    public static <T> Iterable<T> toIterable(final Iterator<T> it) {
       Args.notNull("it", it);
+
       return () -> it;
    }
 
@@ -380,5 +423,4 @@ public abstract class CollectionUtils {
       }
       return target;
    }
-
 }
