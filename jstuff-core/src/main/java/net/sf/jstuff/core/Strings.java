@@ -9,6 +9,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -610,6 +613,83 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return join(iterable.iterator(), null);
    }
 
+   public static String join(final Iterable<?> iterable, final char separator) {
+      if (iterable == null)
+         return null;
+
+      return join(iterable.iterator(), separator);
+   }
+
+   public static String join(final Iterable<?> iterable, final String separator) {
+      if (iterable == null)
+         return null;
+      return join(iterable.iterator(), separator);
+   }
+
+   public static <T> String join(final Iterable<T> iterable, final char separator, final Function<T, Object> transform) {
+      if (iterable == null)
+         return null;
+
+      return join(iterable.iterator(), separator, transform);
+   }
+
+   public static <T> String join(final Iterable<T> iterable, final String separator, final Function<T, Object> transform) {
+      if (iterable == null)
+         return null;
+
+      return join(iterable.iterator(), separator, transform);
+   }
+
+   public static <T> String join(final Iterator<T> it, final char separator, final Function<T, Object> transform) {
+      if (it == null)
+         return null;
+
+      if (!it.hasNext())
+         return EMPTY;
+
+      Args.notNull("transform", transform);
+
+      final T first = it.next();
+      if (!it.hasNext())
+         return Objects.toString(transform.apply(first), EMPTY);
+
+      final StringBuilder sb = new StringBuilder(128);
+      sb.append(Objects.toString(transform.apply(first), EMPTY));
+
+      while (it.hasNext()) {
+         sb.append(separator);
+         final T obj = it.next();
+         sb.append(Objects.toString(transform.apply(obj), EMPTY));
+      }
+
+      return sb.toString();
+   }
+
+   public static <T> String join(final Iterator<T> it, final String separator, final Function<T, Object> transform) {
+      if (it == null)
+         return null;
+
+      if (!it.hasNext())
+         return EMPTY;
+
+      Args.notNull("transform", transform);
+
+      final T first = it.next();
+      if (!it.hasNext())
+         return Objects.toString(transform.apply(first), EMPTY);
+
+      final StringBuilder sb = new StringBuilder(128);
+      sb.append(Objects.toString(transform.apply(first), EMPTY));
+
+      while (it.hasNext()) {
+         sb.append(separator);
+         final T obj = it.next();
+         sb.append(Objects.toString(transform.apply(obj), EMPTY));
+      }
+
+      return sb.toString();
+   }
+
    /**
     * Capitalize the first character of the given character sequence.
     * If you need to capitalize all words in a string use {@link WordUtils#uncapitalize(String)}
@@ -628,7 +708,11 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    public static String nullToEmpty(final Object txt) {
-      return txt == null ? "" : txt instanceof String ? (String) txt : txt.toString();
+      return txt == null //
+         ? "" //
+         : txt instanceof String //
+            ? (String) txt
+            : txt.toString();
    }
 
    public static String nullToEmpty(final String txt) {
@@ -765,7 +849,8 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return replaceEach(searchIn, searchFor, replaceWith);
    }
 
-   public static CharSequence replaceEachGroup(final Pattern regex, final CharSequence searchIn, final int groupToReplace, final String replaceWith) {
+   public static CharSequence replaceEachGroup(final Pattern regex, final CharSequence searchIn, final int groupToReplace,
+      final String replaceWith) {
       final Matcher m = regex.matcher(searchIn);
       final StringBuilder sb = new StringBuilder(searchIn);
       while (m.find()) {
@@ -774,7 +859,8 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return sb;
    }
 
-   public static CharSequence replaceEachGroup(final String regex, final CharSequence searchIn, final int groupToReplace, final String replaceWith) {
+   public static CharSequence replaceEachGroup(final String regex, final CharSequence searchIn, final int groupToReplace,
+      final String replaceWith) {
       return replaceEachGroup(Pattern.compile(regex), searchIn, groupToReplace, replaceWith);
    }
 
