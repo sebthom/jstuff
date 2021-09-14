@@ -30,4 +30,31 @@ public class TupleTest {
       assertThat(t1).isNotEqualTo(t2);
       assertThat(t3).isEqualTo(t1);
    }
+
+   @Test
+   public void testTuple3() {
+      final Tuple3<String, String, String> t1 = Tuple3.create("a", "a", "a");
+      final Tuple3<String, String, String> t2 = Tuple3.create("b", "a", "a");
+      final Tuple3<String, String, String> t3 = Tuple3.create("a", "a", "a");
+      assertThat(t1).isNotEqualTo(t2);
+      assertThat(t3).isEqualTo(t1);
+   }
+
+   @Test
+   public void testTuple4() {
+      final Tuple4<String, String, String, String> t1 = Tuple4.create("a", "a", "a", "a");
+      final Tuple4<String, String, String, String> t2 = Tuple4.create("b", "a", "a", "a");
+      final Tuple4<String, String, String, String> t3 = Tuple4.create("a", "a", "a", "a");
+      assertThat(t1).isNotEqualTo(t2);
+      assertThat(t3).isEqualTo(t1);
+   }
+
+   @Test
+   public void testTuple5() {
+      final Tuple5<String, String, String, String, String> t1 = Tuple5.create("a", "a", "a", "a", "a");
+      final Tuple5<String, String, String, String, String> t2 = Tuple5.create("b", "a", "a", "a", "a");
+      final Tuple5<String, String, String, String, String> t3 = Tuple5.create("a", "a", "a", "a", "a");
+      assertThat(t1).isNotEqualTo(t2);
+      assertThat(t3).isEqualTo(t1);
+   }
 }
