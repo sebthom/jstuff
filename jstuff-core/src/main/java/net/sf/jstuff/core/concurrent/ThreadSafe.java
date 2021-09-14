@@ -10,9 +10,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Documents instances of a class as being thread-safe.
+ *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ThreadSafe {
 }
