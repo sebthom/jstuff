@@ -6,7 +6,9 @@ package net.sf.jstuff.core.functional;
 
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.ref.LazyInitializedRef;
@@ -35,15 +37,16 @@ public abstract class Suppliers {
       };
    }
 
-   public static <T> Supplier<T> memoize(final Supplier<? extends T> provider, final int ttl) {
+   public static <T> Supplier<T> memoize(final Supplier<? extends T> provider, final ToIntFunction<T> ttl) {
       Args.notNull("provider", provider);
+      Args.notNull("ttl", ttl);
 
       return new Supplier<T>() {
          private Tuple2<Long, T> cached;
 
          @Override
          public synchronized T get() {
-            if (cached != null && System.currentTimeMillis() - cached.get1() <= ttl)
+            if (cached != null && System.currentTimeMillis() - cached.get1() <= ttl.applyAsInt(cached.get2()))
                return cached.get2();
 
             final T obj = provider.get();
@@ -51,6 +54,10 @@ public abstract class Suppliers {
             return obj;
          }
       };
+   }
+
+   public static <T> Supplier<T> memoize(final Supplier<? extends T> provider, final int ttl) {
+      return memoize(provider, t -> ttl);
    }
 
    public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider) {
@@ -74,8 +81,9 @@ public abstract class Suppliers {
       };
    }
 
-   public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider, final int ttl) {
+   public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider, final ToIntFunction<T> ttl) {
       Args.notNull("provider", provider);
+      Args.notNull("ttl", ttl);
 
       return new Supplier<T>() {
          private SoftReference<Tuple2<Long, T>> cached;
@@ -84,7 +92,7 @@ public abstract class Suppliers {
          public synchronized T get() {
             if (cached != null) {
                final Tuple2<Long, T> val = cached.get();
-               if (val != null && System.currentTimeMillis() - val.get1() <= ttl)
+               if (val != null && System.currentTimeMillis() - val.get1() <= ttl.applyAsInt(val.get2()))
                   return val.get2();
             }
 
@@ -93,6 +101,10 @@ public abstract class Suppliers {
             return obj;
          }
       };
+   }
+
+   public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider, final int ttl) {
+      return memoizeSoft(provider, t -> ttl);
    }
 
    public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider) {
@@ -116,8 +128,9 @@ public abstract class Suppliers {
       };
    }
 
-   public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider, final int ttl) {
+   public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider, final ToIntFunction<T> ttl) {
       Args.notNull("provider", provider);
+      Args.notNull("ttl", ttl);
 
       return new Supplier<T>() {
          private WeakReference<Tuple2<Long, T>> cached;
@@ -126,7 +139,7 @@ public abstract class Suppliers {
          public synchronized T get() {
             if (cached != null) {
                final Tuple2<Long, T> val = cached.get();
-               if (val != null && System.currentTimeMillis() - val.get1() <= ttl)
+               if (val != null && System.currentTimeMillis() - val.get1() <= ttl.applyAsInt(val.get2()))
                   return val.get2();
             }
 
@@ -135,6 +148,10 @@ public abstract class Suppliers {
             return obj;
          }
       };
+   }
+
+   public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider, final int ttl) {
+      return memoizeWeak(provider, t -> ttl);
    }
 
    public static <T> Supplier<T> of(final T object) {
@@ -159,6 +176,21 @@ public abstract class Suppliers {
          synchronized (lock) {
             return delegate.get();
          }
+      };
+   }
+
+   public static <T> Supplier<T> synchronizedSupplier(final Supplier<T> delegate, final ReadLock lock) {
+      Args.notNull("delegate", delegate);
+      Args.notNull("lock", lock);
+
+      return () -> {
+         lock.lock();
+         try {
+            return delegate.get();
+         } finally {
+            lock.unlock();
+         }
+
       };
    }
 }
