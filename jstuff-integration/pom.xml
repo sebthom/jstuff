@@ -160,7 +160,7 @@
             <!-- https://search.maven.org/search?q=g:net.bytebuddy -->
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.11.18</version>
+            <version>1.11.20</version>
          </dependency>
          <dependency>
             <groupId>com.h2database</groupId>
