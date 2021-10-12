@@ -14,16 +14,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.apache.commons.lang3.SystemUtils;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
@@ -178,7 +180,7 @@ public abstract class Processes {
 
       public Builder withEnvironment(final Consumer<Map<String, Object>> envConfigurer) {
          if (env == null) {
-            env = new HashMap<>();
+            env = new TreeMap<>(SystemUtils.IS_OS_WINDOWS ? String.CASE_INSENSITIVE_ORDER : null);
             env.putAll(System.getenv());
          }
          envConfigurer.accept(env);
@@ -352,6 +354,17 @@ public abstract class Processes {
          return process.isAlive();
       }
 
+      /**
+       * Requests forceful termination of the process (SIGKILL) and immediately returns.
+       */
+      public ProcessWrapper kill() {
+         if (process.isAlive()) {
+            isKillRequested = true;
+            process.destroyForcibly();
+         }
+         return this;
+      }
+
       public CompletableFuture<ProcessWrapper> onExit() {
          return CompletableFuture.supplyAsync(() -> {
             try {
@@ -402,17 +415,6 @@ public abstract class Processes {
             isTerminateRequested = true;
             process.destroy();
             BACKGROUND_THREADS.schedule(this::kill, gracePeriod, gracePeriodTimeUnit);
-         }
-         return this;
-      }
-
-      /**
-       * Requests forcful termination of the process (SIGKILL) and immediately returns.
-       */
-      public ProcessWrapper kill() {
-         if (process.isAlive()) {
-            isKillRequested = true;
-            process.destroyForcibly();
          }
          return this;
       }
