@@ -13,7 +13,7 @@ public class MutableRef<T> implements Ref<T> {
       return new MutableRef<>(value);
    }
 
-   private T value;
+   private volatile T value;
 
    public MutableRef() {
    }
