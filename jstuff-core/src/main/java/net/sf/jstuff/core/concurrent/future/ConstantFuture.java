@@ -2,7 +2,7 @@
  * Copyright 2010-2021 by Sebastian Thomschke and contributors.
  * SPDX-License-Identifier: EPL-2.0
  */
-package net.sf.jstuff.core.concurrent;
+package net.sf.jstuff.core.concurrent.future;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;

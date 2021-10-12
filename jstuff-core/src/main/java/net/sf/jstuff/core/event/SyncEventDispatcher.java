@@ -7,8 +7,8 @@ package net.sf.jstuff.core.event;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import net.sf.jstuff.core.concurrent.ConstantFuture;
 import net.sf.jstuff.core.concurrent.ThreadSafe;
+import net.sf.jstuff.core.concurrent.future.ConstantFuture;
 import net.sf.jstuff.core.validation.Args;
 
 /**
