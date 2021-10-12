@@ -724,6 +724,40 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    /**
+    * See {@link String#regionMatches(boolean, int, String, int, int)}
+    */
+   public static boolean regionMatches(final CharSequence searchIn, final boolean ignoreCase, final int searchInOffset,
+      final CharSequence searchFor, final int searchForOffset, int length) {
+      if (searchIn instanceof String && searchFor instanceof String)
+         return ((String) searchIn).regionMatches(ignoreCase, searchInOffset, (String) searchFor, searchForOffset, length);
+
+      if (searchInOffset < 0 || searchForOffset < 0 //
+         || searchInOffset > searchIn.length() - length //
+         || searchForOffset > searchFor.length() - length)
+         return false;
+
+      int searchInIndex = searchInOffset;
+      int searchForIndex = searchForOffset;
+
+      while (length-- > 0) {
+         final char c1 = searchIn.charAt(searchInIndex++);
+         final char c2 = searchFor.charAt(searchForIndex++);
+         if (c1 == c2) {
+            continue;
+         }
+         if (ignoreCase) {
+            final char u1 = Character.toUpperCase(c1);
+            final char u2 = Character.toUpperCase(c2);
+            if (u1 == u2 || Character.toLowerCase(u1) == Character.toLowerCase(u2)) {
+               continue;
+            }
+         }
+         return false;
+      }
+      return true;
+   }
+
+   /**
     * <p>
     * Repeat a String <code>repeat</code> times to form a new String.
     * </p>
