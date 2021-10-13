@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -29,6 +29,7 @@ import org.apache.commons.lang3.SystemUtils;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
+import net.sf.jstuff.core.concurrent.ScalingScheduledExecutorService;
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.validation.Args;
 
@@ -414,6 +415,7 @@ public abstract class Processes {
          if (process.isAlive()) {
             isTerminateRequested = true;
             process.destroy();
+
             BACKGROUND_THREADS.schedule(this::kill, gracePeriod, gracePeriodTimeUnit);
          }
          return this;
@@ -439,11 +441,8 @@ public abstract class Processes {
       }
    }
 
-   private static final ScheduledThreadPoolExecutor BACKGROUND_THREADS = new ScheduledThreadPoolExecutor(0);
-
-   static {
-      BACKGROUND_THREADS.setKeepAliveTime(10, TimeUnit.SECONDS);
-   }
+   private static final ScheduledExecutorService BACKGROUND_THREADS = new ScalingScheduledExecutorService(0, Integer.MAX_VALUE, 30,
+      TimeUnit.SECONDS);
 
    public static Builder builder(final File executable) {
       Args.notNull("executable", executable);
