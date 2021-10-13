@@ -4,29 +4,28 @@
  */
 package net.sf.jstuff.core.concurrent;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Solution for http://stackoverflow.com/questions/19528304/how-to-get-the-threadpoolexecutor-to-increase-threads-to-max-before-queueing
+ * <p>
+ * See also https://groovy-programming.com/post/26923146865 and https://dzone.com/articles/scalable-java-thread-pool-executor
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @ThreadSafe
 public class ScalingThreadPoolExecutor extends ThreadPoolExecutor {
-   private static final class ScalingQueue extends LinkedBlockingQueue<Runnable> {
+
+   private static final class ScalingQueue extends LinkedTransferQueue<Runnable> {
       private static final long serialVersionUID = 1L;
 
-      private ThreadPoolExecutor executor;
-
       @Override
-      public boolean offer(final Runnable r) {
-         final int requiredWorkers = executor.getActiveCount() + size();
-         return requiredWorkers < executor.getPoolSize() && super.offer(r);
+      public boolean offer(final Runnable runnable) {
+         return tryTransfer(runnable);
       }
    }
 
@@ -43,8 +42,6 @@ public class ScalingThreadPoolExecutor extends ThreadPoolExecutor {
       }
    };
 
-   private final AtomicInteger activeThreads = new AtomicInteger();
-
    /**
     * Creates a new <tt>ScalingThreadPoolExecutor</tt> with the given initial parameters and default thread factory and handler.
     *
@@ -59,21 +56,5 @@ public class ScalingThreadPoolExecutor extends ThreadPoolExecutor {
     */
    public ScalingThreadPoolExecutor(final int minPoolSize, final int maxPoolSize, final long keepAliveTime, final TimeUnit unit) {
       super(minPoolSize, maxPoolSize, keepAliveTime, unit, new ScalingQueue(), FORCE_QUEUE_POLICY);
-      ((ScalingQueue) getQueue()).executor = this;
-   }
-
-   @Override
-   protected void afterExecute(final Runnable r, final Throwable t) {
-      activeThreads.decrementAndGet();
-   }
-
-   @Override
-   protected void beforeExecute(final Thread t, final Runnable r) {
-      activeThreads.incrementAndGet();
-   }
-
-   @Override
-   public int getActiveCount() {
-      return activeThreads.get();
    }
 }
