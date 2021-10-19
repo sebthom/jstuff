@@ -17,21 +17,21 @@ import net.sf.jstuff.core.logging.Logger;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObservableRef<E> extends MutableRef<E> {
+public class ObservableRef<V> extends MutableRef<V> {
 
    private static final Logger LOG = Logger.create();
 
-   public static <T> ObservableRef<T> of(final T value) {
-      return new ObservableRef<>(value);
+   public static <V> ObservableRef<V> of(final V initialValue) {
+      return new ObservableRef<>(initialValue);
    }
 
    private final CopyOnWriteArraySet<Object> observers = new CopyOnWriteArraySet<>();
-   private volatile E value;
+   private volatile V value;
 
    public ObservableRef() {
    }
 
-   public ObservableRef(final E initialValue) {
+   public ObservableRef(final V initialValue) {
       this.value = initialValue;
    }
 
@@ -40,11 +40,11 @@ public class ObservableRef<E> extends MutableRef<E> {
    }
 
    @Override
-   public E get() {
+   public V get() {
       return value;
    }
 
-   protected boolean isModification(final E oldValue, final E newValue) {
+   protected boolean isModification(final V oldValue, final V newValue) {
       if (newValue == oldValue)
          return false;
 
@@ -56,7 +56,11 @@ public class ObservableRef<E> extends MutableRef<E> {
       return true;
    }
 
-   protected boolean isScalarValue(final E value) {
+   public boolean isObserved() {
+      return !observers.isEmpty();
+   }
+
+   protected boolean isScalarValue(final V value) {
       return value == null //
          || value instanceof String //
          || value instanceof BigInteger //
@@ -67,14 +71,10 @@ public class ObservableRef<E> extends MutableRef<E> {
          || value instanceof Character;
    }
 
-   public boolean isObserved() {
-      return !observers.isEmpty();
-   }
-
    @Override
    @SuppressWarnings("unchecked")
-   public void set(final E newValue) {
-      final E oldValue = value;
+   public void set(final V newValue) {
+      final V oldValue = value;
 
       // do nothing if value is the same object
       if (!isModification(oldValue, newValue))
@@ -87,9 +87,9 @@ public class ObservableRef<E> extends MutableRef<E> {
             if (observer instanceof Runnable) {
                ((Runnable) observer).run();
             } else if (observer instanceof Consumer) {
-               ((Consumer<E>) observer).accept(newValue);
+               ((Consumer<V>) observer).accept(newValue);
             } else if (observer instanceof BiConsumer) {
-               ((BiConsumer<E, E>) observer).accept(oldValue, newValue);
+               ((BiConsumer<V, V>) observer).accept(oldValue, newValue);
             }
          } catch (final Exception ex) {
             LOG.error(ex);
@@ -97,11 +97,11 @@ public class ObservableRef<E> extends MutableRef<E> {
       }
    }
 
-   public void subscribe(final BiConsumer<E, E> observer) {
+   public void subscribe(final BiConsumer<V, V> observer) {
       subscribe((Object) observer);
    }
 
-   public void subscribe(final Consumer<E> observer) {
+   public void subscribe(final Consumer<V> observer) {
       subscribe((Object) observer);
    }
 
@@ -116,11 +116,11 @@ public class ObservableRef<E> extends MutableRef<E> {
       subscribe((Object) observer);
    }
 
-   public void unsubscribe(final BiConsumer<E, E> observer) {
+   public void unsubscribe(final BiConsumer<V, V> observer) {
       unsubscribe((Object) observer);
    }
 
-   public void unsubscribe(final Consumer<E> observer) {
+   public void unsubscribe(final Consumer<V> observer) {
       unsubscribe((Object) observer);
    }
 
@@ -133,5 +133,9 @@ public class ObservableRef<E> extends MutableRef<E> {
 
    public void unsubscribe(final Runnable observer) {
       unsubscribe((Object) observer);
+   }
+
+   public void unsubscribeAll() {
+      observers.clear();
    }
 }

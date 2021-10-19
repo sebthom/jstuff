@@ -7,27 +7,27 @@ package net.sf.jstuff.core.ref;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MutableRef<T> implements Ref<T> {
+public class MutableRef<V> implements Ref<V> {
 
-   public static <T> MutableRef<T> of(final T value) {
-      return new MutableRef<>(value);
+   public static <V> MutableRef<V> of(final V initialValue) {
+      return new MutableRef<>(initialValue);
    }
 
-   private volatile T value;
+   private volatile V value;
 
    public MutableRef() {
    }
 
-   public MutableRef(final T value) {
+   public MutableRef(final V value) {
       this.value = value;
    }
 
    @Override
-   public T get() {
+   public V get() {
       return value;
    }
 
-   public void set(final T value) {
+   public void set(final V value) {
       this.value = value;
    }
 }

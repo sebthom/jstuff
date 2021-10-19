@@ -7,14 +7,14 @@ package net.sf.jstuff.core.ref;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class LazyInitializedRef<T> implements Ref<T> {
-   private T value;
+public abstract class LazyInitializedRef<V> implements Ref<V> {
+   private V value;
 
-   protected abstract T create();
+   protected abstract V create();
 
    @Override
-   public final T get() {
-      T result = value;
+   public final V get() {
+      V result = value;
       if (result == null) {
          synchronized (this) { // ensure only one thread creates an instance
             result = value;

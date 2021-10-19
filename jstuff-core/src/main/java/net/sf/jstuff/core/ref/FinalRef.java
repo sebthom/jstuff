@@ -9,21 +9,21 @@ import java.io.Serializable;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FinalRef<T> implements Ref<T>, Serializable {
+public class FinalRef<V> implements Ref<V>, Serializable {
    private static final long serialVersionUID = 1L;
 
-   public static <T> FinalRef<T> of(final T value) {
+   public static <V> FinalRef<V> of(final V value) {
       return new FinalRef<>(value);
    }
 
-   final T value;
+   final V value;
 
-   public FinalRef(final T value) {
+   public FinalRef(final V value) {
       this.value = value;
    }
 
    @Override
-   public T get() {
+   public V get() {
       return value;
    }
 }
