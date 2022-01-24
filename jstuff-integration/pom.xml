@@ -130,7 +130,7 @@
             <!-- https://github.com/luben/zstd-jni -->
             <groupId>com.github.luben</groupId>
             <artifactId>zstd-jni</artifactId>
-            <version>1.5.1-1</version>
+            <version>1.5.2-1</version>
          </dependency>
          <dependency>
             <!-- https://github.com/xerial/snappy-java -->
