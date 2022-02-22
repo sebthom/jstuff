@@ -24,6 +24,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -384,15 +385,41 @@ public abstract class DOMUtils {
       return elem;
    }
 
-   public static String evaluate(final Node searchScope, final String xPathExpression) throws XMLException {
+   /**
+    * @param returnType one of {@link XPathConstants#NUMBER NUMBER}, {@link XPathConstants#STRING STRING}, {@link XPathConstants#BOOLEAN BOOLEAN},
+    *           {@link XPathConstants#NODE NODE}, {@link XPathConstants#NODESET NODESET}
+    */
+   @SuppressWarnings("unchecked")
+   private static <T> T evaluate(final Node searchScope, final String xPathExpression, final QName returnType) throws XMLException {
       Args.notNull("searchScope", searchScope);
       Args.notNull("xPathExpression", xPathExpression);
+      Args.notNull("returnType", returnType);
 
       try {
-         return XPATH.get().evaluate(xPathExpression, searchScope);
+         return (T) XPATH.get().evaluate(xPathExpression, searchScope, returnType);
       } catch (final XPathExpressionException ex) {
          throw new XMLException(ex);
       }
+   }
+
+   public static Boolean evaluateAsBoolean(final Node searchScope, final String xPathExpression) throws XMLException {
+      return evaluate(searchScope, xPathExpression, XPathConstants.BOOLEAN);
+   }
+
+   public static Number evaluateAsNumber(final Node searchScope, final String xPathExpression) throws XMLException {
+      return evaluate(searchScope, xPathExpression, XPathConstants.NUMBER);
+   }
+
+   public static <T extends Node> T evaluateAsNode(final Node searchScope, final String xPathExpression) throws XMLException {
+      return evaluate(searchScope, xPathExpression, XPathConstants.NODE);
+   }
+
+   public static <T extends Node> List<T> evaluateAsNodes(final Node searchScope, final String xPathExpression) throws XMLException {
+      return nodeListToList(evaluate(searchScope, xPathExpression, XPathConstants.NODESET));
+   }
+
+   public static String evaluateAsString(final Node searchScope, final String xPathExpression) throws XMLException {
+      return evaluate(searchScope, xPathExpression, XPathConstants.STRING);
    }
 
    @SuppressWarnings("unchecked")

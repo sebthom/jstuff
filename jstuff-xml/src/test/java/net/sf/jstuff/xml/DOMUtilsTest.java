@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.Map;
 
 import org.junit.Test;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -33,10 +34,13 @@ public class DOMUtilsTest {
 
    @Test
    public void testEvaluate() {
-      final Element elem = DOMUtils.parseString("<foo id='myid'><bar/><bar/><bar/></foo>", null).getDocumentElement();
+      final Element elem = DOMUtils.parseString("<foo id='myid'><bar name='a'/><bar name='b'/><bar /></foo>", null).getDocumentElement();
 
-      assertThat(DOMUtils.evaluate(elem, "/foo/@id")).isEqualTo("myid");
-      assertThat(DOMUtils.evaluate(elem, "count(/foo/bar)")).isEqualTo("3");
+      assertThat(DOMUtils.evaluateAsString(elem, "/foo/@id")).isEqualTo("myid");
+      assertThat(DOMUtils.evaluateAsString(elem, "count(/foo/bar)")).isEqualTo("3");
+      assertThat(DOMUtils.evaluateAsNodes(elem, "/foo/bar/@name")).hasSize(2).hasOnlyElementsOfType(Attr.class);
+      assertThat(DOMUtils.evaluateAsNodes(elem, "/foo/bar[@name]")).hasSize(2).hasOnlyElementsOfType(Element.class);
+      assertThat(DOMUtils.evaluateAsNodes(elem, "/foo/bar[@name='a']")).hasSize(1);
    }
 
    @Test
@@ -56,7 +60,8 @@ public class DOMUtilsTest {
 
       final XPathNodeConfiguration cfg = new XPathNodeConfiguration();
       cfg.recursive = true;
-      assertThat(DOMUtils.getXPathNodes(elem, cfg)).hasToString("{/foo/@id=1, /foo/bar/@name=name, /foo/bar/text()=blabla, /foo/text()=null}");
+      assertThat(DOMUtils.getXPathNodes(elem, cfg)).hasToString(
+         "{/foo/@id=1, /foo/bar/@name=name, /foo/bar/text()=blabla, /foo/text()=null}");
 
       cfg.recursive = false;
       assertThat(DOMUtils.getXPathNodes(elem, cfg)).hasToString("{/foo/@id=1, /foo/text()=null}");
@@ -67,8 +72,8 @@ public class DOMUtilsTest {
          "{/foo[@id='1']/@id=1, /foo[@id='1']/bar[@name='name']/@name=name, /foo[@id='1']/bar[@name='name']/text()=blabla, /foo[@id='1']/text()=null}");
 
       final Element elem1 = DOMUtils.parseString("<top><child name='foo' weight='1'>1234</child></top>", null).getDocumentElement();
-      final Element elem2 = DOMUtils.parseString("<top><child name='foo' weight='2'>ABCD</child><child name='bar' weight='2'>ABCD</child></top>", null)
-         .getDocumentElement();
+      final Element elem2 = DOMUtils.parseString(
+         "<top><child name='foo' weight='2'>ABCD</child><child name='bar' weight='2'>ABCD</child></top>", null).getDocumentElement();
 
       cfg.idAttributesByXMLTagName.put("*", "name");
       final Map<String, XPathNode> attrs1 = DOMUtils.getXPathNodes(elem1, cfg);
@@ -119,9 +124,11 @@ public class DOMUtilsTest {
 
       {
          // numeric sort
-         final Document doc = DOMUtils.parseString("<foo><bar name='9080'/><bar name='443'/><bar name='1100'/><bar name='80'/></foo>", null);
+         final Document doc = DOMUtils.parseString("<foo><bar name='9080'/><bar name='443'/><bar name='1100'/><bar name='80'/></foo>",
+            null);
          DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true, "name");
-         assertThat(DOMUtils.toXML(doc, false, false)).isEqualTo("<foo><bar name=\"80\"/><bar name=\"443\"/><bar name=\"1100\"/><bar name=\"9080\"/></foo>");
+         assertThat(DOMUtils.toXML(doc, false, false)).isEqualTo(
+            "<foo><bar name=\"80\"/><bar name=\"443\"/><bar name=\"1100\"/><bar name=\"9080\"/></foo>");
       }
 
       {
@@ -139,7 +146,8 @@ public class DOMUtilsTest {
       }
       {
          // sort on two attribute
-         final Document doc = DOMUtils.parseString("<foo><bar name='bb' value='BB'/><bar name='bb' value='AA'/><bar name='aa' value='AA'/></foo>", null);
+         final Document doc = DOMUtils.parseString(
+            "<foo><bar name='bb' value='BB'/><bar name='bb' value='AA'/><bar name='aa' value='AA'/></foo>", null);
          DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true, "name", "value");
          assertThat(DOMUtils.toXML(doc, false, false)) //
             .isEqualTo("<foo><bar name=\"aa\" value=\"AA\"/><bar name=\"bb\" value=\"AA\"/><bar name=\"bb\" value=\"BB\"/></foo>");

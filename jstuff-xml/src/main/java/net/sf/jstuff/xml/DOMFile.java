@@ -171,15 +171,59 @@ public class DOMFile {
       return DOMUtils.createTextNodeBefore(sibling, text);
    }
 
-   public String evaluate(final Node searchScope, final String xPathExpression) throws XMLException {
+   public Boolean evaluateAsBoolean(final Node searchScope, final String xPathExpression) throws XMLException {
       Args.notNull("searchScope", searchScope);
       Assert.isTrue(DOMUtils._getOwnerDocument(searchScope) == domDocument, "[searchScope] belongs to another DOM document!");
 
-      return DOMUtils.evaluate(searchScope, xPathExpression);
+      return DOMUtils.evaluateAsBoolean(searchScope, xPathExpression);
    }
 
-   public String evaluate(final String xPathExpression) throws XMLException {
-      return DOMUtils.evaluate(domRoot, xPathExpression);
+   public Boolean evaluateAsBoolean(final String xPathExpression) throws XMLException {
+      return DOMUtils.evaluateAsBoolean(domRoot, xPathExpression);
+   }
+
+   public Node evaluateAsNode(final Node searchScope, final String xPathExpression) throws XMLException {
+      Args.notNull("searchScope", searchScope);
+      Assert.isTrue(DOMUtils._getOwnerDocument(searchScope) == domDocument, "[searchScope] belongs to another DOM document!");
+
+      return DOMUtils.evaluateAsNode(searchScope, xPathExpression);
+   }
+
+   public Node evaluateAsNode(final String xPathExpression) throws XMLException {
+      return DOMUtils.evaluateAsNode(domRoot, xPathExpression);
+   }
+
+   public <T extends Node> List<T> evaluateAsNodes(final Node searchScope, final String xPathExpression) throws XMLException {
+      Args.notNull("searchScope", searchScope);
+      Assert.isTrue(DOMUtils._getOwnerDocument(searchScope) == domDocument, "[searchScope] belongs to another DOM document!");
+
+      return DOMUtils.evaluateAsNodes(searchScope, xPathExpression);
+   }
+
+   public <T extends Node> List<T> evaluateAsNodes(final String xPathExpression) throws XMLException {
+      return DOMUtils.evaluateAsNodes(domRoot, xPathExpression);
+   }
+
+   public Number evaluateAsNumber(final Node searchScope, final String xPathExpression) throws XMLException {
+      Args.notNull("searchScope", searchScope);
+      Assert.isTrue(DOMUtils._getOwnerDocument(searchScope) == domDocument, "[searchScope] belongs to another DOM document!");
+
+      return DOMUtils.evaluateAsNumber(searchScope, xPathExpression);
+   }
+
+   public Number evaluateAsNumber(final String xPathExpression) throws XMLException {
+      return DOMUtils.evaluateAsNumber(domRoot, xPathExpression);
+   }
+
+   public String evaluateAsString(final Node searchScope, final String xPathExpression) throws XMLException {
+      Args.notNull("searchScope", searchScope);
+      Assert.isTrue(DOMUtils._getOwnerDocument(searchScope) == domDocument, "[searchScope] belongs to another DOM document!");
+
+      return DOMUtils.evaluateAsString(searchScope, xPathExpression);
+   }
+
+   public String evaluateAsString(final String xPathExpression) throws XMLException {
+      return DOMUtils.evaluateAsString(domRoot, xPathExpression);
    }
 
    public <T extends Node> T findNode(final Node searchScope, final String xPathExpression) throws XMLException {
