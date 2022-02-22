@@ -182,22 +182,22 @@ public class DOMFile {
       return DOMUtils.evaluate(domRoot, xPathExpression);
    }
 
-   public Node findNode(final Node searchScope, final String xPathExpression) throws XMLException {
+   public <T extends Node> T findNode(final Node searchScope, final String xPathExpression) throws XMLException {
       Args.notNull("searchScope", searchScope);
       Assert.isTrue(DOMUtils._getOwnerDocument(searchScope) == domDocument, "[searchScope] belongs to another DOM document!");
 
       return DOMUtils.findNode(searchScope, xPathExpression);
    }
 
-   public Node findNode(final String xPathExpression) throws XMLException {
+   public <T extends Node> T findNode(final String xPathExpression) throws XMLException {
       return findNode(domRoot, xPathExpression);
    }
 
-   public List<Node> findNodes(final String xPathExpression) throws XMLException {
+   public <T extends Node> List<T> findNodes(final String xPathExpression) throws XMLException {
       return DOMUtils.findNodes(domRoot, xPathExpression);
    }
 
-   public List<Node> findNodes(final String xPathExpression, final Node searchScope) throws XMLException {
+   public <T extends Node> List<T> findNodes(final String xPathExpression, final Node searchScope) throws XMLException {
       Args.notNull("searchScope", searchScope);
       Assert.isTrue(DOMUtils._getOwnerDocument(searchScope) == domDocument, "[searchScope] belongs to another DOM document!");
 
