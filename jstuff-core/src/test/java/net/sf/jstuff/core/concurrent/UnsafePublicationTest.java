@@ -80,8 +80,8 @@ public class UnsafePublicationTest {
       private static final int NUMBER_OF_FIELDS = 40;
 
       // fields must be non-final to provoke instruction re-ordering
-      int f01, f02, f03, f04, f05, f06, f07, f08, f09, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, f21, f22, f23, f24, f25, f26, f27, f28, f29, f30,
-         f31, f32, f33, f34, f35, f36, f37, f38, f39, f40;
+      int f01, f02, f03, f04, f05, f06, f07, f08, f09, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, f21, f22, f23, f24, f25, f26,
+         f27, f28, f29, f30, f31, f32, f33, f34, f35, f36, f37, f38, f39, f40;
 
       Subject(final int externalValue) {
          // CHECKSTYLE:IGNORE InnerAssignment FOR NEXT 3 LINES
@@ -91,8 +91,9 @@ public class UnsafePublicationTest {
       }
 
       public boolean isFullyInitialized() {
-         return NUMBER_OF_FIELDS - (f01 + f02 + f03 + f04 + f05 + f06 + f07 + f08 + f09 + f10 + f11 + f12 + f13 + f14 + f15 + f16 + f17 + f18 + f19 + f20 + f21
-            + f22 + f23 + f24 + f25 + f26 + f27 + f28 + f29 + f30 + f31 + f32 + f33 + f34 + f35 + f36 + f37 + f38 + f39 + f40) == 0;
+         return NUMBER_OF_FIELDS - (f01 + f02 + f03 + f04 + f05 + f06 + f07 + f08 + f09 + f10 + f11 + f12 + f13 + f14 + f15 + f16 + f17
+            + f18 + f19 + f20 + f21 + f22 + f23 + f24 + f25 + f26 + f27 + f28 + f29 + f30 + f31 + f32 + f33 + f34 + f35 + f36 + f37 + f38
+            + f39 + f40) == 0;
       }
    }
 
@@ -132,7 +133,8 @@ public class UnsafePublicationTest {
       return true;
    }
 
-   protected void _testPublication(final boolean isExpectedToFail, final Runnable publisher, final Runnable consumer) throws InterruptedException {
+   protected void _testPublication(final boolean isExpectedToFail, final Runnable publisher, final Runnable consumer)
+      throws InterruptedException {
       if (isExpectedToFail && !_isJVMSupported())
          return;
 
@@ -153,7 +155,8 @@ public class UnsafePublicationTest {
       }
 
       final String methodName = StackTrace.getCallerMethodName();
-      LOG.info(methodName + "() -> " + new NumberHelper().getWholeNumberFormatted(FAILURES) + " accesses to not fully initialized objects seen");
+      LOG.info(methodName + "() -> " + new NumberHelper().getWholeNumberFormatted(FAILURES)
+         + " accesses to not fully initialized objects seen");
 
       if (isExpectedToFail) {
          assertThat(FAILURES.get() > 0).isTrue();
@@ -169,7 +172,8 @@ public class UnsafePublicationTest {
          new AbstractPublishingActor() {
             @Override
             protected void publishSubject() {
-               subject = new Subject(subjectCtorArg /*must be a non-static, non-final reference to provoke instruction re-ordering on 64bit OracleJVM*/);
+               subject = new Subject(
+                  subjectCtorArg /*must be a non-static, non-final reference to provoke instruction re-ordering on 64bit OracleJVM*/);
             }
          }, //
          new AbstractConsumingActor() {
@@ -188,9 +192,9 @@ public class UnsafePublicationTest {
             @Override
             protected void publishSubject() {
                // non-final fields to not act as an implicit memory barrier
-               final Ref<Subject> memoryBarrier = new MutableRef<>(//
-                  new Subject(subjectCtorArg /*must be a non-static, non-final reference to provoke instruction re-ordering on 64bit OracleJVM*/) //
-               );
+               final Ref<Subject> memoryBarrier = MutableRef.of(new Subject(
+                  subjectCtorArg /*must be a non-static, non-final reference to provoke instruction re-ordering on 64bit OracleJVM*/
+               ));
                subject = memoryBarrier.get();
             }
          }, //
@@ -213,9 +217,9 @@ public class UnsafePublicationTest {
                //  http://www.cs.umd.edu/~pugh/java/memoryModel/newFinal.pdf
                //  http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.5.1
                //  http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java -> FinalWrapper
-               final Ref<Subject> memoryBarrier = new FinalRef<>(//
-                  new Subject(subjectCtorArg /*must be a non-static, non-final reference to provoke instruction re-ordering on 64bit OracleJVM*/) //
-               );
+               final Ref<Subject> memoryBarrier = new FinalRef<>(new Subject(
+                  subjectCtorArg /*must be a non-static, non-final reference to provoke instruction re-ordering on 64bit OracleJVM*/
+               ));
                subject = memoryBarrier.get();
             }
          }, //

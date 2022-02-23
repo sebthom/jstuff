@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 by Sebastian Thomschke and contributors.
+ * Copyright 2010-2022 by Sebastian Thomschke and contributors.
  * SPDX-License-Identifier: EPL-2.0
  */
 package net.sf.jstuff.core.concurrent;
@@ -102,7 +102,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
 
    @Override
    public <V> ScheduledFuture<V> schedule(final Callable<V> callable, final long delay, final TimeUnit unit) {
-      final MutableRef<Future<V>> workFuture = new MutableRef<>();
+      final MutableRef<Future<V>> workFuture = MutableRef.of(null);
 
       final ScheduledFuture<?> scheduledFuture = scheduler.schedule(() -> {
          workFuture.set(submit(callable));
@@ -114,7 +114,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
 
    @Override
    public ScheduledFuture<?> schedule(final Runnable command, final long delay, final TimeUnit unit) {
-      final MutableRef<Future<Object>> workFuture = new MutableRef<>();
+      final MutableRef<Future<Object>> workFuture = MutableRef.of(null);
 
       @SuppressWarnings("unchecked")
       final ScheduledFuture<?> scheduledFuture = scheduler.schedule(() -> {
@@ -127,7 +127,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
 
    @Override
    public ScheduledFuture<?> scheduleAtFixedRate(final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {
-      final MutableRef<Future<Object>> workFuture = new MutableRef<>();
+      final MutableRef<Future<Object>> workFuture = MutableRef.of(null);
 
       @SuppressWarnings("unchecked")
       final ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate( //
@@ -141,7 +141,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
    @Override
    public ScheduledFuture<?> scheduleWithFixedDelay(final Runnable command, final long initialDelay, final long delay,
       final TimeUnit unit) {
-      final MutableRef<Future<Object>> workFuture = new MutableRef<>();
+      final MutableRef<Future<Object>> workFuture = MutableRef.of(null);
 
       @SuppressWarnings("unchecked")
       final ScheduledFuture<?> scheduledFuture = scheduler.scheduleWithFixedDelay( //

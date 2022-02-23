@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 by Sebastian Thomschke and contributors.
+ * Copyright 2010-2022 by Sebastian Thomschke and contributors.
  * SPDX-License-Identifier: EPL-2.0
  */
 package net.sf.jstuff.core.ref;
@@ -17,7 +17,7 @@ public class ObservableRefTest {
 
    @Test
    public void testObservableRef() {
-      final ObservableRef<String> ref = new ObservableRef<>("foo");
+      final MutableObservableRef.Default<String> ref = new MutableObservableRef.Default<>("foo");
       assertThat(ref.get()).isEqualTo("foo");
       assertThat(ref.isObserved()).isFalse();
 
@@ -45,15 +45,15 @@ public class ObservableRefTest {
       counter.set(0);
       ref.set("bar");
       assertThat(ref.get()).isEqualTo("bar");
-      assertThat(counter.get()).isEqualTo(0);
+      assertThat(counter.get()).isZero();
 
       // set value without observers
-      ref.clearObservers();
+      ref.unsubscribeAll();
       counter.set(0);
       assertThat(ref.isObserved()).isFalse();
       ref.set("foo");
       assertThat(ref.get()).isEqualTo("foo");
-      assertThat(counter.get()).isEqualTo(0);
+      assertThat(counter.get()).isZero();
 
    }
 }
