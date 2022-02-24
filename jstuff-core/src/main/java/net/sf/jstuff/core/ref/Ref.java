@@ -10,14 +10,15 @@ import java.util.function.Supplier;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface Ref<V> {
-   V get();
 
-   default boolean isNull() {
-      return get() == null;
-   }
+   V get();
 
    default boolean isNotNull() {
       return get() != null;
+   }
+
+   default boolean isNull() {
+      return get() == null;
    }
 
    default V orElse(final V other) {

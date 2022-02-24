@@ -31,6 +31,10 @@ public interface MutableRef<V> extends Ref<V> {
       }
    }
 
+   static <V> MutableRef<V> create() {
+      return new Default<>();
+   }
+
    static <V> MutableRef<V> of(final V initialValue) {
       return new Default<>(initialValue);
    }

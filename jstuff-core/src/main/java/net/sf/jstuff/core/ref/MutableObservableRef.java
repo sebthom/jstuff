@@ -145,6 +145,10 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
       }
    }
 
+   static <V> MutableObservableRef<V> create() {
+      return new Default<>();
+   }
+
    static <V> MutableObservableRef<V> of(final V initialValue) {
       return new Default<>(initialValue);
    }
