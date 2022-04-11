@@ -27,6 +27,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    concurrency: ci-${{ github.ref }}
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
