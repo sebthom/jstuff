@@ -15,7 +15,7 @@
 
    <groupId>net.sf.jstuff</groupId>
    <artifactId>jstuff-parent</artifactId>
-   <version>5.21.1-SNAPSHOT</version>
+   <version>6.0.0-SNAPSHOT</version>
    <packaging>pom</packaging>
 
 
@@ -79,7 +79,7 @@
 
 
    <properties>
-      <java.version>8</java.version>
+      <java.version>11</java.version>
 
       <skip.japicmp.cmp>true</skip.japicmp.cmp>
 

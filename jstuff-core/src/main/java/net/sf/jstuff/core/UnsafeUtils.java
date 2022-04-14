@@ -11,7 +11,6 @@ import sun.misc.Unsafe; // CHECKSTYLE:IGNORE IllegalImport
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-@SuppressWarnings("restriction")
 public abstract class UnsafeUtils {
 
    private static final Unsafe UNSAFE = Fields.read(null, Fields.find(Unsafe.class, "theUnsafe"));
@@ -21,9 +20,9 @@ public abstract class UnsafeUtils {
 
       switch (UNSAFE.addressSize()) {
          case 4:
-            return UNSAFE.getInt(new Object[] {obj}, (long) UNSAFE.arrayBaseOffset(Object[].class));
+            return UNSAFE.getInt(new Object[] {obj}, UNSAFE.arrayBaseOffset(Object[].class));
          case 8:
-            return UNSAFE.getLong(new Object[] {obj}, (long) UNSAFE.arrayBaseOffset(Object[].class));
+            return UNSAFE.getLong(new Object[] {obj}, UNSAFE.arrayBaseOffset(Object[].class));
          default:
             throw new IllegalStateException("Unsupported address size: " + UNSAFE.addressSize());
       }

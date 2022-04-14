@@ -64,9 +64,8 @@ public class DelegatingXMLEventReader extends Decorator.Default<XMLEventReader> 
       return wrapped.getProperty(name);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
-   public void forEachRemaining(final Consumer action) {
+   public void forEachRemaining(final Consumer<? super Object> action) {
       wrapped.forEachRemaining(action);
    }
 

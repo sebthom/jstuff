@@ -83,10 +83,11 @@ public abstract class X509Utils {
    /**
     * Converts a javax.security.cert.X509Certificate to java.security.cert.X509Certificate
     */
+   @SuppressWarnings("deprecation")
    public static X509Certificate convert(final javax.security.cert.X509Certificate cert) {
       if (cert == null)
          return null;
-      try (FastByteArrayInputStream bis = new FastByteArrayInputStream(cert.getEncoded())) {
+      try (var bis = new FastByteArrayInputStream(cert.getEncoded())) {
          return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(bis);
       } catch (final Exception ex) {
          throw new IllegalArgumentException("[cert] " + cert + " is not convertable!", ex);
@@ -96,6 +97,7 @@ public abstract class X509Utils {
    /**
     * Converts a java.security.cert.X509Certificate to javax.security.cert.X509Certificate
     */
+   @SuppressWarnings("deprecation")
    public static javax.security.cert.X509Certificate convert(final X509Certificate cert) {
       if (cert == null)
          return null;

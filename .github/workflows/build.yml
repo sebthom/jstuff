@@ -33,12 +33,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - java: 8
+        - java: 11
           may_create_release: ${{ github.ref == 'refs/heads/main' }}
           experimental: false
-        - java: 11
-          may_create_release: false
-          experimental: true
     steps:
     - name: Git Checkout
       uses: actions/checkout@v3 #https://github.com/actions/checkout
