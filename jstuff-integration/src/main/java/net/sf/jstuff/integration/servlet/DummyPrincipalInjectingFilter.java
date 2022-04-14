@@ -60,7 +60,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
    public static String DEFAULT_USER_NAME;
    public static String[] DEFAULT_USER_ROLES;
 
-   private final ThreadLocal<HttpServletRequestWrapper> requestWrapper = new ThreadLocal<HttpServletRequestWrapper>() {
+   private final ThreadLocal<HttpServletRequestWrapper> requestWrapper = new ThreadLocal<>() {
       final HttpServletRequest init = Types.createMixin(HttpServletRequest.class, new Object());
 
       @Override

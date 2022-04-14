@@ -29,7 +29,7 @@ public class ContentCapturingHttpServletResponseWrapperTest {
    @SuppressWarnings("unused")
    public void testContentCapturingHttpServletResponseWrapper() throws UnsupportedEncodingException {
 
-      final String[] encoding = new String[] {"ISO-8859-1"};
+      final String[] encoding = {"ISO-8859-1"};
 
       final HttpServletResponse mock = Types.createMixin(HttpServletResponse.class, new Object() {
          public String getCharacterEncoding() {

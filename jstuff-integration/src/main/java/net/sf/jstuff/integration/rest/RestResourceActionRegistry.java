@@ -19,7 +19,7 @@ import net.sf.jstuff.integration.spring.SpringBeanParanamer;
  */
 public class RestResourceActionRegistry {
    private final MapWith<HttpRequestMethod, MapWithLists<String, RestResourceAction>> actions //
-      = new MapWith<HttpRequestMethod, MapWithLists<String, RestResourceAction>>() {
+      = new MapWith<>() {
          private static final long serialVersionUID = 1L;
 
          @Override

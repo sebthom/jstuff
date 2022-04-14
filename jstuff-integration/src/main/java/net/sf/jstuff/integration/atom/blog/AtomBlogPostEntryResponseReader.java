@@ -56,7 +56,7 @@ public abstract class AtomBlogPostEntryResponseReader {
       final XMLStreamReader xmlr = XML_INPUT_FACTORY.get().createXMLStreamReader(is, encoding);
 
       // Loop over XML input stream and process events
-      while (xmlr.hasNext()) {
+      if (xmlr.hasNext()) {
          xmlr.next();
          return processEntry(xmlr);
       }

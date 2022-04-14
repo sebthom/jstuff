@@ -29,7 +29,7 @@ public class ContentCapturingResourceResponseWrapperTest {
    @SuppressWarnings("unused")
    public void testContentCapturingResourceResponseWrapper() throws UnsupportedEncodingException {
 
-      final String[] encoding = new String[] {"ISO-8859-1"};
+      final String[] encoding = {"ISO-8859-1"};
 
       final ResourceResponse mock = Types.createMixin(ResourceResponse.class, new Object() {
          public String getCharacterEncoding() {

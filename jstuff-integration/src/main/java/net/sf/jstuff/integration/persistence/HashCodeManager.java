@@ -70,7 +70,7 @@ public final class HashCodeManager {
       }
    }
 
-   private static final GCTracker<String> GC_TRACKER = new GCTracker<String>(100) {
+   private static final GCTracker<String> GC_TRACKER = new GCTracker<>(100) {
       private final Logger log = Logger.create();
 
       @Override
