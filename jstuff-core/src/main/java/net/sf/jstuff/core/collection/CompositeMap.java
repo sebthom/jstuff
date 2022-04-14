@@ -119,7 +119,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
 
    @Override
    public Collection<V> values() {
-      return new AbstractList<V>() {
+      return new AbstractList<>() {
          @Override
          public V get(final int index) {
             int i = 0;

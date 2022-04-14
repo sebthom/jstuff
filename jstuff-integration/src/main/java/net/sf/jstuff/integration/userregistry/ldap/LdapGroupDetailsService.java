@@ -46,7 +46,8 @@ public class LdapGroupDetailsService implements GroupDetailsService {
       Args.notNull("groupDN", groupDN);
 
       return (GroupDetails) ldapTemplate.execute(ctx -> {
-         final Attributes attr = ctx.getAttributes(groupDN, new String[] {groupAttributeDisplayName, groupAttributeGroupId, groupAttributeMember});
+         final Attributes attr = ctx.getAttributes(groupDN, new String[] {groupAttributeDisplayName, groupAttributeGroupId,
+            groupAttributeMember});
 
          final DefaultGroupDetails groupDetails = new DefaultGroupDetails();
          groupDetails.setDisplayName((String) attr.get(groupAttributeDisplayName).get());

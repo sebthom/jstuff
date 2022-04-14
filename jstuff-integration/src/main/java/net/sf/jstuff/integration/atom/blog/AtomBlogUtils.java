@@ -47,7 +47,8 @@ public class AtomBlogUtils {
             final String response = deleteEntry.getResponseBodyAsString();
 
             if (httpStatus < 200 || httpStatus >= 300)
-               throw new DeletingAtomBlogEntryFailedException("Deleting blog entry failed: HTTP Status Code " + httpStatus + "\n" + response);
+               throw new DeletingAtomBlogEntryFailedException("Deleting blog entry failed: HTTP Status Code " + httpStatus + "\n"
+                  + response);
 
          } finally {
             // release any connection resources used by the method
@@ -85,7 +86,8 @@ public class AtomBlogUtils {
             try (InputStream responseBodyStream = getBlogs.getResponseBodyAsStream()) {
                if (httpStatus < 200 || httpStatus >= 300) {
                   final String response = IOUtils.toString(responseBodyStream, getBlogs.getResponseCharSet());
-                  throw new ReceivingAtomBlogsFailedException("Receiving atom blogs failed with: HTTP Status Code " + httpStatus + "\n" + response);
+                  throw new ReceivingAtomBlogsFailedException("Receiving atom blogs failed with: HTTP Status Code " + httpStatus + "\n"
+                     + response);
                }
 
                return AtomBlogsReader.processStream(responseBodyStream, getBlogs.getResponseCharSet());
@@ -113,8 +115,8 @@ public class AtomBlogUtils {
    /**
     * @param blogAtomServiceEntriesURL e.g. http://myserver/weblogs/services/atom/blueComment/entries
     */
-   public static void postBlogEntry(final AtomBlogEntry atomBlogEntry, final String blogAtomServiceEntriesURL, final String logonName, final String password)
-      throws PublishingAtomBlogEntryFailedException {
+   public static void postBlogEntry(final AtomBlogEntry atomBlogEntry, final String blogAtomServiceEntriesURL, final String logonName,
+      final String password) throws PublishingAtomBlogEntryFailedException {
       try {
          final StringWriter entryAsXML = new StringWriter();
          final XMLStreamWriter staxWriter = XML_OUTPUT_FACTORY.get().createXMLStreamWriter(entryAsXML);
@@ -175,10 +177,12 @@ public class AtomBlogUtils {
             try (InputStream responseBodyStream = postEntry.getResponseBodyAsStream()) {
                if (httpStatus < 200 || httpStatus >= 300) {
                   final String response = IOUtils.toString(responseBodyStream, postEntry.getResponseCharSet());
-                  throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: HTTP Status Code " + httpStatus + "\n" + response);
+                  throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: HTTP Status Code " + httpStatus
+                     + "\n" + response);
                }
 
-               final AtomBlogEntry responseAtomBlogEntry = AtomBlogPostEntryResponseReader.processStream(responseBodyStream, postEntry.getResponseCharSet());
+               final AtomBlogEntry responseAtomBlogEntry = AtomBlogPostEntryResponseReader.processStream(responseBodyStream, postEntry
+                  .getResponseCharSet());
 
                if (responseAtomBlogEntry.getId() == null)
                   throw new PublishingAtomBlogEntryFailedException("Publishing atom blog entry failed with: No blog entry ID received.");

@@ -53,7 +53,7 @@ public abstract class Iterators {
    public static <T> Iterator<T> cycling(final Collection<T> items) {
       Args.notNull("items", items);
 
-      return new Iterator<T>() {
+      return new Iterator<>() {
          Iterator<T> it = items.iterator();
 
          @Override
@@ -80,7 +80,7 @@ public abstract class Iterators {
       if (size == 0)
          return empty();
 
-      return new Iterator<T>() {
+      return new Iterator<>() {
          int i = 0;
 
          @Override

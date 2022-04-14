@@ -456,8 +456,8 @@ public class CircuitBreaker implements EventListenable<State> {
     *
     * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
     */
-   public <A, E extends Exception> boolean tryExecute(final Invocable<?, A, E> invocable, final A args, final int errorTimeout, final TimeUnit timeUnit)
-      throws E {
+   public <A, E extends Exception> boolean tryExecute(final Invocable<?, A, E> invocable, final A args, final int errorTimeout,
+      final TimeUnit timeUnit) throws E {
       Args.notNull("invocable", invocable);
       Args.notNull("timeUnit", timeUnit);
 

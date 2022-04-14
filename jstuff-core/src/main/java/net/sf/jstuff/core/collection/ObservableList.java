@@ -72,7 +72,7 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
    @Override
    public ListIterator<E> listIterator(final int index) {
       final ListIterator<E> it = wrapped.listIterator(index);
-      return new ListIterator<E>() {
+      return new ListIterator<>() {
          private E current;
 
          @Override

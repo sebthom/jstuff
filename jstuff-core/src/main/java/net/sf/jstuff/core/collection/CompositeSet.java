@@ -81,7 +81,7 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
    public Iterator<V> iterator() {
       // to avoid duplicate elements from the different backing sets we dump the values of all into a new set
       final Iterator<V> it = getSnapshot().iterator();
-      return new Iterator<V>() {
+      return new Iterator<>() {
          @Override
          public boolean hasNext() {
             return it.hasNext();

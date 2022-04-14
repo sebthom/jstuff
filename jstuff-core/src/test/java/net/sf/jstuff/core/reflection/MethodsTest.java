@@ -64,11 +64,14 @@ public class MethodsTest {
 
       entity.setProperty3(true);
 
-      Methods.createPublicMethodAccessor(EntityB_setProperty3_Accessor.class, EntityB.class, "setProperty3", void.class, boolean.class).invoke(entity, false);
-      assertThat(Methods.createPublicMethodAccessor(EntityB_isProperty3_Accessor.class, EntityB.class, "isProperty3", boolean.class).invoke(entity)).isFalse();
+      Methods.createPublicMethodAccessor(EntityB_setProperty3_Accessor.class, EntityB.class, "setProperty3", void.class, boolean.class)
+         .invoke(entity, false);
+      assertThat(Methods.createPublicMethodAccessor(EntityB_isProperty3_Accessor.class, EntityB.class, "isProperty3", boolean.class).invoke(
+         entity)).isFalse();
 
       Methods.createPublicMethodAccessor(EntityB_setProperty3_Accessor.class, EntityB.class, "setProperty3").invoke(entity, true);
-      assertThat(Methods.createPublicMethodAccessor(EntityB_isProperty3_Accessor.class, EntityB.class, "isProperty3").invoke(entity)).isTrue();
+      assertThat(Methods.createPublicMethodAccessor(EntityB_isProperty3_Accessor.class, EntityB.class, "isProperty3").invoke(entity))
+         .isTrue();
    }
 
    @Test

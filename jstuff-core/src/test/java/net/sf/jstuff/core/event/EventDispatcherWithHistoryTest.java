@@ -31,7 +31,7 @@ public class EventDispatcherWithHistoryTest {
       assertThat(listener1Count.get()).isZero();
 
       final AtomicLong listener2Count = new AtomicLong();
-      final EventListener<String> listener2 = new FilteringEventListener<String>() {
+      final EventListener<String> listener2 = new FilteringEventListener<>() {
          @Override
          public boolean accept(final String event) {
             return event != null && event.length() < 5;

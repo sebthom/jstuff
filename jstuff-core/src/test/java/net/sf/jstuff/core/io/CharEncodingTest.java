@@ -57,8 +57,9 @@ public class CharEncodingTest {
 
    @Test
    public void testUTF8WithBOM() {
-      assertEncoding(CharEncoding.UTF_8_WITH_BOM, new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF, 'a', 'b', 'c', 'A', 'B', 'C', '1', '2', '3'});
-      assertEncoding(CharEncoding.UTF_8_WITH_BOM, new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF, 'a', 'b', 'c', 'A', 'B', 'C', '1', '2', '3', (byte) 0xC3,
-         (byte) 0xB6});
+      assertEncoding(CharEncoding.UTF_8_WITH_BOM, new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF, 'a', 'b', 'c', 'A', 'B', 'C', '1', '2',
+         '3'});
+      assertEncoding(CharEncoding.UTF_8_WITH_BOM, new byte[] {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF, 'a', 'b', 'c', 'A', 'B', 'C', '1', '2',
+         '3', (byte) 0xC3, (byte) 0xB6});
    }
 }

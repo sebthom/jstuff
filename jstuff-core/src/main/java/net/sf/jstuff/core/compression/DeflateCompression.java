@@ -35,7 +35,7 @@ public class DeflateCompression extends AbstractCompression {
 
    private final int compressionLevel;
 
-   private final ThreadLocal<Deflater> compressor = new ThreadLocal<Deflater>() {
+   private final ThreadLocal<Deflater> compressor = new ThreadLocal<>() {
       @Override
       public Deflater get() {
          final Deflater result = super.get();
@@ -53,7 +53,7 @@ public class DeflateCompression extends AbstractCompression {
       }
    };
 
-   private final ThreadLocal<Inflater> decompressor = new ThreadLocal<Inflater>() {
+   private final ThreadLocal<Inflater> decompressor = new ThreadLocal<>() {
       @Override
       public Inflater get() {
          final Inflater result = super.get();

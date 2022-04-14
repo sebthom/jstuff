@@ -163,7 +163,7 @@ public class ThreadDumper {
       }
    }
 
-   public static final Comparator<ThreadMeta> SORT_THREADS_BY_ID = (t1, t2) -> Long.compare(t1.getThreadId(), t2.getThreadId());
+   public static final Comparator<ThreadMeta> SORT_THREADS_BY_ID = Comparator.comparing(ThreadMeta::getThreadId);
    public static final Comparator<ThreadMeta> SORT_THREADS_BY_NAME = (t1, t2) -> Strings.compare(t1.getThreadName(), t2.getThreadName());
    public static final Comparator<ThreadMeta> SORT_THREADS_BY_STATE_AND_ID = (t1, t2) -> {
       final int stateCmp = t1.getThreadState().compareTo(t2.getThreadState());

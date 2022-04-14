@@ -29,11 +29,13 @@ public class NetUtilsTest {
    public void testIsPortOpen() throws IOException {
       try (ServerSocket serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort(), 5, InetAddress.getLoopbackAddress())) {
          Threads.sleep(100);
-         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000)).isTrue();
+         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000))
+            .isTrue();
 
          NetUtils.closeQuietly(serverSocket);
          Threads.sleep(1000);
-         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000)).isFalse();
+         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000))
+            .isFalse();
       }
    }
 

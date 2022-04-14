@@ -27,7 +27,7 @@ public class AsyncEventDispatcherTest {
       assertThat(em.subscribe(listener1)).isFalse();
 
       final AtomicLong listener2Count = new AtomicLong();
-      final EventListener<String> listener2 = new FilteringEventListener<String>() {
+      final EventListener<String> listener2 = new FilteringEventListener<>() {
          @Override
          public boolean accept(final String event) {
             return event != null && event.length() < 5;

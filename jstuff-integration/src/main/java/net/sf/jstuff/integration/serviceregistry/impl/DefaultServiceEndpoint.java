@@ -35,9 +35,7 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
    public boolean equals(final Object obj) {
       if (this == obj)
          return true;
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
+      if (obj == null || getClass() != obj.getClass())
          return false;
       final DefaultServiceEndpoint other = (DefaultServiceEndpoint) obj;
       if (!Objects.equals(serviceEndpointId, other.serviceEndpointId))

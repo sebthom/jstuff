@@ -27,19 +27,14 @@ public class WeakIdentityHashMapTest {
 
       @Override
       public int hashCode() {
-         final int prime = 31;
-         int result = 1;
-         result = prime * result + (name == null ? 0 : name.hashCode());
-         return result;
+         return Objects.hash(name);
       }
 
       @Override
       public boolean equals(final Object obj) {
          if (this == obj)
             return true;
-         if (obj == null)
-            return false;
-         if (getClass() != obj.getClass())
+         if (obj == null || getClass() != obj.getClass())
             return false;
          final Entity other = (Entity) obj;
          if (!Objects.equals(name, other.name))

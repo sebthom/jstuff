@@ -56,8 +56,8 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
             pw.println("<span style='color:red'>*isFallback*</span> ");
          }
          pw.println("<b>" + action.getHttpRequestMethod() + "</b>");
-         pw.println(Strings.replace(Strings.replace(Strings.replace(requestURL, "${", "<span style='color:blue'>${"), "}", "}</span>"), baseRequestURL,
-            baseRequestURL + "<b>") + "</b>");
+         pw.println(Strings.replace(Strings.replace(Strings.replace(requestURL, "${", "<span style='color:blue'>${"), "}", "}</span>"),
+            baseRequestURL, baseRequestURL + "<b>") + "</b>");
          pw.println("</p><table style='border: 1px solid black;width:90%;margin-bottom:0.5em'>");
 
          /*
@@ -89,13 +89,14 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
          pw.println("<span style='font-weight:bold;color:darkgreen'>" + action.getHttpResponseBodyType().getSimpleName() + "</span>");
 
          if (action.getHttpRequestBodyType() == null) {
-            pw.println(Strings.replace(action.getServiceMethodSignature(), Strings.join(requestParams, ","), "<span style='color:blue'>" + Strings.join(
-               requestParams, "</span>,<span style='color:blue'>") + "</span>"));
+            pw.println(Strings.replace(action.getServiceMethodSignature(), Strings.join(requestParams, ","), "<span style='color:blue'>"
+               + Strings.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"));
          } else {
-            final String param = Strings.substringAfterLast("," + Strings.substringBetween(action.getServiceMethodSignature(), "(", ")"), ",");
-            pw.println(Strings.replace(Strings.replace(action.getServiceMethodSignature(), Strings.join(requestParams, ","), "<span style='color:blue'>"
-               + Strings.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"), param + ")", "<span style='color:darkred'>" + param
-                  + "</span>)"));
+            final String param = Strings.substringAfterLast("," + Strings.substringBetween(action.getServiceMethodSignature(), "(", ")"),
+               ",");
+            pw.println(Strings.replace(Strings.replace(action.getServiceMethodSignature(), Strings.join(requestParams, ","),
+               "<span style='color:blue'>" + Strings.join(requestParams, "</span>,<span style='color:blue'>") + "</span>"), param + ")",
+               "<span style='color:darkred'>" + param + "</span>)"));
          }
          pw.println("</td></tr>");
          pw.println("</table>");
@@ -158,8 +159,8 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
 
       if (action == null) {
          resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-         resp.getWriter().println(serializeResponse(new RestServiceError("UnsupportedOperationException", "Unsupported HTTP request method " + reqMethod
-            + " for resource " + requestParams)));
+         resp.getWriter().println(serializeResponse(new RestServiceError("UnsupportedOperationException", "Unsupported HTTP request method "
+            + reqMethod + " for resource " + requestParams)));
          return;
       }
 
@@ -243,7 +244,8 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
          if (m.isAnnotationPresent(REST_PUT.class)) {
             final REST_PUT annotation = m.getAnnotation(REST_PUT.class);
             if (Strings.isNotEmpty(annotation.fallback())) {
-               final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.PUT, m, getService());
+               final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.PUT, m,
+                  getService());
                serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
             }
          }
@@ -251,7 +253,8 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
          if (m.isAnnotationPresent(REST_PATCH.class)) {
             final REST_PATCH annotation = m.getAnnotation(REST_PATCH.class);
             if (Strings.isNotEmpty(annotation.fallback())) {
-               final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.PATCH, m, getService());
+               final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.PATCH, m,
+                  getService());
                serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
             }
          }
@@ -259,7 +262,8 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
          if (m.isAnnotationPresent(REST_DELETE.class)) {
             final REST_DELETE annotation = m.getAnnotation(REST_DELETE.class);
             if (Strings.isNotEmpty(annotation.fallback())) {
-               final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.DELETE, m, getService());
+               final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.DELETE, m,
+                  getService());
                serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
             }
          }
@@ -267,7 +271,8 @@ public abstract class AbstractRestServiceExporter extends RemoteExporter impleme
          if (m.isAnnotationPresent(REST_HEAD.class)) {
             final REST_HEAD annotation = m.getAnnotation(REST_HEAD.class);
             if (Strings.isNotEmpty(annotation.fallback())) {
-               final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.HEAD, m, getService());
+               final RestResourceAction action = serviceActions.registerResourceAction(annotation.value(), HttpRequestMethod.HEAD, m,
+                  getService());
                serviceActions.registerFallbackResourceAction(annotation.fallback(), m, getService(), action);
             }
          }

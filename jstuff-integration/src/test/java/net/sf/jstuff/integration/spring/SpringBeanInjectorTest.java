@@ -65,7 +65,8 @@ public class SpringBeanInjectorTest {
          // expected
       }
 
-      final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanInjectorTest.xml", SpringBeanInjectorTest.class);
+      final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanInjectorTest.xml",
+         SpringBeanInjectorTest.class);
 
       final SpringBeanInjector injector = SpringBeanInjector.get();
 

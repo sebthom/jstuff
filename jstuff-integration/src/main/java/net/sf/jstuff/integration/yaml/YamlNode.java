@@ -237,7 +237,8 @@ public final class YamlNode extends ObjectNode {
 
    @Override
    @SuppressWarnings("unchecked")
-   public <T extends com.fasterxml.jackson.databind.JsonNode> T setAll(final Map<String, ? extends com.fasterxml.jackson.databind.JsonNode> properties) {
+   public <T extends com.fasterxml.jackson.databind.JsonNode> T setAll(
+      final Map<String, ? extends com.fasterxml.jackson.databind.JsonNode> properties) {
       super.setAll(properties);
       return (T) this;
    }

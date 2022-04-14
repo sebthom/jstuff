@@ -60,7 +60,7 @@ public abstract class Enumerations {
    }
 
    public static <T> Iterable<T> toIterable(final Enumeration<T> en) {
-      return () -> new Iterator<T>() {
+      return () -> new Iterator<>() {
          @Override
          public boolean hasNext() {
             return en != null && en.hasMoreElements();

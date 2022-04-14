@@ -69,24 +69,26 @@ public class RestResourceActionRegistry {
       final HttpRequestMethod reqMethod = primaryResourceAction.getHttpRequestMethod() == HttpRequestMethod.DELETE ? HttpRequestMethod.POST
          : HttpRequestMethod.GET;
 
-      final RestResourceAction action = new RestResourceAction(resourceId, reqMethod, serviceMethod, SpringBeanParanamer.getParameterNames(serviceMethod,
-         serviceImpl), primaryResourceAction);
+      final RestResourceAction action = new RestResourceAction(resourceId, reqMethod, serviceMethod, SpringBeanParanamer.getParameterNames(
+         serviceMethod, serviceImpl), primaryResourceAction);
       for (final RestResourceAction mappedAction : actions.getNullSafe(reqMethod).getNullSafe(resourceId))
          if (mappedAction.getRequiredURLParameterCount() == action.getRequiredURLParameterCount())
-            throw new IllegalArgumentException("Another service method with the same number of parameters is mapped to the same resourceId+requestMethod: "
-               + action + " <> " + mappedAction);
+            throw new IllegalArgumentException(
+               "Another service method with the same number of parameters is mapped to the same resourceId+requestMethod: " + action
+                  + " <> " + mappedAction);
       actions.getOrCreate(reqMethod).add(resourceId, action);
       return action;
    }
 
    public RestResourceAction registerResourceAction(final String resourceId, final HttpRequestMethod reqMethod, final Method serviceMethod,
       final Object serviceImpl) {
-      final RestResourceAction action = new RestResourceAction(resourceId, reqMethod, serviceMethod, SpringBeanParanamer.getParameterNames(serviceMethod,
-         serviceImpl));
+      final RestResourceAction action = new RestResourceAction(resourceId, reqMethod, serviceMethod, SpringBeanParanamer.getParameterNames(
+         serviceMethod, serviceImpl));
       for (final RestResourceAction mappedAction : actions.getNullSafe(reqMethod).getNullSafe(resourceId))
          if (mappedAction.getRequiredURLParameterCount() == action.getRequiredURLParameterCount())
-            throw new IllegalArgumentException("Another service method with the same number of parameters is mapped to the same resourceId+requestMethod: "
-               + action + " <> " + mappedAction);
+            throw new IllegalArgumentException(
+               "Another service method with the same number of parameters is mapped to the same resourceId+requestMethod: " + action
+                  + " <> " + mappedAction);
       actions.getOrCreate(reqMethod).add(resourceId, action);
       return action;
    }

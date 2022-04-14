@@ -125,7 +125,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
    @Override
    public Iterator<E> iterator() {
       final Iterator<E> it = wrapped.iterator();
-      return new Iterator<E>() {
+      return new Iterator<>() {
          int index = -1;
          E item;
 

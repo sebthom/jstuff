@@ -99,9 +99,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
    public boolean equals(final Object obj) {
       if (this == obj)
          return true;
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
+      if (obj == null || getClass() != obj.getClass())
          return false;
       final AbstractJPAEntity<?> other = (AbstractJPAEntity<?>) obj;
       if (getId() == null) {
@@ -149,18 +147,13 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
             for (final Field field : currClazz.getDeclaredFields())
                if (!Fields.isStatic(field) && !field.getName().startsWith("class$")) {
                   final Object fieldValue = Fields.read(this, field);
-                  if (field.getType().isAssignableFrom(AbstractJPAEntity.class)) {
-                     if (fieldValue == null) {
-                        sb.append(intend).append("[").append(field.getName()).append("] ").append(fieldValue).append(" | ").append(field.getType().getName())
-                           .append(NEW_LINE);
-                     } else {
-                        final AbstractJPAEntity<?> referencedEntity = (AbstractJPAEntity<?>) fieldValue;
-                        sb.append(intend).append("[").append(field.getName()).append("] id=").append(referencedEntity.getId()).append(" | ").append(
-                           referencedEntity.getClass().getName()).append(NEW_LINE);
-                     }
+                  if (fieldValue == null || !field.getType().isAssignableFrom(AbstractJPAEntity.class)) {
+                     sb.append(intend).append("[").append(field.getName()).append("] ").append(fieldValue).append(" | ").append(field
+                        .getType().getName()).append(NEW_LINE);
                   } else {
-                     sb.append(intend).append("[").append(field.getName()).append("] ").append(fieldValue).append(" | ").append(field.getType().getName())
-                        .append(NEW_LINE);
+                     final AbstractJPAEntity<?> referencedEntity = (AbstractJPAEntity<?>) fieldValue;
+                     sb.append(intend).append("[").append(field.getName()).append("] id=").append(referencedEntity.getId()).append(" | ")
+                        .append(referencedEntity.getClass().getName()).append(NEW_LINE);
                   }
                }
             sb.append(NEW_LINE);

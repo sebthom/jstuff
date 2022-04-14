@@ -28,7 +28,8 @@ public class LinePrefixingTeeInputStreamTest {
            LinePrefixingTeeInputStream tee = new LinePrefixingTeeInputStream(input, branch, "prefix: ")) {
 
          assertThat(IOUtils.toString(tee)).isEqualTo("Line 1" + Strings.NEW_LINE + "Line 2" + Strings.NEW_LINE + "Line 3");
-         assertThat(branch.toString()).isEqualTo("prefix: Line 1" + Strings.NEW_LINE + "prefix: Line 2" + Strings.NEW_LINE + "prefix: Line 3");
+         assertThat(branch.toString()).isEqualTo("prefix: Line 1" + Strings.NEW_LINE + "prefix: Line 2" + Strings.NEW_LINE
+            + "prefix: Line 3");
       }
    }
 }

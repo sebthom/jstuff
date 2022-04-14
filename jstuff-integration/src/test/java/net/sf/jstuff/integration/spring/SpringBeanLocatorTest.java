@@ -22,7 +22,8 @@ public class SpringBeanLocatorTest {
       } catch (final IllegalStateException ex) {
          // expected
       }
-      final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml", SpringBeanLocatorTest.class);
+      final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml",
+         SpringBeanLocatorTest.class);
 
       assertThat(SpringBeanLocator.get().byClass(SpringBeanLocator.class)).isNotNull();
       final Object bean = SpringBeanLocator.get().byName("springBean");

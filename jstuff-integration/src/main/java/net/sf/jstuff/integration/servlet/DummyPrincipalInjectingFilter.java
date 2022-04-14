@@ -109,7 +109,8 @@ public class DummyPrincipalInjectingFilter implements Filter {
    }
 
    @Override
-   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
+      ServletException {
       if (username != null && request instanceof HttpServletRequest) {
          LOG.debug("Injecting dummy user [%s]...", username);
          final HttpServletRequestWrapper wrapper = requestWrapper.get();

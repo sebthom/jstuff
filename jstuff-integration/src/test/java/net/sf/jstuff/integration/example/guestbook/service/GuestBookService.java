@@ -52,8 +52,8 @@ public interface GuestBookService {
     * @throws PermissionDeniedException if not authorized to access the comment with the given ID
     */
    @REST_GET("responses")
-   PagedListWithSortBy<GuestBookEntry, String> getResponses(int entryId, int start, int max, @SuppressWarnings("unchecked") SortBy<String>... sortBy)
-      throws PermissionDeniedException;
+   PagedListWithSortBy<GuestBookEntry, String> getResponses(int entryId, int start, int max,
+      @SuppressWarnings("unchecked") SortBy<String>... sortBy) throws PermissionDeniedException;
 
    @REST_HEAD(value = "responses", fallback = "responses_count")
    int getResponsesCount(int entryId) throws PermissionDeniedException;

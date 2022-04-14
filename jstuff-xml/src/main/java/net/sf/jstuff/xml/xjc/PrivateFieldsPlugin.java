@@ -41,13 +41,9 @@ public class PrivateFieldsPlugin extends AbstractPlugin {
       for (final ClassOutline classDef : model.getClasses()) {
 
          for (final JFieldVar fieldDef : classDef.implClass.fields().values()) {
-            // ignore static fields
-            if ((fieldDef.mods().getValue() & JMod.STATIC) != 0) {
-               continue;
-            }
-
-            // ignore private fields
-            if ((fieldDef.mods().getValue() & JMod.PRIVATE) != 0) {
+            if ((fieldDef.mods().getValue() & JMod.STATIC) != 0 // ignore static fields
+               || (fieldDef.mods().getValue() & JMod.PRIVATE) != 0 // ignore private fields
+            ) {
                continue;
             }
 
@@ -57,5 +53,4 @@ public class PrivateFieldsPlugin extends AbstractPlugin {
       }
       return true;
    }
-
 }

@@ -61,10 +61,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
 
             @Override
             public boolean isVisitingMethod(final Method method) {
-               if (Methods.isStatic(method))
-                  return false;
-
-               if (method.getParameterTypes().length != 1)
+               if (Methods.isStatic(method) || method.getParameterTypes().length != 1)
                   return false;
 
                final Builder.Property annoOverride = propertyConfig.get(method.getName());

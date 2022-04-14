@@ -103,8 +103,10 @@ public class CompressionITest {
          cmp.decompress(new ByteArrayInputStream(compressedOS.toByteArray()), uncompressedOS);
 
          assertThat(uncompressedOS.toByteArray()).isEqualTo(TEST_TEXT_BYTES);
-         assertThat(IOUtils.readBytes(cmp.createDecompressingInputStream(new ByteArrayInputStream(compressedOS.toByteArray())))).isEqualTo(TEST_TEXT_BYTES);
-         assertThat(cmp.decompress(IOUtils.readBytes(cmp.createCompressingInputStream(new ByteArrayInputStream(TEST_TEXT_BYTES))))).isEqualTo(TEST_TEXT_BYTES);
+         assertThat(IOUtils.readBytes(cmp.createDecompressingInputStream(new ByteArrayInputStream(compressedOS.toByteArray())))).isEqualTo(
+            TEST_TEXT_BYTES);
+         assertThat(cmp.decompress(IOUtils.readBytes(cmp.createCompressingInputStream(new ByteArrayInputStream(TEST_TEXT_BYTES)))))
+            .isEqualTo(TEST_TEXT_BYTES);
       }
    }
 
@@ -164,7 +166,8 @@ public class CompressionITest {
 
       System.out.println("Benchmark results by roundtrip speed:");
       int i = 1;
-      for (final BenchmarkResult r : result.values().stream().sorted(CompressionBenchmark.COMPARATOR_ROUNDTRIP_SPEED).collect(Collectors.toList())) {
+      for (final BenchmarkResult r : result.values().stream().sorted(CompressionBenchmark.COMPARATOR_ROUNDTRIP_SPEED).collect(Collectors
+         .toList())) {
          System.out.println(" " + i++ + ". " + r);
       }
       System.out.println("Benchmark results by ratio:");

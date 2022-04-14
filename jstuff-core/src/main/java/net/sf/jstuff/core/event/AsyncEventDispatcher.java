@@ -22,8 +22,8 @@ import net.sf.jstuff.core.validation.Args;
 @ThreadSafe
 public class AsyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
    private static final class LazyInitialized {
-      private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder()
-         .daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("EventManager-thread").build());
+      private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors.newSingleThreadScheduledExecutor(
+         new BasicThreadFactory.Builder().daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("EventManager-thread").build());
    }
 
    private final Set<EventListener<EVENT>> eventListeners = new CopyOnWriteArraySet<>();

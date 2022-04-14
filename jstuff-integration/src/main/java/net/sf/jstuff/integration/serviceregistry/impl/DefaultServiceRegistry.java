@@ -110,7 +110,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
       }
 
       private void removeActiveService() {
-         LOG.info("Removing service:\n  serviceEndpointId : %s\n  serviceInterface  : %s [%s]\n  serviceInstance   : %s [%s]", serviceEndpointId, //
+         LOG.info("Removing service:\n  serviceEndpointId : %s\n  serviceInterface  : %s [%s]\n  serviceInstance   : %s [%s]",
+            serviceEndpointId, //
             activeServiceInterface.getName(), toString(activeServiceInterface.getClassLoader()), //
             toString(activeService), toString(activeService.getClass().getClassLoader()));
          activeService = null;
@@ -125,7 +126,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
       }
 
       private <SERVICE_INTERFACE> void setActiveService(final Class<SERVICE_INTERFACE> serviceInterface, final SERVICE_INTERFACE service) {
-         LOG.info("Registering service:\n  serviceEndpointId : %s\n  serviceInterface  : %s [%s]\n  serviceInstance   : %s [%s]", serviceEndpointId, //
+         LOG.info("Registering service:\n  serviceEndpointId : %s\n  serviceInterface  : %s [%s]\n  serviceInstance   : %s [%s]",
+            serviceEndpointId, //
             serviceInterface.getName(), toString(serviceInterface.getClassLoader()), //
             toString(service), toString(service.getClass().getClassLoader()));
          activeServiceInterface = serviceInterface;
@@ -213,8 +215,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
          if (srvConfig.activeService == serviceInstance)
             return false;
 
-         throw new IllegalStateException("Cannot register service [" + serviceInstance + "] at endpoint [" + serviceEndpointId + "] because service ["
-            + srvConfig.activeService + "] is already registered.");
+         throw new IllegalStateException("Cannot register service [" + serviceInstance + "] at endpoint [" + serviceEndpointId
+            + "] because service [" + srvConfig.activeService + "] is already registered.");
       } finally {
          serviceEndpoints_WRITE.unlock();
       }
@@ -227,9 +229,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
       final Class<SERVICE_INTERFACE> serviceInterface) {
       final DefaultServiceProxyAdvice<SERVICE_INTERFACE> advice = new DefaultServiceProxyAdvice<>(serviceEndpointState, serviceInterface);
       final ServiceProxyInternal<SERVICE_INTERFACE> serviceProxy = Proxies.create((proxy, method, args) -> {
-         if (method.getDeclaringClass() == ServiceProxy.class)
-            return method.invoke(advice, args);
-         if (method.getDeclaringClass() == ServiceProxyInternal.class)
+         if (method.getDeclaringClass() == ServiceProxy.class || method.getDeclaringClass() == ServiceProxyInternal.class)
             return method.invoke(advice, args);
 
          final String methodName = method.getName();
@@ -274,7 +274,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
    }
 
    @Override
-   public <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(final String serviceEndpointId, final Class<SERVICE_INTERFACE> serviceInterface) {
+   public <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(final String serviceEndpointId,
+      final Class<SERVICE_INTERFACE> serviceInterface) {
       Args.notNull("serviceEndpointId", serviceEndpointId);
       Args.notNull("serviceInterface", serviceInterface);
 
@@ -355,10 +356,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
       serviceEndpoints_WRITE.lock();
       try {
          final ServiceEndpointState srvConfig = serviceEndpoints.get(serviceEndpointId);
-         if (srvConfig == null)
-            return false;
-
-         if (srvConfig.activeService != serviceInstance)
+         if (srvConfig == null || srvConfig.activeService != serviceInstance)
             return false;
 
          srvConfig.removeActiveService();

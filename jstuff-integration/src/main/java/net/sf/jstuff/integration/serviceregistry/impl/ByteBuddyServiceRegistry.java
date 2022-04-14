@@ -27,7 +27,8 @@ public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
       private final ServiceEndpointState serviceEndpointState;
       private final Class<SERVICE_INTERFACE> serviceInterface;
 
-      protected ByteBuddyServiceInterceptor(final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
+      protected ByteBuddyServiceInterceptor(final ServiceEndpointState serviceEndpointState,
+         final Class<SERVICE_INTERFACE> serviceInterface) {
          this.serviceEndpointState = serviceEndpointState;
          this.serviceInterface = serviceInterface;
       }
@@ -67,7 +68,8 @@ public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
           ex.printStackTrace();
       }*/
 
-      final DefaultServiceProxyAdvice<SERVICE_INTERFACE> proxy = Types.newInstance(clazz.getLoaded(), serviceEndpointState, serviceInterface);
+      final DefaultServiceProxyAdvice<SERVICE_INTERFACE> proxy = Types.newInstance(clazz.getLoaded(), serviceEndpointState,
+         serviceInterface);
       proxy.setProxy(proxy);
       return proxy;
    }

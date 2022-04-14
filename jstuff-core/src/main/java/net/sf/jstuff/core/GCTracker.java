@@ -44,8 +44,8 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
    }
 
    private static final class LazyInitialized {
-      private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors.newSingleThreadScheduledExecutor(new BasicThreadFactory.Builder()
-         .daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("GCTracker-thread").build());
+      private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors.newSingleThreadScheduledExecutor(
+         new BasicThreadFactory.Builder().daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("GCTracker-thread").build());
    }
 
    private static final Logger LOG = Logger.create();
@@ -110,7 +110,8 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
       Args.notNull("target", subject);
 
       if (subject == eventToFireOnGC)
-         throw new IllegalArgumentException("eventToFireOnGC callback cannot be the same as the target, this avoids garbage collection of target.");
+         throw new IllegalArgumentException(
+            "eventToFireOnGC callback cannot be the same as the target, this avoids garbage collection of target.");
 
       monitoredReferences.add(new GCReference(subject, eventToFireOnGC, this));
    }

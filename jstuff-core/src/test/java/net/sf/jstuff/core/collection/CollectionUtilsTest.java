@@ -5,7 +5,7 @@
 package net.sf.jstuff.core.collection;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
-import static net.sf.jstuff.core.collection.Sets.newLinkedHashSet;
+import static net.sf.jstuff.core.collection.Sets.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Collections;

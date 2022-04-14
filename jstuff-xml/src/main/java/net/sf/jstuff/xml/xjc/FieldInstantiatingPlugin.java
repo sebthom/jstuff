@@ -100,7 +100,8 @@ public class FieldInstantiatingPlugin extends AbstractPlugin {
                if (jakarta.xml.bind.annotation.XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName()) //
                   || "javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName()) //
                ) {
-                  for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) a.getAnnotationMembers().get("value")).annotations()) {
+                  for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) a.getAnnotationMembers().get("value"))
+                     .annotations()) {
                      final JAnnotationValue requiredAttribute = xmlElementRefAnno.getAnnotationMembers().get("required");
                      if (requiredAttribute != null) {
                         ((Map<?, ?>) Fields.read(xmlElementRefAnno, memberValueFields)).remove("required");
@@ -122,7 +123,8 @@ public class FieldInstantiatingPlugin extends AbstractPlugin {
                throw new IllegalStateException("FieldOutline not found for " + fieldDecl.name());
 
             boolean doInstantiate = false;
-            for (final CPluginCustomization pc : findCustomizations(fieldDef.getPropertyInfo().getCustomizations(), CUSTOMIZATION_ENABLED_TAG)) {
+            for (final CPluginCustomization pc : findCustomizations(fieldDef.getPropertyInfo().getCustomizations(),
+               CUSTOMIZATION_ENABLED_TAG)) {
                pc.markAsAcknowledged();
                doInstantiate = true;
             }

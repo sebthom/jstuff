@@ -30,9 +30,7 @@ public class Entity extends Identifiable.Default<Integer> {
    public boolean equals(final Object obj) {
       if (this == obj)
          return true;
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
+      if (obj == null || getClass() != obj.getClass())
          return false;
       final Entity other = (Entity) obj;
       if (!Objects.equals(id, other.id))

@@ -260,7 +260,8 @@ public abstract class Locks {
       return true;
    }
 
-   public static boolean tryLockAll(final long time, final TimeUnit unit, final Collection<? extends Lock> locks) throws InterruptedException {
+   public static boolean tryLockAll(final long time, final TimeUnit unit, final Collection<? extends Lock> locks)
+      throws InterruptedException {
       if (locks == null || locks.isEmpty())
          return true;
 

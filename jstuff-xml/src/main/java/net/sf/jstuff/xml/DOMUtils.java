@@ -101,29 +101,18 @@ public abstract class DOMUtils {
       public boolean equals(final Object obj) {
          if (this == obj)
             return true;
-         if (obj == null)
-            return false;
-         if (getClass() != obj.getClass())
+         if (obj == null || getClass() != obj.getClass())
             return false;
          final XPathNode other = (XPathNode) obj;
 
-         if (!Objects.equals(name, other.name))
-            return false;
-         if (!Objects.equals(value, other.value))
-            return false;
-         if (!Objects.equals(xPath, other.xPath))
+         if (!Objects.equals(name, other.name) || !Objects.equals(value, other.value) || !Objects.equals(xPath, other.xPath))
             return false;
          return true;
       }
 
       @Override
       public int hashCode() {
-         final int prime = 31;
-         int result = 1;
-         result = prime * result + (name == null ? 0 : name.hashCode());
-         result = prime * result + (value == null ? 0 : value.hashCode());
-         result = prime * result + (xPath == null ? 0 : xPath.hashCode());
-         return result;
+         return Objects.hash(name, value, xPath);
       }
 
       @Override

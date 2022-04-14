@@ -54,7 +54,8 @@ public class RequestAttributeSettingFilter implements Filter {
    }
 
    @Override
-   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
+      ServletException {
       if (!attributes.isEmpty()) {
          LOG.debug("For request [%s] setting request attributes: %s", request, attributes);
 

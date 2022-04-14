@@ -67,7 +67,8 @@ public class LZ4BlockCompression extends AbstractCompression {
 
       output = new DelegatingOutputStream(output, true);
 
-      try (LZ4BlockOutputStream compOS = new LZ4BlockOutputStream(toCloseIgnoring(output), DEFAULT_BLOCK_SIZE, COMP, CHECKSUM.get(), false)) {
+      try (LZ4BlockOutputStream compOS = new LZ4BlockOutputStream(toCloseIgnoring(output), DEFAULT_BLOCK_SIZE, COMP, CHECKSUM.get(),
+         false)) {
          IOUtils.copyLarge(uncompressed, compOS);
          compOS.finish();
       }

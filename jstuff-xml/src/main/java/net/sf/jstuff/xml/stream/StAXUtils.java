@@ -86,7 +86,8 @@ public abstract class StAXUtils {
     * @deprecated use {@link StAXFactory}
     */
    @Deprecated
-   public static AutoCloseableXMLEventReader createXMLEventReader(final InputStream xmlInput, final boolean autoClose) throws XMLStreamException {
+   public static AutoCloseableXMLEventReader createXMLEventReader(final InputStream xmlInput, final boolean autoClose)
+      throws XMLStreamException {
       return DEFAULT_STAX_FACTORY.createXMLEventReader(xmlInput, autoClose);
    }
 
@@ -95,7 +96,8 @@ public abstract class StAXUtils {
     * @deprecated use {@link StAXFactory}
     */
    @Deprecated
-   public static AutoCloseableXMLEventReader createXMLEventReader(final Reader xmlReader, final boolean autoClose) throws XMLStreamException {
+   public static AutoCloseableXMLEventReader createXMLEventReader(final Reader xmlReader, final boolean autoClose)
+      throws XMLStreamException {
       return DEFAULT_STAX_FACTORY.createXMLEventReader(xmlReader, autoClose);
    }
 
@@ -112,7 +114,8 @@ public abstract class StAXUtils {
     * @deprecated use {@link StAXFactory}
     */
    @Deprecated
-   public static AutoCloseableXMLEventReader createXMLEventReader(final StreamSource xmlSource, final boolean autoClose) throws XMLStreamException {
+   public static AutoCloseableXMLEventReader createXMLEventReader(final StreamSource xmlSource, final boolean autoClose)
+      throws XMLStreamException {
       return DEFAULT_STAX_FACTORY.createXMLEventReader(xmlSource, autoClose);
    }
 
@@ -129,8 +132,8 @@ public abstract class StAXUtils {
     * @deprecated use {@link StAXFactory}
     */
    @Deprecated
-   public static AutoCloseableXMLEventWriter createXMLEventWriter(final OutputStream xmlOutput, final Charset encoding, final boolean autoClose)
-      throws XMLStreamException {
+   public static AutoCloseableXMLEventWriter createXMLEventWriter(final OutputStream xmlOutput, final Charset encoding,
+      final boolean autoClose) throws XMLStreamException {
       return DEFAULT_STAX_FACTORY.createXMLEventWriter(xmlOutput, encoding, autoClose);
    }
 
@@ -147,7 +150,8 @@ public abstract class StAXUtils {
     * @deprecated use {@link StAXFactory}
     */
    @Deprecated
-   public static AutoCloseableXMLEventWriter createXMLEventWriter(final StreamResult xmlResult, final boolean autoClose) throws XMLStreamException {
+   public static AutoCloseableXMLEventWriter createXMLEventWriter(final StreamResult xmlResult, final boolean autoClose)
+      throws XMLStreamException {
       return DEFAULT_STAX_FACTORY.createXMLEventWriter(xmlResult, autoClose);
    }
 
@@ -156,7 +160,8 @@ public abstract class StAXUtils {
     * @deprecated use {@link StAXFactory}
     */
    @Deprecated
-   public static AutoCloseableXMLEventWriter createXMLEventWriter(final Writer xmlWriter, final boolean autoClose) throws XMLStreamException {
+   public static AutoCloseableXMLEventWriter createXMLEventWriter(final Writer xmlWriter, final boolean autoClose)
+      throws XMLStreamException {
       return DEFAULT_STAX_FACTORY.createXMLEventWriter(xmlWriter, autoClose);
    }
 
@@ -173,7 +178,8 @@ public abstract class StAXUtils {
     * @deprecated use {@link StAXFactory}
     */
    @Deprecated
-   public static ExtendedXMLStreamReader createXMLStreamReader(final InputStream xmlInput, final boolean autoClose) throws XMLStreamException {
+   public static ExtendedXMLStreamReader createXMLStreamReader(final InputStream xmlInput, final boolean autoClose)
+      throws XMLStreamException {
       return DEFAULT_STAX_FACTORY.createXMLStreamReader(xmlInput, autoClose);
    }
 
@@ -199,7 +205,8 @@ public abstract class StAXUtils {
     * @deprecated use {@link StAXFactory}
     */
    @Deprecated
-   public static ExtendedXMLStreamReader createXMLStreamReader(final StreamSource xmlSource, final boolean autoClose) throws XMLStreamException {
+   public static ExtendedXMLStreamReader createXMLStreamReader(final StreamSource xmlSource, final boolean autoClose)
+      throws XMLStreamException {
       return DEFAULT_STAX_FACTORY.createXMLStreamReader(xmlSource, autoClose);
    }
 
@@ -216,8 +223,8 @@ public abstract class StAXUtils {
     * @deprecated use {@link StAXFactory}
     */
    @Deprecated
-   public static ExtendedXMLStreamWriter createXMLStreamWriter(final OutputStream xmlOutput, final Charset encoding, final boolean autoClose)
-      throws XMLStreamException {
+   public static ExtendedXMLStreamWriter createXMLStreamWriter(final OutputStream xmlOutput, final Charset encoding,
+      final boolean autoClose) throws XMLStreamException {
       return DEFAULT_STAX_FACTORY.createXMLStreamWriter(xmlOutput, encoding, autoClose);
    }
 
@@ -234,7 +241,8 @@ public abstract class StAXUtils {
     * @deprecated use {@link StAXFactory}
     */
    @Deprecated
-   public static ExtendedXMLStreamWriter createXMLStreamWriter(final StreamResult xmlResult, final boolean autoClose) throws XMLStreamException {
+   public static ExtendedXMLStreamWriter createXMLStreamWriter(final StreamResult xmlResult, final boolean autoClose)
+      throws XMLStreamException {
       return DEFAULT_STAX_FACTORY.createXMLStreamWriter(xmlResult, autoClose);
    }
 

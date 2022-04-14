@@ -165,7 +165,8 @@ public class DelegatingXMLStreamReader extends Decorator.Default<XMLStreamReader
    }
 
    @Override
-   public int getTextCharacters(final int sourceStart, final char[] target, final int targetStart, final int length) throws XMLStreamException {
+   public int getTextCharacters(final int sourceStart, final char[] target, final int targetStart, final int length)
+      throws XMLStreamException {
       return wrapped.getTextCharacters(sourceStart, target, targetStart, length);
    }
 

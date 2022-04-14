@@ -24,7 +24,7 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Threads {
    private static final Logger LOG = Logger.create();
 
-   private static final Thread[] EMPTY_THREAD_ARRAY = new Thread[0];
+   private static final Thread[] EMPTY_THREAD_ARRAY = {};
 
    private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = (t1, t2) -> t2.getPriority() - t1.getPriority();
 

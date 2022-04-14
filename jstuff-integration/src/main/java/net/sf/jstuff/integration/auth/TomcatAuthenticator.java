@@ -36,8 +36,8 @@ public class TomcatAuthenticator implements Authenticator {
          final ObjectName name = new ObjectName("Catalina", "type", "Server");
          final Server server = (Server) mBeanServer.getAttribute(name, "managedResource");
          final Engine engine = server.findService("Catalina").getContainer();
-         final Context context = (Context) engine.findChild(engine.getDefaultHost()).findChild(SecurityFilter.HTTP_SERVLET_REQUEST_HOLDER.get()
-            .getContextPath());
+         final Context context = (Context) engine.findChild(engine.getDefaultHost()).findChild(SecurityFilter.HTTP_SERVLET_REQUEST_HOLDER
+            .get().getContextPath());
          return context.getRealm().authenticate(logonName, password) != null;
       } catch (final Exception ex) {
          LOG.error(ex);

@@ -45,7 +45,8 @@ public class X509UtilsTest {
       assertThat(selfSignedPublicKeyPEM) //
          .startsWith("-----BEGIN PUBLIC KEY-----" + Strings.NEW_LINE) //
          .endsWith(Strings.NEW_LINE + "-----END PUBLIC KEY-----" + Strings.NEW_LINE);
-      final PublicKey selfSignedPublicKey = X509Utils.getPublicKeyFromPEM(selfSignedPublicKeyPEM, selfSignedCert.getPublicKey().getAlgorithm());
+      final PublicKey selfSignedPublicKey = X509Utils.getPublicKeyFromPEM(selfSignedPublicKeyPEM, selfSignedCert.getPublicKey()
+         .getAlgorithm());
       assertThat(selfSignedPublicKey).isEqualTo(selfSignedCert.getPublicKey());
 
       final String selfSignedPrivateKeyPEM = X509Utils.toPEM(selfSigned.get2());

@@ -33,7 +33,8 @@ public class HttpServletResponseHeaderSettingFilter implements Filter {
    }
 
    @Override
-   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
+      ServletException {
       LOG.trace("For request %s setting HTTP response headers: %s", request, parameter);
 
       final HttpServletResponse res = (HttpServletResponse) response;

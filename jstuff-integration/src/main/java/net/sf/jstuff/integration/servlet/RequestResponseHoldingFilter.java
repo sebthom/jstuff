@@ -49,7 +49,8 @@ public class RequestResponseHoldingFilter implements Filter {
    }
 
    @Override
-   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
+      ServletException {
       REQ.set(request);
       try {
          RESP.set(response);

@@ -81,7 +81,8 @@ public class TypesGenericsTest {
          return ArrayUtils.EMPTY_CLASS_ARRAY;
 
       if (!searchFor.isAssignableFrom(searchIn))
-         throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is assignable to [searchFor=" + searchFor.getName() + "]");
+         throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is assignable to [searchFor=" + searchFor.getName()
+            + "]");
 
       final boolean isSearchForInterface = searchFor.isInterface();
       final Queue<Type> interfacesToCheck = isSearchForInterface ? new LinkedList<>() : null;

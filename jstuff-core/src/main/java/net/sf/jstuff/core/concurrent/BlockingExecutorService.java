@@ -49,7 +49,8 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
    /**
     * @param maxWaitTime max time to wait for a tasks being added to the queue
     */
-   public BlockingExecutorService(final ExecutorService executorService, final int maxQueueSize, final int maxWaitTime, final TimeUnit maxWaitTimeUnit) {
+   public BlockingExecutorService(final ExecutorService executorService, final int maxQueueSize, final int maxWaitTime,
+      final TimeUnit maxWaitTimeUnit) {
       super(executorService, maxQueueSize, maxWaitTime, maxWaitTimeUnit);
       this.executorService = executorService;
    }
@@ -75,7 +76,8 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
    }
 
    @Override
-   public <T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit) throws InterruptedException {
+   public <T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit)
+      throws InterruptedException {
       return executorService.invokeAll(wrapTasks(tasks), timeout, unit);
    }
 
@@ -85,8 +87,8 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
    }
 
    @Override
-   public <T> T invokeAny(final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit) throws InterruptedException,
-      ExecutionException, TimeoutException {
+   public <T> T invokeAny(final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit)
+      throws InterruptedException, ExecutionException, TimeoutException {
       return executorService.invokeAny(wrapTasks(tasks), timeout, unit);
    }
 

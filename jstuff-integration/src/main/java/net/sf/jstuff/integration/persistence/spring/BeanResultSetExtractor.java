@@ -60,8 +60,8 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
             }
             extractedBeans.add(bean);
          } catch (final Exception ex) {
-            LOG.error(ex, "Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass, Strings.toString(bean),
-               Strings.toString(dynaBean));
+            LOG.error(ex, "Unexpected error occurred while processing DynaBean.\n beanClass=%s\n bean=%s\n dynaBean=%s", beanClass, Strings
+               .toString(bean), Strings.toString(dynaBean));
          }
       }
       return extractedBeans;
@@ -78,8 +78,8 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
       for (final PropertyDescriptor prop : beanInfo.getPropertyDescriptors()) {
          final String propName = prop.getName();
          if (propsLowerCase.put(propName.toLowerCase(), propName) != null)
-            throw new IllegalStateException("Bean Class " + beanClass.getName() + " contains multiple properties with same lowercase representation: "
-               + propName);
+            throw new IllegalStateException("Bean Class " + beanClass.getName()
+               + " contains multiple properties with same lowercase representation: " + propName);
       }
 
       this.beanClass = beanClass;

@@ -284,9 +284,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    public static char charAt(final CharSequence text, final int index, final char resultIfOutOfBound) {
-      if (index < 0)
-         return resultIfOutOfBound;
-      if (index >= text.length())
+      if (index < 0 || index >= text.length())
          return resultIfOutOfBound;
       return text.charAt(index);
    }

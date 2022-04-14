@@ -28,12 +28,13 @@ public class RestResourceAction implements Serializable {
    private final int requiredURLParameterCount;
    private final String requestURITemplate;
 
-   public RestResourceAction(final String resource, final HttpRequestMethod httpRequestMethod, final Method serviceMethod, final String[] parameterNames) {
+   public RestResourceAction(final String resource, final HttpRequestMethod httpRequestMethod, final Method serviceMethod,
+      final String[] parameterNames) {
       this(resource, httpRequestMethod, serviceMethod, parameterNames, null);
    }
 
-   public RestResourceAction(final String resourceName, final HttpRequestMethod httpRequestMethod, final Method serviceMethod, final String[] parameterNames,
-      final RestResourceAction fallbackFor) {
+   public RestResourceAction(final String resourceName, final HttpRequestMethod httpRequestMethod, final Method serviceMethod,
+      final String[] parameterNames, final RestResourceAction fallbackFor) {
       Args.notNull("resource", resourceName);
       Args.notNull("httpRequestMethod", httpRequestMethod);
       Args.notNull("method", serviceMethod);
@@ -50,7 +51,8 @@ public class RestResourceAction implements Serializable {
       if (httpRequestMethod == HttpRequestMethod.PUT || httpRequestMethod == HttpRequestMethod.POST) {
          if (paramCount == 0)
             throw new IllegalArgumentException("HTTP Request Method [" + httpRequestMethod
-               + "] requires a service method with at least one parameter. ResourceId= " + resourceName + ", Service Method=" + serviceMethod);
+               + "] requires a service method with at least one parameter. ResourceId= " + resourceName + ", Service Method="
+               + serviceMethod);
 
          if (paramCount < 2) {
             requestURITemplate = resourceName;
@@ -113,7 +115,8 @@ public class RestResourceAction implements Serializable {
    public String getServiceMethodSignature() {
       if (parameterNames.length == 0)
          return serviceMethod.getDeclaringClass().getSimpleName() + "." + serviceMethod.getName() + "()";
-      return serviceMethod.getDeclaringClass().getSimpleName() + "." + serviceMethod.getName() + "(" + Strings.join(parameterNames, ",") + ")";
+      return serviceMethod.getDeclaringClass().getSimpleName() + "." + serviceMethod.getName() + "(" + Strings.join(parameterNames, ",")
+         + ")";
    }
 
    public boolean isFallback() {
@@ -126,6 +129,7 @@ public class RestResourceAction implements Serializable {
 
    @Override
    public String toString() {
-      return getClass().getSimpleName() + ": resource=" + resourceName + "; httpMethod = " + httpRequestMethod + "; method=" + serviceMethod;
+      return getClass().getSimpleName() + ": resource=" + resourceName + "; httpMethod = " + httpRequestMethod + "; method="
+         + serviceMethod;
    }
 }

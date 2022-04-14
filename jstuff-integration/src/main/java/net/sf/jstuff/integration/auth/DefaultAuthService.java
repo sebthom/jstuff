@@ -227,7 +227,8 @@ public class DefaultAuthService implements AuthService {
    /**
     * @param mappings format = "groupIdXXX=roleXXX"
     */
-   public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final String[] mappings) throws UnknownApplicationRoleException {
+   public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final String[] mappings)
+      throws UnknownApplicationRoleException {
       groupIdToApplicationRoleMappings = new MapWithSets<>();
       for (final String element : mappings) {
          final String[] pair = element.split("=");

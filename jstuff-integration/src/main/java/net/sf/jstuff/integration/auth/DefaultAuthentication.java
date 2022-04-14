@@ -17,7 +17,8 @@ import net.sf.jstuff.integration.userregistry.UserDetails;
 class DefaultAuthentication implements Authentication {
    private static final long serialVersionUID = 1L;
 
-   public static final Authentication UNBOUND = new DefaultAuthentication(new DefaultUserDetails("anonymous", "anonymous", null, null, null), null);
+   public static final Authentication UNBOUND = new DefaultAuthentication(new DefaultUserDetails("anonymous", "anonymous", null, null,
+      null), null);
 
    private String password;
    private final Map<String, Serializable> properties = new HashMap<>(2);

@@ -31,8 +31,8 @@ public class ArrayUtilsTest {
       assertThat(ArrayUtils.intersect(ArrayUtils.EMPTY_OBJECT_ARRAY)).isEmpty();
       assertThat(ArrayUtils.intersect(ArrayUtils.EMPTY_OBJECT_ARRAY, null)).isEmpty();
 
-      final String[] arr1 = new String[] {"foo", "bar", "dog"};
-      final String[] arr2 = new String[] {"cat", "bar", "foo"};
+      final String[] arr1 = {"foo", "bar", "dog"};
+      final String[] arr2 = {"cat", "bar", "foo"};
 
       assertThat(ArrayUtils.intersect(arr1, arr2)).hasSize(2);
       assertThat(ArrayUtils.intersect(arr1, arr2)[0]).isEqualTo("foo");

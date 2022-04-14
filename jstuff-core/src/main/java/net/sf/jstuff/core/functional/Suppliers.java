@@ -22,8 +22,8 @@ public abstract class Suppliers {
    public static <T> Supplier<T> memoize(final Supplier<? extends T> provider) {
       Args.notNull("provider", provider);
 
-      return new Supplier<T>() {
-         private final LazyInitializedRef<T> cached = new LazyInitializedRef<T>() {
+      return new Supplier<>() {
+         private final LazyInitializedRef<T> cached = new LazyInitializedRef<>() {
             @Override
             protected T create() {
                return provider.get();
@@ -41,7 +41,7 @@ public abstract class Suppliers {
       Args.notNull("provider", provider);
       Args.notNull("ttl", ttl);
 
-      return new Supplier<T>() {
+      return new Supplier<>() {
          private Tuple2<Long, T> cached;
 
          @Override
@@ -63,7 +63,7 @@ public abstract class Suppliers {
    public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider) {
       Args.notNull("provider", provider);
 
-      return new Supplier<T>() {
+      return new Supplier<>() {
          private SoftReference<T> cached;
 
          @Override
@@ -85,7 +85,7 @@ public abstract class Suppliers {
       Args.notNull("provider", provider);
       Args.notNull("ttl", ttl);
 
-      return new Supplier<T>() {
+      return new Supplier<>() {
          private SoftReference<Tuple2<Long, T>> cached;
 
          @Override
@@ -110,7 +110,7 @@ public abstract class Suppliers {
    public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider) {
       Args.notNull("provider", provider);
 
-      return new Supplier<T>() {
+      return new Supplier<>() {
          private WeakReference<T> cached;
 
          @Override
@@ -132,7 +132,7 @@ public abstract class Suppliers {
       Args.notNull("provider", provider);
       Args.notNull("ttl", ttl);
 
-      return new Supplier<T>() {
+      return new Supplier<>() {
          private WeakReference<Tuple2<Long, T>> cached;
 
          @Override

@@ -81,7 +81,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       }
    }
 
-   private static final KeyWrapper<Object> NULL_KEY_WRAPPER = new KeyWrapper<Object>() {
+   private static final KeyWrapper<Object> NULL_KEY_WRAPPER = new KeyWrapper<>() {
       private final int identityHashCode = System.identityHashCode(null);
 
       @Override
@@ -167,7 +167,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       for (final Map.Entry<KeyWrapper<K>, V> ref : map.entrySet()) {
          final K key = ref.getKey().get();
          final V value = ref.getValue();
-         final Map.Entry<K, V> entry = new Map.Entry<K, V>() {
+         final Map.Entry<K, V> entry = new Map.Entry<>() {
             @Override
             public K getKey() {
                return key;

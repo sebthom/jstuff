@@ -39,7 +39,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
    }
 
    private <V> ScheduledFuture<V> createDelegatingFuture(final ScheduledFuture<?> scheduledFuture, final MutableRef<Future<V>> workFuture) {
-      return new ScheduledFuture<V>() {
+      return new ScheduledFuture<>() {
          @Override
          public boolean cancel(final boolean mayInterruptIfRunning) {
             final Future<V> f = workFuture.get();

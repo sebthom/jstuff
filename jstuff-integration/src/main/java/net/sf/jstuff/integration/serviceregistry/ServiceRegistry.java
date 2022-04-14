@@ -27,8 +27,8 @@ public interface ServiceRegistry {
     *
     * @throws IllegalStateException if another service was already registered for the given service Id
     */
-   <SERVICE_INTERFACE> boolean addService(Class<SERVICE_INTERFACE> serviceInterface, SERVICE_INTERFACE serviceInstance) throws IllegalArgumentException,
-      IllegalStateException;
+   <SERVICE_INTERFACE> boolean addService(Class<SERVICE_INTERFACE> serviceInterface, SERVICE_INTERFACE serviceInstance)
+      throws IllegalArgumentException, IllegalStateException;
 
    /**
     * @return <code>true</code> if the serviceInstance was added, <code>false</code> if the serviceInstance was added already
@@ -36,8 +36,8 @@ public interface ServiceRegistry {
     * @throws IllegalArgumentException if serviceEndpointId == null or serviceInstance == null
     * @throws IllegalStateException if another service was already registered for the given service Id
     */
-   <SERVICE_INTERFACE> boolean addService(String serviceEndpointId, Class<SERVICE_INTERFACE> serviceInterface, SERVICE_INTERFACE serviceInstance)
-      throws IllegalArgumentException, IllegalStateException;
+   <SERVICE_INTERFACE> boolean addService(String serviceEndpointId, Class<SERVICE_INTERFACE> serviceInterface,
+      SERVICE_INTERFACE serviceInstance) throws IllegalArgumentException, IllegalStateException;
 
    /**
     * @return <code>true</code> if the serviceInstance was removed successfully, <code>false</code> if the given serviceInstance was not registered
