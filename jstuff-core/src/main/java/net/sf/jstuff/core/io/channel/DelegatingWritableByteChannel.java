@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 by Sebastian Thomschke and contributors.
+ * Copyright 2010-2022 by Sebastian Thomschke and contributors.
  * SPDX-License-Identifier: EPL-2.0
  */
 package net.sf.jstuff.core.io.channel;
