@@ -28,39 +28,39 @@ public class KeyToolTest {
       LOG.info("Testing illegal subject DN...");
       try {
          KeyTool.createSelfSignedCertificate("sdfdsf", "RSA", 1024, 14);
-         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
+         failBecauseExceptionWasNotThrown(GeneralSecurityException.class);
       } catch (final Exception ex) {
          System.out.println(ex);
-         assertThat(ex.getClass()).isEqualTo(IllegalArgumentException.class);
+         assertThat(ex.getClass()).isEqualTo(GeneralSecurityException.class);
       }
 
       LOG.info("Testing illegal key size...");
       try {
          KeyTool.createSelfSignedCertificate("CN=foo", "RSA", 20, 14);
-         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
+         failBecauseExceptionWasNotThrown(GeneralSecurityException.class);
       } catch (final Exception ex) {
-         assertThat(ex.getClass()).isEqualTo(IllegalArgumentException.class);
+         assertThat(ex.getClass()).isEqualTo(GeneralSecurityException.class);
       }
 
       LOG.info("Testing illegal algorithm...");
       try {
          KeyTool.createSelfSignedCertificate("CN=foo", "BLABLA", 1024, 14);
-         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
+         failBecauseExceptionWasNotThrown(GeneralSecurityException.class);
       } catch (final Exception ex) {
-         assertThat(ex.getClass()).isEqualTo(IllegalArgumentException.class);
+         assertThat(ex.getClass()).isEqualTo(GeneralSecurityException.class);
       }
 
       LOG.info("Testing illegal validity...");
       try {
          KeyTool.createSelfSignedCertificate("CN=foo", "RSA", 1024, -1);
-         failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
+         failBecauseExceptionWasNotThrown(GeneralSecurityException.class);
       } catch (final Exception ex) {
-         assertThat(ex.getClass()).isEqualTo(IllegalArgumentException.class);
+         assertThat(ex.getClass()).isEqualTo(GeneralSecurityException.class);
       }
 
       final Tuple2<X509Certificate, PrivateKey> result = KeyTool.createSelfSignedCertificate("CN=foo", "RSA", 1024, 14);
 
-      assertThat(result.get1().getSubjectDN().getName()).isEqualTo("CN=foo");
+      assertThat(result.get1().getSubjectX500Principal().getName()).isEqualTo("CN=foo");
       assertThat(result.get1().getType()).isEqualTo("X.509");
       result.get1().checkValidity();
 

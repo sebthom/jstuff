@@ -1,12 +1,16 @@
 /*
- * Copyright 2010-2021 by Sebastian Thomschke and contributors.
+ * Copyright 2010-2022 by Sebastian Thomschke and contributors.
  * SPDX-License-Identifier: EPL-2.0
  */
 package net.sf.jstuff.core.reflection;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import net.sf.jstuff.core.UnsafeUtils;
 import net.sf.jstuff.core.reflection.exception.AccessingFieldValueFailedException;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.reflection.exception.SettingFieldValueFailedException;
@@ -16,6 +20,7 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Fields extends Members {
+
    public static boolean exists(final Class<?> clazz, final String fieldName) {
       return find(clazz, fieldName) != null;
    }
@@ -39,15 +44,25 @@ public abstract class Fields extends Members {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
+      Field field = null;
       try {
-         final Field field = clazz.getDeclaredField(fieldName);
-         if (compatibleTo == null)
-            return field;
-         if (Types.isAssignableTo(compatibleTo, field.getType()))
-            return field;
+         field = clazz.getDeclaredField(fieldName);
       } catch (final NoSuchFieldException ex) {
-         // ignore
+         final Field[] fields = Methods.invoke(clazz, "getDeclaredFields0", false /*publicOnly*/);
+         for (final Field f : fields) {
+            if (fieldName.equals(f.getName())) {
+               field = f;
+               break;
+            }
+         }
       }
+
+      if (field == null)
+         return null;
+
+      if (compatibleTo == null || Types.isAssignableTo(compatibleTo, field.getType()))
+         return field;
+
       return null;
    }
 
@@ -75,6 +90,25 @@ public abstract class Fields extends Members {
          return null;
 
       return findRecursive(superclazz, fieldName, compatibleTo);
+   }
+
+   public static VarHandle findVarHandle(final Class<?> clazz, final String fieldName) {
+      Args.notNull("clazz", clazz);
+      Args.notNull("fieldName", fieldName);
+
+      return findVarHandle(clazz, fieldName, null);
+   }
+
+   public static VarHandle findVarHandle(final Class<?> clazz, final String fieldName, final Class<?> fieldType) {
+      try {
+         UnsafeUtils.openModule(clazz.getModule());
+         final Lookup lookup = MethodHandles.privateLookupIn(clazz, MethodHandles.lookup());
+         return lookup.findVarHandle(Field.class, fieldName, fieldType);
+      } catch (final IllegalAccessException ex) {
+         throw new ReflectionException(ex);
+      } catch (final NoSuchFieldException e) {
+         return null;
+      }
    }
 
    /**
@@ -114,13 +148,28 @@ public abstract class Fields extends Members {
    }
 
    /**
+    * Writes to a static field
+    */
+   public static void write(final Class<?> clazz, final String fieldName, final Object value) throws ReflectionException {
+      Args.notNull("clazz", clazz);
+      Args.notNull("fieldName", fieldName);
+
+      final Field field = findRecursive(clazz, fieldName);
+      if (field == null)
+         throw new ReflectionException("No static field with name [" + fieldName + "] found in class [" + clazz.getName() + "]");
+
+      write(null, field, value);
+   }
+
+   /**
     * @param obj specify <code>null</code> for static fields
     */
    public static void write(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException {
       Args.notNull("field", field);
 
       if (isFinal(field))
-         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field.getName());
+         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#"
+            + field.getName());
 
       try {
          ensureAccessible(field);
@@ -130,30 +179,17 @@ public abstract class Fields extends Members {
       }
    }
 
-   /**
-    * Writes to a static field
-    */
-   public static void write(final Class<?> clazz, final String fieldName, final Object value) throws ReflectionException {
-      Args.notNull("clazz", clazz);
-      Args.notNull("fieldName", fieldName);
-
-      final Field field = findRecursive(clazz, fieldName);
-      if (field == null)
-         throw new ReflectionException("Static field with name [" + fieldName + "] not found in class [" + clazz.getName() + "]");
-
-      write(null, field, value);
-   }
-
    public static void write(final Object obj, final String fieldName, final Object value) throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("fieldName", fieldName);
 
       final Field field = findRecursive(obj.getClass(), fieldName);
       if (field == null)
-         throw new ReflectionException("Field with name [" + fieldName + "] not found in object [" + obj + "]");
+         throw new ReflectionException("No field with name [" + fieldName + "] found in object [" + obj + "]");
 
       if (isFinal(field))
-         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field.getName());
+         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#"
+            + field.getName());
 
       try {
          ensureAccessible(field);
@@ -172,7 +208,7 @@ public abstract class Fields extends Members {
 
       final Field field = findRecursive(clazz, fieldName);
       if (field == null)
-         throw new IllegalArgumentException("Field with name " + fieldName + " not found in class " + clazz.getName());
+         throw new IllegalArgumentException("Field with name [" + fieldName + "] not found in class " + clazz.getName());
       writeIgnoringFinal(null, field, value);
    }
 
@@ -184,7 +220,9 @@ public abstract class Fields extends Members {
 
       try {
          ensureAccessible(field);
-         write(field, "modifiers", field.getModifiers() & ~Modifier.FINAL);
+         if (isStatic(field) && isFinal(field)) {
+            write(field, "modifiers", field.getModifiers() & ~Modifier.FINAL);
+         }
          field.set(obj, value);
       } catch (final Exception ex) {
          throw new SettingFieldValueFailedException(field, obj, ex);
@@ -199,12 +237,6 @@ public abstract class Fields extends Members {
       if (field == null)
          throw new ReflectionException("Field with name [" + fieldName + "] not found in object [" + obj + "]");
 
-      try {
-         ensureAccessible(field);
-         write(field, "modifiers", field.getModifiers() & ~Modifier.FINAL);
-         field.set(obj, value);
-      } catch (final Exception ex) {
-         throw new SettingFieldValueFailedException(field, obj, ex);
-      }
+      writeIgnoringFinal(obj, field, value);
    }
 }

@@ -11,6 +11,7 @@ import java.lang.reflect.ReflectPermission;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import net.sf.jstuff.core.UnsafeUtils;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.validation.Args;
 
@@ -18,6 +19,11 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Members {
+
+   static {
+      UnsafeUtils.openModule(Member.class.getModule());
+   }
+
    private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission("suppressAccessChecks");
 
    public static void assertPrivateAccessAllowed() throws ReflectionException {
@@ -26,11 +32,13 @@ public abstract class Members {
          try {
             mgr.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
          } catch (final SecurityException ex) {
-            throw new ReflectionException("Current security manager configuration does not allow access to private fields and methods.", ex);
+            throw new ReflectionException("Current security manager configuration does not allow access to private fields and methods.",
+               ex);
          }
       }
    }
 
+   @SuppressWarnings("deprecation")
    public static void ensureAccessible(final AccessibleObject ao) {
       if (!ao.isAccessible()) {
          AccessController.doPrivileged((PrivilegedAction<?>) () -> {
