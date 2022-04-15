@@ -6,6 +6,7 @@ package net.sf.jstuff.core;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
@@ -722,8 +723,21 @@ public class StringsTest {
    @Test
    public void testSplitLines() {
       final String lines = "A\nB\n\nC\nD";
-      assertThat(Strings.splitLines(lines)).hasSize(4);
-      assertThat(Strings.splitLinesPreserveAllTokens(lines)).hasSize(5);
+      assertThat(Strings.splitLines(lines, true)).hasSize(5);
+      assertThat(Strings.splitLines(lines, false)).hasSize(4);
+   }
+
+   @Test
+   public void testSplitToList() {
+      assertThat(Strings.splitToList(null, '.')).isNull();
+      assertThat(Strings.splitToList("", '.')).isEmpty();
+      assertThat(Strings.splitToList(".", '.')).isEmpty();
+      assertThat(Strings.splitToList("...", '.')).isEmpty();
+      assertThat(Strings.splitToList("f", '.')).isEqualTo(Arrays.asList("f"));
+      assertThat(Strings.splitToList("foo", '.')).isEqualTo(Arrays.asList("foo"));
+      assertThat(Strings.splitToList(".foo.", '.')).isEqualTo(Arrays.asList("foo"));
+      assertThat(Strings.splitToList("foo.bar", '.')).isEqualTo(Arrays.asList("foo", "bar"));
+      assertThat(Strings.splitToList(".foo..bar..", '.')).isEqualTo(Arrays.asList("foo", "bar"));
    }
 
    @Test

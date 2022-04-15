@@ -8,8 +8,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -940,28 +943,78 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return out;
    }
 
-   public static String[] splitLines(final String text) {
-      if (text.indexOf(NEW_LINE) > -1)
-         return split(text, Strings.NEW_LINE);
-      if (text.indexOf(CR_LF) > -1)
-         return splitByWholeSeparatorPreserveAllTokens(text, CR_LF);
-      if (text.indexOf(LF) > -1)
-         return split(text, LF);
-      if (text.indexOf(CR) > -1)
-         return split(text, CR);
+   public static String[] splitLines(final String text, final boolean preserveEmptyLines) {
+      if (text == null)
+         return null;
+
+      if (preserveEmptyLines) {
+         if (text.indexOf(NEW_LINE) > -1)
+            return splitByWholeSeparatorPreserveAllTokens(text, Strings.NEW_LINE);
+         if (text.indexOf(CR_LF) > -1)
+            return splitByWholeSeparatorPreserveAllTokens(text, CR_LF);
+         if (text.indexOf(LF) > -1)
+            return splitPreserveAllTokens(text, LF);
+         if (text.indexOf(CR) > -1)
+            return splitPreserveAllTokens(text, CR);
+      } else {
+         if (text.indexOf(NEW_LINE) > -1)
+            return split(text, Strings.NEW_LINE);
+         if (text.indexOf(CR_LF) > -1)
+            return splitByWholeSeparator(text, CR_LF);
+         if (text.indexOf(LF) > -1)
+            return split(text, LF);
+         if (text.indexOf(CR) > -1)
+            return split(text, CR);
+      }
+
       return new String[] {text};
    }
 
-   public static String[] splitLinesPreserveAllTokens(final String text) {
-      if (text.indexOf(NEW_LINE) > -1)
-         return splitByWholeSeparatorPreserveAllTokens(text, Strings.NEW_LINE);
-      if (text.indexOf(CR_LF) > -1)
-         return splitByWholeSeparatorPreserveAllTokens(text, CR_LF);
-      if (text.indexOf(LF) > -1)
-         return splitPreserveAllTokens(text, LF);
-      if (text.indexOf(CR) > -1)
-         return splitPreserveAllTokens(text, CR);
-      return new String[] {text};
+   /**
+    * Empty tokens are not preserved.
+    */
+   @SuppressWarnings("null")
+   public static List<String> splitToList(final String text, final char separator) {
+      if (text == null)
+         return null;
+
+      final int len = text.length();
+      if (text.length() == 0)
+         return Collections.emptyList();
+
+      List<String> tokens = null;
+
+      if (len == 1) {
+         if (text.charAt(0) == separator)
+            return Collections.emptyList();
+         tokens = new ArrayList<>(1);
+         tokens.add(text);
+         return tokens;
+      }
+
+      int searchAt = 0;
+      int foundAt;
+      while ((foundAt = text.indexOf(separator, searchAt)) != -1) {
+         if (searchAt == 0) {
+            tokens = new ArrayList<>(len < 5 ? 2 : 4);
+         }
+         if (searchAt < foundAt) {
+            tokens.add(text.substring(searchAt, foundAt));
+         }
+         searchAt = foundAt + 1;
+      }
+
+      if (searchAt == 0) { // separator not found
+         tokens = new ArrayList<>(1);
+         tokens.add(text);
+         return tokens;
+      }
+
+      if (searchAt < len) {
+         tokens.add(text.substring(searchAt, len));
+      }
+
+      return tokens;
    }
 
    public static boolean startsWith(final CharSequence str, final char ch) {
@@ -1116,7 +1169,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       if (text.length() == 0)
          return text;
 
-      final String[] lines = splitLinesPreserveAllTokens(text);
+      final String[] lines = splitLines(text, true);
       for (int i = 0; i < lines.length; i++) {
          lines[i] = lines[i].trim();
       }
