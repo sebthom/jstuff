@@ -22,7 +22,7 @@ public abstract class UnsafeUtils {
       try {
          // not using net.sf.jstuff.core.reflection.Fields to avoid circular dependency in class initialization
          final Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
-         theUnsafe.setAccessible(true);
+         theUnsafe.trySetAccessible();
          UNSAFE = (Unsafe) theUnsafe.get(null);
          MODULE_DESCR_OPEN_FIELD_OFFSET = UNSAFE.objectFieldOffset(ModuleDescriptor.class.getDeclaredField("open"));
       } catch (final ReflectiveOperationException ex) {

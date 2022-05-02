@@ -88,7 +88,7 @@ public abstract class Constructors extends Members {
       Args.notNull("ctor", ctor);
 
       try {
-         ensureAccessible(ctor);
+         ctor.trySetAccessible();
          return ctor.newInstance(args);
       } catch (final Exception ex) {
          throw new InvokingConstructorFailedException(ctor, ex);

@@ -4,12 +4,9 @@
  */
 package net.sf.jstuff.core.reflection;
 
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ReflectPermission;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import net.sf.jstuff.core.UnsafeUtils;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
@@ -35,16 +32,6 @@ public abstract class Members {
             throw new ReflectionException("Current security manager configuration does not allow access to private fields and methods.",
                ex);
          }
-      }
-   }
-
-   @SuppressWarnings("deprecation")
-   public static void ensureAccessible(final AccessibleObject ao) {
-      if (!ao.isAccessible()) {
-         AccessController.doPrivileged((PrivilegedAction<?>) () -> {
-            ao.setAccessible(true);
-            return null;
-         });
       }
    }
 

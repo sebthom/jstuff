@@ -36,10 +36,11 @@ public abstract class DuckTypes {
       return Proxies.create((final Object duckProxy, final Method duckMethod, final Object[] args) -> {
          final Method duckLikeMethod = Methods.findPublicCompatible(duckLikeClass, duckMethod.getName(), duckMethod.getParameterTypes());
          if (duckLikeMethod == null || Methods.isAbstract(duckLikeMethod) || !Methods.isPublic(duckLikeMethod))
-            throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method " + duckLikeMethod + ".");
+            throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method " + duckLikeMethod
+               + ".");
 
          // the public method might be inaccessible if it was declared on a non-public class
-         Methods.ensureAccessible(duckLikeMethod);
+         duckLikeMethod.trySetAccessible();
 
          // delegate method invocation on duck proxy to duckLikeObject's method
          return duckLikeMethod.invoke(duckLikeObject, args);

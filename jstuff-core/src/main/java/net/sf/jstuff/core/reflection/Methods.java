@@ -175,10 +175,7 @@ public abstract class Methods extends Members {
       while (currentClass != null) {
          final Method[] declaredMethods = currentClass.getDeclaredMethods();
          for (final Method candidate : declaredMethods) {
-            if (isStatic(candidate)) {
-               continue;
-            }
-            if (!methodName.equals(candidate.getName())) {
+            if (isStatic(candidate) || !methodName.equals(candidate.getName())) {
                continue;
             }
 
@@ -256,9 +253,7 @@ public abstract class Methods extends Members {
 
          try {
             final Method getter = currentClass.getDeclaredMethod("get" + appendix);
-            if (compatibleTo == null)
-               return getter;
-            if (Types.isAssignableTo(getter.getReturnType(), compatibleTo))
+            if (compatibleTo == null || Types.isAssignableTo(getter.getReturnType(), compatibleTo))
                return getter;
          } catch (final NoSuchMethodException ex) {
             // ignore
@@ -300,11 +295,7 @@ public abstract class Methods extends Members {
       while (currentClass != null) {
          final Method[] declaredMethods = currentClass.getDeclaredMethods();
          for (final Method method : declaredMethods) {
-            if (isStatic(method)) {
-               continue;
-            }
-
-            if (!methodName.equals(method.getName())) {
+            if (isStatic(method) || !methodName.equals(method.getName())) {
                continue;
             }
 
@@ -313,10 +304,7 @@ public abstract class Methods extends Members {
                continue;
             }
 
-            if (compatibleTo == null)
-               return method;
-
-            if (Types.isAssignableTo(compatibleTo, paramTypes[0]))
+            if (compatibleTo == null || Types.isAssignableTo(compatibleTo, paramTypes[0]))
                return method;
          }
 
@@ -357,10 +345,7 @@ public abstract class Methods extends Members {
 
       final Method[] publicMethods = clazz.getMethods();
       for (final Method candidate : publicMethods) {
-         if (isStatic(candidate)) {
-            continue;
-         }
-         if (!methodName.equals(candidate.getName())) {
+         if (isStatic(candidate) || !methodName.equals(candidate.getName())) {
             continue;
          }
 
@@ -429,9 +414,7 @@ public abstract class Methods extends Members {
 
       try {
          final Method getter = clazz.getMethod("get" + appendix);
-         if (compatibleTo == null)
-            return getter;
-         if (Types.isAssignableTo(getter.getReturnType(), compatibleTo))
+         if (compatibleTo == null || Types.isAssignableTo(getter.getReturnType(), compatibleTo))
             return getter;
       } catch (final NoSuchMethodException ex) {
          // ignore
@@ -469,11 +452,7 @@ public abstract class Methods extends Members {
 
       final Method[] publicMethods = clazz.getMethods();
       for (final Method method : publicMethods) {
-         if (isStatic(method)) {
-            continue;
-         }
-
-         if (!methodName.equals(method.getName())) {
+         if (isStatic(method) || !methodName.equals(method.getName())) {
             continue;
          }
 
@@ -482,10 +461,7 @@ public abstract class Methods extends Members {
             continue;
          }
 
-         if (compatibleTo == null)
-            return method;
-
-         if (Types.isAssignableTo(compatibleTo, paramTypes[0]))
+         if (compatibleTo == null || Types.isAssignableTo(compatibleTo, paramTypes[0]))
             return method;
       }
       LOG.trace("No public setter for [%s] found in class [%s] comaptible to [%s].", propertyName, clazz, compatibleTo);
@@ -622,11 +598,7 @@ public abstract class Methods extends Members {
 
       final Method[] publicMethods = clazz.getMethods();
       for (final Method method : publicMethods) {
-         if (isStatic(method)) {
-            continue;
-         }
-
-         if (!isGetter(method)) {
+         if (isStatic(method) || !isGetter(method)) {
             continue;
          }
 
@@ -657,11 +629,7 @@ public abstract class Methods extends Members {
 
       final Method[] publicMethods = clazz.getMethods();
       for (final Method method : publicMethods) {
-         if (isStatic(method)) {
-            continue;
-         }
-
-         if (!isSetter(method)) {
+         if (isStatic(method) || !isSetter(method)) {
             continue;
          }
 
@@ -683,7 +651,7 @@ public abstract class Methods extends Members {
       Args.notNull("method", method);
 
       try {
-         ensureAccessible(method);
+         method.trySetAccessible();
          return (T) method.invoke(obj, args);
       } catch (final Exception ex) {
          throw new InvokingMethodFailedException(method, obj, ex);
@@ -700,7 +668,7 @@ public abstract class Methods extends Members {
          throw new IllegalArgumentException("No method [" + methodName + "] with compatible signature found.");
 
       try {
-         ensureAccessible(method);
+         method.trySetAccessible();
          return (T) method.invoke(obj, args);
       } catch (final Exception ex) {
          throw new InvokingMethodFailedException(method, obj, ex);
@@ -713,25 +681,18 @@ public abstract class Methods extends Members {
    public static boolean isGetter(final Method method) {
       Args.notNull("method", method);
 
-      if (method.getParameterTypes().length > 0)
-         return false;
-
-      if (isReturningVoid(method))
+      if (method.getParameterTypes().length > 0 || isReturningVoid(method))
          return false;
 
       final String methodName = method.getName();
 
       if (methodName.startsWith("get")) {
-         if (methodName.length() == 3)
-            return false;
-         if (!Character.isUpperCase(methodName.charAt(3)))
+         if (methodName.length() == 3 || !Character.isUpperCase(methodName.charAt(3)))
             return false;
          return true;
       }
       if (methodName.startsWith("is")) {
-         if (methodName.length() == 2)
-            return false;
-         if (!Character.isUpperCase(methodName.charAt(2)))
+         if (methodName.length() == 2 || !Character.isUpperCase(methodName.charAt(2)))
             return false;
          return method.getReturnType() == Boolean.class || method.getReturnType() == boolean.class;
       }
@@ -755,23 +716,15 @@ public abstract class Methods extends Members {
 
       final Class<?>[] methodParameterTypes = method.getParameterTypes();
 
-      if (methodParameterTypes.length != 1)
-         return false;
-
-      if (!isReturningVoid(method) //
-         && !Types.isAssignableTo(method.getReturnType(), method.getDeclaringClass()) // in case of fluent-api
-      )
+      if (methodParameterTypes.length != 1 //
+         || !isReturningVoid(method) && !Types.isAssignableTo(method.getReturnType(), method.getDeclaringClass()))
          return false;
 
       final String methodName = method.getName();
 
-      if (methodName.length() < 4)
-         return false;
-
-      if (!methodName.startsWith("set"))
-         return false;
-
-      if (!Character.isUpperCase(methodName.charAt(3)))
+      if (methodName.length() < 4 //
+         || !methodName.startsWith("set") //
+         || !Character.isUpperCase(methodName.charAt(3)))
          return false;
 
       return true;

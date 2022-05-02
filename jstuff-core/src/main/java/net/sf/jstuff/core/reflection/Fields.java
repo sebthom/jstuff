@@ -119,7 +119,7 @@ public abstract class Fields extends Members {
       Args.notNull("field", field);
 
       try {
-         ensureAccessible(field);
+         field.trySetAccessible();
          return (T) field.get(obj);
       } catch (final Exception ex) {
          throw new AccessingFieldValueFailedException(field, obj, ex);
@@ -140,7 +140,7 @@ public abstract class Fields extends Members {
          return null;
 
       try {
-         ensureAccessible(field);
+         field.trySetAccessible();
          return (T) field.get(obj);
       } catch (final Exception ex) {
          throw new AccessingFieldValueFailedException(field, obj, ex);
@@ -172,7 +172,7 @@ public abstract class Fields extends Members {
             + field.getName());
 
       try {
-         ensureAccessible(field);
+         field.trySetAccessible();
          field.set(obj, value);
       } catch (final Exception ex) {
          throw new SettingFieldValueFailedException(field, obj, ex);
@@ -192,7 +192,7 @@ public abstract class Fields extends Members {
             + field.getName());
 
       try {
-         ensureAccessible(field);
+         field.trySetAccessible();
          field.set(obj, value);
       } catch (final Exception ex) {
          throw new SettingFieldValueFailedException(field, obj, ex);
@@ -219,7 +219,7 @@ public abstract class Fields extends Members {
       Args.notNull("field", field);
 
       try {
-         ensureAccessible(field);
+         field.trySetAccessible();
          if (isStatic(field) && isFinal(field)) {
             write(field, "modifiers", field.getModifiers() & ~Modifier.FINAL);
          }
