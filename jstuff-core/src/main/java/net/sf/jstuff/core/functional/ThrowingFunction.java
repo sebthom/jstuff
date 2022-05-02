@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.functional;
 
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import net.sf.jstuff.core.exception.Exceptions;
 
@@ -12,20 +12,16 @@ import net.sf.jstuff.core.exception.Exceptions;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @FunctionalInterface
-public interface ThrowingConsumer<I, X extends Throwable> extends Consumer<I> {
-
-   static <T> ThrowingConsumer<T, RuntimeException> from(final Consumer<T> consumer) {
-      return consumer::accept;
-   }
+public interface ThrowingFunction<I, O, X extends Throwable> extends Function<I, O> {
 
    @Override
-   default void accept(final I elem) {
+   default O apply(final I elem) {
       try {
-         acceptOrThrow(elem);
+         return applyOrThrow(elem);
       } catch (final Throwable t) { // CHECKSTYLE:IGNORE IllegalCatch
          throw Exceptions.wrapAsRuntimeException(t);
       }
    }
 
-   void acceptOrThrow(I elem) throws X;
+   O applyOrThrow(I input) throws X;
 }
