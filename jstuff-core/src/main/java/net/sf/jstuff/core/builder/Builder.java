@@ -21,7 +21,7 @@ public interface Builder<TARGET_TYPE> {
     */
    @Retention(RetentionPolicy.RUNTIME)
    @Target({ElementType.METHOD, ElementType.TYPE})
-   public @interface Property {
+   @interface Property {
 
       /**
        * specifies if the property can have a null value
