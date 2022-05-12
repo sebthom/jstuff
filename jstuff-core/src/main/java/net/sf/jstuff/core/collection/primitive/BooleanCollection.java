@@ -4,12 +4,12 @@
  */
 package net.sf.jstuff.core.collection.primitive;
 
-import java.util.Collection;
+import net.sf.jstuff.core.collection.ext.CollectionExt;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface BooleanCollection extends Collection<Boolean> {
+public interface BooleanCollection extends CollectionExt<Boolean> {
 
    boolean addAll(boolean... values);
 

@@ -206,6 +206,40 @@ public abstract class CollectionUtils {
    }
 
    /**
+    * Gets the n-th element of the list.
+    *
+    * @param index a negative index selects an element from the end of the list
+    *
+    * @throws IllegalArgumentException if list is null
+    * @throws IndexOutOfBoundsException if index is out of range
+    */
+   public static <T> T getAt(final List<T> list, final int index) {
+      Args.notNull("list", list);
+      if (index < 0)
+         return list.get(list.size() + index);
+      return list.get(index);
+   }
+
+   /**
+    * @param list a non-empty list with non-nullable elements
+    * @throws IllegalArgumentException if list is null
+    * @throws IndexOutOfBoundsException if list is empty
+    */
+   public static <T> T getLast(final List<T> list) {
+      Args.notNull("list", list);
+      return list.get(list.size() - 1);
+   }
+
+   /**
+    * @return the last element or null if list is null or empty
+    */
+   public static <T> T getLastOrNull(final List<T> list) {
+      if (list == null || list.isEmpty())
+         return null;
+      return list.get(list.size() - 1);
+   }
+
+   /**
     * @param n first n elements to return
     * @return a new list with the first n elements of the input list
     */
@@ -295,6 +329,10 @@ public abstract class CollectionUtils {
       return collection == null || collection.isEmpty();
    }
 
+   public static boolean isNotEmpty(final Collection<?> collection) {
+      return collection != null && !collection.isEmpty();
+   }
+
    public static <K> ArrayList<K> newArrayList() {
       return new ArrayList<>();
    }
@@ -357,6 +395,13 @@ public abstract class CollectionUtils {
       throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + collection.size());
    }
 
+   /**
+    * Removes the last element in this list.
+    *
+    * @return the element previously at the specified position or null if the list is empty
+    *
+    * @throws UnsupportedOperationException if the {@code remove} operation is not supported by this list
+    */
    public static <T> T removeLast(final List<T> list) {
       Args.notNull("list", list);
 

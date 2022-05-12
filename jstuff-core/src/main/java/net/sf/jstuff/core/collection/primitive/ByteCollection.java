@@ -4,15 +4,16 @@
  */
 package net.sf.jstuff.core.collection.primitive;
 
-import java.util.Collection;
-import java.util.function.LongConsumer;
-import java.util.function.LongPredicate;
+import java.util.function.IntConsumer;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
+
+import net.sf.jstuff.core.collection.ext.CollectionExt;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface ByteCollection extends Collection<Byte> {
+public interface ByteCollection extends CollectionExt<Byte> {
 
    boolean addAll(byte... values);
 
@@ -22,17 +23,17 @@ public interface ByteCollection extends Collection<Byte> {
 
    boolean containsAll(byte... values);
 
-   void forEach(LongConsumer consumer);
+   void forEach(IntConsumer consumer);
 
-   boolean removeIf(LongPredicate filter);
+   boolean removeIf(IntPredicate filter);
 
    /**
-    * @deprecated use {@link #removeIf(LongPredicate)}
+    * @deprecated use {@link #removeIf(IntPredicate)}
     */
    @Deprecated
    @Override
    default boolean removeIf(final Predicate<? super Byte> filter) {
-      return Collection.super.removeIf(filter);
+      return CollectionExt.super.removeIf(filter);
    }
 
    /**

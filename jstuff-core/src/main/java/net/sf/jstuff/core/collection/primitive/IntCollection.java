@@ -4,15 +4,16 @@
  */
 package net.sf.jstuff.core.collection.primitive;
 
-import java.util.Collection;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
+import net.sf.jstuff.core.collection.ext.CollectionExt;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface IntCollection extends Collection<Integer> {
+public interface IntCollection extends CollectionExt<Integer> {
 
    boolean add(int value);
 
@@ -32,7 +33,7 @@ public interface IntCollection extends Collection<Integer> {
    @Deprecated
    @Override
    default boolean removeIf(final Predicate<? super Integer> filter) {
-      return Collection.super.removeIf(filter);
+      return CollectionExt.super.removeIf(filter);
    }
 
    /**

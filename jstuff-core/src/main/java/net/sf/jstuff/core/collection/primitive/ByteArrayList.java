@@ -7,10 +7,11 @@ package net.sf.jstuff.core.collection.primitive;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.RandomAccess;
-import java.util.function.LongConsumer;
-import java.util.function.LongPredicate;
+import java.util.function.IntConsumer;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
+import net.sf.jstuff.core.functional.IntBiConsumer;
 import net.sf.jstuff.core.math.Numbers;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
@@ -122,9 +123,15 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    }
 
    @Override
-   public void forEach(final LongConsumer consumer) {
+   public void forEach(final IntConsumer consumer) {
       for (int i = 0; i < size; i++) {
          consumer.accept(values[i]);
+      }
+   }
+
+   public void forEach(final IntBiConsumer consumer) {
+      for (int i = 0; i < size; i++) {
+         consumer.accept(i, values[i]);
       }
    }
 
@@ -198,7 +205,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    }
 
    @Override
-   public boolean removeIf(final LongPredicate filter) {
+   public boolean removeIf(final IntPredicate filter) {
       Assert.isTrue(mutable, "List is immutable!");
 
       final ByteArrayList temp = new ByteArrayList();
@@ -215,7 +222,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    }
 
    /**
-    * @deprecated use {@link #removeIf(LongPredicate)}
+    * @deprecated use {@link #removeIf(IntPredicate)}
     */
    @Deprecated
    @Override

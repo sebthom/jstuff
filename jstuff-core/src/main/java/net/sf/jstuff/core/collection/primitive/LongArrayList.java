@@ -11,6 +11,7 @@ import java.util.function.LongConsumer;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
+import net.sf.jstuff.core.functional.LongBiConsumer;
 import net.sf.jstuff.core.math.Numbers;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
@@ -125,6 +126,12 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    public void forEach(final LongConsumer consumer) {
       for (int i = 0; i < size; i++) {
          consumer.accept(values[i]);
+      }
+   }
+
+   public void forEach(final LongBiConsumer consumer) {
+      for (int i = 0; i < size; i++) {
+         consumer.accept(i, values[i]);
       }
    }
 

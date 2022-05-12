@@ -4,15 +4,16 @@
  */
 package net.sf.jstuff.core.collection.primitive;
 
-import java.util.Collection;
 import java.util.function.LongConsumer;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
+import net.sf.jstuff.core.collection.ext.CollectionExt;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface LongCollection extends Collection<Long> {
+public interface LongCollection extends CollectionExt<Long> {
 
    boolean addAll(long... values);
 
@@ -32,7 +33,7 @@ public interface LongCollection extends Collection<Long> {
    @Deprecated
    @Override
    default boolean removeIf(final Predicate<? super Long> filter) {
-      return Collection.super.removeIf(filter);
+      return CollectionExt.super.removeIf(filter);
    }
 
    /**
