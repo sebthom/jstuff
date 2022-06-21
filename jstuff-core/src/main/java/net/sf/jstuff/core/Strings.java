@@ -691,6 +691,21 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return sb.toString();
    }
 
+   public static String lowerCase(final CharSequence txt) {
+      if (txt == null)
+         return null;
+      if (txt instanceof String)
+         return ((String) txt).toLowerCase();
+
+      final var len = txt.length();
+      final var chars = new char[len];
+      for (int i = 0; i < len; i++) {
+         chars[i] = Character.toLowerCase(txt.charAt(i));
+      }
+
+      return new String(chars);
+   }
+
    /**
     * Capitalize the first character of the given character sequence.
     * If you need to capitalize all words in a string use {@link WordUtils#uncapitalize(String)}
@@ -1183,6 +1198,21 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
          return text;
 
       return text.substring(0, maxLength);
+   }
+
+   public static String upperCase(final CharSequence txt) {
+      if (txt == null)
+         return null;
+      if (txt instanceof String)
+         return ((String) txt).toUpperCase();
+
+      final var len = txt.length();
+      final var chars = new char[len];
+      for (int i = 0; i < len; i++) {
+         chars[i] = Character.toUpperCase(txt.charAt(i));
+      }
+
+      return new String(chars);
    }
 
    /**
