@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import net.sf.jstuff.core.functional.ConsumerWithIndex;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -203,6 +204,18 @@ public abstract class CollectionUtils {
          }
       }
       return count;
+   }
+
+   public static <T> void forEach(final Collection<T> collection, final ConsumerWithIndex<T> consumer) {
+      if (collection == null || collection.isEmpty())
+         return;
+
+      Args.notNull("consumer", consumer);
+
+      int i = -1;
+      for (final T t : collection) {
+         consumer.accept(++i, t);
+      }
    }
 
    /**
