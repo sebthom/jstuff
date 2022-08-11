@@ -8,7 +8,6 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ReflectPermission;
 
-import net.sf.jstuff.core.UnsafeUtils;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.validation.Args;
 
@@ -16,10 +15,6 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Members {
-
-   static {
-      UnsafeUtils.openModule(Member.class.getModule());
-   }
 
    private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission("suppressAccessChecks");
 

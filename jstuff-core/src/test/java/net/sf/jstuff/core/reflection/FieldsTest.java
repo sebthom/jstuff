@@ -41,7 +41,7 @@ public class FieldsTest {
       Fields.writeIgnoringFinal(e, "name", "bar");
       assertThat(e.name).isEqualTo("bar");
 
-      // static field test
+      // static final field test
       Fields.writeIgnoringFinal(Entity.class, "INSTANCE", e);
       assertThat(Entity.INSTANCE).isEqualTo(e);
    }

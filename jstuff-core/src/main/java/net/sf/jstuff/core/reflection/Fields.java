@@ -8,10 +8,10 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import net.sf.jstuff.core.UnsafeUtils;
 import net.sf.jstuff.core.reflection.exception.AccessingFieldValueFailedException;
+import net.sf.jstuff.core.reflection.exception.InvokingMethodFailedException;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.reflection.exception.SettingFieldValueFailedException;
 import net.sf.jstuff.core.validation.Args;
@@ -20,6 +20,21 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Fields extends Members {
+
+   public static void assertAssignable(final Field field, final Object value) throws IllegalArgumentException {
+      Args.notNull("field", field);
+
+      if (value == null) {
+         if (field.getType().isPrimitive())
+            throw new IllegalArgumentException("Cannot assign null value to primitive field [" + field.getDeclaringClass().getSimpleName() + "#" + field
+               .getName() + "]");
+         return;
+      }
+
+      if (!Types.isAssignableTo(value.getClass(), field.getType()))
+         throw new IllegalArgumentException("Cannot assign value " + value + " to incompatible field [" + field.getDeclaringClass().getSimpleName() + "#"
+            + field.getName() + "]");
+   }
 
    public static boolean exists(final Class<?> clazz, final String fieldName) {
       return find(clazz, fieldName) != null;
@@ -48,12 +63,16 @@ public abstract class Fields extends Members {
       try {
          field = clazz.getDeclaredField(fieldName);
       } catch (final NoSuchFieldException ex) {
-         final Field[] fields = Methods.invoke(clazz, "getDeclaredFields0", false /*publicOnly*/);
-         for (final Field f : fields) {
-            if (fieldName.equals(f.getName())) {
-               field = f;
-               break;
+         try {
+            final Field[] fields = Methods.invoke(clazz, "getDeclaredFields0", false /*publicOnly*/);
+            for (final Field f : fields) {
+               if (fieldName.equals(f.getName())) {
+                  field = f;
+                  break;
+               }
             }
+         } catch (final InvokingMethodFailedException ignore) {
+            // ignore
          }
       }
 
@@ -109,6 +128,18 @@ public abstract class Fields extends Members {
       } catch (final NoSuchFieldException e) {
          return null;
       }
+   }
+
+   /**
+    * @return true if the given value can be assigned to the given field, i.e. is compatible with the field's type
+    */
+   public static boolean isAssignable(final Field field, final Object value) {
+      Args.notNull("field", field);
+
+      if (value == null)
+         return !field.getType().isPrimitive();
+
+      return Types.isAssignableTo(value.getClass(), field.getType());
    }
 
    /**
@@ -168,8 +199,7 @@ public abstract class Fields extends Members {
       Args.notNull("field", field);
 
       if (isFinal(field))
-         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#"
-            + field.getName());
+         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field.getName());
 
       try {
          field.trySetAccessible();
@@ -188,8 +218,7 @@ public abstract class Fields extends Members {
          throw new ReflectionException("No field with name [" + fieldName + "] found in object [" + obj + "]");
 
       if (isFinal(field))
-         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#"
-            + field.getName());
+         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field.getName());
 
       try {
          field.trySetAccessible();
@@ -219,10 +248,20 @@ public abstract class Fields extends Members {
       Args.notNull("field", field);
 
       try {
-         field.trySetAccessible();
          if (isStatic(field) && isFinal(field)) {
-            write(field, "modifiers", field.getModifiers() & ~Modifier.FINAL);
+            try {
+               assertAssignable(field, value);
+            } catch (final Exception ex) {
+               throw new SettingFieldValueFailedException(field, obj, ex);
+            }
+
+            // https://stackoverflow.com/a/71465198
+            final var fieldBase = UnsafeUtils.UNSAFE.staticFieldBase(field);
+            final var fieldOffset = UnsafeUtils.UNSAFE.staticFieldOffset(field);
+            UnsafeUtils.UNSAFE.putObject(fieldBase, fieldOffset, value);
+            return;
          }
+         field.trySetAccessible();
          field.set(obj, value);
       } catch (final Exception ex) {
          throw new SettingFieldValueFailedException(field, obj, ex);
