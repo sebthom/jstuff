@@ -33,7 +33,7 @@ public abstract class AbstractThreadMXSampler {
    private boolean isWarningLogged;
 
    private final Queue<ThreadInfo[]> samples = new ConcurrentLinkedQueue<>();
-   private final Callable<Void> aggregator = new Callable<Void>() {
+   private final Callable<Void> aggregator = new Callable<>() {
       @Override
       public Void call() throws Exception {
          while (true) {

@@ -108,7 +108,7 @@ public class ThreadLocalSecureRandom extends SecureRandom {
       return random;
    }
 
-   private final ThreadLocal<SecureRandom> instances = new ThreadLocal<SecureRandom>() {
+   private final ThreadLocal<SecureRandom> instances = new ThreadLocal<>() {
       private long seedTimestamp;
 
       @Override
