@@ -38,12 +38,10 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
       }
 
       protected boolean isModification(final V oldValue, final V newValue) {
-         if (newValue == oldValue)
-            return false;
-
-         if (isScalarValue(newValue) //
-            && isScalarValue(oldValue) //
-            && Objects.equals(newValue, oldValue))
+         if (newValue == oldValue //
+            || isScalarValue(newValue) //
+               && isScalarValue(oldValue) //
+               && Objects.equals(newValue, oldValue))
             return false;
 
          return true;

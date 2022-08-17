@@ -114,7 +114,7 @@ public abstract class MoreFiles {
       Args.notNull("fileToBackup", fileToBackup);
       Args.notNull("backupFolder", backupFolder);
 
-      Args.isDir("backupFolder", backupFolder);
+      Args.isDirectoryReadable("backupFolder", backupFolder);
 
       if (Files.exists(fileToBackup)) {
          Args.isFileReadable("fileToBackup", fileToBackup); // ensure it is actually a file

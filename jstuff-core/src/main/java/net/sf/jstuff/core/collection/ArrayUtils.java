@@ -30,7 +30,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    /**
-    * Returns a new list with all items accepted by the filter
+    * Returns a new array with all items accepted by the filter
     *
     * @throws IllegalArgumentException if <code>accept == null</code>
     */

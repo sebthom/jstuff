@@ -12,128 +12,205 @@ import java.util.function.Function;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public final class Either<L, R> implements Serializable {
+public interface Either<L, R> extends Serializable {
 
-   private static final long serialVersionUID = 1L;
+   static <L, R> Either<L, R> left(final L left) {
+      return new Either<>() {
+         private static final long serialVersionUID = 1L;
 
-   public static <L, R> Either<L, R> left(final L left) {
-      return new Either<>(left, null, true);
+         @Override
+         public void apply(final Consumer<? super L> leftConsumer, final Consumer<? super R> rightConsumer) {
+            leftConsumer.accept(left);
+         }
+
+         @Override
+         public boolean isLeft() {
+            return true;
+         }
+
+         @Override
+         public boolean isRight() {
+            return false;
+         }
+
+         @Override
+         public L left() {
+            return left;
+         }
+
+         @Override
+         public L leftOrElse(final L fallback) {
+            return left;
+         }
+
+         @Override
+         public <T> T map(final Function<? super L, ? extends T> leftMapper, final Function<? super R, ? extends T> rightMapper) {
+            return leftMapper.apply(left);
+         }
+
+         @Override
+         public R right() {
+            throw new IllegalStateException("Right value not present");
+         }
+
+         @Override
+         public R rightOrElse(final R fallback) {
+            return fallback;
+         }
+
+         @Override
+         public String toString() {
+            return Objects.toString(left);
+         }
+
+         @SuppressWarnings("null")
+         @Override
+         public L value() {
+            return left;
+         }
+
+         @Override
+         public <T> Either<T, R> mapLeft(final Function<? super L, ? extends T> mapper) {
+            final T leftMapped = mapper.apply(left());
+            return Either.left(leftMapped);
+         }
+
+         @Override
+         @SuppressWarnings("unchecked")
+         public <T> Either<L, T> mapRight(final Function<? super R, ? extends T> mapper) {
+            return (Either<L, T>) this;
+         }
+
+         @Override
+         public boolean equals(final Object obj) {
+            if (this == obj)
+               return true;
+            if (obj == null || getClass() != obj.getClass())
+               return false;
+            final var other = (Either<?, ?>) obj;
+            if (other.isRight())
+               return false;
+            return Objects.equals(left, other.left());
+         }
+
+         @Override
+         public int hashCode() {
+            return Objects.hash(left);
+         }
+      };
    }
 
-   public static <L, R> Either<L, R> right(final R right) {
-      return new Either<>(null, right, false);
+   static <L, R> Either<L, R> right(final R right) {
+      return new Either<>() {
+         private static final long serialVersionUID = 1L;
+
+         @Override
+         public void apply(final Consumer<? super L> leftConsumer, final Consumer<? super R> rightConsumer) {
+            rightConsumer.accept(right);
+         }
+
+         @Override
+         public boolean isLeft() {
+            return false;
+         }
+
+         @Override
+         public boolean isRight() {
+            return true;
+         }
+
+         @Override
+         public L left() {
+            throw new IllegalStateException("Left value not present");
+         }
+
+         @Override
+         public L leftOrElse(final L fallback) {
+            return fallback;
+         }
+
+         @Override
+         public <T> T map(final Function<? super L, ? extends T> leftMapper, final Function<? super R, ? extends T> rightMapper) {
+            return rightMapper.apply(right);
+         }
+
+         @Override
+         public R right() {
+            return right;
+         }
+
+         @Override
+         public R rightOrElse(final R fallback) {
+            return right;
+         }
+
+         @Override
+         public String toString() {
+            return Objects.toString(right);
+         }
+
+         @SuppressWarnings("null")
+         @Override
+         public R value() {
+            return right;
+         }
+
+         @Override
+         @SuppressWarnings("unchecked")
+         public <T> Either<T, R> mapLeft(final Function<? super L, ? extends T> mapper) {
+            return (Either<T, R>) this;
+         }
+
+         @Override
+         public <T> Either<L, T> mapRight(final Function<? super R, ? extends T> mapper) {
+            final T rightMapped = mapper.apply(right());
+            return Either.right(rightMapped);
+         }
+
+         @Override
+         public boolean equals(final Object obj) {
+            if (this == obj)
+               return true;
+            if (obj == null || getClass() != obj.getClass())
+               return false;
+            final var other = (Either<?, ?>) obj;
+            if (other.isLeft())
+               return false;
+            return Objects.equals(right, other.right());
+         }
+
+         @Override
+         public int hashCode() {
+            return Objects.hash(right);
+         }
+      };
    }
 
-   private final boolean isLeft;
+   void apply(Consumer<? super L> leftConsumer, Consumer<? super R> rightConsumer);
 
-   private final L left;
+   boolean isLeft();
 
-   private final R right;
-
-   private Either(final L left, final R right, final boolean isLeft) {
-      this.left = left;
-      this.right = right;
-      this.isLeft = isLeft;
-   }
-
-   public void apply(final Consumer<? super L> leftConsumer, final Consumer<? super R> rightConsumer) {
-      if (isLeft) {
-         leftConsumer.accept(left);
-      } else {
-         rightConsumer.accept(right);
-      }
-   }
-
-   @Override
-   public boolean equals(final Object obj) {
-      if (this == obj)
-         return true;
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
-         return false;
-      final Either<?, ?> other = (Either<?, ?>) obj;
-      if (isLeft != other.isLeft)
-         return false;
-      if (!Objects.equals(left, other.left))
-         return false;
-      if (!Objects.equals(right, other.right))
-         return false;
-      return true;
-   }
-
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (isLeft ? 1231 : 1237);
-      result = prime * result + (left == null ? 0 : left.hashCode());
-      result = prime * result + (right == null ? 0 : right.hashCode());
-      return result;
-   }
-
-   public boolean isLeft() {
-      return isLeft;
-   }
-
-   public boolean isRight() {
-      return !isLeft;
-   }
+   boolean isRight();
 
    /**
     * @throws IllegalStateException if left value not present
     */
-   public L left() {
-      if (!isLeft)
-         throw new IllegalStateException("Left value not present");
-      return left;
-   }
+   L left();
 
-   public L leftOrElse(final L fallback) {
-      return isLeft ? left : fallback;
-   }
+   L leftOrElse(L fallback);
 
-   public <T> T map(final Function<? super L, ? extends T> leftMapper, final Function<? super R, ? extends T> rightMapper) {
-      return isLeft ? leftMapper.apply(left) : rightMapper.apply(right);
-   }
+   <T> T map(Function<? super L, ? extends T> leftMapper, Function<? super R, ? extends T> rightMapper);
 
-   @SuppressWarnings("unchecked")
-   public <T> Either<T, R> mapLeft(final Function<? super L, ? extends T> mapper) {
-      if (isLeft) {
-         final T leftMapped = mapper.apply(left);
-         return left(leftMapped);
-      }
-      return (Either<T, R>) this;
-   }
+   <T> Either<T, R> mapLeft(Function<? super L, ? extends T> mapper);
 
-   @SuppressWarnings("unchecked")
-   public <T> Either<L, T> mapRight(final Function<? super R, ? extends T> mapper) {
-      if (!isLeft) {
-         final T rightMapped = mapper.apply(right);
-         return right(rightMapped);
-      }
-      return (Either<L, T>) this;
-   }
+   <T> Either<L, T> mapRight(Function<? super R, ? extends T> mapper);
 
    /**
     * @throws IllegalStateException if right value not present
     */
-   public R right() {
-      if (isLeft)
-         throw new IllegalStateException("Right value not present");
-      return right;
-   }
+   R right();
 
-   public R rightOrElse(final R fallback) {
-      return !isLeft ? right : fallback;
-   }
+   R rightOrElse(R fallback);
 
-   @Override
-   public String toString() {
-      return Objects.toString(isLeft ? left : right);
-   }
-
-   public Object value() {
-      return isLeft ? left : right;
-   }
+   Object value();
 }

@@ -8,7 +8,6 @@ import static net.sf.jstuff.core.reflection.StackTrace.*;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
@@ -39,30 +38,6 @@ public abstract class Args {
             ) //
          );
       return value;
-   }
-
-   /**
-    * Ensures file exists.
-    */
-   public static File exists(final String argumentName, final File file) {
-      _notNull("argumentName", argumentName);
-      _notNull(argumentName, file);
-
-      if (!file.exists())
-         throw _createIllegalArgumentException(argumentName, "File [" + file.getAbsolutePath() + "] does not exist.");
-      return file;
-   }
-
-   /**
-    * Ensures path exists.
-    */
-   public static Path exists(final String argumentName, final Path path, final LinkOption... options) {
-      _notNull("argumentName", argumentName);
-      _notNull(argumentName, path);
-
-      if (!Files.exists(path, options))
-         throw _createIllegalArgumentException(argumentName, "Path [" + path + "] does not exist.");
-      return path;
    }
 
    public static byte greaterThan(final String argumentName, final byte value, final byte bound) {
@@ -132,11 +107,27 @@ public abstract class Args {
    }
 
    /**
+    * Ensures file exists, points to a directory and is readable by the current user.
+    */
+   public static Path isDirectoryReadable(final String argumentName, Path file) {
+      _notNull("argumentName", argumentName);
+      file = _notNull(argumentName, file);
+
+      if (!Files.exists(file))
+         throw _createIllegalArgumentException(argumentName, "Directory [" + file.toAbsolutePath() + "] does not exist.");
+      if (!Files.isDirectory(file))
+         throw _createIllegalArgumentException(argumentName, "Resource [" + file.toAbsolutePath() + "] is not a directory.");
+      if (!Files.isReadable(file))
+         throw _createIllegalArgumentException(argumentName, "File [" + file.toAbsolutePath() + "] is not readable.");
+      return file;
+   }
+
+   /**
     * Ensures file exists, points to a regular file and is readable by the current user.
     */
-   public static File isFileReadable(final String argumentName, final File file) {
+   public static File isFileReadable(final String argumentName, File file) {
       _notNull("argumentName", argumentName);
-      _notNull(argumentName, file);
+      file = _notNull(argumentName, file);
 
       if (!file.exists())
          throw _createIllegalArgumentException(argumentName, "File [" + file.getAbsolutePath() + "] does not exist.");
@@ -148,25 +139,11 @@ public abstract class Args {
    }
 
    /**
-    * Ensures file either does not exists or points to a regular file and it's path is writeable by the current user.
-    */
-   public static File isFileWriteable(final String argumentName, final File file) {
-      _notNull("argumentName", argumentName);
-      _notNull(argumentName, file);
-
-      if (file.exists() && !file.isFile())
-         throw _createIllegalArgumentException(argumentName, "Resource [" + file.getAbsolutePath() + "] is not a regular file.");
-      if (!file.canWrite())
-         throw _createIllegalArgumentException(argumentName, "File [" + file.getAbsolutePath() + "] is not readable.");
-      return file;
-   }
-
-   /**
     * Ensures file exists, points to a regular file and is readable by the current user.
     */
-   public static Path isFileReadable(final String argumentName, final Path file) {
+   public static Path isFileReadable(final String argumentName, Path file) {
       _notNull("argumentName", argumentName);
-      _notNull(argumentName, file);
+      file = _notNull(argumentName, file);
 
       if (!Files.exists(file))
          throw _createIllegalArgumentException(argumentName, "File [" + file.toAbsolutePath() + "] does not exist.");
@@ -180,30 +157,28 @@ public abstract class Args {
    /**
     * Ensures file either does not exists or points to a regular file and it's path is writeable by the current user.
     */
-   public static Path isFileWriteable(final String argumentName, final Path file) {
+   public static File isFileWriteable(final String argumentName, File file) {
+      _notNull("argumentName", argumentName);
+      file = _notNull(argumentName, file);
+
+      if (file.exists() && !file.isFile())
+         throw _createIllegalArgumentException(argumentName, "Resource [" + file.getAbsolutePath() + "] is not a regular file.");
+      if (!file.canWrite())
+         throw _createIllegalArgumentException(argumentName, "File [" + file.getAbsolutePath() + "] is not writable.");
+      return file;
+   }
+
+   /**
+    * Ensures file either does not exists or points to a regular file and it's path is writeable by the current user.
+    */
+   public static Path isFileWritable(final String argumentName, final Path file) {
       _notNull("argumentName", argumentName);
       _notNull(argumentName, file);
 
       if (Files.exists(file) && !Files.isRegularFile(file))
          throw _createIllegalArgumentException(argumentName, "Resource [" + file.toAbsolutePath() + "] is not a regular file.");
       if (!Files.isWritable(file))
-         throw _createIllegalArgumentException(argumentName, "File [" + file.toAbsolutePath() + "] is not readable.");
-      return file;
-   }
-
-   /**
-    * Ensures file exists, points to a regular file and is readable by the current user.
-    */
-   public static Path isDir(final String argumentName, final Path file) {
-      _notNull("argumentName", argumentName);
-      _notNull(argumentName, file);
-
-      if (!Files.exists(file))
-         throw _createIllegalArgumentException(argumentName, "Directory [" + file.toAbsolutePath() + "] does not exist.");
-      if (!Files.isDirectory(file))
-         throw _createIllegalArgumentException(argumentName, "Resource [" + file.toAbsolutePath() + "] is not a directory.");
-      if (!Files.isReadable(file))
-         throw _createIllegalArgumentException(argumentName, "File [" + file.toAbsolutePath() + "] is not readable.");
+         throw _createIllegalArgumentException(argumentName, "File [" + file.toAbsolutePath() + "] is not writable.");
       return file;
    }
 
@@ -299,11 +274,9 @@ public abstract class Args {
       return value;
    }
 
-   public static <C extends Collection<?>> C noNulls(final String argumentName, final C items) {
+   public static <C extends Collection<?>> C noNulls(final String argumentName, C items) {
       _notNull("argumentName", argumentName);
-
-      if (items == null)
-         return null;
+      items = _notNull(argumentName, items);
 
       for (final Object item : items)
          if (item == null)
@@ -312,11 +285,9 @@ public abstract class Args {
    }
 
    @SafeVarargs
-   public static <T> T[] noNulls(final String argumentName, final T... items) {
+   public static <T> T[] noNulls(final String argumentName, T... items) {
       _notNull("argumentName", argumentName);
-
-      if (items == null)
-         return null;
+      items = _notNull(argumentName, items);
 
       for (final Object item : items)
          if (item == null)
@@ -327,9 +298,9 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if string <code>value</code> is null, has a length of 0, or only contains whitespace chars
     */
-   public static <S extends CharSequence> S notBlank(final String argumentName, final S value) {
+   public static <S extends CharSequence> S notBlank(final String argumentName, S value) {
       _notNull("argumentName", argumentName);
-      _notNull(argumentName, value);
+      value = _notNull(argumentName, value);
 
       if (value.length() == 0)
          throw _createIllegalArgumentException(argumentName, "must not be empty");
@@ -342,9 +313,9 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
     */
-   public static <A> A[] notEmpty(final String argumentName, final A[] value) {
+   public static byte[] notEmpty(final String argumentName, byte [] value) {
       _notNull("argumentName", argumentName);
-      _notNull(argumentName, value);
+      value = _notNull(argumentName, value);
 
       if (value.length == 0)
          throw _createIllegalArgumentException(argumentName, "must not be empty");
@@ -354,9 +325,9 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
     */
-   public static byte[] notEmpty(final String argumentName, final byte[] value) {
+   public static <A> A[] notEmpty(final String argumentName, A [] value) {
       _notNull("argumentName", argumentName);
-      _notNull(argumentName, value);
+      value = _notNull(argumentName, value);
 
       if (value.length == 0)
          throw _createIllegalArgumentException(argumentName, "must not be empty");
@@ -366,9 +337,9 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> collection is null or empty
     */
-   public static <C extends Collection<?>> C notEmpty(final String argumentName, final C value) {
+   public static <C extends Collection<?>> C notEmpty(final String argumentName, C value) {
       _notNull("argumentName", argumentName);
-      _notNull(argumentName, value);
+      value = _notNull(argumentName, value);
 
       if (value.isEmpty())
          throw _createIllegalArgumentException(argumentName, "must not be empty");
@@ -378,9 +349,9 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> map is null or empty
     */
-   public static <M extends Map<?, ?>> M notEmpty(final String argumentName, final M value) {
+   public static <M extends Map<?, ?>> M notEmpty(final String argumentName, M value) {
       _notNull("argumentName", argumentName);
-      _notNull(argumentName, value);
+      value = _notNull(argumentName, value);
 
       if (value.isEmpty())
          throw _createIllegalArgumentException(argumentName, "must not be empty");
@@ -390,9 +361,9 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if string <code>value</code> is null or has a length of 0
     */
-   public static <S extends CharSequence> S notEmpty(final String argumentName, final S value) {
+   public static <S extends CharSequence> S notEmpty(final String argumentName, S value) {
       _notNull("argumentName", argumentName);
-      _notNull(argumentName, value);
+      value = _notNull(argumentName, value);
 
       if (value.length() == 0)
          throw _createIllegalArgumentException(argumentName, "must not be empty");
@@ -423,7 +394,7 @@ public abstract class Args {
       return value;
    }
 
-   public static Object notEquals(final String argumentName, final Object value, final Object invalidValue) {
+   public static <T> T notEquals(final String argumentName, final T value, final Object invalidValue) {
       _notNull("argumentName", argumentName);
 
       if (Objects.equals(value, invalidValue))
@@ -474,10 +445,9 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> is null
     */
-   public static <T> T notNull(final String argumentName, final T value) {
+   public static <T> T notNull(final String argumentName, T value) {
       _notNull("argumentName", argumentName);
-      _notNull(argumentName, value);
-
+      value = _notNull(argumentName, value);
       return value;
    }
 

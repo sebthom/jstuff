@@ -62,8 +62,9 @@ public class ThreadLocalSecureRandom extends SecureRandom {
       try {
          random.instances.get();
       } catch (final RuntimeSecurityException ex) {
-         if (ex.getCause() instanceof NoSuchAlgorithmException)
-            throw (NoSuchAlgorithmException) ex.getCause();
+         final var cause = ex.getCause();
+         if (cause instanceof NoSuchAlgorithmException)
+            throw (NoSuchAlgorithmException) cause;
          throw ex;
       }
       return random;
@@ -74,8 +75,9 @@ public class ThreadLocalSecureRandom extends SecureRandom {
       try {
          random.instances.get();
       } catch (final RuntimeSecurityException ex) {
-         if (ex.getCause() instanceof NoSuchAlgorithmException)
-            throw (NoSuchAlgorithmException) ex.getCause();
+         final var cause = ex.getCause();
+         if (cause instanceof NoSuchAlgorithmException)
+            throw (NoSuchAlgorithmException) cause;
          throw ex;
       }
       return random;
@@ -87,10 +89,11 @@ public class ThreadLocalSecureRandom extends SecureRandom {
       try {
          random.instances.get();
       } catch (final RuntimeSecurityException ex) {
-         if (ex.getCause() instanceof NoSuchAlgorithmException)
-            throw (NoSuchAlgorithmException) ex.getCause();
-         if (ex.getCause() instanceof NoSuchProviderException)
-            throw (NoSuchProviderException) ex.getCause();
+         final var cause = ex.getCause();
+         if (cause instanceof NoSuchAlgorithmException)
+            throw (NoSuchAlgorithmException) cause;
+         if (cause instanceof NoSuchProviderException)
+            throw (NoSuchProviderException) cause;
          throw ex;
       }
       return random;
@@ -101,8 +104,9 @@ public class ThreadLocalSecureRandom extends SecureRandom {
       try {
          random.instances.get();
       } catch (final RuntimeSecurityException ex) {
-         if (ex.getCause() instanceof NoSuchAlgorithmException)
-            throw (NoSuchAlgorithmException) ex.getCause();
+         final var cause = ex.getCause();
+         if (cause instanceof NoSuchAlgorithmException)
+            throw (NoSuchAlgorithmException) cause;
          throw ex;
       }
       return random;

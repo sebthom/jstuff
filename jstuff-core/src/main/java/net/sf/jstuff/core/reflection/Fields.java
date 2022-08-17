@@ -26,14 +26,14 @@ public abstract class Fields extends Members {
 
       if (value == null) {
          if (field.getType().isPrimitive())
-            throw new IllegalArgumentException("Cannot assign null value to primitive field [" + field.getDeclaringClass().getSimpleName() + "#" + field
-               .getName() + "]");
+            throw new IllegalArgumentException("Cannot assign null value to primitive field [" + field.getDeclaringClass().getSimpleName()
+               + "#" + field.getName() + "]");
          return;
       }
 
       if (!Types.isAssignableTo(value.getClass(), field.getType()))
-         throw new IllegalArgumentException("Cannot assign value " + value + " to incompatible field [" + field.getDeclaringClass().getSimpleName() + "#"
-            + field.getName() + "]");
+         throw new IllegalArgumentException("Cannot assign value " + value + " to incompatible field [" + field.getDeclaringClass()
+            .getSimpleName() + "#" + field.getName() + "]");
    }
 
    public static boolean exists(final Class<?> clazz, final String fieldName) {

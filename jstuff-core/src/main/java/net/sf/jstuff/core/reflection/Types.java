@@ -162,7 +162,8 @@ public abstract class Types {
          return ArrayUtils.EMPTY_CLASS_ARRAY;
 
       if (!searchFor.isAssignableFrom(searchIn))
-         throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is not assignable to [searchFor=" + searchFor.getName() + "]");
+         throw new IllegalArgumentException("Class [searchIn=" + searchIn.getName() + "] is not assignable to [searchFor=" + searchFor
+            .getName() + "]");
 
       final boolean isSearchForInterface = searchFor.isInterface();
 
@@ -258,7 +259,8 @@ public abstract class Types {
          case "jar":
             try {
                // extract the jar path from: jar:file:/F:/allianz/apps/dev/java/sun_jdk1.5.0_22/jre/lib/rt.jar!/java/lang/String.class
-               return new File(URLDecoder.decode(Strings.substringBetween(location.getPath(), "file:", "!"), Charset.defaultCharset().name()));
+               return new File(URLDecoder.decode(Strings.substringBetween(location.getPath(), "file:", "!"), Charset.defaultCharset()
+                  .name()));
             } catch (final Exception ex) {
                LOG.warn(ex, "Failed to parse location: %s", location.getPath());
                return null;
@@ -333,9 +335,12 @@ public abstract class Types {
        * get version from META-INF/MANIFEST.MF
        */
       {
-         final String version = Strings.trim(clazz.getPackage().getImplementationVersion());
-         if (!Strings.isEmpty(version))
-            return version;
+         final var pkg = clazz.getPackage();
+         if (pkg != null) {
+            final String version = Strings.trim(pkg.getImplementationVersion());
+            if (!Strings.isEmpty(version))
+               return version;
+         }
       }
 
       final File location = findLibrary(clazz);
@@ -646,7 +651,8 @@ public abstract class Types {
          Fields.write(obj, field, value);
          return;
       }
-      throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
+      throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz
+         + "]");
    }
 
    /**
@@ -670,6 +676,7 @@ public abstract class Types {
          Fields.writeIgnoringFinal(obj, field, value);
          return;
       }
-      throw new ReflectionException("No corresponding setter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
+      throw new ReflectionException("No corresponding setter method or field found for property [" + propertyName + "] in class [" + clazz
+         + "]");
    }
 }

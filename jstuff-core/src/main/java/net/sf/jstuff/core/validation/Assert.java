@@ -7,6 +7,8 @@ package net.sf.jstuff.core.validation;
 import static net.sf.jstuff.core.reflection.StackTrace.*;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -28,7 +30,8 @@ public abstract class Assert {
       );
    }
 
-   private static IllegalStateException _createIllegalStateException(final String errorMessage, final Object... errorMessageArgs) {
+   private static IllegalStateException _createIllegalStateException(final String errorMessage,
+      final Object... errorMessageArgs) {
       return removeFirstStackTraceElement( //
          removeFirstStackTraceElement( //
             new IllegalStateException(String.format(errorMessage, errorMessageArgs)) //
@@ -54,7 +57,7 @@ public abstract class Assert {
       return value;
    }
 
-   public static Object equals(final Object value, final Object expectedValue, final String errorMessage) {
+   public static <T> T equals(final T value, final Object expectedValue, final String errorMessage) {
       if (!Objects.equals(value, expectedValue))
          throw _createIllegalStateException(errorMessage);
       return value;
@@ -95,12 +98,27 @@ public abstract class Assert {
    }
 
    /**
+    * Ensures file exists, points to a directory and is readable by the current user.
+    */
+   public static Path isDirectoryReadable(Path file) {
+      file = Args.notNull("file", file);
+
+      if (!Files.exists(file))
+         throw _createIllegalStateException("File [" + file.toAbsolutePath() + "] does not exist.");
+      if (!Files.isDirectory(file))
+         throw _createIllegalStateException("Resource [" + file.toAbsolutePath() + "] is not a directory.");
+      if (!Files.isReadable(file))
+         throw _createIllegalStateException("File [" + file.toAbsolutePath() + "] is not readable.");
+      return file;
+   }
+
+   /**
     * Ensures file exists, points to a regular file and is readable by the current user.
     *
-    * @throws IllegalStateException if <code>value</code> is not readable
+    * @throws IllegalStateException if <code>file</code> is not readable
     */
-   public static File isFileReadable(final File file) {
-      Args.notNull("file", file);
+   public static File isFileReadable(File file) {
+      file = Args.notNull("file", file);
 
       if (!file.exists())
          throw _createIllegalStateException("File [" + file.getAbsolutePath() + "] does not exist.");
@@ -112,12 +130,60 @@ public abstract class Assert {
    }
 
    /**
+    * Ensures file exists, points to a regular file and is readable by the current user.
+    *
+    * @throws IllegalStateException if <code>file</code> is not readable
+    */
+   public static Path isFileReadable(Path file) {
+      file = Args.notNull("file", file);
+
+      if (!Files.exists(file))
+         throw _createIllegalStateException("File [" + file.toAbsolutePath() + "] does not exist.");
+      if (!Files.isRegularFile(file))
+         throw _createIllegalStateException("Resource [" + file.toAbsolutePath() + "] is not a regular file.");
+      if (!Files.isReadable(file))
+         throw _createIllegalStateException("File [" + file.toAbsolutePath() + "] is not readable.");
+      return file;
+   }
+
+   /**
+    * Ensures file either does not exists or points to a regular file and it's path is writable by the current user.
+    *
+    * @throws IllegalStateException if <code>file</code> exists or is not writable
+    */
+   public static File isFileWritable(File file) {
+      file = Args.notNull("file", file);
+
+      if (file.exists() && !file.isFile())
+         throw _createIllegalStateException("Resource [" + file.getAbsolutePath() + "] is not a regular file.");
+      if (!file.canWrite())
+         throw _createIllegalStateException("File [" + file.getAbsolutePath() + "] is not writable.");
+      return file;
+   }
+
+   /**
+    * Ensures file exists, points to a regular file and is readable by the current user.
+    *
+    * @throws IllegalStateException if <code>file</code> is not readable
+    */
+   public static Path isFileWritable(Path file) {
+      file = Args.notNull("file", file);
+
+      if (Files.exists(file) && !Files.isRegularFile(file))
+         throw _createIllegalStateException("Resource [" + file.toAbsolutePath() + "] is not a regular file.");
+      if (!Files.isWritable(file))
+         throw _createIllegalStateException("File [" + file.toAbsolutePath() + "] is not writable.");
+      return file;
+   }
+
+   /**
     * @throws IllegalStateException if <code>value</code> is not <code>null</code>
     */
    public static <T> T isInstanceOf(final T value, final Class<?> type, final String errorMessage) {
       Args.notNull("type", type);
       if (!type.isInstance(value))
          throw _createIllegalStateException(errorMessage);
+      assert value != null;
       return value;
    }
 
@@ -127,7 +193,7 @@ public abstract class Assert {
    public static <T> T isNull(final T value, final String errorMessage) {
       if (value != null)
          throw _createIllegalStateException(errorMessage);
-      return value;
+      return null;
    }
 
    /**
@@ -137,7 +203,7 @@ public abstract class Assert {
       Args.notNull("errorMessageSupplier", errorMessageSupplier);
       if (value != null)
          throw _createIllegalStateException(errorMessageSupplier.get());
-      return value;
+      return null;
    }
 
    /**
@@ -224,9 +290,11 @@ public abstract class Assert {
       return value;
    }
 
-   public static <C extends Collection<?>> C noNulls(final C items, final String errorMessage) {
-      if (items == null)
-         return null;
+   /**
+    * @throws IllegalStateException if <code>items</code> is null or contains any null items
+    */
+   public static <C extends Collection<?>> C noNulls(C items, final String errorMessage) {
+      items = Args.notNull("items", items);
 
       for (final Object item : items)
          if (item == null)
@@ -234,9 +302,11 @@ public abstract class Assert {
       return items;
    }
 
-   public static <T> T[] noNulls(final T[] items, final String errorMessage) {
-      if (items == null)
-         return null;
+   /**
+    * @throws IllegalStateException if <code>items</code> is null or contains any null items
+    */
+   public static <T> T[] noNulls(T [] items, final String errorMessage) {
+      items = Args.notNull("items", items);
 
       for (final T item : items)
          if (item == null)
@@ -248,12 +318,18 @@ public abstract class Assert {
     * @throws IllegalStateException if string <code>value</code> is null, has a length of 0, or only contains whitespace chars
     */
    public static <S extends CharSequence> S notBlank(final S value, final String errorMessage) {
-      if (Strings.isBlank(value))
+      if (value == null || Strings.isBlank(value))
          throw _createIllegalStateException(errorMessage);
       return value;
    }
 
-   public static <A> A[] notEmpty(final A[] value, final String errorMessage) {
+   public static byte[] notEmpty(final byte [] value, final String errorMessage) {
+      if (value == null || value.length == 0)
+         throw _createIllegalStateException(errorMessage);
+      return value;
+   }
+
+   public static <A> A[] notEmpty(final A [] value, final String errorMessage) {
       if (value == null || value.length == 0)
          throw _createIllegalStateException(errorMessage);
       return value;
@@ -301,7 +377,7 @@ public abstract class Assert {
       return value;
    }
 
-   public static Object notEquals(final Object value, final Object invalidValue, final String errorMessage) {
+   public static <T> T notEquals(final T value, final Object invalidValue, final String errorMessage) {
       if (Objects.equals(value, invalidValue))
          throw _createIllegalStateException(errorMessage);
       return value;

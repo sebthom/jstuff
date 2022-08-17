@@ -23,12 +23,12 @@ public class PagedList<E> extends ArrayList<E> {
    }
 
    public PagedList(final Class<E> elementType) {
-      setElementType(elementType);
+      this.elementType = elementType;
    }
 
    public PagedList(final Class<E> elementType, final List<E> elements, final int start, final int totalCount) {
       super(elements);
-      setElementType(elementType);
+      this.elementType = elementType;
       this.start = start;
       this.totalCount = totalCount;
    }

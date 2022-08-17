@@ -37,17 +37,17 @@ public abstract class Proxies {
        * determine a class loader that can see all interfaces
        */
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      boolean isGoodCL = Types.isVisible(cl, interfaceTypes);
+      boolean isGoodCL = cl != null && Types.isVisible(cl, interfaceTypes);
 
       if (!isGoodCL && cl != handler.getClass().getClassLoader()) {
          cl = handler.getClass().getClassLoader();
-         isGoodCL = Types.isVisible(cl, interfaceTypes);
+         isGoodCL = cl != null && Types.isVisible(cl, interfaceTypes);
       }
 
       if (!isGoodCL) {
          for (final Class<?> iface : interfaceTypes) {
             cl = iface.getClassLoader();
-            isGoodCL = Types.isVisible(cl, interfaceTypes);
+            isGoodCL = cl != null && Types.isVisible(cl, interfaceTypes);
             if (isGoodCL) {
                break;
             }

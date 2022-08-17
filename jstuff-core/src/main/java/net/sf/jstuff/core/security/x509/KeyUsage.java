@@ -34,7 +34,10 @@ public enum KeyUsage {
       final Set<KeyUsage> usages = new HashSet<>();
       for (int i = 0; i < keyUsage.length; i++) {
          if (keyUsage[i]) {
-            usages.add(getByRFCBit(i));
+            final var ku = getByRFCBit(i);
+            if (ku != null) {
+               usages.add(ku);
+            }
          }
       }
       return usages.isEmpty() ? Collections.emptySet() : usages;

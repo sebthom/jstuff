@@ -21,12 +21,12 @@ public abstract class Sets {
       return ConcurrentHashMap.newKeySet();
    }
 
-   public static <T> Set<T> newConcurrentHashSet(final Collection<T> items) {
-      if (items == null)
-         return null;
+   public static <T> Set<T> newConcurrentHashSet(final Collection<T> initialValues) {
+      if (initialValues == null || initialValues.isEmpty())
+         return newConcurrentHashSet();
 
-      final Set<T> set = ConcurrentHashMap.newKeySet(items.size());
-      set.addAll(items);
+      final Set<T> set = ConcurrentHashMap.newKeySet(initialValues.size());
+      set.addAll(initialValues);
       return set;
    }
 
@@ -35,12 +35,12 @@ public abstract class Sets {
    }
 
    @SafeVarargs
-   public static <T> Set<T> newConcurrentHashSet(final T... items) {
-      if (items == null)
-         return null;
+   public static <T> Set<T> newConcurrentHashSet(final T... initialValues) {
+      if (initialValues == null || initialValues.length == 0)
+         return newConcurrentHashSet();
 
-      final Set<T> set = ConcurrentHashMap.newKeySet(items.length);
-      CollectionUtils.addAll(set, items);
+      final Set<T> set = ConcurrentHashMap.newKeySet(initialValues.length);
+      CollectionUtils.addAll(set, initialValues);
       return set;
    }
 
@@ -57,12 +57,12 @@ public abstract class Sets {
    }
 
    @SafeVarargs
-   public static <K> HashSet<K> newHashSet(final K... values) {
-      if (values == null || values.length == 0)
+   public static <K> HashSet<K> newHashSet(final K... initialValues) {
+      if (initialValues == null || initialValues.length == 0)
          return new HashSet<>();
 
-      final HashSet<K> s = new HashSet<>(values.length);
-      Collections.addAll(s, values);
+      final HashSet<K> s = new HashSet<>(initialValues.length);
+      Collections.addAll(s, initialValues);
       return s;
    }
 
@@ -75,12 +75,12 @@ public abstract class Sets {
    }
 
    @SafeVarargs
-   public static <K> LinkedHashSet<K> newLinkedHashSet(final K... values) {
-      if (values == null || values.length == 0)
+   public static <K> LinkedHashSet<K> newLinkedHashSet(final K... initialValues) {
+      if (initialValues == null || initialValues.length == 0)
          return new LinkedHashSet<>();
 
-      final LinkedHashSet<K> s = new LinkedHashSet<>(values.length);
-      Collections.addAll(s, values);
+      final LinkedHashSet<K> s = new LinkedHashSet<>(initialValues.length);
+      Collections.addAll(s, initialValues);
       return s;
    }
 

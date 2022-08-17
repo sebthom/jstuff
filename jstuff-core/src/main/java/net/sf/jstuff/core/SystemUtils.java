@@ -6,20 +6,17 @@ package net.sf.jstuff.core;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.prefs.Preferences;
-import java.util.stream.Stream;
 
 import org.apache.commons.io.IOUtils;
 
@@ -37,7 +34,8 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    private static Boolean isDockerized;
    private static Boolean isRunningAsAdmin;
 
-   private static final Collection<String> WINDOWS_EXE_FILE_EXTENSIONS = Arrays.asList(Strings.splitByWholeSeparator( //
+   @SuppressWarnings("null")
+   private static final Collection<String> WINDOWS_EXE_FILE_EXTENSIONS = List.of(Strings.splitByWholeSeparator( //
       IS_OS_WINDOWS //
          ? System.getenv("PATHEXT") //
          : ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC", //
@@ -114,104 +112,109 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
     * (in Windows "elevated", in Unix as "root").
     */
    public static boolean isRunningAsAdmin() {
-      if (isRunningAsAdmin == null) {
+      if (isRunningAsAdmin != null)
+         return isRunningAsAdmin;
 
-         try {
-            if (IS_OS_WINDOWS) {
-               // https://stackoverflow.com/a/11995662/5116073
-               final Process p = Runtime.getRuntime().exec(new String[] {"net", "session"});
-               p.waitFor(10, TimeUnit.SECONDS);
-               if (!p.isAlive() && p.exitValue() == 0) {
-                  isRunningAsAdmin = true;
-               } else {
-                  p.destroyForcibly();
-                  isRunningAsAdmin = false;
-               }
+      try {
+         if (IS_OS_WINDOWS) {
+            // https://stackoverflow.com/a/11995662/5116073
 
-            } else if (IS_OS_LINUX) {
-               final Process p = Runtime.getRuntime().exec(new String[] {"id", "-u"});
-               p.waitFor(10, TimeUnit.SECONDS);
-               if (!p.isAlive() && p.exitValue() == 0) {
-                  try (InputStream is = p.getInputStream()) {
-                     final List<String> lines = IOUtils.readLines(is, Charset.defaultCharset());
-                     isRunningAsAdmin = !lines.isEmpty() && "0".equals(lines.get(0));
-                  }
-               } else {
-                  p.destroyForcibly();
-                  isRunningAsAdmin = false;
-               }
+            final Process p = Runtime.getRuntime().exec(new String[] {"net", "session"});
+            p.waitFor(10, TimeUnit.SECONDS);
+            if (!p.isAlive() && p.exitValue() == 0) {
+               isRunningAsAdmin = true;
+               return true;
+            }
+            p.destroyForcibly();
+            isRunningAsAdmin = false;
+            return false;
+         }
 
-            } else {
-               final java.util.logging.Logger prefsLogger = LogManager.getLogManager().getLogger("java.util.prefs.WindowsPreferences");
-               prefsLogger.setLevel(Level.SEVERE);
-               try {
-                  // https://stackoverflow.com/a/23538961/5116073
-                  final Preferences prefs = Preferences.systemRoot();
-                  synchronized (prefs) {
-                     prefs.put("foo", "bar"); // SecurityException on Windows
-                     prefs.remove("foo");
-                     prefs.flush(); // BackingStoreException on Linux
-                  }
-                  isRunningAsAdmin = true;
-               } finally {
-                  prefsLogger.setLevel(Level.INFO);
+         if (IS_OS_LINUX) {
+            final Process p = Runtime.getRuntime().exec(new String[] {"id", "-u"});
+            p.waitFor(10, TimeUnit.SECONDS);
+            if (!p.isAlive() && p.exitValue() == 0) {
+               try (var is = p.getInputStream()) {
+                  final var lines = IOUtils.readLines(is, Charset.defaultCharset());
+                  isRunningAsAdmin = !lines.isEmpty() && "0".equals(lines.get(0));
+                  return isRunningAsAdmin;
                }
             }
-         } catch (final Exception ex) {
-            LOG.debug(ex);
+            p.destroyForcibly();
             isRunningAsAdmin = false;
+            return false;
          }
+
+         final java.util.logging.Logger prefsLogger = LogManager.getLogManager().getLogger("java.util.prefs.WindowsPreferences");
+         prefsLogger.setLevel(Level.SEVERE);
+         try {
+            // https://stackoverflow.com/a/23538961/5116073
+            final Preferences prefs = Preferences.systemRoot();
+            synchronized (prefs) {
+               prefs.put("foo", "bar"); // SecurityException on Windows
+               prefs.remove("foo");
+               prefs.flush(); // BackingStoreException on Linux
+            }
+            isRunningAsAdmin = true;
+            return true;
+         } finally {
+            prefsLogger.setLevel(Level.INFO);
+         }
+      } catch (final Exception ex) {
+         LOG.debug(ex);
+         isRunningAsAdmin = false;
+         return false;
       }
-      return isRunningAsAdmin;
    }
 
    public static boolean isRunningInsideContainer() {
-      if (isContainerized == null) {
-         if (IS_OS_UNIX) {
-            // see http://docs.podman.io/en/latest/markdown/podman-run.1.html#description
-            final Path containerenv = Paths.get("/run/.containerenv");
-            if (Files.exists(containerenv)) {
-               isContainerized = true;
-               return true;
-            }
-            final Path cgroup = Paths.get("/proc/1/cgroup");
-            if (Files.exists(cgroup)) {
-               // see https://stackoverflow.com/a/52581380
-               try (Stream<String> stream = Files.lines(cgroup)) {
-                  final String[] searchFor = {"/docker", "/lxc", "/kubepods", "/garden"};
-                  isContainerized = stream.anyMatch(line -> Strings.containsAny(line, searchFor));
-                  return isContainerized;
-               } catch (final IOException ex) {
-                  LOG.debug(ex);
-               }
+      if (isContainerized != null)
+         return isContainerized;
+
+      if (IS_OS_UNIX) {
+         // see http://docs.podman.io/en/latest/markdown/podman-run.1.html#description
+         final Path containerenv = Paths.get("/run/.containerenv");
+         if (Files.exists(containerenv)) {
+            isContainerized = true;
+            return true;
+         }
+         final Path cgroup = Paths.get("/proc/1/cgroup");
+         if (Files.exists(cgroup)) {
+            // see https://stackoverflow.com/a/52581380
+            try (var stream = Files.lines(cgroup)) {
+               final String[] searchFor = {"/docker", "/lxc", "/kubepods", "/garden"};
+               isContainerized = stream.anyMatch(line -> Strings.containsAny(line, searchFor));
+               return isContainerized;
+            } catch (final IOException ex) {
+               LOG.debug(ex);
             }
          }
-         isContainerized = false;
-         return false;
       }
-      return isContainerized;
+      isContainerized = false;
+      return false;
    }
 
    public static boolean isRunningInsideDocker() {
-      if (isDockerized == null) {
-         if (IS_OS_UNIX) {
-            // see https://stackoverflow.com/a/52581380
-            final Path cgroup = Paths.get("/proc/1/cgroup");
-            if (Files.exists(cgroup)) {
-               try (Stream<String> stream = Files.lines(cgroup)) {
-                  if (stream.anyMatch(line -> line.contains("/docker"))) {
-                     isContainerized = true;
-                     isDockerized = true;
-                     return true;
-                  }
-               } catch (final IOException ex) {
-                  LOG.debug(ex);
+      if (isDockerized != null)
+         return isDockerized;
+
+      if (IS_OS_UNIX) {
+         // see https://stackoverflow.com/a/52581380
+         final Path cgroup = Paths.get("/proc/1/cgroup");
+         if (Files.exists(cgroup)) {
+            try (var stream = Files.lines(cgroup)) {
+               if (stream.anyMatch(line -> line.contains("/docker"))) {
+                  isContainerized = true;
+                  isDockerized = true;
+                  return true;
                }
+            } catch (final IOException ex) {
+               LOG.debug(ex);
             }
          }
-         isDockerized = false;
       }
-      return isDockerized;
+      isDockerized = false;
+      return false;
    }
 
    /**

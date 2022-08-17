@@ -165,7 +165,7 @@ public enum Trilean {
       }
    }
 
-   public Object toObject(final Object trueValue, final Object falseValue, final Object unknownValue) {
+   public <T> T toObject(final T trueValue, final T falseValue, final T unknownValue) {
       switch (this) {
          case TRUE:
             return trueValue;
@@ -192,10 +192,8 @@ public enum Trilean {
       if (state == null) {
          state = UNKNOWN;
       }
-      if (this == TRUE && state == TRUE)
-         return FALSE;
-
-      if (this == FALSE && state == FALSE)
+      if (this == TRUE && state == TRUE //
+         || this == FALSE && state == FALSE)
          return FALSE;
 
       if (this == UNKNOWN || state == UNKNOWN)

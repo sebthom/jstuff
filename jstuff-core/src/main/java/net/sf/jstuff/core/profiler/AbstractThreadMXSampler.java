@@ -39,7 +39,7 @@ public abstract class AbstractThreadMXSampler {
          while (true) {
             final ThreadInfo[] sample = samples.poll();
             if (sample == null) {
-               if (executor.isShutdown())
+               if (executor == null || executor.isShutdown())
                   return null;
                Thread.sleep(samplingInterval);
             } else {

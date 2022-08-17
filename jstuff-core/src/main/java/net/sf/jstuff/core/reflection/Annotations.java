@@ -38,7 +38,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
       /*
        * build the final map of attributes to be used
        */
-      final Map<String, Object> attrValues = new HashMap<>();
+      final var attrValues = new HashMap<String, Object>();
       int count = 0;
       for (final Method m : annotationType.getDeclaredMethods()) {
          final String attrName = m.getName();
@@ -113,7 +113,8 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
    @SuppressWarnings("unchecked")
    public static <A extends Annotation> A getDefaults(final Class<A> annotation) {
       Args.notNull("annotation", annotation);
-      return (A) Proxy.newProxyInstance(annotation.getClassLoader(), new Class[] {annotation}, (proxy, method, args) -> method.getDefaultValue());
+      return (A) Proxy.newProxyInstance(annotation.getClassLoader(), new Class[] {annotation}, (proxy, method, args) -> method
+         .getDefaultValue());
    }
 
    /**
@@ -163,7 +164,8 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
       final Annotation[][] result = new Annotation[methodParameterTypesCount][];
       for (int i = 0; i < methodParameterTypesCount; i++) {
          final HashSet<Annotation> paramAnnos = methodParameterAnnotations[i];
-         result[i] = paramAnnos == null ? new Annotation[0] : methodParameterAnnotations[i].toArray(new Annotation[methodParameterAnnotations[i].size()]);
+         result[i] = paramAnnos == null ? new Annotation[0]
+            : methodParameterAnnotations[i].toArray(new Annotation[methodParameterAnnotations[i].size()]);
 
       }
       return result;
@@ -172,8 +174,8 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
    public static Map<String, Object> getParameters(final Annotation annotation) throws ReflectionException {
       Args.notNull("annotation", annotation);
 
-      final Method[] methods = annotation.annotationType().getDeclaredMethods();
-      final Map<String, Object> parameters = new HashMap<>(methods.length);
+      final var methods = annotation.annotationType().getDeclaredMethods();
+      final var parameters = new HashMap<String, Object>(methods.length);
       for (final Method m : methods) {
          try {
             parameters.put(m.getName(), m.invoke(annotation));

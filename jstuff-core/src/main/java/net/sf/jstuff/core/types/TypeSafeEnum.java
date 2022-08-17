@@ -33,7 +33,8 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
    private static final long serialVersionUID = 1L;
 
    private static final ConcurrentMap<Class<? extends TypeSafeEnum<?>>, ConcurrentMap<?, ? extends TypeSafeEnum<?>>> ENUMS_BY_TYPE = new ConcurrentHashMap<>();
-   private static final Comparator<TypeSafeEnum<?>> ORDINAL_COMPARATOR = (o1, o2) -> o1.ordinal == o2.ordinal ? 0 : o1.ordinal < o2.ordinal ? -1 : 1;
+   private static final Comparator<TypeSafeEnum<?>> ORDINAL_COMPARATOR = (o1, o2) -> o1.ordinal == o2.ordinal ? 0
+      : o1.ordinal < o2.ordinal ? -1 : 1;
    private static final AtomicInteger ORDINAL_COUNTER = new AtomicInteger();
 
    public static <V, T extends TypeSafeEnum<V>> T getEnum(final Class<T> enumType, final V id) {
@@ -122,7 +123,7 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
    private void registerEnum() {
       ConcurrentMap<ID, TypeSafeEnum<?>> enumItems = new ConcurrentHashMap<>(2);
       @SuppressWarnings("unchecked")
-      final ConcurrentMap<ID, TypeSafeEnum<?>> existingEnumItems = (ConcurrentMap<ID, TypeSafeEnum<?>>) ENUMS_BY_TYPE.putIfAbsent(
+      final var existingEnumItems = (ConcurrentMap<ID, TypeSafeEnum<?>>) ENUMS_BY_TYPE.putIfAbsent(
          (Class<? extends TypeSafeEnum<?>>) getClass(), enumItems);
       if (existingEnumItems != null) {
          enumItems = existingEnumItems;
