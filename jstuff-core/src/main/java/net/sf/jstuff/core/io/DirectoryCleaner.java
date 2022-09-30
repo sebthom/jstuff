@@ -110,7 +110,7 @@ public class DirectoryCleaner {
    protected Path directory;
    protected boolean recursive;
    protected Duration minimumFileAge;
-   protected Size minimumFileSize;
+   protected Size minimumFileSize = Size.ZERO;
    protected BiPredicate<Path, BasicFileAttributes> fileFilter = (path, attr) -> true;
    protected BiConsumer<Path, BasicFileAttributes> onFileDeleted;
 

@@ -32,6 +32,8 @@ import net.sf.jstuff.core.validation.Args;
  */
 public final class Size implements Serializable, Comparable<Size> {
 
+   public static final Size ZERO = Size.ofBytes(0);
+
    private static final long serialVersionUID = 1L;
 
    private static final Rounding ROUNDING_2_HALFUP = new Rounding(2, RoundingMode.HALF_UP);
@@ -107,9 +109,7 @@ public final class Size implements Serializable, Comparable<Size> {
    public boolean equals(final Object obj) {
       if (this == obj)
          return true;
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
+      if (obj == null || getClass() != obj.getClass())
          return false;
       final Size other = (Size) obj;
       if (!Objects.equals(bytes, other.bytes))
