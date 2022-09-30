@@ -131,6 +131,63 @@ public abstract class Fields extends Members {
    }
 
    /**
+    * @throws ReflectionException if field cannot be found
+    */
+   public static Field get(final Class<?> clazz, final String fieldName) {
+      Args.notNull("clazz", clazz);
+      Args.notNull("fieldName", fieldName);
+
+      final var field = find(clazz, fieldName, null);
+      if (field == null)
+         throw new ReflectionException("Field [" + fieldName + "] not found in class [" + clazz.getName() + "].");
+      return field;
+   }
+
+   /**
+    * @param compatibleWith the field type must assignable from this type, i.e. objects of type <code>compatibleWith</code> must be assignable to the field
+    * @throws ReflectionException if field cannot be found
+    */
+   public static Field get(final Class<?> clazz, final String fieldName, final Class<?> compatibleWith) {
+      Args.notNull("clazz", clazz);
+      Args.notNull("fieldName", fieldName);
+
+      final var field = find(clazz, fieldName, compatibleWith);
+      if (field == null)
+         throw new ReflectionException("Field [" + fieldName + "] compatible with [" + compatibleWith + "] not found in class [" + clazz
+            .getName() + "].");
+      return field;
+   }
+
+   /**
+    * @throws ReflectionException if field cannot be found
+    */
+   public static Field getRecursive(final Class<?> clazz, final String fieldName) {
+      Args.notNull("clazz", clazz);
+      Args.notNull("fieldName", fieldName);
+
+      final var field = findRecursive(clazz, fieldName, null);
+      if (field == null)
+         throw new ReflectionException("Field [" + fieldName + "] not found in class [" + clazz.getName()
+            + "]  or any of it's super classes.");
+      return field;
+   }
+
+   /**
+    * @param compatibleWith objects of type <code>compatibleWith</code> must be assignable to the field
+    * @throws ReflectionException if field cannot be found
+    */
+   public static Field getRecursive(final Class<?> clazz, final String fieldName, final Class<?> compatibleWith) {
+      Args.notNull("clazz", clazz);
+      Args.notNull("fieldName", fieldName);
+
+      final var field = findRecursive(clazz, fieldName, compatibleWith);
+      if (field == null)
+         throw new ReflectionException("Field [" + fieldName + "] compatible with [" + compatibleWith + "] not found in class [" + clazz
+            .getName() + "] or any of it's super classes.");
+      return field;
+   }
+
+   /**
     * @return true if the given value can be assigned to the given field, i.e. is compatible with the field's type
     */
    public static boolean isAssignable(final Field field, final Object value) {

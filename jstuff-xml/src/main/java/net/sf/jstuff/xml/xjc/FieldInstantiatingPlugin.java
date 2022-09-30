@@ -95,7 +95,7 @@ public class FieldInstantiatingPlugin extends AbstractPlugin {
              * })
              * private List<JAXBElement<?>> bikesAndCars;
              */
-            final Field memberValueFields = Fields.find(JAnnotationUse.class, "memberValues");
+            final Field memberValueFields = Fields.get(JAnnotationUse.class, "memberValues");
             for (final JAnnotationUse a : fieldDecl.annotations()) {
                if (jakarta.xml.bind.annotation.XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName()) //
                   || "javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName()) //

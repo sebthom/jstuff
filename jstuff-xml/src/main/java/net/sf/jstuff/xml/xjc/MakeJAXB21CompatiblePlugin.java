@@ -37,7 +37,7 @@ import net.sf.jstuff.core.reflection.Fields;
  */
 public class MakeJAXB21CompatiblePlugin extends AbstractPlugin {
 
-   private static final Field MEMBER_VALUES_FIELD = Fields.find(JAnnotationUse.class, "memberValues");
+   private static final Field MEMBER_VALUES_FIELD = Fields.get(JAnnotationUse.class, "memberValues");
 
    public static final String OPTION_NAME = "Xjaxb21compat";
 
