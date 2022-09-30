@@ -121,7 +121,9 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
    @SuppressWarnings("unchecked")
    public <T> T[] toArray(final T[] array) {
       final int size = this.size();
-      final T[] result = array.length >= size ? array : (T[]) Array.newInstance(array.getClass().getComponentType(), size);
+      final T[] result = array.length >= size //
+         ? array 
+         : (T[]) Array.newInstance(array.getClass().getComponentType(), size);
       int idx = 0;
       for (final Collection<? extends V> coll : components) {
          for (final V v : coll) {

@@ -107,7 +107,7 @@ public abstract class StackTrace {
    public static StackTraceElement getCallerStackTraceElement(final String calledClassName) {
       Args.notNull("calledClassName", calledClassName);
 
-      final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+      final var stack = Thread.currentThread().getStackTrace();
       boolean foundInStack = false;
       for (final StackTraceElement curr : stack)
          if (calledClassName.equals(curr.getClassName())) {
@@ -152,7 +152,7 @@ public abstract class StackTrace {
    public static <T extends Throwable> T removeFirstStackTraceElement(final T exception) {
       Args.notNull("exception", exception);
 
-      final StackTraceElement[] stack = exception.getStackTrace();
+      final var stack = exception.getStackTrace();
       if (stack != null && stack.length > 0) {
          final StackTraceElement[] newStack = new StackTraceElement[stack.length - 1];
          System.arraycopy(stack, 1, newStack, 0, stack.length - 1);

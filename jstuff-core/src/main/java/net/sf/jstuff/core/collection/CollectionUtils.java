@@ -362,8 +362,8 @@ public abstract class CollectionUtils {
       return new ArrayList<>();
    }
 
-   public static <K> ArrayList<K> newArrayList(final Collection<K> collection) {
-      return collection == null ? new ArrayList<>() : new ArrayList<>(collection);
+   public static <K> ArrayList<K> newArrayList(final Collection<K> initialValues) {
+      return initialValues == null ? new ArrayList<>() : new ArrayList<>(initialValues);
    }
 
    public static <K> ArrayList<K> newArrayList(final int initialSize) {
@@ -371,12 +371,12 @@ public abstract class CollectionUtils {
    }
 
    @SafeVarargs
-   public static <K> ArrayList<K> newArrayList(final K... values) {
-      if (values == null || values.length == 0)
+   public static <K> ArrayList<K> newArrayList(final K... initialValues) {
+      if (initialValues == null || initialValues.length == 0)
          return new ArrayList<>();
 
-      final ArrayList<K> l = new ArrayList<>(values.length);
-      Collections.addAll(l, values);
+      final ArrayList<K> l = new ArrayList<>(initialValues.length);
+      Collections.addAll(l, initialValues);
       return l;
    }
 

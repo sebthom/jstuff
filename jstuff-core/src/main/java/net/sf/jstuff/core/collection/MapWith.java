@@ -95,9 +95,6 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       map.putAll(otherMap);
    }
 
-   /**
-    * @since 1.8
-    */
    @Override
    public V putIfAbsent(final K key, final V value) {
       if (!containsKey(key))
@@ -110,11 +107,6 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       return map.remove(key);
    }
 
-   /**
-    * Removes the entry for the specified key only if it is currently mapped to the specified value.
-    *
-    * @since 1.8
-    */
    @Override
    public boolean remove(final Object key, final Object value) {
       if (!containsKey(key))

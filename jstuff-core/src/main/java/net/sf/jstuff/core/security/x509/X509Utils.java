@@ -122,7 +122,7 @@ public abstract class X509Utils {
     */
    public static X509Certificate getCertificate(final File file) throws GeneralSecurityException, IOException {
       Args.notNull("file", file);
-      try (InputStream is = Files.newInputStream(file.toPath(), StandardOpenOption.READ)) {
+      try (var is = Files.newInputStream(file.toPath(), StandardOpenOption.READ)) {
          return getCertificate(is);
       }
    }

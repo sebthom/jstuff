@@ -104,7 +104,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
       assertIsModifiable();
 
       try {
-         final List<X509Certificate> certs = new ArrayList<>();
+         final var certs = new ArrayList<X509Certificate>();
          for (final String certAlias : Enumerations.toIterable(trustStore.aliases())) {
             final Certificate cert = trustStore.getCertificate(certAlias);
             if (cert == null) {
@@ -116,7 +116,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
                LOG.warn("Ignoring non-X509Certificate [%s] with alias [%s].", cert, certAlias);
             }
          }
-         if (certs.size() > 0) {
+         if (!certs.isEmpty()) {
             addTrustCerts(certs.toArray(new X509Certificate[certs.size()]));
          }
       } catch (final GeneralSecurityException ex) {
@@ -180,9 +180,6 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
 
    @Override
    public TrustManager[] getTrustManagers() {
-      if (trustManagers == null)
-         return new TrustManager[0];
-
       return trustManagers.clone();
    }
 

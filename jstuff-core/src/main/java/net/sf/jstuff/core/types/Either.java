@@ -63,7 +63,6 @@ public interface Either<L, R> extends Serializable {
             return Objects.toString(left);
          }
 
-         @SuppressWarnings("null")
          @Override
          public L value() {
             return left;
@@ -149,7 +148,6 @@ public interface Either<L, R> extends Serializable {
             return Objects.toString(right);
          }
 
-         @SuppressWarnings("null")
          @Override
          public R value() {
             return right;

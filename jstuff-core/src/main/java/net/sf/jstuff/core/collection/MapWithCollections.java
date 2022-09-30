@@ -70,7 +70,7 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
     */
    @Override
    public boolean containsValue(final Object value) {
-      for (final Entry<K, C> entry : entrySet())
+      for (final var entry : entrySet())
          if (entry.getValue() != null && entry.getValue().contains(value))
             return true;
       return false;
@@ -83,7 +83,7 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
    }
 
    /**
-    * Associates the specified value with the specified key in this map (optional operation).
+    * Associates the specified value with the specified key in this map.
     * If the map previously contained a mapping for this key, the old value is replaced by the specified value.
     *
     * @param key key with which the specified value is to be associated

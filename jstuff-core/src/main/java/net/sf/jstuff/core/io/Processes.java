@@ -44,12 +44,12 @@ public abstract class Processes {
       private final List<Object> args = new ArrayList<>(2);
       private Map<String, Object> env;
       private Function<Object, String> stringifier = Objects::toString;
+      private Consumer<ProcessWrapper> onExit;
       private File workDir;
 
       private boolean redirectErrorToOutput;
       private Object redirectError;
       private Object redirectOutput;
-      private Consumer<ProcessWrapper> onExit;
 
       protected Builder(final String exe) {
          executable = exe;

@@ -163,7 +163,8 @@ public abstract class NetUtils {
    public static boolean isKnownHost(final String hostname) {
       Args.notNull("hostname", hostname);
       try {
-         return InetAddress.getByName(hostname) != null;
+         InetAddress.getByName(hostname);
+         return true;
       } catch (final UnknownHostException ex) {
          LOG.debug("Host [%s] is unknown.", hostname);
          return false;

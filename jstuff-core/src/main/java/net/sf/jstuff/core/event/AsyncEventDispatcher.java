@@ -41,7 +41,7 @@ public class AsyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
 
    @Override
    public Future<Integer> fire(final EVENT type) {
-      final EventListener<EVENT>[] copy = eventListeners.toArray(new EventListener[eventListeners.size()]);
+      final EventListener<EVENT>[] copy = eventListeners.toArray(EventListener[]::new);
       return executor.submit(() -> Events.fire(type, copy));
    }
 

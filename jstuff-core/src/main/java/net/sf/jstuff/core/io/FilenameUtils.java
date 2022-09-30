@@ -35,6 +35,9 @@ public abstract class FilenameUtils extends org.apache.commons.io.FilenameUtils 
       return getBaseName(file.getName());
    }
 
+   /**
+    * @return {@code null} if this path has zero elements
+    */
    public static String getBaseName(final Path file) {
       return getBaseName(file.getFileName().toString());
    }
@@ -51,6 +54,9 @@ public abstract class FilenameUtils extends org.apache.commons.io.FilenameUtils 
       return getExtension(file.getName());
    }
 
+   /**
+    * @return {@code null} if this path has zero elements
+    */
    public static String getExtension(final Path file) {
       return getExtension(file.getFileName().toString());
    }

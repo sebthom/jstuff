@@ -25,7 +25,7 @@ public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V
 
    public CompositeIterator(final Collection<? extends Iterator<V>> components) {
       super(components);
-      if (this.components.size() > 0) {
+      if (!this.components.isEmpty()) {
          nextItemIterator = CollectionUtils.remove(this.components, 0);
       }
    }
@@ -33,7 +33,7 @@ public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V
    @SafeVarargs
    public CompositeIterator(final Iterator<V>... components) {
       super(components);
-      if (this.components.size() > 0) {
+      if (!this.components.isEmpty()) {
          nextItemIterator = CollectionUtils.remove(this.components, 0);
       }
    }
@@ -55,7 +55,7 @@ public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V
    protected void prepareNextItemIterator() {
       if (nextItemIterator.hasNext())
          return;
-      if (components.size() > 0) {
+      if (!components.isEmpty()) {
          nextItemIterator = CollectionUtils.remove(components, 0);
          prepareNextItemIterator();
       }

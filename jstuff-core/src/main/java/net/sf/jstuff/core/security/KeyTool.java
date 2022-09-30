@@ -16,6 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import net.sf.jstuff.core.Strings;
+import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.io.MoreFiles;
@@ -71,7 +72,7 @@ public abstract class KeyTool {
 
    public static void main(final String[] args) throws IOException { // CHECKSTYLE:IGNORE UncommentedMain
       try {
-         final ProcessWrapper prc = Processes.builder(Path.of(System.getProperty("java.home"), "bin/keytool")).withArgs(args)
+         final ProcessWrapper prc = Processes.builder(SystemUtils.getJavaHome().toPath().resolve("bin/keytool")).withArgs(args)
             .withRedirectOutput(System.out) //
             .withRedirectError(System.err) //
             .start() //
@@ -92,7 +93,7 @@ public abstract class KeyTool {
 
       try {
          final var out = new StringBuilder();
-         final ProcessWrapper prc = Processes.builder(Path.of(System.getProperty("java.home"), "bin/keytool")).withArgs(args)
+         final ProcessWrapper prc = Processes.builder(SystemUtils.getJavaHome().toPath().resolve("bin/keytool")).withArgs(args)
             .withRedirectErrorToOutput() //
             .withRedirectOutput(out) //
             .start() //

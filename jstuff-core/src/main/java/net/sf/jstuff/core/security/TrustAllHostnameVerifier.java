@@ -16,5 +16,4 @@ public class TrustAllHostnameVerifier implements HostnameVerifier {
    public boolean verify(final String hostname, final SSLSession session) {
       return true;
    }
-
 }

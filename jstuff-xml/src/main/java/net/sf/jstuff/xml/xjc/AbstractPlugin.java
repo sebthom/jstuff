@@ -26,9 +26,10 @@ public abstract class AbstractPlugin extends Plugin {
 
    @Override
    public List<String> getCustomizationURIs() {
-      if (getCustomizationNS() == null)
+      final var ns = getCustomizationNS();
+      if (ns == null)
          return Collections.emptyList();
-      return Arrays.asList(getCustomizationNS());
+      return Arrays.asList(ns);
    }
 
    protected CCustomizations findCustomizations(final CCustomizations cc, final String name) {

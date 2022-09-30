@@ -34,7 +34,6 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    private static Boolean isDockerized;
    private static Boolean isRunningAsAdmin;
 
-   @SuppressWarnings("null")
    private static final Collection<String> WINDOWS_EXE_FILE_EXTENSIONS = List.of(Strings.splitByWholeSeparator( //
       IS_OS_WINDOWS //
          ? System.getenv("PATHEXT") //
@@ -49,7 +48,7 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
       if (Strings.isEmpty(program))
          return null;
 
-      final String[] paths = Strings.splitByWholeSeparator(System.getenv("PATH"), File.pathSeparator);
+      final var paths = Strings.splitByWholeSeparator(System.getenv("PATH"), File.pathSeparator);
 
       if (IS_OS_WINDOWS) {
          boolean programHasExeFileExtension = false;

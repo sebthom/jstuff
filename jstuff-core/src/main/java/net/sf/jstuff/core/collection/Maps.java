@@ -131,11 +131,8 @@ public abstract class Maps {
 
    public static <K, V> V get(final Map<K, V> map, final K key, final V defaultValue) {
       if (map == null)
-         return null;
-
-      if (map.containsKey(key))
-         return map.get(key);
-      return defaultValue;
+         return defaultValue;
+      return map.getOrDefault(key, defaultValue);
    }
 
    public static <K, V> ArrayList<K> keysAsArrayList(final Map<K, V> map) {
@@ -337,7 +334,7 @@ public abstract class Maps {
          return direction == SortDirection.ASC ? valueCmp : -valueCmp;
       });
 
-      final Map<K, V> sortedMap = new LinkedHashMap<>();
+      final var sortedMap = new LinkedHashMap<K, V>();
       for (final Entry<K, V> e : entries) {
          sortedMap.put(e.getKey(), e.getValue());
       }
@@ -352,10 +349,10 @@ public abstract class Maps {
 
       Args.notNull("comparator", comparator);
 
-      final List<Entry<K, V>> entries = new ArrayList<>(map.entrySet());
+      final var entries = new ArrayList<>(map.entrySet());
       entries.sort((o1, o2) -> comparator.compare(o1.getValue(), o2.getValue()));
 
-      final Map<K, V> sortedMap = new LinkedHashMap<>();
+      final var sortedMap = new LinkedHashMap<K, V>();
       for (final Entry<K, V> e : entries) {
          sortedMap.put(e.getKey(), e.getValue());
       }
@@ -374,9 +371,9 @@ public abstract class Maps {
       Args.notNull("valueSeparator", valueSeparator);
       Args.notNull("assignmentOperator", assignmentOperator);
 
-      final Map<String, String> result = new HashMap<>();
-      for (final String element : Strings.split(valuePairs, valueSeparator)) {
-         final String[] valuePairSplitted = Strings.split(element, assignmentOperator);
+      final var result = new HashMap<String, String>();
+      for (final var element : Strings.split(valuePairs, valueSeparator)) {
+         final var valuePairSplitted = Strings.split(element, assignmentOperator);
          result.put(valuePairSplitted[0], valuePairSplitted[1]);
       }
       return result;

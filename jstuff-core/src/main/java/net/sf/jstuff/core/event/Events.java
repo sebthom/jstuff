@@ -19,7 +19,7 @@ public abstract class Events {
     */
    public static <Event> int fire(final Event type, final Collection<EventListener<Event>> listeners) {
       int count = 0;
-      if (listeners != null && listeners.size() > 0) {
+      if (listeners != null && !listeners.isEmpty()) {
          for (final EventListener<Event> listener : listeners)
             if (fire(type, listener)) {
                count++;

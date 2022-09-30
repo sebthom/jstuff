@@ -8,7 +8,6 @@ import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import net.sf.jstuff.core.validation.Args;
@@ -28,7 +27,7 @@ public enum ExtendedKeyUsage {
    OCSP_SIGNING("1.3.6.1.5.5.7.3.9", "id-kp-OCSPSigning");
 
    public static Set<ExtendedKeyUsage> getAllowedBy(final X509Certificate cert) throws CertificateParsingException {
-      final List<String> oids = cert.getExtendedKeyUsage();
+      final var oids = cert.getExtendedKeyUsage();
       if (oids == null || oids.isEmpty())
          return Collections.emptySet();
       final Set<ExtendedKeyUsage> usages = new HashSet<>();
@@ -51,7 +50,7 @@ public enum ExtendedKeyUsage {
    public boolean isAllowedBy(final X509Certificate cert) throws CertificateParsingException {
       Args.notNull("cert", cert);
 
-      final List<String> oids = cert.getExtendedKeyUsage();
+      final var oids = cert.getExtendedKeyUsage();
       if (oids == null || oids.isEmpty())
          return false;
       return oids.contains(rfcOID);

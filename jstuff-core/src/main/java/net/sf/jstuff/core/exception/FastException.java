@@ -10,6 +10,7 @@ package net.sf.jstuff.core.exception;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class FastException extends Exception {
+
    private static final long serialVersionUID = 1L;
 
    public FastException() {
@@ -29,6 +30,6 @@ public class FastException extends Exception {
 
    @Override
    public Throwable fillInStackTrace() {
-      return null;
+      return this;
    }
 }

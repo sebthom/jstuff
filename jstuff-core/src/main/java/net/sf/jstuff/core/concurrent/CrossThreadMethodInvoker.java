@@ -79,10 +79,10 @@ public class CrossThreadMethodInvoker {
    /**
     * Creates a JDK proxy executing all method in the {@link CrossThreadMethodInvoker}'s owner thread
     */
-   @SuppressWarnings("unchecked")
    public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
       final Class<?>... targetInterfaces) {
-      return (CrossThreadProxy<INTERFACE>) Proxies.create((proxy, method, args) -> {
+
+      return Proxies.create((proxy, method, args) -> {
          if (method.getDeclaringClass() == CrossThreadProxy.class) {
             final String mName = method.getName();
             if ("get".equals(mName))
@@ -96,10 +96,10 @@ public class CrossThreadMethodInvoker {
    /**
     * Creates a JDK proxy executing all method in the {@link CrossThreadMethodInvoker}'s owner thread
     */
-   @SuppressWarnings("unchecked")
    public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
       final Function<Object, Object> resultTransformer, final Class<?>... targetInterfaces) {
-      return (CrossThreadProxy<INTERFACE>) Proxies.create(Thread.currentThread().getContextClassLoader(), (proxy, method, args) -> {
+
+      return Proxies.create(Thread.currentThread().getContextClassLoader(), (proxy, method, args) -> {
          if (method.getDeclaringClass() == CrossThreadProxy.class) {
             final String mName = method.getName();
             if ("get".equals(mName))

@@ -97,7 +97,7 @@ abstract class LoggerUtils {
       final StackTraceElement loggedSTE = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
       final Method method = Methods.findAnyCompatible(loggedClass, loggedSTE.getMethodName(), args);
       if (method == null) {
-         final StringBuilder sb = new StringBuilder(METHOD_ENTRY_MARKER);
+         final var sb = new StringBuilder(METHOD_ENTRY_MARKER);
          sb.append(argToString(args[0]));
          for (int i = 1; i < args.length; i++) {
             sb.append(", ").append(argToString(args[i]));

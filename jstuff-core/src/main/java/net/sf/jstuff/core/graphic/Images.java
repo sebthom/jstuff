@@ -26,7 +26,8 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Images {
    private static final class LazyInitialized {
-      private static final GraphicsConfiguration GC = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+      private static final GraphicsConfiguration GC = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+         .getDefaultConfiguration();
    }
 
    public static BufferedImage toBufferedImage(final Image image) throws HeadlessException {
