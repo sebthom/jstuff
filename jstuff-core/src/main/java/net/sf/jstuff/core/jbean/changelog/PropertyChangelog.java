@@ -7,7 +7,6 @@ package net.sf.jstuff.core.jbean.changelog;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.jbean.JBean;
@@ -19,7 +18,7 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 public class PropertyChangelog implements EventListener<PropertyChangeEvent>, Serializable {
    private static final long serialVersionUID = 1L;
 
-   private final List<PropertyChangeEvent> propertyChanges = new ArrayList<>();
+   private final List<Object /*PropertyChangeEvent|UndoMarker*/> propertyChanges = new ArrayList<>();
 
    private boolean undoing;
 
@@ -28,17 +27,17 @@ public class PropertyChangelog implements EventListener<PropertyChangeEvent>, Se
    }
 
    public boolean isDirty(final JBean<?> bean) {
-      for (final PropertyChangeEvent p : propertyChanges)
-         if (p.bean == bean)
-            return true;
-      return false;
+      return propertyChanges.stream() //
+         .filter(PropertyChangeEvent.class::isInstance) //
+         .map(PropertyChangeEvent.class::cast) //
+         .anyMatch(p -> p.bean == bean);
    }
 
    public boolean isDirty(final JBean<?> bean, final PropertyDescriptor<?> prop) {
-      for (final PropertyChangeEvent p : propertyChanges)
-         if (p.bean == bean && p.property == prop)
-            return true;
-      return false;
+      return propertyChanges.stream() //
+         .filter(PropertyChangeEvent.class::isInstance) //
+         .map(PropertyChangeEvent.class::cast) //
+         .anyMatch(p -> p.bean == bean && p.property == prop);
    }
 
    @Override
@@ -51,9 +50,11 @@ public class PropertyChangelog implements EventListener<PropertyChangeEvent>, Se
    public void undo() {
       undoing = true;
       try {
-         for (final ListIterator<PropertyChangeEvent> it = propertyChanges.listIterator(propertyChanges.size()); it.hasPrevious();) {
-            final PropertyChangeEvent change = it.previous();
-            change.undo();
+         for (final var it = propertyChanges.listIterator(propertyChanges.size()); it.hasPrevious();) {
+            final var change = it.previous();
+            if (change instanceof PropertyChangeEvent) {
+               ((PropertyChangeEvent) change).undo();
+            }
             it.remove();
          }
       } finally {
@@ -70,9 +71,11 @@ public class PropertyChangelog implements EventListener<PropertyChangeEvent>, Se
 
       undoing = true;
       try {
-         for (final ListIterator<PropertyChangeEvent> it = propertyChanges.listIterator(propertyChanges.size()); it.hasPrevious();) {
-            final PropertyChangeEvent change = it.previous();
-            change.undo();
+         for (final var it = propertyChanges.listIterator(propertyChanges.size()); it.hasPrevious();) {
+            final var change = it.previous();
+            if (change instanceof PropertyChangeEvent) {
+               ((PropertyChangeEvent) change).undo();
+            }
             it.remove();
 
             if (change.equals(until)) {
