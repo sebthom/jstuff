@@ -18,7 +18,7 @@
 
    <properties>
        <!-- https://search.maven.org/artifact/com.fasterxml.jackson.core/jackson-core -->
-      <jackson.version>2.13.3</jackson.version>
+      <jackson.version>2.13.4</jackson.version>
    </properties>
 
    <dependencyManagement>
@@ -130,7 +130,7 @@
             <!-- https://github.com/luben/zstd-jni -->
             <groupId>com.github.luben</groupId>
             <artifactId>zstd-jni</artifactId>
-            <version>1.5.2-3</version>
+            <version>1.5.2-4</version>
          </dependency>
          <dependency>
             <!-- https://github.com/xerial/snappy-java -->
