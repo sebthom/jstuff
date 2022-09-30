@@ -18,7 +18,7 @@
 
    <properties>
        <!-- https://search.maven.org/artifact/com.fasterxml.jackson.core/jackson-core -->
-      <jackson.version>2.13.3</jackson.version>
+      <jackson.version>2.13.4</jackson.version>
    </properties>
 
    <dependencyManagement>
@@ -507,7 +507,7 @@
       <dependency>
          <groupId>org.eclipse.jetty</groupId>
          <artifactId>jetty-webapp</artifactId>
-         <version>10.0.11</version>
+         <version>10.0.12</version>
          <scope>test</scope>
       </dependency>
       <dependency>
