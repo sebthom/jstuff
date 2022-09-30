@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -21,6 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
+import net.sf.jstuff.core.ref.MutableRef;
 import net.sf.jstuff.core.reflection.Annotations;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.Proxies;
@@ -28,7 +28,6 @@ import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.reflection.exception.InvokingMethodFailedException;
 import net.sf.jstuff.core.reflection.visitor.DefaultClassVisitor;
 import net.sf.jstuff.core.validation.Args;
-import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -51,9 +50,9 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
          this.targetClass = targetClass;
          this.constructorArgs = constructorArgs;
 
-         // collecting annotation information
+         // collecting annotation information on builder interface
+         final var propertyDefaultsRef = MutableRef.of((Builder.Property) null);
          Types.visit(builderInterface, new DefaultClassVisitor() {
-
             @Override
             public boolean isVisitingFields(final Class<?> clazz) {
                return false;
@@ -73,17 +72,17 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
 
             @Override
             public boolean visit(final Class<?> clazz) {
-               if (propertyDefaults == null) {
-                  propertyDefaults = clazz.getAnnotation(Builder.Property.class);
+               if (propertyDefaultsRef.isNull()) {
+                  propertyDefaultsRef.set(clazz.getAnnotation(Builder.Property.class));
                }
                return true;
             }
          });
-         if (propertyDefaults == null) {
-            propertyDefaults = Annotations.getDefaults(Builder.Property.class);
-         }
 
-         // collecting @OnPostBuild methods
+         final var pd = propertyDefaultsRef.get();
+         propertyDefaults = pd == null ? Annotations.getDefaults(Builder.Property.class) : pd;
+
+         // collecting @OnPostBuild methods on target class
          final Set<String> overridablePostBuildMethodNames = new HashSet<>(2);
          Types.visit(targetClass, new DefaultClassVisitor() {
             @Override
@@ -116,79 +115,90 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
          });
       }
 
+      protected Object buildTarget() throws Throwable { // CHECKSTYLE:IGNORE .*
+         // creating target instance
+         final Object target = Types.newInstance(targetClass, constructorArgs);
+
+         // setting properties
+         for (final Tuple2<String, Object[]> property : properties) {
+            String propName = property.get1();
+            // remove "with" prefix from withSomeProperty(...) named properties
+            if (propName.length() > 4 && propName.startsWith("with")) {
+               propName = Strings.lowerCaseFirstChar(propName.substring(4));
+            }
+            final Object[] propArgs = property.get2();
+            final String setterName = "set" + Strings.upperCaseFirstChar(propName);
+            final Method setterMethod = Methods.findAnyCompatible(targetClass, setterName, propArgs);
+            // if no setter found then directly try to set the field
+            if (setterMethod == null) {
+               if (propArgs.length == 1) {
+                  Types.writePropertyIgnoringFinal(target, propName, propArgs[0]);
+               } else
+                  throw new IllegalStateException("Method [" + targetClass.getName() + "#" + setterName + "()] not found.");
+            } else {
+               Methods.invoke(target, setterMethod, propArgs);
+            }
+         }
+
+         // validate @Property constraints
+         if (propertyConfig.size() > 0) {
+            for (final var prop : propertyConfig.entrySet()) {
+               final String propName = prop.getKey();
+               final Builder.Property propConfig = prop.getValue();
+
+               boolean wasPropertySet = false;
+               for (final Tuple2<String, Object[]> property : properties) {
+                  if (propName.equals(property.get1())) {
+                     final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
+                     if (!isNullable && property.get2()[0] == null)
+                        throw new IllegalArgumentException(builderInterface.getSimpleName() + "." + propName
+                           + "(...) must not be set to null.");
+                     wasPropertySet = true;
+                  }
+               }
+               if (!wasPropertySet) {
+                  final boolean isRequired = propConfig == null ? propertyDefaults.required() : propConfig.required();
+                  if (isRequired)
+                     throw new IllegalStateException("Setting " + builderInterface.getSimpleName() + "." + propName + "(...) is required.");
+               }
+            }
+         }
+
+         // invoke @OnPostBuild methods of the newly instantiated object
+         for (int i = onPostBuilds.size() - 1; i >= 0; i--) {
+            try {
+               Methods.invoke(target, onPostBuilds.get(i), ArrayUtils.EMPTY_OBJECT_ARRAY);
+            } catch (final InvokingMethodFailedException ex) {
+               var cause = ex.getCause();
+               if (cause instanceof InvocationTargetException) {
+                  cause = ex.getCause();
+                  if (cause != null)
+                     throw cause;
+               }
+               throw ex;
+            }
+         }
+         return target;
+      }
+
+      /**
+       * handles invocation of withXYZ on builder interface
+       */
       @Override
       public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
          final boolean isBuildMethod = "build".equals(method.getName()) //
             && method.getParameterTypes().length == 0 //
             && method.getReturnType().isAssignableFrom(targetClass);
 
-         if (isBuildMethod) {
-
-            // creating target instance
-            final Object target = Types.newInstance(targetClass, constructorArgs);
-
-            // writing properties
-            for (final Tuple2<String, Object[]> property : properties) {
-               String propName = property.get1();
-               // remove "with" prefix from withSomeProperty(...) named properties
-               if (propName.length() > 4 && propName.startsWith("with")) {
-                  propName = Strings.lowerCaseFirstChar(propName.substring(4));
-               }
-               final Object[] propArgs = property.get2();
-               final String setterName = "set" + Strings.upperCaseFirstChar(propName);
-               final Method setterMethod = Methods.findAnyCompatible(targetClass, setterName, propArgs);
-               // if no setter found then directly try to set the field
-               if (setterMethod == null && propArgs.length == 1) {
-                  Types.writePropertyIgnoringFinal(target, propName, propArgs[0]);
-               } else {
-                  Assert.notNull(setterMethod, "Method [%s#%s()] not found.", targetClass.getName(), setterName);
-                  Methods.invoke(target, setterMethod, propArgs);
-               }
-            }
-
-            // validate @Property constraints
-            if (propertyConfig.size() > 0) {
-               for (final Entry<String, Builder.Property> prop : propertyConfig.entrySet()) {
-                  final String propName = prop.getKey();
-                  final Builder.Property propConfig = prop.getValue();
-
-                  boolean found = false;
-                  for (final Tuple2<String, Object[]> property : properties) {
-                     if (propName.equals(property.get1())) {
-                        final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
-                        if (!isNullable && (property.get2() == null || property.get2()[0] == null))
-                           throw new IllegalArgumentException(builderInterface.getSimpleName() + "." + propName
-                              + "(...) must not be set to null.");
-                        found = true;
-                     }
-                  }
-                  if (!found) {
-                     final boolean isRequired = propConfig == null ? propertyDefaults.required() : propConfig.required();
-                     if (isRequired)
-                        throw new IllegalStateException("Setting " + builderInterface.getSimpleName() + "." + propName
-                           + "(...) is required.");
-                  }
-               }
-            }
-
-            // invoke @OnPostBuild methods of the newly instantiated object
-            for (int i = onPostBuilds.size() - 1; i >= 0; i--) {
-               try {
-                  Methods.invoke(target, onPostBuilds.get(i), ArrayUtils.EMPTY_OBJECT_ARRAY);
-               } catch (final InvokingMethodFailedException ex) {
-                  if (ex.getCause() instanceof InvocationTargetException)
-                     throw ex.getCause().getCause();
-                  throw ex;
-               }
-            }
-            return target;
-         }
+         if (isBuildMethod)
+            return buildTarget();
 
          if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0)
             return builderInterface.getName() + "@" + hashCode();
 
+         // collect values from setter invocations
          if (method.getReturnType().isAssignableFrom(builderInterface)) {
-            properties.add(Tuple2.create(method.getName(), args));
+            properties.add(Tuple2.create(method.getName(), args == null ? ArrayUtils.EMPTY_OBJECT_ARRAY : args));
             return proxy;
          }
          throw new UnsupportedOperationException(method.toString());
@@ -218,12 +228,14 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
    protected BuilderFactory(final Class<BLDR_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass,
       final Object... constructorArgs) {
       Args.notNull("builderInterface", builderInterface);
+
       if (!builderInterface.isInterface())
          throw new IllegalArgumentException("[builderInterface] '" + builderInterface.getName() + "' is not an interface!");
 
       this.builderInterface = builderInterface;
 
-      this.targetClass = targetClass == null ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0]
+      this.targetClass = targetClass == null //
+         ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0]
          : targetClass;
 
       Args.notNull("targetClass", this.targetClass);
