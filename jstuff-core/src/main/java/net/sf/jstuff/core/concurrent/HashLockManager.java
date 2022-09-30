@@ -245,7 +245,10 @@ public class HashLockManager<KeyType> {
    public void unlockRead(final KeyType key) {
       Args.notNull("key", key);
 
-      locksByKey.get(key).readLock().unlock();
+      final var lock = locksByKey.get(key);
+      if (lock == null)
+         throw new IllegalMonitorStateException("attempt to unlock read lock, not locked by current thread. key: " + key);
+      lock.readLock().unlock();
    }
 
    /**
@@ -256,6 +259,9 @@ public class HashLockManager<KeyType> {
    public void unlockWrite(final KeyType key) {
       Args.notNull("key", key);
 
-      locksByKey.get(key).writeLock().unlock();
+      final var lock = locksByKey.get(key);
+      if (lock == null)
+         throw new IllegalMonitorStateException("attempt to unlock write lock, not locked by current thread. key: " + key);
+      lock.writeLock().unlock();
    }
 }

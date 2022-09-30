@@ -25,8 +25,6 @@ import net.sf.jstuff.core.validation.Assert;
 public abstract class AbstractThreadMXSampler {
    private static final Logger LOG = Logger.create();
 
-   private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
-
    private ScheduledExecutorService executor;
    private final int samplingInterval;
    private final ThreadMXBean threadMBean;
@@ -64,7 +62,10 @@ public abstract class AbstractThreadMXSampler {
 
    protected AbstractThreadMXSampler(final int samplingIntervalInMS) {
       samplingInterval = samplingIntervalInMS;
-      threadMBean = TMX;
+      final var tmx = ManagementFactory.getThreadMXBean();
+      if (tmx == null)
+         throw new IllegalStateException("ManagementFactory.getThreadMXBean() returned null!");
+      threadMBean = tmx;
    }
 
    protected AbstractThreadMXSampler(final int samplingIntervalInMS, final ThreadMXBean mbean) {
@@ -88,8 +89,8 @@ public abstract class AbstractThreadMXSampler {
 
       LOG.info("Starting sampling...");
       this.executor = executor;
-      this.executor.submit(aggregator);
-      this.executor.scheduleAtFixedRate(sampler, samplingInterval, samplingInterval, TimeUnit.MILLISECONDS);
+      executor.submit(aggregator);
+      executor.scheduleAtFixedRate(sampler, samplingInterval, samplingInterval, TimeUnit.MILLISECONDS);
    }
 
    public synchronized void stop() {

@@ -71,7 +71,7 @@ public class LinkedByteArrayOutputStream extends OutputStream {
    }
 
    public int size() {
-      return blocks.size() * blockSize + blockWritePos;
+      return (blocks != null ? blocks.size() : 0) * blockSize + blockWritePos;
    }
 
    public byte[] toByteArray() {

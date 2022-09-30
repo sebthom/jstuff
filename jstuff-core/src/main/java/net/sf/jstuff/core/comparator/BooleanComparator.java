@@ -20,6 +20,11 @@ public class BooleanComparator implements Comparator<Boolean>, Serializable {
 
    @Override
    public int compare(final Boolean o1, final Boolean o2) {
+      if (o1 == null)
+         return -1;
+      if (o2 == null)
+         return 1;
+
       final boolean b1 = o1;
       final boolean b2 = o2;
 

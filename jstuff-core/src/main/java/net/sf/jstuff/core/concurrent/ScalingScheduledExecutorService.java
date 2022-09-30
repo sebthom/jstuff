@@ -56,7 +56,10 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
          @Override
          public V get() throws InterruptedException, ExecutionException {
             scheduledFuture.get();
-            return workFuture.get().get();
+            final Future<V> f = workFuture.get();
+            if (f == null)
+               throw new IllegalStateException("workFuture.get() returned null.");
+            return f.get();
          }
 
          @Override
@@ -64,7 +67,10 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
             final long startAt = System.currentTimeMillis();
             scheduledFuture.get(timeout, unit);
             final long elapsed = System.currentTimeMillis() - startAt;
-            return workFuture.get().get(unit.toMillis(timeout) - elapsed, TimeUnit.MILLISECONDS);
+            final Future<V> f = workFuture.get();
+            if (f == null)
+               throw new IllegalStateException("workFuture.get() returned null.");
+            return f.get(unit.toMillis(timeout) - elapsed, TimeUnit.MILLISECONDS);
          }
 
          @Override

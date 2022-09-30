@@ -64,7 +64,9 @@ public class DeflaterInputStream extends FilterInputStream {
 
       try {
          if (isInternalCompressor) {
-            compressor.end();
+            if (compressor != null) {
+               compressor.end();
+            }
             compressor = null;
          }
 
@@ -95,7 +97,7 @@ public class DeflaterInputStream extends FilterInputStream {
    @Override
    public int read(final byte[] bufCompressed, int off, int bytesToRead) throws IOException {
       Args.notNull("output", 0);
-      if (in == null)
+      if (in == null || compressor == null)
          throw new IOException("Source InputStream is closed!");
 
       if (off < 0 || bytesToRead < 0 || bytesToRead > bufCompressed.length - off)

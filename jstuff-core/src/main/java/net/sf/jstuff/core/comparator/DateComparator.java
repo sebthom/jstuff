@@ -21,9 +21,18 @@ public class DateComparator implements Comparator<Date>, Serializable {
 
    @Override
    public int compare(final Date o1, final Date o2) {
+      if (o1 == null)
+         return -1;
+      if (o2 == null)
+         return 1;
+
       final long n1 = o1.getTime();
       final long n2 = o2.getTime();
 
-      return n1 < n2 ? -1 : n1 > n2 ? 1 : 0;
+      return n1 < n2 //
+         ? -1
+         : n1 > n2 //
+            ? 1
+            : 0;
    }
 }

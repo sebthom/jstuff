@@ -152,7 +152,7 @@ public abstract class DOMUtils {
 
       @Override
       public InputSource resolveEntity(final String schemaId, final String schemaLocation) throws SAXException, IOException {
-         if (!schemaLocation.startsWith("file://")) {
+         if (schemaLocation != null && !schemaLocation.startsWith("file://")) {
             log.debug("Ignoring DTD [%s] [%s]", schemaId, schemaLocation);
             return new InputSource(new StringReader(""));
          }

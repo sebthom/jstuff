@@ -23,7 +23,12 @@ public abstract class Levels {
 
    public static Level getRootLevel() {
       synchronized (Loggers.ROOT_LOGGER) {
-         return Loggers.ROOT_LOGGER.getLevel();
+         final Level rootLevel = Loggers.ROOT_LOGGER.getLevel();
+         if (rootLevel == null) {
+            setRootLevel(Level.INFO);
+            return Level.INFO;
+         }
+         return rootLevel;
       }
    }
 
@@ -41,7 +46,7 @@ public abstract class Levels {
       synchronized (Loggers.ROOT_LOGGER) {
          final Level oldLevel = Loggers.ROOT_LOGGER.getLevel();
          Loggers.ROOT_LOGGER.setLevel(enabledLevel);
-         return oldLevel;
+         return oldLevel == null ? Level.INFO : oldLevel;
       }
    }
 }

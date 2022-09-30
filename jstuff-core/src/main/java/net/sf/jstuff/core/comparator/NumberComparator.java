@@ -20,9 +20,18 @@ public class NumberComparator implements Comparator<Number>, Serializable {
 
    @Override
    public int compare(final Number o1, final Number o2) {
+      if (o1 == null)
+         return -1;
+      if (o2 == null)
+         return 1;
+
       final double d1 = o1.doubleValue();
       final double d2 = o2.doubleValue();
 
-      return d1 < d2 ? -1 : d1 > d2 ? 1 : 0;
+      return d1 < d2 //
+         ? -1
+         : d1 > d2 //
+            ? 1
+            : 0;
    }
 }

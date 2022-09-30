@@ -102,7 +102,10 @@ public abstract class MoreFiles {
    public static File backupFile(final Path fileToBackup) throws IOException {
       Args.notNull("fileToBackup", fileToBackup);
 
-      return backupFile(fileToBackup, fileToBackup.getParent());
+      final var parentDir = fileToBackup.getParent();
+      if (parentDir == null)
+         throw new IOException("Cannot backup [" + fileToBackup + "] which has no parent directory!");
+      return backupFile(fileToBackup, parentDir);
    }
 
    /**

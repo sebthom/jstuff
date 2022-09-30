@@ -28,7 +28,7 @@ public abstract class Constructors extends Members {
    /**
     * @return the constructor or null if the method does not exist
     */
-   @SuppressWarnings({"unchecked", "null"})
+   @SuppressWarnings({"unchecked"})
    public static <T> Constructor<T> findCompatible(final Class<T> clazz, final Class<?>... parameterTypes) {
       Args.notNull("clazz", clazz);
       final int parameterTypesLen = parameterTypes == null ? 0 : parameterTypes.length;
@@ -40,7 +40,7 @@ public abstract class Constructors extends Members {
          if (ctorParamTypes.length != parameterTypesLen) {
             continue;
          }
-         if (parameterTypesLen == 0)
+         if (parameterTypesLen == 0 || parameterTypes == null)
             return ctor;
 
          for (int i = 0; i < parameterTypesLen; i++)
@@ -55,7 +55,7 @@ public abstract class Constructors extends Members {
    /**
     * @return a constructor compatible with the given arguments or null if none was found
     */
-   @SuppressWarnings({"unchecked", "null"})
+   @SuppressWarnings({"unchecked"})
    public static <T> Constructor<T> findCompatible(final Class<T> clazz, final Object... args) {
       Args.notNull("clazz", clazz);
       final int argsLen = args == null ? 0 : args.length;
@@ -67,7 +67,7 @@ public abstract class Constructors extends Members {
          if (ctorParamTypes.length != argsLen) {
             continue;
          }
-         if (argsLen == 0)
+         if (argsLen == 0 || args == null)
             return ctor;
 
          for (int i = 0; i < argsLen; i++)

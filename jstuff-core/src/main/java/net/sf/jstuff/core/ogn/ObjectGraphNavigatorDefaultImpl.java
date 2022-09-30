@@ -91,6 +91,10 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
             targetAccessor = getter;
          }
       }
+
+      if (parent == null || targetAccessor == null)
+         return null;
+
       return new ObjectGraphNavigationResult(root, path, parent, targetAccessor, target);
    }
 }

@@ -86,6 +86,8 @@ public abstract class Threads {
    }
 
    public static int count() {
+      if (TMX == null)
+         throw new IllegalStateException("ThreadMXBean not present!");
       return TMX.getThreadCount();
    }
 
@@ -105,6 +107,8 @@ public abstract class Threads {
     * @return ids of deadlocked threads
     */
    public static long[] deadlockedIds() {
+      if (TMX == null)
+         throw new IllegalStateException("ThreadMXBean not present!");
       final long[] result = TMX.findDeadlockedThreads();
       if (result == null)
          return ArrayUtils.EMPTY_LONG_ARRAY;

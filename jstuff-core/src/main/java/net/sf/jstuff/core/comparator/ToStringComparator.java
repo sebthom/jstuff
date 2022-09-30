@@ -15,12 +15,11 @@ import java.util.Locale;
 public class ToStringComparator<T> implements Comparator<T>, Serializable {
    private static final long serialVersionUID = 1L;
 
-   private static final ToStringComparator<?> INSTANCE = new ToStringComparator<>();
+   private static final ToStringComparator<?> INSTANCE = new ToStringComparator<>(Locale.getDefault());
 
-   public static <T> ToStringComparator<T> create(final Locale locale) {
-      return new ToStringComparator<>(locale);
-   }
-
+   /**
+    * Shared comparator instance for default locale.
+    */
    @SuppressWarnings("unchecked")
    public static <T> ToStringComparator<T> get() {
       return (ToStringComparator<T>) INSTANCE;
@@ -28,10 +27,6 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable {
 
    private transient Collator collator;
    private final Locale locale;
-
-   public ToStringComparator() {
-      this(Locale.getDefault());
-   }
 
    public ToStringComparator(final Locale locale) {
       this.locale = locale;
@@ -41,7 +36,11 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable {
    public int compare(final T o1, final T o2) {
       if (o1 == o2)
          return 0;
-      return getCollator().compare(o1 == null ? null : o1.toString(), o2 == null ? null : o2.toString());
+      if (o1 == null)
+         return -1;
+      if (o2 == null)
+         return 1;
+      return getCollator().compare(o1.toString(), o2.toString());
    }
 
    private Collator getCollator() {

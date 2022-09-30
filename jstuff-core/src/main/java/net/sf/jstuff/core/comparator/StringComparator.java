@@ -15,14 +15,10 @@ import java.util.Locale;
 public class StringComparator implements Comparator<String>, Serializable {
    private static final long serialVersionUID = 1L;
 
-   public static final StringComparator INSTANCE = new StringComparator();
+   public static final StringComparator INSTANCE = new StringComparator(Locale.getDefault());
 
    private Collator collator;
    private final Locale locale;
-
-   public StringComparator() {
-      this(Locale.getDefault());
-   }
 
    public StringComparator(final Locale locale) {
       this.locale = locale;
@@ -32,6 +28,10 @@ public class StringComparator implements Comparator<String>, Serializable {
    public int compare(final String o1, final String o2) {
       if (o1 == o2)
          return 0;
+      if (o1 == null)
+         return -1;
+      if (o2 == null)
+         return 1;
       return getCollator().compare(o1, o2);
    }
 

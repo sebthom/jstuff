@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Currency;
 import java.util.Locale;
 
 import org.apache.commons.lang3.JavaVersion;
@@ -41,7 +42,10 @@ public class NumberHelper implements Serializable {
 
    public String getCurrencyCode() {
       if (currencyCode == null) {
-         currencyCode = NumberFormat.getCurrencyInstance(locale).getCurrency().getCurrencyCode();
+         final var currency = Currency.getInstance(locale);
+         if (currency != null) {
+            currencyCode = currency.getCurrencyCode();
+         }
       }
       return currencyCode;
    }
@@ -61,7 +65,10 @@ public class NumberHelper implements Serializable {
 
    public String getCurrencySymbol() {
       if (currencySymbol == null) {
-         currencySymbol = NumberFormat.getCurrencyInstance(locale).getCurrency().getSymbol();
+         final var currency = Currency.getInstance(locale);
+         if (currency != null) {
+            currencySymbol = currency.getSymbol();
+         }
       }
       return currencySymbol;
    }

@@ -315,6 +315,8 @@ public abstract class Predicates {
       @Override
       @SuppressWarnings("unchecked")
       public boolean test(final V obj) {
+         if (obj == null)
+            return false;
          try {
             return accept.test((PropertyType) ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(obj, propertyPath));
          } catch (final ClassCastException ex) {
