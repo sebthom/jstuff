@@ -59,7 +59,10 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
       if (dateString == null)
          return null;
 
-      return (Date) RFC3399_FORMAT.parseObject(dateString);
+      final var date = (Date) RFC3399_FORMAT.parseObject(dateString);
+      if (date == null)
+         throw new ParseException("Parsing date [" + dateString + "] failed for unknown reason.", 0);
+      return date;
    }
 
    public static int getCurrentYear() {
