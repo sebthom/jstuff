@@ -218,6 +218,18 @@ public abstract class CollectionUtils {
       }
    }
 
+   public static <T> void forEach(final Iterable<T> it, final ConsumerWithIndex<T> consumer) {
+      if (it == null)
+         return;
+
+      Args.notNull("consumer", consumer);
+
+      int i = -1;
+      for (final T t : it) {
+         consumer.accept(++i, t);
+      }
+   }
+
    /**
     * Gets the n-th element of the list.
     *
