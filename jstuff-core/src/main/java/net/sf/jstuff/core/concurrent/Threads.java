@@ -48,7 +48,7 @@ public abstract class Threads {
    }
 
    public static Thread[] allSortedByPriority() {
-      final Thread[] result = all();
+      final var result = all();
       Arrays.sort(result, THREAD_PRIORITY_COMPARATOR);
       return result;
    }
@@ -63,7 +63,7 @@ public abstract class Threads {
     * @return blocked threads
     */
    public static Thread[] blocked() {
-      Thread[] result = EMPTY_THREAD_ARRAY;
+      var result = EMPTY_THREAD_ARRAY;
       for (final Thread t : Threads.all()) {
          if (t.getState() == State.BLOCKED) {
             result = ArrayUtils.add(result, t);
@@ -76,7 +76,7 @@ public abstract class Threads {
     * @return ids of blocked threads
     */
    public static long[] blockedIds() {
-      long[] ids = ArrayUtils.EMPTY_LONG_ARRAY;
+      var ids = ArrayUtils.EMPTY_LONG_ARRAY;
       for (final Thread t : Threads.all()) {
          if (t.getState() == State.BLOCKED) {
             ids = ArrayUtils.add(ids, t.getId());
@@ -92,8 +92,8 @@ public abstract class Threads {
    }
 
    public static Thread[] deadlocked() {
-      final long[] deadlockedIds = deadlockedIds();
-      Thread[] result = EMPTY_THREAD_ARRAY;
+      final var deadlockedIds = deadlockedIds();
+      var result = EMPTY_THREAD_ARRAY;
       for (final Thread t : all()) {
          for (final long deadlockedId : deadlockedIds)
             if (t.getId() == deadlockedId) {

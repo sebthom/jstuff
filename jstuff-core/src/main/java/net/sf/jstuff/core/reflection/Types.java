@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
@@ -193,8 +192,8 @@ public abstract class Types {
          public boolean visit(final Class<?> clazz, final ParameterizedType type) {
             if (type != null) {
                Maps.putAll(genericVariableToArgumentMappings, //
-                  /*generic variable*/(TypeVariable<?>[]) clazz.getTypeParameters(), //
-                  /*arguments (concrete types) for generic variables*/type.getActualTypeArguments() //
+                  /*generic variable*/ clazz.getTypeParameters(), //
+                  /*arguments (concrete types) for generic variables*/ type.getActualTypeArguments() //
                );
             }
 
@@ -485,7 +484,7 @@ public abstract class Types {
    }
 
    public static <T> T newInstance(final Class<T> type, final Object... constructorArgs) {
-      final Constructor<T> ctor = Constructors.findCompatible(type, constructorArgs);
+      final var ctor = Constructors.findCompatible(type, constructorArgs);
       if (ctor == null)
          throw new IllegalArgumentException("No constructor found in class [" + type.getName() + "] compatible with give arguments!");
       return Constructors.invoke(ctor, constructorArgs);
@@ -494,7 +493,8 @@ public abstract class Types {
    /**
     * Tries to read the given value using a getter method or direct field access
     */
-   public static <T> T readProperty(final Object obj, final String propertyName, final Class<? extends T> compatibleTo) throws ReflectionException {
+   public static <T> T readProperty(final Object obj, final String propertyName, final Class<? extends T> compatibleTo)
+      throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);
 
@@ -508,7 +508,8 @@ public abstract class Types {
       if (field != null)
          return Fields.read(obj, field);
 
-      throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz + "]");
+      throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz
+         + "]");
    }
 
    public static Type resolveBound(final TypeVariable<?> typeVariable) {
@@ -530,7 +531,7 @@ public abstract class Types {
       if (type instanceof ParameterizedType)
          return resolveUnderlyingClass(((ParameterizedType) type).getRawType());
       if (type instanceof GenericArrayType) {
-         final Type ctype = ((GenericArrayType) type).getGenericComponentType();
+         final var ctype = ((GenericArrayType) type).getGenericComponentType();
          final Class<?> cclass = resolveUnderlyingClass(ctype);
          if (cclass != null)
             return Array.newInstance(cclass, 0).getClass();
@@ -658,7 +659,8 @@ public abstract class Types {
    /**
     * Tries to write the given value using a setter method or direct field access
     */
-   public static void writePropertyIgnoringFinal(final Object obj, final String propertyName, final Object value) throws ReflectionException {
+   public static void writePropertyIgnoringFinal(final Object obj, final String propertyName, final Object value)
+      throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);
 

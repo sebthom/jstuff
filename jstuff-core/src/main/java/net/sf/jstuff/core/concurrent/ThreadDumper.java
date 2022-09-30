@@ -164,14 +164,14 @@ public class ThreadDumper {
    }
 
    public static final Comparator<ThreadMeta> SORT_THREADS_BY_ID = Comparator.comparing(ThreadMeta::getThreadId);
-   public static final Comparator<ThreadMeta> SORT_THREADS_BY_NAME = (t1, t2) -> Strings.compare(t1.getThreadName(), t2.getThreadName());
+   public static final Comparator<ThreadMeta> SORT_THREADS_BY_NAME = Comparator.comparing(ThreadMeta::getThreadName);
    public static final Comparator<ThreadMeta> SORT_THREADS_BY_STATE_AND_ID = (t1, t2) -> {
       final int stateCmp = t1.getThreadState().compareTo(t2.getThreadState());
-      return stateCmp == 0 ? Long.compare(t1.getThreadId(), t2.getThreadId()) : stateCmp;
+      return stateCmp == 0 ? SORT_THREADS_BY_ID.compare(t1, t2) : stateCmp;
    };
    public static final Comparator<ThreadMeta> SORT_THREADS_BY_STATE_AND_NAME = (t1, t2) -> {
       final int stateCmp = t1.getThreadState().compareTo(t2.getThreadState());
-      return stateCmp == 0 ? Strings.compare(t1.getThreadName(), t2.getThreadName()) : stateCmp;
+      return stateCmp == 0 ? SORT_THREADS_BY_NAME.compare(t1, t2) : stateCmp;
    };
 
    private static final FastDateFormat TIMESTAMP = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");

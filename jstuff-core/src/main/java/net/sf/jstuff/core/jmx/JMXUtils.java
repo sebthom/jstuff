@@ -51,10 +51,8 @@ public abstract class JMXUtils {
 
       try {
          mbeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
-         if (mbeanServer != null) {
-            LOG.info("Located MBeanServer via MBeanServerFactory#findMBeanServer(null).get(0)");
-            return mbeanServer;
-         }
+         LOG.info("Located MBeanServer via MBeanServerFactory#findMBeanServer(null).get(0)");
+         return mbeanServer;
       } catch (final Exception | LinkageError ex) {
          LOG.warn("Locating MBeanServer via MBeanServerFactory#findMBeanServer(null).get(0) failed.", ex);
       }
@@ -70,9 +68,8 @@ public abstract class JMXUtils {
    public static boolean isDebugModeEnabled() {
       final List<String> args = ManagementFactory.getRuntimeMXBean().getInputArguments();
       for (final String arg : args) {
-         if (arg.startsWith("-agentlib:jdwp") && args.contains("-Xdebug"))
-            return true;
-         if (arg.startsWith("-Xrunjdwp"))
+         if (arg.startsWith("-agentlib:jdwp") && args.contains("-Xdebug") 
+            || arg.startsWith("-Xrunjdwp"))
             return true;
       }
       return false;

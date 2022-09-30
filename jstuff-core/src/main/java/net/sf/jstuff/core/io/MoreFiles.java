@@ -491,7 +491,7 @@ public abstract class MoreFiles {
     * Based on jre/lib/content-types.properties
     */
    public static String getContentTypeByFileExtension(final Path file) {
-      return URLConnection.getFileNameMap().getContentTypeFor(file.getFileName().toString());
+      return getContentTypeByFileExtension(file.getFileName().toString());
    }
 
    public static String getContentTypeByFileExtension(final String fileName) {

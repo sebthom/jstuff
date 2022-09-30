@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
@@ -214,8 +215,8 @@ public class DateTimeHelper implements Serializable {
    }
 
    public boolean isValidDate(final String date) {
-      return date != null && (isValidDate(DateFormatStyle.SHORT, date) || isValidDate(DateFormatStyle.MEDIUM, date) || isValidDate(DateFormatStyle.LONG, date)
-         || isValidDate(DateFormatStyle.FULL, date));
+      return date != null && (isValidDate(DateFormatStyle.SHORT, date) || isValidDate(DateFormatStyle.MEDIUM, date) || isValidDate(
+         DateFormatStyle.LONG, date) || isValidDate(DateFormatStyle.FULL, date));
    }
 
    protected boolean isValidDateTime(final DateFormatStyle style, final String dateTime) {
@@ -236,12 +237,18 @@ public class DateTimeHelper implements Serializable {
    }
 
    public boolean isValidDateTime(final String dateTime) {
-      return dateTime != null && (isValidDateTime(DateFormatStyle.SHORT, dateTime) || isValidDateTime(DateFormatStyle.MEDIUM, dateTime) || isValidDateTime(
-         DateFormatStyle.LONG, dateTime) || isValidDateTime(DateFormatStyle.FULL, dateTime));
+      return Strings.isNotBlank(dateTime) //
+         && (isValidDateTime(DateFormatStyle.SHORT, dateTime) //
+            || isValidDateTime(DateFormatStyle.MEDIUM, dateTime) //
+            || isValidDateTime(DateFormatStyle.LONG, dateTime) //
+            || isValidDateTime(DateFormatStyle.FULL, dateTime));
    }
 
    protected boolean isValidTime(final DateFormatStyle style, final String time) {
       Args.notNull("style", style);
+
+      if (time == null || time.isBlank())
+         return false;
 
       final DateFormat df = getTimeFormat(style);
       df.setLenient(false);
@@ -255,25 +262,36 @@ public class DateTimeHelper implements Serializable {
    }
 
    public boolean isValidTime(final String time) {
-      return time != null && (isValidTime(DateFormatStyle.SHORT, time) || isValidTime(DateFormatStyle.MEDIUM, time) || isValidTime(DateFormatStyle.LONG, time)
-         || isValidTime(DateFormatStyle.FULL, time));
+      return Strings.isNotBlank(time) //
+         && (isValidTime(DateFormatStyle.SHORT, time) //
+            || isValidTime(DateFormatStyle.MEDIUM, time) //
+            || isValidTime(DateFormatStyle.LONG, time) //
+            || isValidTime(DateFormatStyle.FULL, time));
    }
 
    /**
     * @param date String containing the date to convert
     */
    public Date parseDate(final String date) {
-      Args.notNull("date", date);
+      if (Strings.isEmpty(date))
+         return null;
 
       final DateFormat df;
-      if (isValidDateTime(date)) {
-         df = DateFormat.getDateInstance(getDateTimeStyle(date).style, locale);
-      } else if (isValidDate(date)) {
-         df = DateFormat.getDateInstance(getDateStyle(date).style, locale);
-      } else if (isValidTime(date)) {
-         df = DateFormat.getTimeInstance(getTimeStyle(date).style, locale);
+      var dfs = getDateTimeStyle(date);
+      if (dfs != null) {
+         df = DateFormat.getDateInstance(dfs.style, locale);
       } else {
-         df = DateFormat.getDateInstance();
+         dfs = getDateStyle(date);
+         if (dfs != null) {
+            df = DateFormat.getDateInstance(dfs.style, locale);
+         } else {
+            dfs = getTimeStyle(date);
+            if (dfs != null) {
+               df = DateFormat.getTimeInstance(dfs.style, locale);
+            } else {
+               df = DateFormat.getDateInstance();
+            }
+         }
       }
 
       df.setLenient(false);

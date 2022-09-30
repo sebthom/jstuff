@@ -21,38 +21,43 @@ public class ExtendedXMLStreamReader extends DelegatingXMLStreamReader {
    }
 
    public String getAttributeValue(final String attrLocalName) {
-      return getAttributeValueAsString(attrLocalName, null);
+      for (int i = 0; i < getAttributeCount(); i++) {
+         final String localName = getAttributeLocalName(i);
+         if (localName.equals(attrLocalName))
+            return getAttributeValue(i);
+      }
+      return null;
    }
 
    public boolean getAttributeValueAsBoolean(final String attrLocalName, final boolean defaultValue) {
-      final String val = getAttributeValueAsString(attrLocalName, null);
+      final String val = getAttributeValue(attrLocalName);
       if (val == null || Strings.isBlank(val))
          return defaultValue;
       return Boolean.parseBoolean(val);
    }
 
    public byte getAttributeValueAsByte(final String attrLocalName, final byte defaultValue) {
-      final String val = getAttributeValueAsString(attrLocalName, null);
+      final String val = getAttributeValue(attrLocalName);
       if (val == null || Strings.isBlank(val))
          return defaultValue;
       return Byte.parseByte(val);
    }
 
    public int getAttributeValueAsInt(final String attrLocalName, final int defaultValue) {
-      final String val = getAttributeValueAsString(attrLocalName, null);
+      final String val = getAttributeValue(attrLocalName);
       if (val == null || Strings.isBlank(val))
          return defaultValue;
       return Integer.parseInt(val);
    }
 
    public long getAttributeValueAsLong(final String attrLocalName, final long defaultValue) {
-      final String val = getAttributeValueAsString(attrLocalName, null);
+      final String val = getAttributeValue(attrLocalName);
       if (val == null || Strings.isBlank(val))
          return defaultValue;
       return Long.parseLong(val);
    }
 
-   public String getAttributeValueAsString(final String attrLocalName, final String defaultValue) {
+   public String getAttributeValueOrElse(final String attrLocalName, final String defaultValue) {
       for (int i = 0; i < getAttributeCount(); i++) {
          final String localName = getAttributeLocalName(i);
          if (localName.equals(attrLocalName))
@@ -60,5 +65,4 @@ public class ExtendedXMLStreamReader extends DelegatingXMLStreamReader {
       }
       return defaultValue;
    }
-
 }

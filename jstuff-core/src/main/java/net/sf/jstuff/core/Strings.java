@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -197,14 +196,18 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       Args.notNull("initialState", initialState);
 
       final char esc = '\u001B';
+      final var sb = new StringBuilder(txt.length());
 
-      final StringBuilder sb = new StringBuilder(txt.length());
-
-      if (initialState != null && initialState.isActive()) {
-         sb.append("<span style=\"").append(initialState.toCSS()).append("\">");
+      ANSIState effectiveState;
+      if (initialState == null) {
+         effectiveState = new ANSIState();
+      } else {
+         if (initialState.isActive()) {
+            sb.append("<span style=\"").append(initialState.toCSS()).append("\">");
+         }
+         effectiveState = new ANSIState(initialState);
       }
 
-      ANSIState effectiveState = new ANSIState(initialState);
       final StringBuilder lookAhead = new StringBuilder(8);
 
       for (int i = 0, txtLen = txt.length(); i < txtLen; i++) {
@@ -611,7 +614,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    public static String join(final Iterable<?> iterable) {
       if (iterable == null)
          return null;
-      return join(iterable.iterator(), null);
+      return join(iterable.iterator(), EMPTY);
    }
 
    public static String join(final Iterable<?> iterable, final char separator) {
@@ -652,15 +655,15 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
       final T first = it.next();
       if (!it.hasNext())
-         return Objects.toString(transform.apply(first), EMPTY);
+         return nullToEmpty(transform.apply(first));
 
       final StringBuilder sb = new StringBuilder(128);
-      sb.append(Objects.toString(transform.apply(first), EMPTY));
+      sb.append(nullToEmpty(transform.apply(first)));
 
       while (it.hasNext()) {
          sb.append(separator);
          final T obj = it.next();
-         sb.append(Objects.toString(transform.apply(obj), EMPTY));
+         sb.append(nullToEmpty(transform.apply(obj)));
       }
 
       return sb.toString();
@@ -677,15 +680,15 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
       final T first = it.next();
       if (!it.hasNext())
-         return Objects.toString(transform.apply(first), EMPTY);
+         return nullToEmpty(transform.apply(first));
 
       final StringBuilder sb = new StringBuilder(128);
-      sb.append(Objects.toString(transform.apply(first), EMPTY));
+      sb.append(nullToEmpty(transform.apply(first)));
 
       while (it.hasNext()) {
          sb.append(separator);
          final T obj = it.next();
-         sb.append(Objects.toString(transform.apply(obj), EMPTY));
+         sb.append(nullToEmpty(transform.apply(obj)));
       }
 
       return sb.toString();
@@ -716,7 +719,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
       final int len = txt.length();
       if (len == 0)
-         return "";
+         return EMPTY;
       final String firstChar = String.valueOf(Character.toLowerCase(txt.charAt(0)));
       if (len == 1)
          return firstChar;
@@ -725,14 +728,14 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
    public static String nullToEmpty(final Object txt) {
       return txt == null //
-         ? "" //
+         ? EMPTY //
          : txt instanceof String //
             ? (String) txt
             : txt.toString();
    }
 
    public static String nullToEmpty(final String txt) {
-      return txt == null ? "" : txt;
+      return txt == null ? EMPTY : txt;
    }
 
    public static String pluralize(final int count, final String singluar, final String plural) {
@@ -988,7 +991,6 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    /**
     * Empty tokens are not preserved.
     */
-   @SuppressWarnings("null")
    public static List<String> splitToList(final String text, final char separator) {
       if (text == null)
          return null;
@@ -997,22 +999,16 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       if (text.length() == 0)
          return Collections.emptyList();
 
-      List<String> tokens = null;
-
       if (len == 1) {
          if (text.charAt(0) == separator)
             return Collections.emptyList();
-         tokens = new ArrayList<>(1);
-         tokens.add(text);
-         return tokens;
+         return List.of(text);
       }
 
+      final var tokens = new ArrayList<String>(len < 5 ? 2 : 4);
       int searchAt = 0;
       int foundAt;
       while ((foundAt = text.indexOf(separator, searchAt)) != -1) {
-         if (searchAt == 0) {
-            tokens = new ArrayList<>(len < 5 ? 2 : 4);
-         }
          if (searchAt < foundAt) {
             tokens.add(text.substring(searchAt, foundAt));
          }
@@ -1020,7 +1016,6 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       }
 
       if (searchAt == 0) { // separator not found
-         tokens = new ArrayList<>(1);
          tokens.add(text);
          return tokens;
       }
@@ -1028,7 +1023,6 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       if (searchAt < len) {
          tokens.add(text.substring(searchAt, len));
       }
-
       return tokens;
    }
 
@@ -1039,7 +1033,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    public static String stripAnsiEscapeSequences(final String in) {
       if (in == null)
          return null;
-      return in.replaceAll("\u001B\\[[;\\d]*m", "");
+      return in.replaceAll("\u001B\\[[;\\d]*m", EMPTY);
    }
 
    /**
@@ -1101,13 +1095,13 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     *         Returns "" if searchIn is null.
     */
    public static String substringBeforeIgnoreCase(final String searchIn, final String searchFor) {
-      if (searchIn == null)
-         return "";
+      if (isEmpty(searchIn))
+         return EMPTY;
 
       final int pos = searchIn.toLowerCase().indexOf(searchFor.toLowerCase());
 
       if (pos < 0)
-         return "";
+         return EMPTY;
 
       return searchIn.substring(0, pos);
    }
@@ -1184,7 +1178,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       if (text.length() == 0)
          return text;
 
-      final String[] lines = splitLines(text, true);
+      final var lines = splitLines(text, true);
       for (int i = 0; i < lines.length; i++) {
          lines[i] = lines[i].trim();
       }
@@ -1225,7 +1219,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
       final int len = txt.length();
       if (len == 0)
-         return "";
+         return EMPTY;
       final String firstChar = String.valueOf(Character.toUpperCase(txt.charAt(0)));
       if (len == 1)
          return firstChar;

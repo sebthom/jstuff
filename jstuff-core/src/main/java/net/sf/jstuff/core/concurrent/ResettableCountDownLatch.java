@@ -17,17 +17,17 @@ import net.sf.jstuff.core.reflection.Methods;
 public class ResettableCountDownLatch extends CountDownLatch {
 
    private final int count;
-   private final AbstractQueuedSynchronizer sync;
+   private final AbstractQueuedSynchronizer synchronizer;
    private final Method syncSetState;
 
    public ResettableCountDownLatch(final int count) {
       super(count);
       this.count = count;
-      sync = Fields.read(this, "sync");
+      synchronizer = Fields.read(this, "sync"); // access CountDownLatch#sync field
       syncSetState = Methods.findAny(AbstractQueuedSynchronizer.class, "setState", int.class);
    }
 
    public void reset() {
-      Methods.invoke(sync, syncSetState, count);
+      Methods.invoke(synchronizer, syncSetState, count);
    }
 }

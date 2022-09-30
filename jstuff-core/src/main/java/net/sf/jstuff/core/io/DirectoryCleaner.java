@@ -52,6 +52,7 @@ public class DirectoryCleaner {
       /**
        * The directory to clean.
        */
+      @Builder.Property(required = true)
       THIS directory(Path value);
 
       THIS fileFilter(BiPredicate<Path, BasicFileAttributes> value);
@@ -62,7 +63,7 @@ public class DirectoryCleaner {
       THIS minimumFileAge(Duration value);
 
       /**
-       * Only delete files that at least have the given file size.
+       * Only delete files that at least have the given file size. Default is to delete all files.
        */
       THIS minimumFileSize(long value, ByteUnit unit);
 
@@ -114,6 +115,9 @@ public class DirectoryCleaner {
    protected BiPredicate<Path, BasicFileAttributes> fileFilter = (path, attr) -> true;
    protected BiConsumer<Path, BasicFileAttributes> onFileDeleted;
 
+   protected DirectoryCleaner() {
+   }
+
    /**
     * Cleans the directory specified via the builder.
     */
@@ -154,13 +158,9 @@ public class DirectoryCleaner {
 
          @Override
          public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-            if (!fileFilter.test(file, attrs))
-               return FileVisitResult.CONTINUE;
-
-            if (minimumFileSize > 0 && attrs.size() < minimumFileSize)
-               return FileVisitResult.CONTINUE;
-
-            if (minimumFileAge != null && attrs.lastModifiedTime().toMillis() > deleteBefore)
+            if (!fileFilter.test(file, attrs) //
+               || minimumFileSize > 0 && attrs.size() < minimumFileSize //
+               || minimumFileAge != null && attrs.lastModifiedTime().toMillis() > deleteBefore)
                return FileVisitResult.CONTINUE;
 
             Files.delete(file);

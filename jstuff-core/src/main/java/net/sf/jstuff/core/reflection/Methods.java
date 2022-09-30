@@ -173,13 +173,13 @@ public abstract class Methods extends Members {
 
       Class<?> currentClass = clazz;
       while (currentClass != null) {
-         final Method[] declaredMethods = currentClass.getDeclaredMethods();
+         final var declaredMethods = currentClass.getDeclaredMethods();
          for (final Method candidate : declaredMethods) {
             if (isStatic(candidate) || !methodName.equals(candidate.getName())) {
                continue;
             }
 
-            final Class<?>[] candidateParameterTypes = candidate.getParameterTypes();
+            final var candidateParameterTypes = candidate.getParameterTypes();
 
             if (candidateParameterTypes.length != argTypes.length) {
                continue;
@@ -187,10 +187,11 @@ public abstract class Methods extends Members {
 
             boolean isCompatible = true;
             for (int i = 0; i < argTypes.length; i++) {
-               if (argTypes[i] == null) {
+               final var argType = argTypes[i];
+               if (argType == null) {
                   continue;
                }
-               if (!Types.isAssignableTo(argTypes[i], candidateParameterTypes[i])) {
+               if (!Types.isAssignableTo(argType, candidateParameterTypes[i])) {
                   isCompatible = false;
                   break;
                }
@@ -213,7 +214,7 @@ public abstract class Methods extends Members {
       if (args == null || args.length == 0)
          return findAny(clazz, methodName);
 
-      final Class<?>[] argTypes = new Class<?>[args.length];
+      final var argTypes = new Class<?>[args.length];
       for (int i = 0; i < args.length; i++) {
          argTypes[i] = args[i] == null ? null : args[i].getClass();
       }
@@ -293,13 +294,13 @@ public abstract class Methods extends Members {
 
       Class<?> currentClass = clazz;
       while (currentClass != null) {
-         final Method[] declaredMethods = currentClass.getDeclaredMethods();
+         final var declaredMethods = currentClass.getDeclaredMethods();
          for (final Method method : declaredMethods) {
             if (isStatic(method) || !methodName.equals(method.getName())) {
                continue;
             }
 
-            final Class<?>[] paramTypes = method.getParameterTypes();
+            final var paramTypes = method.getParameterTypes();
             if (paramTypes.length != 1) {
                continue;
             }
@@ -343,23 +344,24 @@ public abstract class Methods extends Members {
       if (argTypes == null || argTypes.length == 0)
          return null;
 
-      final Method[] publicMethods = clazz.getMethods();
+      final var publicMethods = clazz.getMethods();
       for (final Method candidate : publicMethods) {
          if (isStatic(candidate) || !methodName.equals(candidate.getName())) {
             continue;
          }
 
-         final Class<?>[] candidateParameterTypes = candidate.getParameterTypes();
+         final var candidateParameterTypes = candidate.getParameterTypes();
 
          if (candidateParameterTypes.length != argTypes.length) {
             continue;
          }
 
          for (int i = 0; i < argTypes.length; i++) {
-            if (argTypes[i] == null) {
+            final var argType = argTypes[i];
+            if (argType == null) {
                continue;
             }
-            if (!Types.isAssignableTo(argTypes[i], candidateParameterTypes[i])) {
+            if (!Types.isAssignableTo(argType, candidateParameterTypes[i])) {
                break;
             }
          }
@@ -378,7 +380,7 @@ public abstract class Methods extends Members {
       if (args == null || args.length == 0)
          return findPublic(clazz, methodName);
 
-      final Class<?>[] argTypes = new Class<?>[args.length];
+      final var argTypes = new Class<?>[args.length];
       for (int i = 0; i < args.length; i++) {
          argTypes[i] = args[i] == null ? null : args[i].getClass();
       }
@@ -450,13 +452,13 @@ public abstract class Methods extends Members {
 
       final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
-      final Method[] publicMethods = clazz.getMethods();
+      final var publicMethods = clazz.getMethods();
       for (final Method method : publicMethods) {
          if (isStatic(method) || !methodName.equals(method.getName())) {
             continue;
          }
 
-         final Class<?>[] paramTypes = method.getParameterTypes();
+         final var paramTypes = method.getParameterTypes();
          if (paramTypes.length != 1) {
             continue;
          }
@@ -476,7 +478,7 @@ public abstract class Methods extends Members {
          return null;
 
       final String methodName = method.getName();
-      final Class<?>[] parameterTypes = method.getParameterTypes();
+      final var parameterTypes = method.getParameterTypes();
 
       Class<?> currentClass = method.getDeclaringClass().getSuperclass();
       while (currentClass != null) {
@@ -596,7 +598,7 @@ public abstract class Methods extends Members {
 
       final List<Method> result = CollectionUtils.newArrayList();
 
-      final Method[] publicMethods = clazz.getMethods();
+      final var publicMethods = clazz.getMethods();
       for (final Method method : publicMethods) {
          if (isStatic(method) || !isGetter(method)) {
             continue;
@@ -627,13 +629,13 @@ public abstract class Methods extends Members {
 
       final List<Method> result = CollectionUtils.newArrayList();
 
-      final Method[] publicMethods = clazz.getMethods();
+      final var publicMethods = clazz.getMethods();
       for (final Method method : publicMethods) {
          if (isStatic(method) || !isSetter(method)) {
             continue;
          }
 
-         final Class<?>[] paramTypes = method.getParameterTypes();
+         final var paramTypes = method.getParameterTypes();
 
          if (compatibleTo == null || Types.isAssignableTo(compatibleTo, paramTypes[0])) {
             result.add(method);

@@ -11,12 +11,12 @@ public interface MutableRef<V> extends Ref<V> {
 
    class Default<V> implements MutableRef<V> {
 
-      private volatile V value;
+      protected volatile V value;
 
-      public Default() {
+      protected Default() {
       }
 
-      public Default(final V value) {
+      protected Default(final V value) {
          this.value = value;
       }
 

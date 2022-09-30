@@ -23,13 +23,12 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
       private static final Logger LOG = Logger.create();
 
       private final CopyOnWriteArraySet<Object> observers = new CopyOnWriteArraySet<>();
-      private volatile V value;
 
-      public Default() {
+      protected Default() {
       }
 
-      public Default(final V initialValue) {
-         this.value = initialValue;
+      protected Default(final V initialValue) {
+         super(initialValue);
       }
 
       @Override

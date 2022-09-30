@@ -180,22 +180,26 @@ public abstract class DOMUtils {
          for (int i = 0, l = nodeMap.getLength(); i < l; i++) {
             final Attr attr = (Attr) nodeMap.item(i);
             if (attr.isId()) {
-               result.add((Attr) nodeMap.item(i));
+               result.add(attr);
             }
          }
       }
       if (result.isEmpty() && cfg.idAttributesByXMLTagName.size() > 0) {
-         for (final String idAttrName : cfg.getIdAttributesForXMLTagName(elem.getTagName()))
-            if (elem.hasAttribute(idAttrName)) {
-               result.add(elem.getAttributeNode(idAttrName));
+         for (final String idAttrName : cfg.getIdAttributesForXMLTagName(elem.getTagName())) {
+            final var attr = elem.getAttributeNode(idAttrName);
+            if (attr != null) {
+               result.add(attr);
                break;
             }
+         }
          if (result.isEmpty()) {
-            for (final String idAttrName : cfg.getIdAttributesForXMLTagName("*"))
-               if (elem.hasAttribute(idAttrName)) {
-                  result.add(elem.getAttributeNode(idAttrName));
+            for (final String idAttrName : cfg.getIdAttributesForXMLTagName("*")) {
+               final var attr = elem.getAttributeNode(idAttrName);
+               if (attr != null) {
+                  result.add(attr);
                   break;
                }
+            }
          }
       }
       return result;
@@ -205,6 +209,8 @@ public abstract class DOMUtils {
       final Document doc = node.getOwnerDocument();
       if (doc == null && node instanceof Document)
          return (Document) node;
+      if (doc == null)
+         throw new IllegalArgumentException("Node " + node + " has no owner document!");
       return doc;
    }
 
@@ -217,7 +223,7 @@ public abstract class DOMUtils {
       xPath.append('/');
       xPath.append(elem.getTagName());
       final List<Attr> attrs = _getIdAttributes(elem, cfg);
-      if (attrs.size() > 0) {
+      if (!attrs.isEmpty()) {
          xPath.append('[');
          boolean isFirst = true;
          for (final Attr idAttribute : _getIdAttributes(elem, cfg)) {
@@ -359,8 +365,7 @@ public abstract class DOMUtils {
       Args.notNull("parent", parent);
       Args.notNull("text", text);
 
-      final Text elem = (Text) parent.appendChild(_getOwnerDocument(parent).createTextNode(text.toString()));
-      return elem;
+      return (Text) parent.appendChild(_getOwnerDocument(parent).createTextNode(text.toString()));
    }
 
    public static Text createTextNodeBefore(final Node sibling, final Object text) {
@@ -370,8 +375,7 @@ public abstract class DOMUtils {
       final Node parent = sibling.getParentNode();
       Args.notNull("sibling.parentNode", parent);
 
-      final Text elem = (Text) parent.insertBefore(_getOwnerDocument(parent).createTextNode(text.toString()), sibling);
-      return elem;
+      return (Text) parent.insertBefore(_getOwnerDocument(parent).createTextNode(text.toString()), sibling);
    }
 
    /**
@@ -494,9 +498,9 @@ public abstract class DOMUtils {
       final NamedNodeMap nodeMap = node.getAttributes();
       final List<Attr> result = CollectionUtils.newArrayList(nodeMap.getLength());
       for (int i = 0, l = nodeMap.getLength(); i < l; i++) {
-         final Attr attr = (Attr) nodeMap.item(i);
+         final var attr = (Attr) nodeMap.item(i);
          if (attr.isId()) {
-            result.add((Attr) nodeMap.item(i));
+            result.add(attr);
          }
       }
       return result;
@@ -710,8 +714,8 @@ public abstract class DOMUtils {
 
          final SAXParseExceptionHandler errorHandler = new SAXParseExceptionHandler();
          domBuilder.setErrorHandler(errorHandler);
-         Document domDocument = domBuilder.parse(input);
-         final Element domRoot = domDocument.getDocumentElement();
+         var domDoc = domBuilder.parse(input);
+         final Element domRoot = domDoc.getDocumentElement();
 
          // remove any schema location declarations
          domRoot.removeAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation");
@@ -722,7 +726,7 @@ public abstract class DOMUtils {
             LOG.debug("Fixing root namespace...");
 
             domRoot.setAttribute("jstuffNS", defaultNamespace);
-            final String newXML = toXML(domDocument) //
+            final String newXML = toXML(domDoc) //
                .replaceFirst("xmlns\\s*=\\s*(['][^']*[']|[\"][^\"]*[\"])", "") //
                .replaceFirst("jstuffNS", "xmlns");
 
@@ -750,12 +754,12 @@ public abstract class DOMUtils {
 
             // re-parse the file with the new namespace
             errorHandler.violations.clear();
-            domDocument = domBuilder.parse(new InputSource(new StringReader(newXML)));
+            domDoc = domBuilder.parse(new InputSource(new StringReader(newXML)));
          }
 
          Assert.isTrue(errorHandler.violations.isEmpty(), errorHandler.violations.size() + " XML schema violation(s) detected in ["
             + inputId + "]:\n\n => " + Strings.join(errorHandler.violations, "\n => "));
-         return domDocument;
+         return domDoc;
       } catch (final ParserConfigurationException | SAXException | IOException ex) {
          throw new XMLException(ex);
       }

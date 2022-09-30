@@ -35,14 +35,10 @@ public final class Rounding implements Serializable {
    public boolean equals(final Object obj) {
       if (this == obj)
          return true;
-      if (obj == null)
-         return false;
-      if (getClass() != obj.getClass())
+      if (obj == null || getClass() != obj.getClass())
          return false;
       final Rounding other = (Rounding) obj;
-      if (roundAt != other.roundAt)
-         return false;
-      if (roundingMode != other.roundingMode)
+      if (roundingMode != other.roundingMode || roundAt != other.roundAt)
          return false;
       return true;
    }
@@ -71,7 +67,7 @@ public final class Rounding implements Serializable {
       Args.notNull("value", value);
 
       final BigDecimal bd = Numbers.toBigDecimal(value);
-      if (roundAt < 0)
+      if (divider != null)
          return bd.divide(divider).setScale(0, roundingMode).multiply(divider);
       return bd.setScale(roundAt, roundingMode).stripTrailingZeros();
    }

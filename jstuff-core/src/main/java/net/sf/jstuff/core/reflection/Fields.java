@@ -40,8 +40,8 @@ public abstract class Fields extends Members {
       return find(clazz, fieldName) != null;
    }
 
-   public static boolean exists(final Class<?> clazz, final String fieldName, final Class<?> compatibleTo) {
-      return find(clazz, fieldName, compatibleTo) != null;
+   public static boolean exists(final Class<?> clazz, final String fieldName, final Class<?> compatibleWith) {
+      return find(clazz, fieldName, compatibleWith) != null;
    }
 
    /**
@@ -52,10 +52,10 @@ public abstract class Fields extends Members {
    }
 
    /**
-    * @param compatibleTo the field type must assignable from this type, i.e. objects of type <code>compatibleTo</code> must be assignable to the field
+    * @param compatibleWith objects of type <code>compatibleWith</code> must be assignable to the field
     * @return the field or null if the field does not exist
     */
-   public static Field find(final Class<?> clazz, final String fieldName, final Class<?> compatibleTo) {
+   public static Field find(final Class<?> clazz, final String fieldName, final Class<?> compatibleWith) {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
@@ -79,7 +79,7 @@ public abstract class Fields extends Members {
       if (field == null)
          return null;
 
-      if (compatibleTo == null || Types.isAssignableTo(compatibleTo, field.getType()))
+      if (compatibleWith == null || Types.isAssignableTo(compatibleWith, field.getType()))
          return field;
 
       return null;
@@ -93,14 +93,14 @@ public abstract class Fields extends Members {
    }
 
    /**
-    * @param compatibleTo the field type must be a super class or interface of <code>compatibleTo</code>
+    * @param compatibleWith the field type must be a super class or interface of <code>compatibleWith</code>
     * @return the field or null if the field does not exist
     */
-   public static Field findRecursive(final Class<?> clazz, final String fieldName, final Class<?> compatibleTo) {
+   public static Field findRecursive(final Class<?> clazz, final String fieldName, final Class<?> compatibleWith) {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
-      final Field field = find(clazz, fieldName, compatibleTo);
+      final Field field = find(clazz, fieldName, compatibleWith);
       if (field != null)
          return field;
 
@@ -108,7 +108,7 @@ public abstract class Fields extends Members {
       if (superclazz == null)
          return null;
 
-      return findRecursive(superclazz, fieldName, compatibleTo);
+      return findRecursive(superclazz, fieldName, compatibleWith);
    }
 
    public static VarHandle findVarHandle(final Class<?> clazz, final String fieldName) {
@@ -256,7 +256,8 @@ public abstract class Fields extends Members {
       Args.notNull("field", field);
 
       if (isFinal(field))
-         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field.getName());
+         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#"
+            + field.getName());
 
       try {
          field.trySetAccessible();
@@ -275,7 +276,8 @@ public abstract class Fields extends Members {
          throw new ReflectionException("No field with name [" + fieldName + "] found in object [" + obj + "]");
 
       if (isFinal(field))
-         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#" + field.getName());
+         throw new SettingFieldValueFailedException(field, obj, "Cannot write to final field " + field.getDeclaringClass().getName() + "#"
+            + field.getName());
 
       try {
          field.trySetAccessible();

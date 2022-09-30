@@ -34,10 +34,8 @@ public abstract class Beans extends java.beans.Beans {
       Args.notNull("beanType", beanType);
 
       final Map<String, PropertyDescriptor> properties = BEAN_PROPERTIES_CACHE.get(beanType);
-      if (properties == null) {
-         populateCache(beanType);
-         return BEAN_PROPERTIES_CACHE.get(beanType);
-      }
+      if (properties == null)
+         return populateCache(beanType);
       return properties;
    }
 
@@ -48,10 +46,8 @@ public abstract class Beans extends java.beans.Beans {
       Args.notNull("beanType", beanType);
 
       final Map<String, PropertyDescriptor> properties = BEAN_PROPERTIES_CACHE.get(beanType);
-      if (properties == null) {
-         populateCache(beanType);
-         return BEAN_PROPERTIES_CACHE.get(beanType).values();
-      }
+      if (properties == null)
+         return populateCache(beanType).values();
       return properties.values();
    }
 
@@ -59,22 +55,25 @@ public abstract class Beans extends java.beans.Beans {
       Args.notNull("beanType", beanType);
 
       final Map<String, PropertyDescriptor> properties = BEAN_PROPERTIES_CACHE.get(beanType);
-      if (properties == null) {
-         populateCache(beanType);
-         return BEAN_PROPERTIES_CACHE.get(beanType).keySet();
-      }
+      if (properties == null)
+         return populateCache(beanType).keySet();
       return properties.keySet();
    }
 
-   private static void populateCache(final Class<?> beanType) {
+   private static Map<String, PropertyDescriptor> populateCache(final Class<?> beanType) {
       try {
          final BeanInfo beanInfo = Introspector.getBeanInfo(beanType, Object.class);
          final PropertyDescriptor[] props = beanInfo.getPropertyDescriptors();
-         final Map<String, PropertyDescriptor> beanProperties = new HashMap<>(props.length);
+         final var beanProperties = new HashMap<String, PropertyDescriptor>(props.length);
          for (final PropertyDescriptor prop : props) {
-            beanProperties.put(prop.getName(), prop);
+            final var name = prop.getName();
+            if (name != null) {
+               beanProperties.put(prop.getName(), prop);
+            }
          }
-         BEAN_PROPERTIES_CACHE.put(beanType, Collections.unmodifiableMap(beanProperties));
+         final var map = Collections.unmodifiableMap(beanProperties);
+         BEAN_PROPERTIES_CACHE.put(beanType, map);
+         return map;
       } catch (final IntrospectionException ex) {
          throw new ReflectionException(ex);
       }
@@ -104,7 +103,7 @@ public abstract class Beans extends java.beans.Beans {
 
       Assert.isTrue(stringValues.length == targetTypes.length, "Arguments [stringValues} and [targetTypes] must have the same length");
 
-      final Object[] result = new Object[targetTypes.length];
+      final var result = new Object[targetTypes.length];
 
       for (int i = 0, l = targetTypes.length; i < l; i++) {
          result[i] = valueOf(stringValues[i], targetTypes[i]);

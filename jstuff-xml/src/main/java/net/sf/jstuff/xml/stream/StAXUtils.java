@@ -312,12 +312,15 @@ public abstract class StAXUtils {
                      + "--------------------------------");
                }
                if (isMatch) {
+                  if (attrs == null) {
+                     attrs = readAttributes(reader, attrs);
+                  }
                   elem = new ElementInfo( //
                      reader.getLocalName(), //
                      reader.getPrefix(), //
                      reader.getNamespaceURI(), //
                      reader.getLocation(), //
-                     evaluteAttributes ? attrs : readAttributes(reader, attrs) //
+                     attrs //
                   );
                   attrs = null;
                }
