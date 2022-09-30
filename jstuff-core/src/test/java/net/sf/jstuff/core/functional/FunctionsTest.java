@@ -19,13 +19,13 @@ public class FunctionsTest {
    @Test
    public void testConverts() {
       final Function<Object, Integer> t1 = objectToString()//
-         .andThen(stringToInt())//
-         .andThen(castTo(Number.class))//
-         .andThen(objectToString())//
          .andThen(trim()) //
+         .andThen(stringToInt()) //
+         .andThen(castTo(Number.class)) //
+         .andThen(objectToString()) //
          .andThen(stringToInt());
 
       assertThat(t1.apply(null)).isNull();
-      assertThat(t1.apply("1")).isEqualTo(Integer.valueOf(1));
+      assertThat(t1.apply(" 1 ")).isEqualTo(Integer.valueOf(1));
    }
 }
