@@ -4,13 +4,6 @@
  */
 package net.sf.jstuff.xml.stream;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,10 +15,6 @@ import java.util.regex.Pattern;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.primitive.IntArrayList;
@@ -70,190 +59,6 @@ public abstract class StAXUtils {
    }
 
    private static final Logger LOG = Logger.create();
-
-   private static final StAXFactory DEFAULT_STAX_FACTORY = new StAXFactory();
-
-   /**
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static AutoCloseableXMLEventReader createXMLEventReader(final File xmlFile) throws FileNotFoundException, XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLEventReader(xmlFile);
-   }
-
-   /**
-    * @param autoClose if true xmlInput.close() is invoked when XMLStreamReader.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static AutoCloseableXMLEventReader createXMLEventReader(final InputStream xmlInput, final boolean autoClose)
-      throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLEventReader(xmlInput, autoClose);
-   }
-
-   /**
-    * @param autoClose if true xmlReader.close() is invoked when XMLStreamReader.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static AutoCloseableXMLEventReader createXMLEventReader(final Reader xmlReader, final boolean autoClose)
-      throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLEventReader(xmlReader, autoClose);
-   }
-
-   /**
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static AutoCloseableXMLEventReader createXMLEventReader(final Source xmlSource) throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLEventReader(xmlSource);
-   }
-
-   /**
-    * @param autoClose if true xmlSourcegetReader()/getInputStream().close() is invoked when XMLStreamReader.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static AutoCloseableXMLEventReader createXMLEventReader(final StreamSource xmlSource, final boolean autoClose)
-      throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLEventReader(xmlSource, autoClose);
-   }
-
-   /**
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static AutoCloseableXMLEventWriter createXMLEventWriter(final File xmlFile) throws FileNotFoundException, XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLEventWriter(xmlFile);
-   }
-
-   /**
-    * @param autoClose if true os.close() is invoked when XMLEventWriter.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static AutoCloseableXMLEventWriter createXMLEventWriter(final OutputStream xmlOutput, final Charset encoding,
-      final boolean autoClose) throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLEventWriter(xmlOutput, encoding, autoClose);
-   }
-
-   /**
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static AutoCloseableXMLEventWriter createXMLEventWriter(final Result xmlResult) throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLEventWriter(xmlResult);
-   }
-
-   /**
-    * @param autoClose if true xmlResult.[getWriter()/getOutputStream()].close() is invoked when ExtendedXMLEventWriter.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static AutoCloseableXMLEventWriter createXMLEventWriter(final StreamResult xmlResult, final boolean autoClose)
-      throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLEventWriter(xmlResult, autoClose);
-   }
-
-   /**
-    * @param autoClose if true xmlWriter.close() is invoked when XMLEventWriter.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static AutoCloseableXMLEventWriter createXMLEventWriter(final Writer xmlWriter, final boolean autoClose)
-      throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLEventWriter(xmlWriter, autoClose);
-   }
-
-   /**
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static ExtendedXMLStreamReader createXMLStreamReader(final File xmlFile) throws FileNotFoundException, XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLStreamReader(xmlFile);
-   }
-
-   /**
-    * @param autoClose if true xmlInput.close() is invoked when XMLStreamReader.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static ExtendedXMLStreamReader createXMLStreamReader(final InputStream xmlInput, final boolean autoClose)
-      throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLStreamReader(xmlInput, autoClose);
-   }
-
-   /**
-    * @param autoClose if true xmlReader.close() is invoked when XMLStreamReader.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static ExtendedXMLStreamReader createXMLStreamReader(final Reader xmlReader, final boolean autoClose) throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLStreamReader(xmlReader, autoClose);
-   }
-
-   /**
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static ExtendedXMLStreamReader createXMLStreamReader(final Source xmlSource) throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLStreamReader(xmlSource);
-   }
-
-   /**
-    * @param autoClose if true xmlSource.[getReader()/getInputStream()].close() is invoked when ExtendedXMLStreamReader.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static ExtendedXMLStreamReader createXMLStreamReader(final StreamSource xmlSource, final boolean autoClose)
-      throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLStreamReader(xmlSource, autoClose);
-   }
-
-   /**
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static ExtendedXMLStreamWriter createXMLStreamWriter(final File xmlFile) throws FileNotFoundException, XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLStreamWriter(xmlFile);
-   }
-
-   /**
-    * @param autoClose if true os.close() is invoked when XMLStreamWriter.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static ExtendedXMLStreamWriter createXMLStreamWriter(final OutputStream xmlOutput, final Charset encoding,
-      final boolean autoClose) throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLStreamWriter(xmlOutput, encoding, autoClose);
-   }
-
-   /**
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static ExtendedXMLStreamWriter createXMLStreamWriter(final Result xmlResult) throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLStreamWriter(xmlResult);
-   }
-
-   /**
-    * @param autoClose if true xmlResult.[getWriter()/getOutputStream()].close() is invoked when ExtendedXMLStreamWriter.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static ExtendedXMLStreamWriter createXMLStreamWriter(final StreamResult xmlResult, final boolean autoClose)
-      throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLStreamWriter(xmlResult, autoClose);
-   }
-
-   /**
-    * @param autoClose if true xmlWriter.close() is invoked when XMLStreamWriter.close() is called
-    * @deprecated use {@link StAXFactory}
-    */
-   @Deprecated
-   public static ExtendedXMLStreamWriter createXMLStreamWriter(final Writer xmlWriter, final boolean autoClose) throws XMLStreamException {
-      return DEFAULT_STAX_FACTORY.createXMLStreamWriter(xmlWriter, autoClose);
-   }
 
    public static ElementInfo findElement(final XMLStreamReader reader, final String xpath) throws XMLStreamException {
       final List<ElementInfo> elems = findElements(reader, xpath, 1);
@@ -357,16 +162,17 @@ public abstract class StAXUtils {
    }
 
    public static String getAttributeValue(final XMLStreamReader reader, final String attrLocalName) {
-      return getAttributeValue(reader, attrLocalName, null);
-   }
-
-   public static String getAttributeValue(final XMLStreamReader reader, final String attrLocalName, final String defaultValue) {
       for (int i = 0; i < reader.getAttributeCount(); i++) {
          final String localName = reader.getAttributeLocalName(i);
          if (localName.equals(attrLocalName))
             return reader.getAttributeValue(i);
       }
-      return defaultValue;
+      return null;
+   }
+
+   public static String getAttributeValue(final XMLStreamReader reader, final String attrLocalName, final String defaultValue) {
+      final var val = getAttributeValue(reader, attrLocalName);
+      return val == null ? defaultValue : val;
    }
 
    public static boolean getAttributeValueAsBoolean(final XMLStreamReader reader, final String attrLocalName, final boolean defaultValue) {
