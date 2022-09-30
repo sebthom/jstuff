@@ -20,8 +20,26 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
+
+   @SuppressWarnings("unchecked")
+   public static <T> T[] asArray(final T... values) {
+      return values;
+   }
+
+   public static <T> boolean containsNulls(final T[] array) {
+      if (array == null)
+         return false;
+
+      for (final T t : array) {
+         if (t == null)
+            return true;
+      }
+      return false;
+   }
+
    public static <T> boolean containsIdentical(final T[] array, final T theItem) {
-      Args.notNull("array", array);
+      if (array == null)
+         return false;
 
       for (final T t : array)
          if (t == theItem)
@@ -36,9 +54,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     */
    @SuppressWarnings({"unchecked"})
    public static <T> T[] filter(final Predicate<? super T> filter, final T... array) throws IllegalArgumentException {
-      if (array == null)
-         return null;
-      if (array.length == 0)
+      if (array == null || array.length == 0)
          return array;
       Args.notNull("filter", filter);
       final ArrayList<T> result = CollectionUtils.newArrayList();
@@ -64,7 +80,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
             return (T[]) Array.newInstance(itemType, 0);
       }
 
-      final List<T> commonItems = new ArrayList<>();
+      final var commonItems = new ArrayList<T>();
 
       for (final T candidate : arrays[0]) {
          boolean isCommon = true;
@@ -205,7 +221,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
          throw new IllegalArgumentException("[array] is not an array but of type: " + array.getClass());
 
       final int l = Array.getLength(array);
-      final List<Object> result = CollectionUtils.newArrayList(l);
+      final var result = CollectionUtils.newArrayList(l);
       for (int i = 0; i < l; i++) {
          result.add(Array.get(array, i));
       }
