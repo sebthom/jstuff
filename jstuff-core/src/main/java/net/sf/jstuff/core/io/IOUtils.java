@@ -23,6 +23,7 @@ import java.nio.channels.Selector;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.ObjIntConsumer;
 import java.util.zip.ZipFile;
 
 import net.sf.jstuff.core.Strings;
@@ -88,21 +89,37 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
    }
 
    /**
-    * @return number of bytes copied, or -1 if &gt; Integer.MAX_VALUE
+    * Copies bytes from an {@code InputStream} to an {@code OutputStream}.
+    * <p>
+    * This method uses the provided buffer, so there is no need to use a {@code BufferedInputStream}.
+    * </p>
+    *
+    * @param in the {@code InputStream} to read.
+    * @param out the {@code OutputStream} to write.
+    * @param buffer the buffer to use for the copy
+    * @param onBeforeWrite a callback that is called before each write operation
+    * @return the number of bytes copied.
     */
-   public static int copyAndClose(final InputStream is, final OutputStream os) throws IOException {
-      try {
-         return copy(is, os);
-      } finally {
-         closeQuietly(is);
-         closeQuietly(os);
+   @SuppressWarnings("resource")
+   public static long copy(final InputStream in, final OutputStream out, final byte[] buffer, final ObjIntConsumer<byte[]> onBeforeWrite)
+      throws IOException {
+      Args.notNull("in", in);
+      Args.notNull("out", out);
+
+      long count = 0;
+      int n;
+      while (EOF != (n = in.read(buffer))) {
+         onBeforeWrite.accept(buffer, n);
+         out.write(buffer, 0, n);
+         count += n;
       }
+      return count;
    }
 
    /**
     * @return number of bytes copied
     */
-   public static long copyLargeAndClose(final InputStream is, final OutputStream os) throws IOException {
+   public static long copyAndClose(final InputStream is, final OutputStream os) throws IOException {
       try {
          return copyLarge(is, os);
       } finally {
