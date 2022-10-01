@@ -149,16 +149,16 @@ public abstract class StackTrace {
    /**
     * @return the given exception
     */
-   public static <T extends Throwable> T removeFirstStackTraceElement(final T exception) {
-      Args.notNull("exception", exception);
+   public static <T extends Throwable> T removeFirstStackTraceElement(final T ex) {
+      Args.notNull("ex", ex);
 
-      final var stack = exception.getStackTrace();
-      if (stack != null && stack.length > 0) {
+      final var stack = ex.getStackTrace();
+      if (stack.length > 0) {
          final StackTraceElement[] newStack = new StackTraceElement[stack.length - 1];
          System.arraycopy(stack, 1, newStack, 0, stack.length - 1);
-         exception.setStackTrace(newStack);
+         ex.setStackTrace(newStack);
       }
-      return exception;
+      return ex;
    }
 
 }

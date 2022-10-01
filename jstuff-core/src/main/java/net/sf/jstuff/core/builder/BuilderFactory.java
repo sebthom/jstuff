@@ -4,12 +4,11 @@
  */
 package net.sf.jstuff.core.builder;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import java.util.Set;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.ref.MutableRef;
 import net.sf.jstuff.core.reflection.Annotations;
@@ -41,15 +39,15 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
       private final Object[] constructorArgs;
 
       private Builder.Property propertyDefaults;
-      private final Map<String, Builder.Property> propertyConfig = Maps.newHashMap(2);
-      private final List<Method> onPostBuilds = newArrayList(2);
+      private final Map<String, Builder.Property> propertyConfig = new HashMap<>(2);
+      private final List<Method> onPostBuilds = new ArrayList<>(2);
 
       /**
        * ordered list of the values of all wither/setter invocations on the builder instance
        */
       private final List<Tuple2<String, Object[]>> properties = new ArrayList<>();
 
-      BuilderImpl(final Class<?> builderInterface, final Class<?> targetClass, final Object[] constructorArgs) {
+      BuilderImpl(final Class<?> builderInterface, final Class<?> targetClass, final Object... constructorArgs) {
          this.builderInterface = builderInterface;
          this.targetClass = targetClass;
          this.constructorArgs = constructorArgs;

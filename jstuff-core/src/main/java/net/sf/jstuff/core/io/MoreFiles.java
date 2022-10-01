@@ -534,7 +534,7 @@ public abstract class MoreFiles {
    }
 
    public static Path getTempDirectory() {
-      return Paths.get(System.getProperty("java.io.tmpdir"));
+      return SystemUtils.getJavaIoTmpDir().toPath();
    }
 
    public static Path getWorkingDirectory() {

@@ -53,7 +53,8 @@ abstract class LoggerUtils {
       return (I) Proxy.newProxyInstance(object.getClass().getClassLoader(), interfaces, (proxy, interfaceMethod, args) -> {
          if (log.isTraceEnabled()) {
             final long start = System.currentTimeMillis();
-            final Method methodWithParameterNames = Methods.findPublic(object.getClass(), interfaceMethod.getName(), interfaceMethod.getParameterTypes());
+            final Method methodWithParameterNames = Methods.findPublic(object.getClass(), interfaceMethod.getName(), interfaceMethod
+               .getParameterTypes());
             log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
             final Object returnValue = interfaceMethod.invoke(object, args);
             final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
@@ -122,16 +123,16 @@ abstract class LoggerUtils {
       if (ex == null)
          return;
 
-      final StackTraceElement[] stacktrace = ex.getStackTrace();
-      if (stacktrace == null || stacktrace.length < 3)
+      final StackTraceElement[] stack = ex.getStackTrace();
+      if (stack.length < 3)
          return;
 
-      final List<StackTraceElement> sanitized = new ArrayList<>(stacktrace.length - 2);
+      final List<StackTraceElement> sanitized = new ArrayList<>(stack.length - 2);
       // we leave the first two elements untouched to keep the context
-      sanitized.add(stacktrace[0]);
-      sanitized.add(stacktrace[1]);
-      for (int i = 2, l = stacktrace.length; i < l; i++) {
-         final StackTraceElement ste = stacktrace[i];
+      sanitized.add(stack[0]);
+      sanitized.add(stack[1]);
+      for (int i = 2, l = stack.length; i < l; i++) {
+         final StackTraceElement ste = stack[i];
          final String className = ste.getClassName();
          if ("java.lang.reflect.Method".equals(className) //
             || className.startsWith("org.springframework.aop.") //
@@ -142,13 +143,11 @@ abstract class LoggerUtils {
             if (className.startsWith("sun.proxy.$Proxy", 4)) { // com.sun.proxy.$Proxy
                continue;
             } else if (className.startsWith("ibm.", 4)) { // com.ibm.
-               if (className.startsWith("io.async.", 8)) { // com.ibm.io.async.
-                  continue;
-               } else if (className.startsWith("wps.", 8)) { // com.ibm.wps.
-                  continue;
-               } else if (className.startsWith("ws.", 8)) { // com.ibm.ws.
-                  continue;
-               } else if (className.startsWith("_jsp.", 8)) { // com.ibm._jsp.
+               if (className.startsWith("io.async.", 8) // com.ibm.io.async.
+                  || className.startsWith("wps.", 8) // com.ibm.wps.
+                  || className.startsWith("ws.", 8) // com.ibm.ws.
+                  || className.startsWith("_jsp.", 8) // com.ibm._jsp.
+               ) {
                   continue;
                } else if (className.startsWith("jsse2.", 8)) { // com.ibm.jsse2.
                   if (className.startsWith(".", 15)) { // com.ibm.jsse2.b. || com.ibm.jsse2.f. || ...
@@ -173,7 +172,7 @@ abstract class LoggerUtils {
          sanitized.add(ste);
       }
 
-      ex.setStackTrace(sanitized.toArray(new StackTraceElement[sanitized.size()]));
+      ex.setStackTrace(sanitized.toArray(StackTraceElement[]::new));
 
       if (ex.getCause() != null) {
          sanitizeStackTraces(ex.getCause());

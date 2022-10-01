@@ -106,15 +106,13 @@ public abstract class Exceptions extends ExceptionUtils {
       exception.initCause(ex);
 
       final StackTraceElement[] stack = exception.getStackTrace();
-      if (stack != null) {
-         final StackTraceElement caller = StackTrace.getCallerStackTraceElement();
-         for (int i = 0; i < stack.length; i++) {
-            if (stack[i].equals(caller)) {
-               final StackTraceElement[] newStack = new StackTraceElement[stack.length - i];
-               System.arraycopy(stack, i, newStack, 0, stack.length - i);
-               exception.setStackTrace(newStack);
-               break;
-            }
+      final StackTraceElement caller = StackTrace.getCallerStackTraceElement();
+      for (int i = 0; i < stack.length; i++) {
+         if (stack[i].equals(caller)) {
+            final StackTraceElement[] newStack = new StackTraceElement[stack.length - i];
+            System.arraycopy(stack, i, newStack, 0, stack.length - i);
+            exception.setStackTrace(newStack);
+            break;
          }
       }
 

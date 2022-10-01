@@ -93,20 +93,20 @@ final class JULLogger implements LoggerInternal {
       } else {
          final Throwable effectiveException;
          if (LoggerConfig.isCompactExceptionLoggingEnabled) {
-            final StackTraceElement[] st = ex.getStackTrace();
             final StringBuilder sb = new StringBuilder();
             if (message == null || message.length() == 0) {
                sb.append("Catched ");
             } else {
                sb.append(message).append(" reason: ");
             }
+            final var stack = ex.getStackTrace();
             sb.append(ex.getClass().getName()).append(": ").append(ex.getMessage()).append("\n");
-            if (st != null && st.length > 0) {
-               sb.append("\tat ").append(st[0]).append("\n");
-               if (st.length > 1) {
-                  sb.append("\tat ").append(st[1]).append("\n");
+            if (stack.length > 0) {
+               sb.append("\tat ").append(stack[0]).append("\n");
+               if (stack.length > 1) {
+                  sb.append("\tat ").append(stack[1]).append("\n");
                }
-               if (st.length > 2) {
+               if (stack.length > 2) {
                   sb.append("\t[StackTrace truncated - set log level of ").append(loggerName).append(" to FINE for full details]");
                }
             }
@@ -167,7 +167,8 @@ final class JULLogger implements LoggerInternal {
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+      final Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_DEBUG)
          return;
@@ -318,7 +319,8 @@ final class JULLogger implements LoggerInternal {
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+      final Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_ERROR)
          return;
@@ -470,7 +472,8 @@ final class JULLogger implements LoggerInternal {
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+      final Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_INFO)
          return;
@@ -605,7 +608,8 @@ final class JULLogger implements LoggerInternal {
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+      final Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_TRACE)
          return;
@@ -686,7 +690,8 @@ final class JULLogger implements LoggerInternal {
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+      final Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_WARN)
          return;

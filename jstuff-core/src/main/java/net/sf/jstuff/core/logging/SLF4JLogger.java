@@ -104,7 +104,6 @@ final class SLF4JLogger implements LoggerInternal {
          }
       } else {
          if (LoggerConfig.isCompactExceptionLoggingEnabled) {
-            final StackTraceElement[] st = ex.getStackTrace();
             final StringBuilder sb = new StringBuilder();
             if (message == null || message.length() == 0) {
                sb.append("Catched ");
@@ -112,12 +111,13 @@ final class SLF4JLogger implements LoggerInternal {
                sb.append(message).append(" reason: ");
             }
             sb.append(ex.getClass().getName()).append(": ").append(ex.getMessage()).append("\n");
-            if (st != null && st.length > 0) {
-               sb.append("\tat ").append(st[0]).append("\n");
-               if (st.length > 1) {
-                  sb.append("\tat ").append(st[1]).append("\n");
+            final StackTraceElement[] stack = ex.getStackTrace();
+            if (stack.length > 0) {
+               sb.append("\tat ").append(stack[0]).append("\n");
+               if (stack.length > 1) {
+                  sb.append("\tat ").append(stack[1]).append("\n");
                }
-               if (st.length > 2) {
+               if (stack.length > 2) {
                   sb.append("\t[StackTrace truncated - set log level of ").append(loggerName).append(" to FINE for full details]");
                }
             }
@@ -193,7 +193,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+      final Object arg5) {
       if (!logger.isDebugEnabled())
          return;
 
@@ -328,7 +329,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+      final Object arg5) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -453,7 +455,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+      final Object arg5) {
       if (!logger.isInfoEnabled())
          return;
 
@@ -573,7 +576,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+      final Object arg5) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -645,7 +649,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
+      final Object arg5) {
       if (!logger.isWarnEnabled())
          return;
 
