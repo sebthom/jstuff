@@ -120,7 +120,7 @@ public class ThreadDumper {
 
       public boolean isAtObjectWait() {
          final StackTraceElement[] stack = threadInfo.getStackTrace();
-         if (stack == null || stack.length == 0)
+         if (stack.length == 0)
             return false;
 
          return Object.class.getName().equals(stack[0].getClassName()) //
@@ -129,7 +129,7 @@ public class ThreadDumper {
 
       public boolean isAtThreadSleep() {
          final StackTraceElement[] stack = threadInfo.getStackTrace();
-         if (stack == null || stack.length == 0)
+         if (stack.length == 0)
             return false;
 
          return Thread.class.getName().equals(stack[0].getClassName()) //
@@ -138,7 +138,7 @@ public class ThreadDumper {
 
       public boolean isAtUnsafePark() {
          final StackTraceElement[] stack = threadInfo.getStackTrace();
-         if (stack == null || stack.length == 0)
+         if (stack.length == 0)
             return false;
 
          return "sun.misc.Unsafe".equals(stack[0].getClassName()) //
