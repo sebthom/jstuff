@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.types.Composite;
 
 /**
@@ -65,6 +64,9 @@ public class CompositeLock extends Composite.Default<Lock> implements CloseableL
 
    @Override
    public void unlock() {
-      Locks.unlockAll(CollectionUtils.reverse((List<Lock>) components));
+      final var locks = (List<Lock>) components;
+      for (int i = locks.size(); i-- > 0;) {
+         locks.get(i).unlock();
+      }
    }
 }
