@@ -239,9 +239,9 @@ public abstract class MoreFiles {
    @SuppressWarnings("resource")
    public static void copyContent(final FileChannel source, final FileChannel target, final LongBiConsumer onBytesWritten)
       throws IOException {
-      Args.notNull("onBytesWritten", onBytesWritten);
       Args.notNull("source", source);
       Args.notNull("target", target);
+      Args.notNull("onBytesWritten", onBytesWritten);
 
       try ( //
            WritableByteChannel outCh = new DelegatingWritableByteChannel(target, onBytesWritten) //
@@ -265,6 +265,33 @@ public abstract class MoreFiles {
 
    public static void copyContent(final Path source, final Path target) throws IOException {
       copyContent(source, target, (bytesWritten, totalBytesWritten) -> { /* ignore */ });
+   }
+
+   /**
+    * @param buffer the buffer to use for the copy
+    * @param onBeforeWrite a callback that is called before each write operation
+    */
+   public static void copyContent(final Path source, final Path target, final ByteBuffer buffer, final Consumer<ByteBuffer> onBeforeWrite)
+      throws IOException {
+      Args.notNull("source", source);
+      Args.notNull("target", target);
+      Args.notNull("onBeforeWrite", onBeforeWrite);
+
+      try (var in = Files.newByteChannel(source, DEFAULT_FILE_READ_OPTIONS);
+           var out = Files.newByteChannel(target, DEFAULT_FILE_WRITE_OPTIONS)) {
+         while (in.read(buffer) > -1) {
+            buffer.flip();
+            onBeforeWrite.accept(buffer);
+            out.write(buffer);
+            buffer.compact();
+         }
+         buffer.flip();
+         while (buffer.hasRemaining()) {
+            onBeforeWrite.accept(buffer);
+            out.write(buffer);
+         }
+      }
+
    }
 
    /**

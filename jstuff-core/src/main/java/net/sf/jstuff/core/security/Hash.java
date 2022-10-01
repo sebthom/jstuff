@@ -189,6 +189,12 @@ public interface Hash<T> {
             }
 
             @Override
+            public Hasher<Long> update(final byte[] bytes, final int offset, final int len) {
+               cs.update(bytes, offset, len);
+               return this;
+            }
+
+            @Override
             public Hasher<Long> update(final ByteBuffer bytes) {
                cs.update(bytes);
                return this;
@@ -228,6 +234,8 @@ public interface Hash<T> {
       Hasher<T> update(byte b);
 
       Hasher<T> update(byte[] bytes);
+
+      Hasher<T> update(byte[] bytes, int offset, int len);
 
       Hasher<T> update(ByteBuffer bytes);
    }
@@ -375,6 +383,12 @@ public interface Hash<T> {
             @Override
             public Hasher<String> update(final byte[] bytes) {
                md.update(bytes);
+               return this;
+            }
+
+            @Override
+            public Hasher<String> update(final byte[] bytes, final int offset, final int len) {
+               md.update(bytes, offset, len);
                return this;
             }
 

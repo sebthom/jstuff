@@ -7,9 +7,16 @@ package net.sf.jstuff.core.io;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.atomic.LongAdder;
+import java.util.function.Consumer;
 
 import org.junit.Test;
+
+import net.sf.jstuff.core.security.Hash;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -21,6 +28,28 @@ public class MoreFilesTest {
       assertThat(MoreFiles.findFiles(Paths.get(rootPath), globPattern)).hasSize(exceptedFiles);
       assertThat(MoreFiles.findDirectories(Paths.get(rootPath), globPattern)).hasSize(exceptedFolders);
       assertThat(MoreFiles.find(Paths.get(rootPath), globPattern, true, true)).hasSize(exceptedFiles + exceptedFolders);
+   }
+
+   @Test
+   public void testCopyContent() throws IOException {
+      final var hasher = Hash.MD5.newHasher();
+      final var bytesRead = new LongAdder();
+      final Consumer<ByteBuffer> onBeforeWrite = bytes -> {
+         bytesRead.add(bytes.remaining());
+         bytes.mark();
+         hasher.update(bytes);
+         bytes.reset();
+      };
+
+      final var source = Path.of("pom.xml");
+      final var sourceHash = Hash.MD5.hash(source);
+      final var target = Path.of("target/pom.xml.copy");
+      MoreFiles.copyContent(source, target, ByteBuffer.allocate(256), onBeforeWrite);
+      assertThat(bytesRead.longValue()).isEqualTo(Files.size(source));
+      final var targetHash = Hash.MD5.hash(target);
+      assertThat(sourceHash).isEqualTo(targetHash);
+      assertThat(sourceHash).isEqualTo(hasher.hash());
+      Files.delete(target);
    }
 
    @Test
