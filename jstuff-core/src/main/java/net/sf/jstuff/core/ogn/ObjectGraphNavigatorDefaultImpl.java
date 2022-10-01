@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 
 import net.sf.jstuff.core.reflection.Fields;
 import net.sf.jstuff.core.reflection.Methods;
+import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -48,7 +49,8 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
             final Field field = Fields.findRecursive(parent.getClass(), chunk);
             if (field == null) {
                if (strict)
-                  throw new IllegalArgumentException("Invalid object navigation path from root object class [" + root.getClass().getName() + "] path: " + path);
+                  throw new IllegalArgumentException("Invalid object navigation path from root object class [" + root.getClass().getName()
+                     + "] path: " + path);
                return null;
             }
             target = Fields.read(parent, field);
@@ -64,7 +66,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
    }
 
    @Override
-   public ObjectGraphNavigationResult navigateTo(final Object root, final String path) {
+   public ObjectGraphNavigationResult navigateTo(final Object root, final String path) throws ReflectionException {
       Args.notNull("root", root);
       Args.notNull("path", path);
 
@@ -81,7 +83,8 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
             final Field field = Fields.findRecursive(parent.getClass(), chunk);
             if (field == null) {
                if (strict)
-                  throw new IllegalArgumentException("Invalid object navigation path from root object class [" + root.getClass().getName() + "] path: " + path);
+                  throw new IllegalArgumentException("Invalid object navigation path from root object class [" + root.getClass().getName()
+                     + "] path: " + path);
                return null;
             }
             target = Fields.read(parent, field);
