@@ -17,11 +17,14 @@ import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
+import net.sf.jstuff.core.concurrent.NotThreadSafe;
+import net.sf.jstuff.core.concurrent.ThreadSafe;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@ThreadSafe
 public interface Hash<T> {
 
    abstract class AbstractHash<T> implements Hash<T> {
@@ -65,6 +68,7 @@ public interface Hash<T> {
    }
 
    abstract class ChecksumHash extends AbstractHash<Long> {
+
       protected ChecksumHash(final Category category, final String name, final byte[] salt) {
          super(category, name, salt);
       }
@@ -144,6 +148,54 @@ public interface Hash<T> {
          return hash(text.getBytes(StandardCharsets.UTF_8));
       }
 
+      @Override
+      public Hasher<Long> newHasher() {
+         final var hashImpl = this;
+         final var cs = newInstance();
+         return new Hasher<>() {
+            {
+               reset();
+            }
+
+            @Override
+            public Hash<Long> getHash() {
+               return hashImpl;
+            }
+
+            @Override
+            public Long hash() {
+               return cs.getValue();
+            }
+
+            @Override
+            public Hasher<Long> reset() {
+               cs.reset();
+               if (salt != null && salt.length > 0) {
+                  cs.update(salt);
+               }
+               return this;
+            }
+
+            @Override
+            public Hasher<Long> update(final byte b) {
+               cs.update(b);
+               return this;
+            }
+
+            @Override
+            public Hasher<Long> update(final byte[] bytes) {
+               cs.update(bytes);
+               return this;
+            }
+
+            @Override
+            public Hasher<Long> update(final ByteBuffer bytes) {
+               cs.update(bytes);
+               return this;
+            }
+         };
+      }
+
       protected abstract Checksum newInstance();
 
       @Override
@@ -156,6 +208,28 @@ public interface Hash<T> {
             }
          };
       }
+   }
+
+   /**
+    * Incremental hasher
+    */
+   @NotThreadSafe
+   interface Hasher<T> {
+
+      Hash<T> getHash();
+
+      /**
+       * @return the computed hash and resets this instance
+       */
+      T hash();
+
+      Hasher<T> reset();
+
+      Hasher<T> update(byte b);
+
+      Hasher<T> update(byte[] bytes);
+
+      Hasher<T> update(ByteBuffer bytes);
    }
 
    class MessageDigestHash extends AbstractHash<String> {
@@ -264,6 +338,54 @@ public interface Hash<T> {
          return hash(text.getBytes(StandardCharsets.UTF_8));
       }
 
+      @Override
+      public Hasher<String> newHasher() {
+         final var hashImpl = this;
+         final var md = newInstance();
+         return new Hasher<>() {
+            {
+               reset();
+            }
+
+            @Override
+            public Hash<String> getHash() {
+               return hashImpl;
+            }
+
+            @Override
+            public String hash() {
+               return toHexString(md.digest());
+            }
+
+            @Override
+            public Hasher<String> reset() {
+               md.reset();
+               if (salt != null && salt.length > 0) {
+                  md.update(salt);
+               }
+               return this;
+            }
+
+            @Override
+            public Hasher<String> update(final byte b) {
+               md.update(b);
+               return this;
+            }
+
+            @Override
+            public Hasher<String> update(final byte[] bytes) {
+               md.update(bytes);
+               return this;
+            }
+
+            @Override
+            public Hasher<String> update(final ByteBuffer bytes) {
+               md.update(bytes);
+               return this;
+            }
+         };
+      }
+
       protected MessageDigest newInstance() throws SecurityException {
          return lookup(name);
       }
@@ -315,6 +437,11 @@ public interface Hash<T> {
    T hash(ReadableByteChannel ch) throws IOException;
 
    T hash(String text);
+
+   /**
+    * @return a new not-thread safe hasher instance for incremental hashing
+    */
+   Hasher<T> newHasher();
 
    /**
     * @return a new instance configured with the given salt

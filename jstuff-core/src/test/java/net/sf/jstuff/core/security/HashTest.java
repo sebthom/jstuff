@@ -14,7 +14,18 @@ import org.junit.Test;
 public class HashTest {
 
    @Test
-   public void testHashes() {
+   public void testHashCategories() {
+      assertThat(Hash.ADLER32.getCategory()).isEqualTo(Hash.Category.CHECKSUM);
+      assertThat(Hash.CRC32.getCategory()).isEqualTo(Hash.Category.CRC);
+      assertThat(Hash.MD5.getCategory()).isEqualTo(Hash.Category.UNKEYED_CRYPTOGRAPHIC);
+      assertThat(Hash.SHA1.getCategory()).isEqualTo(Hash.Category.UNKEYED_CRYPTOGRAPHIC);
+      assertThat(Hash.SHA256.getCategory()).isEqualTo(Hash.Category.UNKEYED_CRYPTOGRAPHIC);
+      assertThat(Hash.SHA384.getCategory()).isEqualTo(Hash.Category.UNKEYED_CRYPTOGRAPHIC);
+      assertThat(Hash.SHA512.getCategory()).isEqualTo(Hash.Category.UNKEYED_CRYPTOGRAPHIC);
+   }
+
+   @Test
+   public void testHash() {
       assertThat(Hash.ADLER32.hash("HelloWorld!")).isEqualTo(427_033_630L);
       assertThat(Hash.ADLER32.withSalt("foo".getBytes()).hash("HelloWorld!")).isEqualTo(702_678_370L);
 
@@ -41,5 +52,24 @@ public class HashTest {
          "c5179301e5619c392fb9b8872b90156ea45e452ea7336d9ee727d5d4a2a95df6a973ddfdeb92bbc14e01aa923591d44835ac32ccd1a71f4681f6a731fae5c238");
       assertThat(Hash.SHA512.withSalt("foo".getBytes()).hash("HelloWorld!")).isEqualTo(
          "e4f870274af66ccb3a2e1e8f3c770e89265a4fffba594de2f9c0160036a0430a037dada3f2b045bef1f10b0c66a468ab409b41679490c98a5529ab5700a33245");
+   }
+
+   @Test
+   public void testHasher() {
+      assertThat(Hash.ADLER32.newHasher().update("HelloWorld!".getBytes()).hash()).isEqualTo(427_033_630L);
+      assertThat(Hash.ADLER32.withSalt("foo".getBytes()).newHasher().update("HelloWorld!".getBytes()).hash()).isEqualTo(702_678_370L);
+      assertThat(Hash.ADLER32.withSalt("foo".getBytes()).newHasher().update("Whatever".getBytes()).reset().update("HelloWorld!".getBytes())
+         .hash()).isEqualTo(702_678_370L);
+
+      assertThat(Hash.CRC32.newHasher().update("HelloWorld!".getBytes()).hash()).isEqualTo(3_083_157_831L);
+      assertThat(Hash.CRC32.withSalt("foo".getBytes()).newHasher().update("HelloWorld!".getBytes()).hash()).isEqualTo(178_500_065L);
+      assertThat(Hash.CRC32.withSalt("foo".getBytes()).newHasher().update("Whatever".getBytes()).reset().update("HelloWorld!".getBytes())
+         .hash()).isEqualTo(178_500_065L);
+
+      assertThat(Hash.MD5.newHasher().update("HelloWorld!".getBytes()).hash()).isEqualTo("06e0e6637d27b2622ab52022db713ce2");
+      assertThat(Hash.MD5.withSalt("foo".getBytes()).newHasher().update("HelloWorld!".getBytes()).hash()).isEqualTo(
+         "6e368f642a96f22e6f33e7b6c57ea204");
+      assertThat(Hash.SHA1.newHasher().update("HelloWorld!".getBytes()).hash()).isEqualTo("d735871a64133ee062400659cf91b8234d1c1930");
+
    }
 }
