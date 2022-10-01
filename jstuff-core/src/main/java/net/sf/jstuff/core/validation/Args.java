@@ -313,7 +313,7 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
     */
-   public static byte[] notEmpty(final String argumentName, byte [] value) {
+   public static byte[] notEmpty(final String argumentName, byte[] value) {
       _notNull("argumentName", argumentName);
       value = _notNull(argumentName, value);
 
@@ -325,7 +325,7 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
     */
-   public static <A> A[] notEmpty(final String argumentName, A [] value) {
+   public static <A> A[] notEmpty(final String argumentName, A[] value) {
       _notNull("argumentName", argumentName);
       value = _notNull(argumentName, value);
 

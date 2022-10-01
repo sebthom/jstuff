@@ -35,7 +35,6 @@ import net.sf.jstuff.core.validation.Args;
 public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends TARGET_CLASS>> {
 
    private static final class BuilderImpl implements InvocationHandler {
-      final List<Tuple2<String, Object[]>> properties = new ArrayList<>();
 
       private final Class<?> builderInterface;
       private final Class<?> targetClass;
@@ -44,6 +43,11 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
       private Builder.Property propertyDefaults;
       private final Map<String, Builder.Property> propertyConfig = Maps.newHashMap(2);
       private final List<Method> onPostBuilds = newArrayList(2);
+
+      /**
+       * ordered list of the values of all wither/setter invocations on the builder instance
+       */
+      private final List<Tuple2<String, Object[]>> properties = new ArrayList<>();
 
       BuilderImpl(final Class<?> builderInterface, final Class<?> targetClass, final Object[] constructorArgs) {
          this.builderInterface = builderInterface;

@@ -35,7 +35,7 @@ public class MapsTest {
 
    @Test
    public void testSortByValueAsc() {
-      final Map<String, Integer> map = new HashMap<>();
+      final var map = new HashMap<String, Integer>();
       map.put("e", 3);
       map.put("d", 2);
       map.put("c", 2);
@@ -44,7 +44,7 @@ public class MapsTest {
       map.put(null, 0);
 
       // {a=null, b=null, null=0, c=2, d=2, e=3}
-      final Map<String, Integer> sortedMap = Maps.sortByValue(map);
+      final var sortedMap = Maps.sortByValue(map);
 
       assertThat(new ArrayList<>(sortedMap.values())).isNotEqualTo(new ArrayList<>(map.values()));
       assertThat(new ArrayList<>(sortedMap.values())).isEqualTo(Arrays.asList((Integer) null, (Integer) null, 0, 2, 2, 3));
@@ -62,7 +62,7 @@ public class MapsTest {
       final UnsortableKey keyA = new UnsortableKey("a");
       final UnsortableKey keyNull = null;
 
-      final Map<UnsortableKey, Integer> map = new HashMap<>();
+      final var map = new HashMap<UnsortableKey, Integer>();
       map.put(keyE, 3);
       map.put(keyD, 2);
       map.put(keyC, 2);
@@ -87,7 +87,7 @@ public class MapsTest {
 
    @Test
    public void testSortByValueDesc() {
-      final Map<String, Integer> map = new HashMap<>();
+      final var map = new HashMap<String, Integer>();
       map.put("e", 3);
       map.put("d", 2);
       map.put("c", 2);

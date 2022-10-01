@@ -30,8 +30,7 @@ public abstract class Assert {
       );
    }
 
-   private static IllegalStateException _createIllegalStateException(final String errorMessage,
-      final Object... errorMessageArgs) {
+   private static IllegalStateException _createIllegalStateException(final String errorMessage, final Object... errorMessageArgs) {
       return removeFirstStackTraceElement( //
          removeFirstStackTraceElement( //
             new IllegalStateException(String.format(errorMessage, errorMessageArgs)) //
@@ -305,7 +304,7 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>items</code> is null or contains any null items
     */
-   public static <T> T[] noNulls(T [] items, final String errorMessage) {
+   public static <T> T[] noNulls(T[] items, final String errorMessage) {
       items = Args.notNull("items", items);
 
       for (final T item : items)
@@ -323,13 +322,13 @@ public abstract class Assert {
       return value;
    }
 
-   public static byte[] notEmpty(final byte [] value, final String errorMessage) {
+   public static byte[] notEmpty(final byte[] value, final String errorMessage) {
       if (value == null || value.length == 0)
          throw _createIllegalStateException(errorMessage);
       return value;
    }
 
-   public static <A> A[] notEmpty(final A [] value, final String errorMessage) {
+   public static <A> A[] notEmpty(final A[] value, final String errorMessage) {
       if (value == null || value.length == 0)
          throw _createIllegalStateException(errorMessage);
       return value;
