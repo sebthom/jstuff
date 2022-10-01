@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.reflection;
 
+import java.util.Arrays;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.validation.Args;
 
@@ -84,7 +86,7 @@ public abstract class StackTrace {
    }
 
    public static StackTraceElement getCallerStackTraceElement() {
-      final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+      final var stack = Thread.currentThread().getStackTrace();
       boolean stackTraceClassFound = false;
       for (int i = 0, l = stack.length; i < l; i++) {
          final StackTraceElement elem = stack[i];
@@ -154,8 +156,7 @@ public abstract class StackTrace {
 
       final var stack = ex.getStackTrace();
       if (stack.length > 0) {
-         final StackTraceElement[] newStack = new StackTraceElement[stack.length - 1];
-         System.arraycopy(stack, 1, newStack, 0, stack.length - 1);
+         final var newStack = Arrays.copyOfRange(stack, 1, stack.length);
          ex.setStackTrace(newStack);
       }
       return ex;
