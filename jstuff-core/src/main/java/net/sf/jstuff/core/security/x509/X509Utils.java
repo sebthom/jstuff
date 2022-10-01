@@ -52,7 +52,7 @@ import net.sf.jstuff.core.io.MoreFiles;
 import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.security.Base64;
-import net.sf.jstuff.core.security.Checksums;
+import net.sf.jstuff.core.security.Hash;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -341,7 +341,7 @@ public abstract class X509Utils {
 
    public static String getFingerprint(final X509Certificate cert) throws CertificateEncodingException {
       Args.notNull("cert", cert);
-      return Checksums.sha1(cert.getEncoded());
+      return Hash.SHA1.hash(cert.getEncoded());
    }
 
    /**
