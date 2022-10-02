@@ -200,7 +200,7 @@ public class DateTimeHelper implements Serializable {
    protected boolean isValidDate(final DateFormatStyle style, final String date) {
       Args.notNull("style", style);
 
-      if (date == null || date.length() == 0)
+      if (date == null || date.isEmpty())
          return false;
 
       final DateFormat df = getDateFormat(style);
@@ -222,7 +222,7 @@ public class DateTimeHelper implements Serializable {
    protected boolean isValidDateTime(final DateFormatStyle style, final String dateTime) {
       Args.notNull("style", style);
 
-      if (dateTime == null || dateTime.length() == 0)
+      if (dateTime == null || dateTime.isEmpty())
          return false;
 
       final DateFormat df = getDateTimeFormat(style);

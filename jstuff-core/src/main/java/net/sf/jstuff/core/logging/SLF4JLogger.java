@@ -92,7 +92,7 @@ final class SLF4JLogger implements LoggerInternal {
       String effectiveMessage;
       final Throwable effectiveException;
       if (logger.isDebugEnabled()) {
-         effectiveMessage = message == null || message.length() == 0 ? "Catched " : message;
+         effectiveMessage = message == null || message.isEmpty() ? "Catched " : message;
          effectiveException = ex;
          if (LoggerConfig.isAddLocationToDebugMessages) {
             final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
@@ -105,7 +105,7 @@ final class SLF4JLogger implements LoggerInternal {
       } else {
          if (LoggerConfig.isCompactExceptionLoggingEnabled) {
             final StringBuilder sb = new StringBuilder();
-            if (message == null || message.length() == 0) {
+            if (message == null || message.isEmpty()) {
                sb.append("Catched ");
             } else {
                sb.append(message).append(" reason: ");
@@ -124,7 +124,7 @@ final class SLF4JLogger implements LoggerInternal {
             effectiveMessage = sb.toString();
             effectiveException = null;
          } else {
-            effectiveMessage = message == null || message.length() == 0 ? "Catched " : message;
+            effectiveMessage = message == null || message.isEmpty() ? "Catched " : message;
             effectiveException = ex;
          }
       }
@@ -233,7 +233,7 @@ final class SLF4JLogger implements LoggerInternal {
          return;
 
       final String version = Types.getVersion(newInstance.getClass());
-      if (version == null || version.length() == 0) {
+      if (version == null || version.isEmpty()) {
          _log(DEBUG_INT, newInstance.toString() + " instantiated.");
       } else {
          _log(DEBUG_INT, newInstance + " v" + version + " instantiated.");
@@ -495,7 +495,7 @@ final class SLF4JLogger implements LoggerInternal {
          return;
 
       final String version = Types.getVersion(newInstance.getClass());
-      if (version == null || version.length() == 0) {
+      if (version == null || version.isEmpty()) {
          _log(INFO_INT, newInstance.toString() + " instantiated.");
       } else {
          _log(INFO_INT, newInstance + " v" + version + " instantiated.");

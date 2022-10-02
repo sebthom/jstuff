@@ -75,7 +75,7 @@ final class JULLogger implements LoggerInternal {
 
       String effectiveMessage;
       if (isDebugLevelEnabled) {
-         effectiveMessage = message == null || message.length() == 0 ? "Catched " : message;
+         effectiveMessage = message == null || message.isEmpty() ? "Catched " : message;
 
          final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
          if (caller == null) { // should never happen
@@ -94,7 +94,7 @@ final class JULLogger implements LoggerInternal {
          final Throwable effectiveException;
          if (LoggerConfig.isCompactExceptionLoggingEnabled) {
             final StringBuilder sb = new StringBuilder();
-            if (message == null || message.length() == 0) {
+            if (message == null || message.isEmpty()) {
                sb.append("Catched ");
             } else {
                sb.append(message).append(" reason: ");
@@ -113,7 +113,7 @@ final class JULLogger implements LoggerInternal {
             effectiveMessage = sb.toString();
             effectiveException = null;
          } else {
-            effectiveMessage = message == null || message.length() == 0 ? "Catched " : message;
+            effectiveMessage = message == null || message.isEmpty() ? "Catched " : message;
             effectiveException = ex;
          }
 
@@ -212,7 +212,7 @@ final class JULLogger implements LoggerInternal {
          return;
 
       final String version = Types.getVersion(newInstance.getClass());
-      if (version == null || version.length() == 0) {
+      if (version == null || version.isEmpty()) {
          _log(Level.FINE, newInstance.toString() + " instantiated.", effectiveLevel <= L_DEBUG);
       } else {
          _log(Level.FINE, newInstance + " v" + version + " instantiated.", effectiveLevel <= L_DEBUG);
@@ -517,7 +517,7 @@ final class JULLogger implements LoggerInternal {
          return;
 
       final String version = Types.getVersion(newInstance.getClass());
-      if (version == null || version.length() == 0) {
+      if (version == null || version.isEmpty()) {
          _log(Level.INFO, newInstance.toString() + " instantiated.", effectiveLevel <= L_DEBUG);
       } else {
          _log(Level.INFO, newInstance + " v" + version + " instantiated.", effectiveLevel <= L_DEBUG);

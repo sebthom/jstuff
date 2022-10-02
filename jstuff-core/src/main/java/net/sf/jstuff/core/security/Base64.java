@@ -33,7 +33,7 @@ public abstract class Base64 {
    public static final byte[] decode(final String encoded) {
       if (encoded == null)
          return null;
-      if (encoded.length() == 0)
+      if (encoded.isEmpty())
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
       return decode(encoded.getBytes(StandardCharsets.UTF_8));
@@ -51,7 +51,7 @@ public abstract class Base64 {
    public static String encode(final String plain) {
       if (plain == null)
          return null;
-      if (plain.length() == 0)
+      if (plain.isEmpty())
          return "";
 
       return java.util.Base64.getEncoder().encodeToString(plain.getBytes(StandardCharsets.UTF_8));
@@ -144,7 +144,7 @@ public abstract class Base64 {
    public static byte[] urldecode(final String encoded) {
       if (encoded == null)
          return null;
-      if (encoded.length() == 0)
+      if (encoded.isEmpty())
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
       return urldecode(encoded.getBytes(StandardCharsets.UTF_8));
@@ -162,7 +162,7 @@ public abstract class Base64 {
    public static String urlencode(final String plain) {
       if (plain == null)
          return null;
-      if (plain.length() == 0)
+      if (plain.isEmpty())
          return "";
 
       return java.util.Base64.getUrlEncoder().encodeToString(plain.getBytes(StandardCharsets.UTF_8));
