@@ -37,7 +37,7 @@ public abstract class AbstractPlugin extends Plugin {
       final CCustomizations result = new CCustomizations();
       for (final CPluginCustomization cpc : cc) {
          final Element e = cpc.element;
-         if (Objects.equals(getCustomizationNS(), e.getNamespaceURI()) && e.getLocalName().equals(name)) {
+         if (Objects.equals(getCustomizationNS(), e.getNamespaceURI()) && Objects.equals(e.getLocalName(), name)) {
             result.add(cpc);
          }
       }
