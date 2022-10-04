@@ -60,7 +60,7 @@ public abstract class Images {
       if (image instanceof BufferedImage)
          return (BufferedImage) image;
 
-      final String[] keys = image.getPropertyNames();
+      final var keys = image.getPropertyNames();
       final Hashtable<String, Object> props;
       if (keys == null) {
          props = null;

@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.io;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -16,6 +18,8 @@ import java.time.Duration;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.builder.BuilderFactory;
 import net.sf.jstuff.core.builder.OnPostBuild;
@@ -77,6 +81,7 @@ public class DirectoryCleaner {
 
    private static final Logger LOG = Logger.create();
 
+   @Nullable
    private static ConcurrentLinkedQueue<DirectoryCleaner> directoryCleanersToRunOnExit;
 
    protected static synchronized void registerCleanerOnExit(final DirectoryCleaner cleaner) {
@@ -85,11 +90,9 @@ public class DirectoryCleaner {
          Runtime.getRuntime().addShutdownHook(new java.lang.Thread() {
             @Override
             public void run() {
-               for (final DirectoryCleaner cleaner : directoryCleanersToRunOnExit) {
+               for (final DirectoryCleaner cleaner : asNonNull(directoryCleanersToRunOnExit)) {
                   try {
-                     if (cleaner.getDirectory() != null) {
-                        cleaner.cleanDirectory();
-                     }
+                     cleaner.cleanDirectory();
                   } catch (final NoSuchFileException | FileNotFoundException ex) {
                      // ignore
                   } catch (final Exception ex) {
@@ -99,7 +102,7 @@ public class DirectoryCleaner {
             }
          });
       }
-      directoryCleanersToRunOnExit.add(cleaner);
+      asNonNull(directoryCleanersToRunOnExit).add(cleaner);
    }
 
    @SuppressWarnings("unchecked")
@@ -108,11 +111,13 @@ public class DirectoryCleaner {
    }
 
    protected boolean cleanOnExit;
-   protected Path directory;
+   protected Path directory = Path.of("/foobar"); // overridden by mandatory builder argument
    protected boolean recursive;
+   @Nullable
    protected Duration minimumFileAge;
    protected Size minimumFileSize = Size.ZERO;
    protected BiPredicate<Path, BasicFileAttributes> fileFilter = (path, attr) -> true;
+   @Nullable
    protected BiConsumer<Path, BasicFileAttributes> onFileDeleted;
 
    protected DirectoryCleaner() {
@@ -128,7 +133,8 @@ public class DirectoryCleaner {
    /**
     * Cleans the given directory, ignoring the directory specified via the builder.
     */
-   public void cleanDirectory(final Path directory, final BiConsumer<Path, BasicFileAttributes> onFileDeleted) throws IOException {
+   public void cleanDirectory(final Path directory, final @Nullable BiConsumer<Path, BasicFileAttributes> onFileDeleted)
+      throws IOException {
       Args.notNull("directory", directory);
 
       if (!Files.isDirectory(directory)) {
@@ -139,6 +145,7 @@ public class DirectoryCleaner {
       LOG.debug("Cleaning [%s]...", directory);
 
       final long deleteBefore;
+      final var minimumFileAge = this.minimumFileAge;
       if (minimumFileAge == null) {
          deleteBefore = Long.MAX_VALUE;
       } else {
@@ -176,6 +183,7 @@ public class DirectoryCleaner {
       return directory;
    }
 
+   @Nullable
    public Duration getMinimumFileAge() {
       return minimumFileAge;
    }

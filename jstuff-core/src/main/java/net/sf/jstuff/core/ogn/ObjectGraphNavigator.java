@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.ogn;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -17,7 +19,9 @@ public interface ObjectGraphNavigator {
     *         path.
     * @throws IllegalArgumentException if the given path is invalid, e.g. because of non-existing fields/properties named in the path.
     */
+   @Nullable
    ObjectGraphNavigationResult navigateTo(Object root, String path);
 
+   @Nullable
    <T> T getValueAt(Object root, String path);
 }

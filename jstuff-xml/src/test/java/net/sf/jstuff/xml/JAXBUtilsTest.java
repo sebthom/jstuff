@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.xml;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -12,14 +13,14 @@ import org.junit.Test;
 public class JAXBUtilsTest {
 
    public static class MyEntity {
-      private MyEntity child;
-      private String name;
+      private @Nullable MyEntity child;
+      private @Nullable String name;
 
-      public MyEntity getChild() {
+      public @Nullable MyEntity getChild() {
          return child;
       }
 
-      public String getName() {
+      public @Nullable String getName() {
          return name;
       }
 
@@ -36,8 +37,9 @@ public class JAXBUtilsTest {
    public void testToXML() {
       final MyEntity e = new MyEntity();
       e.name = "a";
-      e.child = new MyEntity();
-      e.child.name = "b";
+      final var child = new MyEntity();
+      child.name = "b";
+      e.child = child;
       System.out.println(JAXBUtils.toXML(e));
    }
 

@@ -6,6 +6,9 @@ package net.sf.jstuff.core.jbean;
 
 import java.io.Serializable;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.event.SyncEventDispatcher;
 import net.sf.jstuff.core.jbean.changelog.AddItemEvent;
@@ -24,10 +27,11 @@ public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializabl
    /* ******************************************************************************
     * Property Change Event Support
     * ******************************************************************************/
+   @Nullable
    private volatile SyncEventDispatcher<PropertyChangeEvent> events;
 
    @Override
-   public <T> T _get(final PropertyDescriptor<T> property) {
+   public <T> @NonNull T _get(final PropertyDescriptor<T> property) {
       throw new UnsupportedOperationException("Unknown property [" + property + "]");
    }
 
@@ -72,13 +76,13 @@ public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializabl
       }
    }
 
-   protected void onItemRemoved(final PropertyDescriptor<?> property, final Object item, final int index) {
+   protected void onItemRemoved(final PropertyDescriptor<?> property, final @Nullable Object item, final int index) {
       if (events != null) {
          events.fire(new RemoveItemEvent(this, property, item, index));
       }
    }
 
-   protected void onValueSet(final PropertyDescriptor<?> property, final Object oldValue, final Object newValue) {
+   protected void onValueSet(final PropertyDescriptor<?> property, final @Nullable Object oldValue, final @Nullable Object newValue) {
       if (events != null) {
          events.fire(new SetValueEvent(this, property, oldValue, newValue));
       }

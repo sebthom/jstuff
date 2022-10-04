@@ -6,6 +6,8 @@ package net.sf.jstuff.core.security;
 
 import java.security.GeneralSecurityException;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.exception.DelegatingRuntimeException;
 
 /**
@@ -34,7 +36,7 @@ public class RuntimeSecurityException extends DelegatingRuntimeException {
    }
 
    @Override
-   public synchronized RuntimeSecurityException initCause(final Throwable cause) {
+   public synchronized RuntimeSecurityException initCause(final @Nullable Throwable cause) {
       super.initCause(cause);
       return this;
    }

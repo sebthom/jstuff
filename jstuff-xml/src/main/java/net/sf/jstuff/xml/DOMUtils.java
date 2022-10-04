@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.xml;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,6 +42,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
@@ -88,17 +91,17 @@ public abstract class DOMUtils {
       private static final long serialVersionUID = 1L;
 
       public final String name;
-      public final String value;
+      public final @Nullable String value;
       public final String xPath;
 
-      public XPathNode(final String name, final String value, final String xPath) {
+      public XPathNode(final String name, final @Nullable String value, final String xPath) {
          this.name = name;
          this.value = value;
          this.xPath = xPath;
       }
 
       @Override
-      public boolean equals(final Object obj) {
+      public boolean equals(final @Nullable Object obj) {
          if (this == obj)
             return true;
          if (obj == null || getClass() != obj.getClass())
@@ -117,7 +120,8 @@ public abstract class DOMUtils {
 
       @Override
       public String toString() {
-         return value;
+         final var value = this.value;
+         return value == null ? "null" : value;
       }
    }
 
@@ -151,7 +155,8 @@ public abstract class DOMUtils {
       private final Logger log = Logger.create();
 
       @Override
-      public InputSource resolveEntity(final String schemaId, final String schemaLocation) throws SAXException, IOException {
+      public @Nullable InputSource resolveEntity(final @Nullable String schemaId, final @Nullable String schemaLocation)
+         throws SAXException, IOException {
          if (schemaLocation != null && !schemaLocation.startsWith("file://")) {
             log.debug("Ignoring DTD [%s] [%s]", schemaId, schemaLocation);
             return new InputSource(new StringReader(""));
@@ -286,8 +291,7 @@ public abstract class DOMUtils {
       Args.notNull("sibling", sibling);
       Args.notNull("commentString", commentString);
 
-      final Node parent = sibling.getParentNode();
-      Args.notNull("sibling.parentNode", parent);
+      final Node parent = Args.notNull("sibling.parentNode", sibling.getParentNode());
 
       return (Comment) parent.insertBefore(_getOwnerDocument(parent).createComment(commentString), sibling);
    }
@@ -302,7 +306,7 @@ public abstract class DOMUtils {
    /**
     * Creates a new XML element as child of the given parentNode with the given attributes.
     */
-   public static Element createElement(final Node parent, final String tagName, final Map<String, String> tagAttributes) {
+   public static Element createElement(final Node parent, final String tagName, final @Nullable Map<String, String> tagAttributes) {
       Args.notNull("parent", parent);
       Args.notEmpty("tagName", tagName);
 
@@ -319,12 +323,11 @@ public abstract class DOMUtils {
       return createElementBefore(sibling, tagName, null);
    }
 
-   public static Element createElementBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes) {
+   public static Element createElementBefore(final Node sibling, final String tagName, final @Nullable Map<String, String> tagAttributes) {
       Args.notNull("sibling", sibling);
       Args.notEmpty("tagName", tagName);
 
-      final Node parent = sibling.getParentNode();
-      Args.notNull("sibling.parentNode", parent);
+      final Node parent = Args.notNull("sibling.parentNode", sibling.getParentNode());
 
       final Element elem = (Element) parent.insertBefore(_getOwnerDocument(parent).createElement(tagName), sibling);
       if (tagAttributes != null) {
@@ -372,8 +375,7 @@ public abstract class DOMUtils {
       Args.notNull("sibling", sibling);
       Args.notNull("text", text);
 
-      final Node parent = sibling.getParentNode();
-      Args.notNull("sibling.parentNode", parent);
+      final Node parent = Args.notNull("sibling.parentNode", sibling.getParentNode());
 
       return (Text) parent.insertBefore(_getOwnerDocument(parent).createTextNode(text.toString()), sibling);
    }
@@ -416,7 +418,7 @@ public abstract class DOMUtils {
    }
 
    @SuppressWarnings("unchecked")
-   public static <T extends Node> T findNode(final Node searchScope, final String xPathExpression) throws XMLException {
+   public static <T extends Node> @Nullable T findNode(final Node searchScope, final String xPathExpression) throws XMLException {
       Args.notNull("searchScope", searchScope);
       Args.notNull("xPathExpression", xPathExpression);
 
@@ -432,7 +434,8 @@ public abstract class DOMUtils {
       Args.notNull("xPathExpression", xPathExpression);
 
       try {
-         return DOMUtils.nodeListToList((NodeList) XPATH.get().evaluate(xPathExpression, searchScope, XPathConstants.NODESET));
+         final var nodes = (NodeList) XPATH.get().evaluate(xPathExpression, searchScope, XPathConstants.NODESET);
+         return DOMUtils.nodeListToList(asNonNullUnsafe(nodes));
       } catch (final XPathExpressionException ex) {
          throw new XMLException(ex);
       }
@@ -441,7 +444,8 @@ public abstract class DOMUtils {
    /**
     * @param recursive return text content of child nodes
     */
-   public static String findTextContent(final Node searchScope, final String xPathExpression, final boolean recursive) throws XMLException {
+   public static @Nullable String findTextContent(final Node searchScope, final String xPathExpression, final boolean recursive)
+      throws XMLException {
       Args.notNull("searchScope", searchScope);
       Args.notNull("xPathExpression", xPathExpression);
 
@@ -461,9 +465,10 @@ public abstract class DOMUtils {
       Args.notNull("node", node);
 
       final NamedNodeMap nodeMap = node.getAttributes();
-      final List<Attr> result = CollectionUtils.newArrayList(nodeMap.getLength());
+      final var result = new ArrayList<Attr>(nodeMap.getLength());
       for (int i = 0, l = nodeMap.getLength(); i < l; i++) {
-         result.add((Attr) nodeMap.item(i));
+         final var attr = (Attr) nodeMap.item(i);
+         result.add(asNonNullUnsafe(attr));
       }
       return result;
    }
@@ -486,7 +491,7 @@ public abstract class DOMUtils {
       return nodeListToList(parent.getElementsByTagName(tagName));
    }
 
-   public static Node getFirstChild(final Node node) throws XMLException {
+   public static @Nullable Node getFirstChild(final Node node) throws XMLException {
       Args.notNull("node", node);
 
       return findNode(node, "*");
@@ -545,8 +550,7 @@ public abstract class DOMUtils {
       Args.notNull("sibling", sibling);
       Args.notNull("nodeToImport", nodeToImport);
 
-      final Node parent = sibling.getParentNode();
-      Args.notNull("sibling.parentNode", parent);
+      final Node parent = Args.notNull("sibling.parentNode", sibling.getParentNode());
 
       final Node importedNode = _getOwnerDocument(parent).importNode(nodeToImport, true);
       return (T) parent.insertBefore(importedNode, sibling);
@@ -578,8 +582,7 @@ public abstract class DOMUtils {
       Args.notNull("sibling", sibling);
       Args.notNull("nodesToImport", nodesToImport);
 
-      final Node parent = sibling.getParentNode();
-      Args.notNull("sibling.parentNode", parent);
+      final Node parent = Args.notNull("sibling.parentNode", sibling.getParentNode());
 
       final Document targetDoc = _getOwnerDocument(parent);
       final List<T> importedNodes = new ArrayList<>(nodesToImport.size());
@@ -647,7 +650,8 @@ public abstract class DOMUtils {
     * @param defaultNamespace optional, may be null
     * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
     */
-   public static Document parseFile(final File xmlFile, final String defaultNamespace, final File... xmlSchemaFiles) throws XMLException {
+   public static Document parseFile(final File xmlFile, final @Nullable String defaultNamespace, final File @Nullable... xmlSchemaFiles)
+      throws XMLException {
       Args.notNull("xmlFile", xmlFile);
       Assert.isFileReadable(xmlFile);
 
@@ -673,8 +677,8 @@ public abstract class DOMUtils {
     * @param defaultNamespace optional, may be null
     * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
     */
-   public static Document parseInputSource(final InputSource input, final String inputId, final String defaultNamespace,
-      final File... xmlSchemaFiles) throws XMLException {
+   public static Document parseInputSource(final InputSource input, final @Nullable String inputId, final @Nullable String defaultNamespace,
+      final File @Nullable... xmlSchemaFiles) throws XMLException {
       Args.notNull("input", input);
 
       try {
@@ -772,7 +776,7 @@ public abstract class DOMUtils {
     * @param inputId an identifier / label for the input source, e.g. a file name
     */
    @SuppressWarnings("resource")
-   public static Document parseString(final CharSequence input, final String inputId) throws XMLException {
+   public static Document parseString(final CharSequence input, final @Nullable String inputId) throws XMLException {
       Args.notNull("input", input);
 
       return parseInputSource(new InputSource(new CharSequenceReader(input)), inputId, null, (File[]) null);
@@ -787,7 +791,7 @@ public abstract class DOMUtils {
     * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
     */
    @SuppressWarnings("resource")
-   public static Document parseString(final CharSequence input, final String inputId, final String defaultNamespace,
+   public static Document parseString(final CharSequence input, final @Nullable String inputId, final String defaultNamespace,
       final File... xmlSchemaFiles) throws XMLException {
       Args.notNull("input", input);
 
@@ -921,7 +925,7 @@ public abstract class DOMUtils {
             final String v2 = a2 == null ? null : a2.getValue();
             final int rc;
             // perform numeric sort if both values are integers
-            if (Strings.isNumeric(v1) && Strings.isNumeric(v2)) {
+            if (v1 != null && v2 != null && Strings.isNumeric(v1) && Strings.isNumeric(v2)) {
                final int i1 = Integer.parseInt(v1, 10);
                final int i2 = Integer.parseInt(v2, 10);
                rc = i1 < i2 ? -1 : i1 == i2 ? 0 : 1;

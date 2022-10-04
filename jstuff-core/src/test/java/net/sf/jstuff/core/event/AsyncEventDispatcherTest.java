@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -18,23 +19,23 @@ public class AsyncEventDispatcherTest {
 
    @Test
    public void testAsyncEventDispatcher() throws InterruptedException, ExecutionException {
-      final EventDispatcher<String> em = new AsyncEventDispatcher<>();
+      final EventDispatcher<@Nullable String> em = new AsyncEventDispatcher<>();
 
       final AtomicLong listener1Count = new AtomicLong();
-      final EventListener<String> listener1 = event -> listener1Count.incrementAndGet();
+      final EventListener<@Nullable String> listener1 = event -> listener1Count.incrementAndGet();
 
       assertThat(em.subscribe(listener1)).isTrue();
       assertThat(em.subscribe(listener1)).isFalse();
 
       final AtomicLong listener2Count = new AtomicLong();
-      final EventListener<String> listener2 = new FilteringEventListener<>() {
+      final EventListener<@Nullable String> listener2 = new FilteringEventListener<>() {
          @Override
-         public boolean accept(final String event) {
+         public boolean accept(@Nullable final String event) {
             return event != null && event.length() < 5;
          }
 
          @Override
-         public void onEvent(final String event) {
+         public void onEvent(@Nullable final String event) {
             listener2Count.incrementAndGet();
          }
       };

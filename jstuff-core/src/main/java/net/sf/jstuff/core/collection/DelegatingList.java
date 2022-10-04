@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -38,12 +40,12 @@ public abstract class DelegatingList<V> extends DelegatingCollection<V> implemen
    }
 
    @Override
-   public int indexOf(final Object o) {
+   public int indexOf(final @Nullable Object o) {
       return delegate.indexOf(o);
    }
 
    @Override
-   public int lastIndexOf(final Object o) {
+   public int lastIndexOf(final @Nullable Object o) {
       return delegate.lastIndexOf(o);
    }
 

@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -32,12 +34,12 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
    }
 
    @Override
-   public boolean containsKey(final Object key) {
+   public boolean containsKey(final @Nullable Object key) {
       return map.containsKey(key);
    }
 
    @Override
-   public boolean containsValue(final Object value) {
+   public boolean containsValue(final @Nullable Object value) {
       return map.containsValue(value);
    }
 
@@ -56,20 +58,24 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       return map.entrySet();
    }
 
+   @Nullable
    @Override
-   public V get(final Object key) {
+   public V get(final @Nullable Object key) {
       return map.get(key);
    }
 
    public final V getNullSafe(final K key) {
-      if (containsKey(key))
-         return get(key);
+      final var v = get(key);
+      if (v != null)
+         return v;
       return createNullSafe(key);
    }
 
    public final V getOrCreate(final K key) {
-      if (containsKey(key))
-         return get(key);
+      final var v = get(key);
+      if (v != null)
+         return v;
+
       final V value = create(key);
       put(key, value);
       return value;
@@ -85,6 +91,7 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       return map.keySet();
    }
 
+   @Nullable
    @Override
    public V put(final K key, final V value) {
       return map.put(key, value);
@@ -95,6 +102,7 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       map.putAll(otherMap);
    }
 
+   @Nullable
    @Override
    public V putIfAbsent(final K key, final V value) {
       if (!containsKey(key))
@@ -102,13 +110,14 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       return map.get(key);
    }
 
+   @Nullable
    @Override
-   public V remove(final Object key) {
+   public V remove(final @Nullable Object key) {
       return map.remove(key);
    }
 
    @Override
-   public boolean remove(final Object key, final Object value) {
+   public boolean remove(final @Nullable Object key, final @Nullable Object value) {
       if (!containsKey(key))
          return false;
 

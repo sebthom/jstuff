@@ -7,6 +7,9 @@ package net.sf.jstuff.core.exception;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.types.Decorator;
 import net.sf.jstuff.core.validation.Args;
 
@@ -24,6 +27,7 @@ public class DelegatingRuntimeException extends RuntimeException implements Deco
       this.wrapped = wrapped;
    }
 
+   @SuppressWarnings("null")
    @Override
    public synchronized DelegatingRuntimeException fillInStackTrace() {
       // invoked by parent constructor
@@ -36,16 +40,19 @@ public class DelegatingRuntimeException extends RuntimeException implements Deco
    /**
     * @return the cause of the wrapped exception
     */
+   @Nullable
    @Override
    public synchronized Throwable getCause() {
       return wrapped.getCause();
    }
 
+   @Nullable
    @Override
    public String getLocalizedMessage() {
       return wrapped.getLocalizedMessage();
    }
 
+   @Nullable
    @Override
    public String getMessage() {
       return wrapped.getMessage();
@@ -68,7 +75,7 @@ public class DelegatingRuntimeException extends RuntimeException implements Deco
    }
 
    @Override
-   public synchronized DelegatingRuntimeException initCause(final Throwable cause) {
+   public synchronized DelegatingRuntimeException initCause(final @Nullable Throwable cause) {
       wrapped.initCause(cause);
       return this;
    }
@@ -99,7 +106,7 @@ public class DelegatingRuntimeException extends RuntimeException implements Deco
    }
 
    @Override
-   public void setStackTrace(final StackTraceElement[] stackTrace) {
+   public void setStackTrace(final @NonNull StackTraceElement[] stackTrace) {
       wrapped.setStackTrace(stackTrace);
    }
 

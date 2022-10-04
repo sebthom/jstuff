@@ -7,6 +7,8 @@ package net.sf.jstuff.core.comparator;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.ogn.ObjectGraphNavigatorDefaultImpl;
 import net.sf.jstuff.core.validation.Args;
 
@@ -25,7 +27,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable {
 
    @Override
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public int compare(final T o1, final T o2) {
+   public int compare(final @Nullable T o1, final @Nullable T o2) {
       if (o1 == o2)
          return 0;
       if (o1 == null)
@@ -45,6 +47,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable {
       return ((Comparable) v1).compareTo(v2);
    }
 
+   @Nullable
    protected Object getValueAt(final Object obj, final String propertyPath) {
       return ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(obj, propertyPath);
    }

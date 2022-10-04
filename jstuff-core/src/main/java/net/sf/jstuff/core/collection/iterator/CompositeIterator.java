@@ -7,6 +7,9 @@ package net.sf.jstuff.core.collection.iterator;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.types.Composite;
 
@@ -23,18 +26,19 @@ public class CompositeIterator<V> extends Composite.Default<Iterator<? extends V
    public CompositeIterator() {
    }
 
-   public CompositeIterator(final Collection<? extends Iterator<V>> components) {
-      super(components);
-      if (!this.components.isEmpty()) {
-         nextItemIterator = CollectionUtils.remove(this.components, 0);
+   public CompositeIterator(final Collection<? extends @Nullable Iterator<? extends V>> initialIterators) {
+      super(false, initialIterators);
+      if (!components.isEmpty()) {
+         nextItemIterator = CollectionUtils.remove(components, 0);
       }
    }
 
+   @SuppressWarnings("null")
    @SafeVarargs
-   public CompositeIterator(final Iterator<V>... components) {
-      super(components);
-      if (!this.components.isEmpty()) {
-         nextItemIterator = CollectionUtils.remove(this.components, 0);
+   public CompositeIterator(final @NonNullByDefault({}) Iterator<? extends V>... initialIterators) {
+      super(initialIterators);
+      if (!components.isEmpty()) {
+         nextItemIterator = CollectionUtils.remove(components, 0);
       }
    }
 

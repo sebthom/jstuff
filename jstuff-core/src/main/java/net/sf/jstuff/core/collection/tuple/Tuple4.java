@@ -32,6 +32,7 @@ public final class Tuple4<T1, T2, T3, T4> extends AbstractList<Object> implement
    }
 
    @Override
+   @SuppressWarnings("null")
    public Object get(final int index) {
       switch (index) {
          case 0:

@@ -7,6 +7,8 @@ package net.sf.jstuff.core.io.stream;
 import java.io.InputStream;
 import java.util.Random;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.validation.Args;
 
@@ -17,7 +19,7 @@ public class RandomInputStream extends InputStream {
 
    private int bytesRead = 0;
    private Random random;
-   private byte[] buff;
+   private byte @Nullable [] buff;
    private final int size;
 
    public RandomInputStream() {
@@ -47,8 +49,9 @@ public class RandomInputStream extends InputStream {
       if (size > -1 && bytesRead >= size)
          return IOUtils.EOF;
       bytesRead++;
+      var buff = this.buff;
       if (buff == null || buff.length != 1) {
-         buff = new byte[1];
+         buff = this.buff = new byte[1];
       }
       random.nextBytes(buff);
       return buff[0] & 0xFF;
@@ -63,8 +66,9 @@ public class RandomInputStream extends InputStream {
       if (len == 0)
          return 0;
 
+      var buff = this.buff;
       if (buff == null || buff.length != len) {
-         buff = new byte[len];
+         buff = this.buff = new byte[len];
       }
       random.nextBytes(buff);
       System.arraycopy(buff, 0, out, off, len);

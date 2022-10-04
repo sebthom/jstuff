@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
 
 import com.sun.tools.xjc.Plugin;
@@ -20,7 +21,7 @@ import com.sun.tools.xjc.model.CPluginCustomization;
  */
 public abstract class AbstractPlugin extends Plugin {
 
-   protected String getCustomizationNS() {
+   protected @Nullable String getCustomizationNS() {
       return null;
    }
 

@@ -6,6 +6,8 @@ package net.sf.jstuff.core.logging;
 
 import java.lang.reflect.Method;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.types.Decorator;
 
 /**
@@ -20,32 +22,34 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void debug(final String msg) {
+   public void debug(final @Nullable String msg) {
       wrapped.debug(msg);
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg) {
+   public void debug(final String messageTemplate, final @Nullable Object arg) {
       wrapped.debug(messageTemplate, arg);
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg1, final Object arg2) {
+   public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2) {
       wrapped.debug(messageTemplate, arg1, arg2);
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
+   public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       wrapped.debug(messageTemplate, arg1, arg2, arg3);
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4) {
       wrapped.debug(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4, final @Nullable Object arg5) {
       wrapped.debug(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
@@ -55,7 +59,7 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void debug(final Throwable ex, final String msg) {
+   public void debug(final Throwable ex, final @Nullable String msg) {
       wrapped.debug(ex, msg);
    }
 
@@ -75,57 +79,60 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void entry(final Object arg1) {
+   public void entry(final @Nullable Object arg1) {
       wrapped.entry(arg1);
    }
 
    @Override
-   public void entry(final Object arg1, final Object arg2) {
+   public void entry(final @Nullable Object arg1, final @Nullable Object arg2) {
       wrapped.entry(arg1, arg2);
    }
 
    @Override
-   public void entry(final Object arg1, final Object arg2, final Object arg3) {
+   public void entry(final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       wrapped.entry(arg1, arg2, arg3);
    }
 
    @Override
-   public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void entry(final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3, final @Nullable Object arg4) {
       wrapped.entry(arg1, arg2, arg3, arg4);
    }
 
    @Override
-   public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void entry(final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3, final @Nullable Object arg4,
+      final @Nullable Object arg5) {
       wrapped.entry(arg1, arg2, arg3, arg4, arg5);
    }
 
    @Override
-   public void error(final String msg) {
+   public void error(final @Nullable String msg) {
       wrapped.error(msg);
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg) {
+   public void error(final String messageTemplate, final @Nullable Object arg) {
       wrapped.error(messageTemplate, arg);
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg1, final Object arg2) {
+   public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2) {
       wrapped.error(messageTemplate, arg1, arg2);
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
+   public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       wrapped.error(messageTemplate, arg1, arg2, arg3);
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4) {
       wrapped.error(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4, final @Nullable Object arg5) {
       wrapped.error(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
@@ -135,7 +142,7 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void error(final Throwable ex, final String msg) {
+   public void error(final Throwable ex, final @Nullable String msg) {
       wrapped.error(ex, msg);
    }
 
@@ -160,7 +167,7 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void fatal(final Throwable ex, final String msg) {
+   public void fatal(final Throwable ex, final @Nullable String msg) {
       wrapped.fatal(ex, msg);
    }
 
@@ -175,32 +182,34 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void info(final String msg) {
+   public void info(final @Nullable String msg) {
       wrapped.info(msg);
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg) {
+   public void info(final String messageTemplate, final @Nullable Object arg) {
       wrapped.info(messageTemplate, arg);
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg1, final Object arg2) {
+   public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2) {
       wrapped.info(messageTemplate, arg1, arg2);
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
+   public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       wrapped.info(messageTemplate, arg1, arg2, arg3);
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4) {
       wrapped.info(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4, final @Nullable Object arg5) {
       wrapped.info(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
@@ -210,7 +219,7 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void info(final Throwable ex, final String msg) {
+   public void info(final Throwable ex, final @Nullable String msg) {
       wrapped.info(ex, msg);
    }
 
@@ -260,32 +269,34 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void trace(final String msg) {
+   public void trace(final @Nullable String msg) {
       wrapped.trace(msg);
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg) {
+   public void trace(final String messageTemplate, final @Nullable Object arg) {
       wrapped.trace(messageTemplate, arg);
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg1, final Object arg2) {
+   public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2) {
       wrapped.trace(messageTemplate, arg1, arg2);
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
+   public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       wrapped.trace(messageTemplate, arg1, arg2, arg3);
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4) {
       wrapped.trace(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4, final @Nullable Object arg5) {
       wrapped.trace(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
@@ -295,7 +306,7 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void trace(final Throwable ex, final String msg) {
+   public void trace(final Throwable ex, final @Nullable String msg) {
       wrapped.trace(ex, msg);
    }
 
@@ -305,32 +316,34 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void warn(final String msg) {
+   public void warn(final @Nullable String msg) {
       wrapped.warn(msg);
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg) {
+   public void warn(final String messageTemplate, final @Nullable Object arg) {
       wrapped.warn(messageTemplate, arg);
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg1, final Object arg2) {
+   public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2) {
       wrapped.warn(messageTemplate, arg1, arg2);
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
+   public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       wrapped.warn(messageTemplate, arg1, arg2, arg3);
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4) {
       wrapped.warn(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4, final @Nullable Object arg5) {
       wrapped.warn(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
@@ -340,7 +353,7 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
    }
 
    @Override
-   public void warn(final Throwable ex, final String msg) {
+   public void warn(final Throwable ex, final @Nullable String msg) {
       wrapped.warn(ex, msg);
    }
 

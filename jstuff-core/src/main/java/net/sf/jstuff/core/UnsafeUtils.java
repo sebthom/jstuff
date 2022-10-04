@@ -4,8 +4,12 @@
  */
 package net.sf.jstuff.core;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.lang.module.ModuleDescriptor;
 import java.lang.reflect.Field;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.validation.Args;
@@ -23,7 +27,7 @@ public abstract class UnsafeUtils {
          // not using net.sf.jstuff.core.reflection.Fields to avoid circular dependency in class initialization
          final Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
          theUnsafe.trySetAccessible();
-         UNSAFE = (Unsafe) theUnsafe.get(null);
+         UNSAFE = asNonNullUnsafe((Unsafe) theUnsafe.get(null));
          MODULE_DESCR_OPEN_FIELD_OFFSET = UNSAFE.objectFieldOffset(ModuleDescriptor.class.getDeclaredField("open"));
       } catch (final ReflectiveOperationException ex) {
          throw new ReflectionException(ex);
@@ -43,7 +47,7 @@ public abstract class UnsafeUtils {
       }
    }
 
-   public static void openModule(final Module module) {
+   public static void openModule(final @Nullable Module module) {
       if (module == null)
          return;
 

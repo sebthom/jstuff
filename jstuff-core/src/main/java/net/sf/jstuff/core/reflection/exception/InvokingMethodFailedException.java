@@ -7,6 +7,8 @@ package net.sf.jstuff.core.reflection.exception;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.reflection.SerializableMethod;
 
 /**
@@ -16,10 +18,12 @@ public class InvokingMethodFailedException extends ReflectionException {
    private static final long serialVersionUID = 1L;
 
    private final SerializableMethod method;
+   @Nullable
    private final transient Object targetObject;
+   @Nullable
    private final Serializable targetSerializableObject;
 
-   public InvokingMethodFailedException(final Method method, final Object targetObject, final Throwable cause) {
+   public InvokingMethodFailedException(final Method method, final @Nullable Object targetObject, final Throwable cause) {
       super("Invoking method [" + method.getDeclaringClass().getName() + "." + method.getName() + "] failed.", cause);
       this.method = new SerializableMethod(method);
       this.targetObject = targetObject;
@@ -30,6 +34,7 @@ public class InvokingMethodFailedException extends ReflectionException {
       return method.getMethod();
    }
 
+   @Nullable
    public Object getTargetObject() {
       return targetObject != null ? targetObject : targetSerializableObject;
    }

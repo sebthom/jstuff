@@ -6,6 +6,8 @@ package net.sf.jstuff.core.collection;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.comparator.SortBy;
 
 /**
@@ -14,7 +16,7 @@ import net.sf.jstuff.core.comparator.SortBy;
 public class PagedListWithSortBy<E, SortKeyType> extends PagedList<E> {
    private static final long serialVersionUID = 1L;
 
-   private SortBy<SortKeyType>[] sortedBy;
+   private SortBy<SortKeyType> @Nullable [] sortedBy;
 
    public PagedListWithSortBy() {
    }
@@ -27,11 +29,11 @@ public class PagedListWithSortBy<E, SortKeyType> extends PagedList<E> {
       super(elementType, elements, start, totalCount);
    }
 
-   public SortBy<SortKeyType>[] getSortedBy() {
+   public SortBy<SortKeyType> @Nullable [] getSortedBy() {
       return sortedBy;
    }
 
-   public void setSortedBy(final SortBy<SortKeyType>[] sortedBy) {
+   public void setSortedBy(final SortBy<SortKeyType> @Nullable [] sortedBy) {
       this.sortedBy = sortedBy;
    }
 }

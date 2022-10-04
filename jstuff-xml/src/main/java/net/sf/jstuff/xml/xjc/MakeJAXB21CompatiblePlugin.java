@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.xml.xjc;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -56,7 +58,8 @@ public class MakeJAXB21CompatiblePlugin extends AbstractPlugin {
          if (jakarta.xml.bind.annotation.XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName()) //
             || "javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName()) //
          ) {
-            for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) a.getAnnotationMembers().get("value")).annotations()) {
+            for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) asNonNull(a.getAnnotationMembers().get("value")))
+               .annotations()) {
                final JAnnotationValue requiredAttribute = xmlElementRefAnno.getAnnotationMembers().get("required");
                if (requiredAttribute != null) {
                   ((Map<?, ?>) Fields.read(xmlElementRefAnno, MEMBER_VALUES_FIELD)).remove("required");

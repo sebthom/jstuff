@@ -10,6 +10,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.io.IOUtils;
 
 /**
@@ -41,6 +43,7 @@ public class BufferedInputStreamExt extends BufferedInputStream {
     *
     * @throws IOException - if an I/O error occurs
     */
+   @Nullable
    public CharSequence readLine() throws IOException {
       final StringBuilder sb = new StringBuilder();
 
@@ -71,6 +74,7 @@ public class BufferedInputStreamExt extends BufferedInputStream {
     * @param length number of characters to read
     * @throws IOException - if an I/O error occurs
     */
+   @Nullable
    public String readString(final int length) throws IOException {
       final byte[] chars = new byte[length];
       final int countBytes = read(chars);

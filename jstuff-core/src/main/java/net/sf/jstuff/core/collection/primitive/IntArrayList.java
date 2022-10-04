@@ -11,6 +11,9 @@ import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.functional.IntBiConsumer;
 import net.sf.jstuff.core.math.Numbers;
 import net.sf.jstuff.core.validation.Args;
@@ -183,7 +186,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
     */
    @Deprecated
    @Override
-   public boolean remove(final Object o) {
+   public boolean remove(final @Nullable Object o) {
       if (o instanceof Number) {
          final Number n = (Number) o;
          return Numbers.isInteger(n) && removeValue(n.intValue());
@@ -299,7 +302,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
       if (array.getClass().getComponentType() == int.class) {
          if (array.length == size)
             return array;
-         final var result = array.length >= size ? array : (T[]) java.lang.reflect.Array.newInstance(int.class, size);
+         final var result = array.length >= size ? array : (T @NonNull []) java.lang.reflect.Array.newInstance(int.class, size);
          System.arraycopy(values, size, result, 0, size);
          return result;
       }

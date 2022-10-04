@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.validation.Args;
 
@@ -24,7 +25,9 @@ public class NumberHelper implements Serializable {
 
    private final Locale locale;
 
+   @Nullable
    private transient String currencyCode;
+   @Nullable
    private transient String currencySymbol;
 
    /**
@@ -40,6 +43,7 @@ public class NumberHelper implements Serializable {
       this.locale = locale;
    }
 
+   @Nullable
    public String getCurrencyCode() {
       if (currencyCode == null) {
          final var currency = Currency.getInstance(locale);
@@ -63,6 +67,7 @@ public class NumberHelper implements Serializable {
       return getCurrencyFormat(digits, digits).format(value);
    }
 
+   @Nullable
    public String getCurrencySymbol() {
       if (currencySymbol == null) {
          final var currency = Currency.getInstance(locale);
@@ -110,7 +115,7 @@ public class NumberHelper implements Serializable {
    /**
     * @return returns 0 if value is invalid
     */
-   public double getDoubleValueSafe(final String value) {
+   public double getDoubleValueSafe(final @Nullable String value) {
       if (value == null)
          return 0;
 
@@ -144,7 +149,7 @@ public class NumberHelper implements Serializable {
    /**
     * @return returns 0 if value is invalid
     */
-   public int getIntValueSafe(final String value) {
+   public int getIntValueSafe(final @Nullable String value) {
       if (value == null)
          return 0;
 
@@ -182,7 +187,7 @@ public class NumberHelper implements Serializable {
    /**
     * @return returns 0 if value is invalid
     */
-   public long getLongValueSafe(final String value) {
+   public long getLongValueSafe(final @Nullable String value) {
       if (value == null)
          return 0;
 
@@ -216,7 +221,7 @@ public class NumberHelper implements Serializable {
       return getWholeNumberFormat().format(value);
    }
 
-   public boolean isValidCurrency(final String value) {
+   public boolean isValidCurrency(final @Nullable String value) {
       if (value == null)
          return false;
 
@@ -233,7 +238,7 @@ public class NumberHelper implements Serializable {
       }
    }
 
-   public boolean isValidDecimal(final String value) {
+   public boolean isValidDecimal(final @Nullable String value) {
       if (value == null)
          return false;
 
@@ -245,7 +250,7 @@ public class NumberHelper implements Serializable {
       }
    }
 
-   public boolean isValidPercent(final String value) {
+   public boolean isValidPercent(final @Nullable String value) {
       if (value == null)
          return false;
 
@@ -259,7 +264,7 @@ public class NumberHelper implements Serializable {
       }
    }
 
-   public boolean isValidWholeNumber(final String value) {
+   public boolean isValidWholeNumber(final @Nullable String value) {
       if (value == null)
          return false;
 

@@ -14,15 +14,12 @@ import java.io.Serializable;
 public class SortBy<SortKeyType> implements Serializable {
    private static final long serialVersionUID = 1L;
 
-   private SortDirection direction;
-   private SortKeyType key;
+   private SortDirection direction = SortDirection.ASC;
 
-   public SortBy() {
-   }
+   private SortKeyType key;
 
    public SortBy(final SortKeyType key) {
       this.key = key;
-      this.direction = SortDirection.ASC;
    }
 
    public SortBy(final SortKeyType key, final SortDirection direction) {

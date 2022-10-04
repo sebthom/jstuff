@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -34,7 +36,7 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
    }
 
    @Override
-   public boolean addAll(int index, final Collection<? extends E> itemsToAdd) {
+   public boolean addAll(int index, final @Nullable Collection<? extends E> itemsToAdd) {
       if (itemsToAdd == null || itemsToAdd.size() == 0)
          return false;
 
@@ -55,12 +57,12 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
    }
 
    @Override
-   public int indexOf(final Object item) {
+   public int indexOf(final @Nullable Object item) {
       return wrapped.indexOf(item);
    }
 
    @Override
-   public int lastIndexOf(final Object item) {
+   public int lastIndexOf(final @Nullable Object item) {
       return wrapped.lastIndexOf(item);
    }
 
@@ -73,6 +75,7 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
    public ListIterator<E> listIterator(final int index) {
       final ListIterator<E> it = wrapped.listIterator(index);
       return new ListIterator<>() {
+         @SuppressWarnings("null")
          private E current;
 
          @Override
@@ -142,7 +145,7 @@ public class ObservableList<E> extends ObservableCollection<E, List<E>> implemen
    }
 
    @Override
-   public boolean remove(final Object item) {
+   public boolean remove(final @Nullable Object item) {
       final int index = indexOf(item);
       if (index == -1)
          return false;

@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.validation.Args;
 
@@ -23,12 +25,12 @@ public class ZippedBlockInputStream extends FilterInputStream {
    /**
     * Reusable buffer for the compressed data read from the underlying input stream
     */
-   private byte[] blockCompressed;
+   private byte[] blockCompressed = ArrayUtils.EMPTY_BYTE_ARRAY;
 
    /**
     * Reusable buffer holding the uncompressed data
     */
-   private byte[] block;
+   private byte[] block = ArrayUtils.EMPTY_BYTE_ARRAY;
 
    /**
     * Read position marker if the <code>block</code> byte array
@@ -45,10 +47,13 @@ public class ZippedBlockInputStream extends FilterInputStream {
    private boolean isClosed;
    private boolean isEOF;
 
+   private InputStream inputStream;
+
    @SuppressWarnings("resource")
    public ZippedBlockInputStream(final InputStream is) {
       super(is);
       Args.notNull("is", is);
+      inputStream = is;
    }
 
    protected void assertIsOpen() throws IOException {
@@ -76,8 +81,8 @@ public class ZippedBlockInputStream extends FilterInputStream {
       if (!isClosed()) {
          isClosed = true;
          decompressor.end();
-         block = null;
-         blockCompressed = null;
+         block = ArrayUtils.EMPTY_BYTE_ARRAY;
+         blockCompressed = ArrayUtils.EMPTY_BYTE_ARRAY;
          super.close();
       }
    }
@@ -134,7 +139,7 @@ public class ZippedBlockInputStream extends FilterInputStream {
          if (blockOffset >= blockSize) {
             try {
                // abort if reading would result in a blocking read operation on the underlying input stream and we could already read some data
-               if (bytesRead > 0 && in.available() == 0)
+               if (bytesRead > 0 && inputStream.available() == 0)
                   return bytesRead;
 
                readBlockAndDecompress();
@@ -156,23 +161,23 @@ public class ZippedBlockInputStream extends FilterInputStream {
 
    protected void readBlockAndDecompress() throws IOException {
       // read the size of the compressed data
-      final int blockCompressedSize = IOUtils.readInt(in);
+      final int blockCompressedSize = IOUtils.readInt(inputStream);
 
       // read the size of the uncompressed data
-      blockSize = IOUtils.readInt(in);
+      blockSize = IOUtils.readInt(inputStream);
 
       // adjust the size of the 'blockCompressed' byte array if necessary
-      if (blockCompressed == null || blockCompressedSize > blockCompressed.length) {
+      if (blockCompressedSize > blockCompressed.length) {
          blockCompressed = new byte[blockCompressedSize];
       }
 
       // adjust the size of the 'block' byte array if necessary
-      if (block == null || blockSize > block.length) {
+      if (blockSize > block.length) {
          block = new byte[blockSize];
       }
 
       // fill the 'blockCompressed' byte array
-      IOUtils.readBytes(in, blockCompressed, 0, blockCompressedSize);
+      IOUtils.readBytes(inputStream, blockCompressed, 0, blockCompressedSize);
 
       // decompress the data
       try {

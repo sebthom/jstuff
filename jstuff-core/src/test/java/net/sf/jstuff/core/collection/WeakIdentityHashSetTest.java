@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.Objects;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 import junit.framework.TestCase;
@@ -19,6 +20,7 @@ import net.sf.jstuff.core.concurrent.Threads;
  */
 public class WeakIdentityHashSetTest extends TestCase {
    private static class Entity {
+      @Nullable
       private String name;
 
       public Entity setName(final String name) {
@@ -32,7 +34,7 @@ public class WeakIdentityHashSetTest extends TestCase {
       }
 
       @Override
-      public boolean equals(final Object obj) {
+      public boolean equals(@Nullable final Object obj) {
          if (this == obj)
             return true;
          if (obj == null || getClass() != obj.getClass())
@@ -44,6 +46,7 @@ public class WeakIdentityHashSetTest extends TestCase {
       }
    }
 
+   @SuppressWarnings("null")
    @Test
    public void testWeakIdentityHashSet() {
       final WeakIdentityHashSet<Entity> identitySet = WeakIdentityHashSet.create();

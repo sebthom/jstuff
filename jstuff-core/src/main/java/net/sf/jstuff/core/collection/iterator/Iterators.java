@@ -9,6 +9,9 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -21,13 +24,13 @@ public abstract class Iterators {
       return new ArrayIterator<>(array);
    }
 
-   public static <V> CompositeIterator<V> composite(final Collection<? extends Iterator<V>> components) {
-      return new CompositeIterator<>(components);
+   public static <V> CompositeIterator<V> composite(final Collection<? extends @Nullable Iterator<? extends V>> iterators) {
+      return new CompositeIterator<>(iterators);
    }
 
    @SafeVarargs
-   public static <V> CompositeIterator<V> composite(final Iterator<V>... components) {
-      return new CompositeIterator<>(components);
+   public static <V> CompositeIterator<V> composite(final @NonNullByDefault({}) Iterator<? extends V>... iterators) {
+      return new CompositeIterator<>(iterators);
    }
 
    public static boolean contains(final Iterator<?> iterator, final Object searchFor) {

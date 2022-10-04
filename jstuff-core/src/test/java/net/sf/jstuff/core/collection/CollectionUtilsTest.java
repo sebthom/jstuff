@@ -19,8 +19,8 @@ import org.junit.Test;
  */
 public class CollectionUtilsTest {
 
-   @Test
    @SuppressWarnings("unchecked")
+   @Test
    public void testIntersectListt() {
       assertThat(intersect((List[]) null)).isEmpty();
       assertThat(intersect(Collections.emptyList())).isEmpty();
@@ -34,8 +34,8 @@ public class CollectionUtilsTest {
       assertThat(intersect(list1, list2)).isEqualTo(newArrayList("foo", "bar"));
    }
 
-   @Test
    @SuppressWarnings("unchecked")
+   @Test
    public void testIntersectSet() {
       assertThat(intersect((Set[]) null)).isEmpty();
       assertThat(intersect(Collections.emptySet())).isEmpty();

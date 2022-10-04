@@ -7,8 +7,6 @@ package net.sf.jstuff.core.functional;
 import static net.sf.jstuff.core.functional.Functions.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.function.Function;
-
 import org.junit.Test;
 
 /**
@@ -18,7 +16,7 @@ public class FunctionsTest {
 
    @Test
    public void testConverts() {
-      final Function<Object, Integer> t1 = objectToString()//
+      final var t1 = objectToString() //
          .andThen(trim()) //
          .andThen(stringToInt()) //
          .andThen(castTo(Number.class)) //

@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.net;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -34,13 +38,13 @@ public abstract class NetUtils {
 
    private static final Pattern TOPLEVEL_DOMAIN = Pattern.compile("([^.^/]+\\.[^.^/]+)/");
 
-   public static void closeQuietly(final DatagramSocket socket) {
+   public static void closeQuietly(final @Nullable DatagramSocket socket) {
       if (socket == null)
          return;
       socket.close();
    }
 
-   public static void closeQuietly(final ServerSocket socket) {
+   public static void closeQuietly(final @Nullable ServerSocket socket) {
       if (socket == null)
          return;
       try {
@@ -50,7 +54,7 @@ public abstract class NetUtils {
       }
    }
 
-   public static void closeQuietly(final Socket socket) {
+   public static void closeQuietly(final @Nullable Socket socket) {
       if (socket == null)
          return;
       try {
@@ -147,7 +151,7 @@ public abstract class NetUtils {
       }
       final Matcher m = TOPLEVEL_DOMAIN.matcher(target);
       m.find();
-      return m.group(1);
+      return asNonNull(m.group(1));
    }
 
    public static boolean isHostReachable(final String hostname, final int timeoutInMS) {

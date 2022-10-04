@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.concurrent;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -17,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.functional.Invocable;
 import net.sf.jstuff.core.logging.Logger;
@@ -35,7 +38,9 @@ public class HashLockManager<KeyType> {
    private static class CleanUpTask<T> implements Runnable {
       private static final Logger LOG = Logger.create();
 
-      private final WeakReference<HashLockManager<T>> ref;
+      private final WeakReference<@Nullable HashLockManager<T>> ref;
+
+      @Nullable
       private ScheduledFuture<?> future;
 
       CleanUpTask(final HashLockManager<T> mgr) {
@@ -47,7 +52,7 @@ public class HashLockManager<KeyType> {
          final HashLockManager<T> mgr = ref.get();
          if (mgr == null) {
             // if the corresponding HashLockManager was garbage collected we can cancel the scheduled execution of cleanup task
-            future.cancel(true);
+            asNonNull(future).cancel(true);
             return;
          }
 

@@ -15,6 +15,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -23,17 +25,18 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       K get();
    }
 
-   private static final class LookupKeyWrapper implements KeyWrapper<Object> {
+   private static final class LookupKeyWrapper implements KeyWrapper<@Nullable Object> {
       private final int identityHashCode;
+      @Nullable
       private final Object key;
 
-      LookupKeyWrapper(final Object key) {
+      LookupKeyWrapper(final @Nullable Object key) {
          this.key = key;
          identityHashCode = System.identityHashCode(key);
       }
 
       @Override
-      public boolean equals(final Object obj) {
+      public boolean equals(final @Nullable Object obj) {
          if (this == obj)
             return true;
          if (obj == null)
@@ -42,6 +45,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
          return get() == ref.get();
       }
 
+      @Nullable
       @Override
       public Object get() {
          return key;
@@ -66,7 +70,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       }
 
       @Override
-      public boolean equals(final Object obj) {
+      public boolean equals(final @Nullable Object obj) {
          if (this == obj)
             return true;
          if (obj == null)
@@ -81,11 +85,11 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       }
    }
 
-   private static final KeyWrapper<Object> NULL_KEY_WRAPPER = new KeyWrapper<>() {
+   private static final KeyWrapper<@Nullable Object> NULL_KEY_WRAPPER = new KeyWrapper<>() {
       private final int identityHashCode = System.identityHashCode(null);
 
       @Override
-      public boolean equals(final Object obj) {
+      public boolean equals(final @Nullable Object obj) {
          if (this == obj)
             return true;
          if (obj == null)
@@ -94,6 +98,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
          return get() == ref.get();
       }
 
+      @Nullable
       @Override
       public Object get() {
          return null;
@@ -146,13 +151,13 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
    }
 
    @Override
-   public boolean containsKey(final Object key) {
+   public boolean containsKey(final @Nullable Object key) {
       expungeStaleEntries();
       return map.containsKey(new LookupKeyWrapper(key));
    }
 
    @Override
-   public boolean containsValue(final Object value) {
+   public boolean containsValue(final @Nullable Object value) {
       expungeStaleEntries();
       return map.containsValue(value);
    }
@@ -167,7 +172,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       for (final Map.Entry<KeyWrapper<K>, V> ref : map.entrySet()) {
          final K key = ref.getKey().get();
          final V value = ref.getValue();
-         final Map.Entry<K, V> entry = new Map.Entry<>() {
+         final var entry = new Map.Entry<K, V>() {
             @Override
             public K getKey() {
                return key;
@@ -189,7 +194,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
    }
 
    @Override
-   public boolean equals(final Object obj) {
+   public boolean equals(final @Nullable Object obj) {
       if (obj == this)
          return true;
       if (!(obj instanceof Map))
@@ -213,8 +218,9 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       }
    }
 
+   @Nullable
    @Override
-   public V get(final Object key) {
+   public V get(final @Nullable Object key) {
       expungeStaleEntries();
       return map.get(new LookupKeyWrapper(key));
    }
@@ -244,6 +250,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       return Collections.unmodifiableSet(keySet);
    }
 
+   @Nullable
    @Override
    @SuppressWarnings("unchecked")
    public V put(final K key, final V value) {
@@ -261,8 +268,9 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       }
    }
 
+   @Nullable
    @Override
-   public V remove(final Object key) {
+   public V remove(final @Nullable Object key) {
       expungeStaleEntries();
       return map.remove(new LookupKeyWrapper(key));
    }

@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.jbean.changelog;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.jbean.JBean;
 import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 
@@ -13,10 +15,13 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 public class SetValueEvent extends PropertyChangeEvent {
    private static final long serialVersionUID = 1L;
 
+   @Nullable
    public final Object oldValue;
+   @Nullable
    public final Object newValue;
 
-   public SetValueEvent(final JBean<?> bean, final PropertyDescriptor<?> property, final Object oldValue, final Object newValue) {
+   public SetValueEvent(final JBean<?> bean, final PropertyDescriptor<?> property, final @Nullable Object oldValue,
+      final @Nullable Object newValue) {
       super(bean, property);
       this.oldValue = oldValue;
       this.newValue = newValue;
@@ -25,6 +30,6 @@ public class SetValueEvent extends PropertyChangeEvent {
    @SuppressWarnings("unchecked")
    @Override
    void undo() {
-      bean._set((PropertyDescriptor<Object>) property, oldValue);
+      bean._set((PropertyDescriptor<@Nullable Object>) property, oldValue);
    }
 }

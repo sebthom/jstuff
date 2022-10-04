@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.collection;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,6 +13,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+
+import org.eclipse.jdt.annotation.Nullable;
+
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -21,7 +27,7 @@ public abstract class Sets {
       return ConcurrentHashMap.newKeySet();
    }
 
-   public static <T> Set<T> newConcurrentHashSet(final Collection<T> initialValues) {
+   public static <T> Set<T> newConcurrentHashSet(final @Nullable Collection<T> initialValues) {
       if (initialValues == null || initialValues.isEmpty())
          return newConcurrentHashSet();
 
@@ -35,7 +41,7 @@ public abstract class Sets {
    }
 
    @SafeVarargs
-   public static <T> Set<T> newConcurrentHashSet(final T... initialValues) {
+   public static <T> Set<T> newConcurrentHashSet(final T @Nullable... initialValues) {
       if (initialValues == null || initialValues.length == 0)
          return newConcurrentHashSet();
 
@@ -48,7 +54,7 @@ public abstract class Sets {
       return new HashSet<>();
    }
 
-   public static <K> HashSet<K> newHashSet(final Collection<K> initialValues) {
+   public static <K> HashSet<K> newHashSet(final @Nullable Collection<K> initialValues) {
       return initialValues == null ? new HashSet<>() : new HashSet<>(initialValues);
    }
 
@@ -57,7 +63,7 @@ public abstract class Sets {
    }
 
    @SafeVarargs
-   public static <K> HashSet<K> newHashSet(final K... initialValues) {
+   public static <K> HashSet<K> newHashSet(final K @Nullable... initialValues) {
       if (initialValues == null || initialValues.length == 0)
          return new HashSet<>();
 
@@ -75,7 +81,7 @@ public abstract class Sets {
    }
 
    @SafeVarargs
-   public static <K> LinkedHashSet<K> newLinkedHashSet(final K... initialValues) {
+   public static <K> LinkedHashSet<K> newLinkedHashSet(final K @Nullable... initialValues) {
       if (initialValues == null || initialValues.length == 0)
          return new LinkedHashSet<>();
 
@@ -85,8 +91,13 @@ public abstract class Sets {
    }
 
    public static <S, T> Set<T> transform(final Set<S> source, final Function<? super S, ? extends T> op) {
+      return asNonNullUnsafe(transformNullable(source, op));
+   }
+
+   public static <S, T> @Nullable Set<T> transformNullable(final @Nullable Set<S> source, final Function<? super S, ? extends T> op) {
       if (source == null)
          return null;
+      Args.notNull("op", op);
 
       final Set<T> target = Sets.newHashSet(source.size());
       for (final S sourceItem : source) {

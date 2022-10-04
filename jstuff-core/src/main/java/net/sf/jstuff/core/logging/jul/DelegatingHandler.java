@@ -12,6 +12,8 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -35,6 +37,7 @@ public class DelegatingHandler extends Handler {
       wrapped.flush();
    }
 
+   @Nullable
    @Override
    public String getEncoding() {
       return wrapped.getEncoding();
@@ -45,11 +48,13 @@ public class DelegatingHandler extends Handler {
       return wrapped.getErrorManager();
    }
 
+   @Nullable
    @Override
    public Filter getFilter() {
       return wrapped.getFilter();
    }
 
+   @Nullable
    @Override
    public Formatter getFormatter() {
       return wrapped.getFormatter();
@@ -61,17 +66,17 @@ public class DelegatingHandler extends Handler {
    }
 
    @Override
-   public boolean isLoggable(final LogRecord entry) {
+   public boolean isLoggable(final @Nullable LogRecord entry) {
       return wrapped.isLoggable(entry);
    }
 
    @Override
-   public void publish(final LogRecord entry) {
+   public void publish(final @Nullable LogRecord entry) {
       wrapped.publish(entry);
    }
 
    @Override
-   public synchronized void setEncoding(final String encoding) throws SecurityException, UnsupportedEncodingException {
+   public synchronized void setEncoding(final @Nullable String encoding) throws SecurityException, UnsupportedEncodingException {
       wrapped.setEncoding(encoding);
    }
 
@@ -81,7 +86,7 @@ public class DelegatingHandler extends Handler {
    }
 
    @Override
-   public synchronized void setFilter(final Filter newFilter) throws SecurityException {
+   public synchronized void setFilter(final @Nullable Filter newFilter) throws SecurityException {
       wrapped.setFilter(newFilter);
    }
 

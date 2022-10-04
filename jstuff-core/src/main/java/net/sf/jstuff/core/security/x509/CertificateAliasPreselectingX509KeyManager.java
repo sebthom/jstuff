@@ -9,27 +9,35 @@ import java.security.Principal;
 
 import javax.net.ssl.X509KeyManager;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class CertificateAliasPreselectingX509KeyManager extends DelegatingX509KeyManager {
 
+   @Nullable
    private final String clientCertAlias;
+   @Nullable
    private final String serverCertAlias;
 
-   public CertificateAliasPreselectingX509KeyManager(final X509KeyManager wrapped, final String clientCertAlias, final String serverCertAlias) {
+   public CertificateAliasPreselectingX509KeyManager(final X509KeyManager wrapped, final @Nullable String clientCertAlias,
+      final @Nullable String serverCertAlias) {
       super(wrapped);
       this.clientCertAlias = clientCertAlias;
       this.serverCertAlias = serverCertAlias;
    }
 
    @Override
-   public String chooseClientAlias(final String[] keyType, final Principal[] issuers, final Socket socket) {
+   public @Nullable String chooseClientAlias(final @NonNull String[] keyType, final @NonNull Principal @Nullable [] issuers,
+      final @Nullable Socket socket) {
       return clientCertAlias == null ? super.chooseClientAlias(keyType, issuers, socket) : clientCertAlias;
    }
 
    @Override
-   public String chooseServerAlias(final String keyType, final Principal[] issuers, final Socket socket) {
+   public @Nullable String chooseServerAlias(final String keyType, final @NonNull Principal @Nullable [] issuers,
+      final @Nullable Socket socket) {
       return serverCertAlias == null ? super.chooseServerAlias(keyType, issuers, socket) : serverCertAlias;
    }
 }

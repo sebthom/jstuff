@@ -10,6 +10,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.logging.Logger;
 
 /**
@@ -52,7 +54,7 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
       }
 
       @Override
-      public boolean isObserving(final Object observer) {
+      public boolean isObserving(final @Nullable Object observer) {
          return observer != null && observers.contains(observer);
       }
 
@@ -103,7 +105,7 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
          subscribe((Object) observer);
       }
 
-      private void subscribe(final Object observer) {
+      private void subscribe(final @Nullable Object observer) {
          if (observer == null)
             return;
 
@@ -126,9 +128,6 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
       }
 
       private void unsubscribe(final Object observer) {
-         if (observer == null)
-            return;
-
          observers.remove(observer);
       }
 
@@ -142,7 +141,7 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
       }
    }
 
-   static <V> MutableObservableRef<V> create() {
+   static <@Nullable V> MutableObservableRef<V> create() {
       return new Default<>();
    }
 

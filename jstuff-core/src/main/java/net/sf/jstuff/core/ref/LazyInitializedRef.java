@@ -8,6 +8,7 @@ package net.sf.jstuff.core.ref;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class LazyInitializedRef<V> implements Ref<V> {
+   @SuppressWarnings("null")
    private V value;
 
    protected abstract V create();

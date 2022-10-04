@@ -6,6 +6,8 @@ package net.sf.jstuff.core.io;
 
 import java.io.IOException;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.exception.DelegatingRuntimeException;
 
 /**
@@ -30,7 +32,7 @@ public class RuntimeIOException extends DelegatingRuntimeException {
    }
 
    @Override
-   public synchronized RuntimeIOException initCause(final Throwable cause) {
+   public synchronized RuntimeIOException initCause(final @Nullable Throwable cause) {
       super.initCause(cause);
       return this;
    }

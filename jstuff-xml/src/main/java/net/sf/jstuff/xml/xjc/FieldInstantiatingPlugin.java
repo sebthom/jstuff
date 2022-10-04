@@ -4,11 +4,14 @@
  */
 package net.sf.jstuff.xml.xjc;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 
@@ -60,7 +63,7 @@ public class FieldInstantiatingPlugin extends AbstractPlugin {
    private static final String CUSTOMIZATION_ENABLED_TAG = "enabled";
 
    @Override
-   protected String getCustomizationNS() {
+   protected @Nullable String getCustomizationNS() {
       return CUSTOMIZATION_NAMESPACE;
    }
 
@@ -100,7 +103,7 @@ public class FieldInstantiatingPlugin extends AbstractPlugin {
                if (jakarta.xml.bind.annotation.XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName()) //
                   || "javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName()) //
                ) {
-                  for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) a.getAnnotationMembers().get("value"))
+                  for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) asNonNull(a.getAnnotationMembers().get("value")))
                      .annotations()) {
                      final JAnnotationValue requiredAttribute = xmlElementRefAnno.getAnnotationMembers().get("required");
                      if (requiredAttribute != null) {

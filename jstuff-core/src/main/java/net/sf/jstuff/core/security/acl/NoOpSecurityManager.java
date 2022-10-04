@@ -6,6 +6,8 @@ package net.sf.jstuff.core.security.acl;
 
 import java.security.Permission;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.logging.Logger;
 
 /**
@@ -21,11 +23,13 @@ public class NoOpSecurityManager extends SecurityManager {
       return System.getSecurityManager() == this;
    }
 
+   @Nullable
    private SecurityManager replacedSM;
 
    /**
     * @return the security manager instance that got replaced by {@link #install()}
     */
+   @Nullable
    public SecurityManager getReplacedSM() {
       return replacedSM;
    }
@@ -56,7 +60,8 @@ public class NoOpSecurityManager extends SecurityManager {
       }
 
       if (replacedSM != null) {
-         LOG.warn("Cannot restore replaced Security Manager [%s], because another security manager is active already.", currentlyInstalledSM);
+         LOG.warn("Cannot restore replaced Security Manager [%s], because another security manager is active already.",
+            currentlyInstalledSM);
       }
    }
 

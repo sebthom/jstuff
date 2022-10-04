@@ -5,6 +5,7 @@
 package net.sf.jstuff.core.validation;
 
 import static net.sf.jstuff.core.reflection.StackTrace.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -13,6 +14,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 
@@ -30,7 +34,7 @@ public abstract class Args {
       );
    }
 
-   private static <T> T _notNull(final String argumentName, final T value) {
+   private static <T> @NonNull T _notNull(final String argumentName, final @Nullable T value) {
       if (value == null)
          throw removeFirstStackTraceElement( //
             removeFirstStackTraceElement( //
@@ -109,7 +113,7 @@ public abstract class Args {
    /**
     * Ensures file exists, points to a directory and is readable by the current user.
     */
-   public static Path isDirectoryReadable(final String argumentName, Path file) {
+   public static Path isDirectoryReadable(final String argumentName, @Nullable Path file) {
       _notNull("argumentName", argumentName);
       file = _notNull(argumentName, file);
 
@@ -125,7 +129,7 @@ public abstract class Args {
    /**
     * Ensures file exists, points to a regular file and is readable by the current user.
     */
-   public static File isFileReadable(final String argumentName, File file) {
+   public static File isFileReadable(final String argumentName, @Nullable File file) {
       _notNull("argumentName", argumentName);
       file = _notNull(argumentName, file);
 
@@ -141,7 +145,7 @@ public abstract class Args {
    /**
     * Ensures file exists, points to a regular file and is readable by the current user.
     */
-   public static Path isFileReadable(final String argumentName, Path file) {
+   public static Path isFileReadable(final String argumentName, @Nullable Path file) {
       _notNull("argumentName", argumentName);
       file = _notNull(argumentName, file);
 
@@ -157,7 +161,7 @@ public abstract class Args {
    /**
     * Ensures file either does not exists or points to a regular file and it's path is writeable by the current user.
     */
-   public static File isFileWriteable(final String argumentName, File file) {
+   public static File isFileWriteable(final String argumentName, @Nullable File file) {
       _notNull("argumentName", argumentName);
       file = _notNull(argumentName, file);
 
@@ -274,7 +278,7 @@ public abstract class Args {
       return value;
    }
 
-   public static <C extends Collection<?>> C noNulls(final String argumentName, C items) {
+   public static <C extends Collection<?>> C noNulls(final String argumentName, @Nullable C items) {
       _notNull("argumentName", argumentName);
       items = _notNull(argumentName, items);
 
@@ -285,20 +289,20 @@ public abstract class Args {
    }
 
    @SafeVarargs
-   public static <T> T[] noNulls(final String argumentName, T... items) {
+   public static <T> @NonNull T[] noNulls(final String argumentName, T @Nullable... items) {
       _notNull("argumentName", argumentName);
       items = _notNull(argumentName, items);
 
       for (final Object item : items)
          if (item == null)
             throw _createIllegalArgumentException(argumentName, "must not contain elements with value <null>");
-      return items;
+      return asNonNullUnsafe(items);
    }
 
    /**
     * @throws IllegalArgumentException if string <code>value</code> is null, has a length of 0, or only contains whitespace chars
     */
-   public static <S extends CharSequence> S notBlank(final String argumentName, S value) {
+   public static <S extends CharSequence> @NonNull S notBlank(final String argumentName, @Nullable S value) {
       _notNull("argumentName", argumentName);
       value = _notNull(argumentName, value);
 
@@ -313,7 +317,7 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
     */
-   public static byte[] notEmpty(final String argumentName, byte[] value) {
+   public static byte[] notEmpty(final String argumentName, byte @Nullable [] value) {
       _notNull("argumentName", argumentName);
       value = _notNull(argumentName, value);
 
@@ -325,7 +329,7 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> array is null or has a length of 0
     */
-   public static <A> A[] notEmpty(final String argumentName, A[] value) {
+   public static <A> A[] notEmpty(final String argumentName, A @Nullable [] value) {
       _notNull("argumentName", argumentName);
       value = _notNull(argumentName, value);
 
@@ -337,7 +341,7 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> collection is null or empty
     */
-   public static <C extends Collection<?>> C notEmpty(final String argumentName, C value) {
+   public static <C extends Collection<?>> @NonNull C notEmpty(final String argumentName, @Nullable C value) {
       _notNull("argumentName", argumentName);
       value = _notNull(argumentName, value);
 
@@ -349,7 +353,7 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> map is null or empty
     */
-   public static <M extends Map<?, ?>> M notEmpty(final String argumentName, M value) {
+   public static <M extends Map<?, ?>> @NonNull M notEmpty(final String argumentName, @Nullable M value) {
       _notNull("argumentName", argumentName);
       value = _notNull(argumentName, value);
 
@@ -361,7 +365,7 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if string <code>value</code> is null or has a length of 0
     */
-   public static <S extends CharSequence> S notEmpty(final String argumentName, S value) {
+   public static <S extends CharSequence> @NonNull S notEmpty(final String argumentName, @Nullable S value) {
       _notNull("argumentName", argumentName);
       value = _notNull(argumentName, value);
 
@@ -445,7 +449,7 @@ public abstract class Args {
    /**
     * @throws IllegalArgumentException if <code>value</code> is null
     */
-   public static <T> T notNull(final String argumentName, T value) {
+   public static <T> @NonNull T notNull(final String argumentName, @Nullable T value) {
       _notNull("argumentName", argumentName);
       value = _notNull(argumentName, value);
       return value;

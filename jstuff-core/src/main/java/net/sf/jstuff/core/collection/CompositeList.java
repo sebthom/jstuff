@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import net.sf.jstuff.core.types.Composite;
 
 /**
@@ -24,7 +26,7 @@ public class CompositeList<V> extends AbstractList<V> implements Composite<List<
    }
 
    @SafeVarargs
-   public static <V> CompositeList<V> of(final List<? extends V>... lists) {
+   public static <V> CompositeList<V> of(final @NonNull List<? extends V>... lists) {
       return new CompositeList<>(lists);
    }
 
@@ -38,13 +40,8 @@ public class CompositeList<V> extends AbstractList<V> implements Composite<List<
    }
 
    @SafeVarargs
-   public CompositeList(final List<? extends V>... lists) {
+   public CompositeList(final @NonNull List<? extends V>... lists) {
       CollectionUtils.addAll(this.lists, lists);
-   }
-
-   @Override
-   public void addComponent(final List<? extends V> list) {
-      this.lists.add(list);
    }
 
    @Override
@@ -63,18 +60,8 @@ public class CompositeList<V> extends AbstractList<V> implements Composite<List<
    }
 
    @Override
-   public boolean hasComponent(final List<? extends V> list) {
-      return lists.contains(list);
-   }
-
-   @Override
    public boolean isModifiable() {
       return true;
-   }
-
-   @Override
-   public boolean removeComponent(final List<? extends V> list) {
-      return lists.remove(list);
    }
 
    @Override
@@ -84,5 +71,10 @@ public class CompositeList<V> extends AbstractList<V> implements Composite<List<
          size += list.size();
       }
       return size;
+   }
+
+   @Override
+   public Collection<List<? extends V>> getComponents() {
+      return lists;
    }
 }

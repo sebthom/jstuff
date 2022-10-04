@@ -4,8 +4,12 @@
  */
 package net.sf.jstuff.core.collection;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.Collection;
 import java.util.Iterator;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.iterator.Iterators;
 
@@ -41,14 +45,14 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
       getOrCreate(key).add(value);
    }
 
-   public void addAll(final K key, final Collection<V> values) {
+   public void addAll(final K key, final @Nullable Collection<V> values) {
       if (values == null)
          return;
 
       getOrCreate(key).addAll(values);
    }
 
-   public void addAll(final K key, @SuppressWarnings("unchecked") final V... values) {
+   public void addAll(final K key, @SuppressWarnings("unchecked") final V @Nullable... values) {
       if (values == null)
          return;
 
@@ -56,7 +60,7 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
    }
 
    public boolean containsValue(final K key, final V value) {
-      final C values = get(key);
+      final var values = get(key);
       return values != null && values.contains(value);
    }
 
@@ -69,16 +73,16 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
     * @return true if any of the lists referenced by the map contains the value
     */
    @Override
-   public boolean containsValue(final Object value) {
+   public boolean containsValue(final @Nullable Object value) {
       for (final var entry : entrySet())
-         if (entry.getValue() != null && entry.getValue().contains(value))
+         if (asNullable(entry.getValue()) != null && entry.getValue().contains(value))
             return true;
       return false;
    }
 
    @SuppressWarnings("unchecked")
    public Iterator<V> iterator(final K key) {
-      final C values = get(key);
+      final var values = get(key);
       return values == null ? (Iterator<V>) Iterators.empty() : values.iterator();
    }
 
@@ -92,19 +96,19 @@ public abstract class MapWithCollections<K, V, C extends Collection<V>> extends 
     *         A null return can also indicate that the map previously associated null with the specified key,
     *         if the implementation supports null values.
     */
-   public C put(final K key, @SuppressWarnings("unchecked") final V... values) {
-      final C coll = create(key);
+   public @Nullable C put(final K key, @SuppressWarnings("unchecked") final V... values) {
+      final var coll = create(key);
       CollectionUtils.addAll(coll, values);
       return put(key, coll);
    }
 
    public boolean removeValue(final K key, final V value) {
-      final C values = get(key);
+      final var values = get(key);
       return values != null && values.remove(value);
    }
 
    public int size(final K key) {
-      final C values = get(key);
+      final var values = get(key);
       return values == null ? 0 : values.size();
    }
 }

@@ -23,6 +23,7 @@ import org.apache.commons.lang3.mutable.MutableByte;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.apache.commons.lang3.mutable.MutableShort;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.math.Rounding;
 import net.sf.jstuff.core.validation.Args;
@@ -106,7 +107,7 @@ public final class Size implements Serializable, Comparable<Size> {
    }
 
    @Override
-   public boolean equals(final Object obj) {
+   public boolean equals(final @Nullable Object obj) {
       if (this == obj)
          return true;
       if (obj == null || getClass() != obj.getClass())
@@ -139,10 +140,7 @@ public final class Size implements Serializable, Comparable<Size> {
 
    @Override
    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (bytes == null ? 0 : bytes.hashCode());
-      return result;
+      return bytes.hashCode();
    }
 
    public String toHumanReadableString() {

@@ -6,6 +6,8 @@ package net.sf.jstuff.core.reflection;
 
 import java.lang.reflect.Method;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.validation.Args;
@@ -33,7 +35,7 @@ public abstract class DuckTypes {
 
       LOG.debug("Duck-typing %s to type %s", duckLikeObject, duckInterface);
 
-      return Proxies.create((final Object duckProxy, final Method duckMethod, final Object[] args) -> {
+      return Proxies.create((final Object duckProxy, final Method duckMethod, final @Nullable Object[] args) -> {
          final Method duckLikeMethod = Methods.findPublicCompatible(duckLikeClass, duckMethod.getName(), duckMethod.getParameterTypes());
          if (duckLikeMethod == null || Methods.isAbstract(duckLikeMethod) || !Methods.isPublic(duckLikeMethod))
             throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method " + duckLikeMethod

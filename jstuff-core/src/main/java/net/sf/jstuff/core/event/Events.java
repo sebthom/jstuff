@@ -6,6 +6,8 @@ package net.sf.jstuff.core.event;
 
 import java.util.Collection;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.logging.Logger;
 
 /**
@@ -17,7 +19,7 @@ public abstract class Events {
    /**
     * @return the number of listeners notified successfully
     */
-   public static <Event> int fire(final Event type, final Collection<EventListener<Event>> listeners) {
+   public static <Event> int fire(final Event type, final @Nullable Collection<EventListener<Event>> listeners) {
       int count = 0;
       if (listeners != null && !listeners.isEmpty()) {
          for (final EventListener<Event> listener : listeners)
@@ -31,7 +33,7 @@ public abstract class Events {
    /**
     * @return true if the listener was notified successfully
     */
-   public static <Event> boolean fire(final Event event, final EventListener<Event> listener) {
+   public static <Event> boolean fire(final Event event, final @Nullable EventListener<Event> listener) {
       if (listener != null) {
          try {
             if (listener instanceof FilteringEventListener) {
@@ -55,7 +57,7 @@ public abstract class Events {
     * @return the number of listeners notified successfully
     */
    @SafeVarargs
-   public static <Event> int fire(final Event type, final EventListener<Event>... listeners) {
+   public static <Event> int fire(final Event type, final EventListener<Event> @Nullable... listeners) {
       int count = 0;
       if (listeners != null && listeners.length > 0) {
          for (final EventListener<Event> listener : listeners)

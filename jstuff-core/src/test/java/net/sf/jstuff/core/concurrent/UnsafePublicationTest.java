@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -44,6 +45,7 @@ import net.sf.jstuff.core.reflection.StackTrace;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UnsafePublicationTest {
    private abstract static class AbstractConsumingActor implements Runnable {
+      @Nullable
       protected abstract Subject getSubject();
 
       @Override
@@ -177,6 +179,7 @@ public class UnsafePublicationTest {
             }
          }, //
          new AbstractConsumingActor() {
+            @Nullable
             @Override
             protected Subject getSubject() {
                return subject;
@@ -199,6 +202,7 @@ public class UnsafePublicationTest {
             }
          }, //
          new AbstractConsumingActor() {
+            @Nullable
             @Override
             protected Subject getSubject() {
                return subject;
@@ -224,6 +228,7 @@ public class UnsafePublicationTest {
             }
          }, //
          new AbstractConsumingActor() {
+            @Nullable
             @Override
             protected Subject getSubject() {
                return subject;
@@ -243,6 +248,7 @@ public class UnsafePublicationTest {
             }
          }, //
          new AbstractConsumingActor() {
+            @Nullable
             @Override
             protected Subject getSubject() {
                return subjectVolatile;

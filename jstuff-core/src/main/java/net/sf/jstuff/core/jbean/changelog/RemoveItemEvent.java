@@ -6,6 +6,8 @@ package net.sf.jstuff.core.jbean.changelog;
 
 import java.util.Collection;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.jbean.JBean;
 import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 
@@ -15,10 +17,11 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 public class RemoveItemEvent extends PropertyChangeEvent {
    private static final long serialVersionUID = 1L;
 
+   @Nullable
    public final Object item;
    public final int index;
 
-   public RemoveItemEvent(final JBean<?> bean, final PropertyDescriptor<?> property, final Object item, final int index) {
+   public RemoveItemEvent(final JBean<?> bean, final PropertyDescriptor<?> property, final @Nullable Object item, final int index) {
       super(bean, property);
       this.item = item;
       this.index = index;
@@ -27,6 +30,6 @@ public class RemoveItemEvent extends PropertyChangeEvent {
    @SuppressWarnings("unchecked")
    @Override
    void undo() {
-      ((Collection<Object>) bean._get(property)).add(item);
+      ((Collection<@Nullable Object>) bean._get(property)).add(item);
    }
 }

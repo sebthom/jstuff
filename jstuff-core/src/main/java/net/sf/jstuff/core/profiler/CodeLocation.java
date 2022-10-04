@@ -6,6 +6,8 @@ package net.sf.jstuff.core.profiler;
 
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 
 /**
@@ -23,7 +25,7 @@ public class CodeLocation {
    }
 
    @Override
-   public boolean equals(final Object obj) {
+   public boolean equals(final @Nullable Object obj) {
       if (this == obj)
          return true;
       if (obj == null || getClass() != obj.getClass())

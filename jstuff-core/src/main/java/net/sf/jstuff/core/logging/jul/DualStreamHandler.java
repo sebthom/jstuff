@@ -11,6 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -50,8 +52,8 @@ public class DualStreamHandler extends StreamHandler {
    }
 
    @Override
-   public synchronized void publish(final LogRecord entry) {
-      if (isLoggable(entry)) {
+   public synchronized void publish(final @Nullable LogRecord entry) {
+      if (entry != null && isLoggable(entry)) {
          if (entry.getLevel().intValue() > maxStdOutLevel) {
             super.flush();
             stderrHandler.publish(entry);
@@ -63,7 +65,7 @@ public class DualStreamHandler extends StreamHandler {
    }
 
    @Override
-   public synchronized void setEncoding(final String encoding) throws SecurityException, UnsupportedEncodingException {
+   public synchronized void setEncoding(final @Nullable String encoding) throws SecurityException, UnsupportedEncodingException {
       super.setEncoding(encoding);
       stderrHandler.setEncoding(encoding);
    }

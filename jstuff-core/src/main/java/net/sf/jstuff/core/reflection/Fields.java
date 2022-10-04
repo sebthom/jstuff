@@ -9,6 +9,8 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.UnsafeUtils;
 import net.sf.jstuff.core.reflection.exception.AccessingFieldValueFailedException;
 import net.sf.jstuff.core.reflection.exception.InvokingMethodFailedException;
@@ -21,7 +23,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Fields extends Members {
 
-   public static void assertAssignable(final Field field, final Object value) throws IllegalArgumentException {
+   public static void assertAssignable(final Field field, final @Nullable Object value) throws IllegalArgumentException {
       Args.notNull("field", field);
 
       if (value == null) {
@@ -47,6 +49,7 @@ public abstract class Fields extends Members {
    /**
     * @return the field or null if the field does not exist
     */
+   @Nullable
    public static Field find(final Class<?> clazz, final String fieldName) {
       return find(clazz, fieldName, null);
    }
@@ -55,7 +58,8 @@ public abstract class Fields extends Members {
     * @param compatibleWith objects of type <code>compatibleWith</code> must be assignable to the field
     * @return the field or null if the field does not exist
     */
-   public static Field find(final Class<?> clazz, final String fieldName, final Class<?> compatibleWith) {
+   @Nullable
+   public static Field find(final Class<?> clazz, final String fieldName, final @Nullable Class<?> compatibleWith) {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
@@ -88,6 +92,7 @@ public abstract class Fields extends Members {
    /**
     * @return the field or null if the field does not exist
     */
+   @Nullable
    public static Field findRecursive(final Class<?> clazz, final String fieldName) {
       return findRecursive(clazz, fieldName, null);
    }
@@ -96,7 +101,8 @@ public abstract class Fields extends Members {
     * @param compatibleWith the field type must be a super class or interface of <code>compatibleWith</code>
     * @return the field or null if the field does not exist
     */
-   public static Field findRecursive(final Class<?> clazz, final String fieldName, final Class<?> compatibleWith) {
+   @Nullable
+   public static Field findRecursive(final Class<?> clazz, final String fieldName, final @Nullable Class<?> compatibleWith) {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
@@ -111,6 +117,7 @@ public abstract class Fields extends Members {
       return findRecursive(superclazz, fieldName, compatibleWith);
    }
 
+   @Nullable
    public static VarHandle findVarHandle(final Class<?> clazz, final String fieldName) {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
@@ -118,7 +125,8 @@ public abstract class Fields extends Members {
       return findVarHandle(clazz, fieldName, null);
    }
 
-   public static VarHandle findVarHandle(final Class<?> clazz, final String fieldName, final Class<?> fieldType) {
+   @Nullable
+   public static VarHandle findVarHandle(final Class<?> clazz, final String fieldName, final @Nullable Class<?> fieldType) {
       try {
          UnsafeUtils.openModule(clazz.getModule());
          final Lookup lookup = MethodHandles.privateLookupIn(clazz, MethodHandles.lookup());
@@ -147,7 +155,7 @@ public abstract class Fields extends Members {
     * @param compatibleWith the field type must assignable from this type, i.e. objects of type <code>compatibleWith</code> must be assignable to the field
     * @throws ReflectionException if field cannot be found
     */
-   public static Field get(final Class<?> clazz, final String fieldName, final Class<?> compatibleWith) {
+   public static Field get(final Class<?> clazz, final String fieldName, final @Nullable Class<?> compatibleWith) {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
@@ -176,7 +184,7 @@ public abstract class Fields extends Members {
     * @param compatibleWith objects of type <code>compatibleWith</code> must be assignable to the field
     * @throws ReflectionException if field cannot be found
     */
-   public static Field getRecursive(final Class<?> clazz, final String fieldName, final Class<?> compatibleWith) {
+   public static Field getRecursive(final Class<?> clazz, final String fieldName, final @Nullable Class<?> compatibleWith) {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
@@ -190,7 +198,7 @@ public abstract class Fields extends Members {
    /**
     * @return true if the given value can be assigned to the given field, i.e. is compatible with the field's type
     */
-   public static boolean isAssignable(final Field field, final Object value) {
+   public static boolean isAssignable(final Field field, final @Nullable Object value) {
       Args.notNull("field", field);
 
       if (value == null)
@@ -218,6 +226,7 @@ public abstract class Fields extends Members {
     * @param obj specify <code>null</code> for static fields
     * @return null if field not found
     */
+   @Nullable
    @SuppressWarnings("unchecked")
    public static <T> T read(final Object obj, final String fieldName) throws AccessingFieldValueFailedException {
       Args.notNull("obj", obj);
@@ -238,7 +247,7 @@ public abstract class Fields extends Members {
    /**
     * Writes to a static field
     */
-   public static void write(final Class<?> clazz, final String fieldName, final Object value) throws ReflectionException {
+   public static void write(final Class<?> clazz, final String fieldName, final @Nullable Object value) throws ReflectionException {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
@@ -252,7 +261,8 @@ public abstract class Fields extends Members {
    /**
     * @param obj specify <code>null</code> for static fields
     */
-   public static void write(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException {
+   public static void write(final @Nullable Object obj, final Field field, final @Nullable Object value)
+      throws SettingFieldValueFailedException {
       Args.notNull("field", field);
 
       if (isFinal(field))
@@ -267,7 +277,7 @@ public abstract class Fields extends Members {
       }
    }
 
-   public static void write(final Object obj, final String fieldName, final Object value) throws ReflectionException {
+   public static void write(final Object obj, final String fieldName, final @Nullable Object value) throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("fieldName", fieldName);
 
@@ -290,7 +300,8 @@ public abstract class Fields extends Members {
    /**
     * Writes to a static field
     */
-   public static void writeIgnoringFinal(final Class<?> clazz, final String fieldName, final Object value) throws ReflectionException {
+   public static void writeIgnoringFinal(final Class<?> clazz, final String fieldName, final @Nullable Object value)
+      throws ReflectionException {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
@@ -303,7 +314,8 @@ public abstract class Fields extends Members {
    /**
     * @param obj specify <code>null</code> for static fields
     */
-   public static void writeIgnoringFinal(final Object obj, final Field field, final Object value) throws SettingFieldValueFailedException {
+   public static void writeIgnoringFinal(final @Nullable Object obj, final Field field, final @Nullable Object value)
+      throws SettingFieldValueFailedException {
       Args.notNull("field", field);
 
       try {
@@ -327,7 +339,8 @@ public abstract class Fields extends Members {
       }
    }
 
-   public static void writeIgnoringFinal(final Object obj, final String fieldName, final Object value) throws ReflectionException {
+   public static void writeIgnoringFinal(final Object obj, final String fieldName, final @Nullable Object value)
+      throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("fieldName", fieldName);
 

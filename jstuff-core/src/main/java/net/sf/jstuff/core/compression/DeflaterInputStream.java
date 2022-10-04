@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.Deflater;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.validation.Args;
 
@@ -19,6 +21,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class DeflaterInputStream extends FilterInputStream {
 
+   @Nullable
    protected Deflater compressor;
    private final byte[] bufUncompressed;
    private byte[] bufCompressed = new byte[1];
@@ -96,7 +99,7 @@ public class DeflaterInputStream extends FilterInputStream {
 
    @Override
    public int read(final byte[] bufCompressed, int off, int bytesToRead) throws IOException {
-      Args.notNull("output", 0);
+      final var compressor = this.compressor;
       if (in == null || compressor == null)
          throw new IOException("Source InputStream is closed!");
 

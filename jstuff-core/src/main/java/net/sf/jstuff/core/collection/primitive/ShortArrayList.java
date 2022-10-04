@@ -8,6 +8,8 @@ import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.RandomAccess;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.math.Numbers;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
@@ -166,7 +168,7 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
     */
    @Deprecated
    @Override
-   public boolean remove(final Object o) {
+   public boolean remove(final @Nullable Object o) {
       if (o instanceof Number) {
          final Number n = (Number) o;
          return Numbers.isShort(n) && removeValue(n.shortValue());

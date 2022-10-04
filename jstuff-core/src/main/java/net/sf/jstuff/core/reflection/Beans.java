@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
@@ -97,7 +99,7 @@ public abstract class Beans extends java.beans.Beans {
       return stringValue;
    }
 
-   public static Object[] valuesOf(final String[] stringValues, final Class<?>[] targetTypes) {
+   public static Object[] valuesOf(final @NonNull String[] stringValues, final @NonNull Class<?>[] targetTypes) {
       Args.notNull("stringValues", stringValues);
       Args.notNull("targetTypes", targetTypes);
 

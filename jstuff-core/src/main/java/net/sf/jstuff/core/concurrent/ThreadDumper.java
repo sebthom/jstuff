@@ -5,6 +5,7 @@
 package net.sf.jstuff.core.concurrent;
 
 import static net.sf.jstuff.core.Strings.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.io.IOException;
 import java.lang.Thread.State;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.time.FastDateFormat;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.builder.Builder;
@@ -88,9 +90,7 @@ public class ThreadDumper {
 
    public static class ThreadMeta {
 
-      /*
-       * might potentially be null
-       */
+      @Nullable
       private WeakReference<Thread> thread;
       private final ThreadInfo threadInfo;
 
@@ -102,7 +102,9 @@ public class ThreadDumper {
          return threadInfo.getLockedMonitors().length + threadInfo.getLockedSynchronizers().length;
       }
 
+      @Nullable
       private Thread getThread() {
+         final var thread = this.thread;
          return thread == null ? null : thread.get();
       }
 
@@ -268,7 +270,7 @@ public class ThreadDumper {
 
    private void printDeadLockedThread(final Appendable out, final ThreadMeta thread) throws IOException {
       out.append('"').append(thread.getThreadName()).append("\":").append(NEW_LINE);
-      final LockInfo lock = thread.threadInfo.getLockInfo();
+      final LockInfo lock = asNonNull(thread.threadInfo.getLockInfo());
       if (thread.getThreadState() == State.BLOCKED) {
          // "  waiting to lock monitor 0x000000003cc6e7a8 (object 0x000000066c67fbe8, a java.util.concurrent.locks.ReentrantLock),"
          out.append(String.format("  waiting to lock monitor 0x%s (object 0x%s, a %s),%s", //
@@ -327,9 +329,9 @@ public class ThreadDumper {
             .append("Java stack information for the threads listed above:").append(NEW_LINE) //
             .append("===================================================").append(NEW_LINE);
          out.append('"' + deadLock.get1().getThreadName() + "\":").append(NEW_LINE);
-         printStackTrace(out, TAB, deadLock.get1());
+         printStackTrace(out, deadLock.get1());
          out.append('"' + deadLock.get2().getThreadName() + "\":").append(NEW_LINE);
-         printStackTrace(out, TAB, deadLock.get2());
+         printStackTrace(out, deadLock.get2());
 
       }
 
@@ -337,30 +339,30 @@ public class ThreadDumper {
          .append("Found " + deadLocks.size() + " deadlock" + (deadLocks.size() == 1 ? "" : "s") + '.').append(NEW_LINE);
    }
 
-   private void printStackTrace(final Appendable out, final String prefix, final ThreadMeta thread) throws IOException {
+   private void printStackTrace(final Appendable out, final ThreadMeta thread) throws IOException {
       final StackTraceElement[] stackTrace = thread.threadInfo.getStackTrace();
       for (int stackTraceDepth = 0; stackTraceDepth < stackTrace.length; stackTraceDepth++) {
-         out.append(prefix).append("at ") //
+         out.append(TAB).append("at ") //
             .append(stackTrace[stackTraceDepth].toString()) //
             .append(NEW_LINE);
-         if (stackTraceDepth == 0 && thread.threadInfo.getLockInfo() != null) {
-            final LockInfo lockInfo = thread.threadInfo.getLockInfo();
+         final var lockInfo = thread.threadInfo.getLockInfo();
+         if (stackTraceDepth == 0 && lockInfo != null) {
             switch (thread.getThreadState()) {
                case BLOCKED:
-                  out.append(String.format("%s- waiting to lock %s%s", prefix, toString(lockInfo), NEW_LINE));
+                  out.append(String.format("%s- waiting to lock %s%s", TAB, toString(lockInfo), NEW_LINE));
                   break;
                case WAITING:
                case TIMED_WAITING:
-                  out.append(String.format("%s- parking to wait for %s%s", prefix, toString(lockInfo), NEW_LINE));
+                  out.append(String.format("%s- parking to wait for %s%s", TAB, toString(lockInfo), NEW_LINE));
                   break;
                default:
             }
          }
 
          // print locks acquired via synchronized(lock)
-         for (final MonitorInfo lockInfo : thread.threadInfo.getLockedMonitors()) {
-            if (lockInfo.getLockedStackDepth() == stackTraceDepth) {
-               out.append(String.format("%s- locked %s%s", prefix, toString(lockInfo), NEW_LINE));
+         for (final MonitorInfo monitorInfo : thread.threadInfo.getLockedMonitors()) {
+            if (monitorInfo.getLockedStackDepth() == stackTraceDepth) {
+               out.append(String.format("%s- locked %s%s", TAB, toString(monitorInfo), NEW_LINE));
             }
          }
       }
@@ -454,7 +456,7 @@ public class ThreadDumper {
          }
          out.append(NEW_LINE);
 
-         printStackTrace(out, TAB, threadMeta);
+         printStackTrace(out, threadMeta);
 
          out.append(NEW_LINE) //
             .append("   Locked ownable synchronizers:").append(NEW_LINE);

@@ -8,6 +8,8 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.types.Decorator;
 
 /**
@@ -38,17 +40,17 @@ public class DelegatingXMLStreamWriter extends Decorator.Default<XMLStreamWriter
    }
 
    @Override
-   public String getPrefix(final String uri) throws XMLStreamException {
+   public @Nullable String getPrefix(final @Nullable String uri) throws XMLStreamException {
       return wrapped.getPrefix(uri);
    }
 
    @Override
-   public Object getProperty(final String name) throws IllegalArgumentException {
+   public @Nullable Object getProperty(final String name) throws IllegalArgumentException {
       return wrapped.getProperty(name);
    }
 
    @Override
-   public void setDefaultNamespace(final String uri) throws XMLStreamException {
+   public void setDefaultNamespace(final @Nullable String uri) throws XMLStreamException {
       wrapped.setDefaultNamespace(uri);
    }
 
@@ -58,7 +60,7 @@ public class DelegatingXMLStreamWriter extends Decorator.Default<XMLStreamWriter
    }
 
    @Override
-   public void setPrefix(final String prefix, final String uri) throws XMLStreamException {
+   public void setPrefix(final String prefix, final @Nullable String uri) throws XMLStreamException {
       wrapped.setPrefix(prefix, uri);
    }
 
@@ -99,7 +101,7 @@ public class DelegatingXMLStreamWriter extends Decorator.Default<XMLStreamWriter
    }
 
    @Override
-   public void writeDefaultNamespace(final String namespaceURI) throws XMLStreamException {
+   public void writeDefaultNamespace(final @Nullable String namespaceURI) throws XMLStreamException {
       wrapped.writeDefaultNamespace(namespaceURI);
    }
 
@@ -139,7 +141,7 @@ public class DelegatingXMLStreamWriter extends Decorator.Default<XMLStreamWriter
    }
 
    @Override
-   public void writeNamespace(final String prefix, final String namespaceURI) throws XMLStreamException {
+   public void writeNamespace(final @Nullable String prefix, final @Nullable String namespaceURI) throws XMLStreamException {
       wrapped.writeNamespace(prefix, namespaceURI);
    }
 
@@ -159,12 +161,12 @@ public class DelegatingXMLStreamWriter extends Decorator.Default<XMLStreamWriter
    }
 
    @Override
-   public void writeStartDocument(final String version) throws XMLStreamException {
+   public void writeStartDocument(final @Nullable String version) throws XMLStreamException {
       wrapped.writeStartDocument(version);
    }
 
    @Override
-   public void writeStartDocument(final String encoding, final String version) throws XMLStreamException {
+   public void writeStartDocument(final @Nullable String encoding, final @Nullable String version) throws XMLStreamException {
       wrapped.writeStartDocument(encoding, version);
    }
 

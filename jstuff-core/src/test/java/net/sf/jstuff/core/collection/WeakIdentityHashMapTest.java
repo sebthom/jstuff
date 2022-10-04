@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.Map;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 import net.sf.jstuff.core.concurrent.Threads;
@@ -18,6 +19,7 @@ import net.sf.jstuff.core.concurrent.Threads;
  */
 public class WeakIdentityHashMapTest {
    private static class Entity {
+      @Nullable
       private String name;
 
       public Entity setName(final String name) {
@@ -31,7 +33,7 @@ public class WeakIdentityHashMapTest {
       }
 
       @Override
-      public boolean equals(final Object obj) {
+      public boolean equals(@Nullable final Object obj) {
          if (this == obj)
             return true;
          if (obj == null || getClass() != obj.getClass())
@@ -45,7 +47,7 @@ public class WeakIdentityHashMapTest {
 
    @Test
    public void testWeakIdentityHashMap() {
-      final Map<Entity, Object> identityMap = WeakIdentityHashMap.create();
+      final Map<@Nullable Entity, Object> identityMap = WeakIdentityHashMap.create();
 
       Entity e1 = new Entity().setName("aa");
       Entity e2 = new Entity().setName("aa");
@@ -76,7 +78,7 @@ public class WeakIdentityHashMapTest {
       assertThat(identityMap.keySet()).hasSize(3);
       assertThat(identityMap.values()).hasSize(3);
 
-      final Map<Entity, Object> identityMap2 = WeakIdentityHashMap.create();
+      final Map<@Nullable Entity, Object> identityMap2 = WeakIdentityHashMap.create();
 
       identityMap2.put(e1, Boolean.TRUE);
       identityMap2.put(e2, Boolean.TRUE);

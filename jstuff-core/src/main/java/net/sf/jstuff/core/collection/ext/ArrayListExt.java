@@ -7,6 +7,8 @@ package net.sf.jstuff.core.collection.ext;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -19,7 +21,7 @@ public class ArrayListExt<E> extends ArrayList<E> implements ListExt<E> {
       private static final long serialVersionUID = 1L;
 
       @Override
-      public void add(final int index, final Object element) {
+      public void add(final int index, final @Nullable Object element) {
          throw new UnsupportedOperationException();
       }
    };

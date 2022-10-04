@@ -7,11 +7,10 @@ package net.sf.jstuff.core;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
-
-import net.sf.jstuff.core.collection.CollectionUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -37,8 +36,8 @@ public class StringsTest {
       assertThat(Strings.containsAny("abcdef", "")).isFalse();
       assertThat(Strings.containsAny("abcdef", (String) null)).isFalse();
 
-      assertThat(Strings.containsAny(CollectionUtils.newArrayList("abc", "def"), "de", "456")).isTrue();
-      assertThat(Strings.containsAny(CollectionUtils.newArrayList("abc", "def"), "123", "456")).isFalse();
+      assertThat(Strings.containsAny(List.of("abc", "def"), "de", "456")).isTrue();
+      assertThat(Strings.containsAny(List.of("abc", "def"), "123", "456")).isFalse();
    }
 
    @Test
@@ -91,106 +90,106 @@ public class StringsTest {
     * test: replace(string, replacement, start) --> no length argument
     */
    @Test
-   public void testReplace1() {
+   public void testReplaceAt1() {
       String a;
       String b;
 
       a = "1234";
       b = "abcdefghijk";
 
-      assertThat(Strings.replace(a, 0, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1, b)).isEqualTo("1abcdefghijk");
-      assertThat(Strings.replace(a, 2, b)).isEqualTo("12abcdefghijk");
-      assertThat(Strings.replace(a, 3, b)).isEqualTo("123abcdefghijk");
-      assertThat(Strings.replace(a, 4, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 5, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, b)).isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, b)).asString().asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1, b)).asString().isEqualTo("1abcdefghijk");
+      assertThat(Strings.replaceAt(a, 2, b)).asString().isEqualTo("12abcdefghijk");
+      assertThat(Strings.replaceAt(a, 3, b)).asString().isEqualTo("123abcdefghijk");
+      assertThat(Strings.replaceAt(a, 4, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, b)).asString().isEqualTo("1234abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, b)).isEqualTo("123abcdefghijk");
-      assertThat(Strings.replace(a, -2, b)).isEqualTo("12abcdefghijk");
-      assertThat(Strings.replace(a, -3, b)).isEqualTo("1abcdefghijk");
-      assertThat(Strings.replace(a, -4, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -5, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -1_000_000, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1, b)).asString().isEqualTo("123abcdefghijk");
+      assertThat(Strings.replaceAt(a, -2, b)).asString().isEqualTo("12abcdefghijk");
+      assertThat(Strings.replaceAt(a, -3, b)).asString().isEqualTo("1abcdefghijk");
+      assertThat(Strings.replaceAt(a, -4, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -5, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1_000_000, b)).asString().isEqualTo("abcdefghijk");
 
       a = "1234";
       b = "a";
 
-      assertThat(Strings.replace(a, 0, b)).isEqualTo("a");
-      assertThat(Strings.replace(a, 1, b)).isEqualTo("1a");
-      assertThat(Strings.replace(a, 2, b)).isEqualTo("12a");
-      assertThat(Strings.replace(a, 3, b)).isEqualTo("123a");
-      assertThat(Strings.replace(a, 4, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 5, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 1_000_000, b)).isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 0, b)).asString().isEqualTo("a");
+      assertThat(Strings.replaceAt(a, 1, b)).asString().isEqualTo("1a");
+      assertThat(Strings.replaceAt(a, 2, b)).asString().isEqualTo("12a");
+      assertThat(Strings.replaceAt(a, 3, b)).asString().isEqualTo("123a");
+      assertThat(Strings.replaceAt(a, 4, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 5, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 1_000_000, b)).asString().isEqualTo("1234a");
 
-      assertThat(Strings.replace(a, -1, b)).isEqualTo("123a");
-      assertThat(Strings.replace(a, -2, b)).isEqualTo("12a");
-      assertThat(Strings.replace(a, -3, b)).isEqualTo("1a");
-      assertThat(Strings.replace(a, -4, b)).isEqualTo("a");
-      assertThat(Strings.replace(a, -5, b)).isEqualTo("a");
-      assertThat(Strings.replace(a, -1_000_000, b)).isEqualTo("a");
+      assertThat(Strings.replaceAt(a, -1, b)).asString().isEqualTo("123a");
+      assertThat(Strings.replaceAt(a, -2, b)).asString().isEqualTo("12a");
+      assertThat(Strings.replaceAt(a, -3, b)).asString().isEqualTo("1a");
+      assertThat(Strings.replaceAt(a, -4, b)).asString().isEqualTo("a");
+      assertThat(Strings.replaceAt(a, -5, b)).asString().isEqualTo("a");
+      assertThat(Strings.replaceAt(a, -1_000_000, b)).asString().isEqualTo("a");
 
       a = "1234";
       b = "";
 
-      assertThat(Strings.replace(a, 0, b)).isEmpty();
-      assertThat(Strings.replace(a, 1, b)).isEqualTo("1");
-      assertThat(Strings.replace(a, 2, b)).isEqualTo("12");
-      assertThat(Strings.replace(a, 3, b)).isEqualTo("123");
-      assertThat(Strings.replace(a, 4, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 5, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 1_000_000, b)).isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 0, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1, b)).asString().isEqualTo("1");
+      assertThat(Strings.replaceAt(a, 2, b)).asString().isEqualTo("12");
+      assertThat(Strings.replaceAt(a, 3, b)).asString().isEqualTo("123");
+      assertThat(Strings.replaceAt(a, 4, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 5, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 1_000_000, b)).asString().isEqualTo("1234");
 
-      assertThat(Strings.replace(a, -1, b)).isEqualTo("123");
-      assertThat(Strings.replace(a, -2, b)).isEqualTo("12");
-      assertThat(Strings.replace(a, -3, b)).isEqualTo("1");
-      assertThat(Strings.replace(a, -4, b)).isEmpty();
-      assertThat(Strings.replace(a, -5, b)).isEmpty();
-      assertThat(Strings.replace(a, -1_000_000, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1, b)).asString().isEqualTo("123");
+      assertThat(Strings.replaceAt(a, -2, b)).asString().isEqualTo("12");
+      assertThat(Strings.replaceAt(a, -3, b)).asString().isEqualTo("1");
+      assertThat(Strings.replaceAt(a, -4, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -5, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1_000_000, b)).isEmpty();
 
       a = "";
       b = "";
 
-      assertThat(Strings.replace(a, 0, b)).isEmpty();
-      assertThat(Strings.replace(a, 1, b)).isEmpty();
-      assertThat(Strings.replace(a, 2, b)).isEmpty();
-      assertThat(Strings.replace(a, 3, b)).isEmpty();
-      assertThat(Strings.replace(a, 4, b)).isEmpty();
-      assertThat(Strings.replace(a, 5, b)).isEmpty();
-      assertThat(Strings.replace(a, 1_000_000, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 0, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 2, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 3, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 4, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 5, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1_000_000, b)).isEmpty();
 
-      assertThat(Strings.replace(a, -1, b)).isEmpty();
-      assertThat(Strings.replace(a, -2, b)).isEmpty();
-      assertThat(Strings.replace(a, -3, b)).isEmpty();
-      assertThat(Strings.replace(a, -4, b)).isEmpty();
-      assertThat(Strings.replace(a, -5, b)).isEmpty();
-      assertThat(Strings.replace(a, -1_000_000, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -2, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -3, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -4, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -5, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1_000_000, b)).isEmpty();
 
       a = "";
       b = "abcdefghijk";
 
-      assertThat(Strings.replace(a, 0, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 2, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 3, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 4, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 5, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 2, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 3, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 4, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, b)).asString().isEqualTo("abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -2, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -3, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -4, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -5, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -1_000_000, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -2, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -3, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -4, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -5, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1_000_000, b)).asString().isEqualTo("abcdefghijk");
    }
 
    /**
     * test: replace(string, replacement, start, length) --> length = 0
     */
    @Test
-   public void testReplace2() {
+   public void testReplaceAt2() {
       String a;
       String b;
       int c;
@@ -199,103 +198,103 @@ public class StringsTest {
       b = "abcdefghijk";
       c = 0;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("abcdefghijk1234");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1abcdefghijk234");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12abcdefghijk34");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123abcdefghijk4");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("abcdefghijk1234");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1abcdefghijk234");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12abcdefghijk34");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123abcdefghijk4");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123abcdefghijk4");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12abcdefghijk34");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1abcdefghijk234");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("abcdefghijk1234");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("abcdefghijk1234");
-      assertThat(Strings.replace(a, -100000, c, b)).isEqualTo("abcdefghijk1234");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123abcdefghijk4");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12abcdefghijk34");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1abcdefghijk234");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("abcdefghijk1234");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("abcdefghijk1234");
+      assertThat(Strings.replaceAt(a, -100000, c, b)).asString().isEqualTo("abcdefghijk1234");
 
       a = "1234";
       b = "a";
       c = 0;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("a1234");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1a234");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12a34");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123a4");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("a1234");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1a234");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12a34");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123a4");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234a");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123a4");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12a34");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1a234");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("a1234");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("a1234");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("a1234");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123a4");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12a34");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1a234");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("a1234");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("a1234");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("a1234");
 
       a = "1234";
       b = "";
       c = 0;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("1234");
 
       a = "";
       b = "";
       c = 0;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 2, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 3, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 0, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 2, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 3, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).isEmpty();
 
-      assertThat(Strings.replace(a, -1, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -2, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -3, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -2, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -3, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).isEmpty();
 
       a = "";
       b = "abcdefghijk";
       c = 0;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
    }
 
    /**
     * test: replace(string, replacement, start, length) --> length = 1
     */
    @Test
-   public void testReplace3() {
+   public void testReplaceAt3() {
       String a;
       String b;
       int c;
@@ -304,103 +303,103 @@ public class StringsTest {
       b = "abcdefghijk";
       c = 1;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("abcdefghijk234");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1abcdefghijk34");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12abcdefghijk4");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123abcdefghijk");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("abcdefghijk234");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1abcdefghijk34");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12abcdefghijk4");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123abcdefghijk");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123abcdefghijk");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12abcdefghijk4");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1abcdefghijk34");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("abcdefghijk234");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("abcdefghijk234");
-      assertThat(Strings.replace(a, -100000, c, b)).isEqualTo("abcdefghijk234");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123abcdefghijk");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12abcdefghijk4");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1abcdefghijk34");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("abcdefghijk234");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("abcdefghijk234");
+      assertThat(Strings.replaceAt(a, -100000, c, b)).asString().isEqualTo("abcdefghijk234");
 
       a = "1234";
       b = "a";
       c = 1;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("a234");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1a34");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12a4");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123a");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("a234");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1a34");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12a4");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123a");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234a");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123a");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12a4");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1a34");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("a234");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("a234");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("a234");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123a");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12a4");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1a34");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("a234");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("a234");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("a234");
 
       a = "1234";
       b = "";
       c = 1;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("234");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("134");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("124");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("234");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("134");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("124");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("124");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("134");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("234");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("234");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("234");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("124");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("134");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("234");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("234");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("234");
 
       a = "";
       b = "";
       c = 1;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 2, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 3, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 0, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 2, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 3, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).isEmpty();
 
-      assertThat(Strings.replace(a, -1, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -2, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -3, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -2, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -3, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).isEmpty();
 
       a = "";
       b = "abcdefghijk";
       c = 1;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
    }
 
    /**
     * test: replace(string, replacement, start, length) --> length = 1_000_000
     */
    @Test
-   public void testReplace4() {
+   public void testReplaceAt4() {
       String a;
       String b;
       int c;
@@ -409,103 +408,103 @@ public class StringsTest {
       b = "abcdefghijk";
       c = 1_000_000;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1abcdefghijk");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12abcdefghijk");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123abcdefghijk");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1abcdefghijk");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12abcdefghijk");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123abcdefghijk");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123abcdefghijk");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12abcdefghijk");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1abcdefghijk");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123abcdefghijk");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12abcdefghijk");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1abcdefghijk");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
 
       a = "1234";
       b = "a";
       c = 1_000_000;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("a");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1a");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12a");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123a");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("a");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1a");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12a");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123a");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234a");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123a");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12a");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1a");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("a");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("a");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("a");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123a");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12a");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1a");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("a");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("a");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("a");
 
       a = "1234";
       b = "";
       c = 1_000_000;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 0, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1");
-      assertThat(Strings.replace(a, -4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1");
+      assertThat(Strings.replaceAt(a, -4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).isEmpty();
 
       a = "";
       b = "";
       c = 1_000_000;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 2, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 3, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 0, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 2, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 3, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).isEmpty();
 
-      assertThat(Strings.replace(a, -1, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -2, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -3, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -2, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -3, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).isEmpty();
 
       a = "";
       b = "abcdefghijk";
       c = 1_000_000;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
    }
 
    /**
     * test: replace(string, replacement, start, length) --> length = -1
     */
    @Test
-   public void testReplace5() {
+   public void testReplaceAt5() {
       String a;
       String b;
       int c;
@@ -514,103 +513,103 @@ public class StringsTest {
       b = "abcdefghijk";
       c = -1;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("abcdefghijk4");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1abcdefghijk4");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12abcdefghijk4");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123abcdefghijk4");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("abcdefghijk4");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1abcdefghijk4");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12abcdefghijk4");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123abcdefghijk4");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123abcdefghijk4");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12abcdefghijk4");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1abcdefghijk4");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("abcdefghijk4");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("abcdefghijk4");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("abcdefghijk4");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123abcdefghijk4");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12abcdefghijk4");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1abcdefghijk4");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("abcdefghijk4");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("abcdefghijk4");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("abcdefghijk4");
 
       a = "1234";
       b = "a";
       c = -1;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("a4");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1a4");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12a4");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123a4");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("a4");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1a4");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12a4");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123a4");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234a");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123a4");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12a4");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1a4");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("a4");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("a4");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("a4");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123a4");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12a4");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1a4");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("a4");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("a4");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("a4");
 
       a = "1234";
       b = "";
       c = -1;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("4");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("14");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("124");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("4");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("14");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("124");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("124");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("14");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("4");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("4");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("4");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("124");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("14");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("4");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("4");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("4");
 
       a = "";
       b = "";
       c = -1;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 2, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 3, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 0, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 2, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 3, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).isEmpty();
 
-      assertThat(Strings.replace(a, -1, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -2, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -3, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -2, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -3, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).isEmpty();
 
       a = "";
       b = "abcdefghijk";
       c = -1;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
    }
 
    /**
     * test: replace(string, replacement, start, length) --> length = -1_000_000
     */
    @Test
-   public void testReplace6() {
+   public void testReplaceAt6() {
       String a;
       String b;
       int c;
@@ -619,96 +618,96 @@ public class StringsTest {
       b = "abcdefghijk";
       c = -1_000_000;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("abcdefghijk1234");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1abcdefghijk234");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12abcdefghijk34");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123abcdefghijk4");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("abcdefghijk1234");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1abcdefghijk234");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12abcdefghijk34");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123abcdefghijk4");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123abcdefghijk4");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12abcdefghijk34");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1abcdefghijk234");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("abcdefghijk1234");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("abcdefghijk1234");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("abcdefghijk1234");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123abcdefghijk4");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12abcdefghijk34");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1abcdefghijk234");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("abcdefghijk1234");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("abcdefghijk1234");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("abcdefghijk1234");
 
       a = "1234";
       b = "a";
       c = -1_000_000;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("a1234");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1a234");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("12a34");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("123a4");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234a");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("a1234");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1a234");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("12a34");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("123a4");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234a");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234a");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("123a4");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("12a34");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1a234");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("a1234");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("a1234");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("a1234");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("123a4");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("12a34");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1a234");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("a1234");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("a1234");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("a1234");
 
       a = "1234";
       b = "";
       c = -1_000_000;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("1234");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("1234");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("1234");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("1234");
 
       a = "";
       b = "";
       c = -1_000_000;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 2, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 3, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 0, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 2, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 3, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).isEmpty();
 
-      assertThat(Strings.replace(a, -1, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -2, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -3, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -4, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -5, c, b)).isEmpty();
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -2, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -3, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -4, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -5, c, b)).isEmpty();
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).isEmpty();
 
       a = "";
       b = "abcdefghijk";
       c = -1_000_000;
 
-      assertThat(Strings.replace(a, 0, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 2, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 3, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, 1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 2, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 3, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
 
-      assertThat(Strings.replace(a, -1, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -2, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -3, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -4, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -5, c, b)).isEqualTo("abcdefghijk");
-      assertThat(Strings.replace(a, -1_000_000, c, b)).isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -2, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -3, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -4, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -5, c, b)).asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, -1_000_000, c, b)).asString().isEqualTo("abcdefghijk");
    }
 
    @Test
@@ -729,7 +728,7 @@ public class StringsTest {
 
    @Test
    public void testSplitToList() {
-      assertThat(Strings.splitToList(null, '.')).isNull();
+      assertThat(Strings.splitToListNullable(null, '.')).isNull();
       assertThat(Strings.splitToList("", '.')).isEmpty();
       assertThat(Strings.splitToList(".", '.')).isEmpty();
       assertThat(Strings.splitToList("...", '.')).isEmpty();
@@ -750,13 +749,9 @@ public class StringsTest {
       assertThat(Strings.substringBeforeIgnoreCase(a, "X")).isEmpty();
 
       a = null;
-      assertThat(Strings.substringBeforeIgnoreCase(a, "c")).isEmpty();
-      assertThat(Strings.substringBeforeIgnoreCase(a, "C")).isEmpty();
-      assertThat(Strings.substringBeforeIgnoreCase(a, "X")).isEmpty();
+      assertThat(Strings.substringBeforeIgnoreCaseNullable(a, "c")).isNull();
 
       a = "";
       assertThat(Strings.substringBeforeIgnoreCase(a, "c")).isEmpty();
-      assertThat(Strings.substringBeforeIgnoreCase(a, "C")).isEmpty();
-      assertThat(Strings.substringBeforeIgnoreCase(a, "X")).isEmpty();
    }
 }

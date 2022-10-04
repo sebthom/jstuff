@@ -23,6 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.builder.Builder;
 import net.sf.jstuff.core.builder.BuilderFactory;
 import net.sf.jstuff.core.collection.ArrayUtils;
@@ -85,7 +87,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
       }
    }
 
-   public synchronized void addTrustCerts(final Collection<X509Certificate> certs) {
+   public synchronized void addTrustCerts(final @Nullable Collection<X509Certificate> certs) {
       if (certs == null || certs.isEmpty())
          return;
 
@@ -97,7 +99,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
    /**
     * Adds all X509 certificates from the given truststore to this instance.
     */
-   public synchronized void addTrustCerts(final KeyStore trustStore) {
+   public synchronized void addTrustCerts(final @Nullable KeyStore trustStore) {
       if (trustStore == null)
          return;
 
@@ -124,7 +126,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
       }
    }
 
-   public synchronized void addTrustCerts(final X509Certificate... certs) {
+   public synchronized void addTrustCerts(final X509Certificate @Nullable... certs) {
       if (certs == null || certs.length == 0)
          return;
 
@@ -208,7 +210,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
       }
    }
 
-   public synchronized void removeTrustCerts(final X509Certificate... certs) {
+   public synchronized void removeTrustCerts(final X509Certificate @Nullable... certs) {
       if (certs == null || certs.length == 0)
          return;
 

@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.CompositeMap;
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.validation.Args;
@@ -25,7 +27,8 @@ public final class ClassDescriptor<T> implements Serializable {
    private static final Map<Class<?>, ClassDescriptor<?>> REGISTRY = new WeakHashMap<>();
 
    @SuppressWarnings("unchecked")
-   public static <T> ClassDescriptor<T> of(final Class<T> type, final String name, final String description, final ClassDescriptor<?> parent) {
+   public static <T> ClassDescriptor<T> of(final Class<T> type, final String name, final @Nullable String description,
+      final @Nullable ClassDescriptor<?> parent) {
       Args.notNull("type", type);
       Args.notNull("name", name);
       Assert.isFalse(REGISTRY.containsKey(type), "A meta class for [" + type.getName() + "] exists already.");
@@ -41,15 +44,18 @@ public final class ClassDescriptor<T> implements Serializable {
    }
 
    private final Class<T> type;
+   @Nullable
    private final transient ClassDescriptor<?> parent;
    private final transient String name;
+   @Nullable
    private final transient String description;
 
    private final transient Map<String, PropertyDescriptor<?>> properties = Maps.newLinkedHashMap();
    private final transient Map<String, PropertyDescriptor<?>> propertiesReadOnly = Collections.unmodifiableMap(properties);
    private final transient Map<String, PropertyDescriptor<?>> propertiesRecursivelyReadOnly;
 
-   private ClassDescriptor(final Class<T> type, final String name, final String description, final ClassDescriptor<?> parent) {
+   private ClassDescriptor(final Class<T> type, final String name, final @Nullable String description,
+      final @Nullable ClassDescriptor<?> parent) {
       this.type = type;
       this.name = name;
       this.description = description;
@@ -58,11 +64,12 @@ public final class ClassDescriptor<T> implements Serializable {
    }
 
    void addProperty(final PropertyDescriptor<?> prop) {
-      Assert.isFalse(properties.containsKey(prop.getName()), "A meta property with name [" + prop.getName() + "] exists already for class [" + type.getName()
-         + "]");
+      Assert.isFalse(properties.containsKey(prop.getName()), "A meta property with name [" + prop.getName() + "] exists already for class ["
+         + type.getName() + "]");
       properties.put(prop.getName(), prop);
    }
 
+   @Nullable
    public String getDescription() {
       return description;
    }
@@ -71,6 +78,7 @@ public final class ClassDescriptor<T> implements Serializable {
       return name;
    }
 
+   @Nullable
    public ClassDescriptor<?> getParent() {
       return parent;
    }

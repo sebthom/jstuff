@@ -29,9 +29,7 @@ public class Base64Test {
       assertThat(new String(Base64.decode("SGVsbA=="), StandardCharsets.UTF_8)).isEqualTo("Hell");
       assertThat(new String(Base64.decode("SGVsbA="), StandardCharsets.UTF_8)).isEqualTo("Hell");
       assertThat(new String(Base64.decode("SGVsbA"), StandardCharsets.UTF_8)).isEqualTo("Hell");
-      assertThat(Base64.decode((String) null)).isNull();
       assertThat(Base64.decode("")).isEmpty();
-      assertThat(Base64.decode((byte[]) null)).isNull();
       assertThat(Base64.decode(new byte[0])).isEmpty();
       assertThat(Base64.urldecode("A_")).isEqualTo(Base64.decode("A/"));
       assertThat(Base64.urldecode("A-")).isEqualTo(Base64.decode("A+"));

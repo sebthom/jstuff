@@ -9,6 +9,8 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -24,7 +26,8 @@ public class DualPrintStreamHandler extends PrintStreamHandler {
       this(stdout, stderr, formatter, Level.INFO);
    }
 
-   public DualPrintStreamHandler(final PrintStream stdout, final PrintStream stderr, final Formatter formatter, final Level maxStdOutLevel) {
+   public DualPrintStreamHandler(final PrintStream stdout, final PrintStream stderr, final Formatter formatter,
+      final Level maxStdOutLevel) {
       super(stdout, formatter);
       Args.notNull("maxStdOutLevel", maxStdOutLevel);
 
@@ -48,14 +51,14 @@ public class DualPrintStreamHandler extends PrintStreamHandler {
    }
 
    @Override
-   public synchronized void setEncoding(final String encoding) {
+   public synchronized void setEncoding(final @Nullable String encoding) {
       super.setEncoding(encoding);
       stderrHandler.setEncoding(encoding);
    }
 
    @Override
-   public synchronized void publish(final LogRecord entry) {
-      if (isLoggable(entry)) {
+   public synchronized void publish(final @Nullable LogRecord entry) {
+      if (entry != null && isLoggable(entry)) {
          if (entry.getLevel().intValue() > maxStdOutLevel) {
             super.flush();
             stderrHandler.publish(entry);

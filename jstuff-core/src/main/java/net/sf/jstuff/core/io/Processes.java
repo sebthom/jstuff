@@ -26,6 +26,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
@@ -40,15 +42,20 @@ public abstract class Processes {
 
    public static class Builder {
 
-      private String executable;
+      private final String executable;
       private final List<Object> args = new ArrayList<>(2);
+      @Nullable
       private Map<String, Object> env;
       private Function<Object, String> stringifier = Objects::toString;
+      @Nullable
       private Consumer<ProcessWrapper> onExit;
+      @Nullable
       private File workDir;
 
       private boolean redirectErrorToOutput;
+      @Nullable
       private Object redirectError;
+      @Nullable
       private Object redirectOutput;
 
       protected Builder(final String exe) {
@@ -65,6 +72,7 @@ public abstract class Processes {
          return this;
       }
 
+      @SuppressWarnings("null")
       private CompletableFuture<Void> redirect(final InputStream in, final Appendable consumer) {
          return CompletableFuture.runAsync(() -> {
             try {
@@ -75,6 +83,7 @@ public abstract class Processes {
          }, BACKGROUND_THREADS);
       }
 
+      @SuppressWarnings("null")
       private CompletableFuture<Void> redirect(final InputStream in, final Consumer<String> lineConsumer) {
          return CompletableFuture.runAsync(() -> {
             try (Scanner sc = new Scanner(in)) {
@@ -85,6 +94,7 @@ public abstract class Processes {
          }, BACKGROUND_THREADS);
       }
 
+      @SuppressWarnings("null")
       private CompletableFuture<Void> redirect(final InputStream in, final OutputStream out) {
          return CompletableFuture.runAsync(() -> {
             try {
@@ -106,6 +116,7 @@ public abstract class Processes {
          }
 
          final ProcessBuilder pb = new ProcessBuilder(command);
+         final var env = this.env;
          if (env != null) {
             final Map<String, String> pbEnv = pb.environment();
             pbEnv.clear();
@@ -120,6 +131,7 @@ public abstract class Processes {
          if (redirectErrorToOutput) {
             pb.redirectError();
          } else if (redirectError != null) {
+            final var redirectError = this.redirectError;
             if (redirectError instanceof File) {
                pb.redirectError((File) redirectError);
             } else if (redirectError instanceof OutputStream) {
@@ -132,6 +144,7 @@ public abstract class Processes {
          }
 
          if (redirectOutput != null) {
+            final var redirectOutput = this.redirectOutput;
             if (redirectOutput instanceof File) {
                pb.redirectOutput((File) redirectOutput);
             } else if (redirectOutput instanceof OutputStream) {
@@ -167,56 +180,57 @@ public abstract class Processes {
          return this;
       }
 
-      public Builder withArgs(final Object... args) {
+      public Builder withArgs(final @NonNull Object... args) {
          Args.notNull("args", args);
          Collections.addAll(this.args, args);
          return this;
       }
 
-      public Builder withArgs(final String... args) {
+      public Builder withArgs(final @NonNull String... args) {
          Args.notNull("args", args);
-         CollectionUtils.addAll(this.args, (Object[]) args);
+         CollectionUtils.addAll(this.args, (@NonNull Object[]) args);
          return this;
       }
 
       public Builder withEnvironment(final Consumer<Map<String, Object>> envConfigurer) {
+         var env = this.env;
          if (env == null) {
-            env = new TreeMap<>(SystemUtils.IS_OS_WINDOWS ? String.CASE_INSENSITIVE_ORDER : null);
+            env = this.env = new TreeMap<>(SystemUtils.IS_OS_WINDOWS ? String.CASE_INSENSITIVE_ORDER : null);
             env.putAll(System.getenv());
          }
          envConfigurer.accept(env);
          return this;
       }
 
-      public Builder withRedirectError(final Appendable target) {
+      public Builder withRedirectError(final @Nullable Appendable target) {
          assertRedirectErrorToOuputNotConfigured();
          redirectError = target;
          return this;
       }
 
-      public Builder withRedirectError(final Consumer<String> lineConsumer) {
+      public Builder withRedirectError(final @Nullable Consumer<String> lineConsumer) {
          assertRedirectErrorToOuputNotConfigured();
          redirectError = lineConsumer;
          return this;
       }
 
-      public Builder withRedirectError(final File target) {
+      public Builder withRedirectError(final @Nullable File target) {
          assertRedirectErrorToOuputNotConfigured();
          redirectError = target;
          return this;
       }
 
-      public Builder withRedirectError(final OutputStream target) {
+      public Builder withRedirectError(final @Nullable OutputStream target) {
          assertRedirectErrorToOuputNotConfigured();
          redirectError = target;
          return this;
       }
 
-      public Builder withRedirectError(final Path target) {
+      public Builder withRedirectError(final @Nullable Path target) {
          return withRedirectError(target == null ? null : target.toFile());
       }
 
-      public Builder withRedirectError(final PrintStream target) {
+      public Builder withRedirectError(final @Nullable PrintStream target) {
          return withRedirectError((OutputStream) target);
       }
 
@@ -226,39 +240,39 @@ public abstract class Processes {
          return this;
       }
 
-      public Builder withRedirectOutput(final Appendable target) {
+      public Builder withRedirectOutput(final @Nullable Appendable target) {
          redirectOutput = target;
          return this;
       }
 
-      public Builder withRedirectOutput(final Consumer<String> lineConsumer) {
+      public Builder withRedirectOutput(final @Nullable Consumer<String> lineConsumer) {
          redirectOutput = lineConsumer;
          return this;
       }
 
-      public Builder withRedirectOutput(final File target) {
+      public Builder withRedirectOutput(final @Nullable File target) {
          redirectOutput = target;
          return this;
       }
 
-      public Builder withRedirectOutput(final OutputStream target) {
+      public Builder withRedirectOutput(final @Nullable OutputStream target) {
          redirectOutput = target;
          return this;
       }
 
-      public Builder withRedirectOutput(final Path target) {
+      public Builder withRedirectOutput(final @Nullable Path target) {
          redirectOutput = target == null ? null : target.toFile();
          return this;
       }
 
-      public Builder withRedirectOutput(final PrintStream target) {
+      public Builder withRedirectOutput(final @Nullable PrintStream target) {
          return withRedirectOutput((OutputStream) target);
       }
 
       /**
        * Function to be used to convert non-String arguments and environment-variables to String objects
        */
-      public Builder withStringifier(final Function<Object, String> stringifier) {
+      public Builder withStringifier(final @Nullable Function<Object, String> stringifier) {
          this.stringifier = stringifier == null ? Objects::toString : stringifier;
          return this;
       }
@@ -377,7 +391,7 @@ public abstract class Processes {
          }, BACKGROUND_THREADS);
       }
 
-      public ProcessWrapper onExit(final Consumer<ProcessWrapper> action) {
+      public ProcessWrapper onExit(final @Nullable Consumer<ProcessWrapper> action) {
          if (action == null)
             return this;
 

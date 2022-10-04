@@ -20,7 +20,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class BufferedOutputStreamExt extends BufferedOutputStream {
 
-   private Charset charset;
+   private Charset charset = Charset.defaultCharset();
 
    /**
     * @param out the underlying output stream

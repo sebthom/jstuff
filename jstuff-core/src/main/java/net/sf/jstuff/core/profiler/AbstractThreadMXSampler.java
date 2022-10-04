@@ -14,6 +14,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -25,18 +27,21 @@ import net.sf.jstuff.core.validation.Assert;
 public abstract class AbstractThreadMXSampler {
    private static final Logger LOG = Logger.create();
 
+   @Nullable
    private ScheduledExecutorService executor;
    private final int samplingInterval;
    private final ThreadMXBean threadMBean;
    private boolean isWarningLogged;
 
    private final Queue<ThreadInfo[]> samples = new ConcurrentLinkedQueue<>();
-   private final Callable<Void> aggregator = new Callable<>() {
+   private final Callable<@Nullable Void> aggregator = new Callable<>() {
+      @Nullable
       @Override
       public Void call() throws Exception {
          while (true) {
             final ThreadInfo[] sample = samples.poll();
             if (sample == null) {
+               final var executor = AbstractThreadMXSampler.this.executor;
                if (executor == null || executor.isShutdown())
                   return null;
                Thread.sleep(samplingInterval);
@@ -94,7 +99,9 @@ public abstract class AbstractThreadMXSampler {
    }
 
    public synchronized void stop() {
-      Assert.isFalse(executor == null, "No sampling in progress");
+      final var executor = this.executor;
+      if (executor == null)
+         throw new IllegalStateException("No sampling in progress");
 
       LOG.info("Stopping sampling ...");
       executor.shutdown();
@@ -103,6 +110,6 @@ public abstract class AbstractThreadMXSampler {
       } catch (final InterruptedException ex) {
          Threads.handleInterruptedException(ex);
       }
-      executor = null;
+      this.executor = null;
    }
 }

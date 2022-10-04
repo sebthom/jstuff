@@ -5,6 +5,7 @@
 package net.sf.jstuff.core.validation;
 
 import static net.sf.jstuff.core.reflection.StackTrace.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -14,6 +15,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 
@@ -99,7 +103,7 @@ public abstract class Assert {
    /**
     * Ensures file exists, points to a directory and is readable by the current user.
     */
-   public static Path isDirectoryReadable(Path file) {
+   public static Path isDirectoryReadable(@Nullable Path file) {
       file = Args.notNull("file", file);
 
       if (!Files.exists(file))
@@ -116,7 +120,7 @@ public abstract class Assert {
     *
     * @throws IllegalStateException if <code>file</code> is not readable
     */
-   public static File isFileReadable(File file) {
+   public static File isFileReadable(@Nullable File file) {
       file = Args.notNull("file", file);
 
       if (!file.exists())
@@ -133,7 +137,7 @@ public abstract class Assert {
     *
     * @throws IllegalStateException if <code>file</code> is not readable
     */
-   public static Path isFileReadable(Path file) {
+   public static Path isFileReadable(@Nullable Path file) {
       file = Args.notNull("file", file);
 
       if (!Files.exists(file))
@@ -150,7 +154,7 @@ public abstract class Assert {
     *
     * @throws IllegalStateException if <code>file</code> exists or is not writable
     */
-   public static File isFileWritable(File file) {
+   public static File isFileWritable(@Nullable File file) {
       file = Args.notNull("file", file);
 
       if (file.exists() && !file.isFile())
@@ -165,7 +169,7 @@ public abstract class Assert {
     *
     * @throws IllegalStateException if <code>file</code> is not readable
     */
-   public static Path isFileWritable(Path file) {
+   public static Path isFileWritable(@Nullable Path file) {
       file = Args.notNull("file", file);
 
       if (Files.exists(file) && !Files.isRegularFile(file))
@@ -178,7 +182,7 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>value</code> is not <code>null</code>
     */
-   public static <T> T isInstanceOf(final T value, final Class<?> type, final String errorMessage) {
+   public static <T> @NonNull T isInstanceOf(final @Nullable T value, final Class<?> type, final String errorMessage) {
       Args.notNull("type", type);
       if (!type.isInstance(value))
          throw _createIllegalStateException(errorMessage);
@@ -189,7 +193,7 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>value</code> is not <code>null</code>
     */
-   public static <T> T isNull(final T value, final String errorMessage) {
+   public static <T> @Nullable T isNull(final @Nullable T value, final String errorMessage) {
       if (value != null)
          throw _createIllegalStateException(errorMessage);
       return null;
@@ -198,7 +202,7 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>value</code> is not <code>null</code>
     */
-   public static <T> T isNull(final T value, final Supplier<String> errorMessageSupplier) {
+   public static <T> @Nullable T isNull(final @Nullable T value, final Supplier<String> errorMessageSupplier) {
       Args.notNull("errorMessageSupplier", errorMessageSupplier);
       if (value != null)
          throw _createIllegalStateException(errorMessageSupplier.get());
@@ -233,7 +237,7 @@ public abstract class Assert {
       return value;
    }
 
-   public static <S extends CharSequence> S matches(final S value, final Pattern pattern, final String errorMessage) {
+   public static <S extends CharSequence> @NonNull S matches(final @Nullable S value, final Pattern pattern, final String errorMessage) {
       Args.notNull("pattern", pattern);
 
       if (value == null || !pattern.matcher(value).matches())
@@ -292,7 +296,7 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>items</code> is null or contains any null items
     */
-   public static <C extends Collection<?>> C noNulls(C items, final String errorMessage) {
+   public static <C extends Collection<?>> @NonNull C noNulls(@Nullable C items, final String errorMessage) {
       items = Args.notNull("items", items);
 
       for (final Object item : items)
@@ -304,31 +308,31 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>items</code> is null or contains any null items
     */
-   public static <T> T[] noNulls(T[] items, final String errorMessage) {
+   public static <T> @NonNull T[] noNulls(T @Nullable [] items, final String errorMessage) {
       items = Args.notNull("items", items);
 
       for (final T item : items)
          if (item == null)
             throw _createIllegalStateException(errorMessage);
-      return items;
+      return asNonNullUnsafe(items);
    }
 
    /**
     * @throws IllegalStateException if string <code>value</code> is null, has a length of 0, or only contains whitespace chars
     */
-   public static <S extends CharSequence> S notBlank(final S value, final String errorMessage) {
+   public static <S extends CharSequence> @NonNull S notBlank(final @Nullable S value, final String errorMessage) {
       if (value == null || Strings.isBlank(value))
          throw _createIllegalStateException(errorMessage);
       return value;
    }
 
-   public static byte[] notEmpty(final byte[] value, final String errorMessage) {
+   public static byte[] notEmpty(final byte @Nullable [] value, final String errorMessage) {
       if (value == null || value.length == 0)
          throw _createIllegalStateException(errorMessage);
       return value;
    }
 
-   public static <A> A[] notEmpty(final A[] value, final String errorMessage) {
+   public static <A> A[] notEmpty(final A @Nullable [] value, final String errorMessage) {
       if (value == null || value.length == 0)
          throw _createIllegalStateException(errorMessage);
       return value;
@@ -337,7 +341,7 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>value</code> collection is null or empty
     */
-   public static <C extends Collection<?>> C notEmpty(final C value, final String errorMessage) {
+   public static <C extends Collection<?>> @NonNull C notEmpty(final @Nullable C value, final String errorMessage) {
       if (value == null || value.isEmpty())
          throw _createIllegalStateException(errorMessage);
       return value;
@@ -346,13 +350,13 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>value</code> map is null or empty
     */
-   public static <M extends Map<?, ?>> M notEmpty(final M value, final String errorMessage) {
+   public static <M extends Map<?, ?>> @NonNull M notEmpty(final @Nullable M value, final String errorMessage) {
       if (value == null || value.isEmpty())
          throw _createIllegalStateException(errorMessage);
       return value;
    }
 
-   public static <S extends CharSequence> S notEmpty(final S value, final String errorMessage) {
+   public static <S extends CharSequence> @NonNull S notEmpty(final @Nullable S value, final String errorMessage) {
       if (value == null || value.length() == 0)
          throw _createIllegalStateException(errorMessage);
       return value;
@@ -415,7 +419,7 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>value</code> is <code>null</code>
     */
-   public static <T> T notNull(final T value, final String errorMessage) {
+   public static <T> @NonNull T notNull(final @Nullable T value, final String errorMessage) {
       if (value == null)
          throw _createIllegalStateException(errorMessage);
       return value;
@@ -424,7 +428,7 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>value</code> is <code>null</code>
     */
-   public static <T> T notNull(final T value, final Supplier<String> errorMessageSupplier) {
+   public static <T> @NonNull T notNull(final @Nullable T value, final Supplier<String> errorMessageSupplier) {
       Args.notNull("errorMessageSupplier", errorMessageSupplier);
       if (value == null)
          throw _createIllegalStateException(errorMessageSupplier.get());
@@ -434,7 +438,7 @@ public abstract class Assert {
    /**
     * @throws IllegalStateException if <code>value</code> is <code>null</code>
     */
-   public static <T> T notNull(final T value, final String errorMessage, final Object... errorMessageArgs) {
+   public static <T> @NonNull T notNull(final @Nullable T value, final String errorMessage, final Object... errorMessageArgs) {
       if (value == null)
          throw _createIllegalStateException(errorMessage, errorMessageArgs);
       return value;

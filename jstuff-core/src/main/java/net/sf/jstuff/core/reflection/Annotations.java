@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.reflection.exception.InvokingMethodFailedException;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
@@ -32,7 +34,8 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
       return create(annotationType, null);
    }
 
-   public static <T extends Annotation> T create(final Class<T> annotationType, final Map<String, Object> attributes) throws ReflectionException {
+   public static <T extends Annotation> T create(final Class<T> annotationType, final @Nullable Map<String, Object> attributes)
+      throws ReflectionException {
       Args.notNull("annotationType", annotationType);
 
       /*

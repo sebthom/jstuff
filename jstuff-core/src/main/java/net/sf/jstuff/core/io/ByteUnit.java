@@ -10,6 +10,8 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.math.Numbers;
 import net.sf.jstuff.core.math.Rounding;
 import net.sf.jstuff.core.validation.Args;
@@ -94,9 +96,6 @@ public enum ByteUnit {
    }
 
    public BigInteger toBytes(final Number value) {
-      if (value == null)
-         return null;
-
       if (value instanceof BigInteger) {
          if (this == BYTES)
             return (BigInteger) value;
@@ -104,7 +103,6 @@ public enum ByteUnit {
       }
 
       final BigDecimal bd = Numbers.toBigDecimal(value);
-
       if (this == BYTES)
          return ROUNDING_0_UP.round(bd).toBigInteger();
       return ROUNDING_0_UP.round(bd.multiply(toBytesMultiplierBD)).toBigInteger();
@@ -116,11 +114,11 @@ public enum ByteUnit {
       return toBytes(BigInteger.valueOf(value));
    }
 
-   public String toHumanReadableString(final Number value, final Rounding rounding) {
+   public String toHumanReadableString(final @Nullable Number value, final Rounding rounding) {
       return toHumanReadableString(value, rounding, Locale.getDefault());
    }
 
-   public String toHumanReadableString(final Number value, final Rounding rounding, final Locale locale) {
+   public String toHumanReadableString(final @Nullable Number value, final Rounding rounding, final Locale locale) {
       if (value == null)
          return "<null> " + symbol;
 
@@ -172,15 +170,17 @@ public enum ByteUnit {
       return symbol;
    }
 
-   public String toString(final Number value) {
+   public String toString(final @Nullable Number value) {
       return toString(value, Locale.getDefault());
    }
 
-   public String toString(final Number value, final Locale locale) {
-      Args.notNull("locale", locale);
-
+   public String toString(final @Nullable Number value, @Nullable Locale locale) {
       if (value == null)
          return "<null> " + symbol;
+
+      if (locale == null) {
+         locale = Locale.getDefault();
+      }
 
       final BigDecimal bd = Numbers.toBigDecimal(value);
 

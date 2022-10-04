@@ -12,6 +12,9 @@ import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.collection.ArrayUtils;
@@ -24,15 +27,17 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Threads {
    private static final Logger LOG = Logger.create();
 
-   private static final Thread[] EMPTY_THREAD_ARRAY = {};
+   private static final @NonNull Thread[] EMPTY_THREAD_ARRAY = {};
 
-   private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = (t1, t2) -> t2.getPriority() - t1.getPriority();
+   private static final Comparator<@NonNull Thread> THREAD_PRIORITY_COMPARATOR = (t1, t2) -> t2.getPriority() - t1.getPriority();
 
+   @Nullable
    private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
 
+   @Nullable
    private static ThreadGroup rootTG;
 
-   public static Thread[] all() {
+   public static @NonNull Thread[] all() {
       final ThreadGroup root = rootThreadGroup();
 
       Thread[] tmp = new Thread[count() + 1];
@@ -86,9 +91,10 @@ public abstract class Threads {
    }
 
    public static int count() {
-      if (TMX == null)
+      final var tmx = TMX;
+      if (tmx == null)
          throw new IllegalStateException("ThreadMXBean not present!");
-      return TMX.getThreadCount();
+      return tmx.getThreadCount();
    }
 
    public static Thread[] deadlocked() {
@@ -107,14 +113,16 @@ public abstract class Threads {
     * @return ids of deadlocked threads
     */
    public static long[] deadlockedIds() {
-      if (TMX == null)
+      final var tmx = TMX;
+      if (tmx == null)
          throw new IllegalStateException("ThreadMXBean not present!");
-      final long[] result = TMX.findDeadlockedThreads();
+      final long[] result = tmx.findDeadlockedThreads();
       if (result == null)
          return ArrayUtils.EMPTY_LONG_ARRAY;
       return result;
    }
 
+   @Nullable
    public static Thread findThreadByName(final String threadName) {
       for (final Thread t : all()) {
          if (Strings.equals(threadName, t.getName()))

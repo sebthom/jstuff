@@ -13,6 +13,8 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.IOUtils;
@@ -77,7 +79,7 @@ public class DeflateCompression extends AbstractCompression {
       this.compressionLevel = compressionLevel;
    }
 
-   public DeflateCompression(final int compressionLevel, final byte[] dictionary) {
+   public DeflateCompression(final int compressionLevel, final byte @Nullable [] dictionary) {
       this.compressionLevel = compressionLevel;
 
       if (dictionary != null && dictionary.length > 0) {

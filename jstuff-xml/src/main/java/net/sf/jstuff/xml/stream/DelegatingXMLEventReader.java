@@ -4,11 +4,16 @@
  */
 package net.sf.jstuff.xml.stream;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.function.Consumer;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.types.Decorator;
 
@@ -35,13 +40,13 @@ public class DelegatingXMLEventReader extends Decorator.Default<XMLEventReader> 
    }
 
    @Override
-   public XMLEvent peek() throws XMLStreamException {
+   public @Nullable XMLEvent peek() throws XMLStreamException {
       return wrapped.peek();
    }
 
    @Override
    public Object next() {
-      return wrapped.next();
+      return asNonNullUnsafe(wrapped.next());
    }
 
    @Override
@@ -65,7 +70,7 @@ public class DelegatingXMLEventReader extends Decorator.Default<XMLEventReader> 
    }
 
    @Override
-   public void forEachRemaining(final Consumer<? super Object> action) {
+   public void forEachRemaining(final Consumer<? super @NonNull Object> action) {
       wrapped.forEachRemaining(action);
    }
 

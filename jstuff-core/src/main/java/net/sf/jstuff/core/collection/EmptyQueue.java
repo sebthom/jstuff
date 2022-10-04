@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Queue;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -48,11 +50,13 @@ public final class EmptyQueue<E> extends AbstractQueue<E> implements Serializabl
       return false;
    }
 
+   @Nullable
    @Override
    public E peek() {
       return null;
    }
 
+   @Nullable
    @Override
    public E poll() {
       return null;

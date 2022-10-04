@@ -7,16 +7,13 @@ package net.sf.jstuff.core.comparator;
 import java.util.Collection;
 import java.util.Comparator;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class CompositeComparator<T> extends net.sf.jstuff.core.types.Composite.Default<Comparator<T>> implements Comparator<T> {
    private static final long serialVersionUID = 1L;
-
-   @SafeVarargs
-   public static <T> CompositeComparator<T> of(final Comparator<T>... comparators) {
-      return new CompositeComparator<>(comparators);
-   }
 
    public CompositeComparator() {
    }
@@ -25,8 +22,9 @@ public class CompositeComparator<T> extends net.sf.jstuff.core.types.Composite.D
       super(comparators);
    }
 
+   @SuppressWarnings("null")
    @SafeVarargs
-   public CompositeComparator(final Comparator<T>... comparators) {
+   public CompositeComparator(final @NonNullByDefault({}) Comparator<T>... comparators) {
       super(comparators);
    }
 

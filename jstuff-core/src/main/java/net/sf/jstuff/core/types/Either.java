@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -63,6 +65,7 @@ public interface Either<L, R> extends Serializable {
             return Objects.toString(left);
          }
 
+         @SuppressWarnings("null")
          @Override
          public L value() {
             return left;
@@ -81,7 +84,7 @@ public interface Either<L, R> extends Serializable {
          }
 
          @Override
-         public boolean equals(final Object obj) {
+         public boolean equals(final @Nullable Object obj) {
             if (this == obj)
                return true;
             if (obj == null || getClass() != obj.getClass())
@@ -148,6 +151,7 @@ public interface Either<L, R> extends Serializable {
             return Objects.toString(right);
          }
 
+         @SuppressWarnings("null")
          @Override
          public R value() {
             return right;
@@ -166,7 +170,7 @@ public interface Either<L, R> extends Serializable {
          }
 
          @Override
-         public boolean equals(final Object obj) {
+         public boolean equals(final @Nullable Object obj) {
             if (this == obj)
                return true;
             if (obj == null || getClass() != obj.getClass())

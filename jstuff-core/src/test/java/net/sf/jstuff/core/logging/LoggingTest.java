@@ -16,6 +16,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -121,7 +122,7 @@ public class LoggingTest {
          }
 
          @Override
-         public void publish(final LogRecord entry) {
+         public void publish(@Nullable final LogRecord entry) {
             count[0]++;
          }
       };
@@ -229,7 +230,8 @@ public class LoggingTest {
          }
 
          @Override
-         public void publish(final LogRecord entry) {
+         public void publish(@Nullable final LogRecord entry) {
+            assert entry != null;
             count[0]++;
             switch (count[0]) {
                case 1:

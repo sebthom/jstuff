@@ -7,6 +7,8 @@ package net.sf.jstuff.core.comparator;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -19,7 +21,7 @@ public class NumberComparator implements Comparator<Number>, Serializable {
    }
 
    @Override
-   public int compare(final Number o1, final Number o2) {
+   public int compare(final @Nullable Number o1, final @Nullable Number o2) {
       if (o1 == null)
          return -1;
       if (o2 == null)

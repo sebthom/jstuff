@@ -7,6 +7,9 @@ package net.sf.jstuff.core.reflection;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -15,7 +18,8 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Proxies {
 
    @SuppressWarnings("unchecked")
-   public static <T> T create(final ClassLoader loader, final InvocationHandler handler, final Class<?>... interfaceTypes) {
+   public static <T> T create(final @Nullable ClassLoader loader, final InvocationHandler handler,
+      final @NonNull Class<?>... interfaceTypes) {
       Args.notNull("loader", loader);
       Args.notNull("handler", handler);
       Args.notEmpty("interfaceTypes", interfaceTypes);
@@ -25,7 +29,7 @@ public abstract class Proxies {
    }
 
    @SuppressWarnings("unchecked")
-   public static <T> T create(final InvocationHandler handler, final Class<?>... interfaceTypes) {
+   public static <T> T create(final InvocationHandler handler, final @NonNull Class<?>... interfaceTypes) {
       Args.notNull("handler", handler);
       Args.notEmpty("interfaceTypes", interfaceTypes);
       Args.noNulls("interfaceTypes", interfaceTypes);

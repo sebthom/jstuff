@@ -40,9 +40,6 @@ public class EvictingDeque<E> extends DelegatingDeque<E> {
 
    @Override
    public boolean addAll(final Collection<? extends E> c) {
-      if (c == null)
-         return false;
-
       boolean modified = false;
       for (final E e : c) {
          if (offerLast(e)) {

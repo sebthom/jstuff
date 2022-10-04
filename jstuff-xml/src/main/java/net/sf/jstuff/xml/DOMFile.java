@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
@@ -66,14 +67,15 @@ public class DOMFile {
    /**
     * Loads an existing XML file.
     */
-   public DOMFile(final File xmlFile, final String rootNamespace) throws IOException, XMLException {
+   public DOMFile(final File xmlFile, final @Nullable String rootNamespace) throws IOException, XMLException {
       this(xmlFile, rootNamespace, (File[]) null);
    }
 
    /**
     * @param rootNamespace optional, may be null
     */
-   public DOMFile(final File xmlFile, final String rootNamespace, final File... xmlSchemaFiles) throws IOException, XMLException {
+   public DOMFile(final File xmlFile, final @Nullable String rootNamespace, final File @Nullable... xmlSchemaFiles) throws IOException,
+      XMLException {
       Args.notNull("xmlFile", xmlFile);
       Assert.isFileReadable(xmlFile);
 
@@ -119,7 +121,7 @@ public class DOMFile {
    /**
     * Creates a new XML element as child of the given parentNode with the given attributes.
     */
-   public Element createElement(final Node parent, final String tagName, final Map<String, String> tagAttributes) {
+   public Element createElement(final Node parent, final String tagName, final @Nullable Map<String, String> tagAttributes) {
       Args.notNull("parent", parent);
       assertNodeBelongsToDocument("parent", parent);
 
@@ -133,14 +135,14 @@ public class DOMFile {
       return DOMUtils.createElementBefore(sibling, tagName);
    }
 
-   public Element createElementBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes) {
+   public Element createElementBefore(final Node sibling, final String tagName, final @Nullable Map<String, String> tagAttributes) {
       Args.notNull("sibling", sibling);
       assertNodeBelongsToDocument("sibling", sibling);
 
       return DOMUtils.createElementBefore(sibling, tagName, tagAttributes);
    }
 
-   public Element createElementWithText(final Node parent, final String tagName, final Map<String, String> tagAttributes,
+   public Element createElementWithText(final Node parent, final String tagName, final @Nullable Map<String, String> tagAttributes,
       final Object text) {
       final Element elem = createElement(parent, tagName, tagAttributes);
       createTextNode(elem, text);
@@ -153,7 +155,7 @@ public class DOMFile {
       return elem;
    }
 
-   public Element createElementWithTextBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes,
+   public Element createElementWithTextBefore(final Node sibling, final String tagName, final @Nullable Map<String, String> tagAttributes,
       final Object text) {
       final Element elem = createElementBefore(sibling, tagName, tagAttributes);
       createTextNode(elem, text);
@@ -235,14 +237,14 @@ public class DOMFile {
       return DOMUtils.evaluateAsString(domRoot, xPathExpression);
    }
 
-   public <T extends Node> T findNode(final Node searchScope, final String xPathExpression) throws XMLException {
+   public <T extends Node> @Nullable T findNode(final Node searchScope, final String xPathExpression) throws XMLException {
       Args.notNull("searchScope", searchScope);
       assertNodeBelongsToDocument("parent", searchScope);
 
       return DOMUtils.findNode(searchScope, xPathExpression);
    }
 
-   public <T extends Node> T findNode(final String xPathExpression) throws XMLException {
+   public <T extends Node> @Nullable T findNode(final String xPathExpression) throws XMLException {
       return findNode(domRoot, xPathExpression);
    }
 
@@ -260,7 +262,8 @@ public class DOMFile {
    /**
     * @param recursive return text content of child nodes
     */
-   public String findTextContent(final Node searchScope, final String xPathExpression, final boolean recursive) throws XMLException {
+   public @Nullable String findTextContent(final Node searchScope, final String xPathExpression, final boolean recursive)
+      throws XMLException {
       Args.notNull("searchScope", searchScope);
       assertNodeBelongsToDocument("parent", searchScope);
 
@@ -270,7 +273,7 @@ public class DOMFile {
    /**
     * @param recursive return text content of child nodes
     */
-   public String findTextContent(final String xPathExpression, final boolean recursive) throws XMLException {
+   public @Nullable String findTextContent(final String xPathExpression, final boolean recursive) throws XMLException {
       return DOMUtils.findTextContent(domRoot, xPathExpression, recursive);
    }
 
@@ -321,7 +324,7 @@ public class DOMFile {
       return xmlFile.getAbsolutePath();
    }
 
-   public Node getFirstChild(final Node parent) {
+   public @Nullable Node getFirstChild(final Node parent) {
       Args.notNull("parent", parent);
       assertNodeBelongsToDocument("parent", parent);
 

@@ -6,8 +6,11 @@ package net.sf.jstuff.core.io.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
 
-import net.sf.jstuff.core.collection.ArrayUtils;
+import org.eclipse.jdt.annotation.NonNull;
+
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.types.Composite;
 import net.sf.jstuff.core.validation.Args;
@@ -19,23 +22,20 @@ public class CompositeInputStream extends InputStream implements Composite<Input
 
    private static final Logger LOG = Logger.create();
 
+   @NonNull
    private final InputStream[] streams;
+   private final List<InputStream> streamsUnmodifiable;
    private InputStream currentStream;
    private int currentStreamIdx;
 
-   public CompositeInputStream(final InputStream... streams) {
-      Args.notNull("streams", streams);
+   public CompositeInputStream(final @NonNull InputStream... streams) {
       Args.notEmpty("streams", streams);
       Args.noNulls("streams", streams);
 
       this.streams = streams;
+      streamsUnmodifiable = List.of(streams);
       currentStreamIdx = 0;
       currentStream = streams[0];
-   }
-
-   @Override
-   public void addComponent(final InputStream stream) {
-      throw new UnsupportedOperationException();
    }
 
    @Override
@@ -62,8 +62,8 @@ public class CompositeInputStream extends InputStream implements Composite<Input
    }
 
    @Override
-   public boolean hasComponent(final InputStream stream) {
-      return ArrayUtils.contains(streams, stream);
+   public Collection<InputStream> getComponents() {
+      return streamsUnmodifiable;
    }
 
    @Override
@@ -106,11 +106,6 @@ public class CompositeInputStream extends InputStream implements Composite<Input
       }
       while (useNextStream());
       return -1;
-   }
-
-   @Override
-   public boolean removeComponent(final InputStream stream) {
-      throw new UnsupportedOperationException();
    }
 
    @Override

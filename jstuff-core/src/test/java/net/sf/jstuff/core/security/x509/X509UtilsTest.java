@@ -14,7 +14,6 @@ import java.security.cert.X509Certificate;
 import org.junit.Test;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.security.KeyTool;
 
 /**
@@ -22,10 +21,11 @@ import net.sf.jstuff.core.security.KeyTool;
  */
 public class X509UtilsTest {
 
+   @SuppressWarnings("null")
    @Test
    public void testWithSelfSignedCert() throws GeneralSecurityException {
-      final Tuple2<X509Certificate, PrivateKey> selfSigned = KeyTool.createSelfSignedCertificate("cn=foo", "RSA", 512, 1);
-      final X509Certificate selfSignedCert = selfSigned.get1();
+      final var selfSigned = KeyTool.createSelfSignedCertificate("cn=foo", "RSA", 512, 1);
+      final var selfSignedCert = selfSigned.get1();
 
       assertThat(X509Utils.isSelfSignedCertificate(selfSignedCert)).isTrue();
       assertThat(X509Utils.isValid(selfSignedCert)).isTrue();
@@ -35,6 +35,7 @@ public class X509UtilsTest {
       assertThat(X509Utils.getOcspResponderURL(selfSignedCert)).isNull();
 
       final String selfSignedCertPEM = X509Utils.toPEM(selfSignedCert);
+      assert selfSignedCertPEM != null;
       assertThat(selfSignedCertPEM) //
          .startsWith("-----BEGIN CERTIFICATE-----" + Strings.NEW_LINE) //
          .endsWith(Strings.NEW_LINE + "-----END CERTIFICATE-----" + Strings.NEW_LINE);
@@ -42,6 +43,7 @@ public class X509UtilsTest {
       assertThat(selfSignedCert2).isEqualTo(selfSignedCert);
 
       final String selfSignedPublicKeyPEM = X509Utils.toPEM(selfSignedCert.getPublicKey());
+      assert selfSignedPublicKeyPEM != null;
       assertThat(selfSignedPublicKeyPEM) //
          .startsWith("-----BEGIN PUBLIC KEY-----" + Strings.NEW_LINE) //
          .endsWith(Strings.NEW_LINE + "-----END PUBLIC KEY-----" + Strings.NEW_LINE);
@@ -50,6 +52,7 @@ public class X509UtilsTest {
       assertThat(selfSignedPublicKey).isEqualTo(selfSignedCert.getPublicKey());
 
       final String selfSignedPrivateKeyPEM = X509Utils.toPEM(selfSigned.get2());
+      assert selfSignedPrivateKeyPEM != null;
       assertThat(selfSignedPrivateKeyPEM) //
          .startsWith("-----BEGIN PRIVATE KEY-----" + Strings.NEW_LINE) //
          .endsWith(Strings.NEW_LINE + "-----END PRIVATE KEY-----" + Strings.NEW_LINE);

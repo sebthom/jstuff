@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import net.sf.jstuff.core.types.Composite;
 
 /**
@@ -19,11 +21,11 @@ public class CompositeLock extends Composite.Default<Lock> implements CloseableL
 
    private static final long serialVersionUID = 1L;
 
-   public CompositeLock(final Collection<Lock> locks) {
+   public CompositeLock(final Collection<@NonNull Lock> locks) {
       super(false, locks);
    }
 
-   public CompositeLock(final Lock... locks) {
+   public CompositeLock(final @NonNull Lock... locks) {
       super(false, locks);
    }
 

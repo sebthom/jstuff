@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -39,7 +41,7 @@ public class MapWithLists<K, V> extends MapWithCollections<K, V, List<V>> {
    }
 
    @Override
-   public List<V> createNullSafe(final Object key) {
+   public List<V> createNullSafe(final @Nullable Object key) {
       return Collections.emptyList();
    }
 }

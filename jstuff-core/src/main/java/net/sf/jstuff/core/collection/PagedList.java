@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -15,7 +16,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class PagedList<E> extends ArrayList<E> {
    private static final long serialVersionUID = 1L;
 
-   private Class<E> elementType;
+   private @Nullable Class<E> elementType;
    private int start;
    private int totalCount;
 
@@ -33,7 +34,7 @@ public class PagedList<E> extends ArrayList<E> {
       this.totalCount = totalCount;
    }
 
-   public Class<E> getElementType() {
+   public @Nullable Class<E> getElementType() {
       return elementType;
    }
 

@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 import net.sf.jstuff.core.logging.Logger;
@@ -50,7 +51,7 @@ public class HashLockManagerTest {
       final CountDownLatch launch = new CountDownLatch(THREADS);
 
       for (int i = 0; i < THREADS; i++) {
-         es.submit((Callable<Void>) () -> {
+         es.submit((Callable<@Nullable Void>) () -> {
             // intentionally generated new object to proof synchronization is not based on lock identity but hashcode identity
             final String namedLock = new String("MY_LOCK");
 
@@ -96,7 +97,7 @@ public class HashLockManagerTest {
       final CountDownLatch launch = new CountDownLatch(THREADS);
 
       for (int i = 0; i < THREADS; i++) {
-         es.submit((Callable<Void>) () -> {
+         es.submit((Callable<@Nullable Void>) () -> {
             final String namedLock = new String("MY_LOCK");
 
             launch.countDown();

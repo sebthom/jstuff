@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.ref;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -13,6 +15,7 @@ public interface MutableRef<V> extends Ref<V> {
 
       protected volatile V value;
 
+      @SuppressWarnings("null")
       protected Default() {
       }
 
@@ -31,7 +34,7 @@ public interface MutableRef<V> extends Ref<V> {
       }
    }
 
-   static <V> MutableRef<V> create() {
+   static <@Nullable V> MutableRef<V> create() {
       return new Default<>();
    }
 

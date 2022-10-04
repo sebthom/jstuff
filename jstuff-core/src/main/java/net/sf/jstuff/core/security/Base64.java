@@ -6,19 +6,19 @@ package net.sf.jstuff.core.security;
 
 import java.nio.charset.StandardCharsets;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.validation.Args;
 
 /**
- * Delegates to java.util.Base64 (Java 8+), javax.xml.bind.DatatypeConverter (Java 6+) or sun.misc.BASE64Decoder (Java 5)
- * depending on the current JVM.
- *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Base64 {
 
    public static final byte[] decode(final byte[] encoded) {
-      if (encoded == null)
-         return null;
+      Args.notNull("encoded", encoded);
+
       if (encoded.length == 0)
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
@@ -31,8 +31,8 @@ public abstract class Base64 {
    }
 
    public static final byte[] decode(final String encoded) {
-      if (encoded == null)
-         return null;
+      Args.notNull("encoded", encoded);
+
       if (encoded.isEmpty())
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
@@ -40,8 +40,8 @@ public abstract class Base64 {
    }
 
    public static String encode(final byte[] plain) {
-      if (plain == null)
-         return null;
+      Args.notNull("plain", plain);
+
       if (plain.length == 0)
          return "";
 
@@ -49,18 +49,21 @@ public abstract class Base64 {
    }
 
    public static String encode(final String plain) {
-      if (plain == null)
-         return null;
+      Args.notNull("plain", plain);
+
       if (plain.isEmpty())
          return "";
 
       return java.util.Base64.getEncoder().encodeToString(plain.getBytes(StandardCharsets.UTF_8));
    }
 
-   public static boolean isBase64(final byte[] bytes) {
+   public static boolean isBase64(final byte @Nullable [] bytes) {
+      if (bytes == null)
+         return false;
       for (final byte ch : bytes) {
          // test a-z, A-Z, +, /, \n, \r, =
-         if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '+' || ch == '/' || ch == '\r' || ch == '\n' || ch == '=') {
+         if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '+' || ch == '/' || ch == '\r' || ch == '\n'
+            || ch == '=') {
             continue;
          }
          return false;
@@ -69,10 +72,14 @@ public abstract class Base64 {
       return true;
    }
 
-   public static boolean isBase64Url(final byte[] bytes) {
+   public static boolean isBase64Url(final byte @Nullable [] bytes) {
+      if (bytes == null)
+         return false;
+
       for (final byte ch : bytes) {
          // test a-z, A-Z, -, _, \n, \r, =
-         if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '-' || ch == '_' || ch == '\r' || ch == '\n' || ch == '=') {
+         if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '-' || ch == '_' || ch == '\r' || ch == '\n'
+            || ch == '=') {
             continue;
          }
          return false;
@@ -82,6 +89,8 @@ public abstract class Base64 {
    }
 
    private static byte[] sanitizeBytes(final byte[] bytes) {
+      Args.notNull("bytes", bytes);
+
       /*
        * count new line chars
        */
@@ -133,8 +142,8 @@ public abstract class Base64 {
    }
 
    public static byte[] urldecode(final byte[] encoded) {
-      if (encoded == null)
-         return null;
+      Args.notNull("encoded", encoded);
+
       if (encoded.length == 0)
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
@@ -142,8 +151,8 @@ public abstract class Base64 {
    }
 
    public static byte[] urldecode(final String encoded) {
-      if (encoded == null)
-         return null;
+      Args.notNull("encoded", encoded);
+
       if (encoded.isEmpty())
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
@@ -151,8 +160,8 @@ public abstract class Base64 {
    }
 
    public static String urlencode(final byte[] plain) {
-      if (plain == null)
-         return null;
+      Args.notNull("plain", plain);
+
       if (plain.length == 0)
          return "";
 
@@ -160,8 +169,8 @@ public abstract class Base64 {
    }
 
    public static String urlencode(final String plain) {
-      if (plain == null)
-         return null;
+      Args.notNull("plain", plain);
+
       if (plain.isEmpty())
          return "";
 

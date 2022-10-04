@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.security.acl;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -14,7 +16,7 @@ public abstract class DelegatingSecurityManagerWithThreadLocalControl extends De
    /**
     * Determines if custom security checks implemented by this class are executed or if calls are only delegated to the underlying security manager
     */
-   private final ThreadLocal<Boolean> isEnabledForThread = new ThreadLocal<>();
+   private final ThreadLocal<@Nullable Boolean> isEnabledForThread = new ThreadLocal<>();
 
    protected DelegatingSecurityManagerWithThreadLocalControl() {
    }

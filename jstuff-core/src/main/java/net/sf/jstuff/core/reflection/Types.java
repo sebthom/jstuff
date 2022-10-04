@@ -34,6 +34,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.SystemUtils;
@@ -57,9 +59,10 @@ public abstract class Types {
       return (T) obj;
    }
 
-   public static <T> T createMixin(final Class<T> objectInterface, final Object... mixins) {
+   public static <T> T createMixin(final Class<T> objectInterface, final @NonNull Object... mixins) {
       Args.notNull("objectInterface", objectInterface);
       Args.notEmpty("mixins", mixins);
+      Args.noNulls("mixins", mixins);
 
       final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<>();
       return Proxies.create((proxy, method, args) -> {
@@ -80,14 +83,14 @@ public abstract class Types {
       }, objectInterface);
    }
 
-   public static <T> T createSynchronized(final Class<T> objectInterface, final T object) {
+   public static <T extends @NonNull Object> T createSynchronized(final Class<T> objectInterface, final T object) {
       Args.notNull("objectInterface", objectInterface);
       Args.notNull("object", object);
 
       return createSynchronized(objectInterface, object, object);
    }
 
-   public static <T> T createSynchronized(final Class<T> objectInterface, final T object, final Object lock) {
+   public static <T extends @NonNull Object> T createSynchronized(final Class<T> objectInterface, final T object, final Object lock) {
       Args.notNull("objectInterface", objectInterface);
       Args.notNull("object", object);
 
@@ -98,7 +101,7 @@ public abstract class Types {
       }, objectInterface);
    }
 
-   public static <T> T createThreadLocalized(final Class<T> objectInterface, final ThreadLocal<T> threadLocal) {
+   public static <T extends @NonNull Object> T createThreadLocalized(final Class<T> objectInterface, final ThreadLocal<T> threadLocal) {
       Args.notNull("objectInterface", objectInterface);
       Args.notNull("threadLocal", threadLocal);
 
@@ -108,6 +111,7 @@ public abstract class Types {
    /**
     * @return null if class not found
     */
+   @Nullable
    public static <T> Class<T> find(final String className) {
       return find(className, true);
    }
@@ -116,6 +120,7 @@ public abstract class Types {
     * @return null if class not found
     */
    @SuppressWarnings("unchecked")
+   @Nullable
    public static <T> Class<T> find(final String className, final boolean initialize) {
       Args.notNull("className", className);
 
@@ -174,22 +179,22 @@ public abstract class Types {
 
       visit(searchIn, new ClassVisitorWithTypeArguments() {
          @Override
-         public boolean isVisiting(final Class<?> clazz, final ParameterizedType type) {
+         public boolean isVisiting(final Class<?> clazz, final @Nullable ParameterizedType type) {
             return searchFor.isAssignableFrom(clazz);
          }
 
          @Override
-         public boolean isVisitingInterfaces(final Class<?> clazz, final ParameterizedType type) {
+         public boolean isVisitingInterfaces(final Class<?> clazz, final @Nullable ParameterizedType type) {
             return isSearchForInterface && searchFor.isAssignableFrom(clazz);
          }
 
          @Override
-         public boolean isVisitingSuperclass(final Class<?> clazz, final ParameterizedType type) {
+         public boolean isVisitingSuperclass(final Class<?> clazz, final @Nullable ParameterizedType type) {
             return searchFor.isAssignableFrom(clazz);
          }
 
          @Override
-         public boolean visit(final Class<?> clazz, final ParameterizedType type) {
+         public boolean visit(final Class<?> clazz, final @Nullable ParameterizedType type) {
             if (type != null) {
                Maps.putAll(genericVariableToArgumentMappings, //
                   /*generic variable*/ clazz.getTypeParameters(), //
@@ -228,6 +233,7 @@ public abstract class Types {
    /**
     * @return the local JAR or root directory containing the given class or null if not detectable
     */
+   @Nullable
    public static File findLibrary(final Class<?> clazz) {
       {
          URI uri = null;
@@ -285,7 +291,7 @@ public abstract class Types {
       return getInterfacesRecursive(clazz, new HashSet<>(2));
    }
 
-   private static Set<Class<?>> getInterfacesRecursive(Class<?> clazz, final Set<Class<?>> result) {
+   private static Set<Class<?>> getInterfacesRecursive(@Nullable Class<?> clazz, final Set<Class<?>> result) {
       while (clazz != null) {
          for (final Class<?> next : clazz.getInterfaces()) {
             result.add(next);
@@ -329,6 +335,7 @@ public abstract class Types {
    /**
     * @return the implementation version of the archive containing the class
     */
+   @Nullable
    public static String getVersion(final Class<?> clazz) {
       /*
        * get version from META-INF/MANIFEST.MF
@@ -336,7 +343,7 @@ public abstract class Types {
       {
          final var pkg = clazz.getPackage();
          if (pkg != null) {
-            final String version = Strings.trim(pkg.getImplementationVersion());
+            final String version = Strings.trimNullable(pkg.getImplementationVersion());
             if (!Strings.isEmpty(version))
                return version;
          }
@@ -369,7 +376,7 @@ public abstract class Types {
                   try (InputStream is = jar.getInputStream(jarEntry)) {
                      final Properties p = new Properties();
                      p.load(is);
-                     final String version = Strings.trim(p.getProperty("version"));
+                     final String version = Strings.trimNullable(p.getProperty("version"));
                      if (!Strings.isEmpty(version))
                         return version;
                      break;
@@ -434,7 +441,7 @@ public abstract class Types {
       return type.getName().indexOf('$') > -1;
    }
 
-   public static boolean isInstanceOf(final Object obj, final Class<?> type) {
+   public static boolean isInstanceOf(final @Nullable Object obj, final Class<?> type) {
       Args.notNull("type", type);
       if (obj == null)
          return false;
@@ -483,7 +490,7 @@ public abstract class Types {
       }
    }
 
-   public static <T> T newInstance(final Class<T> type, final Object... constructorArgs) {
+   public static <T> @NonNull T newInstance(final Class<T> type, final Object... constructorArgs) {
       final var ctor = Constructors.findCompatible(type, constructorArgs);
       if (ctor == null)
          throw new IllegalArgumentException("No constructor found in class [" + type.getName() + "] compatible with give arguments!");
@@ -493,8 +500,8 @@ public abstract class Types {
    /**
     * Tries to read the given value using a getter method or direct field access
     */
-   public static <T> T readProperty(final Object obj, final String propertyName, final Class<? extends T> compatibleTo)
-      throws ReflectionException {
+   public static <T extends @NonNull Object> T readProperty(final Object obj, final String propertyName,
+      final Class<? extends T> compatibleTo) throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);
 
@@ -512,6 +519,7 @@ public abstract class Types {
          + "]");
    }
 
+   @Nullable
    public static Type resolveBound(final TypeVariable<?> typeVariable) {
       final Type[] bounds = typeVariable.getBounds();
       if (bounds.length == 0)
@@ -525,7 +533,10 @@ public abstract class Types {
       return bound == Object.class ? null : bound;
    }
 
-   public static Class<?> resolveUnderlyingClass(final Type type) {
+   @Nullable
+   public static Class<?> resolveUnderlyingClass(final @Nullable Type type) {
+      if (type == null)
+         return null;
       if (type instanceof Class)
          return (Class<?>) type;
       if (type instanceof ParameterizedType)
@@ -549,7 +560,7 @@ public abstract class Types {
       final Queue<Class<?>> toVisit = new LinkedList<>();
       toVisit.add(clazz);
       while (!toVisit.isEmpty()) {
-         final Class<?> current = toVisit.poll();
+         final Class<?> current = toVisit.remove();
 
          if (!visitor.visit(current))
             return;
@@ -588,8 +599,9 @@ public abstract class Types {
       final Queue<Type> toVisit = new LinkedList<>();
       toVisit.add(clazz);
       while (!toVisit.isEmpty()) {
-         final Type current = toVisit.poll();
+         final Type current = toVisit.remove();
 
+         @NonNull
          final Class<?> currentClass;
          final ParameterizedType currentType;
          if (current instanceof ParameterizedType) {
@@ -634,7 +646,7 @@ public abstract class Types {
    /**
     * Tries to write the given value using a setter method or direct field access
     */
-   public static void writeProperty(final Object obj, final String propertyName, final Object value) throws ReflectionException {
+   public static void writeProperty(final Object obj, final String propertyName, final @Nullable Object value) throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);
 
@@ -659,7 +671,7 @@ public abstract class Types {
    /**
     * Tries to write the given value using a setter method or direct field access
     */
-   public static void writePropertyIgnoringFinal(final Object obj, final String propertyName, final Object value)
+   public static void writePropertyIgnoringFinal(final Object obj, final String propertyName, final @Nullable Object value)
       throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);

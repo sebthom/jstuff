@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 import net.sf.jstuff.core.comparator.SortDirection;
@@ -35,7 +36,7 @@ public class MapsTest {
 
    @Test
    public void testSortByValueAsc() {
-      final var map = new HashMap<String, Integer>();
+      final var map = new HashMap<@Nullable String, Integer>();
       map.put("e", 3);
       map.put("d", 2);
       map.put("c", 2);

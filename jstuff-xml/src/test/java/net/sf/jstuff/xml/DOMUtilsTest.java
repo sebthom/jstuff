@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.xml;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
@@ -28,7 +29,7 @@ public class DOMUtilsTest {
    @Test
    public void testCreateCommentBefore() {
       final Element elem = DOMUtils.parseString("<foo id='myid'><bar/></foo>", null).getDocumentElement();
-      DOMUtils.createCommentBefore(DOMUtils.findNode(elem, "/foo/bar"), "MY_COMMENT");
+      DOMUtils.createCommentBefore(asNonNull(DOMUtils.findNode(elem, "/foo/bar")), "MY_COMMENT");
       assertThat(DOMUtils.toXML(elem, false, false)).isEqualTo("<foo id=\"myid\"><!--MY_COMMENT--><bar/></foo>");
    }
 
@@ -87,16 +88,16 @@ public class DOMUtilsTest {
          .containsKey("/top/child[@name='bar']/text()") //
          .containsKey("/top/child[@name='bar']/@name") //
          .containsKey("/top/child[@name='bar']/@weight");
-      assertThat(diff.rightOnlyEntries.get("/top/child[@name='bar']/text()").value).isEqualTo("ABCD");
-      assertThat(diff.rightOnlyEntries.get("/top/child[@name='bar']/@name").value).isEqualTo("bar");
-      assertThat(diff.rightOnlyEntries.get("/top/child[@name='bar']/@weight").value).isEqualTo("2");
+      assertThat(asNonNull(diff.rightOnlyEntries.get("/top/child[@name='bar']/text()")).value).isEqualTo("ABCD");
+      assertThat(asNonNull(diff.rightOnlyEntries.get("/top/child[@name='bar']/@name")).value).isEqualTo("bar");
+      assertThat(asNonNull(diff.rightOnlyEntries.get("/top/child[@name='bar']/@weight")).value).isEqualTo("2");
 
       assertThat(diff.entryValueDiffs.get(0).key).isEqualTo("/top/child[@name='foo']/@weight");
-      assertThat(diff.entryValueDiffs.get(0).leftValue.value).isEqualTo("1");
-      assertThat(diff.entryValueDiffs.get(0).rightValue.value).isEqualTo("2");
+      assertThat(asNonNull(diff.entryValueDiffs.get(0).leftValue).value).isEqualTo("1");
+      assertThat(asNonNull(diff.entryValueDiffs.get(0).rightValue).value).isEqualTo("2");
       assertThat(diff.entryValueDiffs.get(1).key).isEqualTo("/top/child[@name='foo']/text()");
-      assertThat(diff.entryValueDiffs.get(1).leftValue.value).isEqualTo("1234");
-      assertThat(diff.entryValueDiffs.get(1).rightValue.value).isEqualTo("ABCD");
+      assertThat(asNonNull(diff.entryValueDiffs.get(1).leftValue).value).isEqualTo("1234");
+      assertThat(asNonNull(diff.entryValueDiffs.get(1).rightValue).value).isEqualTo("ABCD");
    }
 
    @Test
@@ -157,6 +158,7 @@ public class DOMUtilsTest {
    @Test
    public void testToXML() throws XMLException {
       final Document doc = DOMUtils.parseString("<foo id='1'><bar name='name'>blabla</bar></foo>", null);
-      assertThat(DOMUtils.toXML(doc.getFirstChild().getFirstChild(), false, false)).isEqualTo("<bar name=\"name\">blabla</bar>");
+      assertThat(DOMUtils.toXML(asNonNull(asNonNull(doc.getFirstChild()).getFirstChild()), false, false)).isEqualTo(
+         "<bar name=\"name\">blabla</bar>");
    }
 }

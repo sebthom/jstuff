@@ -6,8 +6,10 @@ package net.sf.jstuff.core.comparator;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Objects;
 import java.util.TreeSet;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -15,18 +17,20 @@ import org.junit.Test;
  */
 public class PropertyComparatorTest {
    private static final class Entity {
+      @Nullable
       String name;
 
       @SuppressWarnings("unused")
+      @Nullable
       Entity child;
 
-      private Entity(final String name) {
+      private Entity(@Nullable final String name) {
          this.name = name;
       }
 
       @Override
       public String toString() {
-         return name;
+         return Objects.toString(name);
       }
    }
 

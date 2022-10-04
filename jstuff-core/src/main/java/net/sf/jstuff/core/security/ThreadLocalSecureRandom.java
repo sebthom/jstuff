@@ -15,6 +15,8 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.builder.Builder;
 import net.sf.jstuff.core.builder.BuilderFactory;
@@ -130,6 +132,7 @@ public class ThreadLocalSecureRandom extends SecureRandom {
       protected SecureRandom initialValue() {
          seedTimestamp = System.currentTimeMillis();
          try {
+            final var algorithm = ThreadLocalSecureRandom.this.algorithm;
             if (algorithm != null) {
                if (algorithmProvider instanceof String)
                   return SecureRandom.getInstance(algorithm, (String) algorithmProvider);
@@ -160,7 +163,9 @@ public class ThreadLocalSecureRandom extends SecureRandom {
 
    private long reseedMS = -1;
 
+   @Nullable
    private String algorithm;
+   @Nullable
    private Object algorithmProvider;
    private boolean useStrongInstances;
    private final boolean isInitialized;
@@ -301,7 +306,7 @@ public class ThreadLocalSecureRandom extends SecureRandom {
       useStrongInstances = false;
    }
 
-   protected void setReseedEvery(final Duration value) {
+   protected void setReseedEvery(final @Nullable Duration value) {
       if (value == null || value.toMillis() < 1) {
          reseedMS = -1;
       } else {
@@ -313,7 +318,7 @@ public class ThreadLocalSecureRandom extends SecureRandom {
     * @throws UnsupportedOperationException always
     */
    @Override
-   public void setSeed(final byte[] seed) {
+   public void setSeed(final byte @Nullable [] seed) {
       throw new UnsupportedOperationException();
    }
 

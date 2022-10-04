@@ -35,6 +35,7 @@ public final class Tuple5<T1, T2, T3, T4, T5> extends AbstractList<Object> imple
    }
 
    @Override
+   @SuppressWarnings("null")
    public Object get(final int index) {
       switch (index) {
          case 0:

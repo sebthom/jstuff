@@ -14,6 +14,9 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -26,7 +29,7 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
    }
 
    @SafeVarargs
-   public static <V> CompositeSet<V> of(final Set<? extends V>... sets) {
+   public static <V> CompositeSet<V> of(final @NonNull Set<? extends V>... sets) {
       return new CompositeSet<>(sets);
    }
 
@@ -38,12 +41,12 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
    }
 
    @SafeVarargs
-   public CompositeSet(final Set<? extends V>... sets) {
+   public CompositeSet(final @NonNull Set<? extends V>... sets) {
       super(sets);
    }
 
    @Override
-   public boolean equals(final Object obi) {
+   public boolean equals(final @Nullable Object obi) {
       if (obi == this)
          return true;
       if (!(obi instanceof Set))

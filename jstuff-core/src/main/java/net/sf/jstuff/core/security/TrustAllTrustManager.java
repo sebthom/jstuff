@@ -6,10 +6,12 @@ package net.sf.jstuff.core.security;
 
 import java.security.cert.X509Certificate;
 
+import javax.net.ssl.X509TrustManager;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TrustAllTrustManager implements javax.net.ssl.X509TrustManager {
+public class TrustAllTrustManager implements X509TrustManager {
 
    private static final X509Certificate[] NO_CERTS = new X509Certificate[0];
 

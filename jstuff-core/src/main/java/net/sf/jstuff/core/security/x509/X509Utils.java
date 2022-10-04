@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.security.x509;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +48,8 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.MoreFiles;
@@ -85,8 +89,7 @@ public abstract class X509Utils {
     */
    @SuppressWarnings("deprecation")
    public static X509Certificate convert(final javax.security.cert.X509Certificate cert) {
-      if (cert == null)
-         return null;
+      Args.notNull("cert", cert);
       try (var bis = new FastByteArrayInputStream(cert.getEncoded())) {
          return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(bis);
       } catch (final Exception ex) {
@@ -99,8 +102,7 @@ public abstract class X509Utils {
     */
    @SuppressWarnings("deprecation")
    public static javax.security.cert.X509Certificate convert(final X509Certificate cert) {
-      if (cert == null)
-         return null;
+      Args.notNull("cert", cert);
       try {
          return javax.security.cert.X509Certificate.getInstance(cert.getEncoded());
       } catch (final Exception ex) {
@@ -201,10 +203,10 @@ public abstract class X509Utils {
    /**
     * @return the first CN found
     */
-   public static String getCN(final X509Certificate cert) {
+   public static @Nullable String getCN(final X509Certificate cert) {
       Args.notNull("cert", cert);
+      final String subjectPrincipal = cert.getSubjectX500Principal().getName(X500Principal.RFC2253);
       try {
-         final String subjectPrincipal = cert.getSubjectX500Principal().getName(X500Principal.RFC2253);
          for (final Rdn rdn : new LdapName(subjectPrincipal).getRdns()) {
             final Attribute cnAttr = rdn.toAttributes().get("cn");
             if (cnAttr != null) {
@@ -351,6 +353,7 @@ public abstract class X509Utils {
     *
     * @return null if OCSP URL is not specified or is not a HTTP or LDAP URL
     */
+   @Nullable
    public static String getOcspResponderURL(final X509Certificate cert) {
       Args.notNull("cert", cert);
       // https://tools.ietf.org/html/rfc4325#section-2
@@ -415,7 +418,7 @@ public abstract class X509Utils {
       final Matcher keyMatcher = PRIVATE_KEY_PATTERN.matcher(pemContent);
       final byte[] privateKey;
       if (keyMatcher.find()) {
-         privateKey = Base64.decode(keyMatcher.group(1));
+         privateKey = Base64.decode(asNonNull(keyMatcher.group(1)));
       } else {
          privateKey = Base64.decode(pemContent);
       }
@@ -455,7 +458,7 @@ public abstract class X509Utils {
       final Matcher keyMatcher = PUBLIC_KEY_PATTERN.matcher(pemContent);
       final byte[] publicKey;
       if (keyMatcher.find()) {
-         publicKey = Base64.decode(keyMatcher.group(1));
+         publicKey = Base64.decode(asNonNull(keyMatcher.group(1)));
       } else {
          publicKey = Base64.decode(pemContent);
       }
@@ -512,11 +515,10 @@ public abstract class X509Utils {
    /**
     * Performs a case-insensitive comparison of the DNs ignoring whitespaces between name components.
     */
-   @SuppressWarnings("null")
-   public static boolean isEqualDN(String dn1, String dn2) {
-      if (dn1 == dn2)
-         return true;
-      if (dn1 == null ? dn2 != null : dn2 == null)
+   public static boolean isEqualDN(@Nullable String dn1, @Nullable String dn2) {
+      if (dn1 == null)
+         return dn2 == null;
+      if (dn2 == null)
          return false;
       if (dn1.equalsIgnoreCase(dn2))
          return true;
@@ -536,17 +538,18 @@ public abstract class X509Utils {
          }
          dn2 = Strings.join(parts, ',');
       }
-      return dn1.equalsIgnoreCase(dn2);
+      return asNonNullUnsafe(dn1).equalsIgnoreCase(dn2);
    }
 
    public static boolean isExpired(final X509Certificate cert) {
+      Args.notNull("cert", cert);
       return cert.getNotAfter().getTime() < System.currentTimeMillis();
    }
 
    /**
     * Performs a case-insensitive comparison of the issuer DNs.
     */
-   public static boolean isIssuerDN(final X509Certificate cert, final String issuerDN) {
+   public static boolean isIssuerDN(final @Nullable X509Certificate cert, final @Nullable String issuerDN) {
       if (cert == null || issuerDN == null)
          return false;
 
@@ -567,7 +570,7 @@ public abstract class X509Utils {
    /**
     * Performs a case-insensitive comparison of the subject DNs.
     */
-   public static boolean isSubjectDN(final X509Certificate cert, final String subjectDN) {
+   public static boolean isSubjectDN(final @Nullable X509Certificate cert, final @Nullable String subjectDN) {
       if (cert == null || subjectDN == null)
          return false;
 
@@ -577,9 +580,10 @@ public abstract class X509Utils {
    /**
     * @return true if the current date/time is within the validity period given in the certificate
     */
-   public static boolean isValid(final X509Certificate cert) {
+   public static boolean isValid(final @Nullable X509Certificate cert) {
       if (cert == null)
          return false;
+
       try {
          cert.checkValidity();
          return true;
@@ -588,20 +592,27 @@ public abstract class X509Utils {
       }
    }
 
-   public static boolean isValidFor(final X509Certificate cert, final Duration duration) {
+   public static boolean isValidFor(final @Nullable X509Certificate cert, final Duration duration) {
+      if (cert == null)
+         return false;
+
       Args.notNull("duration", duration);
       return getValidityDuration(cert).compareTo(duration) >= 0;
    }
 
-   public static boolean isX509Certificate(final Certificate cert) {
+   public static boolean isX509Certificate(final @Nullable Certificate cert) {
       if (cert == null)
          return false;
       return cert instanceof X509Certificate;
    }
 
-   private static String toPEM(final byte[] data, final String type, final int charsPerLine) {
+   @Nullable
+   private static String toPEM(final byte @Nullable [] data, final String type, final int charsPerLine) {
+      if (data == null)
+         return null;
+
       final char[] encoded = Base64.encode(data).toCharArray();
-      final StringBuilder sb = new StringBuilder(encoded.length + 70);
+      final var sb = new StringBuilder(encoded.length + 70);
       sb.append("-----BEGIN ").append(type).append("-----").append(Strings.NEW_LINE);
       for (int i = 0; i < encoded.length; i += charsPerLine) {
          if (encoded.length - i < charsPerLine) {
@@ -615,19 +626,23 @@ public abstract class X509Utils {
       return sb.toString();
    }
 
-   public static String toPEM(final PrivateKey key) {
+   @Nullable
+   public static String toPEM(final @Nullable PrivateKey key) {
       return key == null ? null : toPEM(key.getEncoded(), "PRIVATE KEY", 64);
    }
 
-   public static String toPEM(final PublicKey key) {
+   @Nullable
+   public static String toPEM(final @Nullable PublicKey key) {
       return key == null ? null : toPEM(key.getEncoded(), "PUBLIC KEY", 64);
    }
 
-   public static String toPEM(final X509Certificate cert) throws CertificateEncodingException {
+   @Nullable
+   public static String toPEM(final @Nullable X509Certificate cert) throws CertificateEncodingException {
       return cert == null ? null : toPEM(cert.getEncoded(), "CERTIFICATE", 64);
    }
 
-   public static String toPEM(final X509CRL crl) throws CRLException {
+   @Nullable
+   public static String toPEM(final @Nullable X509CRL crl) throws CRLException {
       return crl == null ? null : toPEM(crl.getEncoded(), "X509 CRL", 64);
    }
 

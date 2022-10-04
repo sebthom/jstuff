@@ -7,6 +7,8 @@ package net.sf.jstuff.core.io;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -15,6 +17,7 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class CharSequenceReader extends Reader {
+   @Nullable
    private CharSequence text;
    private int next;
    private int mark;
@@ -28,9 +31,11 @@ public class CharSequenceReader extends Reader {
       text = null;
    }
 
-   private void ensureOpen() throws IOException {
+   private CharSequence ensureOpen() throws IOException {
+      final var text = this.text;
       if (text == null)
          throw new IOException("Stream closed");
+      return text;
    }
 
    @Override
@@ -47,7 +52,7 @@ public class CharSequenceReader extends Reader {
 
    @Override
    public int read() throws IOException {
-      ensureOpen();
+      final var text = ensureOpen();
       if (next >= text.length())
          return IOUtils.EOF;
       return text.charAt(next++);
@@ -55,7 +60,7 @@ public class CharSequenceReader extends Reader {
 
    @Override
    public int read(final char[] cbuf, final int off, final int len) throws IOException {
-      ensureOpen();
+      final var text = ensureOpen();
 
       if (off < 0 || off > cbuf.length || len < 0 || off + len > cbuf.length || off + len < 0)
          throw new IndexOutOfBoundsException();
@@ -96,7 +101,8 @@ public class CharSequenceReader extends Reader {
 
    @Override
    public long skip(final long ns) throws IOException {
-      ensureOpen();
+      final var text = ensureOpen();
+
       if (next >= text.length())
          return 0;
       // Bound skip by beginning and end of the source

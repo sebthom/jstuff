@@ -4,6 +4,11 @@
  */
 package net.sf.jstuff.core.logging;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.concurrent.ThreadSafe;
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.validation.Args;
@@ -22,7 +27,7 @@ import net.sf.jstuff.core.validation.Args;
 public interface Logger {
 
    static Logger create() {
-      final String name = StackTrace.getCallerStackTraceElement(Logger.class).getClassName();
+      final String name = asNonNullUnsafe(StackTrace.getCallerStackTraceElement(Logger.class)).getClassName();
       return LoggerConfig.create(name);
    }
 
@@ -36,24 +41,24 @@ public interface Logger {
       return LoggerConfig.create(name);
    }
 
-   static <I> I createLogged(final I object, final Class<I> primaryInterface, final Class<?>... secondaryInterfaces) {
+   static <@NonNull I> I createLogged(final I object, final Class<I> primaryInterface, final Class<?> @Nullable... secondaryInterfaces) {
       return LoggerUtils.createLogged(object, primaryInterface, secondaryInterfaces);
    }
 
-   void debug(String msg);
+   void debug(@Nullable String msg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
     * @param arg Argument referenced by the format specifiers in the message template.
     */
-   void debug(String messageTemplate, Object arg);
+   void debug(String messageTemplate, @Nullable Object arg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
     * @param arg1 Argument referenced by the format specifiers in the message template.
     * @param arg2 Argument referenced by the format specifiers in the message template.
     */
-   void debug(String messageTemplate, Object arg1, Object arg2);
+   void debug(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -61,7 +66,7 @@ public interface Logger {
     * @param arg2 Argument referenced by the format specifiers in the message template.
     * @param arg3 Argument referenced by the format specifiers in the message template.
     */
-   void debug(String messageTemplate, Object arg1, Object arg2, Object arg3);
+   void debug(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -70,7 +75,7 @@ public interface Logger {
     * @param arg3 Argument referenced by the format specifiers in the message template.
     * @param arg4 Argument referenced by the format specifiers in the message template.
     */
-   void debug(String messageTemplate, Object arg1, Object arg2, Object arg3, Object arg4);
+   void debug(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -80,11 +85,12 @@ public interface Logger {
     * @param arg4 Argument referenced by the format specifiers in the message template.
     * @param arg5 Argument referenced by the format specifiers in the message template.
     */
-   void debug(String messageTemplate, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5);
+   void debug(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4,
+      @Nullable Object arg5);
 
    void debug(Throwable ex);
 
-   void debug(Throwable ex, String msg);
+   void debug(Throwable ex, @Nullable String msg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -106,42 +112,42 @@ public interface Logger {
    /**
     * Logs a method entry at TRACE level.
     */
-   void entry(Object arg1);
+   void entry(@Nullable Object arg1);
 
    /**
     * Logs a method entry at TRACE level.
     */
-   void entry(Object arg1, Object arg2);
+   void entry(@Nullable Object arg1, @Nullable Object arg2);
 
    /**
     * Logs a method entry at TRACE level.
     */
-   void entry(Object arg1, Object arg2, Object arg3);
+   void entry(@Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3);
 
    /**
     * Logs a method entry at TRACE level.
     */
-   void entry(Object arg1, Object arg2, Object arg3, Object arg4);
+   void entry(@Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4);
 
    /**
     * Logs a method entry at TRACE level.
     */
-   void entry(Object arg1, Object arg2, Object arg3, Object arg4, Object arg5);
+   void entry(@Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4, @Nullable Object arg5);
 
-   void error(String msg);
+   void error(@Nullable String msg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
     * @param arg Argument referenced by the format specifiers in the message template.
     */
-   void error(String messageTemplate, Object arg);
+   void error(String messageTemplate, @Nullable Object arg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
     * @param arg1 Argument referenced by the format specifiers in the message template.
     * @param arg2 Argument referenced by the format specifiers in the message template.
     */
-   void error(String messageTemplate, Object arg1, Object arg2);
+   void error(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -149,7 +155,7 @@ public interface Logger {
     * @param arg2 Argument referenced by the format specifiers in the message template.
     * @param arg3 Argument referenced by the format specifiers in the message template.
     */
-   void error(String messageTemplate, Object arg1, Object arg2, Object arg3);
+   void error(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -158,7 +164,7 @@ public interface Logger {
     * @param arg3 Argument referenced by the format specifiers in the message template.
     * @param arg4 Argument referenced by the format specifiers in the message template.
     */
-   void error(String messageTemplate, Object arg1, Object arg2, Object arg3, Object arg4);
+   void error(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -168,11 +174,12 @@ public interface Logger {
     * @param arg4 Argument referenced by the format specifiers in the message template.
     * @param arg5 Argument referenced by the format specifiers in the message template.
     */
-   void error(String messageTemplate, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5);
+   void error(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4,
+      @Nullable Object arg5);
 
    void error(Throwable ex);
 
-   void error(Throwable ex, String msg);
+   void error(Throwable ex, @Nullable String msg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -201,7 +208,7 @@ public interface Logger {
    /**
     * Creates a log entry at ERROR level and always logs the full stack trace.
     */
-   void fatal(Throwable ex, String msg);
+   void fatal(Throwable ex, @Nullable String msg);
 
    /**
     * Creates a log entry at ERROR level and always logs the full stack trace.
@@ -217,20 +224,20 @@ public interface Logger {
     */
    String getName();
 
-   void info(String msg);
+   void info(@Nullable String msg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
     * @param arg Argument referenced by the format specifiers in the message template.
     */
-   void info(String messageTemplate, Object arg);
+   void info(String messageTemplate, @Nullable Object arg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
     * @param arg1 Argument referenced by the format specifiers in the message template.
     * @param arg2 Argument referenced by the format specifiers in the message template.
     */
-   void info(String messageTemplate, Object arg1, Object arg2);
+   void info(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -238,7 +245,7 @@ public interface Logger {
     * @param arg2 Argument referenced by the format specifiers in the message template.
     * @param arg3 Argument referenced by the format specifiers in the message template.
     */
-   void info(String messageTemplate, Object arg1, Object arg2, Object arg3);
+   void info(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -247,7 +254,7 @@ public interface Logger {
     * @param arg3 Argument referenced by the format specifiers in the message template.
     * @param arg4 Argument referenced by the format specifiers in the message template.
     */
-   void info(String messageTemplate, Object arg1, Object arg2, Object arg3, Object arg4);
+   void info(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -257,11 +264,12 @@ public interface Logger {
     * @param arg4 Argument referenced by the format specifiers in the message template.
     * @param arg5 Argument referenced by the format specifiers in the message template.
     */
-   void info(String messageTemplate, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5);
+   void info(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4,
+      @Nullable Object arg5);
 
    void info(Throwable ex);
 
-   void info(Throwable ex, String msg);
+   void info(Throwable ex, @Nullable String msg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -285,20 +293,20 @@ public interface Logger {
 
    boolean isWarnEnabled();
 
-   void trace(String msg);
+   void trace(@Nullable String msg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
     * @param arg Argument referenced by the format specifiers in the message template.
     */
-   void trace(String messageTemplate, Object arg);
+   void trace(String messageTemplate, @Nullable Object arg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
     * @param arg1 Argument referenced by the format specifiers in the message template.
     * @param arg2 Argument referenced by the format specifiers in the message template.
     */
-   void trace(String messageTemplate, Object arg1, Object arg2);
+   void trace(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -306,7 +314,7 @@ public interface Logger {
     * @param arg2 Argument referenced by the format specifiers in the message template.
     * @param arg3 Argument referenced by the format specifiers in the message template.
     */
-   void trace(String messageTemplate, Object arg1, Object arg2, Object arg3);
+   void trace(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -315,7 +323,7 @@ public interface Logger {
     * @param arg3 Argument referenced by the format specifiers in the message template.
     * @param arg4 Argument referenced by the format specifiers in the message template.
     */
-   void trace(String messageTemplate, Object arg1, Object arg2, Object arg3, Object arg4);
+   void trace(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -325,11 +333,12 @@ public interface Logger {
     * @param arg4 Argument referenced by the format specifiers in the message template.
     * @param arg5 Argument referenced by the format specifiers in the message template.
     */
-   void trace(String messageTemplate, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5);
+   void trace(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4,
+      @Nullable Object arg5);
 
    void trace(Throwable ex);
 
-   void trace(Throwable ex, String msg);
+   void trace(Throwable ex, @Nullable String msg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -338,20 +347,20 @@ public interface Logger {
     */
    void trace(Throwable ex, String messageTemplate, Object... args);
 
-   void warn(String msg);
+   void warn(@Nullable String msg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
     * @param arg Argument referenced by the format specifiers in the message template.
     */
-   void warn(String messageTemplate, Object arg);
+   void warn(String messageTemplate, @Nullable Object arg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
     * @param arg1 Argument referenced by the format specifiers in the message template.
     * @param arg2 Argument referenced by the format specifiers in the message template.
     */
-   void warn(String messageTemplate, Object arg1, Object arg2);
+   void warn(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -359,7 +368,7 @@ public interface Logger {
     * @param arg2 Argument referenced by the format specifiers in the message template.
     * @param arg3 Argument referenced by the format specifiers in the message template.
     */
-   void warn(String messageTemplate, Object arg1, Object arg2, Object arg3);
+   void warn(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -368,7 +377,7 @@ public interface Logger {
     * @param arg3 Argument referenced by the format specifiers in the message template.
     * @param arg4 Argument referenced by the format specifiers in the message template.
     */
-   void warn(String messageTemplate, Object arg1, Object arg2, Object arg3, Object arg4);
+   void warn(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
@@ -378,11 +387,12 @@ public interface Logger {
     * @param arg4 Argument referenced by the format specifiers in the message template.
     * @param arg5 Argument referenced by the format specifiers in the message template.
     */
-   void warn(String messageTemplate, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5);
+   void warn(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4,
+      @Nullable Object arg5);
 
    void warn(Throwable ex);
 
-   void warn(Throwable ex, String msg);
+   void warn(Throwable ex, @Nullable String msg);
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.

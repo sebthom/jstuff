@@ -6,6 +6,8 @@ package net.sf.jstuff.xml.stream;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 
 /**
@@ -20,7 +22,7 @@ public class ExtendedXMLStreamReader extends DelegatingXMLStreamReader {
       super(wrapped);
    }
 
-   public String getAttributeValue(final String attrLocalName) {
+   public @Nullable String getAttributeValue(final String attrLocalName) {
       for (int i = 0; i < getAttributeCount(); i++) {
          final String localName = getAttributeLocalName(i);
          if (localName.equals(attrLocalName))

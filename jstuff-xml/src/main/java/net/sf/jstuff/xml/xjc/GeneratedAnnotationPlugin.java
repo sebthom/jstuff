@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.xml.xjc;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.xml.sax.ErrorHandler;
 
 import com.sun.codemodel.JAnnotatable;
@@ -38,6 +39,7 @@ public class GeneratedAnnotationPlugin extends AbstractPlugin {
       return "  -" + OPTION_NAME + "    :  mark the generated types as @javax.annotation.Generated";
    }
 
+   @Nullable
    private JClass generatedAnnotation;
 
    @Override

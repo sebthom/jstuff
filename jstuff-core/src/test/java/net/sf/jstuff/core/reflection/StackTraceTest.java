@@ -6,6 +6,7 @@ package net.sf.jstuff.core.reflection;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -14,7 +15,7 @@ import org.junit.Test;
 public class StackTraceTest {
    private static class Outer {
       private static class Inner {
-         private void ensureEquals(final Object a, final Object b) {
+         private void ensureEquals(@Nullable final Object a, @Nullable final Object b) {
             assertThat(b).isEqualTo(a);
          }
 
@@ -22,11 +23,11 @@ public class StackTraceTest {
             ensureEquals("net.sf.jstuff.core.reflection.StackTraceTest$Outer$Inner", StackTrace.getThisStackTraceElement().getClassName());
             ensureEquals("innerMethod", StackTrace.getThisMethodName());
             ensureEquals("innerMethod", StackTrace.getThisStackTraceElement().getMethodName());
-            ensureEquals(25, StackTrace.getThisLineNumber());
+            ensureEquals(26, StackTrace.getThisLineNumber());
             ensureEquals("StackTraceTest.java", StackTrace.getThisFileName());
 
             ensureEquals("outerMethod", StackTrace.getCallerMethodName());
-            ensureEquals(39, StackTrace.getCallerLineNumber());
+            ensureEquals(40, StackTrace.getCallerLineNumber());
             ensureEquals("StackTraceTest.java", StackTrace.getCallerFileName());
             ensureEquals(Outer.class.getName(), StackTrace.getCallerClassName());
             ensureEquals(Outer.class, StackTrace.getCallerClass());

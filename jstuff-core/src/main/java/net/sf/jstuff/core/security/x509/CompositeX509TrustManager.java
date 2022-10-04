@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.net.ssl.X509TrustManager;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -31,7 +33,7 @@ public class CompositeX509TrustManager implements X509TrustManager {
       this.trustManagers = new ArrayList<>(trustManagers);
    }
 
-   public CompositeX509TrustManager(final X509TrustManager... trustManagers) {
+   public CompositeX509TrustManager(final @NonNull X509TrustManager... trustManagers) {
       Args.notNull("keyManagers", trustManagers);
       Args.noNulls("trustManagers", trustManagers);
 
@@ -39,7 +41,7 @@ public class CompositeX509TrustManager implements X509TrustManager {
    }
 
    @Override
-   public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
+   public void checkClientTrusted(final @NonNull X509Certificate[] chain, final String authType) throws CertificateException {
       for (final X509TrustManager trustManager : trustManagers) {
          try {
             trustManager.checkClientTrusted(chain, authType);
@@ -52,7 +54,7 @@ public class CompositeX509TrustManager implements X509TrustManager {
    }
 
    @Override
-   public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
+   public void checkServerTrusted(final @NonNull X509Certificate[] chain, final String authType) throws CertificateException {
       for (final X509TrustManager trustManager : trustManagers) {
          try {
             trustManager.checkServerTrusted(chain, authType);
@@ -66,7 +68,7 @@ public class CompositeX509TrustManager implements X509TrustManager {
 
    @Override
    public X509Certificate[] getAcceptedIssuers() {
-      final List<X509Certificate> result = new ArrayList<>();
+      final var result = new ArrayList<X509Certificate>();
       for (final X509TrustManager trustManager : trustManagers) {
          CollectionUtils.addAll(result, trustManager.getAcceptedIssuers());
       }

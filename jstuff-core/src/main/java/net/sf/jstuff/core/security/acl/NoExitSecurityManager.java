@@ -6,6 +6,8 @@ package net.sf.jstuff.core.security.acl;
 
 import java.security.Permission;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Security manager that prevents calls to {@link System#exit(int)}
  *
@@ -17,6 +19,7 @@ public class NoExitSecurityManager extends DelegatingSecurityManagerWithThreadLo
 
       private static final long serialVersionUID = 1L;
 
+      @Nullable
       private final Integer status;
 
       public ExitNotAllowedException() {
@@ -29,6 +32,7 @@ public class NoExitSecurityManager extends DelegatingSecurityManagerWithThreadLo
          this.status = status;
       }
 
+      @Nullable
       public Integer getStatus() {
          return status;
       }

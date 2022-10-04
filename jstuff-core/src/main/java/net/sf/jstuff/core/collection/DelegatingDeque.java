@@ -7,6 +7,8 @@ package net.sf.jstuff.core.collection;
 import java.util.Deque;
 import java.util.Iterator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -51,11 +53,13 @@ public abstract class DelegatingDeque<V> extends DelegatingQueue<V> implements D
       return delegate.removeLast();
    }
 
+   @Nullable
    @Override
    public V pollFirst() {
       return delegate.pollFirst();
    }
 
+   @Nullable
    @Override
    public V pollLast() {
       return delegate.pollLast();
@@ -71,23 +75,25 @@ public abstract class DelegatingDeque<V> extends DelegatingQueue<V> implements D
       return delegate.getLast();
    }
 
+   @Nullable
    @Override
    public V peekFirst() {
       return delegate.peekFirst();
    }
 
+   @Nullable
    @Override
    public V peekLast() {
       return delegate.peekLast();
    }
 
    @Override
-   public boolean removeFirstOccurrence(final Object o) {
+   public boolean removeFirstOccurrence(final @Nullable Object o) {
       return delegate.removeFirstOccurrence(o);
    }
 
    @Override
-   public boolean removeLastOccurrence(final Object o) {
+   public boolean removeLastOccurrence(final @Nullable Object o) {
       return delegate.removeLastOccurrence(o);
    }
 

@@ -4,11 +4,16 @@
  */
 package net.sf.jstuff.core.collection;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.reflection.Types;
 import net.sf.jstuff.core.types.Composite;
@@ -25,7 +30,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
    }
 
    @SafeVarargs
-   public static <K, V> CompositeMap<K, V> of(final Map<? extends K, ? extends V>... maps) {
+   public static <K, V> CompositeMap<K, V> of(final @NonNull Map<? extends K, ? extends V>... maps) {
       return new CompositeMap<>(maps);
    }
 
@@ -37,7 +42,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
    }
 
    @SafeVarargs
-   public CompositeMap(final Map<? extends K, ? extends V>... maps) {
+   public CompositeMap(final @NonNull Map<? extends K, ? extends V>... maps) {
       super(maps);
    }
 
@@ -47,7 +52,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
    }
 
    @Override
-   public boolean containsKey(final Object key) {
+   public boolean containsKey(final @Nullable Object key) {
       for (final Map<? extends K, ? extends V> m : components)
          if (m.containsKey(key))
             return true;
@@ -55,7 +60,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
    }
 
    @Override
-   public boolean containsValue(final Object value) {
+   public boolean containsValue(final @Nullable Object value) {
       for (final Map<? extends K, ? extends V> m : components)
          if (m.containsValue(value))
             return true;
@@ -66,14 +71,15 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
    public CompositeSet<Entry<K, V>> entrySet() {
       final CompositeSet<Entry<K, V>> entries = new CompositeSet<>();
       for (final Map<? extends K, ? extends V> m : components) {
-         final Collection<? extends Entry<K, V>> set = Types.cast(m.entrySet());
-         entries.addComponent(set);
+         final @NonNull Collection<? extends Entry<K, V>> set = Types.cast(m.entrySet());
+         entries.getComponents().add(set);
       }
       return entries;
    }
 
    @Override
-   public V get(final Object key) {
+   @Nullable
+   public V get(final @Nullable Object key) {
       for (final Map<? extends K, ? extends V> m : components)
          if (m.containsKey(key))
             return m.get(key);
@@ -92,13 +98,14 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
    public Set<K> keySet() {
       final CompositeSet<K> keys = new CompositeSet<>();
       for (final Map<? extends K, ? extends V> m : components) {
-         keys.addComponent(m.keySet());
+         keys.getComponents().add(m.keySet());
       }
       return keys;
    }
 
+   @Nullable
    @Override
-   public V put(final Object key, final Object value) {
+   public V put(final K key, final V value) {
       throw new UnsupportedOperationException();
    }
 
@@ -107,8 +114,9 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
       throw new UnsupportedOperationException();
    }
 
+   @Nullable
    @Override
-   public V remove(final Object key) {
+   public V remove(final @Nullable Object key) {
       throw new UnsupportedOperationException();
    }
 
@@ -126,7 +134,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
             for (final Iterator<K> it = keySet().iterator(); it.hasNext(); i++) {
                final K key = it.next();
                if (i == index)
-                  return CompositeMap.this.get(key);
+                  return asNonNullUnsafe(CompositeMap.this.get(key));
             }
             throw new IndexOutOfBoundsException("Index: " + index);
          }

@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -29,12 +30,12 @@ public class SyncEventDispatcherTest {
       final AtomicLong listener2Count = new AtomicLong();
       final EventListener<String> listener2 = new FilteringEventListener<>() {
          @Override
-         public boolean accept(final String event) {
+         public boolean accept(@Nullable final String event) {
             return event != null && event.length() < 5;
          }
 
          @Override
-         public void onEvent(final String event) {
+         public void onEvent(@Nullable final String event) {
             listener2Count.incrementAndGet();
          }
       };

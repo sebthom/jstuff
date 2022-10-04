@@ -16,6 +16,7 @@ import org.apache.commons.lang3.mutable.MutableByte;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.apache.commons.lang3.mutable.MutableShort;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -50,7 +51,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
    private static final BigDecimal LONG_MAX_VALUE_BD = BigDecimal.valueOf(Long.MAX_VALUE);
    private static final BigDecimal LONG_MIN_VALUE_BD = BigDecimal.valueOf(Long.MIN_VALUE);
 
-   public static boolean isByte(final Number number) {
+   public static boolean isByte(final @Nullable Number number) {
       if (number == null)
          return false;
 
@@ -82,7 +83,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
       return BYTE_MAX_VALUE_BD.compareTo(bd) >= 0 && BYTE_MIN_VALUE_BD.compareTo(bd) <= 0;
    }
 
-   public static boolean isInteger(final BigInteger number) {
+   public static boolean isInteger(final @Nullable BigInteger number) {
       if (number == null)
          return false;
 
@@ -93,7 +94,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
       return number <= Integer.MAX_VALUE && number >= Integer.MIN_VALUE;
    }
 
-   public static boolean isInteger(final Number number) {
+   public static boolean isInteger(final @Nullable Number number) {
       if (number == null)
          return false;
 
@@ -126,7 +127,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
       return INTEGER_MAX_VALUE_BD.compareTo(bd) >= 0 && INTEGER_MIN_VALUE_BD.compareTo(bd) <= 0;
    }
 
-   public static boolean isLong(final Number number) {
+   public static boolean isLong(final @Nullable Number number) {
       if (number == null)
          return false;
 
@@ -156,7 +157,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
       return LONG_MAX_VALUE_BD.compareTo(bd) >= 0 && LONG_MIN_VALUE_BD.compareTo(bd) <= 0;
    }
 
-   public static boolean isShort(final Number number) {
+   public static boolean isShort(final @Nullable Number number) {
       if (number == null)
          return false;
 
@@ -189,7 +190,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
       return SHORT_MAX_VALUE_BD.compareTo(bd) >= 0 && SHORT_MIN_VALUE_BD.compareTo(bd) <= 0;
    }
 
-   public static boolean isWhole(final Number number) {
+   public static boolean isWhole(final @Nullable Number number) {
       if (number == null)
          return false;
 
@@ -213,9 +214,6 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
    }
 
    public static BigDecimal toBigDecimal(final Number number) {
-      if (number == null)
-         return null;
-
       final BigDecimal bd;
       if (number instanceof BigDecimal) {
          bd = (BigDecimal) number;
@@ -230,9 +228,6 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
    }
 
    public static BigInteger toBigInteger(final UUID uuid) {
-      if (uuid == null)
-         return null;
-
       return new BigInteger(1, //
          ByteBuffer.wrap(new byte[16]) //
             .putLong(uuid.getMostSignificantBits())//

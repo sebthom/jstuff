@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.zip.Deflater;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.io.stream.ZippedBlockInputStream;
 import net.sf.jstuff.core.io.stream.ZippedBlockOutputStream;
 
@@ -17,8 +19,8 @@ import net.sf.jstuff.core.io.stream.ZippedBlockOutputStream;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ZippedBlockSocket extends Socket {
-   private ZippedBlockInputStream in;
-   private ZippedBlockOutputStream out;
+   private @Nullable ZippedBlockInputStream in;
+   private @Nullable ZippedBlockOutputStream out;
 
    public ZippedBlockSocket() {
    }
@@ -37,8 +39,9 @@ public class ZippedBlockSocket extends Socket {
    @SuppressWarnings("resource")
    @Override
    public InputStream getInputStream() throws IOException {
+      var in = this.in;
       if (in == null) {
-         in = new ZippedBlockInputStream(super.getInputStream());
+         in = this.in = new ZippedBlockInputStream(super.getInputStream());
       }
       return in;
    }
@@ -46,8 +49,9 @@ public class ZippedBlockSocket extends Socket {
    @SuppressWarnings("resource")
    @Override
    public OutputStream getOutputStream() throws IOException {
+      var out = this.out;
       if (out == null) {
-         out = new ZippedBlockOutputStream(super.getOutputStream(), 1024);
+         out = this.out = new ZippedBlockOutputStream(super.getOutputStream(), 1024);
          out.getCompressor().setStrategy(Deflater.DEFAULT_STRATEGY);
          out.getCompressor().setLevel(Deflater.BEST_COMPRESSION);
       }

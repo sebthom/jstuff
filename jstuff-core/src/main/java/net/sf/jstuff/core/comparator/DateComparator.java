@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Date;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -20,7 +22,7 @@ public class DateComparator implements Comparator<Date>, Serializable {
    }
 
    @Override
-   public int compare(final Date o1, final Date o2) {
+   public int compare(final @Nullable Date o1, final @Nullable Date o2) {
       if (o1 == null)
          return -1;
       if (o2 == null)

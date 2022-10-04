@@ -4,11 +4,15 @@
  */
 package net.sf.jstuff.core.net;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.logging.Logger;
 
@@ -21,6 +25,7 @@ public abstract class AbstractServer {
    protected final Executor executor;
    protected volatile boolean isRunning;
    protected final int portNumber;
+   @Nullable
    protected ServerSocket socketListener;
 
    protected AbstractServer(final int portNumber, final int numberOfThreads) {
@@ -55,7 +60,7 @@ public abstract class AbstractServer {
             @Override
             public void run() {
                try {
-                  socketListener = new ServerSocket(portNumber);
+                  final var socketListener = AbstractServer.this.socketListener = new ServerSocket(portNumber);
 
                   while (true) {
                      @SuppressWarnings("resource")
@@ -90,7 +95,7 @@ public abstract class AbstractServer {
    public synchronized void stopServer() throws IOException {
       if (isRunning) {
          isRunning = false;
-         socketListener.close();
+         asNonNull(socketListener).close();
       }
    }
 }

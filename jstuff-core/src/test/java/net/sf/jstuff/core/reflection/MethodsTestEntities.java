@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.reflection;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Test classes are placed in a separate place because of
  * https://stackoverflow.com/questions/34763339/methodhandle-private-method-called-using-findvirtual
@@ -13,9 +15,11 @@ package net.sf.jstuff.core.reflection;
 public abstract class MethodsTestEntities {
 
    public static class EntityA {
+      @Nullable
       private EntityA property1;
       private int property2;
 
+      @Nullable
       protected EntityA getProperty1() {
          return property1;
       }
@@ -40,6 +44,7 @@ public abstract class MethodsTestEntities {
 
       private boolean property3;
 
+      @Nullable
       @Override
       public EntityA getProperty1() {
          return super.getProperty1();

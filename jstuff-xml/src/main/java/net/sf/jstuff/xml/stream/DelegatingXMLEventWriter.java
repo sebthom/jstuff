@@ -10,6 +10,8 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.types.Decorator;
 
 /**
@@ -50,12 +52,12 @@ public class DelegatingXMLEventWriter extends Decorator.Default<XMLEventWriter> 
    }
 
    @Override
-   public String getPrefix(final String uri) throws XMLStreamException {
+   public @Nullable String getPrefix(final @Nullable String uri) throws XMLStreamException {
       return wrapped.getPrefix(uri);
    }
 
    @Override
-   public void setDefaultNamespace(final String uri) throws XMLStreamException {
+   public void setDefaultNamespace(final @Nullable String uri) throws XMLStreamException {
       wrapped.setDefaultNamespace(uri);
    }
 
@@ -65,7 +67,7 @@ public class DelegatingXMLEventWriter extends Decorator.Default<XMLEventWriter> 
    }
 
    @Override
-   public void setPrefix(final String prefix, final String uri) throws XMLStreamException {
+   public void setPrefix(final String prefix, final @Nullable String uri) throws XMLStreamException {
       wrapped.setPrefix(prefix, uri);
    }
 }

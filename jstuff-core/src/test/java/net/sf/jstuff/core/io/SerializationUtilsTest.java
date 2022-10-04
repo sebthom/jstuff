@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -16,6 +17,7 @@ import org.junit.Test;
 public class SerializationUtilsTest {
 
    public static final class Entity {
+      @Nullable
       private String name;
 
       public Entity() {
@@ -26,7 +28,7 @@ public class SerializationUtilsTest {
       }
 
       @Override
-      public boolean equals(final Object obj) {
+      public boolean equals(@Nullable final Object obj) {
          if (this == obj)
             return true;
          if (obj == null || getClass() != obj.getClass())
@@ -37,6 +39,7 @@ public class SerializationUtilsTest {
          return true;
       }
 
+      @Nullable
       public String getName() {
          return name;
       }
@@ -46,7 +49,7 @@ public class SerializationUtilsTest {
          return Objects.hash(name);
       }
 
-      public void setName(final String name) {
+      public void setName(@Nullable final String name) {
          this.name = name;
       }
    }

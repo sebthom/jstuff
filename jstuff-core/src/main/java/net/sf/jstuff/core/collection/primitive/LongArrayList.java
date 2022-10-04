@@ -11,6 +11,8 @@ import java.util.function.LongConsumer;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.functional.LongBiConsumer;
 import net.sf.jstuff.core.math.Numbers;
 import net.sf.jstuff.core.validation.Args;
@@ -183,7 +185,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
     */
    @Deprecated
    @Override
-   public boolean remove(final Object o) {
+   public boolean remove(final @Nullable Object o) {
       if (o instanceof Number) {
          final Number n = (Number) o;
          return Numbers.isLong(n) && removeValue(n.longValue());

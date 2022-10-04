@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.jbean;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import net.sf.jstuff.core.event.EventListener;
 import net.sf.jstuff.core.jbean.changelog.PropertyChangeEvent;
 import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
@@ -16,7 +18,7 @@ public interface JBean<Type extends JBean<Type>> {
 
    void _unsubscribe(EventListener<PropertyChangeEvent> listener);
 
-   <PType> PType _get(PropertyDescriptor<PType> property);
+   <PType> @NonNull PType _get(PropertyDescriptor<PType> property);
 
    <PType> Type _set(PropertyDescriptor<PType> property, PType value);
 }

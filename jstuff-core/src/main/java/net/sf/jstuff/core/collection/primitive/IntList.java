@@ -6,6 +6,8 @@ package net.sf.jstuff.core.collection.primitive;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -50,7 +52,7 @@ public interface IntList extends IntCollection, List<Integer> {
     */
    @Deprecated
    @Override
-   boolean remove(Object o);
+   boolean remove(@Nullable Object o);
 
    /**
     * @throws IndexOutOfBoundsException if the index is out of range (<tt>index &lt; 0 || index &gt;= size()</tt>)

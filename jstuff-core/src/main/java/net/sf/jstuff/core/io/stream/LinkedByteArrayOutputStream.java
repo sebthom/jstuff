@@ -10,6 +10,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -22,6 +24,7 @@ public class LinkedByteArrayOutputStream extends OutputStream {
 
    private static final int DEFAULT_BLOCK_SIZE = 4096;
 
+   @Nullable
    private LinkedList<byte[]> blocks;
    private byte[] block;
    private final int blockSize;
@@ -54,8 +57,9 @@ public class LinkedByteArrayOutputStream extends OutputStream {
    }
 
    protected void nextBlock() {
+      var blocks = this.blocks;
       if (blocks == null) {
-         blocks = new LinkedList<>();
+         blocks = this.blocks = new LinkedList<>();
       }
 
       blocks.addLast(block);

@@ -6,6 +6,8 @@ package net.sf.jstuff.core.collection.ext;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -40,6 +42,7 @@ public interface ListExt<E> extends List<E>, CollectionExt<E> {
    /**
     * Gets the last element of the list or null if empty.
     */
+   @Nullable
    default E getLastOrNull() {
       if (isEmpty())
          return null;

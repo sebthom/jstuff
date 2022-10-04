@@ -7,7 +7,7 @@ package net.sf.jstuff.core.comparator;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import net.sf.jstuff.core.validation.Args;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -15,16 +15,16 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class SortByComparator<T, SortKeyType> implements Comparator<T>, Serializable {
    private static final long serialVersionUID = 1L;
 
-   private SortBy<SortKeyType>[] sortBy;
+   private SortBy<@NonNull SortKeyType>[] sortBy;
 
    @SafeVarargs
-   protected SortByComparator(final SortBy<SortKeyType>... sortBy) {
-      setSortBy(sortBy);
+   protected SortByComparator(final @NonNull SortBy<SortKeyType>... sortBy) {
+      this.sortBy = sortBy;
    }
 
    @Override
    public int compare(final T o1, final T o2) {
-      for (final SortBy<SortKeyType> sb : sortBy) {
+      for (final var sb : sortBy) {
          final int i = compareByKey(o1, o2, sb.getKey());
          if (i == 0) {
             continue;
@@ -41,8 +41,7 @@ public abstract class SortByComparator<T, SortKeyType> implements Comparator<T>,
    protected abstract Comparator<T> getComparator(SortKeyType sortKey);
 
    @SafeVarargs
-   public final void setSortBy(final SortBy<SortKeyType>... sortBy) {
-      Args.notNull("sortBy", sortBy);
+   public final void setSortBy(final @NonNull SortBy<SortKeyType>... sortBy) {
       this.sortBy = sortBy;
    }
 }

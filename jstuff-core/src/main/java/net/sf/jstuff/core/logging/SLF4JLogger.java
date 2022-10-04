@@ -9,6 +9,7 @@ import static org.slf4j.spi.LocationAwareLogger.*;
 
 import java.lang.reflect.Method;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
@@ -25,23 +26,22 @@ final class SLF4JLogger implements LoggerInternal {
    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(SLF4JLogger.class);
 
    private final org.slf4j.Logger logger;
+
+   @Nullable
    private final LocationAwareLogger loggerEx;
-   private final boolean isLocationAware;
    private final String loggerName;
 
    SLF4JLogger(final String name) {
       logger = LoggerFactory.getLogger(name);
       loggerName = logger.getName();
       if (logger instanceof LocationAwareLogger) {
-         isLocationAware = logger instanceof LocationAwareLogger;
          loggerEx = (LocationAwareLogger) logger;
       } else {
-         isLocationAware = false;
          loggerEx = null;
       }
    }
 
-   private void _log(final int level, final String message) {
+   private void _log(final int level, final @Nullable String message) {
       final String effectiveMessage;
       if (LoggerConfig.isAddLocationToDebugMessages && logger.isDebugEnabled()) {
          final StackTraceElement caller = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
@@ -56,7 +56,7 @@ final class SLF4JLogger implements LoggerInternal {
          effectiveMessage = message;
       }
 
-      if (isLocationAware) {
+      if (loggerEx != null) {
          loggerEx.log(null, DelegatingLogger.FQCN, level, effectiveMessage, null, null);
       } else {
          switch (level) {
@@ -79,7 +79,7 @@ final class SLF4JLogger implements LoggerInternal {
       }
    }
 
-   private void _log(final int level, final String message, final Throwable ex) {
+   private void _log(final int level, final @Nullable String message, final @Nullable Throwable ex) {
       if (ex == null) {
          _log(level, message);
          return;
@@ -129,7 +129,7 @@ final class SLF4JLogger implements LoggerInternal {
          }
       }
 
-      if (isLocationAware) {
+      if (loggerEx != null) {
          loggerEx.log(null, DelegatingLogger.FQCN, level, effectiveMessage, null, effectiveException);
       } else {
          switch (level) {
@@ -153,7 +153,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void debug(final String msg) {
+   public void debug(final @Nullable String msg) {
       if (!logger.isDebugEnabled())
          return;
 
@@ -161,7 +161,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg) {
+   public void debug(final String messageTemplate, final @Nullable Object arg) {
       if (!logger.isDebugEnabled())
          return;
 
@@ -169,7 +169,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg1, final Object arg2) {
+   public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2) {
       if (!logger.isDebugEnabled())
          return;
 
@@ -177,7 +177,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
+   public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       if (!logger.isDebugEnabled())
          return;
 
@@ -185,7 +185,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4) {
       if (!logger.isDebugEnabled())
          return;
 
@@ -193,8 +194,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void debug(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
-      final Object arg5) {
+   public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4, final @Nullable Object arg5) {
       if (!logger.isDebugEnabled())
          return;
 
@@ -210,7 +211,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void debug(final Throwable ex, final String msg) {
+   public void debug(final Throwable ex, final @Nullable String msg) {
       if (!logger.isDebugEnabled())
          return;
 
@@ -249,7 +250,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void entry(final Object arg1) {
+   public void entry(final @Nullable Object arg1) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -257,7 +258,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void entry(final Object arg1, final Object arg2) {
+   public void entry(final @Nullable Object arg1, final @Nullable Object arg2) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -265,7 +266,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void entry(final Object arg1, final Object arg2, final Object arg3) {
+   public void entry(final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -273,7 +274,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void entry(final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3, final @Nullable Object arg4) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -281,7 +282,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void entry(final Object arg1, final Object arg2, final Object arg3, final Object arg4, final Object arg5) {
+   public void entry(final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3, final @Nullable Object arg4,
+      final @Nullable Object arg5) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -289,7 +291,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void error(final String msg) {
+   public void error(final @Nullable String msg) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -297,7 +299,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg) {
+   public void error(final String messageTemplate, final @Nullable Object arg) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -305,7 +307,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg1, final Object arg2) {
+   public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -313,7 +315,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
+   public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -321,7 +323,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -329,8 +332,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void error(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
-      final Object arg5) {
+   public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4, final @Nullable Object arg5) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -346,7 +349,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void error(final Throwable ex, final String msg) {
+   public void error(final Throwable ex, final @Nullable String msg) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -387,7 +390,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void fatal(final Throwable ex, final String msg) {
+   public void fatal(final Throwable ex, final @Nullable String msg) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -415,7 +418,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void info(final String msg) {
+   public void info(final @Nullable String msg) {
       if (!logger.isInfoEnabled())
          return;
 
@@ -423,7 +426,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg) {
+   public void info(final String messageTemplate, final @Nullable Object arg) {
       if (!logger.isInfoEnabled())
          return;
 
@@ -431,7 +434,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg1, final Object arg2) {
+   public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2) {
       if (!logger.isInfoEnabled())
          return;
 
@@ -439,7 +442,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
+   public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       if (!logger.isInfoEnabled())
          return;
 
@@ -447,7 +450,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4) {
       if (!logger.isInfoEnabled())
          return;
 
@@ -455,8 +459,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void info(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
-      final Object arg5) {
+   public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4, final @Nullable Object arg5) {
       if (!logger.isInfoEnabled())
          return;
 
@@ -472,7 +476,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void info(final Throwable ex, final String msg) {
+   public void info(final Throwable ex, final @Nullable String msg) {
       if (!logger.isInfoEnabled())
          return;
 
@@ -536,7 +540,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void trace(final String msg) {
+   public void trace(final @Nullable String msg) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -544,7 +548,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg) {
+   public void trace(final String messageTemplate, final @Nullable Object arg) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -552,7 +556,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg1, final Object arg2) {
+   public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -560,7 +564,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
+   public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -568,7 +572,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -576,8 +581,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void trace(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
-      final Object arg5) {
+   public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4, final @Nullable Object arg5) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -593,7 +598,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void trace(final Throwable ex, final String msg) {
+   public void trace(final Throwable ex, final @Nullable String msg) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -609,7 +614,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void warn(final String msg) {
+   public void warn(final @Nullable String msg) {
       if (!logger.isWarnEnabled())
          return;
 
@@ -617,7 +622,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg) {
+   public void warn(final String messageTemplate, final @Nullable Object arg) {
       if (!logger.isWarnEnabled())
          return;
 
@@ -625,7 +630,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg1, final Object arg2) {
+   public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2) {
       if (!logger.isWarnEnabled())
          return;
 
@@ -633,7 +638,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3) {
+   public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3) {
       if (!logger.isWarnEnabled())
          return;
 
@@ -641,7 +646,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4) {
+   public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4) {
       if (!logger.isWarnEnabled())
          return;
 
@@ -649,8 +655,8 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void warn(final String messageTemplate, final Object arg1, final Object arg2, final Object arg3, final Object arg4,
-      final Object arg5) {
+   public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
+      final @Nullable Object arg4, final @Nullable Object arg5) {
       if (!logger.isWarnEnabled())
          return;
 
@@ -666,7 +672,7 @@ final class SLF4JLogger implements LoggerInternal {
    }
 
    @Override
-   public void warn(final Throwable ex, final String msg) {
+   public void warn(final Throwable ex, final @Nullable String msg) {
       if (!logger.isWarnEnabled())
          return;
 

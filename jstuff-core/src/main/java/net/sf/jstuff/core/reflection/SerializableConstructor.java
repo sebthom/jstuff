@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -19,8 +22,8 @@ public final class SerializableConstructor implements Serializable {
    private static final long serialVersionUID = 1L;
 
    private transient Constructor<?> constructor;
-   private Class<?> declaringClass;
-   private Class<?>[] parameterTypes;
+   private @Nullable Class<?> declaringClass;
+   private @NonNull Class<?> @Nullable [] parameterTypes;
 
    public SerializableConstructor(final Constructor<?> constructor) {
       Args.notNull("constructor", constructor);
@@ -33,15 +36,17 @@ public final class SerializableConstructor implements Serializable {
    }
 
    public Class<?> getDeclaringClass() {
+      var declaringClass = this.declaringClass;
       if (declaringClass == null) {
-         declaringClass = constructor.getDeclaringClass();
+         declaringClass = this.declaringClass = constructor.getDeclaringClass();
       }
       return declaringClass;
    }
 
-   public Class<?>[] getParameterTypes() {
+   public @NonNull Class<?>[] getParameterTypes() {
+      var parameterTypes = this.parameterTypes;
       if (parameterTypes == null) {
-         parameterTypes = constructor.getParameterTypes();
+         parameterTypes = this.parameterTypes = constructor.getParameterTypes();
       }
       return parameterTypes;
    }
@@ -49,7 +54,7 @@ public final class SerializableConstructor implements Serializable {
    private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
       in.defaultReadObject();
       try {
-         constructor = declaringClass.getDeclaredConstructor(parameterTypes);
+         constructor = getDeclaringClass().getDeclaredConstructor(parameterTypes);
       } catch (final NoSuchMethodException ex) {
          throw new IOException(ex);
       }

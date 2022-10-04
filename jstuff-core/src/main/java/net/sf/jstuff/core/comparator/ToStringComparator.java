@@ -9,10 +9,12 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ToStringComparator<T> implements Comparator<T>, Serializable {
+public class ToStringComparator<@Nullable T> implements Comparator<T>, Serializable {
    private static final long serialVersionUID = 1L;
 
    private static final ToStringComparator<?> INSTANCE = new ToStringComparator<>(Locale.getDefault());
@@ -21,10 +23,11 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable {
     * Shared comparator instance for default locale.
     */
    @SuppressWarnings("unchecked")
-   public static <T> ToStringComparator<T> get() {
+   public static <@Nullable T> ToStringComparator<T> get() {
       return (ToStringComparator<T>) INSTANCE;
    }
 
+   @Nullable
    private transient Collator collator;
    private final Locale locale;
 
@@ -44,8 +47,9 @@ public class ToStringComparator<T> implements Comparator<T>, Serializable {
    }
 
    private Collator getCollator() {
+      var collator = this.collator;
       if (collator == null) {
-         collator = Collator.getInstance(locale);
+         collator = this.collator = Collator.getInstance(locale);
       }
       return collator;
    }

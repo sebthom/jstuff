@@ -8,6 +8,8 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.reflection.Fields;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
@@ -31,6 +33,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
       this.strict = strict;
    }
 
+   @Nullable
    @Override
    @SuppressWarnings("unchecked")
    public <T> T getValueAt(final Object root, final String path) {
@@ -65,12 +68,14 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
       return strict;
    }
 
+   @Nullable
    @Override
    public ObjectGraphNavigationResult navigateTo(final Object root, final String path) throws ReflectionException {
       Args.notNull("root", root);
       Args.notNull("path", path);
 
       Object parent = null;
+      @Nullable
       Object target = root;
       AccessibleObject targetAccessor = null;
       for (final String chunk : path.split("\\.")) {

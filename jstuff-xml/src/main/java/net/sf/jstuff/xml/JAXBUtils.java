@@ -12,6 +12,8 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
@@ -78,7 +80,7 @@ public abstract class JAXBUtils {
          final StreamResult result = new StreamResult(out);
          JAXBContext.newInstance(xmlRootClasses).generateSchema(new SchemaOutputResolver() {
             @Override
-            public Result createOutput(final String namespaceURI, final String suggestedFileName) throws IOException {
+            public @Nullable Result createOutput(final String namespaceURI, final String suggestedFileName) throws IOException {
                result.setSystemId(new File(suggestedFileName));
                return result;
             }

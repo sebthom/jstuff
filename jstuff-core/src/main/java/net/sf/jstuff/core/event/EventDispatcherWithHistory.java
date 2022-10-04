@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.core.event;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.Future;
@@ -16,7 +17,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 @ThreadSafe
 public class EventDispatcherWithHistory<EVENT> implements EventDispatcher<EVENT> {
-   private List<EVENT> eventHistory;
+   private List<EVENT> eventHistory = Collections.emptyList();
    private final EventDispatcher<EVENT> wrapped;
 
    public EventDispatcherWithHistory(final EventDispatcher<EVENT> wrapped) {

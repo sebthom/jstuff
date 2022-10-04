@@ -5,9 +5,12 @@
 package net.sf.jstuff.core.jbean.meta;
 
 import static java.util.Collections.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.io.Serializable;
 import java.util.Map;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.reflection.Types;
@@ -27,21 +30,20 @@ public final class PropertyDescriptor<P> implements Serializable {
       final boolean ordered, //
       final boolean unique, //
       final boolean container, //
-      final String description, //
+      final @Nullable String description, //
       final Map<String, ? extends Serializable> properties //
    ) {
       synchronized (metaClass) {
-         final PropertyDescriptor<P> p = new PropertyDescriptor<>();
-         p.metaClass = metaClass;
-         p.name = name;
-         p.lowerBound = lowerBound;
-         p.upperBound = upperBound;
-         p.type = type;
-         p.ordered = ordered;
-         p.unique = unique;
-         p.container = container;
-         p.description = description == null ? "" : description;
-         p.properties = unmodifiableMap(Maps.newHashMap(properties));
+         final var p = new PropertyDescriptor<>(metaClass, //
+            name, //
+            type, //
+            lowerBound, //
+            upperBound, //
+            ordered, //
+            unique, //
+            container, //
+            description == null ? "" : description, //
+            properties);
          metaClass.addProperty(p);
          return p;
       }
@@ -60,7 +62,27 @@ public final class PropertyDescriptor<P> implements Serializable {
    private transient boolean writable;
    private transient Map<String, ? extends Serializable> properties;
 
-   private PropertyDescriptor() {
+   private PropertyDescriptor(final ClassDescriptor<?> metaClass, // CHECKSTYLE:IGNORE ParameterNumber
+      final String name, //
+      final Class<P> type, //
+      final int lowerBound, //
+      final int upperBound, //
+      final boolean ordered, //
+      final boolean unique, //
+      final boolean container, //
+      final String description, //
+      final Map<String, ? extends Serializable> properties //
+   ) {
+      this.metaClass = metaClass;
+      this.name = name;
+      this.lowerBound = lowerBound;
+      this.upperBound = upperBound;
+      this.type = type;
+      this.ordered = ordered;
+      this.unique = unique;
+      this.container = container;
+      this.description = description;
+      this.properties = unmodifiableMap(Maps.newHashMap(properties));
    }
 
    public String getDescription() {
@@ -122,7 +144,7 @@ public final class PropertyDescriptor<P> implements Serializable {
 
    private Object readResolve() {
       synchronized (metaClass.getType()) {
-         return metaClass.getProperties().get(name);
+         return asNonNullUnsafe(metaClass.getProperties().get(name));
       }
    }
 
@@ -132,7 +154,8 @@ public final class PropertyDescriptor<P> implements Serializable {
 
    @Override
    public String toString() {
-      return "PropertyDescriptor [name=" + name + ", description=" + description + ", lowerBound=" + lowerBound + ", upperBound=" + upperBound + ", type="
-         + type + ", container=" + container + ", ordered=" + ordered + ", unique=" + unique + ", writable=" + writable + "]";
+      return "PropertyDescriptor [name=" + name + ", description=" + description + ", lowerBound=" + lowerBound + ", upperBound="
+         + upperBound + ", type=" + type + ", container=" + container + ", ordered=" + ordered + ", unique=" + unique + ", writable="
+         + writable + "]";
    }
 }

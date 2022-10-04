@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.tuple.Tuple2;
@@ -39,7 +41,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
       private final Object[] constructorArgs;
 
       private Builder.Property propertyDefaults;
-      private final Map<String, Builder.Property> propertyConfig = new HashMap<>(2);
+      private final Map<String, Builder.@Nullable Property> propertyConfig = new HashMap<>(2);
       private final List<Method> onPostBuilds = new ArrayList<>(2);
 
       /**
@@ -53,7 +55,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
          this.constructorArgs = constructorArgs;
 
          // collecting annotation information on builder interface
-         final var propertyDefaultsRef = MutableRef.of((Builder.Property) null);
+         final var propertyDefaultsRef = MutableRef.of((Builder.@Nullable Property) null);
          Types.visit(builderInterface, new DefaultClassVisitor() {
             @Override
             public boolean isVisitingFields(final Class<?> clazz) {
@@ -123,6 +125,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
 
          // setting properties
          for (final Tuple2<String, Object[]> property : properties) {
+            @NonNull
             String propName = property.get1();
             // remove "with" prefix from withSomeProperty(...) named properties
             if (propName.length() > 4 && propName.startsWith("with")) {
@@ -187,7 +190,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
        * handles invocation of withXYZ on builder interface
        */
       @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      public @Nullable Object invoke(final Object proxy, final Method method, final Object @Nullable [] args) throws Throwable {
          final boolean isBuildMethod = "build".equals(method.getName()) //
             && method.getParameterTypes().length == 0 //
             && method.getReturnType().isAssignableFrom(targetClass);
@@ -227,7 +230,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
    private final Object[] constructorArgs;
 
    @SuppressWarnings("unchecked")
-   protected BuilderFactory(final Class<BLDR_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass,
+   protected BuilderFactory(final Class<BLDR_IFACE> builderInterface, @Nullable Class<TARGET_CLASS> targetClass,
       final Object... constructorArgs) {
       Args.notNull("builderInterface", builderInterface);
 
@@ -236,11 +239,11 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
 
       this.builderInterface = builderInterface;
 
-      this.targetClass = targetClass == null //
-         ? (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0]
-         : targetClass;
+      if (targetClass == null) {
+         targetClass = (Class<TARGET_CLASS>) Types.findGenericTypeArguments(builderInterface, Builder.class)[0];
+      }
 
-      Args.notNull("targetClass", this.targetClass);
+      this.targetClass = Args.notNull("targetClass", targetClass);
 
       if (this.targetClass.isInterface())
          throw new IllegalArgumentException("[targetClass] '" + this.targetClass.getName() + "' is an interface.");
@@ -251,7 +254,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
       this.constructorArgs = constructorArgs;
    }
 
-   public BLDR_IFACE create() {
+   public @NonNull BLDR_IFACE create() {
       return Proxies.create(new BuilderImpl(builderInterface, targetClass, constructorArgs), builderInterface);
    }
 }

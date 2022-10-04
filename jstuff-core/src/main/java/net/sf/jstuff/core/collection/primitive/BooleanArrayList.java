@@ -8,6 +8,9 @@ import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.RandomAccess;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
@@ -165,7 +168,7 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
     */
    @Deprecated
    @Override
-   public boolean remove(final Object o) {
+   public boolean remove(final @Nullable Object o) {
       if (o instanceof Boolean)
          return removeValue((Boolean) o);
       return false;
@@ -253,7 +256,7 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
       if (array.getClass().getComponentType() == int.class) {
          if (array.length == size)
             return array;
-         final var result = array.length >= size ? array : (T[]) java.lang.reflect.Array.newInstance(boolean.class, size);
+         final var result = array.length >= size ? array : (T @NonNull []) java.lang.reflect.Array.newInstance(boolean.class, size);
          System.arraycopy(values, size, result, 0, size);
          return result;
       }

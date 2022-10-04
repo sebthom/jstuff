@@ -11,6 +11,7 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -23,6 +24,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.SerializationUtils;
 import net.sf.jstuff.core.validation.Args;
@@ -34,7 +37,7 @@ public class AESEncryptor {
    public static final class AESSealedObject extends SealedObject {
       private static final long serialVersionUID = 1L;
 
-      private byte[] iv;
+      private byte @Nullable [] iv;
 
       public AESSealedObject(final Serializable obj, final Cipher cipher) throws IOException, IllegalBlockSizeException {
          super(obj, cipher);
@@ -70,7 +73,7 @@ public class AESEncryptor {
          final Cipher cipher = ciphers.get();
          // the first 16 bytes are the initial vector
          final byte[] iv = ArrayUtils.subarray(data, 0, 16);
-         final byte[] encrypted = ArrayUtils.subarray(data, 16, data.length);
+         final byte[] encrypted = Arrays.copyOfRange(data, 16, data.length);
          cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
          return cipher.doFinal(encrypted);
       } catch (final GeneralSecurityException ex) {

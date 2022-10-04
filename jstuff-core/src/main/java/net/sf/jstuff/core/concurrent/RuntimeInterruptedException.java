@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.concurrent;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.exception.DelegatingRuntimeException;
 
 /**
@@ -28,7 +30,7 @@ public class RuntimeInterruptedException extends DelegatingRuntimeException {
    }
 
    @Override
-   public synchronized RuntimeInterruptedException initCause(final Throwable cause) {
+   public synchronized RuntimeInterruptedException initCause(final @Nullable Throwable cause) {
       super.initCause(cause);
       return this;
    }

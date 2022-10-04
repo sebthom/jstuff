@@ -4,9 +4,13 @@
  */
 package net.sf.jstuff.core.profiler;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.lang.Thread.State;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -20,8 +24,10 @@ public class SamplingMethodProfiler {
 
    private final AbstractThreadMXSampler sampler;
 
-   private String profiledClassName;
-   private String profiledMethod;
+   private String profiledClassName = "<uninitialized>";
+   private String profiledMethod = "<uninitialized>";
+
+   @Nullable
    private CallTree root;
 
    public SamplingMethodProfiler(final int samplingIntervalInMS) {
@@ -43,6 +49,8 @@ public class SamplingMethodProfiler {
    }
 
    protected final void processSample(final ThreadInfo[] threadsState) {
+      final var root = asNonNullUnsafe(this.root);
+
       for (final ThreadInfo threadInfo : threadsState) {
          final boolean isThreadExecuting = threadInfo.getThreadState() == State.RUNNABLE && threadInfo.getLockName() == null;
 
@@ -80,7 +88,7 @@ public class SamplingMethodProfiler {
 
       LOG.info("Stopping sampling of %s#%s()...", profiledClassName, profiledMethod);
       sampler.stop();
-      final CallTree result = root;
+      final CallTree result = asNonNull(root);
       root = null;
       return result;
    }

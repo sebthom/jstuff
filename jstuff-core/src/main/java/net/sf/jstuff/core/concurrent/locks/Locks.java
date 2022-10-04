@@ -12,6 +12,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -19,7 +21,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Locks {
 
-   public static void lockAll(final Collection<? extends Lock> locks) {
+   public static void lockAll(final @Nullable Collection<? extends Lock> locks) {
       if (locks == null || locks.isEmpty())
          return;
 
@@ -35,7 +37,7 @@ public abstract class Locks {
       }
    }
 
-   public static void lockAll(final Lock... locks) {
+   public static void lockAll(final Lock @Nullable... locks) {
       if (locks == null || locks.length == 0)
          return;
 
@@ -51,7 +53,7 @@ public abstract class Locks {
       }
    }
 
-   public static void lockInterruptiblyAll(final Collection<? extends Lock> locks) throws InterruptedException {
+   public static void lockInterruptiblyAll(final @Nullable Collection<? extends Lock> locks) throws InterruptedException {
       if (locks == null || locks.isEmpty())
          return;
 
@@ -67,7 +69,7 @@ public abstract class Locks {
       }
    }
 
-   public static void lockInterruptiblyAll(final Lock... locks) throws InterruptedException {
+   public static void lockInterruptiblyAll(final Lock @Nullable... locks) throws InterruptedException {
       if (locks == null || locks.length == 0)
          return;
 
@@ -91,7 +93,7 @@ public abstract class Locks {
 
       return new CloseableLock() {
          @Override
-         public boolean equals(final Object obj) {
+         public boolean equals(final @Nullable Object obj) {
             return lock.equals(obj);
          }
 
@@ -147,7 +149,7 @@ public abstract class Locks {
          private static final long serialVersionUID = 1L;
 
          @Override
-         public boolean equals(final Object obj) {
+         public boolean equals(final @Nullable Object obj) {
             return lock.equals(obj);
          }
 
@@ -218,7 +220,7 @@ public abstract class Locks {
       };
    }
 
-   public static boolean tryLockAll(final Collection<? extends Lock> locks) {
+   public static boolean tryLockAll(final @Nullable Collection<? extends Lock> locks) {
       if (locks == null || locks.isEmpty())
          return true;
 
@@ -239,7 +241,7 @@ public abstract class Locks {
       return true;
    }
 
-   public static boolean tryLockAll(final Lock... locks) {
+   public static boolean tryLockAll(final Lock @Nullable... locks) {
       if (locks == null || locks.length == 0)
          return true;
 
@@ -260,7 +262,7 @@ public abstract class Locks {
       return true;
    }
 
-   public static boolean tryLockAll(final long time, final TimeUnit unit, final Collection<? extends Lock> locks)
+   public static boolean tryLockAll(final long time, final TimeUnit unit, final @Nullable Collection<? extends Lock> locks)
       throws InterruptedException {
       if (locks == null || locks.isEmpty())
          return true;
@@ -284,7 +286,7 @@ public abstract class Locks {
       return true;
    }
 
-   public static boolean tryLockAll(final long time, final TimeUnit unit, final Lock... locks) throws InterruptedException {
+   public static boolean tryLockAll(final long time, final TimeUnit unit, final Lock @Nullable... locks) throws InterruptedException {
       if (locks == null || locks.length == 0)
          return true;
 

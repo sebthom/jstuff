@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -43,6 +45,7 @@ public enum KeyUsage {
       return usages.isEmpty() ? Collections.emptySet() : usages;
    }
 
+   @Nullable
    private static KeyUsage getByRFCBit(final int bit) {
       switch (bit) {
          case 0:

@@ -51,14 +51,14 @@ public class NumericalSystem {
 
    public NumericalSystem(final String digits) {
       Args.notNull("digits", digits);
+
       this.digits = digits;
       digitsArray = digits.toCharArray();
       radix = BigInteger.valueOf(digitsArray.length);
    }
 
    public BigInteger decodeAsBigInteger(final CharSequence encoded) {
-      if (encoded == null)
-         return null;
+      Args.notNull("encoded", encoded);
 
       if ("0".equals(encoded))
          return BigInteger.ZERO;
@@ -74,6 +74,8 @@ public class NumericalSystem {
    }
 
    public int decodeAsInt(final CharSequence encoded) {
+      Args.notNull("encoded", encoded);
+
       if ("0".equals(encoded))
          return 0;
 
@@ -86,6 +88,8 @@ public class NumericalSystem {
    }
 
    public long decodeAsLong(final CharSequence encoded) {
+      Args.notNull("encoded", encoded);
+
       if ("0".equals(encoded))
          return 0;
 
@@ -98,8 +102,7 @@ public class NumericalSystem {
    }
 
    public String encode(final BigInteger value) {
-      if (value == null)
-         return null;
+      Args.notNull("value", value);
 
       switch (value.compareTo(BigInteger.ZERO)) {
          case -1:
@@ -181,8 +184,7 @@ public class NumericalSystem {
     * non-optimized version of {@link #encode(BigInteger)}
     */
    String encode_slow(final BigInteger value) {
-      if (value == null)
-         return null;
+      Args.notNull("value", value);
 
       switch (value.compareTo(BigInteger.ZERO)) {
          case -1:

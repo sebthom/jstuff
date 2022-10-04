@@ -7,6 +7,8 @@ package net.sf.jstuff.core.jbean.changelog;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -16,7 +18,7 @@ public class UndoMarker implements Serializable {
    private final String id = UUID.randomUUID().toString();
 
    @Override
-   public boolean equals(final Object obj) {
+   public boolean equals(final @Nullable Object obj) {
       if (this == obj)
          return true;
       if (obj == null || getClass() != obj.getClass())

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.concurrent.RuntimeInterruptedException;
@@ -23,7 +24,8 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Exceptions extends ExceptionUtils {
 
-   public static <T extends Throwable> T getCauseOfType(final Throwable ex, final Class<T> type) {
+   @Nullable
+   public static <T extends Throwable> T getCauseOfType(final @Nullable Throwable ex, final @Nullable Class<T> type) {
       if (ex == null || type == null)
          return null;
 
@@ -41,9 +43,6 @@ public abstract class Exceptions extends ExceptionUtils {
     * as it uses StringBuilder instead of StringBuffer.
     */
    public static String getStackTrace(final Throwable ex) {
-      if (ex == null)
-         return null;
-
       try (StringPrintWriter spw = new StringPrintWriter()) {
          ex.printStackTrace(spw);
          return spw.toString();
@@ -69,9 +68,6 @@ public abstract class Exceptions extends ExceptionUtils {
    }
 
    public static String toString(final StackTraceElement[] stacktrace, final String indention) {
-      if (stacktrace == null)
-         return null;
-
       final StringBuilder sb = new StringBuilder();
       for (final StackTraceElement element : stacktrace) {
          sb.append(indention);
@@ -86,8 +82,7 @@ public abstract class Exceptions extends ExceptionUtils {
     */
    @SuppressWarnings("unchecked")
    public static <T extends Throwable> T wrapAs(final Throwable ex, final Class<T> type) {
-      if (ex == null)
-         return null;
+      Args.notNull("ex", ex);
 
       if (Types.isInstanceOf(ex, type))
          return (T) ex;

@@ -4,11 +4,15 @@
  */
 package net.sf.jstuff.core.concurrent;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.builder.Builder;
 import net.sf.jstuff.core.builder.BuilderFactory;
@@ -151,14 +155,16 @@ public class CircuitBreaker implements EventListenable<State> {
 
    protected int activePermits;
 
+   @Nullable
    protected EventDispatcher<State> eventDispatcher;
    protected int failureThreshold;
    protected List<Long> failureTimestamps = new ArrayList<>();
    protected long failureTrackingPeriodMS;
-   protected Class<? extends Throwable>[] hardTrippingExceptionTypes;
+
+   protected Class<? extends Throwable> @Nullable [] hardTrippingExceptionTypes;
    protected long inOpenStateUntil = -1;
    protected int maxConcurrent = Integer.MAX_VALUE;
-   protected String name;
+   protected String name = "<unnamed>";
    protected long resetPeriodMS;
    protected State state = State.CLOSE;
    protected Object synchronizer = new Object();
@@ -186,6 +192,7 @@ public class CircuitBreaker implements EventListenable<State> {
    }
 
    protected boolean isFatalException(final Throwable ex) {
+      final var hardTrippingExceptionTypes = this.hardTrippingExceptionTypes;
       if (hardTrippingExceptionTypes == null || hardTrippingExceptionTypes.length == 0)
          return false;
 
@@ -219,7 +226,7 @@ public class CircuitBreaker implements EventListenable<State> {
    /**
     * Increments the subsequent failures counter.
     */
-   public void reportFailure(final Throwable ex) {
+   public void reportFailure(final @Nullable Throwable ex) {
       final long now = System.currentTimeMillis();
 
       synchronized (synchronizer) {
@@ -300,7 +307,7 @@ public class CircuitBreaker implements EventListenable<State> {
    public boolean subscribe(final EventListener<State> listener) {
       Assert.notNull(eventDispatcher, "No eventDispatcher configured.");
 
-      return eventDispatcher.subscribe(listener);
+      return asNonNull(eventDispatcher).subscribe(listener);
    }
 
    protected void switchToCLOSE() { // CHECKSTYLE:IGNORE AbbreviationAsWordInName
@@ -537,6 +544,7 @@ public class CircuitBreaker implements EventListenable<State> {
 
    @Override
    public boolean unsubscribe(final EventListener<State> listener) {
+      final var eventDispatcher = this.eventDispatcher;
       if (eventDispatcher == null)
          return false;
 

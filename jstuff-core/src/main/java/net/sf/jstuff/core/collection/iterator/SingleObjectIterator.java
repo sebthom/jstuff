@@ -28,6 +28,7 @@ public class SingleObjectIterator<T> implements Iterator<T>, Serializable {
    }
 
    @Override
+   @SuppressWarnings("null")
    public T next() {
       if (hasNext) {
          hasNext = false;

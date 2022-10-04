@@ -4,10 +4,12 @@
  */
 package net.sf.jstuff.core.jbean;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 import net.sf.jstuff.core.collection.Maps;
@@ -35,6 +37,7 @@ public class JBeanTest {
             "min-length", 0 //
          ));
 
+      @Nullable
       private String comment;
 
       @Override
@@ -42,7 +45,7 @@ public class JBeanTest {
       public <T> T _get(final PropertyDescriptor<T> property) {
          Args.notNull("property", property);
          if (property == PROP_comment)
-            return (T) getComment();
+            return asNonNullUnsafe((T) getComment());
          return super._get(property);
       }
 
@@ -62,11 +65,12 @@ public class JBeanTest {
          return this;
       }
 
+      @Nullable
       public String getComment() {
          return comment;
       }
 
-      public void setComment(String newValue) {
+      public void setComment(@Nullable String newValue) {
          newValue = newValue == null ? null : newValue.trim();
          final String oldValue = getComment();
          if (!Objects.equals(oldValue, newValue)) {

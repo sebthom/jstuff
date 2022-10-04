@@ -1,46 +1,55 @@
 /*
- * Copyright 2010-2022 by Sebastian Thomschke and contributors.
+ * Copyright 2022 by Sebastian Thomschke and contributors.
  * SPDX-License-Identifier: EPL-2.0
  */
 package net.sf.jstuff.core;
+
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.function.Function;
-import java.util.regex.Matcher;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 import javax.swing.text.html.parser.ParserDelegator;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.commons.lang3.text.WordUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.CharSequenceReader;
 import net.sf.jstuff.core.io.RuntimeIOException;
 import net.sf.jstuff.core.validation.Args;
-import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-@SuppressWarnings({"deprecation", "javadoc"})
-public abstract class Strings extends org.apache.commons.lang3.StringUtils {
+public abstract class Strings {
 
    public static final class ANSIState {
 
+      @Nullable
       public String bgcolor;
       public boolean blink;
       public boolean bold;
+      @Nullable
       public String fgcolor;
       public boolean underline;
 
@@ -52,7 +61,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
          copyFrom(copyFrom);
       }
 
-      public void copyFrom(final ANSIState other) {
+      public void copyFrom(final @Nullable ANSIState other) {
          if (other == null)
             return;
          fgcolor = other.fgcolor;
@@ -159,20 +168,22 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
             }
             return sb.toString();
          }
-         return "";
+         return EMPTY;
       }
    }
+
+   public static final String SPACE = " ";
+
+   public static final String EMPTY = "";
 
    /**
     * \r 13 Carriage Return, new line separator on Macintosh
     */
-   @SuppressWarnings("hiding")
    public static final char CR = 13;
 
    /**
     * \n 10 Line Feed, new line separator on Unix/Linux
     */
-   @SuppressWarnings("hiding")
    public static final char LF = 10;
 
    /**
@@ -182,7 +193,80 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
    public static final String NEW_LINE = System.lineSeparator();
 
-   public static final String TAB = "\t";
+   public static final char TAB = '\t';
+
+   public static final int INDEX_NOT_FOUND = -1;
+
+   /**
+    * See {@link StringUtils#abbreviate(String, int)}
+    */
+   public static String abbreviate(final String str, final int maxWidth) {
+      return asNonNullUnsafe(StringUtils.abbreviate(str, maxWidth));
+   }
+
+   /**
+    * See {@link StringUtils#abbreviate(String, int, int)}
+    */
+   public static String abbreviate(final String str, final int offset, final int maxWidth) {
+      return asNonNullUnsafe(StringUtils.abbreviate(str, offset, maxWidth));
+   }
+
+   /**
+    * See {@link StringUtils#abbreviate(String, String, int)}
+    */
+   public static String abbreviate(final String str, final @Nullable String abbrevMarker, final int maxWidth) {
+      return asNonNullUnsafe(StringUtils.abbreviate(str, abbrevMarker, maxWidth));
+   }
+
+   /**
+    * See {@link StringUtils#abbreviate(String, String, int, int)}
+    */
+   public static String abbreviate(final String str, final @Nullable String abbrevMarker, final int offset, final int maxWidth) {
+      return asNonNullUnsafe(StringUtils.abbreviate(str, abbrevMarker, offset, maxWidth));
+   }
+
+   /**
+    * See {@link StringUtils#abbreviateMiddle(String, String, int)}
+    */
+   public static String abbreviateMiddle(final String str, final @Nullable String middle, final int length) {
+      return asNonNullUnsafe(StringUtils.abbreviateMiddle(str, middle, length));
+   }
+
+   /**
+    * See {@link StringUtils#abbreviateMiddle(String, String, int)}
+    */
+   public static @Nullable String abbreviateMiddleNullable(final @Nullable String str, final @Nullable String middle, final int length) {
+      return StringUtils.abbreviateMiddle(str, middle, length);
+   }
+
+   /**
+    * See {@link StringUtils#abbreviate(String, int)}
+    */
+   public static @Nullable String abbreviateNullable(final @Nullable String str, final int maxWidth) {
+      return StringUtils.abbreviate(str, maxWidth);
+   }
+
+   /**
+    * See {@link StringUtils#abbreviate(String, int, int)}
+    */
+   public static @Nullable String abbreviateNullable(final @Nullable String str, final int offset, final int maxWidth) {
+      return StringUtils.abbreviate(str, offset, maxWidth);
+   }
+
+   /**
+    * See {@link StringUtils#abbreviate(String, String, int)}
+    */
+   public static @Nullable String abbreviateNullable(final @Nullable String str, final @Nullable String abbrevMarker, final int maxWidth) {
+      return StringUtils.abbreviate(str, abbrevMarker, maxWidth);
+   }
+
+   /**
+    * See {@link StringUtils#abbreviate(String, String, int, int)}
+    */
+   public static @Nullable String abbreviateNullable(final @Nullable String str, final @Nullable String abbrevMarker, final int offset,
+      final int maxWidth) {
+      return StringUtils.abbreviate(str, abbrevMarker, offset, maxWidth);
+   }
 
    public static CharSequence ansiColorsToHTML(final CharSequence txt) {
       if (isEmpty(txt))
@@ -190,7 +274,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return ansiColorsToHTML(txt, new ANSIState());
    }
 
-   public static CharSequence ansiColorsToHTML(final CharSequence txt, final ANSIState initialState) {
+   public static CharSequence ansiColorsToHTML(final CharSequence txt, final @Nullable ANSIState initialState) {
       if (isEmpty(txt))
          return txt;
       Args.notNull("initialState", initialState);
@@ -208,7 +292,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
          effectiveState = new ANSIState(initialState);
       }
 
-      final StringBuilder lookAhead = new StringBuilder(8);
+      final var lookAhead = new StringBuilder(8);
 
       for (int i = 0, txtLen = txt.length(); i < txtLen; i++) {
          final char ch = txt.charAt(i);
@@ -289,6 +373,95 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return sb;
    }
 
+   /**
+    * See {@link StringUtils#appendIfMissing(String, CharSequence, CharSequence[])}
+    */
+
+   public static String appendIfMissing(final String str, final @Nullable CharSequence suffix, final CharSequence @Nullable... suffixes) {
+      return asNonNullUnsafe(StringUtils.appendIfMissing(str, suffix, suffixes));
+   }
+
+   /**
+    * See {@link StringUtils#appendIfMissingIgnoreCase(String, CharSequence, CharSequence[])}
+    */
+
+   public static String appendIfMissingIgnoreCase(final String str, final @Nullable CharSequence suffix,
+      final CharSequence @Nullable... suffixes) {
+      return asNonNullUnsafe(StringUtils.appendIfMissingIgnoreCase(str, suffix, suffixes));
+   }
+
+   /**
+    * See {@link StringUtils#appendIfMissingIgnoreCase(String, CharSequence, CharSequence[])}
+    */
+   public static @Nullable String appendIfMissingIgnoreCaseNullable(final @Nullable String str, final @Nullable CharSequence suffix,
+      final CharSequence @Nullable... suffixes) {
+      return StringUtils.appendIfMissingIgnoreCase(str, suffix, suffixes);
+   }
+
+   /**
+    * See {@link StringUtils#appendIfMissing(String, CharSequence, CharSequence[])}
+    */
+   public static @Nullable String appendIfMissingNullable(final @Nullable String str, final @Nullable CharSequence suffix,
+      final CharSequence @Nullable... suffixes) {
+      return StringUtils.appendIfMissing(str, suffix, suffixes);
+   }
+
+   /**
+    * See {@link StringUtils#capitalize(String)}
+    */
+   public static String capitalize(final String str) {
+      return asNonNullUnsafe(StringUtils.capitalize(str));
+   }
+
+   /**
+    * See {@link StringUtils#capitalize(String)}
+    */
+   public static @Nullable String capitalizeNullable(final @Nullable String str) {
+      return StringUtils.capitalize(str);
+   }
+
+   /**
+    * See {@link StringUtils#center(String, int)}
+    */
+   public static String center(final String str, final int size) {
+      return asNonNullUnsafe(StringUtils.center(str, size));
+   }
+
+   /**
+    * See {@link StringUtils#center(String, int, char)}
+    */
+   public static String center(final String str, final int size, final char padChar) {
+      return asNonNullUnsafe(StringUtils.center(str, size, padChar));
+   }
+
+   /**
+    * See {@link StringUtils#center(String, int, String)}
+    */
+   public static String center(final String str, final int size, final @Nullable String padStr) {
+      return asNonNullUnsafe(StringUtils.center(str, size, padStr));
+   }
+
+   /**
+    * See {@link StringUtils#center(String, int)}
+    */
+   public static @Nullable String centerNullable(final @Nullable String str, final int size) {
+      return StringUtils.center(str, size);
+   }
+
+   /**
+    * See {@link StringUtils#center(String, int, char)}
+    */
+   public static @Nullable String centerNullable(final @Nullable String str, final int size, final char padChar) {
+      return StringUtils.center(str, size, padChar);
+   }
+
+   /**
+    * See {@link StringUtils#center(String, int, String)}
+    */
+   public static @Nullable String centerNullable(final @Nullable String str, final int size, final @Nullable String padStr) {
+      return StringUtils.center(str, size, padStr);
+   }
+
    public static char charAt(final CharSequence text, final int index, final char resultIfOutOfBound) {
       if (index < 0 || index >= text.length())
          return resultIfOutOfBound;
@@ -296,47 +469,116 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    /**
-    * @return true if searchIn contains ANY of the substrings in searchFor
+    * See {@link StringUtils#chomp(String)}
     */
-   public static boolean containsAny(final CharSequence searchIn, final String... searchFor) {
-      if (isEmpty(searchIn) || ArrayUtils.isEmpty(searchFor))
-         return false;
+   public static String chomp(final String str) {
+      return asNonNullUnsafe(StringUtils.chomp(str));
+   }
 
-      if (searchIn instanceof String) {
-         final String searchIn2 = (String) searchIn;
-         for (final String sf : searchFor)
-            if (searchIn2.indexOf(sf) > -1)
-               return true;
-      } else if (searchIn instanceof StringBuffer) {
-         final StringBuffer searchIn2 = (StringBuffer) searchIn;
-         for (final String sf : searchFor)
-            if (searchIn2.indexOf(sf) > -1)
-               return true;
-      } else if (searchIn instanceof StringBuilder) {
-         final StringBuilder searchIn2 = (StringBuilder) searchIn;
-         for (final String sf : searchFor)
-            if (searchIn2.indexOf(sf) > -1)
-               return true;
-      } else {
-         final String searchIn2 = searchIn.toString();
-         for (final String sf : searchFor)
-            if (searchIn2.indexOf(sf) > -1)
-               return true;
-      }
-      return false;
+   /**
+    * See {@link StringUtils#chomp(String)}
+    */
+   public static @Nullable String chompNullable(final @Nullable String str) {
+      return StringUtils.chomp(str);
+   }
+
+   /**
+    * See {@link StringUtils#chop(String)}
+    */
+   public static String chop(final String str) {
+      return asNonNullUnsafe(StringUtils.chop(str));
+   }
+
+   /**
+    * See {@link StringUtils#chop(String)}
+    */
+   public static @Nullable String chopNullable(final @Nullable String str) {
+      return StringUtils.chop(str);
+   }
+
+   /**
+    * See {@link StringUtils#compare(String, String)}
+    */
+   public static int compare(final @Nullable String str1, final @Nullable String str2) {
+      return StringUtils.compare(str1, str2);
+   }
+
+   /**
+    * See {@link StringUtils#compare(String, String, boolean)}
+    */
+   public static int compare(final @Nullable String str1, final @Nullable String str2, final boolean nullIsLess) {
+      return StringUtils.compare(str1, str2, nullIsLess);
+   }
+
+   /**
+    * See {@link StringUtils#compareIgnoreCase(String, String)}
+    */
+   public static int compareIgnoreCase(final @Nullable String str1, final @Nullable String str2) {
+      return StringUtils.compareIgnoreCase(str1, str2);
+   }
+
+   /**
+    * See {@link StringUtils#compareIgnoreCase(String, String, boolean)}
+    */
+   public static int compareIgnoreCase(final @Nullable String str1, final @Nullable String str2, final boolean nullIsLess) {
+      return StringUtils.compareIgnoreCase(str1, str2, nullIsLess);
+   }
+
+   /**
+    * See {@link StringUtils#contains(CharSequence, CharSequence)}
+    */
+   public static boolean contains(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor) {
+      return StringUtils.contains(searchIn, searchFor);
+   }
+
+   /**
+    * See {@link StringUtils#contains(CharSequence, int)}
+    */
+   public static boolean contains(final @Nullable CharSequence searchIn, final int searchChar) {
+      return StringUtils.contains(searchIn, searchChar);
+   }
+
+   /**
+    * See {@link StringUtils#containsAny(CharSequence, char[])}
+    */
+   public static boolean containsAny(final @Nullable CharSequence searchIn, final char @Nullable... searchChars) {
+      return StringUtils.containsAny(searchIn, searchChars);
+   }
+
+   /**
+    * See {@link StringUtils#containsAny(CharSequence, char[])}
+    */
+   public static boolean containsAny(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchChars) {
+      return StringUtils.containsAny(searchIn, searchChars);
+   }
+
+   /**
+    * See {@link StringUtils#containsAny(CharSequence, CharSequence[])}
+    */
+   public static boolean containsAny(final @Nullable CharSequence searchIn, final CharSequence @Nullable... searchFor) {
+      return StringUtils.containsAny(searchIn, searchFor);
    }
 
    /**
     * @return true if any searchIn contains ANY of the substrings in searchFor
     */
-   public static boolean containsAny(final Collection<? extends CharSequence> searchIn, final String... searchFor) {
+   public static boolean containsAny(final @Nullable Collection<? extends CharSequence> searchIn, final String @Nullable... searchFor) {
+      if (searchIn == null)
+         return false;
       for (final CharSequence s : searchIn)
          if (containsAny(s, searchFor))
             return true;
       return false;
    }
 
-   public static boolean containsDigit(final String searchIn) {
+   /**
+    * See {@link StringUtils#containsAnyIgnoreCase(CharSequence, CharSequence[])}
+    */
+   public static boolean containsAnyIgnoreCase(final @Nullable CharSequence searchIn, final CharSequence @Nullable... searchFor) {
+      return StringUtils.containsAnyIgnoreCase(searchIn, searchFor);
+   }
+
+   public static boolean containsDigit(final @Nullable CharSequence searchIn) {
       if (searchIn == null || searchIn.length() == 0)
          return false;
 
@@ -344,6 +586,62 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
          if (Character.isDigit((int) searchIn.charAt(i)))
             return true;
       return false;
+   }
+
+   /**
+    * See {@link StringUtils#containsIgnoreCase(CharSequence, CharSequence)}
+    */
+   public static boolean containsIgnoreCase(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor) {
+      return StringUtils.containsAnyIgnoreCase(searchIn, searchFor);
+   }
+
+   /**
+    * See {@link StringUtils#containsNone(CharSequence, char[])}
+    */
+   public static boolean containsNone(final @Nullable CharSequence searchIn, final char @Nullable... searchChars) {
+      return StringUtils.containsNone(searchIn, searchChars);
+   }
+
+   /**
+    * See {@link StringUtils#containsNone(CharSequence, String)}
+    */
+   public static boolean containsNone(final @Nullable CharSequence searchIn, final @Nullable String invalidChars) {
+      return StringUtils.containsNone(searchIn, invalidChars);
+   }
+
+   /**
+    * See {@link StringUtils#containsOnly(CharSequence, char[])}
+    */
+   public static boolean containsOnly(final @Nullable CharSequence searchIn, final char @Nullable... validChars) {
+      return StringUtils.containsOnly(searchIn, validChars);
+   }
+
+   /**
+    * See {@link StringUtils#containsOnly(CharSequence, String)}
+    */
+   public static boolean containsOnly(final @Nullable CharSequence searchIn, final @Nullable String validChars) {
+      return StringUtils.containsOnly(searchIn, validChars);
+   }
+
+   /**
+    * See {@link StringUtils#containsWhitespace(CharSequence)}
+    */
+   public static boolean containsWhitespace(final @Nullable CharSequence searchIn) {
+      return StringUtils.containsWhitespace(searchIn);
+   }
+
+   /**
+    * See {@link StringUtils#countMatches(CharSequence, char)}
+    */
+   public static int countMatches(final @Nullable CharSequence searchIn, final char searchFor) {
+      return StringUtils.countMatches(searchIn, searchFor);
+   }
+
+   /**
+    * See {@link StringUtils#countMatches(CharSequence, CharSequence)}
+    */
+   public static int countMatches(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor) {
+      return StringUtils.countMatches(searchIn, searchFor);
    }
 
    /**
@@ -355,8 +653,53 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     * @param searchFor the substring to count, may be null
     * @return the number of occurrences, 0 if either String is <code>null</code>
     */
-   public static int countMatches(final String searchIn, final String searchFor, final int startAt) {
-      if (isEmpty(searchIn) || isEmpty(searchFor) || startAt >= searchIn.length())
+   public static int countMatches(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor, final int startAt) {
+      if (searchIn == null || searchFor == null //
+         || searchIn.length() == 0 || searchFor.length() == 0 //
+         || startAt >= searchIn.length())
+         return 0;
+
+      int count = 0;
+      int foundAt;
+      if (startAt >= 0) {
+         foundAt = startAt;
+      } else if (startAt < -searchIn.length()) {
+         foundAt = 0;
+      } else {
+         foundAt = searchIn.length() + startAt;
+      }
+      foundAt--;
+      while ((foundAt = indexOf(searchIn, searchFor, foundAt + 1)) > -1) {
+         count++;
+      }
+      return count;
+   }
+
+   /**
+    * <p>
+    * Counts how many times the substring appears in the larger String starting at the given position.
+    * </p>
+    *
+    * @param searchIn the String to check, may be null
+    * @param searchFor the substring to count
+    * @return the number of occurrences, 0 if searchIn is <code>null</code>
+    */
+   public static int countMatches(final @Nullable String searchIn, final char searchFor) {
+      return countMatches(searchIn, searchIn, 0);
+   }
+
+   /**
+    * <p>
+    * Counts how many times the substring appears in the larger String starting at the given position.
+    * </p>
+    *
+    * @param searchIn the String to check, may be null
+    * @param searchFor the substring to count
+    * @return the number of occurrences, 0 if searchIn is <code>null</code>
+    */
+   public static int countMatches(final @Nullable String searchIn, final char searchFor, final int startAt) {
+      if (searchIn == null || searchIn.isEmpty() //
+         || startAt >= searchIn.length())
          return 0;
 
       int count = 0;
@@ -375,15 +718,134 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return count;
    }
 
-   public static <T extends CharSequence> T emptyToNull(final T txt) {
-      return txt == null ? null : txt.length() == 0 ? null : txt;
+   /**
+    * <p>
+    * Counts how many times the substring appears in the larger String starting at the given position.
+    * </p>
+    *
+    * @param searchIn the String to check, may be null
+    * @param searchFor the substring to count, may be null
+    * @return the number of occurrences, 0 if either String is <code>null</code>
+    */
+   public static int countMatches(final @Nullable String searchIn, final @Nullable String searchFor) {
+      return countMatches(searchIn, searchFor, 0);
    }
 
-   public static boolean endsWith(final CharSequence str, final char ch) {
-      return isNotEmpty(str) && str.charAt(str.length() - 1) == ch;
+   /**
+    * <p>
+    * Counts how many times the substring appears in the larger String starting at the given position.
+    * </p>
+    *
+    * @param searchIn the String to check, may be null
+    * @param searchFor the substring to count, may be null
+    * @return the number of occurrences, 0 if either String is <code>null</code>
+    */
+   public static int countMatches(final @Nullable String searchIn, final @Nullable String searchFor, final int startAt) {
+      if (searchIn == null || searchFor == null //
+         || searchIn.isEmpty() || searchFor.isEmpty() //
+         || startAt >= searchIn.length())
+         return 0;
+
+      int count = 0;
+      int foundAt;
+      if (startAt >= 0) {
+         foundAt = startAt;
+      } else if (startAt < -searchIn.length()) {
+         foundAt = 0;
+      } else {
+         foundAt = searchIn.length() + startAt;
+      }
+      foundAt--;
+      while ((foundAt = searchIn.indexOf(searchFor, foundAt + 1)) > -1) {
+         count++;
+      }
+      return count;
    }
 
-   public static boolean equals(final String left, final String right) {
+   @NonNullByDefault({})
+   public static <T extends @Nullable CharSequence> T defaultIfBlank(final T str, final T defaultStr) {
+      return isBlank(str) ? defaultStr : str;
+   }
+
+   @NonNullByDefault({})
+   public static <T extends @Nullable CharSequence> T defaultIfEmpty(final T str, final T defaultStr) {
+      return isEmpty(str) ? defaultStr : str;
+   }
+
+   @NonNullByDefault({})
+   public static <T extends CharSequence> T defaultIfNull(final T str, final T defaultStr) {
+      return str == null ? defaultStr : str;
+   }
+
+   /**
+    * See {@link StringUtils#deleteWhitespace(String)}
+    */
+   public static String deleteWhitespace(final String str) {
+      return asNonNullUnsafe(StringUtils.deleteWhitespace(str));
+   }
+
+   /**
+    * See {@link StringUtils#deleteWhitespace(String)}
+    */
+   public static @Nullable String deleteWhitespaceNullable(final @Nullable String str) {
+      return StringUtils.deleteWhitespace(str);
+   }
+
+   /**
+    * See {@link StringUtils#difference(String, String)}
+    */
+   public static String difference(final String str1, final @Nullable String str2) {
+      return asNonNullUnsafe(StringUtils.difference(str1, str2));
+   }
+
+   /**
+    * See {@link StringUtils#difference(String, String)}
+    */
+   public static @Nullable String differenceNullable(final @Nullable String str1, final @Nullable String str2) {
+      return StringUtils.difference(str1, str2);
+   }
+
+   public static String emptyIfBlank(final @Nullable CharSequence str) {
+      return str == null || isBlank(str) ? EMPTY : str.toString();
+   }
+
+   public static String emptyIfNull(final @Nullable CharSequence str) {
+      return str == null ? EMPTY : str.toString();
+   }
+
+   public static boolean endsWith(final @Nullable CharSequence str, final char ch) {
+      return str != null && str.length() > 0 && str.charAt(str.length() - 1) == ch;
+   }
+
+   /**
+    * See {@link StringUtils#endsWith(CharSequence, CharSequence)}
+    */
+   public static boolean endsWith(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor) {
+      return StringUtils.endsWith(searchIn, searchFor);
+   }
+
+   /**
+    * See {@link StringUtils#endsWithAny(CharSequence, CharSequence[])}
+    */
+   public static boolean endsWithAny(final @Nullable CharSequence searchIn, final CharSequence @Nullable... searchFor) {
+      return StringUtils.endsWithAny(searchIn, searchFor);
+   }
+
+   /**
+    * See {@link StringUtils#endsWithIgnoreCase(CharSequence, CharSequence)}
+    */
+   public static boolean endsWithIgnoreCase(final @Nullable CharSequence str, final @Nullable CharSequence suffix) {
+      return StringUtils.endsWithIgnoreCase(str, suffix);
+   }
+
+   /**
+    * See {@link StringUtils#equals(CharSequence, CharSequence)}
+    */
+   public static boolean equals(final @Nullable CharSequence left, final @Nullable CharSequence right) {
+      return StringUtils.equals(left, right);
+   }
+
+   public static boolean equals(final @Nullable String left, final @Nullable String right) {
       if (left == right)
          return true;
 
@@ -393,7 +855,28 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return left.equals(right);
    }
 
-   public static boolean equalsIgnoreCase(final String left, final String right) {
+   /**
+    * See {@link StringUtils#equalsAny(CharSequence, CharSequence[])}
+    */
+   public static boolean equalsAny(final @Nullable CharSequence string, final @Nullable CharSequence... searchStrings) {
+      return StringUtils.equalsAny(string, searchStrings);
+   }
+
+   /**
+    * See {@link StringUtils#equalsAnyIgnoreCase(CharSequence, CharSequence[])}
+    */
+   public static boolean equalsAnyIgnoreCase(final @Nullable CharSequence string, final @Nullable CharSequence... searchStrings) {
+      return StringUtils.equalsAnyIgnoreCase(string, searchStrings);
+   }
+
+   /**
+    * See {@link StringUtils#equalsAnyIgnoreCase(CharSequence, CharSequence[])}
+    */
+   public static boolean equalsIgnoreCase(final @Nullable CharSequence left, final @Nullable CharSequence right) {
+      return StringUtils.equalsIgnoreCase(left, right);
+   }
+
+   public static boolean equalsIgnoreCase(final @Nullable String left, final @Nullable String right) {
       if (left == right)
          return true;
 
@@ -404,9 +887,76 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    /**
+    * See {@link StringUtils#firstNonBlank(CharSequence[])}
+    */
+   @SafeVarargs
+   public static <T extends @Nullable CharSequence> T firstNonBlank(final T @Nullable... values) {
+      return StringUtils.firstNonBlank(values);
+   }
+
+   /**
+    * See {@link StringUtils#firstNonEmpty(CharSequence[])}
+    */
+   @SafeVarargs
+   public static <T extends @Nullable CharSequence> T firstNonEmpty(final T... values) {
+      return StringUtils.firstNonEmpty(values);
+   }
+
+   /**
+    * See {@link StringUtils#getBytes(String, Charset)}
+    */
+   public static byte[] getBytes(final @Nullable String string, final @Nullable Charset charset) {
+      return StringUtils.getBytes(string, charset);
+   }
+
+   /**
+    * See {@link StringUtils#getBytes(String, String)}
+    */
+   public static byte[] getBytes(final @Nullable String string, final @Nullable String charset) throws UnsupportedEncodingException {
+      return StringUtils.getBytes(string, charset);
+   }
+
+   /**
+    * See {@link StringUtils#getCommonPrefix(String[])}
+    */
+   public static String getCommonPrefix(final String @Nullable... strs) {
+      return StringUtils.getCommonPrefix(strs);
+   }
+
+   /**
+    * See {@link StringUtils#getDigits(String)}
+    */
+   public static String getDigits(final String str) {
+      return asNonNullUnsafe(StringUtils.getDigits(str));
+   }
+
+   /**
+    * See {@link StringUtils#getDigits(String)}
+    */
+   public static @Nullable String getDigitsNullable(final @Nullable String str) {
+      return StringUtils.getDigits(str);
+   }
+
+   @NonNullByDefault({})
+   public static <T extends CharSequence> T getIfBlank(final T str, final @NonNull Supplier<T> defaultSupplier) {
+      return isBlank(str) ? defaultSupplier.get() : str;
+   }
+
+   @NonNullByDefault({})
+   public static <T extends CharSequence> T getIfEmpty(final T str, final @NonNull Supplier<T> defaultSupplier) {
+      return isEmpty(str) ? defaultSupplier.get() : str;
+   }
+
+   @NonNullByDefault({})
+   public static <T extends CharSequence> T getIfNull(final T str, final @NonNull Supplier<T> defaultSupplier) {
+      return str == null ? defaultSupplier.get() : str;
+   }
+
+   /**
     * @return null if input does not contain a new line separator.
     */
-   public static String getNewLineSeparator(final CharSequence txt) {
+   @Nullable
+   public static String getNewLineSeparator(final @Nullable CharSequence txt) {
       if (txt == null)
          return null;
       char lastChar = 0;
@@ -428,10 +978,17 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
     */
    public static CharSequence globToRegex(final String globPattern) {
-      if (Strings.isEmpty(globPattern))
+      return asNonNullUnsafe(globToRegexNullable(globPattern));
+   }
+
+   /**
+    * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
+    */
+   public static @Nullable CharSequence globToRegexNullable(final @Nullable String globPattern) {
+      if (globPattern == null || globPattern.length() == 0)
          return globPattern;
 
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
       final char[] chars = globPattern.toCharArray();
       char chPrev = 0;
       final char escapeCHAR = '\\';
@@ -455,7 +1012,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
             case '?':
                if (chPrev == escapeCHAR) {
                   // "\?" => "\?"
-                  sb.append(escapeCHAR).append("?");
+                  sb.append(escapeCHAR).append('?');
                } else {
                   // "?" => "[^\\^\/]"
                   sb.append("[^\\\\^\\/]");
@@ -464,24 +1021,24 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
             case '{':
                if (chPrev == escapeCHAR) {
                   // "\{" => "\{"
-                  sb.append(escapeCHAR).append("{");
+                  sb.append(escapeCHAR).append('{');
                } else {
                   groupDepth++;
-                  sb.append("(");
+                  sb.append('(');
                }
                break;
             case '}':
                if (chPrev == escapeCHAR) {
                   // "\}" => "\}"
-                  sb.append(escapeCHAR).append("}");
+                  sb.append(escapeCHAR).append('}');
                } else {
                   groupDepth--;
-                  sb.append(")");
+                  sb.append(')');
                }
                break;
             case ',':
                if (chPrev == escapeCHAR) {
-                  sb.append(escapeCHAR).append(",");
+                  sb.append(escapeCHAR).append(',');
                } else {
                   // "," => "|" if in group or => "," if not in group
                   sb.append(groupDepth > 0 ? '|' : ',');
@@ -489,15 +1046,15 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
                break;
             case '!':
                if (chPrev == '[') {
-                  sb.append("^"); // "[!" => "[^"
+                  sb.append('^'); // "[!" => "[^"
                } else {
                   sb.append('!');
                }
                break;
             case '*':
-               if (charAt(globPattern, idx + 1, (char) 0) == '*') { // **
-                  if (charAt(globPattern, idx + 2, (char) 0) == '/') // **/
-                     if (charAt(globPattern, idx + 3, (char) 0) == '*') {
+               if (Strings.charAt(globPattern, idx + 1, (char) 0) == '*') { // **
+                  if (Strings.charAt(globPattern, idx + 2, (char) 0) == '/') // **/
+                     if (Strings.charAt(globPattern, idx + 3, (char) 0) == '*') {
                         // "**/*" => ".*"
                         sb.append(".*");
                         idx = idx + 3;
@@ -527,16 +1084,20 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
 
          chPrev = ch;
       }
-      sb.append("$");
+      sb.append('$');
       return sb;
    }
 
    public static CharSequence htmlEncode(final CharSequence text) {
-      if (isEmpty(text))
+      return asNonNullUnsafe(htmlEncodeNullable(text));
+   }
+
+   public static @Nullable CharSequence htmlEncodeNullable(final @Nullable CharSequence text) {
+      if (text == null || text.length() == 0)
          return text;
 
       final int textLen = text.length();
-      final StringBuilder sb = new StringBuilder(textLen);
+      final var sb = new StringBuilder(textLen);
       boolean isFirstSpace = true;
       for (int i = 0; i < textLen; i++) {
          final char ch = text.charAt(i);
@@ -572,7 +1133,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
                sb.append("&gt;");
                break;
 
-            case LF:
+            case Strings.LF:
                sb.append("&lt;br/&gt;");
                break;
 
@@ -590,16 +1151,19 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return sb;
    }
 
-   @SuppressWarnings("resource")
    public static CharSequence htmlToPlainText(final CharSequence html) {
-      Args.notNull("html", html);
+      return asNonNullUnsafe(htmlToPlainText(html));
+   }
 
-      final StringBuilder sb = new StringBuilder();
+   @SuppressWarnings("resource")
+   public static @Nullable CharSequence htmlToPlainTextNullable(final @Nullable CharSequence html) {
+      if (html == null || html.length() == 0)
+         return html;
 
+      final var sb = new StringBuilder();
       try {
-         final ParserDelegator pd = new ParserDelegator();
+         final var pd = new ParserDelegator();
          pd.parse(new CharSequenceReader(html), new ParserCallback() {
-
             @Override
             public void handleText(final char[] text, final int pos) {
                sb.append(text);
@@ -611,109 +1175,920 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return sb;
    }
 
-   public static String join(final Iterable<?> iterable) {
-      if (iterable == null)
-         return null;
-      return join(iterable.iterator(), EMPTY);
-   }
-
-   public static String join(final Iterable<?> iterable, final char separator) {
-      if (iterable == null)
-         return null;
-
-      return join(iterable.iterator(), separator);
-   }
-
-   public static String join(final Iterable<?> iterable, final String separator) {
-      if (iterable == null)
-         return null;
-      return join(iterable.iterator(), separator);
-   }
-
-   public static <T> String join(final Iterable<T> iterable, final char separator, final Function<T, Object> transform) {
-      if (iterable == null)
-         return null;
-
-      return join(iterable.iterator(), separator, transform);
-   }
-
-   public static <T> String join(final Iterable<T> iterable, final String separator, final Function<T, Object> transform) {
-      if (iterable == null)
-         return null;
-
-      return join(iterable.iterator(), separator, transform);
-   }
-
-   public static <T> String join(final Iterator<T> it, final char separator, final Function<T, Object> transform) {
-      if (it == null)
-         return null;
-
-      if (!it.hasNext())
-         return EMPTY;
-
-      Args.notNull("transform", transform);
-
-      final T first = it.next();
-      if (!it.hasNext())
-         return nullToEmpty(transform.apply(first));
-
-      final StringBuilder sb = new StringBuilder(128);
-      sb.append(nullToEmpty(transform.apply(first)));
-
-      while (it.hasNext()) {
-         sb.append(separator);
-         final T obj = it.next();
-         sb.append(nullToEmpty(transform.apply(obj)));
-      }
-
-      return sb.toString();
-   }
-
-   public static <T> String join(final Iterator<T> it, final String separator, final Function<T, Object> transform) {
-      if (it == null)
-         return null;
-
-      if (!it.hasNext())
-         return EMPTY;
-
-      Args.notNull("transform", transform);
-
-      final T first = it.next();
-      if (!it.hasNext())
-         return nullToEmpty(transform.apply(first));
-
-      final StringBuilder sb = new StringBuilder(128);
-      sb.append(nullToEmpty(transform.apply(first)));
-
-      while (it.hasNext()) {
-         sb.append(separator);
-         final T obj = it.next();
-         sb.append(nullToEmpty(transform.apply(obj)));
-      }
-
-      return sb.toString();
-   }
-
-   public static String lowerCase(final CharSequence txt) {
-      if (txt == null)
-         return null;
-      if (txt instanceof String)
-         return ((String) txt).toLowerCase();
-
-      final var len = txt.length();
-      final var chars = new char[len];
-      for (int i = 0; i < len; i++) {
-         chars[i] = Character.toLowerCase(txt.charAt(i));
-      }
-
-      return new String(chars);
+   /**
+    * See {@link StringUtils#indexOf(CharSequence, CharSequence)}
+    */
+   public static int indexOf(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor) {
+      return StringUtils.indexOf(searchIn, searchFor);
    }
 
    /**
-    * Capitalize the first character of the given character sequence.
-    * If you need to capitalize all words in a string use {@link WordUtils#uncapitalize(String)}
+    * See {@link StringUtils#indexOf(CharSequence, CharSequence, int)}
+    */
+   public static int indexOf(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor, final int startPos) {
+      return StringUtils.indexOf(searchIn, searchFor, startPos);
+   }
+
+   /**
+    * See {@link StringUtils#indexOf(CharSequence, int)}
+    */
+   public static int indexOf(final @Nullable CharSequence searchIn, final int searchChar) {
+      return StringUtils.indexOf(searchIn, searchChar);
+   }
+
+   /**
+    * See {@link StringUtils#indexOf(CharSequence, int, int)}
+    */
+   public static int indexOf(final @Nullable CharSequence searchIn, final int searchChar, final int startPos) {
+      return StringUtils.indexOf(searchIn, searchChar, startPos);
+   }
+
+   /**
+    * See {@link StringUtils#indexOfAny(CharSequence, char[])}
+    */
+   public static int indexOfAny(final @Nullable CharSequence searchIn, final char @Nullable... searchChars) {
+      return StringUtils.indexOfAny(searchIn, searchChars);
+   }
+
+   /**
+    * See {@link StringUtils#indexOfAny(CharSequence, CharSequence[])}
+    */
+   public static int indexOfAny(final @Nullable CharSequence searchIn, final CharSequence @Nullable... searchFor) {
+      return StringUtils.indexOfAny(searchIn, searchFor);
+   }
+
+   /**
+    * See {@link StringUtils#indexOfAny(CharSequence, String)}
+    */
+   public static int indexOfAny(final @Nullable CharSequence searchIn, final @Nullable String searchChars) {
+      return StringUtils.indexOfAny(searchIn, searchChars);
+   }
+
+   /**
+    * See {@link StringUtils#indexOfAnyBut(CharSequence, char[])}
+    */
+   public static int indexOfAnyBut(final @Nullable CharSequence searchIn, final char @Nullable... searchChars) {
+      return StringUtils.indexOfAny(searchIn, searchChars);
+   }
+
+   /**
+    * See {@link StringUtils#indexOfAnyBut(CharSequence, CharSequence)}
+    */
+   public static int indexOfAnyBut(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchChars) {
+      return StringUtils.indexOfAny(searchIn, searchChars);
+   }
+
+   /**
+    * See {@link StringUtils#indexOfDifference(CharSequence[])}
+    */
+   public static int indexOfDifference(final CharSequence @Nullable... css) {
+      return StringUtils.indexOfDifference(css);
+   }
+
+   /**
+    * See {@link StringUtils#indexOfDifference(CharSequence, CharSequence)}
+    */
+   public static int indexOfDifference(final @Nullable CharSequence cs1, final @Nullable CharSequence cs2) {
+      return StringUtils.indexOfDifference(cs1, cs2);
+   }
+
+   /**
+    * See {@link StringUtils#indexOfIgnoreCase(CharSequence, CharSequence)}
+    */
+   public static int indexOfIgnoreCase(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor) {
+      return StringUtils.indexOfIgnoreCase(searchIn, searchFor);
+   }
+
+   /**
+    * See {@link StringUtils#indexOfIgnoreCase(CharSequence, CharSequence, int)}
+    */
+   public static int indexOfIgnoreCase(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor, final int startPos) {
+      return StringUtils.indexOfIgnoreCase(searchIn, searchFor, startPos);
+   }
+
+   /**
+    * See {@link StringUtils#isAllBlank(CharSequence[])}
+    */
+   public static boolean isAllBlank(final CharSequence @Nullable... css) {
+      return StringUtils.isAllBlank(css);
+   }
+
+   /**
+    * See {@link StringUtils#isAllEmpty(CharSequence[])}
+    */
+   public static boolean isAllEmpty(final CharSequence @Nullable... css) {
+      return StringUtils.isAllEmpty(css);
+   }
+
+   /**
+    * See {@link StringUtils#isAllLowerCase(CharSequence)}
+    */
+   public static boolean isAllLowerCase(final @Nullable CharSequence cs) {
+      return StringUtils.isAllLowerCase(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isAllUpperCase(CharSequence)}
+    */
+   public static boolean isAllUpperCase(final @Nullable CharSequence cs) {
+      return StringUtils.isAllUpperCase(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isAlpha(CharSequence)}
+    */
+   public static boolean isAlpha(final @Nullable CharSequence cs) {
+      return StringUtils.isAlpha(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isAlphanumeric(CharSequence)}
+    */
+   public static boolean isAlphanumeric(final @Nullable CharSequence cs) {
+      return StringUtils.isAlphanumeric(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isAlphanumericSpace(CharSequence)}
+    */
+   public static boolean isAlphanumericSpace(final @Nullable CharSequence cs) {
+      return StringUtils.isAlphanumericSpace(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isAlphaSpace(CharSequence)}
+    */
+   public static boolean isAlphaSpace(final @Nullable CharSequence cs) {
+      return StringUtils.isAlphaSpace(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isAnyBlank(CharSequence[])}
+    */
+   public static boolean isAnyBlank(final CharSequence @Nullable... css) {
+      return StringUtils.isAnyBlank(css);
+   }
+
+   /**
+    * See {@link StringUtils#isAnyEmpty(CharSequence[])}
+    */
+   public static boolean isAnyEmpty(final CharSequence @Nullable... css) {
+      return StringUtils.isAnyBlank(css);
+   }
+
+   /**
+    * See {@link StringUtils#isAsciiPrintable(CharSequence)}
+    */
+   public static boolean isAsciiPrintable(final @Nullable CharSequence cs) {
+      return StringUtils.isAsciiPrintable(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isBlank(CharSequence)}
+    */
+   public static boolean isBlank(final @Nullable CharSequence cs) {
+      return StringUtils.isBlank(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isEmpty(CharSequence)}
+    */
+   public static boolean isEmpty(final @Nullable CharSequence cs) {
+      return StringUtils.isEmpty(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isMixedCase(CharSequence)}
+    */
+   public static boolean isMixedCase(final @Nullable CharSequence cs) {
+      return StringUtils.isMixedCase(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isNoneBlank(CharSequence[])}
+    */
+   public static boolean isNoneBlank(final CharSequence @Nullable... css) {
+      return StringUtils.isNoneBlank(css);
+   }
+
+   /**
+    * See {@link StringUtils#isNoneEmpty(CharSequence[])}
+    */
+   public static boolean isNoneEmpty(final CharSequence @Nullable... css) {
+      return StringUtils.isNoneEmpty(css);
+   }
+
+   /**
+    * See {@link StringUtils#isNotBlank(CharSequence)}
+    */
+   public static boolean isNotBlank(final @Nullable CharSequence cs) {
+      return StringUtils.isNotBlank(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isNotEmpty(CharSequence)}
+    */
+   public static boolean isNotEmpty(final @Nullable CharSequence cs) {
+      return StringUtils.isNotEmpty(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isNumeric(CharSequence)}
+    */
+   public static boolean isNumeric(final @Nullable CharSequence cs) {
+      return StringUtils.isNumeric(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isNumericSpace(CharSequence)}
+    */
+   public static boolean isNumericSpace(final @Nullable CharSequence cs) {
+      return StringUtils.isNumericSpace(cs);
+   }
+
+   /**
+    * See {@link StringUtils#isWhitespace(CharSequence)}
+    */
+   public static boolean isWhitespace(final @Nullable CharSequence cs) {
+      return StringUtils.isWhitespace(cs);
+   }
+
+   /**
+    * See {@link StringUtils#join(boolean[], char)}
+    */
+   public static String join(final boolean[] array, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(array, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(boolean[], char, int, int)}
+    */
+   public static String join(final boolean[] array, final char separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(array, separator, startIndex, endIndex));
+   }
+
+   /**
+    * See {@link StringUtils#join(byte[], char)}
+    */
+   public static String join(final byte[] array, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(array, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(byte[], char, int, int)}
+    */
+   public static String join(final byte[] array, final char separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(array, separator, startIndex, endIndex));
+   }
+
+   /**
+    * See {@link StringUtils#join(char[], char)}
+    */
+   public static String join(final char[] array, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(array, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(char[], char, int, int)}
+    */
+   public static String join(final char[] array, final char separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(array, separator, startIndex, endIndex));
+   }
+
+   /**
+    * See {@link StringUtils#join(double[], char)}
+    */
+   public static String join(final double[] array, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(array, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(double[], char, int, int)}
+    */
+   public static String join(final double[] array, final char separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(array, separator, startIndex, endIndex));
+   }
+
+   /**
+    * See {@link StringUtils#join(float[], char)}
+    */
+   public static String join(final float[] array, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(array, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(float[], char, int, int)}
+    */
+   public static String join(final float[] array, final char separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(array, separator, startIndex, endIndex));
+   }
+
+   /**
+    * See {@link StringUtils#join(int[], char)}
+    */
+   public static String join(final int[] array, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(array, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(int[], char, int, int)}
+    */
+   public static String join(final int[] array, final char separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(array, separator, startIndex, endIndex));
+   }
+
+   public static String join(final Iterable<?> it) {
+      return asNonNullUnsafe(StringUtils.join(it, EMPTY));
+   }
+
+   /**
+    * See {@link StringUtils#join(Iterable, char)}
+    */
+   public static String join(final Iterable<?> it, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(it, separator));
+   }
+
+   public static CharSequence join(final Iterable<?> it, final @Nullable String separator) {
+      return asNonNullUnsafe(StringUtils.join(it, separator));
+   }
+
+   public static <T> String join(final Iterable<T> it, final char separator, final Function<T, Object> transform) {
+      return asNonNullUnsafe(joinNullable(it, separator, transform));
+   }
+
+   public static <T> String join(final Iterable<T> it, final @Nullable String separator, final Function<T, Object> transform) {
+      return asNonNullUnsafe(joinNullable(it, separator, transform));
+   }
+
+   /**
+    * See {@link StringUtils#join(Iterator, char)}
+    */
+   public static String join(final Iterator<?> it, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(it, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(Iterator, String)}
+    */
+   public static String join(final Iterator<?> it, final @Nullable String separator) {
+      return asNonNullUnsafe(StringUtils.join(it, separator));
+   }
+
+   public static <T> String join(final Iterator<T> it, final char separator, final Function<T, Object> transform) {
+      return asNonNullUnsafe(joinNullable(it, separator, transform));
+   }
+
+   public static <T> String join(final Iterator<T> it, @Nullable final String separator, final Function<T, Object> transform) {
+      return asNonNullUnsafe(joinNullable(it, separator, transform));
+   }
+
+   public static String join(final List<?> list, final char separator) {
+      return asNonNullUnsafe(joinNullable(list, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(List, char, int, int)}
+    */
+   public static String join(final List<?> list, final char separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(list, separator, startIndex, endIndex));
+   }
+
+   public static String join(final List<?> list, final @Nullable String separator) {
+      return asNonNullUnsafe(joinNullable(list, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(List, String, int, int)}
+    */
+   public static String join(final List<?> list, final @Nullable String separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(list, separator, startIndex, endIndex));
+   }
+
+   /**
+    * See {@link StringUtils#join(long[], char)}
+    */
+   public static String join(final long[] array, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(array, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(long[], char, int, int)}
+    */
+   public static String join(final long[] array, final char separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(array, separator, startIndex, endIndex));
+   }
+
+   /**
+    * See {@link StringUtils#join(Object[], char)}
+    */
+   public static String join(final Object[] array, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(array, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(Object[], char, int, int)}
+    */
+   public static String join(final Object[] array, final char separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(array, separator, startIndex, endIndex));
+   }
+
+   /**
+    * See {@link StringUtils#join(Object[], String)}
+    */
+   public static String join(final Object[] array, final @Nullable String separator) {
+      return asNonNullUnsafe(StringUtils.join(array, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(Object[], String, int, int)}
+    */
+   public static String join(final Object[] array, final @Nullable String separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(array, separator, startIndex, endIndex));
+   }
+
+   /**
+    * See {@link StringUtils#join(short[], char)}
+    */
+   public static String join(final short[] array, final char separator) {
+      return asNonNullUnsafe(StringUtils.join(array, separator));
+   }
+
+   /**
+    * See {@link StringUtils#join(short[], char, int, int)}
+    */
+   public static String join(final short[] array, final char separator, final int startIndex, final int endIndex) {
+      return asNonNullUnsafe(StringUtils.join(array, separator, startIndex, endIndex));
+   }
+
+   /**
+    * See {@link StringUtils#join(Object...)}
+    */
+   @SafeVarargs
+   public static <T> String join(final T... elements) {
+      return asNonNullUnsafe(StringUtils.join(elements));
+   }
+
+   /**
+    * See {@link StringUtils#join(boolean[], char)}
+    */
+   public static @Nullable String joinNullable(final boolean @Nullable [] array, final char separator) {
+      return StringUtils.join(array, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(boolean[], char, int, int)}
+    */
+   public static @Nullable String joinNullable(final boolean @Nullable [] array, final char separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(array, separator, startIndex, endIndex);
+   }
+
+   /**
+    * See {@link StringUtils#join(byte[], char)}
+    */
+   public static @Nullable String joinNullable(final byte @Nullable [] array, final char separator) {
+      return StringUtils.join(array, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(byte[], char, int, int)}
+    */
+   public static @Nullable String joinNullable(final byte @Nullable [] array, final char separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(array, separator, startIndex, endIndex);
+   }
+
+   /**
+    * See {@link StringUtils#join(char[], char)}
+    */
+   public static @Nullable String joinNullable(final char @Nullable [] array, final char separator) {
+      return StringUtils.join(array, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(char[], char, int, int)}
+    */
+   public static @Nullable String joinNullable(final char @Nullable [] array, final char separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(array, separator, startIndex, endIndex);
+   }
+
+   /**
+    * See {@link StringUtils#join(double[], char)}
+    */
+   public static @Nullable String joinNullable(final double @Nullable [] array, final char separator) {
+      return StringUtils.join(array, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(double[], char, int, int)}
+    */
+   public static @Nullable String joinNullable(final double @Nullable [] array, final char separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(array, separator, startIndex, endIndex);
+   }
+
+   /**
+    * See {@link StringUtils#join(float[], char)}
+    */
+   public static @Nullable String joinNullable(final float @Nullable [] array, final char separator) {
+      return StringUtils.join(array, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(float[], char, int, int)}
+    */
+   public static @Nullable String joinNullable(final float @Nullable [] array, final char separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(array, separator, startIndex, endIndex);
+   }
+
+   /**
+    * See {@link StringUtils#join(int[], char)}
+    */
+   public static @Nullable String joinNullable(final int @Nullable [] array, final char separator) {
+      return StringUtils.join(array, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(int[], char, int, int)}
+    */
+   public static @Nullable String joinNullable(final int @Nullable [] array, final char separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(array, separator, startIndex, endIndex);
+   }
+
+   public static @Nullable String joinNullable(final @Nullable Iterable<?> it) {
+      return joinNullable(it, EMPTY);
+   }
+
+   /**
+    * See {@link StringUtils#join(Iterable, char)}
+    */
+   public static @Nullable String joinNullable(final @Nullable Iterable<?> it, final char separator) {
+      return StringUtils.join(it, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(Iterable, String)}
+    */
+   public static @Nullable String joinNullable(final @Nullable Iterable<?> it, final @Nullable String separator) {
+      return StringUtils.join(it, separator);
+   }
+
+   public static <T> @Nullable String joinNullable(final @Nullable Iterable<T> it, final char separator,
+      final Function<T, Object> transform) {
+      if (it == null)
+         return null;
+
+      return join(it.iterator(), separator, transform);
+   }
+
+   public static <T> @Nullable String joinNullable(final @Nullable Iterable<T> it, final @Nullable CharSequence separator,
+      final Function<T, Object> transform) {
+      if (it == null)
+         return null;
+
+      return join(it.iterator(), separator, transform);
+   }
+
+   /**
+    * See {@link StringUtils#join(Iterator, char)}
+    */
+   public static @Nullable String joinNullable(final @Nullable Iterator<?> it, final char separator) {
+      return StringUtils.join(it, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(Iterator, String)}
+    */
+   public static @Nullable String joinNullable(final @Nullable Iterator<?> it, final @Nullable String separator) {
+      return StringUtils.join(it, separator);
+   }
+
+   public static <T> @Nullable String joinNullable(final @Nullable Iterator<T> it, final char separator,
+      final Function<T, Object> transform) {
+      if (it == null)
+         return null;
+      if (!it.hasNext())
+         return EMPTY;
+
+      Args.notNull("transform", transform);
+
+      final T first = it.next();
+      if (!it.hasNext())
+         return Objects.toString(transform.apply(first), EMPTY);
+
+      final StringBuilder sb = new StringBuilder(128);
+      sb.append(Objects.toString(transform.apply(first), EMPTY));
+
+      while (it.hasNext()) {
+         sb.append(separator);
+         final T obj = it.next();
+         sb.append(Objects.toString(transform.apply(obj), EMPTY));
+      }
+
+      return sb.toString();
+   }
+
+   public static <T> @Nullable String joinNullable(final @Nullable Iterator<T> it, final @Nullable CharSequence separator,
+      final Function<T, Object> transform) {
+      if (it == null)
+         return null;
+      if (!it.hasNext())
+         return EMPTY;
+
+      Args.notNull("transform", transform);
+
+      final T first = it.next();
+      if (!it.hasNext())
+         return Objects.toString(transform.apply(first), EMPTY);
+
+      final StringBuilder sb = new StringBuilder(128);
+      sb.append(Objects.toString(transform.apply(first), EMPTY));
+
+      while (it.hasNext()) {
+         if (separator != null) {
+            sb.append(separator);
+         }
+         final T obj = it.next();
+         sb.append(Objects.toString(transform.apply(obj), EMPTY));
+      }
+
+      return sb.toString();
+   }
+
+   public static @Nullable String joinNullable(final @Nullable List<?> list, final char separator) {
+      if (list == null)
+         return null;
+      return StringUtils.join(list.iterator(), separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(List, char, int, int)}
+    */
+   public static @Nullable String joinNullable(final @Nullable List<?> list, final char separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(list, separator, startIndex, endIndex);
+   }
+
+   public static @Nullable String joinNullable(final @Nullable List<?> list, final @Nullable String separator) {
+      if (list == null)
+         return null;
+      return StringUtils.join(list.iterator(), separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(List, String, int, int)}
+    */
+   public static @Nullable String joinNullable(final @Nullable List<?> list, final @Nullable String separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(list, separator, startIndex, endIndex);
+   }
+
+   /**
+    * See {@link StringUtils#join(long[], char)}
+    */
+   public static @Nullable String joinNullable(final long @Nullable [] array, final char separator) {
+      return StringUtils.join(array, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(long[], char, int, int)}
+    */
+   public static @Nullable String joinNullable(final long @Nullable [] array, final char separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(array, separator, startIndex, endIndex);
+   }
+
+   /**
+    * See {@link StringUtils#join(Object[], char)}
+    */
+   public static @Nullable String joinNullable(final Object @Nullable [] array, final char separator) {
+      return StringUtils.join(array, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(Object[], char, int, int)}
+    */
+   public static @Nullable String joinNullable(final Object @Nullable [] array, final char separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(array, separator, startIndex, endIndex);
+   }
+
+   /**
+    * See {@link StringUtils#join(Object[], String)}
+    */
+   public static @Nullable String joinNullable(final Object @Nullable [] array, final @Nullable String separator) {
+      return StringUtils.join(array, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(Object[], String, int, int)}
+    */
+   public static @Nullable String joinNullable(final Object @Nullable [] array, final @Nullable String separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(array, separator, startIndex, endIndex);
+   }
+
+   /**
+    * See {@link StringUtils#join(short[], char)}
+    */
+   public static @Nullable String joinNullable(final short @Nullable [] array, final char separator) {
+      return StringUtils.join(array, separator);
+   }
+
+   /**
+    * See {@link StringUtils#join(short[], char, int, int)}
+    */
+   public static @Nullable String joinNullable(final short @Nullable [] array, final char separator, final int startIndex,
+      final int endIndex) {
+      return StringUtils.join(array, separator, startIndex, endIndex);
+   }
+
+   /**
+    * See {@link StringUtils#join(Object...)}
+    */
+   @SafeVarargs
+   public static <T> @Nullable String joinNullable(final T @Nullable... elements) {
+      return StringUtils.join(elements);
+   }
+
+   /**
+    * See {@link StringUtils#joinWith(String, Object...)}
+    */
+   public static String joinWith(final String separator, final Object... elements) {
+      return asNonNullUnsafe(joinWithNullable(separator, elements));
+   }
+
+   /**
+    * See {@link StringUtils#joinWith(String, Object...)}
+    */
+   public static @Nullable String joinWithNullable(final @Nullable String separator, final Object @Nullable... elements) {
+      if (elements == null)
+         return null;
+      return StringUtils.joinWith(separator, elements);
+   }
+
+   /**
+    * See {@link StringUtils#lastIndexOf(CharSequence, CharSequence)}
+    */
+   public static int lastIndexOf(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor) {
+      return StringUtils.lastIndexOf(searchIn, searchFor);
+   }
+
+   /**
+    * See {@link StringUtils#lastIndexOf(CharSequence, CharSequence, int)}
+    */
+   public static int lastIndexOf(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor, final int startPos) {
+      return StringUtils.lastIndexOf(searchIn, searchFor, startPos);
+   }
+
+   /**
+    * See {@link StringUtils#lastIndexOf(CharSequence, int)}
+    */
+   public static int lastIndexOf(final @Nullable CharSequence searchIn, final int searchChar) {
+      return StringUtils.lastIndexOf(searchIn, searchChar);
+   }
+
+   /**
+    * See {@link StringUtils#lastIndexOf(CharSequence, int, int)}
+    */
+   public static int lastIndexOf(final @Nullable CharSequence searchIn, final int searchChar, final int startPos) {
+      return StringUtils.lastIndexOf(searchIn, searchChar, startPos);
+   }
+
+   /**
+    * See {@link StringUtils#lastIndexOfAny(CharSequence, CharSequence[])}
+    */
+   public static int lastIndexOfAny(final @Nullable CharSequence searchIn, final CharSequence @Nullable... searchFor) {
+      return StringUtils.lastIndexOfAny(searchIn, searchFor);
+   }
+
+   /**
+    * See {@link StringUtils#lastIndexOfIgnoreCase(CharSequence, CharSequence)}
+    */
+   public static int lastIndexOfIgnoreCase(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor) {
+      return StringUtils.lastIndexOfIgnoreCase(searchIn, searchFor);
+   }
+
+   /**
+    * See {@link StringUtils#lastIndexOfIgnoreCase(CharSequence, CharSequence, int)}
+    */
+   public static int lastIndexOfIgnoreCase(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor,
+      final int startPos) {
+      return StringUtils.lastIndexOfIgnoreCase(searchIn, searchFor, startPos);
+   }
+
+   /**
+    * See {@link StringUtils#lastOrdinalIndexOf(CharSequence, CharSequence, int)}
+    */
+   public static int lastOrdinalIndexOf(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor, final int ordinal) {
+      return StringUtils.lastOrdinalIndexOf(searchIn, searchFor, ordinal);
+   }
+
+   /**
+    * See {@link StringUtils#left(String, int)}
+    */
+   public static String left(final String str, final int len) {
+      return asNonNullUnsafe(StringUtils.left(str, len));
+   }
+
+   /**
+    * See {@link StringUtils#left(String, int)}
+    */
+   public static @Nullable String leftNullable(final @Nullable String str, final int len) {
+      return StringUtils.left(str, len);
+   }
+
+   /**
+    * See {@link StringUtils#leftPad(String, int)}
+    */
+   public static String leftPad(final String str, final int size) {
+      return asNonNullUnsafe(StringUtils.leftPad(str, size));
+   }
+
+   /**
+    * See {@link StringUtils#leftPad(String, int, char)}
+    */
+   public static String leftPad(final String str, final int size, final char padChar) {
+      return asNonNullUnsafe(StringUtils.leftPad(str, size, padChar));
+   }
+
+   /**
+    * See {@link StringUtils#leftPad(String, int, String)}
+    */
+   public static String leftPad(final String str, final int size, final @Nullable String padStr) {
+      return asNonNullUnsafe(StringUtils.leftPad(str, size, padStr));
+   }
+
+   /**
+    * See {@link StringUtils#leftPad(String, int)}
+    */
+   public static @Nullable String leftPadNullable(final @Nullable String str, final int size) {
+      return StringUtils.leftPad(str, size);
+   }
+
+   /**
+    * See {@link StringUtils#leftPad(String, int, char)}
+    */
+   public static @Nullable String leftPadNullable(final @Nullable String str, final int size, final char padChar) {
+      return StringUtils.leftPad(str, size, padChar);
+   }
+
+   /**
+    * See {@link StringUtils#leftPad(String, int, String)}
+    */
+   public static @Nullable String leftPadNullable(final @Nullable String str, final int size, final @Nullable String padStr) {
+      return StringUtils.leftPad(str, size, padStr);
+   }
+
+   /**
+    * See {@link StringUtils#length(CharSequence)}
+    */
+   public static int length(final @Nullable CharSequence cs) {
+      return StringUtils.length(cs);
+   }
+
+   public static String lowerCase(final CharSequence txt) {
+      return asNonNullUnsafe(lowerCaseNullable(txt));
+   }
+
+   public static String lowerCase(final Object obj) {
+      return asNonNullUnsafe(lowerCaseNullable(obj));
+   }
+
+   public static String lowerCase(final Object obj, final @Nullable Locale locale) {
+      return asNonNullUnsafe(lowerCaseNullable(obj, locale));
+   }
+
+   /**
+    * See {@link StringUtils#lowerCase(String)}
+    */
+   public static String lowerCase(final String str) {
+      return asNonNullUnsafe(StringUtils.lowerCase(str));
+   }
+
+   /**
+    * See {@link StringUtils#lowerCase(String, Locale)}
+    */
+   public static String lowerCase(final String str, final @Nullable Locale locale) {
+      return asNonNullUnsafe(StringUtils.lowerCase(str, locale));
+   }
+
+   /**
+    * Uncapitalize the first character of the given character sequence.
+    * If you need to uncapitalize all words in a string use commons-text's <code>WordUtils.uncapitalize(String)</code>
     */
    public static String lowerCaseFirstChar(final CharSequence txt) {
+      return asNonNullUnsafe(lowerCaseFirstCharNullable(txt));
+   }
+
+   /**
+    * Uncapitalize the first character of the given character sequence.
+    * If you need to uncapitalize all words in a string use commons-text's <code>WordUtils.uncapitalize(String)</code>
+    */
+   public static @Nullable String lowerCaseFirstCharNullable(final @Nullable CharSequence txt) {
       if (txt == null)
          return null;
 
@@ -726,16 +2101,103 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return firstChar + txt.subSequence(1, len);
    }
 
-   public static String nullToEmpty(final Object txt) {
-      return txt == null //
-         ? EMPTY //
-         : txt instanceof String //
-            ? (String) txt
-            : txt.toString();
+   public static @Nullable String lowerCaseNullable(final @Nullable CharSequence txt) {
+      if (txt == null)
+         return null;
+      if (txt.length() == 0)
+         return EMPTY;
+      if (txt instanceof String)
+         return ((String) txt).toLowerCase();
+
+      final var len = txt.length();
+      final var chars = new char[len];
+      for (int i = 0; i < len; i++) {
+         chars[i] = Character.toLowerCase(txt.charAt(i));
+      }
+      return new String(chars);
    }
 
-   public static String nullToEmpty(final String txt) {
-      return txt == null ? EMPTY : txt;
+   public static @Nullable String lowerCaseNullable(final @Nullable Object obj) {
+      if (obj == null)
+         return null;
+      return StringUtils.lowerCase(obj.toString());
+   }
+
+   public static @Nullable String lowerCaseNullable(final @Nullable Object obj, final @Nullable Locale locale) {
+      if (obj == null)
+         return null;
+      return StringUtils.lowerCase(obj.toString(), locale);
+   }
+
+   public static @Nullable String lowerCaseNullable(final @Nullable String str) {
+      return StringUtils.lowerCase(str);
+   }
+
+   /**
+    * See {@link StringUtils#lowerCase(String, Locale)}
+    */
+   public static @Nullable String lowerCaseNullable(final @Nullable String str, final @Nullable Locale locale) {
+      return StringUtils.lowerCase(str, locale);
+   }
+
+   /**
+    * See {@link StringUtils#mid(String, int, int)}
+    */
+   public static String mid(final String str, final int pos, final int len) {
+      return asNonNullUnsafe(StringUtils.mid(str, pos, len));
+   }
+
+   /**
+    * See {@link StringUtils#mid(String, int, int)}
+    */
+   public static @Nullable String midNullable(final @Nullable String str, final int pos, final int len) {
+      return StringUtils.mid(str, pos, len);
+   }
+
+   /**
+    * See {@link StringUtils#normalizeSpace(String)}
+    */
+   public static String normalizeSpace(final String str) {
+      return asNonNullUnsafe(StringUtils.normalizeSpace(str));
+   }
+
+   /**
+    * See {@link StringUtils#normalizeSpace(String)}
+    */
+   public static @Nullable String normalizeSpaceNullable(final @Nullable String str) {
+      return StringUtils.normalizeSpace(str);
+   }
+
+   @Nullable
+   public static <T extends CharSequence> T nullIfBlank(final @Nullable T txt) {
+      return isBlank(txt) ? null : txt;
+   }
+
+   @Nullable
+   public static <T extends CharSequence> T nullIfEmpty(final @Nullable T txt) {
+      return isEmpty(txt) ? null : txt;
+   }
+
+   /**
+    * See {@link StringUtils#ordinalIndexOf(CharSequence, CharSequence, int)}
+    */
+   public static int ordinalIndexOf(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor, final int ordinal) {
+      return StringUtils.ordinalIndexOf(searchIn, searchFor, ordinal);
+   }
+
+   /**
+    * See {@link StringUtils#overlay(String, String, int, int)}
+    */
+   public static String overlay(final String str, final @Nullable String overlay, final int start, final int end) {
+      return asNonNullUnsafe(StringUtils.overlay(str, overlay, start, end));
+   }
+
+   /**
+    * See {@link StringUtils#overlay(String, String, int, int)}
+    */
+   public static @Nullable String overlayNullable(final @Nullable String str, final @Nullable String overlay, final int start,
+      final int end) {
+      return StringUtils.overlay(str, overlay, start, end);
    }
 
    public static String pluralize(final int count, final String singluar, final String plural) {
@@ -743,10 +2205,100 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    /**
+    * See {@link StringUtils#prependIfMissing(String, CharSequence, CharSequence[])}
+    */
+   public static String prependIfMissing(final String str, final @Nullable CharSequence prefix, final CharSequence @Nullable... prefixes) {
+      return asNonNullUnsafe(StringUtils.prependIfMissing(str, prefix, prefixes));
+   }
+
+   /**
+    * See {@link StringUtils#prependIfMissingIgnoreCase(String, CharSequence, CharSequence[])}
+    */
+   public static String prependIfMissingIgnoreCase(final String str, final @Nullable CharSequence prefix,
+      final CharSequence @Nullable... prefixes) {
+      return asNonNullUnsafe(StringUtils.prependIfMissingIgnoreCase(str, prefix, prefixes));
+   }
+
+   /**
+    * See {@link StringUtils#prependIfMissingIgnoreCase(String, CharSequence, CharSequence[])}
+    */
+   public static @Nullable String prependIfMissingIgnoreCaseNullable(final @Nullable String str, final @Nullable CharSequence prefix,
+      final CharSequence @Nullable... prefixes) {
+      return StringUtils.prependIfMissingIgnoreCase(str, prefix, prefixes);
+   }
+
+   /**
+    * See {@link StringUtils#prependIfMissing(String, CharSequence, CharSequence[])}
+    */
+   public static @Nullable String prependIfMissingNullable(final @Nullable String str, final @Nullable CharSequence prefix,
+      final CharSequence @Nullable... prefixes) {
+      return StringUtils.prependIfMissing(str, prefix, prefixes);
+   }
+
+   /**
+    * @See {@link StringUtils#wrap(String, char)}
+    */
+   public static String quote(final String str, final char quoteWith) {
+      return asNonNullUnsafe(StringUtils.wrap(str, quoteWith));
+   }
+
+   /**
+    * @See {@link StringUtils#wrap(String, String)}
+    */
+   public static String quote(final String str, final @Nullable String quoteWith) {
+      return asNonNullUnsafe(StringUtils.wrap(str, quoteWith));
+   }
+
+   /**
+    * @See {@link StringUtils#wrapIfMissing(String, char)}
+    */
+   public static String quoteIfMissing(final String str, final char quoteWith) {
+      return asNonNullUnsafe(StringUtils.wrapIfMissing(str, quoteWith));
+   }
+
+   /**
+    * @See {@link StringUtils#wrapIfMissing(String, String)}
+    */
+   public static String quoteIfMissing(final String str, final @Nullable String quoteWith) {
+      return asNonNullUnsafe(StringUtils.wrapIfMissing(str, quoteWith));
+   }
+
+   /**
+    * @See {@link StringUtils#wrapIfMissing(String, char)}
+    */
+   public static @Nullable String quoteIfMissingNullable(final @Nullable String str, final char quoteWith) {
+      return StringUtils.wrapIfMissing(str, quoteWith);
+   }
+
+   /**
+    * @See {@link StringUtils#wrapIfMissing(String, String)}
+    */
+   public static @Nullable String quoteIfMissingNullable(final @Nullable String str, final @Nullable String quoteWith) {
+      return StringUtils.wrapIfMissing(str, quoteWith);
+   }
+
+   /**
+    * @See {@link StringUtils#wrap(String, char)}
+    */
+   public static @Nullable String quoteNullable(final @Nullable String str, final char quoteWith) {
+      return StringUtils.wrap(str, quoteWith);
+   }
+
+   /**
+    * @See {@link StringUtils#wrap(String, String)}
+    */
+   public static @Nullable String quoteNullable(final @Nullable String str, final @Nullable String quoteWith) {
+      return StringUtils.wrap(str, quoteWith);
+   }
+
+   /**
     * See {@link String#regionMatches(boolean, int, String, int, int)}
     */
-   public static boolean regionMatches(final CharSequence searchIn, final boolean ignoreCase, final int searchInOffset,
-      final CharSequence searchFor, final int searchForOffset, int length) {
+   public static boolean regionMatches(final @Nullable CharSequence searchIn, final boolean ignoreCase, final int searchInOffset,
+      @Nullable final CharSequence searchFor, final int searchForOffset, int length) {
+      if (searchIn == null || searchFor == null)
+         return false;
+
       if (searchIn instanceof String && searchFor instanceof String)
          return ((String) searchIn).regionMatches(ignoreCase, searchInOffset, (String) searchFor, searchForOffset, length);
 
@@ -777,19 +2329,217 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    /**
+    * See {@link StringUtils#remove(String, char)}
+    */
+   public static String remove(final String str, final char remove) {
+      return asNonNullUnsafe(StringUtils.remove(str, remove));
+   }
+
+   /**
+    * See {@link StringUtils#remove(String, String)}
+    */
+   public static String remove(final String str, final @Nullable String remove) {
+      return asNonNullUnsafe(StringUtils.remove(str, remove));
+   }
+
+   /**
+    * See {@link StringUtils#removeEnd(String, String)}
+    */
+   public static String removeEnd(final String str, final @Nullable String remove) {
+      return asNonNullUnsafe(StringUtils.removeEnd(str, remove));
+   }
+
+   /**
+    * See {@link StringUtils#removeEndIgnoreCase(String, String)}
+    */
+   public static String removeEndIgnoreCase(final String str, final @Nullable String remove) {
+      return asNonNullUnsafe(StringUtils.removeEndIgnoreCase(str, remove));
+   }
+
+   /**
+    * See {@link StringUtils#removeEndIgnoreCase(String, String)}
+    */
+   public static @Nullable String removeEndIgnoreCaseNullable(final @Nullable String str, final @Nullable String remove) {
+      return StringUtils.removeEndIgnoreCase(str, remove);
+   }
+
+   /**
+    * See {@link StringUtils#removeEnd(String, String)}
+    */
+   public static @Nullable String removeEndNullable(final @Nullable String str, final @Nullable String remove) {
+      return StringUtils.removeEnd(str, remove);
+   }
+
+   /**
+    * See {@link StringUtils#removeIgnoreCase(String, String)}
+    */
+   public static String removeIgnoreCase(final String str, final @Nullable String remove) {
+      return asNonNullUnsafe(StringUtils.removeIgnoreCase(str, remove));
+   }
+
+   /**
+    * See {@link StringUtils#removeIgnoreCase(String, String)}
+    */
+   public static @Nullable String removeIgnoreCaseNullable(final @Nullable String str, final @Nullable String remove) {
+      return StringUtils.removeIgnoreCase(str, remove);
+   }
+
+   /**
+    * See {@link StringUtils#remove(String, char)}
+    */
+   public static @Nullable String removeNullable(final @Nullable String str, final char remove) {
+      return StringUtils.remove(str, remove);
+   }
+
+   /**
+    * See {@link StringUtils#remove(String, String)}
+    */
+   public static @Nullable String removeNullable(final @Nullable String str, final @Nullable String remove) {
+      return StringUtils.remove(str, remove);
+   }
+
+   /**
+    * See {@link StringUtils#removeStart(String, String)}
+    */
+   public static String removeStart(final String str, final @Nullable String remove) {
+      return asNonNullUnsafe(StringUtils.removeStart(str, remove));
+   }
+
+   /**
+    * See {@link StringUtils#removeStartIgnoreCase(String, String)}
+    */
+   public static String removeStartIgnoreCase(final String str, final @Nullable String remove) {
+      return asNonNullUnsafe(StringUtils.removeStartIgnoreCase(str, remove));
+   }
+
+   /**
+    * See {@link StringUtils#removeStartIgnoreCase(String, String)}
+    */
+   public static @Nullable String removeStartIgnoreCaseNullable(final @Nullable String str, final @Nullable String remove) {
+      return StringUtils.removeStartIgnoreCase(str, remove);
+   }
+
+   /**
+    * See {@link StringUtils#removeStart(String, String)}
+    */
+   public static @Nullable String removeStartNullable(final @Nullable String str, final @Nullable String remove) {
+      return StringUtils.removeStart(str, remove);
+   }
+
+   /**
+    * See {@link StringUtils#repeat(char, int)}
+    */
+   public static String repeat(final char ch, final int repeat) {
+      return StringUtils.repeat(ch, repeat);
+   }
+
+   /**
     * <p>
-    * Repeat a String <code>repeat</code> times to form a new String.
+    * Duplicates text <code>repeat</code> times to form a new {@link CharSequence}.
     * </p>
     */
    public static CharSequence repeat(final CharSequence text, final int repeat) {
-      Assert.isTrue(repeat > 1, "Argument [repeat] cannot be negative");
+      return asNonNullUnsafe(repeatNullable(text, repeat));
+   }
 
-      final StringBuilder sb = new StringBuilder(text.length() * repeat);
+   /**
+    * See {@link StringUtils#repeat(String, int)}
+    */
+   public static String repeat(final String str, final int repeat) {
+      return asNonNullUnsafe(StringUtils.repeat(str, repeat));
+   }
 
+   /**
+    * See {@link StringUtils#repeat(String, String, int)}
+    */
+   public static String repeat(final String str, final @Nullable String separator, final int repeat) {
+      return asNonNullUnsafe(StringUtils.repeat(str, separator, repeat));
+   }
+
+   /**
+    * <p>
+    * Duplicates text <code>repeat</code> times to form a new {@link CharSequence}.
+    * </p>
+    */
+   public static @Nullable CharSequence repeatNullable(final @Nullable CharSequence text, final int repeat) {
+      if (text == null || text.length() == 0)
+         return text;
+
+      if (repeat < 1)
+         return EMPTY;
+
+      final var sb = new StringBuilder(text.length() * repeat);
       for (int i = 0; i < repeat; i++) {
          sb.append(text);
       }
       return sb;
+   }
+
+   /**
+    * See {@link StringUtils#repeat(String, int)}
+    */
+   public static @Nullable String repeatNullable(final @Nullable String str, final int repeat) {
+      return StringUtils.repeat(str, repeat);
+   }
+
+   /**
+    * See {@link StringUtils#repeat(String, String, int)}
+    */
+   public static @Nullable String repeatNullable(final @Nullable String str, final @Nullable String separator, final int repeat) {
+      return StringUtils.repeat(str, separator, repeat);
+   }
+
+   /**
+    * See {@link StringUtils#replaceChars(String, char, char)}
+    */
+   public static String replace(final String searchIn, final char searchFor, final char replaceWith) {
+      return asNonNullUnsafe(StringUtils.replaceChars(searchIn, searchFor, replaceWith));
+   }
+
+   /**
+    * See {@link StringUtils#replace(String, String, String)}
+    */
+   public static String replace(final String searchIn, final @Nullable String searchFor, final @Nullable String replaceWith) {
+      return asNonNullUnsafe(StringUtils.replace(searchIn, searchFor, replaceWith));
+   }
+
+   /**
+    * See {@link StringUtils#replace(String, String, String, int)}
+    */
+   public static String replace(final String searchIn, final @Nullable String searchFor, final @Nullable String replaceWith,
+      final int max) {
+      return asNonNullUnsafe(StringUtils.replace(searchIn, searchFor, replaceWith, max));
+   }
+
+   /**
+    * Replace all occurrences of searchFor in searchIn with replaceWith.
+    */
+   public static void replace(final @Nullable StringBuffer searchIn, final @Nullable String searchFor, final @Nullable String replaceWith) {
+      if (searchIn == null || searchFor == null || replaceWith == null)
+         return;
+      final int searchForLen = searchFor.length();
+      final int replaceWithLen = replaceWith.length();
+      int index = searchIn.indexOf(searchFor);
+      while (index != -1) {
+         searchIn.replace(index, index + searchForLen, replaceWith);
+         index = searchIn.indexOf(searchFor, index + replaceWithLen);
+      }
+   }
+
+   /**
+    * Replace all occurrences of searchFor in searchIn with replaceWith.
+    */
+   public static void replace(final @Nullable StringBuilder searchIn, final @Nullable String searchFor,
+      final @Nullable String replaceWith) {
+      if (searchIn == null || searchFor == null || replaceWith == null)
+         return;
+      final int searchForLen = searchFor.length();
+      final int replaceWithLen = replaceWith.length();
+      int index = searchIn.indexOf(searchFor);
+      while (index != -1) {
+         searchIn.replace(index, index + searchForLen, replaceWith);
+         index = searchIn.indexOf(searchFor, index + replaceWithLen);
+      }
    }
 
    /**
@@ -803,8 +2553,8 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     *
     * @param startAt position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
     */
-   public static String replace(final String searchIn, final int startAt, final CharSequence replaceWith) {
-      return replace(searchIn, startAt, searchIn.length(), replaceWith);
+   public static CharSequence replaceAt(final CharSequence searchIn, final int startAt, final CharSequence replaceWith) {
+      return asNonNullUnsafe(replaceAtNullable(searchIn, startAt, replaceWith));
    }
 
    /**
@@ -824,7 +2574,48 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     * @param startAt position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
     * @param length number of characters to replace
     */
-   public static String replace(final String searchIn, int startAt, int length, final CharSequence replaceWith) {
+   public static CharSequence replaceAt(final @Nullable CharSequence searchIn, final int startAt, final int length,
+      final CharSequence replaceWith) {
+      return asNonNullUnsafe(replaceAtNullable(searchIn, startAt, length, replaceWith));
+   }
+
+   /**
+    * Replaces the substring starting at <code>startAt</code> with the string <code>replaceWith</code>.<br/>
+    * <br/>
+    * <b>startAt:</b><br/>
+    * If startAt is positive, the replacing will begin at the startAt'th offset into searchIn.<br/>
+    * If startAt is negative, the replacing will begin at the startAt'th character from the end of searchIn.<br/>
+    * <br/>
+    * Behavior is based on PHP's substr_replace function http://www.php.net/manual/en/function.substr-replace.php<br/>
+    *
+    * @param startAt position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
+    */
+   public static @Nullable CharSequence replaceAtNullable(final @Nullable CharSequence searchIn, final int startAt,
+      final @Nullable CharSequence replaceWith) {
+      if (searchIn == null)
+         return searchIn;
+      return replaceAtNullable(searchIn, startAt, searchIn.length(), replaceWith);
+   }
+
+   /**
+    * Replaces the substring starting at <code>startAt</code> having a length of <code>length</code> with the string <code>replaceWith</code>.<br/>
+    * <br/>
+    * <b>startAt:</b><br/>
+    * If startAt is positive, the replacing will begin at the startAt'th offset into searchIn.<br/>
+    * If startAt is negative, the replacing will begin at the startAt'th character from the end of searchIn.<br/>
+    * <br/>
+    * <b>length:</b><br/>
+    * If length is positive, it represents the length of the portion of searchIn which is to be replaced.<br/>
+    * If length is negative, it represents the number of characters from the end of searchIn at which to stop replacing.<br/>
+    * If length is 0 the text will be inserted at the given position.<br/>
+    * <br/>
+    * Behavior is based on PHP's substr_replace function http://www.php.net/manual/en/function.substr-replace.php<br/>
+    *
+    * @param startAt position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
+    * @param length number of characters to replace
+    */
+   public static @Nullable CharSequence replaceAtNullable(final @Nullable CharSequence searchIn, int startAt, int length,
+      final @Nullable CharSequence replaceWith) {
       if (searchIn == null || replaceWith == null)
          return searchIn;
 
@@ -849,40 +2640,75 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       }
 
       final int end = startAt + length > stringLength ? stringLength : startAt + length;
-
-      return searchIn.substring(0, startAt) + replaceWith + searchIn.substring(end);
+      final var sb = new StringBuilder();
+      sb.append(searchIn, 0, startAt);
+      sb.append(replaceWith);
+      sb.append(searchIn, end, stringLength);
+      return sb;
    }
 
    /**
-    * Replace all occurrences of searchFor in searchIn with replaceWith.
+    * See {@link StringUtils#replaceChars(String, String, String)}
     */
-   public static void replace(final StringBuffer searchIn, final String searchFor, final String replaceWith) {
-      final int searchForLen = searchFor.length();
-      final int replaceWithLen = replaceWith.length();
-      int index = searchIn.indexOf(searchFor);
-      while (index != -1) {
-         searchIn.replace(index, index + searchForLen, replaceWith);
-         index = searchIn.indexOf(searchFor, index + replaceWithLen);
-      }
+   public static String replaceChars(final String searchIn, final @Nullable String searchChars, final @Nullable String replaceChars) {
+      return asNonNullUnsafe(StringUtils.replaceChars(searchIn, searchChars, replaceChars));
    }
 
    /**
-    * Replace all occurrences of searchFor in searchIn with replaceWith.
+    * See {@link StringUtils#replaceChars(String, String, String)}
     */
-   public static void replace(final StringBuilder searchIn, final String searchFor, final String replaceWith) {
-      final int searchForLen = searchFor.length();
-      final int replaceWithLen = replaceWith.length();
-      int index = searchIn.indexOf(searchFor);
-      while (index != -1) {
-         searchIn.replace(index, index + searchForLen, replaceWith);
-         index = searchIn.indexOf(searchFor, index + replaceWithLen);
-      }
+   public static @Nullable String replaceCharsNullable(final @Nullable String searchIn, final @Nullable String searchChars,
+      final @Nullable String replaceChars) {
+      return StringUtils.replaceChars(searchIn, searchChars, replaceChars);
    }
 
    /**
     * @param tokens e.g. {"searchFor1", "replaceWith1", searchFor2", "replaceWith2", ...}
     */
    public static String replaceEach(final String searchIn, final String... tokens) {
+      return asNonNullUnsafe(replaceEachNullable(searchIn, tokens));
+   }
+
+   /**
+    * See {@link StringUtils#replaceEach(String, String[], String[])}
+    */
+   public static String replaceEach(final String searchIn, final String @Nullable [] searchFor, final String @Nullable [] replaceWith) {
+      return asNonNullUnsafe(StringUtils.replaceEach(searchIn, searchFor, replaceWith));
+   }
+
+   public static CharSequence replaceEachGroup(final @Nullable Pattern regex, final CharSequence searchIn, final int groupToReplace,
+      final @Nullable String replaceWith) {
+      return asNonNullUnsafe(replaceEachGroupNullable(regex, searchIn, groupToReplace, replaceWith));
+   }
+
+   public static CharSequence replaceEachGroup(final @Nullable String regex, final CharSequence searchIn, final int groupToReplace,
+      final @Nullable String replaceWith) {
+      return asNonNullUnsafe(replaceEachGroupNullable(regex, searchIn, groupToReplace, replaceWith));
+   }
+
+   public static @Nullable CharSequence replaceEachGroupNullable(final @Nullable Pattern regex, final @Nullable CharSequence searchIn,
+      final int groupToReplace, final @Nullable String replaceWith) {
+      if (regex == null || searchIn == null || replaceWith == null)
+         return searchIn;
+      final var m = regex.matcher(searchIn);
+      final var sb = new StringBuilder(searchIn);
+      while (m.find()) {
+         sb.replace(m.start(groupToReplace), m.end(groupToReplace), replaceWith);
+      }
+      return sb;
+   }
+
+   public static @Nullable CharSequence replaceEachGroupNullable(final @Nullable String regex, final @Nullable CharSequence searchIn,
+      final int groupToReplace, final @Nullable String replaceWith) {
+      if (regex == null)
+         return searchIn;
+      return replaceEachGroupNullable(Pattern.compile(regex), searchIn, groupToReplace, replaceWith);
+   }
+
+   /**
+    * @param tokens e.g. {"searchFor1", "replaceWith1", searchFor2", "replaceWith2", ...}
+    */
+   public static @Nullable String replaceEachNullable(final @Nullable String searchIn, final String @Nullable... tokens) {
       if (searchIn == null || tokens == null)
          return searchIn;
       final String[] searchFor = new String[tokens.length / 2];
@@ -902,49 +2728,135 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return replaceEach(searchIn, searchFor, replaceWith);
    }
 
-   public static CharSequence replaceEachGroup(final Pattern regex, final CharSequence searchIn, final int groupToReplace,
-      final String replaceWith) {
-      final Matcher m = regex.matcher(searchIn);
-      final StringBuilder sb = new StringBuilder(searchIn);
-      while (m.find()) {
-         sb.replace(m.start(groupToReplace), m.end(groupToReplace), replaceWith);
-      }
-      return sb;
+   /**
+    * See {@link StringUtils#replaceEach(String, String[], String[])}
+    */
+   public static @Nullable String replaceEachNullable(final @Nullable String searchIn, final String @Nullable [] searchFor,
+      final String @Nullable [] replaceWith) {
+      return StringUtils.replaceEach(searchIn, searchFor, replaceWith);
    }
 
-   public static CharSequence replaceEachGroup(final String regex, final CharSequence searchIn, final int groupToReplace,
-      final String replaceWith) {
-      return replaceEachGroup(Pattern.compile(regex), searchIn, groupToReplace, replaceWith);
+   /**
+    * See {@link StringUtils#replaceEachRepeatedly(String, String[], String[])}
+    */
+   public static String replaceEachRepeatedly(final String searchIn, final String @Nullable [] searchFor,
+      final String @Nullable [] replaceWith) {
+      return asNonNullUnsafe(StringUtils.replaceEachRepeatedly(searchIn, searchFor, replaceWith));
+   }
+
+   /**
+    * See {@link StringUtils#replaceEachRepeatedly(String, String[], String[])}
+    */
+   public static @Nullable String replaceEachRepeatedlyNullable(final @Nullable String searchIn, final String @Nullable [] searchFor,
+      final String @Nullable [] replaceWith) {
+      return StringUtils.replaceEachRepeatedly(searchIn, searchFor, replaceWith);
+   }
+
+   /**
+    * See {@link StringUtils#replaceOnce(String, String, String)}
+    */
+   public static String replaceFirst(final String searchIn, final @Nullable String searchFor, final @Nullable String replaceWith) {
+      return asNonNullUnsafe(StringUtils.replaceOnce(searchIn, searchFor, replaceWith));
+   }
+
+   /**
+    * Replace the first occurrence of searchFor in searchIn with replaceWith.
+    */
+   public static void replaceFirst(final @Nullable StringBuffer searchIn, final @Nullable String searchFor,
+      final @Nullable String replaceWith) {
+      if (searchIn == null || searchFor == null || replaceWith == null)
+         return;
+      final int index = searchIn.indexOf(searchFor);
+      if (index != -1) {
+         searchIn.replace(index, index + searchFor.length(), replaceWith);
+      }
+   }
+
+   /**
+    * Replace the first occurrence of searchFor in searchIn with replaceWith.
+    */
+   public static void replaceFirst(final @Nullable StringBuilder searchIn, final @Nullable String searchFor,
+      final @Nullable String replaceWith) {
+      if (searchIn == null || searchFor == null || replaceWith == null)
+         return;
+      final int index = searchIn.indexOf(searchFor);
+      if (index != -1) {
+         searchIn.replace(index, index + searchFor.length(), replaceWith);
+      }
+   }
+
+   /**
+    * See {@link StringUtils#replaceOnceIgnoreCase(String, String, String)}
+    */
+   public static String replaceFirstIgnoreCase(final String searchIn, final @Nullable String searchFor,
+      final @Nullable String replaceWith) {
+      return asNonNullUnsafe(StringUtils.replaceOnceIgnoreCase(searchIn, searchFor, replaceWith));
+   }
+
+   /**
+    * See {@link StringUtils#replaceOnceIgnoreCase(String, String, String)}
+    */
+   public static @Nullable String replaceFirstIgnoreCaseNullable(final @Nullable String searchIn, final @Nullable String searchFor,
+      final @Nullable String replaceWith) {
+      return StringUtils.replaceOnceIgnoreCase(searchIn, searchFor, replaceWith);
+   }
+
+   /**
+    * See {@link StringUtils#replaceOnce(String, String, String)}
+    */
+   public static @Nullable String replaceFirstNullable(final @Nullable String searchIn, final @Nullable String searchFor,
+      final @Nullable String replaceWith) {
+      return StringUtils.replaceOnce(searchIn, searchFor, replaceWith);
    }
 
    /**
     * Replace all occurrences of the search string with the replacement string.
     * This method is case insensitive.
     *
-    * Example:
-    *
-    * String result = replaceSubString ("Kiss my ass.", "ASS", "lips");
-    * System.out.println(result);
-    *
-    * This prints the string "Kiss my lips." to the console.
+    * @param searchIn The string to search
+    * @param searchFor The string to find
+    * @param replaceWith The string to replace searchFor with.
+    * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be returned.
+    */
+   public static CharSequence replaceIgnoreCase(final String searchIn, @Nullable final String searchFor,
+      @Nullable final CharSequence replaceWith) {
+      return asNonNullUnsafe(replaceIgnoreCaseNullable(searchIn, searchFor, replaceWith));
+   }
+
+   /**
+    * See {@link StringUtils#replaceIgnoreCase(String, String, String)}
+    */
+   public static String replaceIgnoreCase(final String searchIn, final @Nullable String searchFor, final @Nullable String replaceWith) {
+      return asNonNullUnsafe(StringUtils.replaceIgnoreCase(searchIn, searchFor, replaceWith));
+   }
+
+   /**
+    * See {@link StringUtils#replaceIgnoreCase(String, String, String, int)}
+    */
+   public static String replaceIgnoreCase(final String searchIn, final @Nullable String searchFor, final @Nullable String replaceWith,
+      final int max) {
+      return asNonNullUnsafe(StringUtils.replaceIgnoreCase(searchIn, searchFor, replaceWith, max));
+   }
+
+   /**
+    * Replace all occurrences of the search string with the replacement string.
+    * This method is case insensitive.
     *
     * @param searchIn The string to search
     * @param searchFor The string to find
     * @param replaceWith The string to replace searchFor with.
     * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be returned.
     */
-   public static CharSequence replaceIgnoreCase(final String searchIn, String searchFor, CharSequence replaceWith) {
-      if (searchIn == null || searchFor == null)
+   public static @Nullable CharSequence replaceIgnoreCaseNullable(final @Nullable String searchIn, @Nullable String searchFor,
+      @Nullable final CharSequence replaceWith) {
+      if (searchIn == null || searchFor == null || replaceWith == null)
          return searchIn;
       final int searchInLen = searchIn.length();
       if (searchInLen == 0)
          return searchIn;
-      if (replaceWith == null) {
-         replaceWith = "";
-      }
 
       final int searchForLen = searchFor.length();
-      final StringBuilder out = new StringBuilder();
+      final var out = new StringBuilder();
 
       int startSearchAt = 0;
       int foundAt = 0;
@@ -961,37 +2873,389 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return out;
    }
 
-   public static String[] splitLines(final String text, final boolean preserveEmptyLines) {
+   /**
+    * See {@link StringUtils#replaceIgnoreCase(String, String, String)}
+    */
+   public static @Nullable String replaceIgnoreCaseNullable(final @Nullable String searchIn, final @Nullable String searchFor,
+      final @Nullable String replaceWith) {
+      return StringUtils.replaceIgnoreCase(searchIn, searchFor, replaceWith);
+   }
+
+   /**
+    * See {@link StringUtils#replaceIgnoreCase(String, String, String, int)}
+    */
+   public static @Nullable String replaceIgnoreCaseNullable(final @Nullable String searchIn, final @Nullable String searchFor,
+      final @Nullable String replaceWith, final int max) {
+      return StringUtils.replaceIgnoreCase(searchIn, searchFor, replaceWith, max);
+   }
+
+   /**
+    * See {@link StringUtils#replaceChars(String, char, char)}
+    */
+   public static @Nullable String replaceNullable(final @Nullable String searchIn, final char searchFor, final char replaceWith) {
+      return StringUtils.replaceChars(searchIn, searchFor, replaceWith);
+   }
+
+   /**
+    * See {@link StringUtils#replace(String, String, String)}
+    */
+   public static @Nullable String replaceNullable(final @Nullable String searchIn, final @Nullable String searchFor,
+      final @Nullable String replaceWith) {
+      return StringUtils.replace(searchIn, searchFor, replaceWith);
+   }
+
+   /**
+    * See {@link StringUtils#replace(String, String, String, int)}
+    */
+   public static @Nullable String replaceNullable(final @Nullable String searchIn, final @Nullable String searchFor,
+      final @Nullable String replaceWith, final int max) {
+      return StringUtils.replace(searchIn, searchFor, replaceWith, max);
+   }
+
+   /**
+    * See {@link StringUtils#reverse(String)}
+    */
+   public static String reverse(final String str) {
+      return asNonNullUnsafe(StringUtils.reverse(str));
+   }
+
+   /**
+    * See {@link StringUtils#reverseDelimited(String, char)}
+    */
+   public static String reverseDelimited(final String str, final char separatorChar) {
+      return asNonNullUnsafe(StringUtils.reverseDelimited(str, separatorChar));
+   }
+
+   /**
+    * See {@link StringUtils#reverseDelimited(String, char)}
+    */
+   public static @Nullable String reverseDelimitedNullable(final @Nullable String str, final char separatorChar) {
+      return StringUtils.reverseDelimited(str, separatorChar);
+   }
+
+   /**
+    * See {@link StringUtils#reverse(String)}
+    */
+   public static @Nullable String reverseNullable(final @Nullable String str) {
+      return StringUtils.reverse(str);
+   }
+
+   /**
+    * See {@link StringUtils#right(String, int)}
+    */
+   public static String right(final String str, final int len) {
+      return asNonNullUnsafe(StringUtils.right(str, len));
+   }
+
+   /**
+    * See {@link StringUtils#right(String, int)}
+    */
+   public static @Nullable String rightNullable(final @Nullable String str, final int len) {
+      return StringUtils.right(str, len);
+   }
+
+   /**
+    * See {@link StringUtils#rightPad(String, int)}
+    */
+   public static String rightPad(final String str, final int size) {
+      return asNonNullUnsafe(StringUtils.rightPad(str, size));
+   }
+
+   /**
+    * See {@link StringUtils#rightPad(String, int, char)}
+    */
+   public static String rightPad(final String str, final int size, final char padChar) {
+      return asNonNullUnsafe(StringUtils.rightPad(str, size, padChar));
+   }
+
+   /**
+    * See {@link StringUtils#rightPad(String, int, String)}
+    */
+   public static String rightPad(final String str, final int size, final @Nullable String padStr) {
+      return asNonNullUnsafe(StringUtils.rightPad(str, size, padStr));
+   }
+
+   /**
+    * See {@link StringUtils#rightPad(String, int)}
+    */
+   public static @Nullable String rightPadNullable(final @Nullable String str, final int size) {
+      return StringUtils.rightPad(str, size);
+   }
+
+   /**
+    * See {@link StringUtils#rightPad(String, int, char)}
+    */
+   public static @Nullable String rightPadNullable(final @Nullable String str, final int size, final char padChar) {
+      return StringUtils.rightPad(str, size, padChar);
+   }
+
+   /**
+    * See {@link StringUtils#rightPad(String, int, String)}
+    */
+   public static @Nullable String rightPadNullable(final @Nullable String str, final int size, final @Nullable String padStr) {
+      return StringUtils.rightPad(str, size, padStr);
+   }
+
+   /**
+    * See {@link StringUtils#rotate(String, int)}
+    */
+   public static String rotate(final String str, final int shift) {
+      return asNonNullUnsafe(StringUtils.rotate(str, shift));
+   }
+
+   /**
+    * See {@link StringUtils#rotate(String, int)}
+    */
+   public static @Nullable String rotateNullable(final @Nullable String str, final int shift) {
+      return StringUtils.rotate(str, shift);
+   }
+
+   /**
+    * See {@link StringUtils#split(String)}
+    */
+   public static @NonNull String[] split(final String str) {
+      return asNonNullUnsafe(StringUtils.split(str));
+   }
+
+   /**
+    * See {@link StringUtils#split(String, char)}
+    */
+   public static @NonNull String[] split(final String str, final char separatorChar) {
+      return asNonNullUnsafe(StringUtils.split(str, separatorChar));
+   }
+
+   /**
+    * See {@link StringUtils#split(String, String)}
+    */
+   public static @NonNull String[] split(final String str, final @Nullable String separatorChars) {
+      return asNonNullUnsafe(StringUtils.split(str, separatorChars));
+   }
+
+   /**
+    * See {@link StringUtils#split(String, String, int)}
+    */
+   public static @NonNull String[] split(final String str, final @Nullable String separatorChars, final int max) {
+      return asNonNullUnsafe(StringUtils.split(str, separatorChars, max));
+   }
+
+   /**
+    * See {@link StringUtils#splitByCharacterType(String)}
+    */
+   public static @NonNull String[] splitByCharacterType(final String str) {
+      return asNonNullUnsafe(StringUtils.splitByCharacterType(str));
+   }
+
+   /**
+    * See {@link StringUtils#splitByCharacterTypeCamelCase(String)}
+    */
+   public static @NonNull String[] splitByCharacterTypeCamelCase(final String str) {
+      return asNonNullUnsafe(StringUtils.splitByCharacterTypeCamelCase(str));
+   }
+
+   /**
+    * See {@link StringUtils#splitByCharacterTypeCamelCase(String)}
+    */
+   public static @NonNull String @Nullable [] splitByCharacterTypeCamelCaseNullable(final @Nullable String str) {
+      return StringUtils.splitByCharacterTypeCamelCase(str);
+   }
+
+   /**
+    * See {@link StringUtils#splitByCharacterType(String)}
+    */
+   public static @NonNull String @Nullable [] splitByCharacterTypeNullable(final @Nullable String str) {
+      return StringUtils.splitByCharacterType(str);
+   }
+
+   /**
+    * See {@link StringUtils#splitByWholeSeparator(String, String)}
+    */
+   public static @NonNull String[] splitByWholeSeparator(final String str, final @Nullable String separator) {
+      return asNonNullUnsafe(StringUtils.splitByWholeSeparator(str, separator));
+   }
+
+   /**
+    * See {@link StringUtils#splitByWholeSeparator(String, String, int)}
+    */
+   public static @NonNull String[] splitByWholeSeparator(final String str, final @Nullable String separator, final int max) {
+      return asNonNullUnsafe(StringUtils.splitByWholeSeparator(str, separator, max));
+   }
+
+   /**
+    * See {@link StringUtils#splitByWholeSeparator(String, String)}
+    */
+   public static @NonNull String @Nullable [] splitByWholeSeparatorNullable(final @Nullable String str, final @Nullable String separator) {
+      return StringUtils.splitByWholeSeparator(str, separator);
+   }
+
+   /**
+    * See {@link StringUtils#splitByWholeSeparator(String, String, int)}
+    */
+   public static @NonNull String @Nullable [] splitByWholeSeparatorNullable(final @Nullable String str, final @Nullable String separator,
+      final int max) {
+      return StringUtils.splitByWholeSeparator(str, separator, max);
+   }
+
+   /**
+    * See {@link StringUtils#splitByWholeSeparatorPreserveAllTokens(String, String)}
+    */
+   public static @NonNull String[] splitByWholeSeparatorPreserveAllTokens(final String str, final @Nullable String separator) {
+      return asNonNullUnsafe(StringUtils.splitByWholeSeparatorPreserveAllTokens(str, separator));
+   }
+
+   /**
+    * See {@link StringUtils#splitByWholeSeparatorPreserveAllTokens(String, String)}
+    */
+   public static @NonNull String[] splitByWholeSeparatorPreserveAllTokens(final String str, final @Nullable String separator,
+      final int max) {
+      return asNonNullUnsafe(StringUtils.splitByWholeSeparatorPreserveAllTokens(str, separator, max));
+   }
+
+   /**
+    * See {@link StringUtils#splitByWholeSeparatorPreserveAllTokens(String, String)}
+    */
+   public static @NonNull String @Nullable [] splitByWholeSeparatorPreserveAllTokensNullable(final @Nullable String str,
+      final @Nullable String separator) {
+      return StringUtils.splitByWholeSeparatorPreserveAllTokens(str, separator);
+   }
+
+   /**
+    * See {@link StringUtils#splitByWholeSeparatorPreserveAllTokens(String, String)}
+    */
+   public static @NonNull String @Nullable [] splitByWholeSeparatorPreserveAllTokensNullable(final @Nullable String str,
+      final @Nullable String separator, final int max) {
+      return StringUtils.splitByWholeSeparatorPreserveAllTokens(str, separator, max);
+   }
+
+   public static @NonNull String[] splitLines(final String text, final boolean preserveEmptyLines) {
+      return asNonNullUnsafe(splitLinesNullable(text, preserveEmptyLines));
+   }
+
+   public static @NonNull String @Nullable [] splitLinesNullable(final @Nullable String text, final boolean preserveEmptyLines) {
       if (text == null)
          return null;
 
       if (preserveEmptyLines) {
-         if (text.indexOf(NEW_LINE) > -1)
+         if (text.indexOf(Strings.NEW_LINE) > -1)
             return splitByWholeSeparatorPreserveAllTokens(text, Strings.NEW_LINE);
-         if (text.indexOf(CR_LF) > -1)
-            return splitByWholeSeparatorPreserveAllTokens(text, CR_LF);
-         if (text.indexOf(LF) > -1)
-            return splitPreserveAllTokens(text, LF);
-         if (text.indexOf(CR) > -1)
-            return splitPreserveAllTokens(text, CR);
+         if (text.indexOf(Strings.CR_LF) > -1)
+            return splitByWholeSeparatorPreserveAllTokens(text, Strings.CR_LF);
+         if (text.indexOf(Strings.LF) > -1)
+            return splitPreserveAllTokens(text, Strings.LF);
+         if (text.indexOf(Strings.CR) > -1)
+            return splitPreserveAllTokens(text, Strings.CR);
       } else {
-         if (text.indexOf(NEW_LINE) > -1)
+         if (text.indexOf(Strings.NEW_LINE) > -1)
             return split(text, Strings.NEW_LINE);
-         if (text.indexOf(CR_LF) > -1)
-            return splitByWholeSeparator(text, CR_LF);
-         if (text.indexOf(LF) > -1)
-            return split(text, LF);
-         if (text.indexOf(CR) > -1)
-            return split(text, CR);
+         if (text.indexOf(Strings.CR_LF) > -1)
+            return splitByWholeSeparator(text, Strings.CR_LF);
+         if (text.indexOf(Strings.LF) > -1)
+            return split(text, Strings.LF);
+         if (text.indexOf(Strings.CR) > -1)
+            return split(text, Strings.CR);
       }
 
-      return new String[] {text};
+      final var result = new String[] {text};
+      return asNonNullUnsafe(result);
+   }
+
+   /**
+    * See {@link StringUtils#split(String)}
+    */
+   public static @NonNull String @Nullable [] splitNullable(final @Nullable String str) {
+      return StringUtils.split(str);
+   }
+
+   /**
+    * See {@link StringUtils#split(String, char)}
+    */
+   public static @NonNull String @Nullable [] splitNullable(final @Nullable String str, final char separatorChar) {
+      return StringUtils.split(str, separatorChar);
+   }
+
+   /**
+    * See {@link StringUtils#split(String, String)}
+    */
+   public static @NonNull String @Nullable [] splitNullable(final @Nullable String str, final @Nullable String separatorChars) {
+      return StringUtils.split(str, separatorChars);
+   }
+
+   /**
+    * See {@link StringUtils#split(String, String, int)}
+    */
+   public static @NonNull String @Nullable [] splitNullable(final @Nullable String str, final @Nullable String separatorChars,
+      final int max) {
+      return StringUtils.split(str, separatorChars, max);
+   }
+
+   /**
+    * See {@link StringUtils#splitPreserveAllTokens(String)}
+    */
+   public static @NonNull String[] splitPreserveAllTokens(final String str) {
+      return asNonNullUnsafe(StringUtils.splitPreserveAllTokens(str));
+   }
+
+   /**
+    * See {@link StringUtils#splitPreserveAllTokens(String, char)}
+    */
+   public static @NonNull String[] splitPreserveAllTokens(final String str, final char separatorChar) {
+      return asNonNullUnsafe(StringUtils.splitPreserveAllTokens(str, separatorChar));
+   }
+
+   /**
+    * See {@link StringUtils#splitPreserveAllTokens(String, String)}
+    */
+   public static @NonNull String[] splitPreserveAllTokens(final String str, final @Nullable String separatorChars) {
+      return asNonNullUnsafe(StringUtils.splitPreserveAllTokens(str, separatorChars));
+   }
+
+   /**
+    * See {@link StringUtils#splitPreserveAllTokens(String, String, int)}
+    */
+   public static @NonNull String[] splitPreserveAllTokens(final String str, final @Nullable String separatorChars, final int max) {
+      return asNonNullUnsafe(StringUtils.splitPreserveAllTokens(str, separatorChars, max));
+   }
+
+   /**
+    * See {@link StringUtils#splitPreserveAllTokens(String)}
+    */
+   public static @NonNull String @Nullable [] splitPreserveAllTokensNullable(final @Nullable String str) {
+      return StringUtils.splitPreserveAllTokens(str);
+   }
+
+   /**
+    * See {@link StringUtils#splitPreserveAllTokens(String, char)}
+    */
+   public static @NonNull String @Nullable [] splitPreserveAllTokensNullable(final @Nullable String str, final char separatorChar) {
+      return StringUtils.splitPreserveAllTokens(str, separatorChar);
+   }
+
+   /**
+    * See {@link StringUtils#splitPreserveAllTokens(String, String)}
+    */
+   public static @NonNull String @Nullable [] splitPreserveAllTokensNullable(final @Nullable String str,
+      final @Nullable String separatorChars) {
+      return StringUtils.splitPreserveAllTokens(str, separatorChars);
+   }
+
+   /**
+    * See {@link StringUtils#splitPreserveAllTokens(String, String, int)}
+    */
+   public static @NonNull String @Nullable [] splitPreserveAllTokensNullable(final @Nullable String str,
+      final @Nullable String separatorChars, final int max) {
+      return StringUtils.splitPreserveAllTokens(str, separatorChars, max);
    }
 
    /**
     * Empty tokens are not preserved.
     */
-   public static List<String> splitToList(final String text, final char separator) {
+   public static List<@NonNull String> splitToList(final String text, final char separator) {
+      return asNonNullUnsafe(splitToListNullable(text, separator));
+   }
+
+   /**
+    * Empty tokens are not preserved.
+    */
+   public static @Nullable List<@NonNull String> splitToListNullable(final @Nullable String text, final char separator) {
       if (text == null)
          return null;
 
@@ -1008,7 +3272,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       final var tokens = new ArrayList<String>(len < 5 ? 2 : 4);
       int searchAt = 0;
       int foundAt;
-      while ((foundAt = text.indexOf(separator, searchAt)) != -1) {
+      while ((foundAt = text.indexOf(separator, searchAt)) != Strings.INDEX_NOT_FOUND) {
          if (searchAt < foundAt) {
             tokens.add(text.substring(searchAt, foundAt));
          }
@@ -1026,14 +3290,179 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return tokens;
    }
 
-   public static boolean startsWith(final CharSequence str, final char ch) {
-      return isNotEmpty(str) && str.charAt(0) == ch;
+   public static boolean startsWith(final @Nullable CharSequence str, final char ch) {
+      return str != null && str.length() > 0 && str.charAt(0) == ch;
    }
 
-   public static String stripAnsiEscapeSequences(final String in) {
-      if (in == null)
+   /**
+    * See {@link StringUtils#startsWith(CharSequence, CharSequence)}
+    */
+   public static boolean startsWith(final @Nullable CharSequence searchIn, final @Nullable CharSequence prefix) {
+      return StringUtils.startsWith(searchIn, prefix);
+   }
+
+   /**
+    * See {@link StringUtils#startsWithAny(CharSequence, CharSequence[])}
+    */
+   public static boolean startsWithAny(final @Nullable CharSequence searchIn, final CharSequence @Nullable... prefixes) {
+      return StringUtils.startsWithAny(searchIn, prefixes);
+   }
+
+   /**
+    * See {@link StringUtils#startsWithIgnoreCase(CharSequence, CharSequence)}
+    */
+   public static boolean startsWithIgnoreCase(final @Nullable CharSequence searchIn, final @Nullable CharSequence prefix) {
+      return StringUtils.startsWithIgnoreCase(searchIn, prefix);
+   }
+
+   /**
+    * See {@link StringUtils#strip(String)}
+    */
+   public static String strip(final String str) {
+      return asNonNullUnsafe(StringUtils.strip(str));
+   }
+
+   /**
+    * See {@link StringUtils#strip(String, String)}
+    */
+   public static String strip(final String str, final @Nullable String stripChars) {
+      return asNonNullUnsafe(StringUtils.strip(str, stripChars));
+   }
+
+   /**
+    * See {@link StringUtils#stripAccents(String)}
+    */
+   public static String stripAccents(final String str) {
+      return asNonNullUnsafe(StringUtils.stripAccents(str));
+   }
+
+   /**
+    * See {@link StringUtils#stripAccents(String)}
+    */
+   public static @Nullable String stripAccentsNullable(final @Nullable String str) {
+      return StringUtils.stripAccents(str);
+   }
+
+   /**
+    * See {@link StringUtils#stripAll(String[])}
+    */
+   public static String[] stripAll(final String @Nullable... strs) {
+      return asNonNullUnsafe(StringUtils.stripAll(strs));
+   }
+
+   /**
+    * See {@link StringUtils#stripAll(String[])}
+    */
+   public static String[] stripAll(final String @Nullable [] strs, final @Nullable String stripChars) {
+      return asNonNullUnsafe(StringUtils.stripAll(strs, stripChars));
+   }
+
+   /**
+    * See {@link StringUtils#stripAll(String[])}
+    */
+   public static String @Nullable [] stripAllNullable(final String @Nullable... strs) {
+      return StringUtils.stripAll(strs);
+   }
+
+   /**
+    * See {@link StringUtils#stripAll(String[])}
+    */
+   public static String @Nullable [] stripAllNullable(final String @Nullable [] strs, final @Nullable String stripChars) {
+      return StringUtils.stripAll(strs, stripChars);
+   }
+
+   public static String stripAnsiEscapeSequences(final String text) {
+      return asNonNullUnsafe(stripAnsiEscapeSequencesNullable(text));
+   }
+
+   public static @Nullable String stripAnsiEscapeSequencesNullable(final @Nullable String text) {
+      if (text == null)
          return null;
-      return in.replaceAll("\u001B\\[[;\\d]*m", EMPTY);
+      return text.replaceAll("\u001B\\[[;\\d]*m", EMPTY);
+   }
+
+   /**
+    * See {@link StringUtils#stripEnd(String, String)}
+    */
+   public static String stripEnd(final String str, final @Nullable String stripChars) {
+      return asNonNullUnsafe(StringUtils.stripEnd(str, stripChars));
+   }
+
+   /**
+    * See {@link StringUtils#stripEnd(String, String)}
+    */
+   public static @Nullable String stripEndNullable(final @Nullable String str, final @Nullable String stripChars) {
+      return StringUtils.stripEnd(str, stripChars);
+   }
+
+   /**
+    * See {@link StringUtils#strip(String)}
+    */
+   public static @Nullable String stripNullable(final @Nullable String str) {
+      return StringUtils.strip(str);
+   }
+
+   /**
+    * See {@link StringUtils#strip(String, String)}
+    */
+   public static @Nullable String stripNullable(final @Nullable String str, final @Nullable String stripChars) {
+      return StringUtils.strip(str, stripChars);
+   }
+
+   /**
+    * See {@link StringUtils#stripStart(String, String)}
+    */
+   public static String stripStart(final String str, final @Nullable String stripChars) {
+      return asNonNullUnsafe(StringUtils.stripStart(str, stripChars));
+   }
+
+   /**
+    * See {@link StringUtils#stripStart(String, String)}
+    */
+   public static @Nullable String stripStartNullable(final @Nullable String str, final @Nullable String stripChars) {
+      return StringUtils.stripStart(str, stripChars);
+   }
+
+   /**
+    * See {@link StringUtils#stripToEmpty(String)}
+    */
+   public static String stripToEmpty(final String str) {
+      return asNonNullUnsafe(StringUtils.stripToEmpty(str));
+   }
+
+   /**
+    * See {@link StringUtils#stripToEmpty(String)}
+    */
+   public static String stripToEmptyNullable(final @Nullable String str) {
+      return asNonNullUnsafe(StringUtils.stripToEmpty(str));
+   }
+
+   /**
+    * See {@link StringUtils#stripToNull(String)}
+    */
+   public static String stripToNull(final String str) {
+      return asNonNullUnsafe(StringUtils.stripToNull(str));
+   }
+
+   /**
+    * See {@link StringUtils#stripToNull(String)}
+    */
+   public static @Nullable String stripToNullNullable(final @Nullable String str) {
+      return StringUtils.stripToNull(str);
+   }
+
+   /**
+    * See {@link StringUtils#substring(String, int)}
+    */
+   public static String substring(final String str, final int start) {
+      return asNonNullUnsafe(StringUtils.substring(str, start));
+   }
+
+   /**
+    * See {@link StringUtils#substring(String, int, int)}
+    */
+   public static String substring(final String str, final int start, final int end) {
+      return asNonNullUnsafe(StringUtils.substring(str, start, end));
    }
 
    /**
@@ -1049,7 +3478,65 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     *         Returns an empty string if searchFor is not part of searchIn.
     */
    public static String substringAfter(final String searchIn, final char searchFor) {
-      if (isEmpty(searchIn))
+      return asNonNullUnsafe(substringAfterLastNullable(searchIn, searchFor));
+   }
+
+   /**
+    * See {@link StringUtils#substringAfter(String, int)}
+    */
+   public static String substringAfter(final String str, final int separator) {
+      return asNonNullUnsafe(StringUtils.substringAfter(str, separator));
+   }
+
+   /**
+    * See {@link StringUtils#substringAfter(String, String)}
+    */
+   public static String substringAfter(final String str, final @Nullable String separator) {
+      return asNonNullUnsafe(StringUtils.substringAfter(str, separator));
+   }
+
+   /**
+    * See {@link StringUtils#substringAfterLast(String, int)}
+    */
+   public static String substringAfterLast(final String str, final int separator) {
+      return asNonNullUnsafe(StringUtils.substringAfterLast(str, separator));
+   }
+
+   /**
+    * See {@link StringUtils#substringAfterLast(String, String)}
+    */
+   public static String substringAfterLast(final String str, final @Nullable String separator) {
+      return asNonNullUnsafe(StringUtils.substringAfterLast(str, separator));
+   }
+
+   /**
+    * See {@link StringUtils#substringAfterLast(String, int)}
+    */
+   public static @Nullable String substringAfterLastNullable(final @Nullable String str, final int separator) {
+      return StringUtils.substringAfterLast(str, separator);
+   }
+
+   /**
+    * See {@link StringUtils#substringAfterLast(String, String)}
+    */
+   public static @Nullable String substringAfterLastNullable(final @Nullable String str, final @Nullable String separator) {
+      return StringUtils.substringAfterLast(str, separator);
+   }
+
+   /**
+    * Searches a string from left to right and returns the rightmost characters of the string.
+    *
+    * substringBefore("this is a test", "s") -> "thi"
+    *
+    * @param searchIn The string whose leftmost characters you want to find.
+    * @param searchFor A substring of searchIn.
+    *           right.
+    * @return The rightmost characters in searchIn.
+    *         The number of characters returned is determined by searchFor.
+    *         Returns an empty string if searchFor is not part of searchIn.
+    */
+   public static @Nullable String substringAfterNullable(final @Nullable String searchIn, final char searchFor) {
+      if (searchIn == null || searchIn.isEmpty())
          return searchIn;
 
       final int pos = searchIn.indexOf(searchFor);
@@ -1057,6 +3544,20 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
          return EMPTY;
 
       return searchIn.substring(pos + 1);
+   }
+
+   /**
+    * See {@link StringUtils#substringAfter(String, int)}
+    */
+   public static @Nullable String substringAfterNullable(final @Nullable String str, final int separator) {
+      return StringUtils.substringAfter(str, separator);
+   }
+
+   /**
+    * See {@link StringUtils#substringAfter(String, String)}
+    */
+   public static @Nullable String substringAfterNullable(final @Nullable String str, final @Nullable String separator) {
+      return StringUtils.substringAfter(str, separator);
    }
 
    /**
@@ -1071,14 +3572,25 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     *         Returns searchIn if searchFor is not part of searchIn.
     */
    public static String substringBefore(final String searchIn, final char searchFor) {
-      if (isEmpty(searchIn))
-         return searchIn;
+      return asNonNullUnsafe(substringBeforeNullable(searchIn, searchFor));
+   }
 
-      final int pos = searchIn.indexOf(searchFor);
-      if (pos < 0)
-         return searchIn;
+   /**
+    * See {@link StringUtils#substringBefore(String, int)}
+    */
+   public static String substringBefore(final String str, final int separator) {
+      return asNonNullUnsafe(StringUtils.substringBefore(str, separator));
+   }
 
-      return searchIn.substring(0, pos);
+   /**
+    * See {@link StringUtils#substringBefore(String, String)}
+    */
+   public static String substringBefore(final String str, final @Nullable String separator) {
+      return asNonNullUnsafe(StringUtils.substringBefore(str, separator));
+   }
+
+   public static String substringBeforeIgnoreCase(final String searchIn, final @Nullable String searchFor) {
+      return asNonNullUnsafe(substringBeforeIgnoreCaseNullable(searchIn, searchFor));
    }
 
    /**
@@ -1094,20 +3606,149 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     *         Returns "" if searchFor is not part of searchIn.
     *         Returns "" if searchIn is null.
     */
-   public static String substringBeforeIgnoreCase(final String searchIn, final String searchFor) {
-      if (isEmpty(searchIn))
+   public static @Nullable String substringBeforeIgnoreCaseNullable(final @Nullable String searchIn, final @Nullable String searchFor) {
+      if (searchIn == null || searchFor == null || searchIn.isEmpty())
+         return searchIn;
+
+      if (searchFor.isEmpty())
          return EMPTY;
 
       final int pos = searchIn.toLowerCase().indexOf(searchFor.toLowerCase());
+      return pos < 0 //
+         ? EMPTY
+         : searchIn.substring(0, pos);
+   }
 
+   /**
+    * See {@link StringUtils#substringBeforeLast(String, String)}
+    */
+   public static String substringBeforeLast(final String str, final @Nullable String separator) {
+      return asNonNullUnsafe(StringUtils.substringBeforeLast(str, separator));
+   }
+
+   /**
+    * See {@link StringUtils#substringBeforeLast(String, String)}
+    */
+   public static @Nullable String substringBeforeLastNullable(final @Nullable String str, final @Nullable String separator) {
+      return StringUtils.substringBeforeLast(str, separator);
+   }
+
+   /**
+    * Searches a string from left to right and returns the leftmost characters of the string.
+    *
+    * substringBefore("this is a test", "s") -> "thi"
+    *
+    * @param searchIn The string whose leftmost characters you want to find.
+    * @param searchFor A substring of searchIn.
+    * @return The leftmost characters in searchIn.
+    *         The number of characters returned is determined by searchFor.
+    *         Returns searchIn if searchFor is not part of searchIn.
+    */
+   public static @Nullable String substringBeforeNullable(final @Nullable String searchIn, final char searchFor) {
+      if (searchIn == null || searchIn.isEmpty())
+         return searchIn;
+
+      final int pos = searchIn.indexOf(searchFor);
       if (pos < 0)
-         return EMPTY;
+         return searchIn;
 
       return searchIn.substring(0, pos);
    }
 
-   public static char[] toCharArray(final CharSequence txt) {
-      if (isEmpty(txt))
+   /**
+    * See {@link StringUtils#substringBefore(String, int)}
+    */
+   public static @Nullable String substringBeforeNullable(final @Nullable String str, final int separator) {
+      return StringUtils.substringBefore(str, separator);
+   }
+
+   /**
+    * See {@link StringUtils#substringBefore(String, String)}
+    */
+   public static @Nullable String substringBeforeNullable(final @Nullable String str, final @Nullable String separator) {
+      return StringUtils.substringBefore(str, separator);
+   }
+
+   /**
+    * See {@link StringUtils#substringBetween(String, String)}
+    */
+   public static String substringBetween(final String str, final @Nullable String tag) {
+      return asNonNullUnsafe(StringUtils.substringBetween(str, tag));
+   }
+
+   /**
+    * See {@link StringUtils#substringBetween(String, String, String)}
+    */
+   public static String substringBetween(final String str, final @Nullable String open, final @Nullable String close) {
+      return asNonNullUnsafe(StringUtils.substringBetween(str, open, close));
+   }
+
+   /**
+    * See {@link StringUtils#substringBetween(String, String)}
+    */
+   public static @Nullable String substringBetweenNullable(final @Nullable String str, final @Nullable String tag) {
+      return StringUtils.substringBetween(str, tag);
+   }
+
+   /**
+    * See {@link StringUtils#substringBetween(String, String, String)}
+    */
+   public static @Nullable String substringBetweenNullable(final @Nullable String str, final @Nullable String open,
+      final @Nullable String close) {
+      return StringUtils.substringBetween(str, open, close);
+   }
+
+   /**
+    * See {@link StringUtils#substring(String, int)}
+    */
+   public static @Nullable String substringNullable(final @Nullable String str, final int start) {
+      return StringUtils.substring(str, start);
+   }
+
+   /**
+    * See {@link StringUtils#substring(String, int, int)}
+    */
+   public static @Nullable String substringNullable(final @Nullable String str, final int start, final int end) {
+      return StringUtils.substring(str, start, end);
+   }
+
+   /**
+    * See {@link StringUtils#substringsBetween(String, String, String)}
+    */
+   public static String[] substringsBetween(final String str, final @Nullable String open, final @Nullable String close) {
+      return asNonNullUnsafe(StringUtils.substringsBetween(str, open, close));
+   }
+
+   /**
+    * See {@link StringUtils#substringsBetween(String, String, String)}
+    */
+   public static String @Nullable [] substringsBetweenNullable(final @Nullable String str, final @Nullable String open,
+      final @Nullable String close) {
+      return StringUtils.substringsBetween(str, open, close);
+   }
+
+   /**
+    * See {@link StringUtils#swapCase(String)}
+    */
+   public static String swapCase(final String str) {
+      return asNonNullUnsafe(StringUtils.swapCase(str));
+   }
+
+   /**
+    * See {@link StringUtils#swapCase(String)}
+    */
+   public static @Nullable String swapCaseNullable(final @Nullable String str) {
+      return StringUtils.swapCase(str);
+   }
+
+   public static char[] toCharArray(final CharSequence text) {
+      return asNonNullUnsafe(toCharArrayNullable(text));
+   }
+
+   public static char @Nullable [] toCharArrayNullable(final @Nullable CharSequence txt) {
+      if (txt == null)
+         return null;
+      if (txt.length() == 0)
          return ArrayUtils.EMPTY_CHAR_ARRAY;
 
       if (txt instanceof String)
@@ -1125,11 +3766,68 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
             chars[i] = txt.charAt(i);
          }
       }
-
       return chars;
    }
 
-   public static String toString(final Object object) {
+   /**
+    * See {@link StringUtils#toCodePoints(CharSequence)}
+    */
+   public static int[] toCodePoints(final CharSequence cs) {
+      return asNonNullUnsafe(StringUtils.toCodePoints(cs));
+   }
+
+   /**
+    * See {@link StringUtils#toCodePoints(CharSequence)}
+    */
+   public static int @Nullable [] toCodePointsNullable(final @Nullable CharSequence cs) {
+      return StringUtils.toCodePoints(cs);
+   }
+
+   /**
+    * See {@link StringUtils#toEncodedString(byte[], Charset)}
+    */
+   public static String toEncodedString(final byte @Nullable [] bytes, final @Nullable Charset charset) {
+      return asNonNullUnsafe(StringUtils.toEncodedString(bytes, charset));
+   }
+
+   /**
+    * See {@link StringUtils#toEncodedString(byte[], Charset)}
+    */
+   public static @Nullable String toEncodedStringNullable(final byte @Nullable [] bytes, final @Nullable Charset charset) {
+      if (bytes == null)
+         return null;
+      return StringUtils.toEncodedString(bytes, charset);
+   }
+
+   /**
+    * @See {@link StringUtils#toRootLowerCase(String)}
+    */
+   public static String toRootLowerCase(final String source) {
+      return asNonNullUnsafe(StringUtils.toRootLowerCase(source));
+   }
+
+   /**
+    * @See {@link StringUtils#toRootLowerCase(String)}
+    */
+   public static @Nullable String toRootLowerCaseNullable(final @Nullable String source) {
+      return StringUtils.toRootLowerCase(source);
+   }
+
+   /**
+    * @See {@link StringUtils#toRootUpperCase(String)}
+    */
+   public static String toRootUpperCase(final String source) {
+      return asNonNullUnsafe(StringUtils.toRootUpperCase(source));
+   }
+
+   /**
+    * @See {@link StringUtils#toRootUpperCase(String)}
+    */
+   public static @Nullable String toRootUpperCaseNullable(final @Nullable String source) {
+      return StringUtils.toRootUpperCase(source);
+   }
+
+   public static String toString(final @Nullable Object object) {
       if (object == null)
          return "null";
       return ToStringBuilder.reflectionToString(object, ToStringStyle.DEFAULT_STYLE);
@@ -1138,7 +3836,7 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    /**
     * @return "{SimpleClassName}@{HexIdentityHashCode}[{fieldName}={fieldValue},...]"
     */
-   public static String toString(final Object object, final Object... fieldAndValues) {
+   public static String toString(final @Nullable Object object, final @NonNullByDefault({}) Object... fieldAndValues) {
       if (object == null)
          return "null";
       final StringBuilder sb = new StringBuilder(object.getClass().getSimpleName());
@@ -1170,50 +3868,179 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
    }
 
    /**
+    * @See {@link StringUtils#trimToEmpty(String)}
+    */
+   public static String trim(final String str) {
+      return asNonNullUnsafe(StringUtils.trim(str));
+   }
+
+   /**
     * Trims all lines
     */
-   public static String trimLines(final String text) {
+   public static @Nullable String trimLines(final @Nullable String text) {
+      return asNonNullUnsafe(trimLinesNullable(text));
+   }
+
+   /**
+    * Trims all lines
+    */
+   public static @Nullable String trimLinesNullable(final @Nullable String text) {
       if (text == null)
          return null;
       if (text.length() == 0)
          return text;
 
-      final var lines = splitLines(text, true);
+      final var lines = Strings.splitLines(text, true);
       for (int i = 0; i < lines.length; i++) {
          lines[i] = lines[i].trim();
       }
-      return join(lines, NEW_LINE);
+      return join(lines, Strings.NEW_LINE);
    }
 
-   public static String truncate(final String text, final int maxLength) {
-      if (text == null)
-         return null;
-      if (text.length() <= maxLength)
-         return text;
+   /**
+    * @See {@link StringUtils#trimToEmpty(String)}
+    */
+   public static @Nullable String trimNullable(final @Nullable String str) {
+      return StringUtils.trim(str);
+   }
 
-      return text.substring(0, maxLength);
+   /**
+    * @See {@link StringUtils#trimToEmpty(String)}
+    */
+   public static String trimToEmpty(final String str) {
+      return asNonNullUnsafe(StringUtils.trimToEmpty(str));
+   }
+
+   /**
+    * @See {@link StringUtils#trimToEmpty(String)}
+    */
+   public static String trimToEmptyNullable(final @Nullable String str) {
+      return asNonNullUnsafe(StringUtils.trimToEmpty(str));
+   }
+
+   /**
+    * @See {@link StringUtils#trimToNull(String)}
+    */
+   public static String trimToNull(final String str) {
+      return asNonNullUnsafe(StringUtils.trimToNull(str));
+   }
+
+   /**
+    * @See {@link StringUtils#trimToNull(String)}
+    */
+   public static @Nullable String trimToNullNullable(final @Nullable String str) {
+      return StringUtils.trimToNull(str);
+   }
+
+   /**
+    * @See {@link StringUtils#truncate(String, int)}
+    */
+   public static String truncate(final String str, final int maxWidth) {
+      return asNonNullUnsafe(StringUtils.truncate(str, maxWidth));
+   }
+
+   /**
+    * @See {@link StringUtils#truncate(String, int, int)}
+    */
+   public static String truncate(final String str, final int offset, final int maxWidth) {
+      return asNonNullUnsafe(StringUtils.truncate(str, offset, maxWidth));
+   }
+
+   /**
+    * @See {@link StringUtils#truncate(String, int)}
+    */
+   public static @Nullable String truncateNullable(final @Nullable String str, final int maxWidth) {
+      return StringUtils.truncate(str, maxWidth);
+   }
+
+   /**
+    * @See {@link StringUtils#truncate(String, int, int)}
+    */
+   public static @Nullable String truncateNullable(final @Nullable String str, final int offset, final int maxWidth) {
+      return StringUtils.truncate(str, offset, maxWidth);
+   }
+
+   /**
+    * @See {@link StringUtils#uncapitalize(String)}
+    */
+   public static String uncapitalize(final String str) {
+      return asNonNullUnsafe(StringUtils.uncapitalize(str));
+   }
+
+   /**
+    * @See {@link StringUtils#uncapitalize(String)}
+    */
+   public static @Nullable String uncapitalizeNullable(final @Nullable String str) {
+      return StringUtils.uncapitalize(str);
+   }
+
+   /**
+    * @See {@link StringUtils#unwrap(String, char)}
+    */
+   public static String unquote(final String str, final char quotedWith) {
+      return asNonNullUnsafe(StringUtils.unwrap(str, quotedWith));
+   }
+
+   /**
+    * @See {@link StringUtils#unwrap(String, String)}
+    */
+   public static String unquote(final String str, final @Nullable String quotedWith) {
+      return asNonNullUnsafe(StringUtils.unwrap(str, quotedWith));
+   }
+
+   /**
+    * @See {@link StringUtils#unwrap(String, char)}
+    */
+   public static @Nullable String unquoteNullable(final @Nullable String str, final char quotedWith) {
+      return StringUtils.unwrap(str, quotedWith);
+   }
+
+   /**
+    * @See {@link StringUtils#unwrap(String, String)}
+    */
+   public static @Nullable String unquoteNullable(final @Nullable String str, final @Nullable String quotedWith) {
+      return StringUtils.unwrap(str, quotedWith);
    }
 
    public static String upperCase(final CharSequence txt) {
-      if (txt == null)
-         return null;
-      if (txt instanceof String)
-         return ((String) txt).toUpperCase();
+      return asNonNullUnsafe(upperCaseNullable(txt));
+   }
 
-      final var len = txt.length();
-      final var chars = new char[len];
-      for (int i = 0; i < len; i++) {
-         chars[i] = Character.toUpperCase(txt.charAt(i));
-      }
+   public static String upperCase(final Object obj) {
+      return asNonNullUnsafe(upperCaseNullable(obj));
+   }
 
-      return new String(chars);
+   public static String upperCase(final Object obj, final @Nullable Locale locale) {
+      return asNonNullUnsafe(upperCaseNullable(obj, locale));
+   }
+
+   /**
+    * @See {@link StringUtils#upperCase(String)}
+    */
+   public static String upperCase(final String str) {
+      return asNonNullUnsafe(StringUtils.upperCase(str));
+   }
+
+   /**
+    * @See {@link StringUtils#upperCase(String, Locale)}
+    */
+   public static String upperCase(final String str, final @Nullable Locale locale) {
+      return asNonNullUnsafe(StringUtils.upperCase(str, locale));
    }
 
    /**
     * Capitalize the first character of the given character sequence.
-    * If you need to capitalize all words in a string use {@link WordUtils#capitalize(String)}
+    * If you need to capitalize all words in a string use commons-text's <code>WordUtils.capitalize(String)</code>
     */
    public static String upperCaseFirstChar(final CharSequence txt) {
+      return asNonNullUnsafe(upperCaseFirstCharNullable(txt));
+   }
+
+   /**
+    * Capitalize the first character of the given character sequence.
+    * If you need to capitalize all words in a string use commons-text's <code>WordUtils.capitalize(String)</code>
+    */
+   public static @Nullable String upperCaseFirstCharNullable(final @Nullable CharSequence txt) {
       if (txt == null)
          return null;
 
@@ -1226,15 +4053,56 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
       return firstChar + txt.subSequence(1, len);
    }
 
-   public static String urlDecode(final String text) {
-      if (isEmpty(text))
-         return text;
+   public static @Nullable String upperCaseNullable(final @Nullable CharSequence txt) {
+      if (txt == null)
+         return null;
+      if (txt.length() == 0)
+         return EMPTY;
+      if (txt instanceof String)
+         return ((String) txt).toUpperCase();
 
-      try {
-         return URLDecoder.decode(text, "UTF-8");
-      } catch (final UnsupportedEncodingException ex) {
-         throw new RuntimeException("UTF-8 not supported", ex);
+      final var len = txt.length();
+      final var chars = new char[len];
+      for (int i = 0; i < len; i++) {
+         chars[i] = Character.toUpperCase(txt.charAt(i));
       }
+      return new String(chars);
+   }
+
+   public static @Nullable String upperCaseNullable(final @Nullable Object obj) {
+      if (obj == null)
+         return null;
+      return StringUtils.upperCase(obj.toString());
+   }
+
+   public static @Nullable String upperCaseNullable(final @Nullable Object obj, final @Nullable Locale locale) {
+      if (obj == null)
+         return null;
+      return StringUtils.upperCase(obj.toString(), locale);
+   }
+
+   /**
+    * @See {@link StringUtils#upperCase(String)}
+    */
+   public static @Nullable String upperCaseNullable(final @Nullable String str) {
+      return StringUtils.upperCase(str);
+   }
+
+   /**
+    * @See {@link StringUtils#upperCase(String, Locale)}
+    */
+   public static @Nullable String upperCaseNullable(final @Nullable String str, final @Nullable Locale locale) {
+      return StringUtils.upperCase(str, locale);
+   }
+
+   public static String urlDecode(final String text) {
+      return asNonNullUnsafe(urlDecodeNullable(text));
+   }
+
+   public static @Nullable String urlDecodeNullable(final @Nullable String text) {
+      if (text == null || text.isEmpty())
+         return text;
+      return URLDecoder.decode(text, StandardCharsets.UTF_8);
    }
 
    /**
@@ -1244,21 +4112,32 @@ public abstract class Strings extends org.apache.commons.lang3.StringUtils {
     * @return the translated String
     */
    public static String urlEncode(final String text) {
-      if (isEmpty(text))
+      return asNonNullUnsafe(urlEncodeNullable(text));
+   }
+
+   /**
+    * Translates a string into application/x-www-form-urlencoded format using a specific encoding scheme.
+    *
+    * @param text the string to be translated
+    * @return the translated String
+    */
+   public static @Nullable String urlEncodeNullable(final @Nullable String text) {
+      if (text == null || text.isEmpty())
          return text;
-
-      try {
-         return URLEncoder.encode(text, "UTF-8");
-      } catch (final UnsupportedEncodingException ex) {
-         throw new RuntimeException("UTF-8 not supported", ex);
-      }
+      return URLEncoder.encode(text, StandardCharsets.UTF_8);
    }
 
-   public static String wrap(final String str, final int wrapLength) {
-      return WordUtils.wrap(str, wrapLength);
+   /**
+    * @See {@link StringUtils#valueOf(char[])}
+    */
+   public static String valueOf(final char[] value) {
+      return asNonNullUnsafe(StringUtils.valueOf(value));
    }
 
-   public static String wrap(final String str, final int wrapLength, final String newLineStr) {
-      return WordUtils.wrap(str, wrapLength, newLineStr, false);
+   /**
+    * @See {@link StringUtils#valueOf(char[])}
+    */
+   public static @Nullable String valueOfNullable(final char @Nullable [] value) {
+      return StringUtils.valueOf(value);
    }
 }

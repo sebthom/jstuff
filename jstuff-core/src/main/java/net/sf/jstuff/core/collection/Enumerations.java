@@ -19,14 +19,16 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import net.sf.jstuff.core.validation.Args;
+import org.eclipse.jdt.annotation.Nullable;
+
+import net.sf.jstuff.core.collection.iterator.Iterators;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Enumerations {
 
-   public static boolean contains(final Enumeration<?> en, final Object searchFor) {
+   public static boolean contains(final @Nullable Enumeration<?> en, final @Nullable Object searchFor) {
       if (en == null)
          return false;
 
@@ -38,7 +40,7 @@ public abstract class Enumerations {
       return false;
    }
 
-   public static boolean containsIdentical(final Enumeration<?> en, final Object searchFor) {
+   public static boolean containsIdentical(final @Nullable Enumeration<?> en, final @Nullable Object searchFor) {
       if (en == null)
          return false;
 
@@ -48,8 +50,9 @@ public abstract class Enumerations {
       return false;
    }
 
-   public static int size(final Enumeration<?> en) {
-      Args.notNull("en", en);
+   public static int size(final @Nullable Enumeration<?> en) {
+      if (en == null)
+         return 0;
 
       int size = 0;
       while (en.hasMoreElements()) {
@@ -59,11 +62,14 @@ public abstract class Enumerations {
       return size;
    }
 
-   public static <T> Iterable<T> toIterable(final Enumeration<T> en) {
+   public static <T> Iterable<T> toIterable(final @Nullable Enumeration<T> en) {
+      if (en == null)
+         return Iterators::empty;
+
       return () -> new Iterator<>() {
          @Override
          public boolean hasNext() {
-            return en != null && en.hasMoreElements();
+            return en.hasMoreElements();
          }
 
          @Override
@@ -78,16 +84,16 @@ public abstract class Enumerations {
       };
    }
 
-   public static <T> List<T> toList(final Enumeration<T> en) {
+   public static <T> List<T> toList(final @Nullable Enumeration<T> en) {
       if (en == null)
-         return null;
+         return Collections.emptyList();
 
       return Collections.list(en);
    }
 
-   public static <T> Set<T> toSet(final Enumeration<T> en) {
+   public static <T> Set<T> toSet(final @Nullable Enumeration<T> en) {
       if (en == null)
-         return null;
+         return Collections.emptySet();
 
       final Set<T> result = new HashSet<>();
       while (en.hasMoreElements()) {
@@ -96,9 +102,9 @@ public abstract class Enumerations {
       return result;
    }
 
-   public static <T> SortedSet<T> toSortedSet(final Enumeration<T> en) {
+   public static <T> SortedSet<T> toSortedSet(final @Nullable Enumeration<T> en) {
       if (en == null)
-         return null;
+         return new TreeSet<>();
 
       final SortedSet<T> result = new TreeSet<>();
       while (en.hasMoreElements()) {
@@ -107,12 +113,18 @@ public abstract class Enumerations {
       return result;
    }
 
-   public static <T> Stream<T> toStream(final Enumeration<T> en) {
+   public static <T> Stream<T> toStream(final @Nullable Enumeration<T> en) {
+      if (en == null)
+         return StreamSupport.stream(new Spliterators.AbstractSpliterator<T>(Long.MAX_VALUE, Spliterator.ORDERED) {
+            @Override
+            public boolean tryAdvance(final Consumer<? super T> action) {
+               return false;
+            }
+         }, false);
+
       return StreamSupport.stream(new Spliterators.AbstractSpliterator<T>(Long.MAX_VALUE, Spliterator.ORDERED) {
          @Override
          public void forEachRemaining(final Consumer<? super T> action) {
-            if (en == null)
-               return;
             while (en.hasMoreElements()) {
                action.accept(en.nextElement());
             }
@@ -120,8 +132,6 @@ public abstract class Enumerations {
 
          @Override
          public boolean tryAdvance(final Consumer<? super T> action) {
-            if (en == null)
-               return false;
             if (en.hasMoreElements()) {
                action.accept(en.nextElement());
                return true;

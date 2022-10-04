@@ -11,6 +11,8 @@ import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.functional.IntBiConsumer;
 import net.sf.jstuff.core.math.Numbers;
 import net.sf.jstuff.core.validation.Args;
@@ -183,7 +185,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
     */
    @Deprecated
    @Override
-   public boolean remove(final Object o) {
+   public boolean remove(final @Nullable Object o) {
       if (o instanceof Number) {
          final Number n = (Number) o;
          return Numbers.isByte(n) && removeValue(n.byteValue());

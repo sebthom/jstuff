@@ -1,5 +1,7 @@
 package net.sf.jstuff.core.net;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,6 +13,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.builder.Builder;
@@ -113,7 +117,8 @@ public class TcpTunnelService extends Thread {
       }
    }
 
-   public interface TcpProxyServerBuilder<THIS extends TcpProxyServerBuilder<THIS, T>, T extends TcpTunnelService> extends Builder<TcpTunnelService> {
+   public interface TcpProxyServerBuilder<THIS extends TcpProxyServerBuilder<THIS, T>, T extends TcpTunnelService> extends
+      Builder<TcpTunnelService> {
 
       /**
        * Default is -1, i.e. unlimited
@@ -156,14 +161,14 @@ public class TcpTunnelService extends Thread {
 
    protected int maxConnections = -1;
 
-   protected String listenerAddress;
+   protected @Nullable String listenerAddress;
    protected int listenerPort;
 
-   protected Proxy.Type proxyType;
-   protected String proxyAddress;
+   protected Proxy.@Nullable Type proxyType;
+   protected @Nullable String proxyAddress;
    protected int proxyPort;
 
-   protected String targetAddress;
+   protected String targetAddress = "<set-by-builder>";
    protected int targetPort;
 
    protected int targetConnectTimeout = 10_000;
@@ -183,7 +188,7 @@ public class TcpTunnelService extends Thread {
          if (Strings.isBlank(listenerAddress)) {
             serverSocket = new ServerSocket(listenerPort);
          } else {
-            serverSocket = new ServerSocket(listenerPort, 0, InetAddress.getByName(listenerAddress));
+            serverSocket = new ServerSocket(listenerPort, 0, InetAddress.getByName(asNonNull(listenerAddress)));
          }
       } catch (final IOException ex) {
          throw new IllegalStateException("Unable to bind to port " + listenerPort, ex);
@@ -196,8 +201,8 @@ public class TcpTunnelService extends Thread {
             final Socket clientSocket = serverSocket.accept();
             if (maxConnections >= 0 && getConnectionCount() >= maxConnections) {
                IOUtils.closeQuietly(clientSocket);
-               LOG.warn("Client from [%s:%s] denied. Max connections [%s] reached.", clientSocket.getInetAddress().getHostAddress(), clientSocket.getPort(),
-                  maxConnections);
+               LOG.warn("Client from [%s:%s] denied. Max connections [%s] reached.", clientSocket.getInetAddress().getHostAddress(),
+                  clientSocket.getPort(), maxConnections);
                continue;
             }
             LOG.info("Accepting client from [%s:%s]...", clientSocket.getInetAddress().getHostAddress(), clientSocket.getPort());

@@ -13,6 +13,9 @@ import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 
+import org.eclipse.jdt.annotation.Nullable;
+
+import net.sf.jstuff.core.collection.iterator.Iterators;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -55,13 +58,12 @@ public class MapBasedNamespaceContext implements NamespaceContext {
       if (prefix.equals(XMLConstants.XMLNS_ATTRIBUTE))
          return XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 
-      if (namespaceURIsByPrefix.containsKey(prefix))
-         return namespaceURIsByPrefix.get(prefix).get(0);
-      return XMLConstants.NULL_NS_URI;
+      final var nsURI = namespaceURIsByPrefix.get(prefix);
+      return nsURI == null ? XMLConstants.NULL_NS_URI : nsURI.get(0);
    }
 
    @Override
-   public String getPrefix(final String namespaceURI) {
+   public @Nullable String getPrefix(final String namespaceURI) {
       Args.notNull("namespaceURI", namespaceURI);
 
       if (namespaceURI.equals(defaultNamespaceURI))
@@ -71,13 +73,15 @@ public class MapBasedNamespaceContext implements NamespaceContext {
       if (namespaceURI.equals(XMLConstants.XMLNS_ATTRIBUTE_NS_URI))
          return XMLConstants.XMLNS_ATTRIBUTE;
 
-      return prefixesByNamespaceURI.containsKey(namespaceURI) ? prefixesByNamespaceURI.get(namespaceURI).get(0) : null;
+      final var prefix = prefixesByNamespaceURI.get(namespaceURI);
+      return prefix == null ? null : prefix.get(0);
    }
 
    @Override
    public Iterator<String> getPrefixes(final String namespaceURI) {
       Args.notNull("namespaceURI", namespaceURI);
 
-      return prefixesByNamespaceURI.containsKey(namespaceURI) ? prefixesByNamespaceURI.get(namespaceURI).iterator() : null;
+      final var prefix = prefixesByNamespaceURI.get(namespaceURI);
+      return prefix == null ? Iterators.empty() : prefix.iterator();
    }
 }

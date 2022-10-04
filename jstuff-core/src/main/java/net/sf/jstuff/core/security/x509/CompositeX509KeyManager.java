@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.security.x509;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.net.Socket;
 import java.security.Principal;
 import java.security.PrivateKey;
@@ -14,6 +16,9 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.net.ssl.X509KeyManager;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.validation.Args;
@@ -31,7 +36,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
       this.keyManagers = new ArrayList<>(keyManagers);
    }
 
-   public CompositeX509KeyManager(final X509KeyManager... keyManagers) {
+   public CompositeX509KeyManager(final @NonNull X509KeyManager... keyManagers) {
       Args.notNull("keyManagers", keyManagers);
       Args.noNulls("keyManagers", keyManagers);
 
@@ -39,7 +44,8 @@ public class CompositeX509KeyManager implements X509KeyManager {
    }
 
    @Override
-   public String chooseClientAlias(final String[] keyType, final Principal[] issuers, final Socket socket) {
+   public @Nullable String chooseClientAlias(final @NonNull String[] keyType, final @NonNull Principal @Nullable [] issuers,
+      final @Nullable Socket socket) {
       for (final X509KeyManager keyManager : keyManagers) {
          final String alias = keyManager.chooseClientAlias(keyType, issuers, socket);
          if (alias != null)
@@ -49,7 +55,8 @@ public class CompositeX509KeyManager implements X509KeyManager {
    }
 
    @Override
-   public String chooseServerAlias(final String keyType, final Principal[] issuers, final Socket socket) {
+   public @Nullable String chooseServerAlias(final String keyType, final @NonNull Principal @Nullable [] issuers,
+      final @Nullable Socket socket) {
       for (final X509KeyManager keyManager : keyManagers) {
          final String alias = keyManager.chooseServerAlias(keyType, issuers, socket);
          if (alias != null)
@@ -59,7 +66,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
    }
 
    @Override
-   public X509Certificate[] getCertificateChain(final String alias) {
+   public @NonNull X509Certificate @Nullable [] getCertificateChain(final String alias) {
       for (final X509KeyManager keyManager : keyManagers) {
          final X509Certificate[] chain = keyManager.getCertificateChain(alias);
          if (chain != null && chain.length > 0)
@@ -69,18 +76,19 @@ public class CompositeX509KeyManager implements X509KeyManager {
    }
 
    @Override
-   public String[] getClientAliases(final String keyType, final Principal[] issuers) {
+   public @NonNull String @Nullable [] getClientAliases(final String keyType, final @NonNull Principal @Nullable [] issuers) {
       final List<String> result = new ArrayList<>();
       for (final X509KeyManager keyManager : keyManagers) {
          CollectionUtils.addAll(result, keyManager.getClientAliases(keyType, issuers));
       }
       if (result.isEmpty())
          return null;
-      return result.toArray(new String[result.size()]);
+      final var arr = result.toArray(String[]::new);
+      return asNonNullUnsafe(arr);
    }
 
    @Override
-   public PrivateKey getPrivateKey(final String alias) {
+   public @Nullable PrivateKey getPrivateKey(final String alias) {
       for (final X509KeyManager keyManager : keyManagers) {
          final PrivateKey privateKey = keyManager.getPrivateKey(alias);
          if (privateKey != null)
@@ -90,13 +98,14 @@ public class CompositeX509KeyManager implements X509KeyManager {
    }
 
    @Override
-   public String[] getServerAliases(final String keyType, final Principal[] issuers) {
+   public @NonNull String @Nullable [] getServerAliases(final String keyType, final @NonNull Principal @Nullable [] issuers) {
       final List<String> result = new ArrayList<>();
       for (final X509KeyManager keyManager : keyManagers) {
          CollectionUtils.addAll(result, keyManager.getServerAliases(keyType, issuers));
       }
       if (result.isEmpty())
          return null;
-      return result.toArray(new String[result.size()]);
+      final var arr = result.toArray(String[]::new);
+      return asNonNullUnsafe(arr);
    }
 }

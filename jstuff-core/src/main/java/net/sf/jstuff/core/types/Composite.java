@@ -7,6 +7,12 @@ package net.sf.jstuff.core.types;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.validation.Args;
 
@@ -18,13 +24,20 @@ public interface Composite<Component> extends Modifiable {
       private static final long serialVersionUID = 1L;
 
       protected final Collection<Component> components = createCollection();
+      protected final Collection<Component> componentsUmodifiable = //
+         components instanceof List //
+            ? Collections.unmodifiableList((List<Component>) components)
+            : components instanceof Set //
+               ? Collections.unmodifiableSet((Set<Component>) components)
+               : Collections.unmodifiableCollection(components);
 
       protected Default() {
       }
 
-      protected Default(final boolean isModifiable, final Collection<? extends Component> initialComponents) {
+      protected Default(final boolean isModifiable, final Collection<? extends @Nullable Component> initialComponents) {
          Args.notNull("initialComponents", initialComponents);
-         for (final Component component : initialComponents)
+
+         for (final var component : initialComponents)
             if (component != null) {
                this.components.add(component);
             }
@@ -32,28 +45,23 @@ public interface Composite<Component> extends Modifiable {
       }
 
       @SafeVarargs
-      protected Default(final boolean isModifiable, final Component... initialComponents) {
+      protected Default(final boolean isModifiable, final @NonNullByDefault({}) Component... initialComponents) {
          Args.notNull("components", initialComponents);
-         for (final Component component : initialComponents)
+
+         for (final var component : initialComponents)
             if (component != null) {
                this.components.add(component);
             }
          this.isModifiable = isModifiable;
       }
 
-      protected Default(final Collection<? extends Component> initialComponents) {
+      protected Default(final Collection<? extends @Nullable Component> initialComponents) {
          this(true, initialComponents);
       }
 
       @SafeVarargs
-      protected Default(final Component... components) {
-         this(true, components);
-      }
-
-      @Override
-      public void addComponent(final Component component) {
-         assertIsModifiable();
-         components.add(component);
+      protected Default(final @NonNullByDefault({}) Component... initialComponents) {
+         this(true, initialComponents);
       }
 
       protected Collection<Component> createCollection() {
@@ -61,20 +69,10 @@ public interface Composite<Component> extends Modifiable {
       }
 
       @Override
-      public boolean hasComponent(final Component component) {
-         return components.contains(component);
-      }
-
-      @Override
-      public boolean removeComponent(final Component component) {
-         assertIsModifiable();
-         return components.remove(component);
+      public Collection<Component> getComponents() {
+         return isModifiable ? components : componentsUmodifiable;
       }
    }
 
-   void addComponent(Component component);
-
-   boolean hasComponent(Component component);
-
-   boolean removeComponent(Component component);
+   Collection<Component> getComponents();
 }

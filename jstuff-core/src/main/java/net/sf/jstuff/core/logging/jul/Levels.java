@@ -6,6 +6,8 @@ package net.sf.jstuff.core.logging.jul;
 
 import java.util.logging.Level;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -32,7 +34,7 @@ public abstract class Levels {
       }
    }
 
-   public static boolean isLoggable(final Level logRecordLevel, final Level loggerLevel) {
+   public static boolean isLoggable(final Level logRecordLevel, final @Nullable Level loggerLevel) {
       if (loggerLevel == null)
          return false;
 

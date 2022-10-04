@@ -7,6 +7,8 @@ package net.sf.jstuff.core.reflection.exception;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.reflection.SerializableField;
 
 /**
@@ -16,17 +18,19 @@ public class SettingFieldValueFailedException extends ReflectionException {
    private static final long serialVersionUID = 1L;
 
    private final SerializableField field;
+   @Nullable
    private final transient Object targetObject;
+   @Nullable
    private final Serializable targetSerializableObject;
 
-   public SettingFieldValueFailedException(final Field field, final Object targetObject, final String message) {
+   public SettingFieldValueFailedException(final Field field, final @Nullable Object targetObject, final String message) {
       super(message);
       this.field = new SerializableField(field);
       this.targetObject = targetObject;
       targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
    }
 
-   public SettingFieldValueFailedException(final Field field, final Object targetObject, final Throwable cause) {
+   public SettingFieldValueFailedException(final Field field, final @Nullable Object targetObject, final Throwable cause) {
       super("Setting value of field [" + field.getDeclaringClass().getSimpleName() + "#" + field.getName() + "] failed.", cause);
       this.field = new SerializableField(field);
       this.targetObject = targetObject;
@@ -37,6 +41,7 @@ public class SettingFieldValueFailedException extends ReflectionException {
       return field.getField();
    }
 
+   @Nullable
    public Object getTargetObject() {
       return targetObject != null ? targetObject : targetSerializableObject;
    }

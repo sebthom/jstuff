@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -17,6 +18,7 @@ import org.junit.Test;
  */
 public class IdentityHashSetTest {
    private static class Entity {
+      @Nullable
       private String name;
 
       public Entity setName(final String name) {
@@ -30,7 +32,7 @@ public class IdentityHashSetTest {
       }
 
       @Override
-      public boolean equals(final Object obj) {
+      public boolean equals(@Nullable final Object obj) {
          if (this == obj)
             return true;
          if (obj == null || getClass() != obj.getClass())

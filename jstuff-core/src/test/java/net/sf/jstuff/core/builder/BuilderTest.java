@@ -6,6 +6,7 @@ package net.sf.jstuff.core.builder;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 import net.sf.jstuff.core.validation.Args;
@@ -20,7 +21,7 @@ public class BuilderTest {
       public interface EntityABuilder<THIS extends EntityABuilder<THIS, T>, T extends EntityA> extends Builder<T> {
 
          @Builder.Property(required = true, nullable = false)
-         THIS propertyA(String value);
+         THIS propertyA(@Nullable String value);
 
          THIS propertyB(int value);
 
@@ -32,6 +33,7 @@ public class BuilderTest {
          return (EntityABuilder<?, ? extends EntityA>) BuilderFactory.of(EntityABuilder.class).create();
       }
 
+      @Nullable
       protected String propertyA;
       protected Integer propertyB = -1;
       protected int methodCallCount = 0;
@@ -57,7 +59,7 @@ public class BuilderTest {
          THIS propertyD(String value);
 
          @Builder.Property(required = true, nullable = true)
-         THIS withPropertyE(String value);
+         THIS withPropertyE(@Nullable String value);
 
       }
 
@@ -67,14 +69,17 @@ public class BuilderTest {
       }
 
       public long propertyC = -1;
+      @Nullable
       private String propertyD;
+      @Nullable
       protected String propertyE;
 
       @Override
       protected void onInitialized() {
          super.onInitialized();
          Args.notNegative("propertyC", propertyC);
-         if (!propertyD.endsWith("_setWithSetter"))
+         final var propertyD = this.propertyD;
+         if (propertyD == null || !propertyD.endsWith("_setWithSetter"))
             throw new IllegalArgumentException("propertyD not set via setter");
       }
 

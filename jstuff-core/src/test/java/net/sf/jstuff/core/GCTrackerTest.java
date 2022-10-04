@@ -6,6 +6,7 @@ package net.sf.jstuff.core;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 import net.sf.jstuff.core.concurrent.Threads;
@@ -22,9 +23,9 @@ public class GCTrackerTest {
 
    @Test
    public void testGCTracker() throws InterruptedException {
-      final EventListener<Void> countGC = event -> garbageCollected++;
+      final EventListener<@Nullable Object> countGC = event -> garbageCollected++;
 
-      final GCTracker<Void> tracker = new GCTracker<>(100);
+      final GCTracker<@Nullable Object> tracker = new GCTracker<>(100);
       tracker.subscribe(countGC);
 
       final int objects = 10000;

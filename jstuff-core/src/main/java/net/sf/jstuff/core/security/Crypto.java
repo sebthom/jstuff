@@ -17,7 +17,8 @@ import javax.crypto.SecretKey;
  */
 public abstract class Crypto {
 
-   private static final ThreadLocalSecureRandom SECURE_RANDOM = ThreadLocalSecureRandom.builder().reseedEvery(Duration.ofMinutes(30)).build();
+   private static final ThreadLocalSecureRandom SECURE_RANDOM = ThreadLocalSecureRandom.builder().reseedEvery(Duration.ofMinutes(30))
+      .build();
 
    public static byte[] createRandomBytes(final int numBytes) {
       final byte[] arr = new byte[numBytes];

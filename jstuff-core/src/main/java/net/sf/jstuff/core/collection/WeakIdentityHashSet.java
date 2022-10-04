@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -49,7 +51,7 @@ public class WeakIdentityHashSet<E> extends AbstractSet<E> implements Cloneable 
    }
 
    @Override
-   public boolean contains(final Object o) {
+   public boolean contains(final @Nullable Object o) {
       return map.containsKey(o);
    }
 
@@ -59,7 +61,7 @@ public class WeakIdentityHashSet<E> extends AbstractSet<E> implements Cloneable 
    }
 
    @Override
-   public boolean equals(final Object o) {
+   public boolean equals(final @Nullable Object o) {
       if (o == null)
          return false;
       if (o == this)
@@ -93,7 +95,7 @@ public class WeakIdentityHashSet<E> extends AbstractSet<E> implements Cloneable 
    }
 
    @Override
-   public boolean remove(final Object o) {
+   public boolean remove(final @Nullable Object o) {
       return map.remove(o) != null;
    }
 

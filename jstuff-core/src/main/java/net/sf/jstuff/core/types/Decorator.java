@@ -20,6 +20,7 @@ public interface Decorator<T> {
       protected boolean wrappedGettable = true;
       protected boolean wrappedSettable = true;
 
+      @SuppressWarnings("null")
       protected Default() {
       }
 

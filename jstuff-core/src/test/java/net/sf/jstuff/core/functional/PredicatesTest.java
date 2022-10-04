@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.function.Predicate;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 import net.sf.jstuff.core.functional.Predicates.Contains;
@@ -25,7 +26,7 @@ public class PredicatesTest {
    @Test
    public void testPredicateChaining() {
       {
-         final Predicate<String> a = startingWith("#").and2(endingWith("#"));
+         final Predicate<@Nullable String> a = startingWith("#").and2(endingWith("#"));
          assertThat(a.test(null)).isFalse();
          assertThat(a.test("#foo")).isFalse();
          assertThat(a.test("foo#")).isFalse();
@@ -33,7 +34,7 @@ public class PredicatesTest {
       }
 
       {
-         final Predicate<String> a = startingWith("#").or2(endingWith("#"));
+         final Predicate<@Nullable String> a = startingWith("#").or2(endingWith("#"));
          assertThat(a.test(null)).isFalse();
          assertThat(a.test("#foo")).isTrue();
          assertThat(a.test("foo#")).isTrue();
@@ -41,7 +42,7 @@ public class PredicatesTest {
       }
 
       {
-         final Predicate<Integer> a = notNull().and2(greaterThan(10)).and(lessThan(20));
+         final Predicate<@Nullable Integer> a = notNull().and2(greaterThan(10)).and2(lessThan(20));
          assertThat(a.test(null)).isFalse();
          assertThat(a.test(2)).isFalse();
          assertThat(a.test(19)).isTrue();
@@ -49,10 +50,7 @@ public class PredicatesTest {
       }
 
       {
-         final Predicate<Long> a = notNull(). //
-            and2( //
-               greaterThan(20L).or(lessThan(10L)).or(equalTo(12L)) //
-            );
+         final Predicate<@Nullable Long> a = notNull().and2(greaterThan(20L).or2(lessThan(10L)).or2(equalTo(12L)));
          assertThat(a.test(null)).isFalse();
          assertThat(a.test(21L)).isTrue();
          assertThat(a.test(19L)).isFalse();
@@ -64,17 +62,17 @@ public class PredicatesTest {
 
    @Test
    public void testContains() {
-      final Contains<String> a = contains("oo");
+      final Contains<@Nullable String> a = contains("oo");
       assertThat(a.test(null)).isFalse();
       assertThat(a.test("")).isFalse();
       assertThat(a.test("foo")).isTrue();
 
-      final Predicate<String> a2 = not(a);
+      final Predicate<@Nullable String> a2 = not(a);
       assertThat(a2.test(null)).isTrue();
       assertThat(a2.test("")).isTrue();
       assertThat(a2.test("foo")).isFalse();
 
-      final Predicate<String> a3 = a.ignoreCase();
+      final Predicate<@Nullable String> a3 = a.ignoreCase();
       assertThat(a3.test(null)).isFalse();
       assertThat(a3.test("")).isFalse();
       assertThat(a3.test("FOO")).isTrue();
@@ -82,19 +80,19 @@ public class PredicatesTest {
 
    @Test
    public void testEndingWith() {
-      final EndingWith<String> a = endingWith("o#");
+      final EndingWith<@Nullable String> a = endingWith("o#");
       assertThat(a.test(null)).isFalse();
       assertThat(a.test("#foo")).isFalse();
       assertThat(a.test("foo")).isFalse();
       assertThat(a.test("foo#")).isTrue();
 
-      final Predicate<String> a2 = not(a);
+      final Predicate<@Nullable String> a2 = not(a);
       assertThat(a2.test(null)).isTrue();
       assertThat(a2.test("#foo")).isTrue();
       assertThat(a2.test("foo")).isTrue();
       assertThat(a2.test("foo#")).isFalse();
 
-      final Predicate<String> a3 = a.ignoreCase();
+      final Predicate<@Nullable String> a3 = a.ignoreCase();
       assertThat(a3.test(null)).isFalse();
       assertThat(a3.test("#FOO")).isFalse();
       assertThat(a3.test("FOO")).isFalse();
@@ -103,12 +101,12 @@ public class PredicatesTest {
 
    @Test
    public void testEqualTo() {
-      final Predicate<String> a = equalTo("123");
+      final Predicate<@Nullable String> a = equalTo("123");
       assertThat(a.test(null)).isFalse();
       assertThat(a.test("1234")).isFalse();
       assertThat(a.test("123")).isTrue();
 
-      final Predicate<String> a2 = not(a);
+      final Predicate<@Nullable String> a2 = not(a);
       assertThat(a2.test(null)).isTrue();
       assertThat(a2.test("1234")).isTrue();
       assertThat(a2.test("123")).isFalse();
@@ -116,13 +114,13 @@ public class PredicatesTest {
 
    @Test
    public void testGreaterThan() {
-      final Predicate<Integer> a = greaterThan(10);
+      final Predicate<@Nullable Integer> a = greaterThan(10);
       assertThat(a.test(null)).isFalse();
       assertThat(a.test(9)).isFalse();
       assertThat(a.test(10)).isFalse();
       assertThat(a.test(11)).isTrue();
 
-      final Predicate<Integer> a2 = not(a);
+      final Predicate<@Nullable Integer> a2 = not(a);
       assertThat(a2.test(null)).isTrue();
       assertThat(a2.test(9)).isTrue();
       assertThat(a2.test(10)).isTrue();
@@ -131,14 +129,14 @@ public class PredicatesTest {
 
    @Test
    public void testLessThan() {
-      final Predicate<Integer> a = lessThan(10);
-      assertThat(a.test(null)).isFalse();
+      final Predicate<@Nullable Integer> a = lessThan(10);
+      assertThat(a.test(null)).isTrue();
       assertThat(a.test(9)).isTrue();
       assertThat(a.test(10)).isFalse();
       assertThat(a.test(11)).isFalse();
 
-      final Predicate<Integer> a2 = not(a);
-      assertThat(a2.test(null)).isTrue();
+      final Predicate<@Nullable Integer> a2 = not(a);
+      assertThat(a2.test(null)).isFalse();
       assertThat(a2.test(9)).isFalse();
       assertThat(a2.test(10)).isTrue();
       assertThat(a2.test(11)).isTrue();
@@ -146,22 +144,22 @@ public class PredicatesTest {
 
    @Test
    public void testNonNull() {
-      final Predicate<Object> a = notNull();
+      final Predicate<@Nullable Object> a = notNull();
       assertThat(a.test(null)).isFalse();
       assertThat(a.test("")).isTrue();
 
-      final Predicate<Object> a2 = not(a);
+      final Predicate<@Nullable Object> a2 = not(a);
       assertThat(a2.test(null)).isTrue();
       assertThat(a2.test("")).isFalse();
    }
 
    @Test
    public void testNull() {
-      final Predicate<Object> a = isNull();
+      final Predicate<@Nullable Object> a = isNull();
       assertThat(a.test(null)).isTrue();
       assertThat(a.test("")).isFalse();
 
-      final Predicate<Object> a2 = not(a);
+      final Predicate<@Nullable Object> a2 = not(a);
       assertThat(a2.test(null)).isFalse();
       assertThat(a2.test("")).isTrue();
    }
@@ -170,7 +168,11 @@ public class PredicatesTest {
    public void testProperty() {
       class Entity {
          @SuppressWarnings("unused")
+         @Nullable
          String name;
+
+         @SuppressWarnings("unused")
+         @Nullable
          Entity parent;
       }
 
@@ -186,12 +188,11 @@ public class PredicatesTest {
 
       final Property<Entity, String> a2 = property("parent.name", equalTo("foobar"));
 
-      e.parent = new Entity();
-
-      e.parent.name = "blub";
+      final var parent = e.parent = new Entity();
+      parent.name = "blub";
       assertThat(a2.test(e)).isFalse();
 
-      e.parent.name = "foobar";
+      parent.name = "foobar";
       assertThat(a2.test(e)).isTrue();
 
       e.parent = null;
@@ -200,19 +201,19 @@ public class PredicatesTest {
 
    @Test
    public void testStartingWith() {
-      final StartingWith<String> a = startingWith("#f");
+      final StartingWith<@Nullable String> a = startingWith("#f");
       assertThat(a.test(null)).isFalse();
       assertThat(a.test("#foo")).isTrue();
       assertThat(a.test("foo")).isFalse();
       assertThat(a.test("foo#")).isFalse();
 
-      final Predicate<String> a2 = not(a);
+      final Predicate<@Nullable String> a2 = not(a);
       assertThat(a2.test(null)).isTrue();
       assertThat(a2.test("#foo")).isFalse();
       assertThat(a2.test("foo")).isTrue();
       assertThat(a2.test("foo#")).isTrue();
 
-      final Predicate<String> a3 = a.ignoreCase();
+      final Predicate<@Nullable String> a3 = a.ignoreCase();
       assertThat(a3.test(null)).isFalse();
       assertThat(a3.test("#FOO")).isTrue();
       assertThat(a3.test("FOO")).isFalse();

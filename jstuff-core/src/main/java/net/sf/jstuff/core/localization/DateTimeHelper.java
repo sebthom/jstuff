@@ -10,6 +10,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
@@ -132,7 +134,7 @@ public class DateTimeHelper implements Serializable {
       return DateFormat.getDateInstance(style.style, locale);
    }
 
-   public DateFormatStyle getDateStyle(final String date) {
+   public @Nullable DateFormatStyle getDateStyle(final String date) {
       Args.notNull("date", date);
 
       if (isValidDate(DateFormatStyle.SHORT, date))
@@ -159,7 +161,7 @@ public class DateTimeHelper implements Serializable {
       return DateFormat.getDateTimeInstance(dateStyle.style, timeStyle.style, locale);
    }
 
-   public DateFormatStyle getDateTimeStyle(final String style) {
+   public @Nullable DateFormatStyle getDateTimeStyle(final String style) {
       Args.notNull("style", style);
 
       if (isValidDateTime(DateFormatStyle.SHORT, style))
@@ -183,7 +185,7 @@ public class DateTimeHelper implements Serializable {
       return DateFormat.getTimeInstance(style.style, locale);
    }
 
-   public DateFormatStyle getTimeStyle(final String style) {
+   public @Nullable DateFormatStyle getTimeStyle(final String style) {
       Args.notNull("style", style);
 
       if (isValidTime(DateFormatStyle.SHORT, style))
@@ -197,7 +199,7 @@ public class DateTimeHelper implements Serializable {
       return null;
    }
 
-   protected boolean isValidDate(final DateFormatStyle style, final String date) {
+   protected boolean isValidDate(final DateFormatStyle style, final @Nullable String date) {
       Args.notNull("style", style);
 
       if (date == null || date.isEmpty())
@@ -214,12 +216,12 @@ public class DateTimeHelper implements Serializable {
       }
    }
 
-   public boolean isValidDate(final String date) {
+   public boolean isValidDate(final @Nullable String date) {
       return date != null && (isValidDate(DateFormatStyle.SHORT, date) || isValidDate(DateFormatStyle.MEDIUM, date) || isValidDate(
          DateFormatStyle.LONG, date) || isValidDate(DateFormatStyle.FULL, date));
    }
 
-   protected boolean isValidDateTime(final DateFormatStyle style, final String dateTime) {
+   protected boolean isValidDateTime(final DateFormatStyle style, final @Nullable String dateTime) {
       Args.notNull("style", style);
 
       if (dateTime == null || dateTime.isEmpty())
@@ -236,7 +238,7 @@ public class DateTimeHelper implements Serializable {
       }
    }
 
-   public boolean isValidDateTime(final String dateTime) {
+   public boolean isValidDateTime(final @Nullable String dateTime) {
       return Strings.isNotBlank(dateTime) //
          && (isValidDateTime(DateFormatStyle.SHORT, dateTime) //
             || isValidDateTime(DateFormatStyle.MEDIUM, dateTime) //
@@ -244,7 +246,7 @@ public class DateTimeHelper implements Serializable {
             || isValidDateTime(DateFormatStyle.FULL, dateTime));
    }
 
-   protected boolean isValidTime(final DateFormatStyle style, final String time) {
+   protected boolean isValidTime(final DateFormatStyle style, final @Nullable String time) {
       Args.notNull("style", style);
 
       if (time == null || time.isBlank())
@@ -261,7 +263,7 @@ public class DateTimeHelper implements Serializable {
       }
    }
 
-   public boolean isValidTime(final String time) {
+   public boolean isValidTime(final @Nullable String time) {
       return Strings.isNotBlank(time) //
          && (isValidTime(DateFormatStyle.SHORT, time) //
             || isValidTime(DateFormatStyle.MEDIUM, time) //
@@ -272,6 +274,7 @@ public class DateTimeHelper implements Serializable {
    /**
     * @param date String containing the date to convert
     */
+   @Nullable
    public Date parseDate(final String date) {
       if (Strings.isEmpty(date))
          return null;

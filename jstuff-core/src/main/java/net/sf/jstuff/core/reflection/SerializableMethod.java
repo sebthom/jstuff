@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Serializable Wrapper for java.lang.reflect.Method objects since they do not implement Serializable
  *
@@ -16,18 +19,19 @@ import java.lang.reflect.Method;
 public final class SerializableMethod implements Serializable {
    private static final long serialVersionUID = 1L;
 
-   private Class<?> declaringClass;
+   private @Nullable Class<?> declaringClass;
    private transient Method method;
-   private String name;
-   private Class<?>[] parameterTypes;
+   private @Nullable String name;
+   private @NonNull Class<?> @Nullable [] parameterTypes;
 
    public SerializableMethod(final Method method) {
       this.method = method;
    }
 
    public Class<?> getDeclaringClass() {
+      var declaringClass = this.declaringClass;
       if (declaringClass == null) {
-         declaringClass = method.getDeclaringClass();
+         declaringClass = this.declaringClass = method.getDeclaringClass();
       }
       return declaringClass;
    }
@@ -37,15 +41,17 @@ public final class SerializableMethod implements Serializable {
    }
 
    public String getName() {
+      var name = this.name;
       if (name == null) {
-         name = method.getName();
+         name = this.name = method.getName();
       }
       return name;
    }
 
-   public Class<?>[] getParameterTypes() {
+   public @NonNull Class<?>[] getParameterTypes() {
+      var parameterTypes = this.parameterTypes;
       if (parameterTypes == null) {
-         parameterTypes = method.getParameterTypes();
+         parameterTypes = this.parameterTypes = method.getParameterTypes();
       }
       return parameterTypes;
    }
@@ -53,7 +59,7 @@ public final class SerializableMethod implements Serializable {
    private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
       in.defaultReadObject();
       try {
-         method = declaringClass.getDeclaredMethod(name, parameterTypes);
+         method = getDeclaringClass().getDeclaredMethod(getName(), parameterTypes);
       } catch (final NoSuchMethodException ex) {
          throw new IOException(ex);
       }

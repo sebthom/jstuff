@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.security;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +16,8 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.SystemUtils;
@@ -39,7 +43,7 @@ public abstract class KeyTool {
       final int keySize, final int daysValid) throws GeneralSecurityException {
 
       final Path keyStoreFile = MoreFiles.getTempDirectory().resolve(UUID.randomUUID().toString() + ".jks");
-      final String[] args = { //
+      final @NonNull String[] args = { //
          "-genkey", //
          "-keyalg", keyAlgo, //
          "-alias", "selfsigned", //
@@ -60,8 +64,8 @@ public abstract class KeyTool {
          final var keyStore = KeyStore.getInstance("JKS");
          keyStore.load(keyStoreIS, "changeit".toCharArray());
          return Tuple2.create( //
-            (X509Certificate) keyStore.getCertificate("selfsigned"), //
-            (PrivateKey) keyStore.getKey("selfsigned", "changeit".toCharArray()) //
+            (X509Certificate) asNonNull(keyStore.getCertificate("selfsigned")), //
+            (PrivateKey) asNonNull(keyStore.getKey("selfsigned", "changeit".toCharArray())) //
          );
       } catch (final IOException ex) {
          throw new GeneralSecurityException(ex);
@@ -70,7 +74,7 @@ public abstract class KeyTool {
       }
    }
 
-   public static void main(final String[] args) throws IOException { // CHECKSTYLE:IGNORE UncommentedMain
+   public static void main(final @NonNull String[] args) throws IOException { // CHECKSTYLE:IGNORE UncommentedMain
       try {
          final ProcessWrapper prc = Processes.builder(SystemUtils.getJavaHome().toPath().resolve("bin/keytool")).withArgs(args)
             .withRedirectOutput(System.out) //
@@ -86,7 +90,7 @@ public abstract class KeyTool {
       }
    }
 
-   public static String run(final String... args) throws IOException {
+   public static String run(final @NonNull String... args) throws IOException {
       if (LOG.isDebugEnabled()) {
          LOG.debug("Executing keytool with \"%s\"...", Strings.join(args, "\", \""));
       }

@@ -4,12 +4,16 @@
  */
 package net.sf.jstuff.core.logging;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.StackTrace;
@@ -25,7 +29,7 @@ abstract class LoggerUtils {
    private static final String METHOD_EXIT_MARKER = "EXIT  << ";
    private static final String METHOD_EXIT_MARKER_VOID = METHOD_EXIT_MARKER + "*void*";
 
-   private static String argToString(final Object object) {
+   private static String argToString(final @Nullable Object object) {
       if (object == null)
          return "null";
       if (object.getClass().isArray())
@@ -36,7 +40,7 @@ abstract class LoggerUtils {
    }
 
    @SuppressWarnings("unchecked")
-   static <I> I createLogged(final I object, final Class<I> primaryInterface, final Class<?>... secondaryInterfaces) {
+   static <@NonNull I> I createLogged(final I object, final Class<I> primaryInterface, final Class<?> @Nullable... secondaryInterfaces) {
       Args.notNull("object", object);
       Args.notNull("primaryInterface", primaryInterface);
 
@@ -53,7 +57,7 @@ abstract class LoggerUtils {
       return (I) Proxy.newProxyInstance(object.getClass().getClassLoader(), interfaces, (proxy, interfaceMethod, args) -> {
          if (log.isTraceEnabled()) {
             final long start = System.currentTimeMillis();
-            final Method methodWithParameterNames = Methods.findPublic(object.getClass(), interfaceMethod.getName(), interfaceMethod
+            final Method methodWithParameterNames = Methods.getPublic(object.getClass(), interfaceMethod.getName(), interfaceMethod
                .getParameterTypes());
             log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
             final Object returnValue = interfaceMethod.invoke(object, args);
@@ -69,7 +73,7 @@ abstract class LoggerUtils {
       });
    }
 
-   static String formatTraceEntry(final Method method, final Object... args) {
+   static String formatTraceEntry(final Method method, final Object @Nullable... args) {
       if (args == null || args.length == 0)
          return METHOD_ENTRY_MARKER_NOARGS;
 
@@ -90,12 +94,12 @@ abstract class LoggerUtils {
       return sb.append(")").toString();
    }
 
-   static String formatTraceEntry(final Object... args) {
+   static String formatTraceEntry(final Object @Nullable... args) {
       if (args == null || args.length == 0)
          return METHOD_ENTRY_MARKER_NOARGS;
 
-      final Class<?> loggedClass = StackTrace.getCallerClass(DelegatingLogger.FQCN);
-      final StackTraceElement loggedSTE = StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN);
+      final Class<?> loggedClass = asNonNullUnsafe(StackTrace.getCallerClass(DelegatingLogger.FQCN));
+      final StackTraceElement loggedSTE = asNonNullUnsafe(StackTrace.getCallerStackTraceElement(DelegatingLogger.FQCN));
       final Method method = Methods.findAnyCompatible(loggedClass, loggedSTE.getMethodName(), args);
       if (method == null) {
          final var sb = new StringBuilder(METHOD_ENTRY_MARKER);
@@ -112,22 +116,22 @@ abstract class LoggerUtils {
       return METHOD_EXIT_MARKER_VOID;
    }
 
-   static String formatTraceExit(final Object returnValue) {
+   static String formatTraceExit(final @Nullable Object returnValue) {
       return METHOD_EXIT_MARKER + argToString(returnValue);
    }
 
    /**
     * Recursively sanitizes removes irrelevant elements from the stacktraces of the given exception and it's causes.
     */
-   static void sanitizeStackTraces(final Throwable ex) {
+   static void sanitizeStackTraces(final @Nullable Throwable ex) {
       if (ex == null)
          return;
 
-      final StackTraceElement[] stack = ex.getStackTrace();
+      final var stack = ex.getStackTrace();
       if (stack.length < 3)
          return;
 
-      final List<StackTraceElement> sanitized = new ArrayList<>(stack.length - 2);
+      final var sanitized = new ArrayList<StackTraceElement>(stack.length - 2);
       // we leave the first two elements untouched to keep the context
       sanitized.add(stack[0]);
       sanitized.add(stack[1]);
@@ -172,7 +176,7 @@ abstract class LoggerUtils {
          sanitized.add(ste);
       }
 
-      ex.setStackTrace(sanitized.toArray(StackTraceElement[]::new));
+      ex.setStackTrace(asNonNullUnsafe(sanitized.toArray(StackTraceElement[]::new)));
 
       if (ex.getCause() != null) {
          sanitizeStackTraces(ex.getCause());

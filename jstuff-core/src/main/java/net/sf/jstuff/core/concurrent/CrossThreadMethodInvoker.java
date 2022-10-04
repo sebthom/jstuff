@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.fluent.Fluent;
 import net.sf.jstuff.core.reflection.Methods;
@@ -22,6 +24,7 @@ import net.sf.jstuff.core.reflection.Proxies;
  */
 @ThreadSafe
 public class CrossThreadMethodInvoker {
+
    public interface CrossThreadProxy<T> {
       T get();
 
@@ -29,14 +32,17 @@ public class CrossThreadMethodInvoker {
    }
 
    private static final class MethodInvocation {
+      @Nullable
       final Object target;
       final Method method;
-      final Object[] args;
+      final Object @Nullable [] args;
+      @Nullable
       volatile Object result;
+      @Nullable
       volatile Exception exception;
       final CountDownLatch isDone = new CountDownLatch(1);
 
-      MethodInvocation(final Object target, final Method method, final Object[] args) {
+      MethodInvocation(final @Nullable Object target, final Method method, final Object @Nullable [] args) {
          this.target = target;
          this.method = method;
          this.args = args;
@@ -59,6 +65,7 @@ public class CrossThreadMethodInvoker {
     * queue of method invocations that shall be executed in another thread
     */
    private final ConcurrentLinkedQueue<MethodInvocation> invocations = new ConcurrentLinkedQueue<>();
+   @Nullable
    private volatile Thread owner;
    private final int timeout;
    private AtomicInteger backgroundThreadCount = new AtomicInteger(Integer.MIN_VALUE);
@@ -79,8 +86,8 @@ public class CrossThreadMethodInvoker {
    /**
     * Creates a JDK proxy executing all method in the {@link CrossThreadMethodInvoker}'s owner thread
     */
-   public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
-      final Class<?>... targetInterfaces) {
+   public <@NonNull INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
+      final @NonNull Class<?>... targetInterfaces) {
 
       return Proxies.create((proxy, method, args) -> {
          if (method.getDeclaringClass() == CrossThreadProxy.class) {
@@ -96,8 +103,8 @@ public class CrossThreadMethodInvoker {
    /**
     * Creates a JDK proxy executing all method in the {@link CrossThreadMethodInvoker}'s owner thread
     */
-   public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
-      final Function<Object, Object> resultTransformer, final Class<?>... targetInterfaces) {
+   public <@NonNull INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
+      final Function<@Nullable Object, ?> resultTransformer, final @NonNull Class<?>... targetInterfaces) {
 
       return Proxies.create(Thread.currentThread().getContextClassLoader(), (proxy, method, args) -> {
          if (method.getDeclaringClass() == CrossThreadProxy.class) {
@@ -115,6 +122,7 @@ public class CrossThreadMethodInvoker {
          throw new IllegalStateException(this + " is not started!");
    }
 
+   @Nullable
    public Thread getOwner() {
       return owner;
    }
@@ -126,7 +134,8 @@ public class CrossThreadMethodInvoker {
    /**
     * performs the given method invocation in the owner thread
     */
-   public Object invokeInOwnerThread(final Object target, final Method method, final Object[] args) throws Exception {
+   @Nullable
+   public Object invokeInOwnerThread(final @Nullable Object target, final Method method, final Object @Nullable [] args) throws Exception {
       if (Thread.currentThread() == owner) //
          return Methods.invoke(target, method, args);
 

@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.compression;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.CRC32;
@@ -98,6 +100,6 @@ public class GZIPCompressingInputStream extends DeflaterInputStream {
 
    private void writeTrailer(final byte[] buf, final int offset) {
       writeInt((int) ((CheckedInputStream) in).getChecksum().getValue(), buf, offset); // CRC-32 of uncompr. data
-      writeInt(compressor.getTotalIn(), buf, offset + 4); // Number of uncompr. bytes
+      writeInt(asNonNull(compressor).getTotalIn(), buf, offset + 4); // Number of uncompr. bytes
    }
 }

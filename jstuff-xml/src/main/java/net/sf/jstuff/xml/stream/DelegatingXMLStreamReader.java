@@ -10,6 +10,8 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.types.Decorator;
 
 /**
@@ -65,12 +67,12 @@ public class DelegatingXMLStreamReader extends Decorator.Default<XMLStreamReader
    }
 
    @Override
-   public String getAttributeValue(final String namespaceURI, final String localName) {
+   public String getAttributeValue(final @Nullable String namespaceURI, final String localName) {
       return wrapped.getAttributeValue(namespaceURI, localName);
    }
 
    @Override
-   public String getCharacterEncodingScheme() {
+   public @Nullable String getCharacterEncodingScheme() {
       return wrapped.getCharacterEncodingScheme();
    }
 
@@ -80,7 +82,7 @@ public class DelegatingXMLStreamReader extends Decorator.Default<XMLStreamReader
    }
 
    @Override
-   public String getEncoding() {
+   public @Nullable String getEncoding() {
       return wrapped.getEncoding();
    }
 
@@ -115,47 +117,47 @@ public class DelegatingXMLStreamReader extends Decorator.Default<XMLStreamReader
    }
 
    @Override
-   public String getNamespacePrefix(final int index) {
+   public @Nullable String getNamespacePrefix(final int index) {
       return wrapped.getNamespacePrefix(index);
    }
 
    @Override
-   public String getNamespaceURI() {
+   public @Nullable String getNamespaceURI() {
       return wrapped.getNamespaceURI();
    }
 
    @Override
-   public String getNamespaceURI(final int index) {
+   public @Nullable String getNamespaceURI(final int index) {
       return wrapped.getNamespaceURI(index);
    }
 
    @Override
-   public String getNamespaceURI(final String prefix) {
+   public @Nullable String getNamespaceURI(final String prefix) {
       return wrapped.getNamespaceURI(prefix);
    }
 
    @Override
-   public String getPIData() {
+   public @Nullable String getPIData() {
       return wrapped.getPIData();
    }
 
    @Override
-   public String getPITarget() {
+   public @Nullable String getPITarget() {
       return wrapped.getPITarget();
    }
 
    @Override
-   public String getPrefix() {
+   public @Nullable String getPrefix() {
       return wrapped.getPrefix();
    }
 
    @Override
-   public Object getProperty(final String name) throws IllegalArgumentException {
+   public @Nullable Object getProperty(final String name) throws IllegalArgumentException {
       return wrapped.getProperty(name);
    }
 
    @Override
-   public String getText() {
+   public @Nullable String getText() {
       return wrapped.getText();
    }
 
@@ -181,7 +183,7 @@ public class DelegatingXMLStreamReader extends Decorator.Default<XMLStreamReader
    }
 
    @Override
-   public String getVersion() {
+   public @Nullable String getVersion() {
       return wrapped.getVersion();
    }
 
@@ -241,7 +243,7 @@ public class DelegatingXMLStreamReader extends Decorator.Default<XMLStreamReader
    }
 
    @Override
-   public void require(final int type, final String namespaceURI, final String localName) throws XMLStreamException {
+   public void require(final int type, final @Nullable String namespaceURI, @Nullable final String localName) throws XMLStreamException {
       wrapped.require(type, namespaceURI, localName);
    }
 

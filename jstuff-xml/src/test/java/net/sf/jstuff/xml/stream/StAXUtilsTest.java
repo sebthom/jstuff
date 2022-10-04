@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.xml.stream;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.InputStream;
@@ -32,53 +33,54 @@ public class StAXUtilsTest {
       Logger.getLogger("net.sf.jstuff.xml.stream").setLevel(Level.FINE);
    }
 
-   private InputStream getXml() {
-      return StAXUtilsTest.class.getResourceAsStream("stax-utils-test.xml");
-   }
-
-   private ElementInfo findElement(final String xpath) throws XMLStreamException {
-      try (AutoCloseableXMLStreamReader reader = STAX_FACTORY.createXMLStreamReader(getXml(), true)) {
-         return StAXUtils.findElement(reader, xpath);
-      }
-   }
-
    private List<ElementInfo> findElements(final String xpath) throws XMLStreamException {
       try (AutoCloseableXMLStreamReader reader = STAX_FACTORY.createXMLStreamReader(getXml(), true)) {
          return StAXUtils.findElements(reader, xpath);
       }
    }
 
-   private String findElementText(final String xpath) throws XMLStreamException {
-      return findElement(xpath).getText();
+   @SuppressWarnings("resource")
+   private InputStream getXml() {
+      return asNonNull(StAXUtilsTest.class.getResourceAsStream("stax-utils-test.xml"));
+   }
+
+   private ElementInfo getElement(final String xpath) throws XMLStreamException {
+      try (AutoCloseableXMLStreamReader reader = STAX_FACTORY.createXMLStreamReader(getXml(), true)) {
+         return asNonNull(StAXUtils.findElement(reader, xpath));
+      }
+   }
+
+   private String getElementText(final String xpath) throws XMLStreamException {
+      return asNonNull(getElement(xpath).getText());
    }
 
    @Test
    public void testElementWithAttributeMatch() throws XMLStreamException {
-      assertThat(findElementText("/root/group/item[@id='2']")).isEqualTo("<Cat>");
-      assertThat(findElementText("root/group/item[@id='2']")).isEqualTo("<Cat>");
-      assertThat(findElementText("group/item[@id='2']")).isEqualTo("<Cat>");
-      assertThat(findElementText("item[@id='2']")).isEqualTo("<Cat>");
+      assertThat(getElementText("/root/group/item[@id='2']")).isEqualTo("<Cat>");
+      assertThat(getElementText("root/group/item[@id='2']")).isEqualTo("<Cat>");
+      assertThat(getElementText("group/item[@id='2']")).isEqualTo("<Cat>");
+      assertThat(getElementText("item[@id='2']")).isEqualTo("<Cat>");
 
-      assertThat(findElementText("item[@id='3']").trim()).isEqualTo("Beer\n\n         Bike");
+      assertThat(getElementText("item[@id='3']").trim()).isEqualTo("Beer\n\n         Bike");
 
-      assertThat(findElementText("item[@id='5']").trim()).isEqualTo("Fast\n      <Steam>\n\n      Train");
+      assertThat(getElementText("item[@id='5']").trim()).isEqualTo("Fast\n      <Steam>\n\n      Train");
 
-      assertThat(findElementText("/root/group/item[@id='4']")).isEqualTo("Car");
-      assertThat(findElementText("root/group/item[@id='4']")).isEqualTo("Car");
-      assertThat(findElementText("group/item[@id='4']")).isEqualTo("Car");
-      assertThat(findElementText("item[@id='4']")).isEqualTo("Car");
+      assertThat(getElementText("/root/group/item[@id='4']")).isEqualTo("Car");
+      assertThat(getElementText("root/group/item[@id='4']")).isEqualTo("Car");
+      assertThat(getElementText("group/item[@id='4']")).isEqualTo("Car");
+      assertThat(getElementText("item[@id='4']")).isEqualTo("Car");
 
-      assertThat(findElementText("/root/group/item[@anchor='#car' and @id='4']")).isEqualTo("Car");
-      assertThat(findElementText("root/group/item[@anchor='#car' and @id='4']")).isEqualTo("Car");
-      assertThat(findElementText("group/item[@anchor='#car' and @id='4']")).isEqualTo("Car");
-      assertThat(findElementText("item[@anchor='#car' and @id='4']")).isEqualTo("Car");
+      assertThat(getElementText("/root/group/item[@anchor='#car' and @id='4']")).isEqualTo("Car");
+      assertThat(getElementText("root/group/item[@anchor='#car' and @id='4']")).isEqualTo("Car");
+      assertThat(getElementText("group/item[@anchor='#car' and @id='4']")).isEqualTo("Car");
+      assertThat(getElementText("item[@anchor='#car' and @id='4']")).isEqualTo("Car");
 
-      assertThat(findElementText("/root/group/item[@id='4' and @anchor='#car']")).isEqualTo("Car");
-      assertThat(findElementText("root/group/item[@id='4' and @anchor='#car']")).isEqualTo("Car");
-      assertThat(findElementText("group/item[@id='4' and @anchor='#car']")).isEqualTo("Car");
-      assertThat(findElementText("item[@id='4' and @anchor='#car']")).isEqualTo("Car");
+      assertThat(getElementText("/root/group/item[@id='4' and @anchor='#car']")).isEqualTo("Car");
+      assertThat(getElementText("root/group/item[@id='4' and @anchor='#car']")).isEqualTo("Car");
+      assertThat(getElementText("group/item[@id='4' and @anchor='#car']")).isEqualTo("Car");
+      assertThat(getElementText("item[@id='4' and @anchor='#car']")).isEqualTo("Car");
 
-      final ElementInfo elem = findElement("item[@id='4' and @anchor='#car']");
+      final ElementInfo elem = getElement("item[@id='4' and @anchor='#car']");
       assertThat(elem.localName).isEqualTo("item");
       assertThat(elem.nsPrefix).isEqualTo("ns1");
       assertThat(elem.nsURI).isEqualTo("http://ns1");
@@ -87,15 +89,15 @@ public class StAXUtilsTest {
 
    @Test
    public void testFindElement() throws XMLStreamException {
-      assertThat(findElementText("/root/group/item")).isEqualTo("Dog");
-      assertThat(findElementText("root/group/item")).isEqualTo("Dog");
-      assertThat(findElementText("group/item")).isEqualTo("Dog");
-      assertThat(findElementText("item")).isEqualTo("Dog");
-      assertThat(findElementText("//item")).isEqualTo("Dog");
-      assertThat(findElementText("/root//item")).isEqualTo("Dog");
+      assertThat(getElementText("/root/group/item")).isEqualTo("Dog");
+      assertThat(getElementText("root/group/item")).isEqualTo("Dog");
+      assertThat(getElementText("group/item")).isEqualTo("Dog");
+      assertThat(getElementText("item")).isEqualTo("Dog");
+      assertThat(getElementText("//item")).isEqualTo("Dog");
+      assertThat(getElementText("/root//item")).isEqualTo("Dog");
 
-      assertThat(findElement("/root").location.getLineNumber()).isEqualTo(2);
-      assertThat(findElement("/root/group/item").location.getLineNumber()).isEqualTo(4);
+      assertThat(asNonNull(getElement("/root").location).getLineNumber()).isEqualTo(2);
+      assertThat(asNonNull(getElement("/root/group/item").location).getLineNumber()).isEqualTo(4);
    }
 
    @Test

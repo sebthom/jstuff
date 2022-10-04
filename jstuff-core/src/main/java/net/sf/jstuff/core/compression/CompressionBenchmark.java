@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.compression;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Comparator;
@@ -16,6 +18,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.collection.Maps;
@@ -33,7 +36,8 @@ import net.sf.jstuff.core.validation.Args;
 public class CompressionBenchmark {
 
    public static class BenchmarkResult {
-      public Compression compression;
+
+      public @Nullable Compression compression;
       public int iterations;
       public long compressTimeMS;
       public long decompressTimeMS;
@@ -138,7 +142,7 @@ public class CompressionBenchmark {
             cmp.compress(uncompressedIS, compressedOS);
          }
          sw.stop();
-         result.get(cmp).compressTimeMS = sw.getTime();
+         asNonNull(result.get(cmp)).compressTimeMS = sw.getTime();
       }
       for (final Compression cmp : compressions) {
          LOG.info("Benchmarking decompression [%s]...", cmp);
@@ -164,7 +168,7 @@ public class CompressionBenchmark {
             cmp.decompress(compressedIS, uncompressedOS);
          }
          sw.stop();
-         result.get(cmp).decompressTimeMS = sw.getTime();
+         asNonNull(result.get(cmp)).decompressTimeMS = sw.getTime();
       }
 
       Thread.currentThread().setPriority(Thread.NORM_PRIORITY);

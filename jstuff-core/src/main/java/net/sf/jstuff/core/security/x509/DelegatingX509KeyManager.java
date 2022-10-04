@@ -11,6 +11,9 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.X509KeyManager;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -23,32 +26,34 @@ public class DelegatingX509KeyManager implements X509KeyManager {
    }
 
    @Override
-   public String chooseClientAlias(final String[] keyType, final Principal[] issuers, final Socket socket) {
+   public @Nullable String chooseClientAlias(final @NonNull String[] keyType, final @NonNull Principal @Nullable [] issuers,
+      final @Nullable Socket socket) {
       return wrapped.chooseClientAlias(keyType, issuers, socket);
    }
 
    @Override
-   public String chooseServerAlias(final String keyType, final Principal[] issuers, final Socket socket) {
+   public @Nullable String chooseServerAlias(final String keyType, final @NonNull Principal @Nullable [] issuers,
+      final @Nullable Socket socket) {
       return wrapped.chooseServerAlias(keyType, issuers, socket);
    }
 
    @Override
-   public X509Certificate[] getCertificateChain(final String alias) {
+   public @NonNull X509Certificate @Nullable [] getCertificateChain(final String alias) {
       return wrapped.getCertificateChain(alias);
    }
 
    @Override
-   public String[] getClientAliases(final String keyType, final Principal[] issuers) {
+   public @NonNull String @Nullable [] getClientAliases(final String keyType, final @NonNull Principal @Nullable [] issuers) {
       return wrapped.getClientAliases(keyType, issuers);
    }
 
    @Override
-   public PrivateKey getPrivateKey(final String alias) {
+   public @Nullable PrivateKey getPrivateKey(final String alias) {
       return wrapped.getPrivateKey(alias);
    }
 
    @Override
-   public String[] getServerAliases(final String keyType, final Principal[] issuers) {
+   public @NonNull String @Nullable [] getServerAliases(final String keyType, final @NonNull Principal @Nullable [] issuers) {
       return wrapped.getServerAliases(keyType, issuers);
    }
 }

@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -17,7 +19,7 @@ public class SortByPropertyComparator<T> extends SortByComparator<T, String> {
    private final Map<String, Comparator<T>> comparators = new HashMap<>();
 
    @SafeVarargs
-   public SortByPropertyComparator(final SortBy<String>... sortBy) {
+   public SortByPropertyComparator(final @NonNull SortBy<String>... sortBy) {
       super(sortBy);
    }
 

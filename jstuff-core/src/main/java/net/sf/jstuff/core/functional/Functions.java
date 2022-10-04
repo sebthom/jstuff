@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.functional;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.Serializable;
 import java.util.function.Function;
 
@@ -60,7 +62,7 @@ public abstract class Functions {
 
       @Override
       public String apply(final In source) {
-         return source == null ? null : source.toString();
+         return source == null ? asNonNullUnsafe((String) null) : source.toString();
       }
    }
 
@@ -77,13 +79,14 @@ public abstract class Functions {
 
       @Override
       public String apply(final In source) {
-         return source == null ? null : prefix + source;
+         return source == null ? asNonNullUnsafe((String) null) : prefix + source;
       }
    }
 
    public static class StringToInt extends AbstractFunction<String, Integer> {
       private static final long serialVersionUID = 1L;
 
+      @SuppressWarnings("null")
       @Override
       public Integer apply(final String source) {
          return source == null ? null : Integer.parseInt(source);
@@ -103,7 +106,7 @@ public abstract class Functions {
 
       @Override
       public String apply(final In source) {
-         return source == null ? null : source + suffix;
+         return source == null ? asNonNullUnsafe((String) null) : source + suffix;
       }
    }
 
@@ -112,7 +115,7 @@ public abstract class Functions {
 
       @Override
       public String apply(final In source) {
-         return source == null ? null : source.toString().trim();
+         return source == null ? asNonNullUnsafe((String) null) : source.toString().trim();
       }
    }
 

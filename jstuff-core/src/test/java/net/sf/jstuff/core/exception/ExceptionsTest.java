@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.core.exception;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class ExceptionsTest {
       assertThat(Exceptions.wrapAs(ex, GeneralSecurityException.class)).isNotSameAs(ex);
 
       final CustomException cex = Exceptions.wrapAs(ex, CustomException.class);
-      assertThat(cex.getCause().getCause()).isEqualTo(ex.getCause());
+      assertThat(asNonNull(cex.getCause()).getCause()).isEqualTo(ex.getCause());
       assertThat(Exceptions.getStackTrace(cex)).isNotSameAs(Exceptions.getStackTrace(ex));
 
       final RuntimeException rex = Exceptions.wrapAsRuntimeException(ex);

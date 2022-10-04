@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.types;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * See https://en.wikipedia.org/wiki/Three-valued_logic
  *
@@ -19,13 +21,13 @@ public enum Trilean {
       return value ? TRUE : FALSE;
    }
 
-   public static Trilean of(final Boolean value) {
+   public static Trilean of(final @Nullable Boolean value) {
       if (value == null)
          return UNKNOWN;
       return value ? TRUE : FALSE;
    }
 
-   public static Trilean of(final String value) {
+   public static Trilean of(final @Nullable String value) {
       if (value == null)
          return UNKNOWN;
 
@@ -47,7 +49,7 @@ public enum Trilean {
       }
    }
 
-   public Trilean and(Trilean state) {
+   public Trilean and(@Nullable Trilean state) {
       if (state == null) {
          state = UNKNOWN;
       }
@@ -85,7 +87,7 @@ public enum Trilean {
       }
    }
 
-   public Trilean or(Trilean state) {
+   public Trilean or(@Nullable Trilean state) {
       if (state == null) {
          state = UNKNOWN;
       }
@@ -99,6 +101,7 @@ public enum Trilean {
    /**
     * @return null for {@link #UNKNOWN}
     */
+   @Nullable
    public Boolean toBoolean() {
       switch (this) {
          case TRUE:
@@ -188,7 +191,7 @@ public enum Trilean {
       }
    }
 
-   public Trilean xor(Trilean state) {
+   public Trilean xor(@Nullable Trilean state) {
       if (state == null) {
          state = UNKNOWN;
       }

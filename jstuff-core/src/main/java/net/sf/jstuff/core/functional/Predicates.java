@@ -13,13 +13,17 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.ogn.ObjectGraphNavigatorDefaultImpl;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@NonNullByDefault({})
 public abstract class Predicates {
    public abstract static class AbstractPredicate<T> implements Predicate2<T>, Serializable {
       private static final long serialVersionUID = 1L;
@@ -42,9 +46,11 @@ public abstract class Predicates {
       public abstract Predicate<V> ignoreCase(Locale locale);
 
       protected final String stringify(final Object obj) {
+         if (obj == null)
+            return null;
          if (ignoreCaseLocale == null)
             return obj.toString();
-         return obj.toString().toLowerCase(ignoreCaseLocale);
+         return Strings.lowerCase(obj, ignoreCaseLocale);
       }
    }
 
@@ -55,16 +61,15 @@ public abstract class Predicates {
       public final Predicate<? super V> second;
 
       public And(final Predicate<? super V> first, final Predicate<? super V> second) {
-         Args.notNull("first", first);
-         Args.notNull("second", second);
-
          this.first = first;
          this.second = second;
       }
 
       @Override
       public boolean test(final V obj) {
-         return first.test(obj) && second.test(obj);
+         final var first = this.first;
+         final var second = this.second;
+         return first != null && second != null && first.test(obj) && second.test(obj);
       }
 
       @Override
@@ -90,14 +95,13 @@ public abstract class Predicates {
       public final String searchFor;
 
       public Contains(final String searchFor) {
-         Args.notNull("searchFor", searchFor);
-
          this.searchFor = searchFor;
       }
 
       @Override
       public boolean test(final V obj) {
-         if (obj == null)
+         final var searchFor = this.searchFor;
+         if (obj == null || searchFor == null)
             return false;
          return stringify(obj).indexOf(searchFor) > -1;
       }
@@ -119,14 +123,13 @@ public abstract class Predicates {
       public final String suffix;
 
       public EndingWith(final String suffix) {
-         Args.notNull("suffix", suffix);
-
          this.suffix = stringify(suffix);
       }
 
       @Override
       public boolean test(final V obj) {
-         if (obj == null)
+         final var suffix = this.suffix;
+         if (obj == null || suffix == null)
             return false;
          return stringify(obj).endsWith(suffix);
       }
@@ -198,8 +201,6 @@ public abstract class Predicates {
 
       @Override
       public boolean test(final V obj) {
-         if (obj == null)
-            return false;
          return ObjectUtils.compare(obj, compareTo) < 0;
       }
    }
@@ -210,13 +211,13 @@ public abstract class Predicates {
       public final Pattern pattern;
 
       public Matches(final String pattern) {
-         Args.notNull("pattern", pattern);
-         this.pattern = Pattern.compile(pattern);
+         this.pattern = pattern == null ? null : Pattern.compile(pattern);
       }
 
       @Override
       public boolean test(final V obj) {
-         if (obj == null)
+         final var pattern = this.pattern;
+         if (obj == null || pattern == null)
             return false;
          return pattern.matcher(obj.toString()).matches();
       }
@@ -247,6 +248,7 @@ public abstract class Predicates {
    public static class Nothing<V> extends AbstractPredicate<V> {
       private static final long serialVersionUID = 1L;
 
+      @NonNull
       private static final Nothing<?> INSTANCE = new Nothing<>();
 
       @Override
@@ -280,16 +282,15 @@ public abstract class Predicates {
       public final Predicate<? super V> second;
 
       public Or(final Predicate<? super V> first, final Predicate<? super V> second) {
-         Args.notNull("first", first);
-         Args.notNull("second", second);
-
          this.first = first;
          this.second = second;
       }
 
       @Override
       public boolean test(final V obj) {
-         return first.test(obj) || second.test(obj);
+         final var first = this.first;
+         final var second = this.second;
+         return first != null && first.test(obj) || second != null && second.test(obj);
       }
 
       @Override
@@ -302,11 +303,10 @@ public abstract class Predicates {
       private static final long serialVersionUID = 1L;
 
       public final Predicate<PropertyType> accept;
-      public final String propertyPath;
+      public final @NonNull String propertyPath;
 
-      public Property(final String propertyPath, final Predicate<PropertyType> accept) {
+      public Property(final @NonNull String propertyPath, final Predicate<PropertyType> accept) {
          Args.notNull("propertyPath", propertyPath);
-         Args.notNull("accept", accept);
 
          this.propertyPath = propertyPath;
          this.accept = accept;
@@ -315,7 +315,8 @@ public abstract class Predicates {
       @Override
       @SuppressWarnings("unchecked")
       public boolean test(final V obj) {
-         if (obj == null)
+         final var accept = this.accept;
+         if (obj == null || accept == null)
             return false;
          try {
             return accept.test((PropertyType) ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(obj, propertyPath));
@@ -331,14 +332,13 @@ public abstract class Predicates {
       public final String prefix;
 
       public StartingWith(final String prefix) {
-         Args.notNull("prefix", prefix);
-
          this.prefix = stringify(prefix);
       }
 
       @Override
       public boolean test(final V obj) {
-         if (obj == null)
+         final var prefix = this.prefix;
+         if (obj == null || prefix == null)
             return false;
          return stringify(obj).startsWith(prefix);
       }
@@ -363,61 +363,75 @@ public abstract class Predicates {
       return (Anything<V>) Anything.INSTANCE;
    }
 
+   @NonNull
    public static <V> Contains<V> contains(final String searchFor) {
       return new Contains<>(searchFor);
    }
 
+   @NonNull
    public static <V> EndingWith<V> endingWith(final String suffix) {
       return new EndingWith<>(suffix);
    }
 
+   @NonNull
    public static <V> EqualTo<V> equalTo(final V equivalent) {
       return new EqualTo<>(equivalent);
    }
 
+   @NonNull
    public static <V extends Comparable<V>> GreaterThan<V> greaterThan(final V compareTo) {
       return new GreaterThan<>(compareTo);
    }
 
+   @NonNull
    public static <V> InstanceOf<V> instanceOf(final Class<?> type) {
       return new InstanceOf<>(type);
    }
 
+   @NonNull
    public static <V> Null<V> isNull() {
       return new Null<>();
    }
 
+   @NonNull
    public static <V extends Comparable<V>> LessThan<V> lessThan(final V compareTo) {
       return new LessThan<>(compareTo);
    }
 
+   @NonNull
    public static <V> Matches<V> matches(final String pattern) {
       return new Matches<>(pattern);
    }
 
+   @NonNull
    public static <V> Not<V> not(final Predicate<? super V> accept) {
       return new Not<>(accept);
    }
 
+   @NonNull
    @SuppressWarnings("unchecked")
    public static <V> Nothing<V> nothing() {
       return (Nothing<V>) Nothing.INSTANCE;
    }
 
+   @NonNull
    public static <V> NotNull<V> notNull() {
       return new NotNull<>();
    }
 
+   @NonNull
    public static <V> Or<V> or(final Predicate<? super V> first, final Predicate<? super V> second) {
       return new Or<>(first, second);
    }
 
+   @NonNull
    public static <V, PropertyType> Property<V, PropertyType> property(@SuppressWarnings("unused") final Class<V> castingHelper,
-      final String propertyPath, final Predicate<PropertyType> accept) {
+      final @NonNull String propertyPath, final Predicate<PropertyType> accept) {
       return new Property<>(propertyPath, accept);
    }
 
-   public static <V, PropertyType> Property<V, PropertyType> property(final String propertyPath, final Predicate<PropertyType> accept) {
+   public static <V, PropertyType> Property<V, PropertyType> property(final @NonNull String propertyPath,
+      final Predicate<PropertyType> accept) {
       return new Property<>(propertyPath, accept);
    }
 

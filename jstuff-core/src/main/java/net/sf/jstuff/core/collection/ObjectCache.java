@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Thread-safe in-memory object cache.
  *
@@ -34,6 +36,7 @@ public final class ObjectCache<K, V> {
    }
 
    private interface ValueReference<K, V> {
+      @Nullable
       V get();
 
       K getKey();
@@ -62,6 +65,7 @@ public final class ObjectCache<K, V> {
     * hard referencing the last n-th items to avoid their garbage collection.
     * the first item is the latest accessed item.
     */
+   @Nullable
    private final LinkedList<V> mru;
    private final boolean useWeakReferences;
 
@@ -114,13 +118,14 @@ public final class ObjectCache<K, V> {
       }
    }
 
+   @Nullable
    public V get(final K key) {
       expungeStaleEntries();
       final ValueReference<K, V> ref = cache.get(key);
       if (ref == null)
          return null;
 
-      final V value = ref.get();
+      final var value = ref.get();
 
       if (value == null) {
          cache.remove(key, ref);
@@ -128,7 +133,8 @@ public final class ObjectCache<K, V> {
       }
 
       // update MRU list
-      if (maxObjectsToKeep > 0 && (mru.isEmpty() || value != mru.getFirst())) {
+      final var mru = this.mru;
+      if (maxObjectsToKeep > 0 && mru != null && (mru.isEmpty() || value != mru.getFirst())) {
          mru.remove(value);
          mru.addFirst(value);
          if (mru.size() > maxObjectsToKeep) {
@@ -145,7 +151,7 @@ public final class ObjectCache<K, V> {
       expungeStaleEntries();
       final Map<K, V> result = new HashMap<>();
       for (final ValueReference<K, V> ref : cache.values()) {
-         final V value = ref.get();
+         final var value = ref.get();
          if (value == null) {
             cache.remove(ref.getKey(), ref);
          } else {

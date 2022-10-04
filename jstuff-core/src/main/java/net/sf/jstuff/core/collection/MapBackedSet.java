@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -61,7 +63,7 @@ public class MapBackedSet<E> implements Set<E>, Serializable {
    }
 
    @Override
-   public boolean contains(final Object o) {
+   public boolean contains(final @Nullable Object o) {
       return map.containsKey(o);
    }
 
@@ -71,7 +73,7 @@ public class MapBackedSet<E> implements Set<E>, Serializable {
    }
 
    @Override
-   public boolean equals(final Object o) {
+   public boolean equals(final @Nullable Object o) {
       return o == this || keys.equals(o);
    }
 
@@ -106,7 +108,7 @@ public class MapBackedSet<E> implements Set<E>, Serializable {
    }
 
    @Override
-   public boolean remove(final Object o) {
+   public boolean remove(final @Nullable Object o) {
       return map.remove(o) != null;
    }
 

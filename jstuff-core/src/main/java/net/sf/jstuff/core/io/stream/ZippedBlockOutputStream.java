@@ -4,10 +4,14 @@
  */
 package net.sf.jstuff.core.io.stream;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.logging.Logger;
@@ -56,7 +60,7 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
     * @param blockSize the number of bytes that need to be written to the stream before the data is compressed and send to the underlying stream
     */
    @SuppressWarnings("resource")
-   public ZippedBlockOutputStream(final OutputStream os, final int blockSize, final Deflater compressor) {
+   public ZippedBlockOutputStream(final OutputStream os, final int blockSize, final @Nullable Deflater compressor) {
       super(os);
 
       Args.notNull("os", os);
@@ -118,6 +122,10 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
          if (LOG.isDebugEnabled()) {
             LOG.debug(block.length + " - " + blockSize + " / " + blockCompressed.length + " - " + compressedSize);
          }
+
+         @SuppressWarnings("resource")
+         final var out = asNonNullUnsafe(this.out);
+
          // write the size of the compressed data
          IOUtils.writeInt(out, compressedSize);
 

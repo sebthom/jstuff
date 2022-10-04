@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.io.Serializable;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 import net.sf.jstuff.core.collection.Maps;
@@ -57,6 +58,7 @@ public class MetaSerializationTest {
    }
 
    public static class EntityMeta {
+      @NonNull
       public static final ClassDescriptor<EntityMeta> META_CLASS = ClassDescriptor.of(EntityMeta.class, "Entity", null, null);
 
       // CHECKSTYLE:IGNORE ConstantName FOR NEXT 2 LINES

@@ -11,6 +11,8 @@ import java.util.List;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.logging.Logger;
 
 /**
@@ -19,18 +21,26 @@ import net.sf.jstuff.core.logging.Logger;
 public abstract class JMXUtils {
    private static final Logger LOG = Logger.create();
 
+   @Nullable
    private static MBeanServer mbeanServer;
 
    public static synchronized MBeanServer getMBeanServer() {
+      var mbeanServer = JMXUtils.mbeanServer;
       if (mbeanServer != null)
          return mbeanServer;
 
       try {
          // http://wiki.jboss.org/wiki/FindMBeanServer
-         final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+         ClassLoader cl = Thread.currentThread().getContextClassLoader();
+         if (cl == null) {
+            cl = JMXUtils.class.getClassLoader();
+         }
+         if (cl == null) {
+            cl = ClassLoader.getSystemClassLoader();
+         }
          final Class<?> clazz = cl.loadClass("org.jboss.mx.util.MBeanServerLocator");
          final Method method = clazz.getMethod("locateJBoss", (Class[]) null);
-         mbeanServer = (MBeanServer) method.invoke((Object[]) null, (Object[]) null);
+         mbeanServer = JMXUtils.mbeanServer = (MBeanServer) method.invoke((Object[]) null, (Object[]) null);
          if (mbeanServer != null) {
             LOG.info("Located MBeanServer via org.jboss.mx.util.MBeanServerLocator#locateJBoss()");
             return mbeanServer;
@@ -40,7 +50,7 @@ public abstract class JMXUtils {
       }
 
       try {
-         mbeanServer = ManagementFactory.getPlatformMBeanServer();
+         mbeanServer = JMXUtils.mbeanServer = ManagementFactory.getPlatformMBeanServer();
          if (mbeanServer != null) {
             LOG.info("Located MBeanServer via java.lang.management.ManagementFactory#getPlatformMBeanServer()");
             return mbeanServer;
@@ -50,7 +60,7 @@ public abstract class JMXUtils {
       }
 
       try {
-         mbeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
+         mbeanServer = JMXUtils.mbeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
          LOG.info("Located MBeanServer via MBeanServerFactory#findMBeanServer(null).get(0)");
          return mbeanServer;
       } catch (final Exception | LinkageError ex) {
@@ -58,7 +68,7 @@ public abstract class JMXUtils {
       }
 
       LOG.info("Creating new MBeanServer...");
-      mbeanServer = MBeanServerFactory.createMBeanServer();
+      mbeanServer = JMXUtils.mbeanServer = MBeanServerFactory.createMBeanServer();
       return mbeanServer;
    }
 
@@ -68,7 +78,7 @@ public abstract class JMXUtils {
    public static boolean isDebugModeEnabled() {
       final List<String> args = ManagementFactory.getRuntimeMXBean().getInputArguments();
       for (final String arg : args) {
-         if (arg.startsWith("-agentlib:jdwp") && args.contains("-Xdebug") 
+         if (arg.startsWith("-agentlib:jdwp") && args.contains("-Xdebug") //
             || arg.startsWith("-Xrunjdwp"))
             return true;
       }

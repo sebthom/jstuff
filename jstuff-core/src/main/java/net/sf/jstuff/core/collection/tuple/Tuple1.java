@@ -26,6 +26,7 @@ public final class Tuple1<T1> extends AbstractList<Object> implements Tuple {
    }
 
    @Override
+   @SuppressWarnings("null")
    public Object get(final int index) {
       if (index == 0)
          return v1;

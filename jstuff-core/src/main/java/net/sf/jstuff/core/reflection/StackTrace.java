@@ -6,6 +6,9 @@ package net.sf.jstuff.core.reflection;
 
 import java.util.Arrays;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.validation.Args;
 
@@ -38,6 +41,7 @@ public abstract class StackTrace {
    /**
     * @return class that called the <code>calledClassName</code>
     */
+   @Nullable
    public static Class<?> getCallerClass(final Class<?> calledClass) {
       Args.notNull("calledClass", calledClass);
 
@@ -47,6 +51,7 @@ public abstract class StackTrace {
    /**
     * @return class that called the <code>calledClassName</code>
     */
+   @Nullable
    public static Class<?> getCallerClass(final String calledClassName) {
       Args.notNull("calledClassName", calledClassName);
 
@@ -70,6 +75,7 @@ public abstract class StackTrace {
       return Strings.substringAfterLast(ste.getClassName(), ".");
    }
 
+   @Nullable
    public static String getCallerFileName() {
       final StackTraceElement ste = getCallerStackTraceElement();
       return ste.getFileName();
@@ -100,12 +106,14 @@ public abstract class StackTrace {
       throw new AssertionError("should never be reached.");
    }
 
+   @Nullable
    public static StackTraceElement getCallerStackTraceElement(final Class<?> calledClass) {
       Args.notNull("calledClass", calledClass);
 
       return getCallerStackTraceElement(calledClass.getName());
    }
 
+   @Nullable
    public static StackTraceElement getCallerStackTraceElement(final String calledClassName) {
       Args.notNull("calledClassName", calledClassName);
 
@@ -119,6 +127,7 @@ public abstract class StackTrace {
       return null;
    }
 
+   @Nullable
    public static String getThisFileName() {
       final StackTraceElement ste = getThisStackTraceElement();
       return ste.getFileName();
@@ -156,7 +165,7 @@ public abstract class StackTrace {
 
       final var stack = ex.getStackTrace();
       if (stack.length > 0) {
-         final var newStack = Arrays.copyOfRange(stack, 1, stack.length);
+         final @NonNull StackTraceElement @NonNull [] newStack = Arrays.copyOfRange(stack, 1, stack.length);
          ex.setStackTrace(newStack);
       }
       return ex;

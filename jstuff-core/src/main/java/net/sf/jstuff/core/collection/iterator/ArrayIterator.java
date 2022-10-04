@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import net.sf.jstuff.core.validation.Args;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -25,6 +27,8 @@ public class ArrayIterator<T> implements Iterator<T>, Serializable {
 
    @SafeVarargs
    public ArrayIterator(final T... array) {
+      Args.notNull("array", array);
+
       this.array = array;
    }
 

@@ -17,6 +17,9 @@ import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.concurrent.NotThreadSafe;
 import net.sf.jstuff.core.concurrent.ThreadSafe;
 import net.sf.jstuff.core.validation.Args;
@@ -32,10 +35,10 @@ public interface Hash<T> {
       protected final byte[] salt;
       protected final Category category;
 
-      protected AbstractHash(final Category category, final String name, final byte[] salt) {
+      protected AbstractHash(final Category category, final String name, final byte @Nullable [] salt) {
          this.category = category;
          this.name = name;
-         this.salt = salt;
+         this.salt = salt == null ? ArrayUtils.EMPTY_BYTE_ARRAY : salt;
       }
 
       @Override
@@ -49,8 +52,8 @@ public interface Hash<T> {
       }
 
       @Override
-      public byte[] getSalt() {
-         return salt;
+      public byte @Nullable [] getSalt() {
+         return salt.length == 0 ? null : salt;
       }
    }
 
@@ -69,12 +72,12 @@ public interface Hash<T> {
 
    abstract class ChecksumHash extends AbstractHash<Long> {
 
-      protected ChecksumHash(final Category category, final String name, final byte[] salt) {
+      protected ChecksumHash(final Category category, final String name, final byte @Nullable [] salt) {
          super(category, name, salt);
       }
 
       protected long compute(final InputStream is, final Checksum cs) throws IOException {
-         if (salt != null && salt.length > 0) {
+         if (salt.length > 0) {
             cs.update(salt);
          }
 
@@ -93,7 +96,7 @@ public interface Hash<T> {
       }
 
       protected long compute(final ReadableByteChannel ch, final Checksum cs) throws IOException {
-         if (salt != null && salt.length > 0) {
+         if (salt.length > 0) {
             cs.update(salt);
          }
 
@@ -111,7 +114,7 @@ public interface Hash<T> {
          Args.notNull("bytes", bytes);
 
          final var cs = newInstance();
-         if (salt != null && salt.length > 0) {
+         if (salt.length > 0) {
             cs.update(salt);
          }
          cs.update(bytes);
@@ -170,7 +173,7 @@ public interface Hash<T> {
             @Override
             public Hasher<Long> reset() {
                cs.reset();
-               if (salt != null && salt.length > 0) {
+               if (salt.length > 0) {
                   cs.update(salt);
                }
                return this;
@@ -264,12 +267,12 @@ public interface Hash<T> {
          return sb.toString();
       }
 
-      protected MessageDigestHash(final Category category, final String name, final byte[] salt) {
+      protected MessageDigestHash(final Category category, final String name, final byte @Nullable [] salt) {
          super(category, name, salt);
       }
 
       protected byte[] compute(final InputStream is, final MessageDigest md) throws IOException {
-         if (salt != null && salt.length > 0) {
+         if (salt.length > 0) {
             md.update(salt);
          }
 
@@ -288,7 +291,7 @@ public interface Hash<T> {
       }
 
       protected byte[] compute(final ReadableByteChannel ch, final MessageDigest md) throws IOException {
-         if (salt != null && salt.length > 0) {
+         if (salt.length > 0) {
             md.update(salt);
          }
 
@@ -306,7 +309,7 @@ public interface Hash<T> {
          Args.notNull("bytes", bytes);
 
          final var md = newInstance();
-         if (salt != null && salt.length > 0) {
+         if (salt.length > 0) {
             md.update(salt);
          }
          md.update(bytes);
@@ -368,7 +371,7 @@ public interface Hash<T> {
             @Override
             public Hasher<String> reset() {
                md.reset();
-               if (salt != null && salt.length > 0) {
+               if (salt.length > 0) {
                   md.update(salt);
                }
                return this;
@@ -440,7 +443,7 @@ public interface Hash<T> {
 
    String getName();
 
-   byte[] getSalt();
+   byte @Nullable [] getSalt();
 
    T hash(byte[] bytes);
 

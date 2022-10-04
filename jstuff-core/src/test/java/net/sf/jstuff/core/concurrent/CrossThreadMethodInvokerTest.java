@@ -6,6 +6,7 @@ package net.sf.jstuff.core.concurrent;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 import net.sf.jstuff.core.concurrent.CrossThreadMethodInvoker.CrossThreadProxy;
@@ -26,7 +27,7 @@ public class CrossThreadMethodInvokerTest {
       int invocations = 0;
 
       @Override
-      public String work(final String input) {
+      public String work(@Nullable final String input) {
          Args.notNull("input", input);
 
          if (owner != Thread.currentThread())

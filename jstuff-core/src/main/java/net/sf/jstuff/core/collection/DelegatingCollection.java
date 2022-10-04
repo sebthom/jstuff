@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.types.Decorator;
 
 /**
@@ -37,7 +39,7 @@ public abstract class DelegatingCollection<V> extends Decorator.Default<Collecti
    }
 
    @Override
-   public boolean contains(final Object o) {
+   public boolean contains(final @Nullable Object o) {
       return wrapped.contains(o);
    }
 
@@ -47,7 +49,7 @@ public abstract class DelegatingCollection<V> extends Decorator.Default<Collecti
    }
 
    @Override
-   public boolean equals(final Object o) {
+   public boolean equals(final @Nullable Object o) {
       return wrapped.equals(o);
    }
 
@@ -67,7 +69,7 @@ public abstract class DelegatingCollection<V> extends Decorator.Default<Collecti
    }
 
    @Override
-   public boolean remove(final Object o) {
+   public boolean remove(final @Nullable Object o) {
       return wrapped.remove(o);
    }
 

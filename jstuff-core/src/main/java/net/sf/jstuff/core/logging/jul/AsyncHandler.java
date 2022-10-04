@@ -11,6 +11,8 @@ import java.util.logging.ErrorManager;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.concurrent.Threads;
 
@@ -36,7 +38,7 @@ public class AsyncHandler extends DelegatingHandler {
          final Thread currentThread = Thread.currentThread();
          while (true) {
             try {
-               final Tuple2<String, LogRecord> entry = backlog.poll(1000, TimeUnit.SECONDS);
+               final var entry = backlog.poll(1000, TimeUnit.SECONDS);
                if (entry == null) {
                   if (state == State.CLOSING) {
                      handler.close();
@@ -91,16 +93,15 @@ public class AsyncHandler extends DelegatingHandler {
    }
 
    @Override
-   public void publish(final LogRecord entry) {
+   public void publish(final @Nullable LogRecord entry) {
       if (state != State.RUNNING) {
          reportError("Not in required state [" + State.RUNNING + "] but [" + state + "]", null, ErrorManager.WRITE_FAILURE);
          return;
       }
 
-      if (!isLoggable(entry))
-         return;
-
-      entry.getSourceMethodName(); // force execution of inferCaller
-      backlog.add(Tuple2.create(Thread.currentThread().getName(), entry));
+      if (entry != null && isLoggable(entry)) {
+         entry.getSourceMethodName(); // force execution of inferCaller
+         backlog.add(Tuple2.create(Thread.currentThread().getName(), entry));
+      }
    }
 }

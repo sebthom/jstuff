@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.ArrayUtils;
 
 /**
@@ -22,7 +24,7 @@ public final class LinePrefixingTeeInputStream extends InputStream {
    private byte[] prefix;
    private boolean isNewLine = true;
 
-   public LinePrefixingTeeInputStream(final InputStream input, final OutputStream branch, final String prefix) {
+   public LinePrefixingTeeInputStream(final InputStream input, final OutputStream branch, final @Nullable String prefix) {
       this.input = input;
       this.branch = branch;
       this.prefix = prefix == null ? ArrayUtils.EMPTY_BYTE_ARRAY : prefix.getBytes();

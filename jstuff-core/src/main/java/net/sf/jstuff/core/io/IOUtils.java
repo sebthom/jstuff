@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.function.ObjIntConsumer;
 import java.util.zip.ZipFile;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
@@ -40,7 +42,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
 
    private static final Logger LOG = Logger.create();
 
-   public static void closeQuietly(final Closeable closeable) {
+   public static void closeQuietly(final @Nullable Closeable closeable) {
       try {
          if (closeable != null) {
             closeable.close();
@@ -50,35 +52,35 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       }
    }
 
-   public static void closeQuietly(final InputStream input) {
+   public static void closeQuietly(final @Nullable InputStream input) {
       closeQuietly((Closeable) input);
    }
 
-   public static void closeQuietly(final OutputStream output) {
+   public static void closeQuietly(final @Nullable OutputStream output) {
       closeQuietly((Closeable) output);
    }
 
-   public static void closeQuietly(final Reader reader) {
+   public static void closeQuietly(final @Nullable Reader reader) {
       closeQuietly((Closeable) reader);
    }
 
-   public static void closeQuietly(final Selector selector) {
+   public static void closeQuietly(final @Nullable Selector selector) {
       closeQuietly((Closeable) selector);
    }
 
-   public static void closeQuietly(final ServerSocket socket) {
+   public static void closeQuietly(final @Nullable ServerSocket socket) {
       closeQuietly((Closeable) socket);
    }
 
-   public static void closeQuietly(final Socket socket) {
+   public static void closeQuietly(final @Nullable Socket socket) {
       closeQuietly((Closeable) socket);
    }
 
-   public static void closeQuietly(final Writer writer) {
+   public static void closeQuietly(final @Nullable Writer writer) {
       closeQuietly((Closeable) writer);
    }
 
-   public static void closeQuietly(final ZipFile file) {
+   public static void closeQuietly(final @Nullable ZipFile file) {
       if (file != null) {
          try {
             file.close();
@@ -263,6 +265,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       return new BufferedInputStream(input, blockSize);
    }
 
+   @SuppressWarnings("null")
    public static String toString(final InputStream input) throws IOException {
       return toString(input, Charset.defaultCharset());
    }

@@ -28,6 +28,7 @@ public final class Tuple2<T1, T2> extends AbstractList<Object> implements Tuple 
    }
 
    @Override
+   @SuppressWarnings("null")
    public Object get(final int index) {
       switch (index) {
          case 0:

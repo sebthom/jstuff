@@ -15,10 +15,6 @@ public class ReverseComparator<T> implements Comparator<T>, Serializable {
 
    private final Comparator<T> delegate;
 
-   public static <T> ReverseComparator<T> of(final Comparator<T> delegate) {
-      return new ReverseComparator<>(delegate);
-   }
-
    /**
     * @param delegate the comparator to reverse
     */

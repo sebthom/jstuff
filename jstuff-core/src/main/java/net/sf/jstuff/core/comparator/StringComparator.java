@@ -9,6 +9,8 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -17,6 +19,7 @@ public class StringComparator implements Comparator<String>, Serializable {
 
    public static final StringComparator INSTANCE = new StringComparator(Locale.getDefault());
 
+   @Nullable
    private Collator collator;
    private final Locale locale;
 
@@ -25,7 +28,7 @@ public class StringComparator implements Comparator<String>, Serializable {
    }
 
    @Override
-   public int compare(final String o1, final String o2) {
+   public int compare(final @Nullable String o1, final @Nullable String o2) {
       if (o1 == o2)
          return 0;
       if (o1 == null)
@@ -36,8 +39,9 @@ public class StringComparator implements Comparator<String>, Serializable {
    }
 
    private Collator getCollator() {
+      var collator = this.collator;
       if (collator == null) {
-         collator = Collator.getInstance(locale);
+         collator = this.collator = Collator.getInstance(locale);
       }
       return collator;
    }

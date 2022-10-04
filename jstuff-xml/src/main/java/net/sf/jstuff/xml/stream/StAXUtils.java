@@ -16,6 +16,8 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.primitive.IntArrayList;
 import net.sf.jstuff.core.logging.Logger;
@@ -28,17 +30,17 @@ public abstract class StAXUtils {
    public static final class ElementInfo {
       public final String localName;
 
-      public final String nsPrefix;
-      public final String nsURI;
-      public final Location location;
-      private String text;
+      public final @Nullable String nsPrefix;
+      public final @Nullable String nsURI;
+      public final @Nullable Location location;
+      private @Nullable String text;
       public final SortedMap<String, String> attrs;
 
       private ElementInfo( //
          final String localName, //
-         final String nsPrefix, //
-         final String nsURI, //
-         final Location location, //
+         final @Nullable String nsPrefix, //
+         final @Nullable String nsURI, //
+         final @Nullable Location location, //
          final SortedMap<String, String> attrs //
       ) {
          this.localName = localName;
@@ -48,19 +50,20 @@ public abstract class StAXUtils {
          this.attrs = attrs;
       }
 
-      public String getText() {
+      public @Nullable String getText() {
          return text;
       }
 
       @Override
       public String toString() {
+         final var nsPrefix = this.nsPrefix;
          return (nsPrefix == null || nsPrefix.length() == 0 ? "" : nsPrefix + ":") + localName;
       }
    }
 
    private static final Logger LOG = Logger.create();
 
-   public static ElementInfo findElement(final XMLStreamReader reader, final String xpath) throws XMLStreamException {
+   public static @Nullable ElementInfo findElement(final XMLStreamReader reader, final String xpath) throws XMLStreamException {
       final List<ElementInfo> elems = findElements(reader, xpath, 1);
       return elems.isEmpty() ? null : elems.get(0);
    }
@@ -161,7 +164,7 @@ public abstract class StAXUtils {
       return result;
    }
 
-   public static String getAttributeValue(final XMLStreamReader reader, final String attrLocalName) {
+   public static @Nullable String getAttributeValue(final XMLStreamReader reader, final String attrLocalName) {
       for (int i = 0; i < reader.getAttributeCount(); i++) {
          final String localName = reader.getAttributeLocalName(i);
          if (localName.equals(attrLocalName))
@@ -182,7 +185,7 @@ public abstract class StAXUtils {
       return Boolean.parseBoolean(val);
    }
 
-   private static SortedMap<String, String> readAttributes(final XMLStreamReader reader, SortedMap<String, String> reusableMap) {
+   private static SortedMap<String, String> readAttributes(final XMLStreamReader reader, @Nullable SortedMap<String, String> reusableMap) {
       if (reusableMap == null) {
          reusableMap = new TreeMap<>();
       } else {
@@ -201,7 +204,7 @@ public abstract class StAXUtils {
 
       xpath = xpath.trim();
       xpath = Strings.replace(xpath, "//", ".*/");
-      final String[] elems = Strings.split(xpath, '/');
+      final var elems = Strings.split(xpath, '/');
       for (int i = 0; i < elems.length; i++) {
          final String elem = elems[i];
          if (i == 0) {

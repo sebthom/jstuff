@@ -7,6 +7,8 @@ package net.sf.jstuff.core.collection;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.ObservableCollection.ItemAction;
 import net.sf.jstuff.core.event.EventListenable;
 import net.sf.jstuff.core.event.EventListener;
@@ -48,6 +50,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       return new ObservableCollection<>(set);
    }
 
+   @Nullable
    protected BulkAction currentBulkAction;
 
    private final SyncEventDispatcher<ItemAction<E>> events = new SyncEventDispatcher<>();
@@ -69,7 +72,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
    }
 
    @Override
-   public boolean addAll(final Collection<? extends E> itemsToAdd) {
+   public boolean addAll(final @Nullable Collection<? extends E> itemsToAdd) {
       if (itemsToAdd == null || itemsToAdd.size() == 0)
          return false;
 
@@ -100,7 +103,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
    }
 
    @Override
-   public boolean contains(final Object item) {
+   public boolean contains(final @Nullable Object item) {
       return wrapped.contains(item);
    }
 
@@ -109,6 +112,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       return wrapped.containsAll(items);
    }
 
+   @Nullable
    public BulkAction getCurrentBulkAction() {
       return currentBulkAction;
    }
@@ -127,6 +131,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
       final Iterator<E> it = wrapped.iterator();
       return new Iterator<>() {
          int index = -1;
+         @SuppressWarnings("null")
          E item;
 
          @Override
@@ -165,7 +170,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
 
    @Override
    @SuppressWarnings("unchecked")
-   public boolean remove(final Object item) {
+   public boolean remove(final @Nullable Object item) {
       final boolean removed = wrapped.remove(item);
       if (removed) {
          onRemoved((E) item, -1);
@@ -174,7 +179,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
    }
 
    @Override
-   public boolean removeAll(final Collection<?> itemsToRemove) {
+   public boolean removeAll(final @Nullable Collection<?> itemsToRemove) {
       if (itemsToRemove == null || itemsToRemove.size() == 0)
          return false;
 
@@ -192,7 +197,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
    }
 
    @Override
-   public boolean retainAll(final Collection<?> itemsToKeep) {
+   public boolean retainAll(final @Nullable Collection<?> itemsToKeep) {
       currentBulkAction = BulkAction.RETAIN_ALL;
       try {
          boolean removedAny = false;

@@ -10,6 +10,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.ref.LazyInitializedRef;
 import net.sf.jstuff.core.validation.Args;
@@ -42,15 +44,17 @@ public abstract class Suppliers {
       Args.notNull("ttl", ttl);
 
       return new Supplier<>() {
+         @Nullable
          private Tuple2<Long, T> cached;
 
          @Override
          public synchronized T get() {
+            final var cached = this.cached;
             if (cached != null && System.currentTimeMillis() - cached.get1() <= ttl.applyAsInt(cached.get2()))
                return cached.get2();
 
             final T obj = provider.get();
-            cached = new Tuple2<>(System.currentTimeMillis(), obj);
+            this.cached = new Tuple2<>(System.currentTimeMillis(), obj);
             return obj;
          }
       };
@@ -64,6 +68,7 @@ public abstract class Suppliers {
       Args.notNull("provider", provider);
 
       return new Supplier<>() {
+         @Nullable
          private SoftReference<T> cached;
 
          @Override
@@ -86,18 +91,20 @@ public abstract class Suppliers {
       Args.notNull("ttl", ttl);
 
       return new Supplier<>() {
-         private SoftReference<Tuple2<Long, T>> cached;
+         @Nullable
+         private SoftReference<@Nullable Tuple2<Long, T>> cached;
 
          @Override
          public synchronized T get() {
+            final var cached = this.cached;
             if (cached != null) {
-               final Tuple2<Long, T> val = cached.get();
+               final var val = cached.get();
                if (val != null && System.currentTimeMillis() - val.get1() <= ttl.applyAsInt(val.get2()))
                   return val.get2();
             }
 
             final T obj = provider.get();
-            cached = new SoftReference<>(new Tuple2<>(System.currentTimeMillis(), obj));
+            this.cached = new SoftReference<>(new Tuple2<>(System.currentTimeMillis(), obj));
             return obj;
          }
       };
@@ -111,6 +118,7 @@ public abstract class Suppliers {
       Args.notNull("provider", provider);
 
       return new Supplier<>() {
+         @Nullable
          private WeakReference<T> cached;
 
          @Override
@@ -133,7 +141,8 @@ public abstract class Suppliers {
       Args.notNull("ttl", ttl);
 
       return new Supplier<>() {
-         private WeakReference<Tuple2<Long, T>> cached;
+         @Nullable
+         private WeakReference<@Nullable Tuple2<Long, T>> cached;
 
          @Override
          public synchronized T get() {

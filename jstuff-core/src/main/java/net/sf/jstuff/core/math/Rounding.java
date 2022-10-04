@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -19,6 +21,7 @@ public final class Rounding implements Serializable {
 
    private static final long serialVersionUID = 1L;
 
+   @Nullable
    private transient BigDecimal divider;
    public final int roundAt;
    public final RoundingMode roundingMode;
@@ -32,7 +35,7 @@ public final class Rounding implements Serializable {
    }
 
    @Override
-   public boolean equals(final Object obj) {
+   public boolean equals(final @Nullable Object obj) {
       if (this == obj)
          return true;
       if (obj == null || getClass() != obj.getClass())
@@ -48,7 +51,7 @@ public final class Rounding implements Serializable {
       final int prime = 31;
       int result = 1;
       result = prime * result + roundAt;
-      result = prime * result + (roundingMode == null ? 0 : roundingMode.hashCode());
+      result = prime * result + roundingMode.hashCode();
       return result;
    }
 
@@ -67,6 +70,7 @@ public final class Rounding implements Serializable {
       Args.notNull("value", value);
 
       final BigDecimal bd = Numbers.toBigDecimal(value);
+      final var divider = this.divider;
       if (divider != null)
          return bd.divide(divider).setScale(0, roundingMode).multiply(divider);
       return bd.setScale(roundAt, roundingMode).stripTrailingZeros();

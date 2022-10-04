@@ -22,7 +22,7 @@ public class Interner {
    @SuppressWarnings("unchecked")
    public <T> T intern(final T immutable) {
       if (immutable == null)
-         return null;
+         return immutable;
 
       T interned = (T) refs.get(immutable);
       if (interned == null) {

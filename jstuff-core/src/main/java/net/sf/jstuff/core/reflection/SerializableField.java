@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Serializable Wrapper for java.lang.reflect.Field objects since they do not implement Serializable
  *
@@ -16,8 +18,10 @@ import java.lang.reflect.Field;
 public final class SerializableField implements Serializable {
    private static final long serialVersionUID = 1L;
 
+   @Nullable
    private Class<?> declaringClass;
    private transient Field field;
+   @Nullable
    private String name;
 
    public SerializableField(final Field field) {
@@ -25,8 +29,9 @@ public final class SerializableField implements Serializable {
    }
 
    public Class<?> getDeclaringClass() {
+      var declaringClass = this.declaringClass;
       if (declaringClass == null) {
-         declaringClass = field.getDeclaringClass();
+         declaringClass = this.declaringClass = field.getDeclaringClass();
       }
       return declaringClass;
    }
@@ -36,8 +41,9 @@ public final class SerializableField implements Serializable {
    }
 
    public String getName() {
+      var name = this.name;
       if (name == null) {
-         name = field.getName();
+         name = this.name = field.getName();
       }
       return name;
    }
@@ -45,7 +51,7 @@ public final class SerializableField implements Serializable {
    private void readObject(final java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
       in.defaultReadObject();
       try {
-         field = declaringClass.getDeclaredField(name);
+         field = getDeclaringClass().getDeclaredField(getName());
       } catch (final NoSuchFieldException ex) {
          throw new IOException(ex);
       }

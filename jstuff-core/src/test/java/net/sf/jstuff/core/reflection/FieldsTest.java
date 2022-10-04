@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.lang.reflect.Field;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -16,6 +17,7 @@ import org.junit.Test;
 public class FieldsTest {
 
    static class Entity {
+      @Nullable
       private static final Entity INSTANCE = null;
       private final String name;
 

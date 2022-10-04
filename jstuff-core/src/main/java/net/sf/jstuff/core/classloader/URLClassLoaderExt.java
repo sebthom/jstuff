@@ -11,6 +11,8 @@ import java.net.URLClassLoader;
 import java.net.URLStreamHandlerFactory;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
@@ -113,8 +115,11 @@ public class URLClassLoaderExt extends URLClassLoader {
       return jarsAdded;
    }
 
+   @Nullable
    @Override
    public URL getResource(final String name) {
+      Args.notNull("name", name);
+
       // if class loader strategy is parent first, then use the default resource loading behavior
       if (!parentLast)
          return super.getResource(name);

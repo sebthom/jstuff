@@ -6,6 +6,8 @@ package net.sf.jstuff.core.collection;
 
 import java.util.Queue;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -30,11 +32,13 @@ public abstract class DelegatingQueue<V> extends DelegatingCollection<V> impleme
       return delegate.offer(e);
    }
 
+   @Nullable
    @Override
    public V peek() {
       return delegate.peek();
    }
 
+   @Nullable
    @Override
    public V poll() {
       return delegate.poll();

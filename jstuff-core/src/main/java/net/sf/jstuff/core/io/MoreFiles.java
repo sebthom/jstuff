@@ -50,6 +50,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.SystemUtils;
@@ -68,9 +70,9 @@ public abstract class MoreFiles {
    private static final AtomicLong _FILE_UNIQUE_ID = new AtomicLong();
    private static final Queue<Path> _FILES_TO_DELETE_ON_SHUTDOWN = new ConcurrentLinkedQueue<>();
 
-   private static final LinkOption[] NOFOLLOW_LINKS = {LinkOption.NOFOLLOW_LINKS};
-   private static final OpenOption[] DEFAULT_FILE_READ_OPTIONS = {StandardOpenOption.READ};
-   private static final OpenOption[] DEFAULT_FILE_WRITE_OPTIONS = { //
+   private static final @NonNull LinkOption[] NOFOLLOW_LINKS = {LinkOption.NOFOLLOW_LINKS};
+   private static final @NonNull OpenOption[] DEFAULT_FILE_READ_OPTIONS = {StandardOpenOption.READ};
+   private static final @NonNull OpenOption[] DEFAULT_FILE_WRITE_OPTIONS = { //
       StandardOpenOption.CREATE, //
       StandardOpenOption.TRUNCATE_EXISTING, //
       StandardOpenOption.WRITE //
@@ -99,6 +101,7 @@ public abstract class MoreFiles {
     *
     * @return a File object representing the backup copy or null if no backup was created because the file to backup did not exist
     */
+   @Nullable
    public static File backupFile(final Path fileToBackup) throws IOException {
       Args.notNull("fileToBackup", fileToBackup);
 
@@ -113,6 +116,7 @@ public abstract class MoreFiles {
     *
     * @return a File object representing the backup copy or null if no backup was created because the file to backup did not exist
     */
+   @Nullable
    public static File backupFile(final Path fileToBackup, final Path backupFolder) throws IOException {
       Args.notNull("fileToBackup", fileToBackup);
       Args.notNull("backupFolder", backupFolder);
@@ -135,7 +139,7 @@ public abstract class MoreFiles {
       return null;
    }
 
-   public static boolean contentEquals(final Path file1, final Path file2) throws IOException {
+   public static boolean contentEquals(final @Nullable Path file1, final @Nullable Path file2) throws IOException {
       if (file1 == null && file2 == null)
          return true;
       if (file1 == null || file2 == null)
@@ -350,7 +354,8 @@ public abstract class MoreFiles {
     *
     * @param parentDirectory if null, then create in system temp directory
     */
-   public static Path createTempDirectory(final Path parentDirectory, final String prefix, final String extension) throws IOException {
+   public static Path createTempDirectory(final @Nullable Path parentDirectory, final String prefix, final String extension)
+      throws IOException {
       final Path tmpDir = createUniqueDirectory(parentDirectory == null ? getTempDirectory() : parentDirectory, prefix, extension);
       forceDeleteOnExit(tmpDir);
       return tmpDir;
@@ -368,7 +373,8 @@ public abstract class MoreFiles {
    /**
     * @param parentDirectory if null, then create in current working directory
     */
-   public static Path createUniqueDirectory(Path parentDirectory, final String prefix, final String extension) throws IOException {
+   public static Path createUniqueDirectory(@Nullable Path parentDirectory, final @Nullable String prefix, final @Nullable String extension)
+      throws IOException {
       if (parentDirectory == null) {
          parentDirectory = getWorkingDirectory();
       }
@@ -406,8 +412,8 @@ public abstract class MoreFiles {
    /**
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
     */
-   public static void find(Path searchRoot, final String globPattern, final Consumer<Path> onDirMatch, final Consumer<Path> onFileMatch)
-      throws IOException {
+   public static void find(Path searchRoot, final String globPattern, final @Nullable Consumer<Path> onDirMatch,
+      final @Nullable Consumer<Path> onFileMatch) throws IOException {
       Args.notNull("searchRoot", searchRoot);
       Args.notNull("globPattern", globPattern);
 
@@ -470,7 +476,7 @@ public abstract class MoreFiles {
       if (Files.isDirectory(fileOrDirectory, NOFOLLOW_LINKS)) {
          Files.walkFileTree(fileOrDirectory, new SimpleFileVisitor<Path>() {
             @Override
-            public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+            public FileVisitResult postVisitDirectory(final Path dir, final @Nullable IOException exc) throws IOException {
                if (exc != null && !(exc instanceof NoSuchFileException) && !(exc instanceof FileNotFoundException))
                   throw exc;
                Files.delete(dir);
@@ -501,6 +507,7 @@ public abstract class MoreFiles {
 
    public static void forceDeleteOnExit(final Path fileOrDirectory) {
       Args.notNull("fileOrDirectory", fileOrDirectory);
+
       LOG.debug("Registering %s for deletion on JVM shutdown...", fileOrDirectory);
       _FILES_TO_DELETE_ON_SHUTDOWN.add(fileOrDirectory);
    }
@@ -517,10 +524,12 @@ public abstract class MoreFiles {
    /**
     * Based on jre/lib/content-types.properties
     */
+   @Nullable
    public static String getContentTypeByFileExtension(final Path file) {
       return getContentTypeByFileExtension(file.getFileName().toString());
    }
 
+   @Nullable
    public static String getContentTypeByFileExtension(final String fileName) {
       return URLConnection.getFileNameMap().getContentTypeFor(fileName);
    }
@@ -544,7 +553,7 @@ public abstract class MoreFiles {
    /**
     * @return true if the given path points to a regular file that is executable by this JVM process.
     */
-   public static boolean isExecutableFile(final Path path) {
+   public static boolean isExecutableFile(final @Nullable Path path) {
       if (path == null)
          return false;
 
@@ -562,6 +571,7 @@ public abstract class MoreFiles {
    @SuppressWarnings("resource")
    public static BasicFileAttributes readAttributes(final Path path) throws IOException {
       Args.notNull("path", path);
+
       final FileSystem fs = path.getFileSystem();
       if (fs.supportedFileAttributeViews().contains("dos"))
          return Files.readAttributes(path, DosFileAttributes.class, NOFOLLOW_LINKS);
@@ -570,7 +580,7 @@ public abstract class MoreFiles {
       return Files.readAttributes(path, BasicFileAttributes.class, NOFOLLOW_LINKS);
    }
 
-   public static void write(final Path file, final CharSequence text, final Charset charset, final OpenOption... options)
+   public static void write(final Path file, final @Nullable CharSequence text, final Charset charset, final OpenOption... options)
       throws IOException {
       Args.notNull("file", file);
       Args.notNull("charset", charset);

@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.reflection.Types;
 
@@ -29,6 +30,7 @@ import net.sf.jstuff.core.reflection.Types;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("unchecked")
 public abstract class TypeSafeEnum<ID> implements Serializable {
    private static final long serialVersionUID = 1L;
 
@@ -37,15 +39,14 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
       : o1.ordinal < o2.ordinal ? -1 : 1;
    private static final AtomicInteger ORDINAL_COUNTER = new AtomicInteger();
 
+   @Nullable
    public static <V, T extends TypeSafeEnum<V>> T getEnum(final Class<T> enumType, final V id) {
-      @SuppressWarnings("unchecked")
       final Map<V, T> enumsById = (Map<V, T>) ENUMS_BY_TYPE.get(enumType);
       if (enumsById == null)
          return null;
       return enumsById.get(id);
    }
 
-   @SuppressWarnings("unchecked")
    public static <ID, T extends TypeSafeEnum<ID>> List<T> getEnums(final Class<T> enumType) {
       Map<ID, T> enumsById = (Map<ID, T>) ENUMS_BY_TYPE.get(enumType);
       if (enumsById == null) {
@@ -80,7 +81,7 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
    }
 
    @Override
-   public final boolean equals(final Object obj) {
+   public final boolean equals(final @Nullable Object obj) {
       return this == obj;
    }
 
@@ -110,7 +111,6 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
    protected final Object readResolve() {
       if (id == null)
          throw new IllegalStateException("Field [id] must not be null.");
-      @SuppressWarnings("unchecked")
       final Object obj = getEnum(getClass(), id);
       if (obj == null)
          throw new IllegalStateException("Unknown enum with id=" + id);
@@ -122,7 +122,6 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
     */
    private void registerEnum() {
       ConcurrentMap<ID, TypeSafeEnum<?>> enumItems = new ConcurrentHashMap<>(2);
-      @SuppressWarnings("unchecked")
       final var existingEnumItems = (ConcurrentMap<ID, TypeSafeEnum<?>>) ENUMS_BY_TYPE.putIfAbsent(
          (Class<? extends TypeSafeEnum<?>>) getClass(), enumItems);
       if (existingEnumItems != null) {

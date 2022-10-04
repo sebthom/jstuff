@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.collection;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,6 +18,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.functional.ConsumerWithIndex;
 import net.sf.jstuff.core.validation.Args;
 
@@ -24,7 +28,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class CollectionUtils {
 
-   public static int addAll(final Collection<Byte> collection, final byte... items) throws IllegalArgumentException {
+   public static int addAll(final Collection<Byte> collection, final byte @Nullable... items) {
       Args.notNull("collection", collection);
 
       if (items == null)
@@ -38,7 +42,7 @@ public abstract class CollectionUtils {
       return count;
    }
 
-   public static int addAll(final Collection<Integer> collection, final int... items) throws IllegalArgumentException {
+   public static int addAll(final Collection<Integer> collection, final int @Nullable... items) {
       Args.notNull("collection", collection);
 
       if (items == null)
@@ -52,7 +56,7 @@ public abstract class CollectionUtils {
       return count;
    }
 
-   public static int addAll(final Collection<Long> collection, final long... items) throws IllegalArgumentException {
+   public static int addAll(final Collection<Long> collection, final long @Nullable... items) {
       Args.notNull("collection", collection);
 
       if (items == null)
@@ -73,7 +77,7 @@ public abstract class CollectionUtils {
     * @throws IllegalArgumentException if <code>collection == null</code>
     */
    @SafeVarargs
-   public static <T> int addAll(final Collection<T> collection, final Predicate<T> filter, final T... items) {
+   public static <T> int addAll(final Collection<T> collection, final Predicate<T> filter, final T @Nullable... items) {
       Args.notNull("collection", collection);
       Args.notNull("filter", filter);
 
@@ -95,7 +99,7 @@ public abstract class CollectionUtils {
     * @throws IllegalArgumentException if <code>collection == null</code>
     */
    @SafeVarargs
-   public static <T> int addAll(final Collection<T> collection, final T... items) throws IllegalArgumentException {
+   public static <T> int addAll(final Collection<T> collection, final T @Nullable... items) {
       Args.notNull("collection", collection);
 
       if (items == null)
@@ -112,7 +116,7 @@ public abstract class CollectionUtils {
    /**
     * Returns true if the given item is contained in the collection based on identity comparison
     */
-   public static <T> boolean containsIdentical(final Collection<T> collection, final T theItem) {
+   public static <T> boolean containsIdentical(final @Nullable Collection<T> collection, final T theItem) {
       if (collection == null)
          return false;
 
@@ -125,15 +129,67 @@ public abstract class CollectionUtils {
    /**
     * Returns a new list or set with all items accepted by the filter
     *
-    * @throws IllegalArgumentException if <code>accept == null</code>
+    * @throws IllegalArgumentException if <code>filter == null</code>
     */
-   public static <T> Collection<T> filter(final Iterable<T> iterable, final Predicate<T> filter) throws IllegalArgumentException {
+   public static <T> Collection<T> filter(final Iterable<T> iterable, final Predicate<T> filter) {
+      return asNonNullUnsafe(filterNullable(iterable, filter));
+   }
+
+   /**
+    * Returns a new list with all items accepted by the filter
+    *
+    * @throws IllegalArgumentException if <code>filter == null</code>
+    */
+   public static <T> Collection<T> filter(final List<T> list, final Predicate<T> filter) {
+      return asNonNullUnsafe(filterNullable(list, filter));
+   }
+
+   /**
+    * Returns a new set with all items accepted by the filter
+    *
+    * @throws IllegalArgumentException if <code>filter == null</code>
+    */
+   public static <T> Collection<T> filter(final @Nullable Set<T> set, final Predicate<T> filter) {
+      return asNonNullUnsafe(filterNullable(set, filter));
+   }
+
+   /**
+    * removes all items not accepted by the filter
+    *
+    * @return number of items removed
+    * @throws IllegalArgumentException if <code>filter == null</code>
+    */
+   public static <T> int filterInPlace(final @Nullable Collection<T> collection, final Predicate<T> filter) {
+      if (collection == null)
+         return 0;
+
+      Args.notNull("filter", filter);
+
+      int count = 0;
+      for (final Iterator<T> it = collection.iterator(); it.hasNext();) {
+         final T item = it.next();
+         if (!filter.test(item)) {
+            it.remove();
+            count++;
+         }
+      }
+      return count;
+   }
+
+   /**
+    * Returns a new list or set with all items accepted by the filter
+    *
+    * @throws IllegalArgumentException if <code>filter == null</code>
+    */
+   public static <T> @Nullable Collection<T> filterNullable(final @Nullable Iterable<T> iterable, final Predicate<T> filter) {
       if (iterable == null)
          return null;
 
       Args.notNull("filter", filter);
 
-      final Collection<T> result = iterable instanceof Set ? new HashSet<>() : new ArrayList<>();
+      final Collection<T> result = iterable instanceof Set //
+         ? iterable instanceof LinkedHashSet ? new LinkedHashSet<>() : new HashSet<>() //
+         : new ArrayList<>();
       for (final T item : iterable)
          if (filter.test(item)) {
             result.add(item);
@@ -144,9 +200,9 @@ public abstract class CollectionUtils {
    /**
     * Returns a new list with all items accepted by the filter
     *
-    * @throws IllegalArgumentException if <code>accept == null</code>
+    * @throws IllegalArgumentException if <code>filter == null</code>
     */
-   public static <T> List<T> filter(final List<T> list, final Predicate<T> filter) throws IllegalArgumentException {
+   public static <T> @Nullable List<T> filterNullable(final @Nullable List<T> list, final Predicate<T> filter) {
       if (list == null)
          return null;
       if (list.isEmpty())
@@ -165,9 +221,9 @@ public abstract class CollectionUtils {
    /**
     * Returns a new set with all items accepted by the filter
     *
-    * @throws IllegalArgumentException if <code>accept == null</code>
+    * @throws IllegalArgumentException if <code>filter == null</code>
     */
-   public static <T> Set<T> filter(final Set<T> set, final Predicate<T> filter) throws IllegalArgumentException {
+   public static <T> @Nullable Set<T> filterNullable(final @Nullable Set<T> set, final Predicate<T> filter) {
       if (set == null)
          return null;
       if (set.isEmpty())
@@ -175,7 +231,7 @@ public abstract class CollectionUtils {
 
       Args.notNull("filter", filter);
 
-      final Set<T> result = new HashSet<>();
+      final Set<T> result = set instanceof LinkedHashSet ? new LinkedHashSet<>() : new HashSet<>();
       for (final T item : set)
          if (filter.test(item)) {
             result.add(item);
@@ -183,30 +239,7 @@ public abstract class CollectionUtils {
       return result;
    }
 
-   /**
-    * removes all items not accepted by the filter
-    *
-    * @return number of items removed
-    * @throws IllegalArgumentException if <code>accept == null</code>
-    */
-   public static <T> int filterInPlace(final Collection<T> collection, final Predicate<T> filter) throws IllegalArgumentException {
-      if (collection == null)
-         return 0;
-
-      Args.notNull("filter", filter);
-
-      int count = 0;
-      for (final Iterator<T> it = collection.iterator(); it.hasNext();) {
-         final T item = it.next();
-         if (!filter.test(item)) {
-            it.remove();
-            count++;
-         }
-      }
-      return count;
-   }
-
-   public static <T> void forEach(final Collection<T> collection, final ConsumerWithIndex<T> consumer) {
+   public static <T> void forEach(final @Nullable Collection<T> collection, final ConsumerWithIndex<T> consumer) {
       if (collection == null || collection.isEmpty())
          return;
 
@@ -218,7 +251,7 @@ public abstract class CollectionUtils {
       }
    }
 
-   public static <T> void forEach(final Iterable<T> it, final ConsumerWithIndex<T> consumer) {
+   public static <T> void forEach(final @Nullable Iterable<T> it, final ConsumerWithIndex<T> consumer) {
       if (it == null)
          return;
 
@@ -258,7 +291,7 @@ public abstract class CollectionUtils {
    /**
     * @return the last element or null if list is null or empty
     */
-   public static <T> T getLastOrNull(final List<T> list) {
+   public static <T> @Nullable T getLastOrNull(final @Nullable List<T> list) {
       if (list == null || list.isEmpty())
          return null;
       return list.get(list.size() - 1);
@@ -269,6 +302,14 @@ public abstract class CollectionUtils {
     * @return a new list with the first n elements of the input list
     */
    public static <T> List<T> head(final List<T> list, final int n) {
+      return asNonNullUnsafe(headNullable(list, n));
+   }
+
+   /**
+    * @param n first n elements to return
+    * @return a new list with the first n elements of the input list
+    */
+   public static <T> @Nullable List<T> headNullable(final @Nullable List<T> list, final int n) {
       if (list == null)
          return null;
 
@@ -292,7 +333,7 @@ public abstract class CollectionUtils {
     * @return all items that are contained in all lists.
     */
    @SafeVarargs
-   public static <T> List<T> intersect(final List<T>... lists) {
+   public static <T> List<T> intersect(final List<T> @Nullable... lists) {
       if (lists == null || lists.length == 0)
          return Collections.emptyList();
 
@@ -323,7 +364,7 @@ public abstract class CollectionUtils {
     * @return all items that are contained in all sets.
     */
    @SafeVarargs
-   public static <T> Set<T> intersect(final Set<T>... sets) {
+   public static <T> Set<T> intersect(final Set<T> @Nullable... sets) {
       if (sets == null || sets.length == 0)
          return Collections.emptySet();
 
@@ -350,11 +391,11 @@ public abstract class CollectionUtils {
       return commonItems;
    }
 
-   public static boolean isEmpty(final Collection<?> collection) {
+   public static boolean isEmpty(final @Nullable Collection<?> collection) {
       return collection == null || collection.isEmpty();
    }
 
-   public static boolean isNotEmpty(final Collection<?> collection) {
+   public static boolean isNotEmpty(final @Nullable Collection<?> collection) {
       return collection != null && !collection.isEmpty();
    }
 
@@ -362,7 +403,7 @@ public abstract class CollectionUtils {
       return new ArrayList<>();
    }
 
-   public static <K> ArrayList<K> newArrayList(final Collection<K> initialValues) {
+   public static <K> ArrayList<K> newArrayList(final @Nullable Collection<K> initialValues) {
       return initialValues == null ? new ArrayList<>() : new ArrayList<>(initialValues);
    }
 
@@ -371,7 +412,7 @@ public abstract class CollectionUtils {
    }
 
    @SafeVarargs
-   public static <K> ArrayList<K> newArrayList(final K... initialValues) {
+   public static <K> ArrayList<K> newArrayList(final K @Nullable... initialValues) {
       if (initialValues == null || initialValues.length == 0)
          return new ArrayList<>();
 
@@ -427,7 +468,7 @@ public abstract class CollectionUtils {
     *
     * @throws UnsupportedOperationException if the {@code remove} operation is not supported by this list
     */
-   public static <T> T removeLast(final List<T> list) {
+   public static <T> @Nullable T removeLast(final List<T> list) {
       Args.notNull("list", list);
 
       if (list.isEmpty())
@@ -436,6 +477,10 @@ public abstract class CollectionUtils {
    }
 
    public static <T> List<T> reverse(final List<T> list) {
+      return asNonNullUnsafe(reverseNullable(list));
+   }
+
+   public static <T> @Nullable List<T> reverseNullable(final @Nullable List<T> list) {
       if (list == null)
          return null;
       if (list.isEmpty())
@@ -451,7 +496,16 @@ public abstract class CollectionUtils {
     * @return a new list with the last n elements of the input list
     */
    public static <T> List<T> tail(final List<T> list, final int n) {
-      Args.notNull("list", list);
+      return asNonNullUnsafe(tailNullable(list, n));
+   }
+
+   /**
+    * @param n last n elements to return
+    * @return a new list with the last n elements of the input list
+    */
+   public static <T> @Nullable List<T> tailNullable(final @Nullable List<T> list, final int n) {
+      if (list == null)
+         return null;
 
       if (n < 1)
          return Collections.emptyList();
@@ -484,8 +538,13 @@ public abstract class CollectionUtils {
    }
 
    public static <S, T> List<T> transform(final List<S> source, final Function<? super S, ? extends T> op) {
+      return asNonNullUnsafe(transformNullable(source, op));
+   }
+
+   public static <S, T> @Nullable List<T> transformNullable(final @Nullable List<S> source, final Function<? super S, ? extends T> op) {
       if (source == null)
          return null;
+      Args.notNull("op", op);
 
       final List<T> target = newArrayList(source.size());
       for (final S sourceItem : source) {

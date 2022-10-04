@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -19,6 +21,8 @@ import java.util.logging.LogManager;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.MoreFiles;
@@ -30,13 +34,18 @@ import net.sf.jstuff.core.logging.Logger;
 public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    private static final Logger LOG = Logger.create();
 
+   @Nullable
    private static Boolean isContainerized;
+
+   @Nullable
    private static Boolean isDockerized;
+
+   @Nullable
    private static Boolean isRunningAsAdmin;
 
    private static final Collection<String> WINDOWS_EXE_FILE_EXTENSIONS = List.of(Strings.splitByWholeSeparator( //
       IS_OS_WINDOWS //
-         ? System.getenv("PATHEXT") //
+         ? getEnvironmentVariable("PATHEXT", "") //
          : ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC", //
       ";" //
    ));
@@ -44,11 +53,12 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    /**
     * Searches for the given program on PATH
     */
+   @Nullable
    public static Path findExecutable(final String program, final boolean resolveSymlinks) {
       if (Strings.isEmpty(program))
          return null;
 
-      final var paths = Strings.splitByWholeSeparator(System.getenv("PATH"), File.pathSeparator);
+      final var paths = Strings.splitByWholeSeparator(getEnvironmentVariable("PATH", ""), File.pathSeparator);
 
       if (IS_OS_WINDOWS) {
          boolean programHasExeFileExtension = false;
@@ -106,6 +116,15 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
       return null;
    }
 
+   public static String getEnvironmentVariable(final String name, final String defaultValue) {
+      try {
+         final String value = System.getenv(name);
+         return value == null ? defaultValue : value;
+      } catch (final SecurityException ex) {
+         return defaultValue;
+      }
+   }
+
    /**
     * Determines if the current Java process is running with administrative permissions
     * (in Windows "elevated", in Unix as "root").
@@ -118,7 +137,7 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
          if (IS_OS_WINDOWS) {
             // https://stackoverflow.com/a/11995662/5116073
 
-            final Process p = Runtime.getRuntime().exec(new String[] {"net", "session"});
+            final Process p = Runtime.getRuntime().exec(asNonNull("net", "session"));
             p.waitFor(10, TimeUnit.SECONDS);
             if (!p.isAlive() && p.exitValue() == 0) {
                isRunningAsAdmin = true;
@@ -130,7 +149,7 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
          }
 
          if (IS_OS_LINUX) {
-            final Process p = Runtime.getRuntime().exec(new String[] {"id", "-u"});
+            final Process p = Runtime.getRuntime().exec(asNonNull("id", "-u"));
             p.waitFor(10, TimeUnit.SECONDS);
             if (!p.isAlive() && p.exitValue() == 0) {
                try (var is = p.getInputStream()) {
@@ -181,7 +200,7 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
          if (Files.exists(cgroup)) {
             // see https://stackoverflow.com/a/52581380
             try (var stream = Files.lines(cgroup)) {
-               final String[] searchFor = {"/docker", "/lxc", "/kubepods", "/garden"};
+               final @NonNull String[] searchFor = {"/docker", "/lxc", "/kubepods", "/garden"};
                isContainerized = stream.anyMatch(line -> Strings.containsAny(line, searchFor));
                return isContainerized;
             } catch (final IOException ex) {

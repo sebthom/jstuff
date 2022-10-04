@@ -21,6 +21,7 @@ import net.sf.jstuff.core.collection.ObjectCache;
 public class TypesTest {
 
    @Test
+   @SuppressWarnings("null")
    public void testFindLibrary() {
       File library;
 
