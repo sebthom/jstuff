@@ -17,6 +17,7 @@ import net.sf.jstuff.core.collection.ArrayUtils;
  */
 @NonNullByDefault({})
 public final class NullAnalysisHelper {
+
    /**
     * Casts non-null value marked as {@link Nullable} to {@link NonNull} without any validation.
     * <p>
@@ -99,6 +100,12 @@ public final class NullAnalysisHelper {
       if (object == null)
          return defaultValue;
       return object;
+   }
+
+   @NonNull
+   @SuppressWarnings("null")
+   public static <T> T eventuallyNonNull() {
+      return asNonNullUnsafe((T) null);
    }
 
    private NullAnalysisHelper() {

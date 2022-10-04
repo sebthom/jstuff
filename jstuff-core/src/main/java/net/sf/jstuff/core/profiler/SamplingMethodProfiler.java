@@ -24,8 +24,8 @@ public class SamplingMethodProfiler {
 
    private final AbstractThreadMXSampler sampler;
 
-   private String profiledClassName = "<uninitialized>";
-   private String profiledMethod = "<uninitialized>";
+   private String profiledClassName = eventuallyNonNull();
+   private String profiledMethod = eventuallyNonNull();
 
    @Nullable
    private CallTree root;
