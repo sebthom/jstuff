@@ -12,7 +12,7 @@ import net.sf.jstuff.core.validation.Args;
 @FunctionalInterface
 public interface BiObjIntConsumer<T, U> {
 
-   void accept(int index, T first, U second);
+   void accept(T first, U second, int index);
 
    default BiObjIntConsumer<T, U> andThen(final BiObjIntConsumer<T, U> next) {
       Args.notNull("next", next);

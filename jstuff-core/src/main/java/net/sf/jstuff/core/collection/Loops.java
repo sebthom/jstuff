@@ -4,10 +4,14 @@
  */
 package net.sf.jstuff.core.collection;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
@@ -25,6 +29,8 @@ import net.sf.jstuff.core.functional.CharConsumer;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Loops {
+
+   private static final CompletableFuture<?> DONE = CompletableFuture.completedFuture(null);
 
    /* ********************
     * Enumerations
@@ -49,6 +55,35 @@ public abstract class Loops {
       }
    }
 
+   public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Enumeration<T> en, @Nullable final ExecutorService workers,
+      final @Nullable Consumer<T> consumer) {
+      if (en == null || consumer == null)
+         return DONE;
+
+      return forEachWithIndexConcurrent(en, workers, (elem, idx) -> consumer.accept(elem));
+   }
+
+   @SuppressWarnings("null")
+   public static <T> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Enumeration<T> en, @Nullable ExecutorService workers,
+      final @Nullable ObjIntConsumer<T> consumer) {
+      if (en == null || consumer == null)
+         return DONE;
+
+      if (workers == null) {
+         workers = ForkJoinPool.commonPool();
+      }
+
+      int i = -1;
+      final var futures = new ArrayList<CompletableFuture<?>>();
+      while (en.hasMoreElements()) {
+         final var next = en.nextElement();
+         final var idx = ++i;
+         futures.add(CompletableFuture.runAsync(() -> consumer.accept(next, idx), workers));
+      }
+
+      return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+   }
+
    /* ********************
     * Iterables
     * ********************/
@@ -68,6 +103,22 @@ public abstract class Loops {
       for (final T t : it) {
          consumer.accept(t, ++i);
       }
+   }
+
+   public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Iterable<T> it, @Nullable final ExecutorService workers,
+      final @Nullable Consumer<T> consumer) {
+      if (it == null || consumer == null)
+         return DONE;
+
+      return forEachConcurrent(it.iterator(), workers, consumer);
+   }
+
+   public static <T> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Iterable<T> it,
+      @Nullable final ExecutorService workers, final @Nullable ObjIntConsumer<T> consumer) {
+      if (it == null || consumer == null)
+         return DONE;
+
+      return forEachWithIndexConcurrent(it.iterator(), workers, consumer);
    }
 
    /* ********************
@@ -91,6 +142,35 @@ public abstract class Loops {
       while (it.hasNext()) {
          consumer.accept(it.next(), ++i);
       }
+   }
+
+   public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Iterator<T> it, @Nullable final ExecutorService workers,
+      final @Nullable Consumer<T> consumer) {
+      if (it == null || consumer == null)
+         return DONE;
+
+      return forEachWithIndexConcurrent(it, workers, (elem, idx) -> consumer.accept(elem));
+   }
+
+   @SuppressWarnings("null")
+   public static <T> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Iterator<T> it, @Nullable ExecutorService workers,
+      final @Nullable ObjIntConsumer<T> consumer) {
+      if (it == null || consumer == null)
+         return DONE;
+
+      if (workers == null) {
+         workers = ForkJoinPool.commonPool();
+      }
+
+      int i = -1;
+      final var futures = new ArrayList<CompletableFuture<?>>();
+      while (it.hasNext()) {
+         final var next = it.next();
+         final var idx = ++i;
+         futures.add(CompletableFuture.runAsync(() -> consumer.accept(next, idx), workers));
+      }
+
+      return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
    }
 
    /* ********************
@@ -117,7 +197,7 @@ public abstract class Loops {
 
       int i = -1;
       for (final var e : map.entrySet()) {
-         consumer.accept(++i, e.getKey(), e.getValue());
+         consumer.accept(e.getKey(), e.getValue(), ++i);
       }
    }
 
@@ -126,6 +206,38 @@ public abstract class Loops {
          return;
 
       forEachWithIndex(map.entrySet(), consumer);
+   }
+
+   public static <K, V> CompletableFuture<?> forEachConcurrent(final @Nullable Map<K, V> map, @Nullable final ExecutorService workers,
+      final @Nullable BiConsumer<K, V> consumer) {
+      if (map == null || consumer == null)
+         return DONE;
+
+      return forEachConcurrent(map.entrySet(), workers, e -> consumer.accept(e.getKey(), e.getValue()));
+   }
+
+   public static <K, V> CompletableFuture<?> forEachConcurrent(final @Nullable Map<K, V> map, @Nullable final ExecutorService workers,
+      final @Nullable Consumer<Entry<K, V>> consumer) {
+      if (map == null || consumer == null)
+         return DONE;
+
+      return forEachConcurrent(map.entrySet(), workers, consumer);
+   }
+
+   public static <K, V> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Map<K, V> map,
+      @Nullable final ExecutorService workers, final @Nullable BiObjIntConsumer<K, V> consumer) {
+      if (map == null || consumer == null)
+         return DONE;
+
+      return forEachWithIndexConcurrent(map.entrySet(), workers, (e, idx) -> consumer.accept(e.getKey(), e.getValue(), idx));
+   }
+
+   public static <K, V> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Map<K, V> map,
+      @Nullable final ExecutorService workers, final @Nullable ObjIntConsumer<Entry<K, V>> consumer) {
+      if (map == null || consumer == null)
+         return DONE;
+
+      return forEachWithIndexConcurrent(map.entrySet(), workers, consumer);
    }
 
    /* ********************
@@ -258,4 +370,44 @@ public abstract class Loops {
       }
    }
 
+   /* ********************
+    * ranges
+    * ********************/
+
+   public static void forRange(final int startInclusive, final int endExclusive, final @Nullable IntConsumer consumer) {
+      if (consumer == null)
+         return;
+
+      for (int i = startInclusive; i < endExclusive; i++) {
+         consumer.accept(endExclusive);
+      }
+   }
+
+   public static void forRange(final int startInclusive, final int endExclusive, final int offset, final @Nullable IntConsumer consumer) {
+      if (consumer == null)
+         return;
+
+      for (long i = startInclusive; i < endExclusive; i += offset) {
+         consumer.accept(endExclusive);
+      }
+   }
+
+   public static void forRange(final long startInclusive, final long endExclusive, final @Nullable LongConsumer consumer) {
+      if (consumer == null)
+         return;
+
+      for (long i = startInclusive; i < endExclusive; i++) {
+         consumer.accept(endExclusive);
+      }
+   }
+
+   public static void forRange(final long startInclusive, final int endExclusive, final long offset,
+      final @Nullable LongConsumer consumer) {
+      if (consumer == null)
+         return;
+
+      for (long i = startInclusive; i < endExclusive; i += offset) {
+         consumer.accept(endExclusive);
+      }
+   }
 }
