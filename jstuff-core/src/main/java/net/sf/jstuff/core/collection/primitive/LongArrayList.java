@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.functional.LongBiConsumer;
+import net.sf.jstuff.core.functional.BiLongConsumer;
 import net.sf.jstuff.core.math.Numbers;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
@@ -131,7 +131,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
       }
    }
 
-   public void forEach(final LongBiConsumer consumer) {
+   public void forEach(final BiLongConsumer consumer) {
       for (int i = 0; i < size; i++) {
          consumer.accept(i, values[i]);
       }

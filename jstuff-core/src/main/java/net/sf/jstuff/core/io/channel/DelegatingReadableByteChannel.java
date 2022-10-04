@@ -10,7 +10,7 @@ import java.nio.channels.ReadableByteChannel;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.functional.LongBiConsumer;
+import net.sf.jstuff.core.functional.BiLongConsumer;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -21,7 +21,7 @@ import net.sf.jstuff.core.validation.Args;
 public class DelegatingReadableByteChannel implements ReadableByteChannel {
 
    private final ReadableByteChannel delegate;
-   private final LongBiConsumer onBytesRead;
+   private final BiLongConsumer onBytesRead;
    private long totalBytesRead;
 
    public DelegatingReadableByteChannel(final ReadableByteChannel delegate) {
@@ -32,7 +32,7 @@ public class DelegatingReadableByteChannel implements ReadableByteChannel {
     * @param onBytesRead LongBiConsumer#accept(long bytesRead, long totalBytesRead)
     */
    @SuppressWarnings("resource")
-   public DelegatingReadableByteChannel(final ReadableByteChannel delegate, final @Nullable LongBiConsumer onBytesRead) {
+   public DelegatingReadableByteChannel(final ReadableByteChannel delegate, final @Nullable BiLongConsumer onBytesRead) {
       Args.notNull("delegate", delegate);
 
       this.delegate = delegate;

@@ -10,16 +10,16 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @FunctionalInterface
-public interface TriConsumer<A, B, C> {
+public interface BiIntConsumer {
 
-   void accept(A a, B b, C c);
+   void accept(int a, int b);
 
-   default TriConsumer<A, B, C> andThen(final TriConsumer<? super A, ? super B, ? super C> next) {
+   default BiIntConsumer andThen(final BiIntConsumer next) {
       Args.notNull("next", next);
 
-      return (a, b, c) -> {
-         accept(a, b, c);
-         next.accept(a, b, c);
+      return (a, b) -> {
+         accept(a, b);
+         next.accept(a, b);
       };
    }
 }

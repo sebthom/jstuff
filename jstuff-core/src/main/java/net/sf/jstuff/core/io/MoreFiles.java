@@ -55,7 +55,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.SystemUtils;
-import net.sf.jstuff.core.functional.LongBiConsumer;
+import net.sf.jstuff.core.functional.BiLongConsumer;
 import net.sf.jstuff.core.io.channel.DelegatingWritableByteChannel;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.math.NumericalSystem;
@@ -241,7 +241,7 @@ public abstract class MoreFiles {
     * @param onBytesWritten LongBiConsumer#accept(long bytesWritten, long totalBytesWritten)
     */
    @SuppressWarnings("resource")
-   public static void copyContent(final FileChannel source, final FileChannel target, final LongBiConsumer onBytesWritten)
+   public static void copyContent(final FileChannel source, final FileChannel target, final BiLongConsumer onBytesWritten)
       throws IOException {
       Args.notNull("source", source);
       Args.notNull("target", target);
@@ -301,7 +301,7 @@ public abstract class MoreFiles {
    /**
     * @param onBytesWritten LongBiConsumer#accept(long bytesWritten, long totalBytesWritten)
     */
-   public static void copyContent(final Path source, final Path target, final LongBiConsumer onBytesWritten) throws IOException {
+   public static void copyContent(final Path source, final Path target, final BiLongConsumer onBytesWritten) throws IOException {
       Args.notNull("onBytesWritten", onBytesWritten);
       Args.notNull("source", source);
       Args.notNull("target", target);

@@ -20,7 +20,6 @@ import java.util.function.Predicate;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.functional.ConsumerWithIndex;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -237,30 +236,6 @@ public abstract class CollectionUtils {
             result.add(item);
          }
       return result;
-   }
-
-   public static <T> void forEach(final @Nullable Collection<T> collection, final ConsumerWithIndex<T> consumer) {
-      if (collection == null || collection.isEmpty())
-         return;
-
-      Args.notNull("consumer", consumer);
-
-      int i = -1;
-      for (final T t : collection) {
-         consumer.accept(++i, t);
-      }
-   }
-
-   public static <T> void forEach(final @Nullable Iterable<T> it, final ConsumerWithIndex<T> consumer) {
-      if (it == null)
-         return;
-
-      Args.notNull("consumer", consumer);
-
-      int i = -1;
-      for (final T t : it) {
-         consumer.accept(++i, t);
-      }
    }
 
    /**

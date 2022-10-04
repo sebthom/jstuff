@@ -10,7 +10,7 @@ import java.nio.channels.WritableByteChannel;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.functional.LongBiConsumer;
+import net.sf.jstuff.core.functional.BiLongConsumer;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -21,7 +21,7 @@ import net.sf.jstuff.core.validation.Args;
 public class DelegatingWritableByteChannel implements WritableByteChannel {
 
    private final WritableByteChannel delegate;
-   private final LongBiConsumer onBytesWritten;
+   private final BiLongConsumer onBytesWritten;
    private long totalBytesWritten;
 
    public DelegatingWritableByteChannel(final WritableByteChannel delegate) {
@@ -32,7 +32,7 @@ public class DelegatingWritableByteChannel implements WritableByteChannel {
     * @param onBytesWritten LongBiConsumer#accept(long bytesWritten, long totalBytesWritten)
     */
    @SuppressWarnings("resource")
-   public DelegatingWritableByteChannel(final WritableByteChannel delegate, final @Nullable LongBiConsumer onBytesWritten) {
+   public DelegatingWritableByteChannel(final WritableByteChannel delegate, final @Nullable BiLongConsumer onBytesWritten) {
       Args.notNull("delegate", delegate);
 
       this.delegate = delegate;

@@ -13,7 +13,7 @@ import java.util.function.Predicate;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.functional.IntBiConsumer;
+import net.sf.jstuff.core.functional.BiIntConsumer;
 import net.sf.jstuff.core.math.Numbers;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
@@ -131,7 +131,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
       }
    }
 
-   public void forEach(final IntBiConsumer consumer) {
+   public void forEach(final BiIntConsumer consumer) {
       for (int i = 0; i < size; i++) {
          consumer.accept(i, values[i]);
       }

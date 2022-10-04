@@ -4,22 +4,22 @@
  */
 package net.sf.jstuff.core.functional;
 
-import java.util.Objects;
+import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @FunctionalInterface
-public interface IntBiConsumer {
+public interface BiLongConsumer {
 
-   void accept(int a, int b);
+   void accept(long a, long b);
 
-   default IntBiConsumer andThen(final IntBiConsumer after) {
-      Objects.requireNonNull(after);
+   default BiLongConsumer andThen(final BiLongConsumer next) {
+      Args.notNull("next", next);
 
       return (a, b) -> {
          accept(a, b);
-         after.accept(a, b);
+         next.accept(a, b);
       };
    }
 }
