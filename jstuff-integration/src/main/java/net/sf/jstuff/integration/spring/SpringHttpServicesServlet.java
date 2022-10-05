@@ -21,7 +21,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.integration.rest.AbstractRestServiceExporter;
 
 /**
  * <u>applicationContext.xml:</u>
@@ -86,10 +85,9 @@ public class SpringHttpServicesServlet extends HttpServlet {
                }
 
                final String serviceID = entry.getKey().substring(1);
-               final String parameter = entry.getValue() instanceof AbstractRestServiceExporter ? "?explainAsHTML" : "";
 
                pw.write("<li>");
-               pw.write("<a href=\"" + contextRoot + serviceID + parameter + "\">" + serviceID + "</a>");
+               pw.write("<a href=\"" + contextRoot + serviceID + "\">" + serviceID + "</a>");
                pw.write("</li>");
             }
             pw.write("</ul></body></html>");
