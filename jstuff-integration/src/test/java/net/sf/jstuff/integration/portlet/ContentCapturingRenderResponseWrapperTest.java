@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.portlet.RenderResponse;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 import net.sf.jstuff.core.logging.Logger;
@@ -26,12 +27,12 @@ public class ContentCapturingRenderResponseWrapperTest {
    private static final Logger LOG = Logger.create();
 
    @Test
-   @SuppressWarnings("unused")
    public void testContentCapturingRenderResponseWrapper() throws UnsupportedEncodingException {
 
-      final String[] encoding = {"ISO-8859-1"};
+      final @NonNull String[] encoding = {"ISO-8859-1"};
 
       final RenderResponse mock = Types.createMixin(RenderResponse.class, new Object() {
+         @SuppressWarnings("unused")
          public String getCharacterEncoding() {
             return encoding[0];
          }

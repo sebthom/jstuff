@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.auth;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import javax.inject.Inject;
 import javax.naming.Context;
 
@@ -19,8 +21,8 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
 public class LdapAuthenticator implements Authenticator {
    private static final Logger LOG = Logger.create();
 
-   protected LdapTemplate ldapTemplate;
-   protected UserDetailsService userDetailsService;
+   protected LdapTemplate ldapTemplate = eventuallyNonNull();
+   protected UserDetailsService userDetailsService = eventuallyNonNull();
 
    public LdapAuthenticator() {
       LOG.infoNew(this);
@@ -29,13 +31,17 @@ public class LdapAuthenticator implements Authenticator {
    @Override
    public boolean authenticate(final String logonName, final String password) {
       LOG.trace("Trying to authenticate user %s", logonName);
+      final UserDetails userDetails = userDetailsService.getUserDetailsByLogonName(logonName);
+      if (userDetails == null) {
+         LOG.trace("Authentication failed. Unkown user with loginName=%s", logonName);
+         return false;
+      }
       try {
          ldapTemplate.execute(ctx -> {
-            final UserDetails userDetails = userDetailsService.getUserDetailsByLogonName(logonName);
             ctx.addToEnvironment(Context.SECURITY_AUTHENTICATION, "simple");
-            ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, userDetails.getDistingueshedName());
+            ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, userDetails.getDistinguishedName());
             ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, password);
-            return ctx.lookup(userDetails.getDistingueshedName());
+            return ctx.lookup(userDetails.getDistinguishedName());
          });
          return true;
       } catch (final LdapException ex) {

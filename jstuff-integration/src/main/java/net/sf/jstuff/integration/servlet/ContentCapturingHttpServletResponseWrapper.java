@@ -15,6 +15,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
@@ -27,8 +29,8 @@ import net.sf.jstuff.core.validation.Assert;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingHttpServletResponseWrapper {
-   private ServletOutputStream exposedOutputStream;
-   private PrintWriter exposedPrintWriter;
+   private @Nullable ServletOutputStream exposedOutputStream;
+   private @Nullable PrintWriter exposedPrintWriter;
    private final FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
 
    public ContentCapturingHttpServletResponseWrapper(final HttpServletResponse response) {
@@ -69,8 +71,9 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
    public ServletOutputStream getOutputStream() {
       Assert.isNull(exposedPrintWriter, "getWriter() was called already!");
 
+      var exposedOutputStream = this.exposedOutputStream;
       if (exposedOutputStream == null) {
-         exposedOutputStream = new ServletOutputStream() {
+         exposedOutputStream = this.exposedOutputStream = new ServletOutputStream() {
             @Override
             public void write(final byte[] b) throws IOException {
                outputStream.write(b);
@@ -105,10 +108,9 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
    public PrintWriter getWriter() {
       Assert.isNull(exposedOutputStream, "getOutpuStream() was called already!");
 
+      var exposedPrintWriter = this.exposedPrintWriter;
       if (exposedPrintWriter == null) {
-
-         exposedPrintWriter = new PrintWriter(new Writer() {
-
+         exposedPrintWriter = this.exposedPrintWriter = new PrintWriter(new Writer() {
             @Override
             public void write(final String str) throws IOException {
                outputStream.write(str.getBytes(getCharacterEncoding()));
@@ -148,7 +150,6 @@ public class ContentCapturingHttpServletResponseWrapper extends StatusCapturingH
             throw new RuntimeException(ex);
          } */
       }
-
       return exposedPrintWriter;
    }
 }

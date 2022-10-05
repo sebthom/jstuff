@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.servlet.session;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,24 +18,17 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import net.sf.jstuff.core.collection.ArrayUtils;
-import net.sf.jstuff.core.collection.CollectionUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.Enumerations;
+import net.sf.jstuff.core.collection.Loops;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class HttpSessionMap implements SessionMap {
-
-   @SuppressWarnings("deprecation")
-   private static String[] getValueNames(final HttpSession sess) {
-      if (sess == null)
-         return ArrayUtils.EMPTY_STRING_ARRAY;
-
-      final String[] valueNames = sess.getValueNames();
-      return valueNames == null ? ArrayUtils.EMPTY_STRING_ARRAY : valueNames;
-   }
 
    private final HttpServletRequest request;
 
@@ -48,7 +43,7 @@ public class HttpSessionMap implements SessionMap {
    }
 
    @Override
-   public boolean containsKey(final Object key) {
+   public boolean containsKey(final @Nullable Object key) {
       final HttpSession sess = request.getSession(false);
       if (sess == null)
          return false;
@@ -56,7 +51,7 @@ public class HttpSessionMap implements SessionMap {
    }
 
    @Override
-   public boolean containsValue(final Object value) {
+   public boolean containsValue(final @Nullable Object value) {
       final HttpSession sess = request.getSession(false);
       if (sess == null)
          return false;
@@ -72,10 +67,8 @@ public class HttpSessionMap implements SessionMap {
       if (sess == null)
          return Collections.emptySet();
 
-      final Map<String, Object> result = new HashMap<>();
-      for (final String key : getValueNames(sess)) {
-         result.put(key, sess.getAttribute(key));
-      }
+      final Map<@NonNull String, @NonNull Object> result = new HashMap<>();
+      Loops.forEach(sess.getAttributeNames(), key -> result.put(key, asNonNullUnsafe(sess.getAttribute(key))));
       return result.entrySet();
    }
 
@@ -85,7 +78,7 @@ public class HttpSessionMap implements SessionMap {
    }
 
    @Override
-   public Object get(final Object key) {
+   public @Nullable Object get(final @Nullable Object key) {
       final HttpSession sess = request.getSession(false);
       if (sess == null)
          return null;
@@ -102,7 +95,7 @@ public class HttpSessionMap implements SessionMap {
 
    @Override
    public Object getId() {
-      final HttpSession sess = request.getSession(true);
+      final HttpSession sess = request.getSession();
       return sess.getId();
    }
 
@@ -127,29 +120,29 @@ public class HttpSessionMap implements SessionMap {
       final HttpSession sess = request.getSession(false);
       if (sess == null)
          return Collections.emptySet();
-      final Set<String> result = new HashSet<>();
-      CollectionUtils.addAll(result, getValueNames(sess));
+      final var result = new HashSet<String>();
+      Loops.forEach(sess.getAttributeNames(), result::add);
       return result;
    }
 
    @Override
-   public Object put(final String key, final Object value) {
-      final HttpSession sess = request.getSession(true);
+   public @Nullable Object put(final @Nullable String key, final Object value) {
+      final HttpSession sess = request.getSession();
       final Object oldValue = sess.getAttribute(key);
       sess.setAttribute(key, value);
       return oldValue;
    }
 
    @Override
-   public void putAll(final Map<? extends String, ? extends Object> map) {
-      final HttpSession sess = request.getSession(true);
-      for (final Entry<? extends String, ? extends Object> e : map.entrySet()) {
-         sess.setAttribute(e.getKey(), e.getValue());
+   public void putAll(final Map<? extends String, ? extends @NonNull Object> map) {
+      final HttpSession sess = request.getSession();
+      for (final var entry : map.entrySet()) {
+         sess.setAttribute(entry.getKey(), entry.getValue());
       }
    }
 
    @Override
-   public Object remove(final Object key) {
+   public @Nullable Object remove(final @Nullable Object key) {
       final HttpSession sess = request.getSession(false);
       if (sess == null)
          return null;
@@ -165,7 +158,7 @@ public class HttpSessionMap implements SessionMap {
       if (sess == null)
          return 0;
 
-      return getValueNames(sess).length;
+      return Enumerations.size(sess.getAttributeNames());
    }
 
    @Override
@@ -174,10 +167,8 @@ public class HttpSessionMap implements SessionMap {
       if (sess == null)
          return Collections.emptyList();
 
-      final Collection<Object> result = new ArrayList<>();
-      for (final String key : getValueNames(sess)) {
-         result.add(sess.getAttribute(key));
-      }
+      final Collection<@NonNull Object> result = new ArrayList<>();
+      Loops.forEach(sess.getAttributeNames(), key -> result.add(asNonNullUnsafe(sess.getAttribute(key))));
       return result;
    }
 }

@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.persistence.spring;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -52,12 +54,12 @@ public class BeanRowMapper<T> implements RowMapper<T> {
       BUB = new BeanUtilsBean(converter);
    }
 
-   private Class<T> beanClass;
+   private Class<T> beanClass = eventuallyNonNull();
 
    /**
     * propertyNameLowerCase => propertyName
     */
-   private Map<String, String> beanPropertyNames;
+   private Map<String, String> beanPropertyNames = eventuallyNonNull();
 
    private final WeakHashMap<ResultSet, ResultSetDynaClass> rsDynaClassesCache = new WeakHashMap<>();
 

@@ -4,10 +4,13 @@
  */
 package net.sf.jstuff.integration.serviceregistry.impl;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.WeakHashSet;
 import net.sf.jstuff.core.logging.Logger;
@@ -30,7 +33,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
    private final Lock listeners_READ;
    private final Lock listeners_WRITE;
 
-   private ServiceProxyInternal<SERVICE_INTERFACE> proxy;
+   private ServiceProxyInternal<SERVICE_INTERFACE> proxy = eventuallyNonNull();
 
    public DefaultServiceProxyAdvice(final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
       Args.notNull("serviceEndpointState", serviceEndpointState);
@@ -40,7 +43,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
       this.serviceInterface = serviceInterface;
       serviceEndpointId = serviceEndpointState.getServiceEndpointId();
 
-      final ReadWriteLock lock = new ReentrantReadWriteLock();
+      final var lock = new ReentrantReadWriteLock();
       listeners_READ = lock.readLock();
       listeners_WRITE = lock.writeLock();
    }
@@ -81,7 +84,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
    }
 
    @Override
-   public Class<?> getServiceImplementationClass() {
+   public @Nullable Class<?> getServiceImplementationClass() {
       final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
       return service == null ? null : service.getClass();
    }

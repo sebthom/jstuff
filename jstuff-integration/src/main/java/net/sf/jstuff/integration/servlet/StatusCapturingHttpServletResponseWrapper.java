@@ -9,6 +9,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -31,7 +33,7 @@ public class StatusCapturingHttpServletResponseWrapper extends HttpServletRespon
    }
 
    @Override
-   public void sendError(final int sc, final String msg) throws IOException {
+   public void sendError(final int sc, final @Nullable String msg) throws IOException {
       httpStatus = sc;
       super.sendError(sc, msg);
    }
@@ -50,7 +52,7 @@ public class StatusCapturingHttpServletResponseWrapper extends HttpServletRespon
     */
    @Deprecated
    @Override
-   public void setStatus(final int sc, final String sm) {
+   public void setStatus(final int sc, final @Nullable String sm) {
       httpStatus = sc;
       super.setStatus(sc, sm);
    }

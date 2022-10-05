@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -21,8 +23,8 @@ public abstract class JPAUtils {
     * E.g. "?, ?, ?" becomes "?1, ?2, ?3"
     */
    public static String enumerateQuestionMarks(final String queryString) {
-      if (queryString == null || queryString.length() == 0)
-         return queryString;
+      if (queryString.isEmpty())
+         return "";
 
       final StringBuilder out = new StringBuilder();
       int startSearchAt = 0, foundAt = 0;
@@ -73,7 +75,7 @@ public abstract class JPAUtils {
       }
    }
 
-   public static void setParameters(final Query query, final Object... parameters) {
+   public static void setParameters(final Query query, final Object @Nullable... parameters) {
       if (parameters != null) {
          for (int i = 0; i < parameters.length; i++) {
             query.setParameter(i + 1, parameters[i]);

@@ -4,7 +4,11 @@
  */
 package net.sf.jstuff.integration.spring;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.Serializable;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.validation.Args;
 
@@ -24,11 +28,9 @@ public final class SpringBeanRef<T> implements Serializable {
       return new SpringBeanRef<>(beanName);
    }
 
-   private transient T springBean;
-
-   private final String beanName;
-
-   private final Class<T> beanType;
+   private final @Nullable String beanName;
+   private final @Nullable Class<T> beanType;
+   private transient @Nullable T springBean;
 
    private SpringBeanRef(final Class<T> beanType) {
       Args.notNull("beanType", beanType);
@@ -42,11 +44,13 @@ public final class SpringBeanRef<T> implements Serializable {
       beanType = null;
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked"})
    public T get() {
       if (springBean == null) {
-         springBean = (T) (beanName == null ? SpringBeanLocator.get().byClass(beanType) : SpringBeanLocator.get().byName(beanName));
+         springBean = (T) (beanName == null //
+            ? SpringBeanLocator.get().byClass(asNonNullUnsafe(beanType))
+            : SpringBeanLocator.get().byName(asNonNullUnsafe(beanName)));
       }
-      return springBean;
+      return asNonNullUnsafe(springBean);
    }
 }

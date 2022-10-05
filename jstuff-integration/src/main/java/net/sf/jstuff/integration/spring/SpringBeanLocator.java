@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.PreDestroy;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +39,13 @@ import net.sf.jstuff.core.validation.Assert;
 public final class SpringBeanLocator {
    private static final Logger LOG = Logger.create();
 
-   private static SpringBeanLocator instance;
+   private static @Nullable SpringBeanLocator instance;
 
    /**
     * @return the default instance (the last instantiated one by any spring context)
     */
    public static SpringBeanLocator get() {
-      Assert.notNull(instance, "Spring context not initialized yet.");
-      return instance;
+      return Assert.notNull(instance, "Spring context not initialized yet.");
    }
 
    @Autowired

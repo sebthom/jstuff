@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.serviceregistry;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * Interface implemented by the service instances handed out to services consumers.
  * Service consumers can cast the received service reference to this type to access service meta-data provided by the service registry.
@@ -21,6 +23,7 @@ public interface ServiceProxy<SERVICE_INTERFACE> {
    /**
     * the concrete class of the service instance that has been registered
     */
+   @Nullable
    Class<?> getServiceImplementationClass();
 
    Class<SERVICE_INTERFACE> getServiceInterface();

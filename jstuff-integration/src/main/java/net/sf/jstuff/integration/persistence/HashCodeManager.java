@@ -4,11 +4,14 @@
  */
 package net.sf.jstuff.integration.persistence;
 
-import java.util.Objects;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.GCTracker;
 import net.sf.jstuff.core.collection.WeakIdentityHashSet;
@@ -38,26 +41,28 @@ public final class HashCodeManager {
       }
 
       @Override
-      public boolean equals(final Object obj) {
-         /* not needed as we have full control over the usage of this class's objects:
-          * if (this == obj) return true;
-          * if (obj == null) return false;
-          * if (getClass() != obj.getClass()) return false;
-          */
-         final FQId other = (FQId) obj;
-         if (!Objects.equals(id, other.id))
+      public boolean equals(@Nullable final Object obj) {
+         if (this == obj)
+            return true;
+         if (obj == null || getClass() != obj.getClass())
             return false;
-         return Objects.equals(realm, other.realm);
+         final FQId other = (FQId) obj;
+         return realm.equals(other.realm) && id.equals(other.id);
       }
 
       @Override
       public int hashCode() {
-         return Objects.hash(id, realm);
+         final int prime = 31;
+         int result = 1;
+         result = prime * result + id.hashCode();
+         result = prime * result + realm.hashCode();
+         return result;
       }
    }
 
    private static final class HashCodeAssignment {
       final int hashCode;
+      @Nullable
       FQId id;
       final WeakIdentityHashSet<Identifiable<?>> identifiables = WeakIdentityHashSet.create();
 
@@ -113,7 +118,7 @@ public final class HashCodeManager {
    }
 
    private static HashCodeAssignment getOrRegisterHashCodeAssignmentByTrackingId(final Identifiable<?> entity, final String trackingId) {
-      final HashCodeAssignment newHca = new HashCodeAssignment(trackingId.hashCode());
+      final var newHca = new HashCodeAssignment(trackingId.hashCode());
       HashCodeAssignment hca = HASHCODE_ASSIGNMENT_BY_TRACKING_ID.putIfAbsent(trackingId, newHca);
       if (hca == null) {
          hca = newHca;
@@ -154,8 +159,8 @@ public final class HashCodeManager {
       /*
        * register trackingId hashCode with the entity ID
        */
-      final HashCodeAssignment newHca = new HashCodeAssignment(trackingId.hashCode());
-      final FQId id = new FQId(entity.getIdRealm(), entity.getId());
+      final var newHca = new HashCodeAssignment(trackingId.hashCode());
+      final FQId id = new FQId(entity.getIdRealm(), asNonNull(entity.getId()));
       HashCodeAssignment hca = HASHCODE_ASSIGNMENT_BY_ID.putIfAbsent(id, newHca);
       if (hca == null) {
          hca = newHca;

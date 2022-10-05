@@ -15,6 +15,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -22,14 +24,14 @@ public class RequestResponseHoldingFilter implements Filter {
    private static final ThreadLocal<ServletRequest> REQ = new ThreadLocal<>();
    private static final ThreadLocal<ServletResponse> RESP = new ThreadLocal<>();
 
-   public static HttpServletRequest getHttpServletRequest() {
+   public static @Nullable HttpServletRequest getHttpServletRequest() {
       final ServletRequest req = REQ.get();
       if (req instanceof HttpServletRequest)
          return (HttpServletRequest) req;
       return null;
    }
 
-   public static HttpServletResponse getHttpServletResponse() {
+   public static @Nullable HttpServletResponse getHttpServletResponse() {
       final ServletResponse resp = RESP.get();
       if (resp instanceof HttpServletResponse)
          return (HttpServletResponse) resp;

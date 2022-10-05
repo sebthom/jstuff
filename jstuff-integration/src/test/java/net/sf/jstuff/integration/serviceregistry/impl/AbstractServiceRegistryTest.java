@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.integration.serviceregistry.impl;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -92,11 +93,11 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> {
       boolean validate();
    }
 
-   protected R registry;
+   protected R registry = eventuallyNonNull();
 
    @After
    public void tearDown() throws Exception {
-      registry = null;
+      registry = eventuallyNonNull();
    }
 
    @Test

@@ -6,7 +6,10 @@ package net.sf.jstuff.integration.serviceregistry.impl;
 
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.comparator.StringComparator;
+import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.serviceregistry.ServiceEndpoint;
 
 /**
@@ -17,12 +20,15 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
    protected final Class<?> serviceInterface;
 
    public DefaultServiceEndpoint(final String serviceEndpointId, final Class<?> serviceInterface) {
+      Args.notNull("serviceEndpointId", serviceEndpointId);
+      Args.notNull("serviceInterface", serviceInterface);
+
       this.serviceEndpointId = serviceEndpointId;
       this.serviceInterface = serviceInterface;
    }
 
    @Override
-   public int compareTo(final DefaultServiceEndpoint other) {
+   public int compareTo(final @Nullable DefaultServiceEndpoint other) {
       if (other == null)
          return 1;
       final int res = StringComparator.INSTANCE.compare(serviceEndpointId, other.serviceEndpointId);
@@ -32,20 +38,15 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
    }
 
    @Override
-   public boolean equals(final Object obj) {
+   public boolean equals(final @Nullable Object obj) {
       if (this == obj)
          return true;
       if (obj == null || getClass() != obj.getClass())
          return false;
-      final DefaultServiceEndpoint other = (DefaultServiceEndpoint) obj;
+      final var other = (DefaultServiceEndpoint) obj;
       if (!Objects.equals(serviceEndpointId, other.serviceEndpointId))
          return false;
-      if (serviceInterface == null) {
-         if (other.serviceInterface != null)
-            return false;
-      } else if (serviceInterface != other.serviceInterface)
-         return false;
-      return true;
+      return serviceInterface == other.serviceInterface;
    }
 
    @Override
@@ -62,8 +63,8 @@ public class DefaultServiceEndpoint implements ServiceEndpoint, Comparable<Defau
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + (serviceEndpointId == null ? 0 : serviceEndpointId.hashCode());
-      result = prime * result + (serviceInterface == null ? 0 : serviceInterface.getName().hashCode());
+      result = prime * result + serviceEndpointId.hashCode();
+      result = prime * result + serviceInterface.getName().hashCode();
       return result;
    }
 

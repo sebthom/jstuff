@@ -7,6 +7,8 @@ package net.sf.jstuff.integration.persistence.jpa;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.comparator.SortBy;
 import net.sf.jstuff.core.fluent.Fluent;
 
@@ -32,9 +34,6 @@ public class JpqlOrderByBuilder {
       final StringBuilder orderBy = new StringBuilder();
 
       for (final SortBy<String> sb : getActiveSortBy(sortBy)) {
-         if (sb.getDirection() == null)
-            throw new IllegalArgumentException("Sort direction not specified for sort field [" + sb.getKey() + "]");
-
          final String jpqlExpression = mappings.get(sb.getKey());
          if (jpqlExpression == null)
             throw new IllegalArgumentException("Invalid sorting field [" + sb.getKey() + "]");
@@ -49,7 +48,7 @@ public class JpqlOrderByBuilder {
       return orderBy.toString();
    }
 
-   public SortBy<String>[] getActiveSortBy(final SortBy<String>[] sortBy) {
+   public SortBy<String>[] getActiveSortBy(final SortBy<String> @Nullable [] sortBy) {
       if (sortBy == null || sortBy.length == 0)
          return defaultSortBy;
       return sortBy;

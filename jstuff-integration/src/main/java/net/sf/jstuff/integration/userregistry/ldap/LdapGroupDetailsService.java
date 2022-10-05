@@ -4,20 +4,26 @@
  */
 package net.sf.jstuff.integration.userregistry.ldap;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import net.sf.jstuff.core.collection.Enumerations;
+import org.eclipse.jdt.annotation.Nullable;
+
+import net.sf.jstuff.core.collection.Loops;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LdapTemplate;
+import net.sf.jstuff.integration.ldap.LdapUtils;
 import net.sf.jstuff.integration.userregistry.DefaultGroupDetails;
 import net.sf.jstuff.integration.userregistry.GroupDetails;
 import net.sf.jstuff.integration.userregistry.GroupDetailsService;
@@ -28,66 +34,66 @@ import net.sf.jstuff.integration.userregistry.GroupDetailsService;
 public class LdapGroupDetailsService implements GroupDetailsService {
    private static final Logger LOG = Logger.create();
 
-   protected String groupAttributeDisplayName;
-   protected String groupAttributeGroupId;
-   protected String groupAttributeMember;
-   protected String groupSearchBase;
-   protected String groupSearchFilter;
+   protected String groupAttributeDisplayName = eventuallyNonNull();
+   protected String groupAttributeGroupId = eventuallyNonNull();
+   protected String groupAttributeMember = eventuallyNonNull();
+   protected String groupSearchBase = eventuallyNonNull();
+   protected String groupSearchFilter = eventuallyNonNull();
    protected boolean groupSearchSubtree = true;
 
-   private LdapTemplate ldapTemplate;
+   private LdapTemplate ldapTemplate = eventuallyNonNull();
 
    public LdapGroupDetailsService() {
       LOG.infoNew(this);
    }
 
    @Override
-   public GroupDetails getGroupDetailsByGroupDN(final String groupDN) {
+   public @Nullable GroupDetails getGroupDetailsByGroupDN(final String groupDN) {
       Args.notNull("groupDN", groupDN);
 
-      return (GroupDetails) ldapTemplate.execute(ctx -> {
-         final Attributes attr = ctx.getAttributes(groupDN, new String[] {groupAttributeDisplayName, groupAttributeGroupId,
+      return ldapTemplate.execute(ctx -> {
+         final Attributes attrs = ctx.getAttributes(groupDN, new String[] {groupAttributeDisplayName, groupAttributeGroupId,
             groupAttributeMember});
 
-         final DefaultGroupDetails groupDetails = new DefaultGroupDetails();
-         groupDetails.setDisplayName((String) attr.get(groupAttributeDisplayName).get());
-         groupDetails.setDistingueshedName(groupDN);
-         groupDetails.setGroupId((String) attr.get(groupAttributeGroupId).get());
-
-         final Set<String> memberDNs = new HashSet<>();
-         for (final Object dn : Enumerations.toIterable(attr.get(groupAttributeMember).getAll())) {
-            memberDNs.add((String) dn);
+         final var memberDNs = new HashSet<String>();
+         final var members = attrs.get(groupAttributeMember);
+         if (members != null) {
+            Loops.forEach(members.getAll(), dn -> memberDNs.add(dn.toString()));
          }
-         groupDetails.setMemberDNs(memberDNs.toArray(new String[memberDNs.size()]));
-         return groupDetails;
+
+         return new DefaultGroupDetails( //
+            LdapUtils.getAttributeValue(attrs, groupAttributeGroupId, "n/a"), //
+            LdapUtils.getAttributeValue(attrs, groupAttributeDisplayName, "n/a"), //
+            groupDN, //
+            memberDNs //
+         );
       });
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public Set<String> getGroupIdsByUserDN(final String userDN) {
       Args.notNull("userDN", userDN);
 
-      return (Set<String>) ldapTemplate.execute(ctx -> {
-         final Set<String> groupIds = new HashSet<>();
-
+      return ldapTemplate.execute(ctx -> {
+         final var groupIds = new HashSet<String>();
          LOG.trace("Performing LDAP Group Search for %s=%s", groupAttributeMember, userDN);
-         for (final SearchResult sr : searchGroup(ctx, groupAttributeMember + "=" + userDN, new String[] {groupAttributeGroupId})) {
-            groupIds.add((String) sr.getAttributes().get(groupAttributeGroupId).get());
-         }
+         Loops.forEach(searchGroup(ctx, groupAttributeMember + "=" + userDN, new String[] {groupAttributeGroupId}), //
+            sr -> groupIds.add(LdapUtils.getAttributeValue(sr, groupAttributeGroupId, "n/a")) //
+         );
          LOG.trace("Found %s group(s) for user %s", groupIds.size(), userDN);
          return groupIds;
       });
    }
 
-   protected Iterable<SearchResult> searchGroup(final DirContext ctx, final String filter, final String[] attrs) throws NamingException {
-      final SearchControls options = new SearchControls();
+   protected NamingEnumeration<SearchResult> searchGroup(final DirContext ctx, final String filter, final String[] attrs)
+      throws NamingException {
+      final var options = new SearchControls();
       options.setSearchScope(groupSearchSubtree ? SearchControls.SUBTREE_SCOPE : SearchControls.ONELEVEL_SCOPE);
       options.setReturningAttributes(attrs);
 
-      return Enumerations.toIterable(ctx.search(groupSearchBase, //
+      return ctx.search(groupSearchBase, //
          "(&(" + filter + ")(" + groupSearchFilter + "))", //
-         options));
+         options);
    }
 
    @Inject

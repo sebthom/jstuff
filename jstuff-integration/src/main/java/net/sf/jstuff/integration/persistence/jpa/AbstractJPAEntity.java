@@ -9,6 +9,7 @@ import static net.sf.jstuff.core.Strings.*;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -19,6 +20,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.date.ImmutableDate;
 import net.sf.jstuff.core.logging.Logger;
@@ -48,11 +51,11 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
    @Column(name = "_createdOn", updatable = false, nullable = false)
    // we assign a value here to work around http://opensource.atlassian.com/projects/hibernate/browse/EJB-46
    // which may also exist with other JPA implementations
-   private final Date _firstPersistedOn = new Date();
+   private Date _firstPersistedOn = new Date();
 
    @Temporal(TemporalType.TIMESTAMP)
    @Column(name = "_modifiedOn", nullable = false)
-   private Date _lastPersistedOn;
+   private @Nullable Date _lastPersistedOn;
 
    @Basic(optional = false)
    @Column(nullable = false)
@@ -66,14 +69,14 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
       _hashCodeTrackingId = HashCodeManager.onEntityInstantiated(this);
    }
 
-   public final ImmutableDate _getFirstPersistedOn() {
+   public final @Nullable ImmutableDate _getFirstPersistedOn() {
       if (_isNew())
          return null;
       return ImmutableDate.of(_firstPersistedOn);
    }
 
-   public final ImmutableDate _getLastPersistedOn() {
-      return ImmutableDate.of(_lastPersistedOn);
+   public final @Nullable ImmutableDate _getLastPersistedOn() {
+      return _lastPersistedOn != null ? ImmutableDate.of(_lastPersistedOn) : null;
    }
 
    public final int _getVersion() {
@@ -96,18 +99,13 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
    }
 
    @Override
-   public boolean equals(final Object obj) {
+   public boolean equals(final @Nullable Object obj) {
       if (this == obj)
          return true;
       if (obj == null || getClass() != obj.getClass())
          return false;
       final AbstractJPAEntity<?> other = (AbstractJPAEntity<?>) obj;
-      if (getId() == null) {
-         if (other.getId() != null)
-            return false;
-      } else if (!getId().equals(other.getId()))
-         return false;
-      return true;
+      return Objects.equals(getId(), other.getId());
    }
 
    @Override
@@ -136,20 +134,20 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
    }
 
    public CharSequence toDebugString() {
-      final StringBuilder sb = new StringBuilder(64);
+      final var sb = new StringBuilder(64);
       Class<?> currClazz = getClass();
-      final StringBuilder intend = new StringBuilder("");
+      final var intend = new StringBuilder("");
 
       try {
-         while (currClazz != Object.class) {
+         while (currClazz != Object.class && currClazz != null) {
             sb.append(intend).append(currClazz).append(" *** START ***").append(NEW_LINE);
             intend.append("  ");
             for (final Field field : currClazz.getDeclaredFields())
                if (!Fields.isStatic(field) && !field.getName().startsWith("class$")) {
                   final Object fieldValue = Fields.read(this, field);
                   if (fieldValue == null || !field.getType().isAssignableFrom(AbstractJPAEntity.class)) {
-                     sb.append(intend).append("[").append(field.getName()).append("] ").append(fieldValue).append(" | ").append(field
-                        .getType().getName()).append(NEW_LINE);
+                     sb.append(intend).append("[").append(field.getName()).append("] ") //
+                        .append(fieldValue).append(" | ").append(field.getType().getName()).append(NEW_LINE);
                   } else {
                      final AbstractJPAEntity<?> referencedEntity = (AbstractJPAEntity<?>) fieldValue;
                      sb.append(intend).append("[").append(field.getName()).append("] id=").append(referencedEntity.getId()).append(" | ")

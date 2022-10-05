@@ -5,6 +5,7 @@
 package net.sf.jstuff.integration.userregistry;
 
 import java.io.Serializable;
+import java.util.SortedSet;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -12,9 +13,9 @@ import java.io.Serializable;
 public interface GroupDetails extends Serializable {
    String getDisplayName();
 
-   String getDistingueshedName();
+   String getDistinguishedName();
 
    String getGroupId();
 
-   String[] getMemberDNs();
+   SortedSet<String> getMemberDNs();
 }

@@ -29,6 +29,7 @@ public class LZFCompression extends AbstractCompression {
       // prevent instantiation
    }
 
+   @SuppressWarnings("null")
    @Override
    public byte[] compress(final byte[] uncompressed) throws IOException {
       Args.notNull("uncompressed", uncompressed);
@@ -52,6 +53,7 @@ public class LZFCompression extends AbstractCompression {
       return new LZFInputStream(compressed);
    }
 
+   @SuppressWarnings("null")
    @Override
    public byte[] decompress(final byte[] compressed) throws IOException {
       Args.notNull("compressed", compressed);

@@ -6,6 +6,8 @@ package net.sf.jstuff.integration.serviceregistry;
 
 import java.util.Collection;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -18,7 +20,8 @@ public interface ServiceRegistry {
     */
    Collection<ServiceEndpoint> getActiveServiceEndpoints();
 
-   <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(String serviceEndpointId, Class<SERVICE_INTERFACE> serviceInterface);
+   <@NonNull SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(String serviceEndpointId,
+      Class<SERVICE_INTERFACE> serviceInterface);
 
    /**
     * Adds the given service using the fully qualified class name of the serviceInterface as service endpoint id.
@@ -27,7 +30,7 @@ public interface ServiceRegistry {
     *
     * @throws IllegalStateException if another service was already registered for the given service Id
     */
-   <SERVICE_INTERFACE> boolean addService(Class<SERVICE_INTERFACE> serviceInterface, SERVICE_INTERFACE serviceInstance)
+   <@NonNull SERVICE_INTERFACE> boolean addService(Class<SERVICE_INTERFACE> serviceInterface, SERVICE_INTERFACE serviceInstance)
       throws IllegalArgumentException, IllegalStateException;
 
    /**
@@ -36,7 +39,7 @@ public interface ServiceRegistry {
     * @throws IllegalArgumentException if serviceEndpointId == null or serviceInstance == null
     * @throws IllegalStateException if another service was already registered for the given service Id
     */
-   <SERVICE_INTERFACE> boolean addService(String serviceEndpointId, Class<SERVICE_INTERFACE> serviceInterface,
+   <@NonNull SERVICE_INTERFACE> boolean addService(String serviceEndpointId, Class<SERVICE_INTERFACE> serviceInterface,
       SERVICE_INTERFACE serviceInstance) throws IllegalArgumentException, IllegalStateException;
 
    /**

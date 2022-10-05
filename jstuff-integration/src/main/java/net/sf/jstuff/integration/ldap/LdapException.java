@@ -4,17 +4,19 @@
  */
 package net.sf.jstuff.integration.ldap;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class LdapException extends RuntimeException {
    private static final long serialVersionUID = 1L;
 
-   public LdapException(final Throwable cause) {
+   public LdapException(final @Nullable Throwable cause) {
       super(cause);
    }
 
-   public LdapException(final String message, final Throwable cause) {
+   public LdapException(final @Nullable String message, final @Nullable Throwable cause) {
       super(message, cause);
    }
 }

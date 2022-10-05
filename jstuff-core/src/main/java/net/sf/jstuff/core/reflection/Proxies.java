@@ -29,7 +29,7 @@ public abstract class Proxies {
    }
 
    @SuppressWarnings("unchecked")
-   public static <T> T create(final InvocationHandler handler, final @NonNull Class<?>... interfaceTypes) {
+   public static <@NonNull T> T create(final InvocationHandler handler, final @NonNull Class<?>... interfaceTypes) {
       Args.notNull("handler", handler);
       Args.notEmpty("interfaceTypes", interfaceTypes);
       Args.noNulls("interfaceTypes", interfaceTypes);

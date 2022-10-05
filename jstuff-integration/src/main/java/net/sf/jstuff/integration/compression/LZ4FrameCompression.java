@@ -23,6 +23,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("null")
 public class LZ4FrameCompression extends AbstractCompression {
 
    public static final LZ4FrameCompression INSTANCE = new LZ4FrameCompression();

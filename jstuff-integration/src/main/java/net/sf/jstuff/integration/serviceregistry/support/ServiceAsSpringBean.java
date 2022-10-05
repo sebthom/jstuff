@@ -4,6 +4,10 @@
  */
 package net.sf.jstuff.integration.serviceregistry.support;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -29,28 +33,27 @@ import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean {
+public class ServiceAsSpringBean<@NonNull T> implements FactoryBean<T>, InitializingBean {
 
-   private boolean isInitialized;
-   private ServiceRegistry serviceRegistry;
+   private ServiceRegistry serviceRegistry = eventuallyNonNull();
 
    /**
     * @optional by default the fully qualified name of the service interface is used
     */
-   private String serviceEndpointId;
-   private Class<T> serviceInterface;
-   private T service;
+   private @Nullable String serviceEndpointId;
+   private Class<T> serviceInterface = eventuallyNonNull();
+   private T service = eventuallyNonNull();
 
    @Override
    public synchronized void afterPropertiesSet() throws Exception {
-      Assert.isFalse(isInitialized, "Already initialized!");
+      Assert.isNull(service, "Already initialized!");
       Assert.notNull(serviceRegistry, "[serviceRegistry] must not be null!");
       Assert.notNull(serviceInterface, "[serviceInterface] must not be null!");
-      if (serviceEndpointId == null) {
-         serviceEndpointId = serviceInterface.getName();
-      }
-      isInitialized = true;
-      service = serviceRegistry.getService(serviceEndpointId, serviceInterface).get();
+
+      service = serviceRegistry.getService(//
+         serviceEndpointId != null ? serviceEndpointId : serviceInterface.getName(), //
+         serviceInterface //
+      ).get();
    }
 
    @Override
@@ -70,14 +73,14 @@ public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean 
 
    public synchronized void setServiceEndpointId(final String serviceEndpointId) {
       Args.notNull("serviceEndpointId", serviceEndpointId);
-      Assert.isFalse(isInitialized, "Already initialized!");
+      Assert.isNull(service, "Already initialized!");
 
       this.serviceEndpointId = serviceEndpointId;
    }
 
    public synchronized void setServiceInterface(final Class<T> serviceInterface) {
       Args.notNull("serviceInterface", serviceInterface);
-      Assert.isFalse(isInitialized, "Already initialized!");
+      Assert.isNull(service, "Already initialized!");
       Assert.isTrue(serviceInterface.isInterface(), "[serviceInterface] must be an interface but is " + serviceInterface);
 
       this.serviceInterface = serviceInterface;
@@ -85,7 +88,7 @@ public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean 
 
    public synchronized void setServiceRegistry(final ServiceRegistry serviceRegistry) {
       Args.notNull("serviceRegistry", serviceRegistry);
-      Assert.isFalse(isInitialized, "Already initialized!");
+      Assert.isNull(service, "Already initialized!");
 
       this.serviceRegistry = serviceRegistry;
    }

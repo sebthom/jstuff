@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
@@ -19,7 +21,7 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class JdbcResourcesCloser {
-   private static boolean close(final Object resource) {
+   private static boolean close(final @Nullable Object resource) {
       if (resource == null)
          return false;
 

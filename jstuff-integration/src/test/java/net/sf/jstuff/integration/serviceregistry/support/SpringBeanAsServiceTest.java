@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class SpringBeanAsServiceTest {
    public static class AlternativeGreetingInterceptor implements MethodInterceptor {
 
       @Override
-      public Object invoke(final MethodInvocation invocation) throws Throwable {
+      public Object invoke(final @Nullable MethodInvocation invocation) throws Throwable {
          return "Hi!";
       }
    }

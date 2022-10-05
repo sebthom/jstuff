@@ -6,16 +6,21 @@ package net.sf.jstuff.integration.userregistry;
 
 import java.io.Serializable;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface UserDetails extends Serializable {
    String getDisplayName();
 
-   String getDistingueshedName();
+   @Nullable
+   String getDistinguishedName();
 
+   @Nullable
    String getEMailAddress();
 
+   @Nullable
    String getLogonName();
 
    String getUserId();

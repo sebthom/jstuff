@@ -4,11 +4,15 @@
  */
 package net.sf.jstuff.integration.userregistry;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface UserDetailsService {
+   @Nullable
    UserDetails getUserDetailsByLogonName(String logonName);
 
+   @Nullable
    UserDetails getUserDetailsByUserId(String userId);
 }

@@ -6,6 +6,9 @@ package net.sf.jstuff.integration.serviceregistry.impl;
 
 import java.lang.reflect.Method;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.DynamicType.Loaded;
@@ -27,14 +30,13 @@ public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
       private final ServiceEndpointState serviceEndpointState;
       private final Class<SERVICE_INTERFACE> serviceInterface;
 
-      protected ByteBuddyServiceInterceptor(final ServiceEndpointState serviceEndpointState,
-         final Class<SERVICE_INTERFACE> serviceInterface) {
-         this.serviceEndpointState = serviceEndpointState;
+      protected ByteBuddyServiceInterceptor(final ServiceEndpointState serviceEPState, final Class<SERVICE_INTERFACE> serviceInterface) {
+         this.serviceEndpointState = serviceEPState;
          this.serviceInterface = serviceInterface;
       }
 
       @RuntimeType
-      public Object intercept(@Origin final Method method, @AllArguments final Object... args) throws Exception {
+      public @Nullable Object intercept(@Origin final Method method, @AllArguments final Object... args) throws Exception {
          final Object service = serviceEndpointState.getActiveServiceIfCompatible(serviceInterface);
          if (service == null)
             throw new ServiceUnavailableException(serviceEndpointState.getServiceEndpointId(), serviceInterface);
@@ -44,8 +46,8 @@ public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
 
    @Override
    @SuppressWarnings({"rawtypes", "resource"})
-   protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointState serviceEndpointState,
-      final Class<SERVICE_INTERFACE> serviceInterface) {
+   protected <@NonNull SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(
+      final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
 
       final MethodDelegation interceptor = MethodDelegation.to(new ByteBuddyServiceInterceptor<>(serviceEndpointState, serviceInterface));
 
@@ -68,8 +70,7 @@ public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
           ex.printStackTrace();
       }*/
 
-      final DefaultServiceProxyAdvice<SERVICE_INTERFACE> proxy = Types.newInstance(clazz.getLoaded(), serviceEndpointState,
-         serviceInterface);
+      final var proxy = Types.newInstance(clazz.getLoaded(), serviceEndpointState, serviceInterface);
       proxy.setProxy(proxy);
       return proxy;
    }

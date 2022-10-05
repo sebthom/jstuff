@@ -5,18 +5,26 @@
 package net.sf.jstuff.integration.ldap;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchResult;
 import javax.naming.ldap.StartTlsResponse;
 
+import org.eclipse.jdt.annotation.Nullable;
+
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class LdapUtils {
-   public static void closeQuietly(final Context context) {
+
+   public static void closeQuietly(final @Nullable Context context) {
       try {
          if (context != null) {
             context.close();
@@ -26,13 +34,43 @@ public abstract class LdapUtils {
       }
    }
 
-   public static void closeQuietly(final StartTlsResponse tls) {
+   public static void closeQuietly(final @Nullable StartTlsResponse tls) {
       try {
          if (tls != null) {
             tls.close();
          }
       } catch (final IOException ex) {
          // ignore
+      }
+   }
+
+   public static <T> T getAttributeValue(@Nullable final SearchResult sr, final String attrName, final T ifNullOrNotExisting)
+      throws NamingException {
+      if (sr == null)
+         return ifNullOrNotExisting;
+
+      return getAttributeValue(sr.getAttributes(), attrName, ifNullOrNotExisting);
+   }
+
+   public static <T> T getAttributeValue(@Nullable final Attributes attrs, final String attrName, final T ifNullOrNotExisting)
+      throws NamingException {
+      if (attrs == null)
+         return ifNullOrNotExisting;
+
+      return getAttributeValue(attrs.get(attrName), ifNullOrNotExisting);
+   }
+
+   @SuppressWarnings("unchecked")
+   public static <T> T getAttributeValue(@Nullable final Attribute attr, final T ifNullOrNotExisting) throws NamingException {
+      if (attr == null)
+         return ifNullOrNotExisting;
+      try {
+         final var obj = attr.get();
+         if (obj == null)
+            return ifNullOrNotExisting;
+         return (T) obj;
+      } catch (final NoSuchElementException ex) {
+         return ifNullOrNotExisting;
       }
    }
 
@@ -47,7 +85,7 @@ public abstract class LdapUtils {
       if (textLen == 0)
          return text;
 
-      final StringBuilder sb = new StringBuilder(textLen + 16);
+      final var sb = new StringBuilder(textLen + 16);
       for (int i = 0; i < textLen; i++) {
          final char ch = text.charAt(i);
          switch (ch) {
@@ -75,11 +113,11 @@ public abstract class LdapUtils {
    }
 
    public static String prettifyDN(final String dn) {
-      final StringBuilder sb = new StringBuilder();
-      for (final String chunk : dn.split(",")) {
-         final String[] pair = chunk.split("=", 2);
+      final var sb = new StringBuilder();
+      for (final String chunk : Strings.split(dn, ',')) {
+         final String[] pair = Strings.split(chunk, "=", 2);
          if (sb.length() > 0) {
-            sb.append(",");
+            sb.append(',');
          }
          sb.append(pair[0].trim().toUpperCase());
          sb.append('=');

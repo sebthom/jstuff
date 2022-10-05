@@ -13,6 +13,8 @@ import java.io.Writer;
 import javax.portlet.ResourceResponse;
 import javax.portlet.filter.ResourceResponseWrapper;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 
 /**
@@ -21,7 +23,7 @@ import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ContentCapturingResourceResponseWrapper extends ResourceResponseWrapper {
-   private PrintWriter exposedPrintWriter;
+   private @Nullable PrintWriter exposedPrintWriter;
    private final FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream();
 
    public ContentCapturingResourceResponseWrapper(final ResourceResponse response) {
@@ -60,9 +62,9 @@ public class ContentCapturingResourceResponseWrapper extends ResourceResponseWra
 
    @Override
    public PrintWriter getWriter() {
+      var exposedPrintWriter = this.exposedPrintWriter;
       if (exposedPrintWriter == null) {
-
-         exposedPrintWriter = new PrintWriter(new Writer() {
+         exposedPrintWriter = this.exposedPrintWriter = new PrintWriter(new Writer() {
             @Override
             public void write(final String str) throws IOException {
                outputStream.write(str.getBytes(getCharacterEncoding()));
@@ -98,7 +100,6 @@ public class ContentCapturingResourceResponseWrapper extends ResourceResponseWra
              throw new RuntimeException(ex);
          } */
       }
-
       return exposedPrintWriter;
    }
 

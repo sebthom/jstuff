@@ -9,12 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -32,11 +31,9 @@ public class StringToMapConverter extends AbstractConverter {
 
    @Override
    @SuppressWarnings("unchecked")
-   public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
-      Args.notNull("targetType", targetType);
-
+   public @Nullable Object convert(final @Nullable Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
       final String sourceString = (String) source;
-      if (StringUtils.isBlank(sourceString))
+      if (sourceString == null || Strings.isBlank(sourceString))
          return Collections.emptyMap();
 
       @SuppressWarnings("rawtypes")
@@ -57,7 +54,7 @@ public class StringToMapConverter extends AbstractConverter {
    }
 
    @Override
-   public Set<ConvertiblePair> getConvertibleTypes() {
+   public @Nullable Set<ConvertiblePair> getConvertibleTypes() {
       return Collections.singleton(new ConvertiblePair(String.class, Map.class));
    }
 

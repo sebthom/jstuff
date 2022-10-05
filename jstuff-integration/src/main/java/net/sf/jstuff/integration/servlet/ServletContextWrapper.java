@@ -24,6 +24,9 @@ import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -98,12 +101,12 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
-   public void declareRoles(final String... roleNames) {
+   public void declareRoles(final @NonNull String... roleNames) {
       delegate.declareRoles(roleNames);
    }
 
    @Override
-   public Object getAttribute(final String name) {
+   public @Nullable Object getAttribute(final String name) {
       return delegate.getAttribute(name);
    }
 
@@ -118,7 +121,7 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
-   public ServletContext getContext(final String uripath) {
+   public @Nullable ServletContext getContext(final String uripath) {
       return delegate.getContext(uripath);
    }
 
@@ -152,7 +155,7 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
-   public FilterRegistration getFilterRegistration(final String filterName) {
+   public @Nullable FilterRegistration getFilterRegistration(final String filterName) {
       return delegate.getFilterRegistration(filterName);
    }
 
@@ -162,7 +165,7 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
-   public String getInitParameter(final String name) {
+   public @Nullable String getInitParameter(final String name) {
       return delegate.getInitParameter(name);
    }
 
@@ -182,7 +185,7 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
-   public String getMimeType(final String file) {
+   public @Nullable String getMimeType(final String file) {
       return delegate.getMimeType(file);
    }
 
@@ -192,32 +195,32 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
-   public RequestDispatcher getNamedDispatcher(final String name) {
+   public @Nullable RequestDispatcher getNamedDispatcher(final String name) {
       return delegate.getNamedDispatcher(name);
    }
 
    @Override
-   public String getRealPath(final String path) {
+   public @Nullable String getRealPath(final String path) {
       return delegate.getRealPath(path);
    }
 
    @Override
-   public RequestDispatcher getRequestDispatcher(final String path) {
+   public @Nullable RequestDispatcher getRequestDispatcher(final String path) {
       return delegate.getRequestDispatcher(path);
    }
 
    @Override
-   public URL getResource(final String path) throws MalformedURLException {
+   public @Nullable URL getResource(final String path) throws MalformedURLException {
       return delegate.getResource(path);
    }
 
    @Override
-   public InputStream getResourceAsStream(final String path) {
+   public @Nullable InputStream getResourceAsStream(final String path) {
       return delegate.getResourceAsStream(path);
    }
 
    @Override
-   public Set<String> getResourcePaths(final String path) {
+   public @Nullable Set<String> getResourcePaths(final String path) {
       return delegate.getResourcePaths(path);
    }
 
@@ -228,7 +231,7 @@ public class ServletContextWrapper implements ServletContext {
 
    @Override
    @Deprecated
-   public Servlet getServlet(final String name) throws ServletException {
+   public @Nullable Servlet getServlet(final String name) throws ServletException {
       return delegate.getServlet(name);
    }
 
@@ -244,7 +247,7 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
-   public ServletRegistration getServletRegistration(final String servletName) {
+   public @Nullable ServletRegistration getServletRegistration(final String servletName) {
       return delegate.getServletRegistration(servletName);
    }
 
@@ -271,17 +274,17 @@ public class ServletContextWrapper implements ServletContext {
 
    @Override
    @Deprecated
-   public void log(final Exception exception, final String msg) {
+   public void log(final @Nullable Exception exception, final @Nullable String msg) {
       delegate.log(exception, msg);
    }
 
    @Override
-   public void log(final String msg) {
+   public void log(final @Nullable String msg) {
       delegate.log(msg);
    }
 
    @Override
-   public void log(final String message, final Throwable throwable) {
+   public void log(final @Nullable String message, final @Nullable Throwable throwable) {
       delegate.log(message, throwable);
    }
 
@@ -309,5 +312,4 @@ public class ServletContextWrapper implements ServletContext {
    public void setSessionTrackingModes(final Set<SessionTrackingMode> sessionTrackingModes) {
       delegate.setSessionTrackingModes(sessionTrackingModes);
    }
-
 }

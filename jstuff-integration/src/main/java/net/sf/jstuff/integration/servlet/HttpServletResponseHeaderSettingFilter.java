@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.servlet;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,7 +19,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.jstuff.core.collection.Enumerations;
+import net.sf.jstuff.core.collection.Loops;
 import net.sf.jstuff.core.logging.Logger;
 
 /**
@@ -47,8 +49,8 @@ public class HttpServletResponseHeaderSettingFilter implements Filter {
 
    @Override
    public void init(final FilterConfig filterConfig) throws ServletException {
-      for (final String param : Enumerations.toIterable(filterConfig.getInitParameterNames())) {
-         parameter.put(param, filterConfig.getInitParameter(param));
-      }
+      Loops.forEach(filterConfig.getInitParameterNames(), param -> {
+         parameter.put(param, asNonNullUnsafe(filterConfig.getInitParameter(param)));
+      });
    }
 }

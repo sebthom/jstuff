@@ -25,6 +25,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("null")
 public class LZ4BlockCompression extends AbstractCompression {
 
    public static final LZ4BlockCompression INSTANCE = new LZ4BlockCompression();

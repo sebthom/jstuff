@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.ldap;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.Hashtable;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +16,8 @@ import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 import net.sf.jstuff.core.functional.Invocable;
 
 /**
@@ -21,8 +25,8 @@ import net.sf.jstuff.core.functional.Invocable;
  */
 public class LdapTemplate {
    private String initialContextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
-   private Hashtable<String, Object> ldapSettings;
-   private String ldapURL;
+   private Hashtable<String, Object> ldapSettings = eventuallyNonNull();
+   private String ldapURL = eventuallyNonNull();
    private boolean pooled = true;
 
    /**
@@ -30,7 +34,7 @@ public class LdapTemplate {
     */
    private boolean useStartTSL = false;
 
-   public Object execute(final Invocable<Object, LdapContext, ? extends Exception> callback) {
+   public <T> T execute(final Invocable<T, @NonNull LdapContext, ? extends Exception> callback) {
       LdapContext ctx = null;
       StartTlsResponse tls = null;
       try {

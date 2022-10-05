@@ -4,7 +4,10 @@
  */
 package net.sf.jstuff.integration.auth;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,13 +15,14 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.util.PatternMatchUtils;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.MapWithSets;
 import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.userregistry.GroupDetailsService;
-import net.sf.jstuff.integration.userregistry.UserDetails;
 import net.sf.jstuff.integration.userregistry.UserDetailsService;
 
 /**
@@ -27,13 +31,13 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
 public class DefaultAuthService implements AuthService {
    private static final Logger LOG = Logger.create();
 
-   protected Set<String> applicationRoles;
-   protected Authenticator authenticator;
-   protected GroupDetailsService groupDetailsService;
-   protected MapWithSets<String, String> groupIdToApplicationRoleMappings;
-   protected AuthListener listener;
-   protected MapWithSets<String, String> uriPatternsToApplicationRoleMappings;
-   protected UserDetailsService userDetailsService;
+   protected Set<String> applicationRoles = eventuallyNonNull();
+   protected Authenticator authenticator = eventuallyNonNull();
+   protected GroupDetailsService groupDetailsService = eventuallyNonNull();
+   protected MapWithSets<String, String> groupIdToApplicationRoleMappings = eventuallyNonNull();
+   protected @Nullable AuthListener listener;
+   protected MapWithSets<String, String> uriPatternsToApplicationRoleMappings = eventuallyNonNull();
+   protected UserDetailsService userDetailsService = eventuallyNonNull();
 
    public DefaultAuthService() {
       LOG.infoNew(this);
@@ -94,13 +98,14 @@ public class DefaultAuthService implements AuthService {
       final Authentication auth = AuthenticationHolder.getAuthentication();
       if (!auth.isAuthenticated()) {
          LOG.trace("User is not authenticated.");
-         return null;
+         return Collections.emptySet();
       }
-      return getGrantedRoles(auth.getUserDetails().getDistingueshedName());
+      return getGrantedRoles(asNonNull(auth.getUserDetails()).getDistinguishedName());
    }
 
-   protected Set<String> getGrantedRoles(final String userDN) {
-      Args.notEmpty("userDN", userDN);
+   protected Set<String> getGrantedRoles(final @Nullable String userDN) {
+      if (userDN == null || Strings.isBlank(userDN))
+         return Collections.emptySet();
 
       final Set<String> groupIds = groupDetailsService.getGroupIdsByUserDN(userDN);
       final Set<String> roles = new HashSet<>();
@@ -119,17 +124,14 @@ public class DefaultAuthService implements AuthService {
       final Authentication auth = AuthenticationHolder.getAuthentication();
       if (!auth.isAuthenticated()) {
          LOG.trace("User is not authenticated.");
-         return null;
+         return Collections.emptySet();
       }
-      return groupDetailsService.getGroupIdsByUserDN(auth.getUserDetails().getDistingueshedName());
+      return groupDetailsService.getGroupIdsByUserDN(asNonNull(asNonNull(auth.getUserDetails()).getDistinguishedName()));
    }
 
    @Override
    public boolean hasRole(final String applicationRole) {
-      final Set<String> roles = getGrantedRoles();
-      if (roles == null)
-         return false;
-      return roles.contains(applicationRole);
+      return getGrantedRoles().contains(applicationRole);
    }
 
    @Override
@@ -141,7 +143,7 @@ public class DefaultAuthService implements AuthService {
    public boolean isIdentity(final String userId) throws PermissionDeniedException {
       final Authentication auth = AuthenticationHolder.getAuthentication();
 
-      return auth.isAuthenticated() && auth.getUserDetails().getUserId().equals(userId);
+      return auth.isAuthenticated() && asNonNull(auth.getUserDetails()).getUserId().equals(userId);
    }
 
    @Override
@@ -166,10 +168,15 @@ public class DefaultAuthService implements AuthService {
 
    @Override
    public void logout() {
-      AuthenticationHolder.getAuthentication().invalidate();
+      final Authentication auth = AuthenticationHolder.getAuthentication();
+      auth.invalidate();
+
+      final var listener = this.listener;
       if (listener != null) {
-         final UserDetails details = AuthenticationHolder.getAuthentication().getUserDetails();
-         listener.afterLogout(details);
+         final var userDetails = auth.getUserDetails();
+         if (userDetails != null) {
+            listener.afterLogout(userDetails);
+         }
       }
    }
 
@@ -177,7 +184,7 @@ public class DefaultAuthService implements AuthService {
     * @param applicationRoles the applicationRoles to set
     */
    @Inject
-   public synchronized void setApplicationRoles(final String[] applicationRoles) {
+   public synchronized void setApplicationRoles(final @NonNull String... applicationRoles) {
       this.applicationRoles = new HashSet<>();
       for (final String element : applicationRoles) {
          LOG.trace("Registering application role: %s", element);
@@ -204,14 +211,13 @@ public class DefaultAuthService implements AuthService {
    /**
     * @param mappings format ? groupIdXXX -> roleXXX
     */
+   @Inject
    public synchronized void setGroupIdToApplicationRoleMappings(final Map<String, String> mappings) throws UnknownApplicationRoleException {
       groupIdToApplicationRoleMappings = new MapWithSets<>();
       for (final Entry<String, String> mapping : mappings.entrySet()) {
          final String group = mapping.getKey().trim();
-         String role = mapping.getValue();
-         if (role != null && group.length() > 0) {
-            role = role.trim();
-
+         if (group.length() > 0) {
+            final var role = mapping.getValue().trim();
             if (role.length() > 0) {
                LOG.trace("Registering groupId -> application role mapping: %s => %s", group, role);
 
@@ -227,11 +233,12 @@ public class DefaultAuthService implements AuthService {
    /**
     * @param mappings format = "groupIdXXX=roleXXX"
     */
-   public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final String[] mappings)
+   @Inject
+   public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final @NonNull String[] mappings)
       throws UnknownApplicationRoleException {
       groupIdToApplicationRoleMappings = new MapWithSets<>();
-      for (final String element : mappings) {
-         final String[] pair = element.split("=");
+      for (final var element : mappings) {
+         final var pair = Strings.split(element, '=');
          pair[0] = pair[0].trim();
          pair[1] = pair[1].trim();
 
@@ -240,10 +247,8 @@ public class DefaultAuthService implements AuthService {
          }
 
          LOG.trace("Registering groupId -> application role mapping: %s => %s", pair[0], pair[1]);
-
          if (!applicationRoles.contains(pair[1]))
             throw new UnknownApplicationRoleException("Application role is unknown: " + pair[1]);
-
          groupIdToApplicationRoleMappings.add(pair[0], pair[1]);
       }
    }
@@ -257,10 +262,11 @@ public class DefaultAuthService implements AuthService {
     * @param mappings format = "/myuri*=roleXXX"
     */
    @Inject
-   public synchronized void setUriPatternsToApplicationRoleMappings(final String[] mappings) throws UnknownApplicationRoleException {
+   public synchronized void setUriPatternsToApplicationRoleMappings(final @NonNull String[] mappings)
+      throws UnknownApplicationRoleException {
       uriPatternsToApplicationRoleMappings = new MapWithSets<>();
-      for (final String element : mappings) {
-         final String[] pair = element.split("=");
+      for (final var element : mappings) {
+         final var pair = Strings.split(element, '=');
          pair[0] = pair[0].trim();
          pair[1] = pair[1].trim();
 
@@ -269,10 +275,8 @@ public class DefaultAuthService implements AuthService {
          }
 
          LOG.trace("Registering URI pattern -> application role mapping: %s => %s", pair[0], pair[1]);
-
          if (!applicationRoles.contains(pair[1]))
             throw new UnknownApplicationRoleException("Application role is unknown: " + pair[1]);
-
          uriPatternsToApplicationRoleMappings.add(pair[0], pair[1]);
       }
    }

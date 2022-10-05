@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.persistence.spring;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -12,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.ResultSetDynaClass;
+import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -33,21 +35,22 @@ import net.sf.jstuff.core.validation.Assert;
 public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
    private static final Logger LOG = Logger.create();
 
-   private Class<T> beanClass;
-   private Map<String, String> beanPropertiesLowerCase;
+   private Class<T> beanClass = eventuallyNonNull();
+   private Map<String, String> beanPropertiesLowerCase = eventuallyNonNull();
 
    public BeanResultSetExtractor(final Class<T> beanClass) throws IntrospectionException {
       setBeanClass(beanClass);
    }
 
    @Override
-   public List<T> extractData(final ResultSet resultSet) throws SQLException, DataAccessException {
+   public @Nullable List<T> extractData(final ResultSet resultSet) throws SQLException, DataAccessException {
       Assert.notNull(beanClass, "Property beanClass must be set.");
 
       final List<T> extractedBeans = new ArrayList<>();
 
-      for (final Iterator<?> it = new ResultSetDynaClass(resultSet, true).iterator(); it.hasNext();) {
-         final DynaBean dynaBean = (DynaBean) it.next();
+      for (final var it = new ResultSetDynaClass(resultSet, true).iterator(); it.hasNext();) {
+         final DynaBean dynaBean = it.next();
+         @SuppressWarnings("null")
          T bean = null;
          try {
             bean = this.getBeanClass().getDeclaredConstructor().newInstance();

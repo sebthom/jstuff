@@ -19,6 +19,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Types;
@@ -57,8 +60,8 @@ public class DummyPrincipalInjectingFilter implements Filter {
    public static final String USER_ROLES_SEPARATOR = ",";
 
    // CHECKSTYLE:IGNORE StaticVariableName FOR NEXT 2 LINES
-   public static String DEFAULT_USER_NAME;
-   public static String[] DEFAULT_USER_ROLES;
+   public static @Nullable String DEFAULT_USER_NAME;
+   public static @NonNull String @Nullable [] DEFAULT_USER_ROLES;
 
    private final ThreadLocal<HttpServletRequestWrapper> requestWrapper = new ThreadLocal<>() {
       final HttpServletRequest init = Types.createMixin(HttpServletRequest.class, new Object());
@@ -68,12 +71,12 @@ public class DummyPrincipalInjectingFilter implements Filter {
          return new HttpServletRequestWrapper(init) {
 
             @Override
-            public String getRemoteUser() {
+            public @Nullable String getRemoteUser() {
                return user.getName();
             }
 
             @Override
-            public Principal getUserPrincipal() {
+            public @Nullable Principal getUserPrincipal() {
                return user;
             }
 
@@ -89,7 +92,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
 
       @Override
       public String getName() {
-         return username;
+         return username != null ? username : "unauthenticated";
       }
 
       @Override
@@ -97,7 +100,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
          return Principal.class.getName() + "[name=" + username + ", roles=" + userRoles + "]";
       }
    };
-   private String username;
+   private @Nullable String username;
    private final Set<String> userRoles = new HashSet<>();
 
    public DummyPrincipalInjectingFilter() {
@@ -121,6 +124,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
       }
    }
 
+   @Nullable
    public String getUsername() {
       return username;
    }
@@ -145,7 +149,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
       }
 
       // configure based on servlet parameters
-      if (user.getName() == null) {
+      if (getUsername() == null) {
          final String uname = config.getInitParameter("username");
          if (uname != null) {
             setUsername(uname);
@@ -159,27 +163,26 @@ public class DummyPrincipalInjectingFilter implements Filter {
       }
 
       // configure based on static default values
-      if (DEFAULT_USER_NAME != null && user.getName() == null) {
+      if (getUsername() == null) {
          setUsername(DEFAULT_USER_NAME);
       }
-      if (DEFAULT_USER_ROLES != null && userRoles.isEmpty()) {
+      if (userRoles.isEmpty()) {
          setUserRoles(DEFAULT_USER_ROLES);
       }
-
    }
 
-   public void setUsername(final String name) {
+   public void setUsername(final @Nullable String name) {
       username = name;
    }
 
-   public void setUserRoles(final Collection<String> userRoles) {
+   public void setUserRoles(final @Nullable Collection<@NonNull String> userRoles) {
       this.userRoles.clear();
       if (userRoles != null) {
          this.userRoles.addAll(userRoles);
       }
    }
 
-   public void setUserRoles(final String... userRoles) {
+   public void setUserRoles(final @NonNull String @Nullable... userRoles) {
       this.userRoles.clear();
       if (userRoles != null) {
          CollectionUtils.addAll(this.userRoles, userRoles);

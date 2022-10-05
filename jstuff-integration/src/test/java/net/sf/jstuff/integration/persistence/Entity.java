@@ -6,6 +6,8 @@ package net.sf.jstuff.integration.persistence;
 
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.types.Identifiable;
 
 /**
@@ -18,16 +20,16 @@ public class Entity extends Identifiable.Default<Integer> {
    @javax.persistence.Transient
    private final String _hashCodeTrackingId;
 
-   private Integer id;
+   private @Nullable Integer id;
 
-   private String label;
+   private @Nullable String label;
 
    public Entity() {
       _hashCodeTrackingId = HashCodeManager.onEntityInstantiated(this);
    }
 
    @Override
-   public boolean equals(final Object obj) {
+   public boolean equals(final @Nullable Object obj) {
       if (this == obj)
          return true;
       if (obj == null || getClass() != obj.getClass())
@@ -39,11 +41,11 @@ public class Entity extends Identifiable.Default<Integer> {
    }
 
    @Override
-   public Integer getId() {
+   public @Nullable Integer getId() {
       return id;
    }
 
-   public String getLabel() {
+   public @Nullable String getLabel() {
       return label;
    }
 

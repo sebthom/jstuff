@@ -10,7 +10,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -49,13 +52,13 @@ public final class YamlNode extends ObjectNode {
    }
 
    @Override
-   public YamlNode put(final String fieldName, final BigDecimal v) {
+   public YamlNode put(final String fieldName, final @Nullable BigDecimal v) {
       super.put(fieldName, v);
       return this;
    }
 
    @Override
-   public YamlNode put(final String fieldName, final BigInteger v) {
+   public YamlNode put(final String fieldName, final @Nullable BigInteger v) {
       super.put(fieldName, v);
       return this;
    }
@@ -67,13 +70,13 @@ public final class YamlNode extends ObjectNode {
    }
 
    @Override
-   public YamlNode put(final String fieldName, final Boolean v) {
+   public YamlNode put(final String fieldName, final @Nullable Boolean v) {
       super.put(fieldName, v);
       return this;
    }
 
    @Override
-   public YamlNode put(final String fieldName, final byte[] v) {
+   public YamlNode put(final String fieldName, final byte @Nullable [] v) {
       super.put(fieldName, v);
       return this;
    }
@@ -88,7 +91,7 @@ public final class YamlNode extends ObjectNode {
     * @return This node (to allow chaining)
     */
    @Override
-   public YamlNode put(final String fieldName, final com.fasterxml.jackson.databind.JsonNode value) {
+   public YamlNode put(final String fieldName, final @Nullable JsonNode value) {
       set(fieldName, value);
       return this;
    }
@@ -100,7 +103,7 @@ public final class YamlNode extends ObjectNode {
    }
 
    @Override
-   public YamlNode put(final String fieldName, final Double v) {
+   public YamlNode put(final String fieldName, final @Nullable Double v) {
       super.put(fieldName, v);
       return this;
    }
@@ -112,7 +115,7 @@ public final class YamlNode extends ObjectNode {
    }
 
    @Override
-   public YamlNode put(final String fieldName, final Float v) {
+   public YamlNode put(final String fieldName, final @Nullable Float v) {
       super.put(fieldName, v);
       return this;
    }
@@ -124,7 +127,7 @@ public final class YamlNode extends ObjectNode {
    }
 
    @Override
-   public YamlNode put(final String fieldName, final Integer v) {
+   public YamlNode put(final String fieldName, final @Nullable Integer v) {
       super.put(fieldName, v);
       return this;
    }
@@ -136,12 +139,12 @@ public final class YamlNode extends ObjectNode {
    }
 
    @Override
-   public YamlNode put(final String fieldName, final Long v) {
+   public YamlNode put(final String fieldName, final @Nullable Long v) {
       super.put(fieldName, v);
       return this;
    }
 
-   public YamlNode put(final String fieldName, final Object obj) {
+   public YamlNode put(final String fieldName, final @Nullable Object obj) {
       super.set(fieldName, obj == null ? null : OBJECT_MAPPER.valueToTree(obj));
       return this;
    }
@@ -153,13 +156,13 @@ public final class YamlNode extends ObjectNode {
    }
 
    @Override
-   public YamlNode put(final String fieldName, final Short v) {
+   public YamlNode put(final String fieldName, final @Nullable Short v) {
       super.put(fieldName, v);
       return this;
    }
 
    @Override
-   public YamlNode put(final String fieldName, final String v) {
+   public YamlNode put(final String fieldName, final @Nullable String v) {
       super.put(fieldName, v);
       return this;
    }
@@ -171,13 +174,13 @@ public final class YamlNode extends ObjectNode {
    }
 
    @Override
-   public YamlNode putPOJO(final String fieldName, final Object pojo) {
+   public YamlNode putPOJO(final String fieldName, final @Nullable Object pojo) {
       super.putPOJO(fieldName, pojo);
       return this;
    }
 
    @Override
-   public YamlNode putRawValue(final String fieldName, final RawValue raw) {
+   public YamlNode putRawValue(final String fieldName, final @Nullable RawValue raw) {
       super.putRawValue(fieldName, raw);
       return this;
    }
@@ -193,9 +196,10 @@ public final class YamlNode extends ObjectNode {
     * <p>
     * {@inheritDoc}
     */
+   @Nullable
    @Override
-   public com.fasterxml.jackson.databind.JsonNode remove(final String fieldName) {
-      final com.fasterxml.jackson.databind.JsonNode removedValue = super.remove(fieldName);
+   public JsonNode remove(final @Nullable String fieldName) {
+      final JsonNode removedValue = super.remove(fieldName);
       return removedValue;
    }
 
@@ -211,8 +215,8 @@ public final class YamlNode extends ObjectNode {
     * {@inheritDoc}
     */
    @Override
-   public com.fasterxml.jackson.databind.JsonNode replace(final String fieldName, final com.fasterxml.jackson.databind.JsonNode value) {
-      final com.fasterxml.jackson.databind.JsonNode replacedValue = super.replace(fieldName, value);
+   public JsonNode replace(final String fieldName, final @Nullable JsonNode value) {
+      final JsonNode replacedValue = super.replace(fieldName, value);
       return replacedValue;
    }
 
@@ -230,15 +234,14 @@ public final class YamlNode extends ObjectNode {
 
    @Override
    @SuppressWarnings("unchecked")
-   public YamlNode set(final String fieldName, final com.fasterxml.jackson.databind.JsonNode value) {
+   public YamlNode set(final String fieldName, final @Nullable JsonNode value) {
       super.set(fieldName, value);
       return this;
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public <T extends com.fasterxml.jackson.databind.JsonNode> T setAll(
-      final Map<String, ? extends com.fasterxml.jackson.databind.JsonNode> properties) {
+   public <T extends JsonNode> T setAll(final Map<String, ? extends JsonNode> properties) {
       super.setAll(properties);
       return (T) this;
    }
@@ -255,7 +258,7 @@ public final class YamlNode extends ObjectNode {
       try {
          return OBJECT_MAPPER.writeValueAsString(this);
       } catch (final JsonProcessingException ex) {
-         return ex.getMessage();
+         return ex.getClass().getSimpleName() + ": " + ex.getMessage();
       }
    }
 
@@ -266,7 +269,7 @@ public final class YamlNode extends ObjectNode {
 
    @Override
    @SuppressWarnings("unchecked")
-   public <T extends com.fasterxml.jackson.databind.JsonNode> T without(final Collection<String> fieldNames) {
+   public <T extends JsonNode> T without(final Collection<String> fieldNames) {
       super.without(fieldNames);
       return (T) this;
    }

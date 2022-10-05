@@ -32,7 +32,6 @@ public interface Identifiable<IdType> {
          this.id = id;
       }
 
-      @Nullable
       @Override
       public Object getIdRealm() {
          return getClass();
@@ -50,6 +49,5 @@ public interface Identifiable<IdType> {
    /**
     * @return an identifier for the realm/namespace in which the id is unique, e.g. the concrete class name.
     */
-   @Nullable
    Object getIdRealm();
 }

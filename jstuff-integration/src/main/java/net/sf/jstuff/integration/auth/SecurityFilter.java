@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.auth;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -32,8 +34,8 @@ public class SecurityFilter implements Filter {
 
    public static final ThreadLocal<HttpServletRequest> HTTP_SERVLET_REQUEST_HOLDER = new ThreadLocal<>();
 
-   private AuthService authService;
-   private UserDetailsService userDetailsService;
+   private AuthService authService = eventuallyNonNull();
+   private UserDetailsService userDetailsService = eventuallyNonNull();
 
    public SecurityFilter() {
       LOG.infoNew(this);
@@ -59,10 +61,12 @@ public class SecurityFilter implements Filter {
       Authentication auth = (Authentication) sess.getAttribute(SESSION_AUTHENTICATION_ATTRIBUTE);
       try {
          if (auth == null) {
-            if (req.getRemoteUser() != null) {
+            final var remoteUser = req.getRemoteUser();
+            if (remoteUser != null) {
                // build a auth object based on form-based login
-               auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(req.getRemoteUser()), (String) sess
-                  .getAttribute("j_password"));
+               auth = new DefaultAuthentication( //
+                  userDetailsService.getUserDetailsByLogonName(remoteUser), //
+                  (String) sess.getAttribute("j_password"));
                sess.removeAttribute("j_password");
                sess.setAttribute(SESSION_AUTHENTICATION_ATTRIBUTE, auth);
             } else {

@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.mail;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
@@ -24,6 +26,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.validation.Args;
@@ -55,12 +59,13 @@ public abstract class MailUtils {
       public String smtpUsername;
    }
 
-   public static void sendMail(final Mail mail, final MailServer mailServer) throws AddressException, MessagingException {
+   public static void sendMail(final @NonNull Mail mail, final @NonNull MailServer mailServer) throws AddressException, MessagingException {
       Args.notNull("mail", mail);
       Args.notNull("mailServer", mailServer);
+      Args.notNull("mailServer.smtpHostname", mailServer.smtpHostname);
 
-      final Properties props = new Properties();
-      props.put("mail.smtp.host", mailServer.smtpHostname);
+      final var props = new Properties();
+      props.put("mail.smtp.host", asNonNullUnsafe(mailServer.smtpHostname));
       props.put("mail.smtp.dsn.notify", "FAILURE");
       props.put("mail.smtp.port", Integer.toString(mailServer.smtpPort));
       final Session session;

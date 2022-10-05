@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.integration.userregistry.DefaultUserDetails;
 import net.sf.jstuff.integration.userregistry.UserDetails;
 
@@ -20,11 +22,11 @@ class DefaultAuthentication implements Authentication {
    public static final Authentication UNBOUND = new DefaultAuthentication(new DefaultUserDetails("anonymous", "anonymous", null, null,
       null), null);
 
-   private String password;
+   private @Nullable String password;
    private final Map<String, Serializable> properties = new HashMap<>(2);
-   private UserDetails userDetails;
+   private @Nullable UserDetails userDetails;
 
-   DefaultAuthentication(final UserDetails userDetails, final String password) {
+   DefaultAuthentication(final @Nullable UserDetails userDetails, final @Nullable String password) {
       this.userDetails = userDetails;
       this.password = password;
    }
@@ -33,16 +35,17 @@ class DefaultAuthentication implements Authentication {
     * @return the password
     */
    @Override
-   public String getPassword() {
+   public @Nullable String getPassword() {
       return password;
    }
 
    @Override
-   public Serializable getProperty(final String name) {
+   public @Nullable Serializable getProperty(final String name) {
       return properties.get(name);
    }
 
    @Override
+   @Nullable
    public UserDetails getUserDetails() {
       return userDetails;
    }
@@ -56,7 +59,7 @@ class DefaultAuthentication implements Authentication {
 
    @Override
    public boolean isAuthenticated() {
-      return userDetails != null && userDetails.getDistingueshedName() != null;
+      return userDetails != null && userDetails.getDistinguishedName() != null;
    }
 
    /**

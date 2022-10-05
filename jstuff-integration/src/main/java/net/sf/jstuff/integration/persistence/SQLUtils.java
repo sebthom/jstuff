@@ -13,6 +13,8 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.validation.Args;
 
@@ -52,7 +54,7 @@ public abstract class SQLUtils {
       // convert column names to Array
       final String[] columnNames = columns.keySet().toArray(new String[columns.size()]);
 
-      final PreparedStatement stmt = con.prepareStatement(buildInsertSQL(tableName, columnNames));
+      final var stmt = con.prepareStatement(buildInsertSQL(tableName, columnNames));
       int parameterIndex = 1;
       // insert column values
       for (final String columnName : columnNames) {
@@ -77,7 +79,7 @@ public abstract class SQLUtils {
    /**
     * Create update-preparedStatement-String with table name, column names and where-clause.
     */
-   public static String buildUpdateSQL(final String tableName, final String[] columnNames, final String where) {
+   public static String buildUpdateSQL(final String tableName, final String[] columnNames, final @Nullable String where) {
       Args.notEmpty("tableName", tableName);
       Args.notEmpty("columnNames", columnNames);
 
@@ -97,7 +99,7 @@ public abstract class SQLUtils {
     */
    @SuppressWarnings("resource")
    public static PreparedStatement buildUpdateStatement(final Connection con, final String tableName, final Map<String, Object> columns,
-      final String where, final Object... whereValues) throws SQLException {
+      final String where, final Object @Nullable... whereValues) throws SQLException {
       Args.notNull("con", con);
       Args.notEmpty("tableName", tableName);
       Args.notEmpty("columns", columns);
@@ -138,13 +140,9 @@ public abstract class SQLUtils {
    public static int getSQLType(final Class<?> type) {
       if (type == Integer.class || type == int.class || type == Short.class || type == short.class)
          return Types.INTEGER;
-      if (type == Long.class || type == long.class)
+      if (type == Long.class || type == long.class || type == Byte.class || type == byte.class)
          return Types.INTEGER;
-      if (type == Byte.class || type == byte.class)
-         return Types.INTEGER;
-      if (type == Float.class || type == float.class)
-         return Types.FLOAT;
-      if (type == Double.class || type == double.class)
+      if (type == Float.class || type == float.class || type == Double.class || type == double.class)
          return Types.FLOAT;
       if (type == BigDecimal.class)
          return Types.FLOAT;

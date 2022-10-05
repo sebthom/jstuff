@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.lang3.reflect.ConstructorUtils;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonStreamContext;
@@ -58,7 +59,7 @@ public class ExtendedBeanDeserializer extends BeanDeserializer {
       super(src);
    }
 
-   private Object getParentObject(final JsonParser p) {
+   private @Nullable Object getParentObject(final JsonParser p) {
       JsonStreamContext parentCtx = p.getParsingContext().getParent();
       if (parentCtx == null)
          return null;

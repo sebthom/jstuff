@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.PreDestroy;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
@@ -43,16 +44,15 @@ import net.sf.jstuff.core.validation.Assert;
 public final class SpringBeanInjector {
    private static final Logger LOG = Logger.create();
 
-   private static SpringBeanInjector instance;
+   private static @Nullable SpringBeanInjector instance;
 
    /**
     * @return the default instance (the last instantiated one by any spring context)
     */
    public static SpringBeanInjector get() {
-      Assert.notNull(instance, "No SpringBeanInjector instance created yet. Add <bean class=\"" + SpringBeanInjector.class.getName()
-         + "\" /> to your spring configuration!");
-
-      return instance;
+      return Assert.notNull(instance, //
+         "No SpringBeanInjector instance created yet. Add <bean class=\"" + SpringBeanInjector.class.getName()
+            + "\" /> to your spring configuration!");
    }
 
    private final ObjectCache<String, Object> registeredSingletons = new ObjectCache<>(true);

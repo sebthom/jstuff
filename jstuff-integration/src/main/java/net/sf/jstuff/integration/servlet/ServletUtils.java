@@ -11,6 +11,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -23,7 +25,7 @@ public abstract class ServletUtils {
       return (T) request.getAttribute(name);
    }
 
-   public static X509Certificate getClientCertificate(final ServletRequest request) {
+   public static @Nullable X509Certificate getClientCertificate(final ServletRequest request) {
       Args.notNull("request", request);
 
       final X509Certificate[] certChain = getAttribute(request, "javax.servlet.request.X509Certificate");

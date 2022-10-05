@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.serviceregistry.impl;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.After;
 import org.junit.Before;
@@ -29,8 +31,8 @@ public class ServiceRegistryPerfITest {
       }
    };
 
-   private ByteBuddyServiceRegistry byteBuddyRegistry;
-   private DefaultServiceRegistry jdkProxyRegistry;
+   private ByteBuddyServiceRegistry byteBuddyRegistry = eventuallyNonNull();
+   private DefaultServiceRegistry jdkProxyRegistry = eventuallyNonNull();
 
    public void runPerfTest(final MyService service, final String label) {
       final StopWatch sw = new StopWatch();
@@ -50,8 +52,8 @@ public class ServiceRegistryPerfITest {
 
    @After
    public void tearDown() throws Exception {
-      byteBuddyRegistry = null;
-      jdkProxyRegistry = null;
+      byteBuddyRegistry = eventuallyNonNull();
+      jdkProxyRegistry = eventuallyNonNull();
    }
 
    @Test

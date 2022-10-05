@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 import net.sf.jstuff.core.logging.Logger;
@@ -29,7 +30,7 @@ public class ContentCapturingHttpServletResponseWrapperTest {
    @SuppressWarnings("unused")
    public void testContentCapturingHttpServletResponseWrapper() throws UnsupportedEncodingException {
 
-      final String[] encoding = {"ISO-8859-1"};
+      final @NonNull String[] encoding = {"ISO-8859-1"};
 
       final HttpServletResponse mock = Types.createMixin(HttpServletResponse.class, new Object() {
          public String getCharacterEncoding() {

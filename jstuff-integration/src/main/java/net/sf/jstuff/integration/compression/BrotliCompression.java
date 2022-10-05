@@ -56,6 +56,7 @@ public class BrotliCompression extends AbstractCompression {
    }
 
    @Override
+   @SuppressWarnings("null")
    public byte[] compress(final byte[] uncompressed) throws IOException {
       Args.notNull("uncompressed", uncompressed);
 
@@ -79,6 +80,7 @@ public class BrotliCompression extends AbstractCompression {
    }
 
    @Override
+   @SuppressWarnings("null")
    public byte[] decompress(final byte[] compressed) throws IOException {
       Args.notNull("compressed", compressed);
 

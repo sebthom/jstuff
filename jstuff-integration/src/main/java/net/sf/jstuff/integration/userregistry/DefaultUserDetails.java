@@ -5,6 +5,7 @@
 package net.sf.jstuff.integration.userregistry;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -13,17 +14,17 @@ public class DefaultUserDetails implements UserDetails {
    private static final long serialVersionUID = 1L;
 
    private final String displayName;
-   private final String distingueshedName;
-   private final String eMailAddress;
-   private final String logonName;
+   private final @Nullable String distinguishedName;
+   private final @Nullable String eMailAddress;
+   private final @Nullable String logonName;
    private final String userId;
 
-   public DefaultUserDetails(final String userId, final String displayName, final String logonName, final String distingueshedName,
-      final String mailAddress) {
+   public DefaultUserDetails(final String userId, final String displayName, final @Nullable String logonName,
+      final @Nullable String distinguishedName, final @Nullable String mailAddress) {
       this.userId = userId;
       this.displayName = displayName;
       this.logonName = logonName;
-      this.distingueshedName = distingueshedName;
+      this.distinguishedName = distinguishedName;
       eMailAddress = mailAddress;
    }
 
@@ -33,17 +34,17 @@ public class DefaultUserDetails implements UserDetails {
    }
 
    @Override
-   public String getDistingueshedName() {
-      return distingueshedName;
+   public @Nullable String getDistinguishedName() {
+      return distinguishedName;
    }
 
    @Override
-   public String getEMailAddress() {
+   public @Nullable String getEMailAddress() {
       return eMailAddress;
    }
 
    @Override
-   public String getLogonName() {
+   public @Nullable String getLogonName() {
       return logonName;
    }
 

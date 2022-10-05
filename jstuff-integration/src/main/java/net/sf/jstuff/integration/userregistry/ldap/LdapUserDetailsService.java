@@ -4,19 +4,21 @@
  */
 package net.sf.jstuff.integration.userregistry.ldap;
 
-import java.util.Iterator;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import javax.inject.Inject;
 import javax.naming.CompositeName;
 import javax.naming.Name;
 import javax.naming.NameParser;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import net.sf.jstuff.core.collection.Enumerations;
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LdapTemplate;
@@ -31,13 +33,13 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
 public class LdapUserDetailsService implements UserDetailsService {
    private static final Logger LOG = Logger.create();
 
-   protected LdapTemplate ldapTemplate;
-   protected String userAttributeDisplayName;
-   protected String userAttributeEMailAdress;
-   protected String userAttributeLogonName;
-   protected String userAttributeUserId;
-   protected String userSearchBase;
-   protected String userSearchFilter;
+   protected LdapTemplate ldapTemplate = eventuallyNonNull();
+   protected String userAttributeDisplayName = eventuallyNonNull();
+   protected String userAttributeEMailAdress = eventuallyNonNull();
+   protected String userAttributeLogonName = eventuallyNonNull();
+   protected String userAttributeUserId = eventuallyNonNull();
+   protected String userSearchBase = eventuallyNonNull();
+   protected String userSearchFilter = eventuallyNonNull();
    protected boolean userSearchSubtree = true;
 
    public LdapUserDetailsService() {
@@ -48,17 +50,17 @@ public class LdapUserDetailsService implements UserDetailsService {
       return userAttributeLogonName;
    }
 
-   protected UserDetails getUserDetailsByFilter(final String filter) {
+   protected @Nullable UserDetails getUserDetailsByFilter(final String filter) {
       Args.notNull("filter", filter);
 
-      return (UserDetails) ldapTemplate.execute(ctx -> {
-         final Iterator<SearchResult> results = searchUser(ctx, filter, new String[] { //
+      return ldapTemplate.execute(ctx -> {
+         final var results = searchUser(ctx, filter, new String[] { //
             userAttributeDisplayName, //
             userAttributeEMailAdress, //
             userAttributeLogonName, //
             userAttributeUserId //
-         }).iterator();
-         if (!results.hasNext())
+         });
+         if (!results.hasMore())
             return null;
 
          final SearchResult sr = results.next();
@@ -73,37 +75,38 @@ public class LdapUserDetailsService implements UserDetailsService {
          final Name dn = contextName.addAll(baseName).addAll(entryName);
 
          return new DefaultUserDetails( //
-            (String) attr.get(userAttributeUserId).get(), //
-            (String) attr.get(userAttributeDisplayName).get(), //
-            (String) attr.get(userAttributeLogonName).get(), //
+            LdapUtils.getAttributeValue(attr, userAttributeUserId, "n/a"), //
+            LdapUtils.getAttributeValue(attr, userAttributeDisplayName, "n/a"), //
+            LdapUtils.getAttributeValue(attr, userAttributeLogonName, null), //
             dn.toString(), //
-            (String) attr.get(userAttributeEMailAdress).get()//
+            LdapUtils.getAttributeValue(attr, userAttributeEMailAdress, null) //
          );
       });
    }
 
    @Override
-   public UserDetails getUserDetailsByLogonName(final String logonName) {
+   public @Nullable UserDetails getUserDetailsByLogonName(final String logonName) {
       Args.notNull("logonName", logonName);
 
       return getUserDetailsByFilter(userAttributeLogonName + "=" + LdapUtils.ldapEscape(logonName));
    }
 
    @Override
-   public UserDetails getUserDetailsByUserId(final String userId) {
+   public @Nullable UserDetails getUserDetailsByUserId(final String userId) {
       Args.notNull("userId", userId);
 
       return getUserDetailsByFilter(userAttributeUserId + "=" + LdapUtils.ldapEscape(userId));
    }
 
-   protected Iterable<SearchResult> searchUser(final DirContext ctx, final String filter, final String[] attrs) throws NamingException {
-      final SearchControls options = new SearchControls();
+   protected NamingEnumeration<SearchResult> searchUser(final DirContext ctx, final String filter, final String[] attrs)
+      throws NamingException {
+      final var options = new SearchControls();
       options.setSearchScope(userSearchSubtree ? SearchControls.SUBTREE_SCOPE : SearchControls.ONELEVEL_SCOPE);
       options.setReturningAttributes(attrs);
 
-      return Enumerations.toIterable(ctx.search(userSearchBase, //
+      return ctx.search(userSearchBase, //
          "(&(" + filter + ")(" + userSearchFilter + "))", //
-         options));
+         options);
    }
 
    @Inject

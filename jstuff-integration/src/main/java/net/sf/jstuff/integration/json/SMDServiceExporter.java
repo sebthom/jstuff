@@ -5,10 +5,12 @@
 package net.sf.jstuff.integration.json;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -130,12 +132,12 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
    /**
     * The exported methods by name.
     */
-   private Map<String, Method> exportedMethodsByName;
+   private Map<String, Method> exportedMethodsByName = Collections.emptyMap();
 
    /**
     * Simple Method Description
     */
-   private String smdTemplate;
+   private String smdTemplate = "";
 
    public SMDServiceExporter() {
       LOG.infoNew(this);
@@ -143,8 +145,9 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
 
    @Override
    public void afterPropertiesSet() throws Exception {
-      exportedMethodsByName = buildExportedMethodsByName(getServiceInterface());
-      smdTemplate = buildSMDTemplate(getServiceInterface(), getService(), exportedMethodsByName, false);
+      final var srvIFace = asNonNullUnsafe(getServiceInterface());
+      exportedMethodsByName = buildExportedMethodsByName(srvIFace);
+      smdTemplate = buildSMDTemplate(srvIFace, asNonNullUnsafe(getService()), exportedMethodsByName, false);
    }
 
    /**
@@ -193,7 +196,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
          final Object methodReturnValue = method.invoke(getProxyForService(), methodArguments);
 
          // creating a JSON object containing the method return value
-         final Map<String, Object> result = new LinkedHashMap<>(2);
+         final var result = new LinkedHashMap<String, Object>(2);
          result.put("id", requestObject.get("id").asText());
          result.put("result", methodReturnValue);
          JSON.writeValue(response.getWriter(), result);

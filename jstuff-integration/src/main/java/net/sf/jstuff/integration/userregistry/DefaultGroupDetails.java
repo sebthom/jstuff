@@ -4,6 +4,11 @@
  */
 package net.sf.jstuff.integration.userregistry;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -13,9 +18,17 @@ public class DefaultGroupDetails implements GroupDetails {
    private static final long serialVersionUID = 1L;
 
    private String displayName;
-   private String distingueshedName;
+   private String distinguishedName;
    private String groupId;
-   private String[] memberDNs;
+   private SortedSet<String> memberDNs;
+
+   public DefaultGroupDetails(final String groupId, final String displayName, final String distinguishedName,
+      final Collection<String> memberDNs) {
+      this.displayName = displayName;
+      this.distinguishedName = distinguishedName;
+      this.groupId = groupId;
+      this.memberDNs = Collections.unmodifiableSortedSet(new TreeSet<>(memberDNs));
+   }
 
    @Override
    public String getDisplayName() {
@@ -23,8 +36,8 @@ public class DefaultGroupDetails implements GroupDetails {
    }
 
    @Override
-   public String getDistingueshedName() {
-      return distingueshedName;
+   public String getDistinguishedName() {
+      return distinguishedName;
    }
 
    @Override
@@ -33,24 +46,8 @@ public class DefaultGroupDetails implements GroupDetails {
    }
 
    @Override
-   public String[] getMemberDNs() {
-      return memberDNs.clone();
-   }
-
-   public void setDisplayName(final String displayName) {
-      this.displayName = displayName;
-   }
-
-   public void setDistingueshedName(final String distingueshedName) {
-      this.distingueshedName = distingueshedName;
-   }
-
-   public void setGroupId(final String groupId) {
-      this.groupId = groupId;
-   }
-
-   public void setMemberDNs(final String[] memberDNs) {
-      this.memberDNs = memberDNs.clone();
+   public SortedSet<String> getMemberDNs() {
+      return memberDNs;
    }
 
    @Override

@@ -11,6 +11,8 @@ import java.net.URL;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import net.sf.jstuff.core.logging.Logger;
 
 /**
@@ -24,17 +26,19 @@ public class ClassPathResourcesServletContext extends ServletContextWrapper {
    }
 
    @Override
-   public ServletContext getContext(final String uripath) {
-      final ServletContext ctx = delegate.getContext(uripath);
+   public @Nullable ServletContext getContext(final String uripath) {
+      final var ctx = delegate.getContext(uripath);
       if (ctx instanceof ClassPathResourcesServletContext)
          return ctx;
       if (ctx == delegate)
          return this;
+      if (ctx == null)
+         return null;
       return new ClassPathResourcesServletContext(ctx);
    }
 
    @Override
-   public URL getResource(final String path) throws MalformedURLException {
+   public @Nullable URL getResource(final String path) throws MalformedURLException {
       URL resource = delegate.getResource(path);
       if (resource == null) {
          resource = ClassPathResourcesFilter.findResourceInClassPath(path);
@@ -44,7 +48,7 @@ public class ClassPathResourcesServletContext extends ServletContextWrapper {
 
    @SuppressWarnings("resource")
    @Override
-   public InputStream getResourceAsStream(final String path) {
+   public @Nullable InputStream getResourceAsStream(final String path) {
       InputStream stream = delegate.getResourceAsStream(path);
       if (stream == null) {
          final URL resource = ClassPathResourcesFilter.findResourceInClassPath(path);

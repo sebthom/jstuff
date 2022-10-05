@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.servlet;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -17,6 +19,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.logging.Logger;
@@ -49,8 +53,14 @@ public class ClassPathResourcesFilter implements Filter {
 
    public static final int DEFAULT_CACHE_TIME_IN_SEC = 60 * 60 * 24; // one day
 
-   public static URL findResourceInClassPath(final String path) {
-      final ClassLoader cl = Thread.currentThread().getContextClassLoader();
+   public static @Nullable URL findResourceInClassPath(final String path) {
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      if (cl == null) {
+         cl = ClassPathResourcesFilter.class.getClassLoader();
+      }
+      if (cl == null) {
+         cl = ClassLoader.getSystemClassLoader();
+      }
       URL resource = cl.getResource(path);
       if (resource == null && path.startsWith("/")) {
          resource = cl.getResource(path.substring(1));
@@ -58,7 +68,7 @@ public class ClassPathResourcesFilter implements Filter {
       return resource;
    }
 
-   protected ServletContext ctx;
+   protected ServletContext ctx = eventuallyNonNull();
 
    protected int maxAgeInSeconds;
 
@@ -80,10 +90,7 @@ public class ClassPathResourcesFilter implements Filter {
       }
 
       final HttpServletRequest req = (HttpServletRequest) request;
-      String resourcePath = req.getServletPath();
-      if (resourcePath == null) {
-         resourcePath = req.getPathInfo();
-      }
+      final String resourcePath = req.getServletPath();
 
       URL resource = ctx.getResource(resourcePath);
       // if resource was found on file system simply continue

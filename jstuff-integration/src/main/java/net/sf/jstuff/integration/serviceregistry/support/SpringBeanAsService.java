@@ -4,6 +4,10 @@
  */
 package net.sf.jstuff.integration.serviceregistry.support;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -30,17 +34,17 @@ import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanAsService<T> implements InitializingBean, DisposableBean {
+public class SpringBeanAsService<@NonNull T> implements InitializingBean, DisposableBean {
 
    private boolean isInitialized;
-   private ServiceRegistry serviceRegistry;
+   private ServiceRegistry serviceRegistry = eventuallyNonNull();
 
    /**
     * @optional by default the fully qualified name of the service interface is used
     */
-   private String serviceEndpointId;
-   private Class<T> serviceInterface;
-   private T springBean;
+   private @Nullable String serviceEndpointId;
+   private Class<T> serviceInterface = eventuallyNonNull();
+   private T springBean = eventuallyNonNull();
 
    @Override
    public synchronized void afterPropertiesSet() throws Exception {
@@ -53,14 +57,15 @@ public class SpringBeanAsService<T> implements InitializingBean, DisposableBean 
       }
       isInitialized = true;
 
-      serviceRegistry.addService(serviceEndpointId, serviceInterface, springBean);
+      serviceRegistry.addService(asNonNullUnsafe(serviceEndpointId), serviceInterface, springBean);
    }
 
    @Override
    public synchronized void destroy() throws Exception {
       if (!isInitialized)
          return;
-      serviceRegistry.removeService(serviceEndpointId, springBean);
+      serviceRegistry.removeService(asNonNullUnsafe(serviceEndpointId), springBean);
+      isInitialized = false;
    }
 
    public synchronized void setService(final T service) {
