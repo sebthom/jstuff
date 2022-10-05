@@ -23,6 +23,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import net.sf.jstuff.core.functional.BiObjIntConsumer;
 import net.sf.jstuff.core.functional.ByteConsumer;
 import net.sf.jstuff.core.functional.CharConsumer;
+import net.sf.jstuff.core.functional.ThrowingConsumer;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -41,6 +42,16 @@ public abstract class Loops {
 
       while (en.hasMoreElements()) {
          consumer.accept(en.nextElement());
+      }
+   }
+
+   public static <T, X extends Throwable> void forEach(final @Nullable Enumeration<T> en, final @Nullable ThrowingConsumer<T, X> consumer)
+      throws X {
+      if (en == null || consumer == null)
+         return;
+
+      while (en.hasMoreElements()) {
+         consumer.acceptOrThrow(en.nextElement());
       }
    }
 
@@ -94,6 +105,16 @@ public abstract class Loops {
       it.forEach(consumer);
    }
 
+   public static <T, X extends Throwable> void forEach(final @Nullable Iterable<T> it, final @Nullable ThrowingConsumer<T, X> consumer)
+      throws X {
+      if (it == null || consumer == null)
+         return;
+
+      for (final T t : it) {
+         consumer.acceptOrThrow(t);
+      }
+   }
+
    public static <T> void forEachWithIndex(final @Nullable Iterable<T> it, final @Nullable ObjIntConsumer<T> consumer) {
       if (it == null || consumer == null)
          return;
@@ -130,6 +151,16 @@ public abstract class Loops {
 
       while (it.hasNext()) {
          consumer.accept(it.next());
+      }
+   }
+
+   public static <T, X extends Throwable> void forEach(final @Nullable Iterator<T> it, final @Nullable ThrowingConsumer<T, X> consumer)
+      throws X {
+      if (it == null || consumer == null)
+         return;
+
+      while (it.hasNext()) {
+         consumer.acceptOrThrow(it.next());
       }
    }
 
@@ -188,6 +219,16 @@ public abstract class Loops {
          return;
 
       map.entrySet().forEach(consumer);
+   }
+
+   public static <K, V, X extends Throwable> void forEach(final @Nullable Map<K, V> map,
+      final @Nullable ThrowingConsumer<Entry<K, V>, X> consumer) throws X {
+      if (map == null || consumer == null)
+         return;
+
+      for (final var e : map.entrySet()) {
+         consumer.acceptOrThrow(e);
+      }
    }
 
    public static <K, V> void forEachWithIndex(final @Nullable Map<K, V> map, final @Nullable BiObjIntConsumer<K, V> consumer) {
@@ -252,8 +293,24 @@ public abstract class Loops {
       }
    }
 
+   public static <T, X extends Throwable> void forEach(final T @Nullable [] array, final @Nullable ThrowingConsumer<T, X> consumer)
+      throws X {
+      if (array == null || consumer == null)
+         return;
+
+      for (final T element : array) {
+         consumer.acceptOrThrow(element);
+      }
+   }
+
    @SafeVarargs
    public static <T> void forEach(final @Nullable Consumer<T> consumer, final T @Nullable... array) {
+      forEach(array, consumer);
+   }
+
+   @SafeVarargs
+   public static <T, X extends Throwable> void forEach(final @Nullable ThrowingConsumer<T, X> consumer, final T @Nullable... array)
+      throws X {
       forEach(array, consumer);
    }
 
