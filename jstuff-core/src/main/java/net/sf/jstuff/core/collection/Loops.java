@@ -17,7 +17,6 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import java.util.function.ObjIntConsumer;
-import java.util.function.ObjLongConsumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -255,12 +254,7 @@ public abstract class Loops {
 
    @SafeVarargs
    public static <T> void forEach(final @Nullable Consumer<T> consumer, final T @Nullable... array) {
-      if (array == null || consumer == null || array.length == 0)
-         return;
-
-      for (final T element : array) {
-         consumer.accept(element);
-      }
+      forEach(array, consumer);
    }
 
    public static <T> void forEachWithIndex(final T @Nullable [] array, final @Nullable ObjIntConsumer<T> consumer) {
@@ -273,13 +267,8 @@ public abstract class Loops {
    }
 
    @SafeVarargs
-   public static <T> void forEachWithIndex(final @Nullable ObjLongConsumer<T> consumer, final T @Nullable... array) {
-      if (array == null || consumer == null || array.length == 0)
-         return;
-
-      for (int i = 0, l = array.length; i < l; i++) {
-         consumer.accept(array[i], i);
-      }
+   public static <T> void forEachWithIndex(final @Nullable ObjIntConsumer<T> consumer, final T @Nullable... array) {
+      forEachWithIndex(array, consumer);
    }
 
    /* ********************
@@ -296,12 +285,7 @@ public abstract class Loops {
    }
 
    public static void forEach(final @Nullable ByteConsumer consumer, final byte @Nullable... array) {
-      if (array == null || consumer == null || array.length == 0)
-         return;
-
-      for (final byte element : array) {
-         consumer.accept(element);
-      }
+      forEach(array, consumer);
    }
 
    /* ********************
@@ -318,12 +302,7 @@ public abstract class Loops {
    }
 
    public static void forEach(final @Nullable CharConsumer consumer, final char @Nullable... array) {
-      if (array == null || consumer == null || array.length == 0)
-         return;
-
-      for (final char element : array) {
-         consumer.accept(element);
-      }
+      forEach(array, consumer);
    }
 
    /* ********************
@@ -340,12 +319,7 @@ public abstract class Loops {
    }
 
    public static void forEach(final @Nullable IntConsumer consumer, final int @Nullable... array) {
-      if (array == null || consumer == null || array.length == 0)
-         return;
-
-      for (final int element : array) {
-         consumer.accept(element);
-      }
+      forEach(array, consumer);
    }
 
    /* ********************
@@ -362,12 +336,7 @@ public abstract class Loops {
    }
 
    public static void forEach(final @Nullable LongConsumer consumer, final long @Nullable... array) {
-      if (array == null || consumer == null || array.length == 0)
-         return;
-
-      for (final long element : array) {
-         consumer.accept(element);
-      }
+      forEach(array, consumer);
    }
 
    /* ********************
@@ -375,12 +344,7 @@ public abstract class Loops {
     * ********************/
 
    public static void forRange(final int startInclusive, final int endExclusive, final @Nullable IntConsumer consumer) {
-      if (consumer == null)
-         return;
-
-      for (int i = startInclusive; i < endExclusive; i++) {
-         consumer.accept(endExclusive);
-      }
+      forRange(startInclusive, endExclusive, 1, consumer);
    }
 
    public static void forRange(final int startInclusive, final int endExclusive, final int offset, final @Nullable IntConsumer consumer) {
@@ -393,15 +357,10 @@ public abstract class Loops {
    }
 
    public static void forRange(final long startInclusive, final long endExclusive, final @Nullable LongConsumer consumer) {
-      if (consumer == null)
-         return;
-
-      for (long i = startInclusive; i < endExclusive; i++) {
-         consumer.accept(endExclusive);
-      }
+      forRange(startInclusive, endExclusive, 1, consumer);
    }
 
-   public static void forRange(final long startInclusive, final int endExclusive, final long offset,
+   public static void forRange(final long startInclusive, final long endExclusive, final long offset,
       final @Nullable LongConsumer consumer) {
       if (consumer == null)
          return;
