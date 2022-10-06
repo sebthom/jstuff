@@ -50,21 +50,19 @@ public abstract class JMXUtils {
       }
 
       try {
-         mbeanServer = JMXUtils.mbeanServer = ManagementFactory.getPlatformMBeanServer();
-         if (mbeanServer != null) {
-            LOG.info("Located MBeanServer via java.lang.management.ManagementFactory#getPlatformMBeanServer()");
-            return mbeanServer;
-         }
-      } catch (final Exception | LinkageError ex) {
-         LOG.warn("Locating MBeanServer via java.lang.management.ManagementFactory#getPlatformMBeanServer() failed.", ex);
-      }
-
-      try {
          mbeanServer = JMXUtils.mbeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
          LOG.info("Located MBeanServer via MBeanServerFactory#findMBeanServer(null).get(0)");
          return mbeanServer;
       } catch (final Exception | LinkageError ex) {
          LOG.warn("Locating MBeanServer via MBeanServerFactory#findMBeanServer(null).get(0) failed.", ex);
+      }
+
+      try {
+         mbeanServer = JMXUtils.mbeanServer = ManagementFactory.getPlatformMBeanServer();
+         LOG.info("Located MBeanServer via java.lang.management.ManagementFactory#getPlatformMBeanServer()");
+         return mbeanServer;
+      } catch (final Exception | LinkageError ex) {
+         LOG.warn("Locating MBeanServer via java.lang.management.ManagementFactory#getPlatformMBeanServer() failed.", ex);
       }
 
       LOG.info("Creating new MBeanServer...");
