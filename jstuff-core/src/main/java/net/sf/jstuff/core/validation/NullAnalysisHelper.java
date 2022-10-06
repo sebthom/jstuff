@@ -16,7 +16,7 @@ import net.sf.jstuff.core.collection.ArrayUtils;
  * @author Sebastian Thomschke
  */
 @NonNullByDefault({})
-public final class NullAnalysisHelper {
+public abstract class NullAnalysisHelper {
 
    /**
     * Casts non-null value marked as {@link Nullable} to {@link NonNull} without any validation.
@@ -108,6 +108,6 @@ public final class NullAnalysisHelper {
       return asNonNullUnsafe((T) null);
    }
 
-   private NullAnalysisHelper() {
+   protected NullAnalysisHelper() {
    }
 }
