@@ -211,7 +211,7 @@ public abstract class Fields extends Members {
     * @param obj specify <code>null</code> for static fields
     */
    @SuppressWarnings("unchecked")
-   public static <T> T read(final Object obj, final Field field) throws AccessingFieldValueFailedException {
+   public static <T> T read(final @Nullable Object obj, final Field field) throws AccessingFieldValueFailedException {
       Args.notNull("field", field);
 
       try {
