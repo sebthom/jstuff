@@ -125,6 +125,13 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
       }
    }
 
+   public static String getProperty(final String name, final String defaultValue) {
+      final var val = System.getProperty(name);
+      if (val == null)
+         return defaultValue;
+      return val;
+   }
+
    /**
     * Determines if the current Java process is running with administrative permissions
     * (in Windows "elevated", in Unix as "root").
