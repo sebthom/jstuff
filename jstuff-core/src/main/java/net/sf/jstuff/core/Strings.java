@@ -805,12 +805,15 @@ public abstract class Strings {
       return StringUtils.difference(str1, str2);
    }
 
-   public static String emptyIfBlank(final @Nullable CharSequence str) {
-      return str == null || isBlank(str) ? EMPTY : str.toString();
+   public static String emptyIfBlank(final @Nullable Object obj) {
+      if (obj == null)
+         return EMPTY;
+      final var str = obj.toString();
+      return str.isBlank() ? EMPTY : str;
    }
 
-   public static String emptyIfNull(final @Nullable CharSequence str) {
-      return str == null ? EMPTY : str.toString();
+   public static String emptyIfNull(final @Nullable Object obj) {
+      return obj == null ? EMPTY : obj.toString();
    }
 
    public static boolean endsWith(final @Nullable CharSequence str, final char ch) {
