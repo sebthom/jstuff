@@ -67,7 +67,7 @@ public abstract class Processes {
             throw new IllegalArgumentException("withRedirectError() and withRedirectErrorToOutput() are mutually exclusive.");
       }
 
-      public Builder onExit(final Consumer<ProcessWrapper> action) {
+      public Builder onExit(final @Nullable Consumer<ProcessWrapper> action) {
          onExit = action;
          return this;
       }
