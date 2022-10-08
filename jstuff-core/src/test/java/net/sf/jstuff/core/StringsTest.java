@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -54,6 +56,81 @@ public class StringsTest {
       assertThat(Strings.countMatches("1234512345", "1", -100)).isEqualTo(2);
       assertThat(Strings.countMatches(null, "1", 1)).isZero();
       assertThat(Strings.countMatches("1", null, 1)).isZero();
+   }
+
+   @Test
+   @SuppressWarnings("unused")
+   public void testDefaultIf() {
+      assertThat(Strings.defaultIfBlank("sometext", "DEFAULT")).isEqualTo("sometext");
+      assertThat(Strings.defaultIfBlank("  ", "DEFAULT")).isEqualTo("DEFAULT");
+      assertThat(Strings.defaultIfBlank("", "DEFAULT")).isEqualTo("DEFAULT");
+      assertThat(Strings.defaultIfBlank(null, "DEFAULT")).isEqualTo("DEFAULT");
+      assertThat(Strings.defaultIfEmpty("sometext", "DEFAULT")).isEqualTo("sometext");
+      assertThat(Strings.defaultIfEmpty("  ", "DEFAULT")).isEqualTo("  ");
+      assertThat(Strings.defaultIfEmpty("", "DEFAULT")).isEqualTo("DEFAULT");
+      assertThat(Strings.defaultIfBlank(null, "DEFAULT")).isEqualTo("DEFAULT");
+      assertThat(Strings.defaultIfNull("sometext", "DEFAULT")).isEqualTo("sometext");
+      assertThat(Strings.defaultIfNull("  ", "DEFAULT")).isEqualTo("  ");
+      assertThat(Strings.defaultIfNull("", "DEFAULT")).isEqualTo("");
+      assertThat(Strings.defaultIfNull(null, "DEFAULT")).isEqualTo("DEFAULT");
+
+      // test type interference
+      final @Nullable String defaultIfBlank0 = Strings.defaultIfBlank("", null);
+      final @NonNull CharSequence defaultIfBlank2 = Strings.defaultIfBlank((CharSequence) "", "");
+      final @NonNull CharSequence defaultIfBlank3 = Strings.defaultIfBlank("", (CharSequence) "");
+      final @NonNull CharSequence defaultIfBlank4 = Strings.defaultIfBlank("", new StringBuilder());
+      final @NonNull String defaultIfBlank5 = Strings.defaultIfBlank(null, "");
+      final @NonNull CharSequence defaultIfBlank6 = Strings.defaultIfBlank((CharSequence) null, "");
+      final @NonNull CharSequence defaultIfBlank7 = Strings.defaultIfBlank(null, (CharSequence) "");
+      final @NonNull StringBuilder defaultIfBlank8 = Strings.defaultIfBlank(null, new StringBuilder());
+
+      final @Nullable String defaultIfEmpty0 = Strings.defaultIfEmpty("", null);
+      final @NonNull String defaultIfEmpty1 = Strings.defaultIfEmpty("", "");
+      final @NonNull CharSequence defaultIfEmpty2 = Strings.defaultIfEmpty((CharSequence) "", "");
+      final @NonNull CharSequence defaultIfEmpty3 = Strings.defaultIfEmpty("", (CharSequence) "");
+      final @NonNull CharSequence defaultIfEmpty4 = Strings.defaultIfEmpty("", new StringBuilder());
+      final @NonNull String defaultIfEmpty5 = Strings.defaultIfEmpty(null, "");
+      final @NonNull CharSequence defaultIfEmpty6 = Strings.defaultIfEmpty((CharSequence) null, "");
+      final @NonNull CharSequence defaultIfEmpty7 = Strings.defaultIfEmpty(null, (CharSequence) "");
+      final @NonNull StringBuilder defaultIfEmpty8 = Strings.defaultIfEmpty(null, new StringBuilder());
+
+      final @Nullable String defaultIfNull0 = Strings.defaultIfNull("", null);
+      final @NonNull String defaultIfNull1 = Strings.defaultIfNull("", "");
+      final @NonNull CharSequence defaultIfNull2 = Strings.defaultIfNull((CharSequence) "", "");
+      final @NonNull CharSequence defaultIfNull3 = Strings.defaultIfNull("", (CharSequence) "");
+      final @NonNull CharSequence defaultIfNull4 = Strings.defaultIfNull("", new StringBuilder());
+      final @NonNull String defaultIfNull5 = Strings.defaultIfNull(null, "");
+      final @NonNull CharSequence defaultIfNull6 = Strings.defaultIfNull((CharSequence) null, "");
+      final @NonNull CharSequence defaultIfNull7 = Strings.defaultIfNull(null, (CharSequence) "");
+      final @NonNull StringBuilder defaultIfNull8 = Strings.defaultIfNull(null, new StringBuilder());
+   }
+
+   @Test
+   @SuppressWarnings("unused")
+   public void testNullIf() {
+      assertThat(Strings.nullIfBlank("a")).isEqualTo("a");
+      assertThat(Strings.nullIfBlank(" ")).isNull();
+      assertThat(Strings.nullIfBlank("")).isNull();
+      assertThat((String) Strings.nullIfBlank(null)).isNull();
+      assertThat(Strings.nullIfEmpty("a")).isEqualTo("a");
+      assertThat(Strings.nullIfEmpty(" ")).isEqualTo(" ");
+      assertThat(Strings.nullIfEmpty("")).isNull();
+      assertThat((String) Strings.nullIfEmpty(null)).isNull();
+
+      // test type interference
+      final @Nullable String nullIfBlank1 = Strings.nullIfBlank("a");
+      final @Nullable CharSequence nullIfBlank2 = Strings.nullIfBlank((CharSequence) "a");
+      final @Nullable StringBuilder nullIfBlank3 = Strings.nullIfBlank(new StringBuilder());
+      final @Nullable String nullIfBlank4 = Strings.nullIfBlank(null);
+      final @Nullable CharSequence nullIfBlank5 = Strings.nullIfBlank((CharSequence) null);
+      final @Nullable StringBuilder nullIfBlank6 = Strings.nullIfBlank((StringBuilder) null);
+
+      final @Nullable String nullIfEmpty1 = Strings.nullIfEmpty("a");
+      final @Nullable CharSequence nullIfEmpty2 = Strings.nullIfEmpty((CharSequence) "a");
+      final @Nullable StringBuilder nullIfEmpty3 = Strings.nullIfEmpty(new StringBuilder());
+      final @Nullable String nullIfEmpty4 = Strings.nullIfEmpty(null);
+      final @Nullable CharSequence nullIfEmpty5 = Strings.nullIfEmpty((CharSequence) null);
+      final @Nullable StringBuilder nullIfEmpty6 = Strings.nullIfEmpty((StringBuilder) null);
    }
 
    @Test

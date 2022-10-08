@@ -763,17 +763,17 @@ public abstract class Strings {
    }
 
    @NonNullByDefault({})
-   public static <T extends @Nullable CharSequence> T defaultIfBlank(final T str, final T defaultStr) {
-      return isBlank(str) ? defaultStr : str;
+   public static <T extends CharSequence> T defaultIfBlank(final @Nullable T str, final T defaultStr) {
+      return str == null || isBlank(str) ? defaultStr : str;
    }
 
    @NonNullByDefault({})
-   public static <T extends @Nullable CharSequence> T defaultIfEmpty(final T str, final T defaultStr) {
-      return isEmpty(str) ? defaultStr : str;
+   public static <T extends CharSequence> T defaultIfEmpty(final @Nullable T str, final T defaultStr) {
+      return str == null || str.length() == 0 ? defaultStr : str;
    }
 
    @NonNullByDefault({})
-   public static <T extends CharSequence> T defaultIfNull(final T str, final T defaultStr) {
+   public static <T extends CharSequence> T defaultIfNull(final @Nullable T str, final T defaultStr) {
       return str == null ? defaultStr : str;
    }
 
