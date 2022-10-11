@@ -69,8 +69,37 @@ public abstract class CollectionUtils {
       return count;
    }
 
+   public static <T> int addAll(final Collection<T> collection, final @Nullable Iterable<T> items) {
+      Args.notNull("collection", collection);
+
+      if (items == null)
+         return 0;
+
+      int count = 0;
+      for (final T item : items)
+         if (collection.add(item)) {
+            count++;
+         }
+      return count;
+   }
+
+   public static <T> int addAll(final Collection<T> collection, final @Nullable Iterator<T> items) {
+      Args.notNull("collection", collection);
+
+      if (items == null)
+         return 0;
+
+      int count = 0;
+      while (items.hasNext()) {
+         if (collection.add(items.next())) {
+            count++;
+         }
+      }
+      return count;
+   }
+
    /**
-    * adds all items to the collection accepted by the filter
+    * Adds all items to the collection accepted by the filter
     *
     * @return number of items added
     * @throws IllegalArgumentException if <code>collection == null</code>
@@ -502,13 +531,19 @@ public abstract class CollectionUtils {
       return () -> it;
    }
 
+   public static <T> List<T> toList(final Iterable<T> it) {
+      Args.notNull("it", it);
+
+      final var result = new ArrayList<T>();
+      addAll(result, it);
+      return result;
+   }
+
    public static <T> List<T> toList(final Iterator<T> it) {
       Args.notNull("it", it);
 
-      final List<T> result = newArrayList();
-      while (it.hasNext()) {
-         result.add(it.next());
-      }
+      final var result = new ArrayList<T>();
+      addAll(result, it);
       return result;
    }
 
