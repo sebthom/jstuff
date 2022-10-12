@@ -35,14 +35,14 @@ import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
  */
 public class ServiceAsSpringBean<@NonNull T> implements FactoryBean<T>, InitializingBean {
 
-   private ServiceRegistry serviceRegistry = eventuallyNonNull();
+   private ServiceRegistry serviceRegistry = lazyNonNull();
 
    /**
     * @optional by default the fully qualified name of the service interface is used
     */
    private @Nullable String serviceEndpointId;
-   private Class<T> serviceInterface = eventuallyNonNull();
-   private T service = eventuallyNonNull();
+   private Class<T> serviceInterface = lazyNonNull();
+   private T service = lazyNonNull();
 
    @Override
    public synchronized void afterPropertiesSet() throws Exception {

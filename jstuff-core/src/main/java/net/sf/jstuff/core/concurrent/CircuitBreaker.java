@@ -164,7 +164,7 @@ public class CircuitBreaker implements EventListenable<State> {
    protected Class<? extends Throwable> @Nullable [] hardTrippingExceptionTypes;
    protected long inOpenStateUntil = -1;
    protected int maxConcurrent = Integer.MAX_VALUE;
-   protected String name = eventuallyNonNull();
+   protected String name = lazyNonNull();
    protected long resetPeriodMS;
    protected State state = State.CLOSE;
    protected Object synchronizer = new Object();

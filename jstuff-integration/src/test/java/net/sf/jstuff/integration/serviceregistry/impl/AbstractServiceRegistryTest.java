@@ -93,11 +93,11 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> {
       boolean validate();
    }
 
-   protected R registry = eventuallyNonNull();
+   protected R registry = lazyNonNull();
 
    @After
    public void tearDown() throws Exception {
-      registry = eventuallyNonNull();
+      registry = lazyNonNull();
    }
 
    @Test

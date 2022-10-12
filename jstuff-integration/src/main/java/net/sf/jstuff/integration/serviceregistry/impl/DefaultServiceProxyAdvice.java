@@ -33,7 +33,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
    private final Lock listeners_READ;
    private final Lock listeners_WRITE;
 
-   private ServiceProxyInternal<SERVICE_INTERFACE> proxy = eventuallyNonNull();
+   private ServiceProxyInternal<SERVICE_INTERFACE> proxy = lazyNonNull();
 
    public DefaultServiceProxyAdvice(final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
       Args.notNull("serviceEndpointState", serviceEndpointState);

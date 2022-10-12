@@ -102,9 +102,19 @@ public abstract class NullAnalysisHelper {
       return object;
    }
 
+   /**
+    * @deprecated use {@link #lazyNonNull()}
+    */
+   @Deprecated
    @NonNull
    @SuppressWarnings("null")
    public static <T> T eventuallyNonNull() {
+      return asNonNullUnsafe((T) null);
+   }
+
+   @NonNull
+   @SuppressWarnings("null")
+   public static <T> T lazyNonNull() {
       return asNonNullUnsafe((T) null);
    }
 

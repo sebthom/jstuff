@@ -35,8 +35,8 @@ import net.sf.jstuff.core.validation.Assert;
 public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
    private static final Logger LOG = Logger.create();
 
-   private Class<T> beanClass = eventuallyNonNull();
-   private Map<String, String> beanPropertiesLowerCase = eventuallyNonNull();
+   private Class<T> beanClass = lazyNonNull();
+   private Map<String, String> beanPropertiesLowerCase = lazyNonNull();
 
    public BeanResultSetExtractor(final Class<T> beanClass) throws IntrospectionException {
       setBeanClass(beanClass);

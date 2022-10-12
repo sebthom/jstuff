@@ -25,8 +25,8 @@ import net.sf.jstuff.core.functional.Invocable;
  */
 public class LdapTemplate {
    private String initialContextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
-   private Hashtable<String, Object> ldapSettings = eventuallyNonNull();
-   private String ldapURL = eventuallyNonNull();
+   private Hashtable<String, Object> ldapSettings = lazyNonNull();
+   private String ldapURL = lazyNonNull();
    private boolean pooled = true;
 
    /**

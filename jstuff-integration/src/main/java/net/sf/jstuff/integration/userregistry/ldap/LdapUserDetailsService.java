@@ -33,13 +33,13 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
 public class LdapUserDetailsService implements UserDetailsService {
    private static final Logger LOG = Logger.create();
 
-   protected LdapTemplate ldapTemplate = eventuallyNonNull();
-   protected String userAttributeDisplayName = eventuallyNonNull();
-   protected String userAttributeEMailAdress = eventuallyNonNull();
-   protected String userAttributeLogonName = eventuallyNonNull();
-   protected String userAttributeUserId = eventuallyNonNull();
-   protected String userSearchBase = eventuallyNonNull();
-   protected String userSearchFilter = eventuallyNonNull();
+   protected LdapTemplate ldapTemplate = lazyNonNull();
+   protected String userAttributeDisplayName = lazyNonNull();
+   protected String userAttributeEMailAdress = lazyNonNull();
+   protected String userAttributeLogonName = lazyNonNull();
+   protected String userAttributeUserId = lazyNonNull();
+   protected String userSearchBase = lazyNonNull();
+   protected String userSearchFilter = lazyNonNull();
    protected boolean userSearchSubtree = true;
 
    public LdapUserDetailsService() {

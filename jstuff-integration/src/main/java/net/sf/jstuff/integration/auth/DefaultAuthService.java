@@ -31,13 +31,13 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
 public class DefaultAuthService implements AuthService {
    private static final Logger LOG = Logger.create();
 
-   protected Set<String> applicationRoles = eventuallyNonNull();
-   protected Authenticator authenticator = eventuallyNonNull();
-   protected GroupDetailsService groupDetailsService = eventuallyNonNull();
-   protected MapWithSets<String, String> groupIdToApplicationRoleMappings = eventuallyNonNull();
+   protected Set<String> applicationRoles = lazyNonNull();
+   protected Authenticator authenticator = lazyNonNull();
+   protected GroupDetailsService groupDetailsService = lazyNonNull();
+   protected MapWithSets<String, String> groupIdToApplicationRoleMappings = lazyNonNull();
    protected @Nullable AuthListener listener;
-   protected MapWithSets<String, String> uriPatternsToApplicationRoleMappings = eventuallyNonNull();
-   protected UserDetailsService userDetailsService = eventuallyNonNull();
+   protected MapWithSets<String, String> uriPatternsToApplicationRoleMappings = lazyNonNull();
+   protected UserDetailsService userDetailsService = lazyNonNull();
 
    public DefaultAuthService() {
       LOG.infoNew(this);
