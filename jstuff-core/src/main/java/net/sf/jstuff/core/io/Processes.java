@@ -86,7 +86,7 @@ public abstract class Processes {
       @SuppressWarnings("null")
       private CompletableFuture<Void> redirect(final InputStream in, final Consumer<String> lineConsumer) {
          return CompletableFuture.runAsync(() -> {
-            try (Scanner sc = new Scanner(in)) {
+            try (var sc = new Scanner(in)) {
                while (sc.hasNextLine()) {
                   lineConsumer.accept(sc.nextLine());
                }
@@ -115,7 +115,7 @@ public abstract class Processes {
             command.add(stringifier.apply(arg));
          }
 
-         final ProcessBuilder pb = new ProcessBuilder(command);
+         final var pb = new ProcessBuilder(command);
          final var env = this.env;
          if (env != null) {
             final Map<String, String> pbEnv = pb.environment();

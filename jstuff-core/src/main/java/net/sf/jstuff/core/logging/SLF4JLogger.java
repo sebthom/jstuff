@@ -104,7 +104,7 @@ final class SLF4JLogger implements LoggerInternal {
          }
       } else {
          if (LoggerConfig.isCompactExceptionLoggingEnabled) {
-            final StringBuilder sb = new StringBuilder();
+            final var sb = new StringBuilder();
             if (message == null || message.isEmpty()) {
                sb.append("Catched ");
             } else {

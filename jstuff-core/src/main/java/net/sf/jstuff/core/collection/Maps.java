@@ -16,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
@@ -97,8 +96,8 @@ public abstract class Maps {
       Args.notNull("rightMap", rightMap);
       Args.notNull("isEqual", isEqual);
 
-      final MapDiff<K, V> mapDiff = new MapDiff<>(leftMap, rightMap);
-      final Set<K> processedLeftKeys = new HashSet<>(Math.max(leftMap.size(), rightMap.size()));
+      final var mapDiff = new MapDiff<>(leftMap, rightMap);
+      final var processedLeftKeys = new HashSet<K>(Math.max(leftMap.size(), rightMap.size()));
 
       /*
        * process the entries of the left map
@@ -155,7 +154,7 @@ public abstract class Maps {
       Args.notNull("valueSeparator", valueSeparator);
       Args.notNull("assignmentOperator", assignmentOperator);
 
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
 
       for (final Iterator<Entry<K, V>> it = values.entrySet().iterator(); it.hasNext();) {
          final Entry<K, V> entry = it.next();
@@ -179,8 +178,7 @@ public abstract class Maps {
 
    public static <K, V, KK extends K, VV extends V> HashMap<K, V> newHashMap(final KK firstKey, final VV firstValue,
       final Object... moreInitialKeysAndValues) {
-      final HashMap<K, V> m = new HashMap<>(1 + moreInitialKeysAndValues.length / 2);
-      return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
+      return putAll(new HashMap<>(1 + moreInitialKeysAndValues.length / 2), firstKey, firstValue, moreInitialKeysAndValues);
    }
 
    public static <K, V> HashMap<K, V> newHashMap(final @Nullable Map<? extends K, ? extends V> initialValues) {
@@ -204,8 +202,7 @@ public abstract class Maps {
 
    public static <K, V, KK extends K, VV extends V> LinkedHashMap<K, V> newLinkedHashMap(final KK firstKey, final VV firstValue,
       final Object... moreInitialKeysAndValues) {
-      final LinkedHashMap<K, V> m = new LinkedHashMap<>(1 + moreInitialKeysAndValues.length / 2);
-      return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
+      return putAll(new LinkedHashMap<>(1 + moreInitialKeysAndValues.length / 2), firstKey, firstValue, moreInitialKeysAndValues);
    }
 
    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(final Object @Nullable [] initialKeysAndValues) {
@@ -233,8 +230,7 @@ public abstract class Maps {
 
    public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator, final KK firstKey,
       final VV firstValue, final Object... moreInitialKeysAndValues) {
-      final TreeMap<K, V> m = new TreeMap<>(keyComparator);
-      return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
+      return putAll(new TreeMap<>(keyComparator), firstKey, firstValue, moreInitialKeysAndValues);
    }
 
    public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator,
@@ -247,8 +243,7 @@ public abstract class Maps {
 
    public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue,
       final Object... moreInitialKeysAndValues) {
-      final TreeMap<K, V> m = new TreeMap<>();
-      return putAll(m, firstKey, firstValue, moreInitialKeysAndValues);
+      return putAll(new TreeMap<>(), firstKey, firstValue, moreInitialKeysAndValues);
    }
 
    public static <K, V, M extends Map<K, V>> M putAll(final M map, final K[] keys, final V[] values) {
@@ -319,7 +314,7 @@ public abstract class Maps {
 
       Args.notNull("direction", direction);
 
-      final List<Entry<K, V>> entries = new ArrayList<>(map.entrySet());
+      final var entries = new ArrayList<>(map.entrySet());
       entries.sort((o1, o2) -> {
          final int valueCmp = ObjectUtils.compare(o1.getValue(), o2.getValue());
          if (valueCmp == 0) {

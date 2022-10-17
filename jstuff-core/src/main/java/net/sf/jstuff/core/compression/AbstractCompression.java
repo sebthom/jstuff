@@ -30,7 +30,7 @@ public abstract class AbstractCompression implements Compression {
    public byte[] compress(final byte[] uncompressed) throws IOException {
       Args.notNull("uncompressed", uncompressed);
 
-      try (FastByteArrayOutputStream output = new FastByteArrayOutputStream()) {
+      try (var output = new FastByteArrayOutputStream()) {
          compress(uncompressed, output);
          return output.toByteArray();
       }
@@ -64,7 +64,7 @@ public abstract class AbstractCompression implements Compression {
    public InputStream createCompressingInputStream(final byte[] uncompressed) throws IOException {
       Args.notNull("uncompressed", uncompressed);
 
-      try (FastByteArrayOutputStream output = new FastByteArrayOutputStream()) {
+      try (var output = new FastByteArrayOutputStream()) {
          compress(uncompressed, output);
          return output.toInputStream();
       }
@@ -75,8 +75,8 @@ public abstract class AbstractCompression implements Compression {
    public InputStream createCompressingInputStream(final InputStream uncompressed) throws IOException {
       Args.notNull("uncompressed", uncompressed);
 
-      final PipedInputStream compressingInputStream = new PipedInputStream();
-      final PipedOutputStream transfomer = new PipedOutputStream(compressingInputStream);
+      final var compressingInputStream = new PipedInputStream();
+      final var transfomer = new PipedOutputStream(compressingInputStream);
       final OutputStream compressingOutputStream = createCompressingOutputStream(transfomer);
 
       EXECUTOR.submit(() -> {
@@ -109,7 +109,7 @@ public abstract class AbstractCompression implements Compression {
    public byte[] decompress(final byte[] compressed) throws IOException {
       Args.notNull("compressed", compressed);
 
-      final FastByteArrayOutputStream bytesOS = new FastByteArrayOutputStream(compressed.length);
+      final var bytesOS = new FastByteArrayOutputStream(compressed.length);
       decompress(compressed, bytesOS);
       return bytesOS.toByteArray();
    }
@@ -119,7 +119,7 @@ public abstract class AbstractCompression implements Compression {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);
 
-      try (FastByteArrayOutputStream baos = new FastByteArrayOutputStream(compressed.length);
+      try (var baos = new FastByteArrayOutputStream(compressed.length);
            InputStream compIS = createDecompressingInputStream(new FastByteArrayInputStream(compressed)) //
       ) {
          IOUtils.copyLarge(compIS, baos);

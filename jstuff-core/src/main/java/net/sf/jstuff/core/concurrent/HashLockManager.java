@@ -85,7 +85,7 @@ public class HashLockManager<KeyType> {
 
    public HashLockManager(final int intervalMS, final ScheduledExecutorService executor) {
       Args.notNull("executor", executor);
-      final CleanUpTask<KeyType> cleanup = new CleanUpTask<>(this);
+      final var cleanup = new CleanUpTask<>(this);
       cleanup.future = executor.scheduleWithFixedDelay(cleanup, intervalMS, intervalMS, TimeUnit.MILLISECONDS);
    }
 

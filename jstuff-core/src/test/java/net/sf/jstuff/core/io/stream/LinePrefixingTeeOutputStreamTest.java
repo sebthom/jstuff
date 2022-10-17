@@ -22,9 +22,9 @@ public class LinePrefixingTeeOutputStreamTest {
    public void testLinePrefixingOuputStream() throws IOException {
       final byte[] inputData = Strings.join(Arrays.asList("Line 1", "Line 2", "Line 3"), Strings.NEW_LINE).getBytes();
 
-      try (FastByteArrayOutputStream main = new FastByteArrayOutputStream();
-           FastByteArrayOutputStream branch = new FastByteArrayOutputStream();
-           LinePrefixingTeeOutputStream tee = new LinePrefixingTeeOutputStream(main, branch, "prefix: ")) {
+      try (var main = new FastByteArrayOutputStream();
+           var branch = new FastByteArrayOutputStream();
+           var tee = new LinePrefixingTeeOutputStream(main, branch, "prefix: ")) {
          tee.write(inputData);
          assertThat(main.toString()).isEqualTo("Line 1" + Strings.NEW_LINE + "Line 2" + Strings.NEW_LINE + "Line 3");
          assertThat(branch.toString()).isEqualTo("prefix: Line 1" + Strings.NEW_LINE + "prefix: Line 2" + Strings.NEW_LINE

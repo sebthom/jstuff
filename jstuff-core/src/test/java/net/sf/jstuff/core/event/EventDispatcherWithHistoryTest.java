@@ -19,20 +19,20 @@ public class EventDispatcherWithHistoryTest {
 
    @Test
    public void testEventDispatcherWithHistory() throws InterruptedException, ExecutionException {
-      final EventDispatcherWithHistory<@Nullable String> em = new EventDispatcherWithHistory<>(new SyncEventDispatcher<>());
+      final var em = new EventDispatcherWithHistory<>(new SyncEventDispatcher<@Nullable String>());
 
       assertThat(em.fire("123").get()).isZero();
       assertThat(em.fire("1234567890").get()).isZero();
 
-      final AtomicLong listener1Count = new AtomicLong();
+      final var listener1Count = new AtomicLong();
       final EventListener<@Nullable String> listener1 = event -> listener1Count.incrementAndGet();
 
       assertThat(em.subscribe(listener1)).isTrue();
       assertThat(em.subscribe(listener1)).isFalse();
       assertThat(listener1Count.get()).isZero();
 
-      final AtomicLong listener2Count = new AtomicLong();
-      final EventListener<@Nullable String> listener2 = new FilteringEventListener<>() {
+      final var listener2Count = new AtomicLong();
+      final var listener2 = new FilteringEventListener<@Nullable String>() {
          @Override
          public boolean accept(@Nullable final String event) {
             return event != null && event.length() < 5;

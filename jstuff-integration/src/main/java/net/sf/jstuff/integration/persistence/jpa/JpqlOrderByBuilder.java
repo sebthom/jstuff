@@ -31,7 +31,7 @@ public class JpqlOrderByBuilder {
    }
 
    public String buildOrderBy(final SortBy<String>[] sortBy) throws IllegalArgumentException {
-      final StringBuilder orderBy = new StringBuilder();
+      final var orderBy = new StringBuilder();
 
       for (final SortBy<String> sb : getActiveSortBy(sortBy)) {
          final String jpqlExpression = mappings.get(sb.getKey());

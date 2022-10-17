@@ -17,7 +17,7 @@ public class EvictingDequeTest {
 
    @Test
    public void testEvictingDeque() {
-      final EvictingDeque<String> q = new EvictingDeque<>(3);
+      final var q = new EvictingDeque<String>(3);
       assertThat(q.size()).isZero();
       assertThat(q.remainingCapacity()).isEqualTo(3);
       q.push("a");

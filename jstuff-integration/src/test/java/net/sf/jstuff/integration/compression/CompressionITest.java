@@ -33,7 +33,7 @@ public class CompressionITest {
    protected static final byte[] TEST_TEXT_BYTES;
 
    static {
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
       for (int i = 0; i < 1000; i++) {
          final Faker faker = new Faker(Locale.ENGLISH);
          sb.append(//
@@ -61,13 +61,13 @@ public class CompressionITest {
          }
 
          {
-            final byte[] uncompressed = new byte[TEST_TEXT_BYTES.length];
+            final var uncompressed = new byte[TEST_TEXT_BYTES.length];
             assertThat(cmp.decompress(compressed, uncompressed)).isEqualTo(uncompressed.length);
             assertThat(uncompressed).isEqualTo(TEST_TEXT_BYTES);
          }
 
          {
-            final byte[] uncompressed = new byte[TEST_TEXT_BYTES.length - 1];
+            final var uncompressed = new byte[TEST_TEXT_BYTES.length - 1];
             try {
                cmp.decompress(compressed, uncompressed);
                failBecauseExceptionWasNotThrown(ZstdException.class);
@@ -77,10 +77,10 @@ public class CompressionITest {
          }
 
          {
-            final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
+            final var compressedOS = new FastByteArrayOutputStream();
             cmp.compress(TEST_TEXT_BYTES, compressedOS);
 
-            final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
+            final var uncompressedOS = new FastByteArrayOutputStream();
             cmp.decompress(compressedOS.toByteArray(), uncompressedOS);
             assertThat(uncompressedOS.toByteArray()).isEqualTo(TEST_TEXT_BYTES);
          }
@@ -97,8 +97,8 @@ public class CompressionITest {
    @SuppressWarnings("resource")
    public static void testInputStreamCompression(final Compression cmp) throws IOException {
       for (int i = 0; i < 4; i++) { // testing instance re-use
-         final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
-         final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
+         final var compressedOS = new FastByteArrayOutputStream();
+         final var uncompressedOS = new FastByteArrayOutputStream();
          cmp.compress(new ByteArrayInputStream(TEST_TEXT_BYTES), compressedOS);
          cmp.decompress(new ByteArrayInputStream(compressedOS.toByteArray()), uncompressedOS);
 
@@ -148,7 +148,7 @@ public class CompressionITest {
 
    @Test
    public void testPerformance() throws IOException {
-      final CompressionBenchmark benchmark = new CompressionBenchmark() //
+      final var benchmark = new CompressionBenchmark() //
          .setTestData(TEST_TEXT_BYTES) //
          .setIterations(500) //
 

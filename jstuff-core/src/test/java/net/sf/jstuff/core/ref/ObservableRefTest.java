@@ -17,11 +17,11 @@ public class ObservableRefTest {
 
    @Test
    public void testObservableRef() {
-      final MutableObservableRef.Default<String> ref = new MutableObservableRef.Default<>("foo");
+      final var ref = new MutableObservableRef.Default<>("foo");
       assertThat(ref.get()).isEqualTo("foo");
       assertThat(ref.isObserved()).isFalse();
 
-      final AtomicInteger counter = new AtomicInteger();
+      final var counter = new AtomicInteger();
       ref.subscribe((o, n) -> {
          counter.incrementAndGet();
          assertThat(o).isEqualTo("foo");

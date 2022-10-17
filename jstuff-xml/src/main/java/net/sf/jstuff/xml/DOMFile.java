@@ -95,7 +95,7 @@ public class DOMFile {
 
    private void assertNodeBelongsToDocument(final String argumentName, final Node node) {
       if (DOMUtils._getOwnerDocument(node) != domDocument) {
-         final IllegalArgumentException ex = new IllegalArgumentException("[" + argumentName + "] belongs to another DOM document!");
+         final var ex = new IllegalArgumentException("[" + argumentName + "] belongs to another DOM document!");
          StackTrace.removeFirstStackTraceElement(ex);
          throw ex;
       }

@@ -15,11 +15,11 @@ public class UnsafeUtilsTest {
 
    @Test
    public void testAddressOf() {
-      final Object obj1 = new Object();
+      final var obj1 = new Object();
       assertThat(UnsafeUtils.addressOf(obj1)).isPositive();
       assertThat(UnsafeUtils.addressOf(obj1)).isEqualTo(UnsafeUtils.addressOf(obj1));
 
-      final Object obj2 = new Object();
+      final var obj2 = new Object();
       assertThat(UnsafeUtils.addressOf(obj2)).isPositive();
       assertThat(UnsafeUtils.addressOf(obj1)).isNotEqualTo(UnsafeUtils.addressOf(obj2));
    }

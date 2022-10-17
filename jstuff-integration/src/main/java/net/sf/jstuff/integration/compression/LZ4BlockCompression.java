@@ -54,7 +54,7 @@ public class LZ4BlockCompression extends AbstractCompression {
             ? 64 //
             : uncompressed.length;
 
-      try (LZ4BlockOutputStream compOS = new LZ4BlockOutputStream(toCloseIgnoring(output), blockSize, COMP, CHECKSUM.get(), false)) {
+      try (var compOS = new LZ4BlockOutputStream(toCloseIgnoring(output), blockSize, COMP, CHECKSUM.get(), false)) {
          compOS.write(uncompressed);
          compOS.finish();
       }
@@ -68,8 +68,7 @@ public class LZ4BlockCompression extends AbstractCompression {
 
       output = new DelegatingOutputStream(output, true);
 
-      try (LZ4BlockOutputStream compOS = new LZ4BlockOutputStream(toCloseIgnoring(output), DEFAULT_BLOCK_SIZE, COMP, CHECKSUM.get(),
-         false)) {
+      try (var compOS = new LZ4BlockOutputStream(toCloseIgnoring(output), DEFAULT_BLOCK_SIZE, COMP, CHECKSUM.get(), false)) {
          IOUtils.copyLarge(uncompressed, compOS);
          compOS.finish();
       }
@@ -97,7 +96,7 @@ public class LZ4BlockCompression extends AbstractCompression {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);
 
-      try (LZ4BlockInputStream compIS = new LZ4BlockInputStream(toCloseIgnoring(compressed), DECOMP, CHECKSUM.get())) {
+      try (var compIS = new LZ4BlockInputStream(toCloseIgnoring(compressed), DECOMP, CHECKSUM.get())) {
          IOUtils.copyLarge(compIS, output);
          output.flush();
       }

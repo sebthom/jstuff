@@ -21,13 +21,13 @@ public abstract class Crypto {
       .build();
 
    public static byte[] createRandomBytes(final int numBytes) {
-      final byte[] arr = new byte[numBytes];
+      final var arr = new byte[numBytes];
       SECURE_RANDOM.nextBytes(arr);
       return arr;
    }
 
    public static CharSequence createRandomDigits(final int len) {
-      final StringBuilder sb = new StringBuilder(len);
+      final var sb = new StringBuilder(len);
       for (final byte b : createRandomBytes(len)) {
          sb.append((char) (48 + Math.abs(b % 10)));
       }

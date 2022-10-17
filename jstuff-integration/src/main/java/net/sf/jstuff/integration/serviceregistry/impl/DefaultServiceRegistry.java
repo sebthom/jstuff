@@ -236,7 +236,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
     */
    protected <@NonNull SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(
       final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
-      final DefaultServiceProxyAdvice<SERVICE_INTERFACE> advice = new DefaultServiceProxyAdvice<>(serviceEndpointState, serviceInterface);
+      final var advice = new DefaultServiceProxyAdvice<>(serviceEndpointState, serviceInterface);
       final ServiceProxyInternal<SERVICE_INTERFACE> serviceProxy = Proxies.create((proxy, method, args) -> {
          if (method.getDeclaringClass() == ServiceProxy.class || method.getDeclaringClass() == ServiceProxyInternal.class)
             return method.invoke(advice, args);
@@ -270,7 +270,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
    public List<ServiceEndpoint> getActiveServiceEndpoints() {
       serviceEndpoints_READ.lock();
       try {
-         final List<ServiceEndpoint> result = new ArrayList<>();
+         final var result = new ArrayList<ServiceEndpoint>();
          for (final ServiceEndpointState sep : serviceEndpoints.values()) {
             if (sep.activeServiceInterface != null) {
                result.add(new DefaultServiceEndpoint(sep.serviceEndpointId, sep.activeServiceInterface));
@@ -318,7 +318,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
    public Set<String> getServiceEndpointIds() {
       serviceEndpoints_READ.lock();
       try {
-         final TreeSet<String> result = new TreeSet<>();
+         final var result = new TreeSet<String>();
          for (final ServiceEndpointState sep : serviceEndpoints.values()) {
             if (sep.activeService != null) {
                result.add(sep.serviceEndpointId);
@@ -346,7 +346,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
          if (mbeanName == null) {
             mbeanName = asNonNullUnsafe(getClass().getPackage()).getName() + ":type=" + getClass().getSimpleName();
          }
-         final ObjectName mbeanObjectName = new ObjectName(mbeanName);
+         final var mbeanObjectName = new ObjectName(mbeanName);
          LOG.info("Registering MBean %s", mbeanName);
          if (mbeanServer == null) {
             mbeanServer = ManagementFactory.getPlatformMBeanServer();

@@ -120,7 +120,7 @@ public class NumericalSystem {
       BigInteger remainder = value;
       long remainderAsLong = -1;
 
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
 
       while (true) {
          final int idx;
@@ -153,7 +153,7 @@ public class NumericalSystem {
 
       final int base = digitsArray.length;
 
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
       int remainder = value;
       while (remainder > 0) {
          sb.append(digitsArray[remainder % base]);
@@ -170,7 +170,7 @@ public class NumericalSystem {
 
       final int base = digitsArray.length;
 
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
       long remainder = value;
       while (remainder > 0) {
          sb.append(digitsArray[(int) (remainder % base)]);
@@ -198,7 +198,7 @@ public class NumericalSystem {
 
       final BigInteger base = BigInteger.valueOf(digitsArray.length);
       BigInteger remainder = value;
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
       while (remainder.compareTo(BigInteger.ZERO) > 0) {
          sb.append(digitsArray[remainder.mod(base).intValue()]);
          remainder = remainder.divide(base);

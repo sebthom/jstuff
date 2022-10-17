@@ -37,7 +37,7 @@ public class FieldsTest {
    @Test
    public void testWriteIgnoringFinal() throws SecurityException {
       // instance field test
-      final Entity e = new Entity("foo");
+      final var e = new Entity("foo");
       assertThat(e.name).isEqualTo("foo");
 
       Fields.writeIgnoringFinal(e, "name", "bar");

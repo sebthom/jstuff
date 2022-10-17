@@ -18,8 +18,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -251,13 +249,13 @@ public class ThreadDumper {
    }
 
    private Map<Long, ThreadMeta> getThreadsByThreadId() {
-      final Map<Long, ThreadMeta> result = new HashMap<>();
+      final var result = new HashMap<Long, ThreadMeta>();
 
       // get all threads for access to isDeamon/getPriority which are not in ThreadInfo on Java < 9
       final Thread[] threads = Threads.all();
 
       for (final ThreadInfo threadInfo : ManagementFactory.getThreadMXBean().dumpAllThreads(true, true)) {
-         final ThreadMeta td = new ThreadMeta(threadInfo);
+         final var td = new ThreadMeta(threadInfo);
          for (final Thread t : threads) {
             if (threadInfo.getThreadId() == t.getId()) {
                td.thread = new WeakReference<>(t);
@@ -296,7 +294,7 @@ public class ThreadDumper {
       if (deadlockedThreads.length == 0)
          return;
 
-      final Set<Tuple2<ThreadMeta, ThreadMeta>> deadLocks = new HashSet<>();
+      final var deadLocks = new HashSet<Tuple2<ThreadMeta, ThreadMeta>>();
       for (final long id : deadlockedThreads) {
          final ThreadMeta thread = threadsById.get(id);
          if (thread == null) {
@@ -371,7 +369,7 @@ public class ThreadDumper {
    private void printThreads(final Appendable out, final Map<Long, ThreadMeta> threadsById) throws IOException {
 
       // get threadInfo for access to lock objects etc.
-      final SortedSet<ThreadMeta> threadsSorted = new TreeSet<>(threadSorter);
+      final var threadsSorted = new TreeSet<>(threadSorter);
       threadsSorted.addAll(threadsById.values());
 
       for (final ThreadMeta threadMeta : threadsSorted) {

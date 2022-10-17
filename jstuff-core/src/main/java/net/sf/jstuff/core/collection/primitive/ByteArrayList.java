@@ -210,7 +210,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    public boolean removeIf(final IntPredicate filter) {
       Assert.isTrue(mutable, "List is immutable!");
 
-      final ByteArrayList temp = new ByteArrayList();
+      final var temp = new ByteArrayList();
       for (int i = 0; i < size; i++) {
          if (filter.test(values[i])) {
             temp.add(values[i]);
@@ -287,7 +287,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    @Deprecated
    @Override
    public Byte[] toArray() {
-      final Byte[] result = new Byte[size];
+      final var result = new Byte[size];
       for (int i = 0; i < result.length; i++) {
          result[i] = values[i];
       }
@@ -315,7 +315,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
 
    @Override
    public String toString() {
-      final StringBuilder sb = new StringBuilder("[");
+      final var sb = new StringBuilder("[");
       for (int i = 0; i < size; i++) {
          sb.append(values[i]);
          if (i < size - 1) {

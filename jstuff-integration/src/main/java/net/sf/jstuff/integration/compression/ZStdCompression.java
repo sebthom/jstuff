@@ -50,14 +50,14 @@ public class ZStdCompression extends AbstractCompression {
       final long maxSize = Zstd.compressBound(uncompressed.length);
       if (maxSize > Integer.MAX_VALUE)
          throw new IOException("Max output size is greater than Integer.MAX_VALUE!");
-      final byte[] dst = new byte[(int) maxSize];
+      final var dst = new byte[(int) maxSize];
 
       final long rc = Zstd.compress(dst, uncompressed, compressionLevel);
       if (Zstd.isError(rc))
          throw new IOException(Zstd.getErrorName(rc));
 
       final int size = (int) rc;
-      final byte[] out = new byte[size];
+      final var out = new byte[size];
       System.arraycopy(dst, 0, out, 0, size);
       return out;
    }
@@ -67,7 +67,7 @@ public class ZStdCompression extends AbstractCompression {
    public OutputStream createCompressingOutputStream(final OutputStream output) throws IOException {
       Args.notNull("output", output);
 
-      final ZstdOutputStream out = new ZstdOutputStream(output, compressionLevel);
+      final var out = new ZstdOutputStream(output, compressionLevel);
       out.setCloseFrameOnFlush(true);
       out.setChecksum(useChecksum);
       return out;

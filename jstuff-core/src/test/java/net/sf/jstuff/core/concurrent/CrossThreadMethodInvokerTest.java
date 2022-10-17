@@ -43,9 +43,9 @@ public class CrossThreadMethodInvokerTest {
 
    @Test
    public void testCrossThreadMethodInvoker() {
-      final Service service = new Service();
+      final var service = new Service();
 
-      final CrossThreadMethodInvoker methodInvoker = new CrossThreadMethodInvoker(2000);
+      final var methodInvoker = new CrossThreadMethodInvoker(2000);
       final CrossThreadProxy<IService> serviceProxy = methodInvoker.createProxy(service, IService.class);
 
       try {

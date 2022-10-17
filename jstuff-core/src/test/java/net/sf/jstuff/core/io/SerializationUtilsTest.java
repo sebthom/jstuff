@@ -56,7 +56,7 @@ public class SerializationUtilsTest {
 
    @Test
    public void testBean2XML() {
-      final Entity bean = new Entity("foobar");
+      final var bean = new Entity("foobar");
       System.out.println(SerializationUtils.bean2xml(bean));
       final Entity clone = SerializationUtils.xml2bean(SerializationUtils.bean2xml(bean));
       assertThat(clone) //

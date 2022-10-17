@@ -36,7 +36,7 @@ public class ExceptionsTest {
 
    @Test
    public void testThrowSneakily() {
-      final IOException ex = new IOException();
+      final var ex = new IOException();
       try {
          Exceptions.throwSneakily(ex);
          failBecauseExceptionWasNotThrown(IOException.class);
@@ -53,7 +53,7 @@ public class ExceptionsTest {
 
    @Test
    public void testWrapAs() {
-      final IOException ex = new IOException(new GeneralSecurityException());
+      final var ex = new IOException(new GeneralSecurityException());
       assertThat(Exceptions.wrapAs(ex, IOException.class)).isSameAs(ex);
       assertThat(Exceptions.wrapAs(ex, Exception.class)).isSameAs(ex);
       assertThat(Exceptions.wrapAs(ex, Throwable.class)).isSameAs(ex);

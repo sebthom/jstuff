@@ -20,8 +20,8 @@ public class CompositeInputStreamTest {
    @Test
    @SuppressWarnings("resource")
    public void testCompositeInputStream() throws IOException {
-      final FastByteArrayInputStream bis1 = new FastByteArrayInputStream("Hello ".getBytes());
-      final FastByteArrayInputStream bis2 = new FastByteArrayInputStream("World!".getBytes());
+      final var bis1 = new FastByteArrayInputStream("Hello ".getBytes());
+      final var bis2 = new FastByteArrayInputStream("World!".getBytes());
 
       assertThat(new String(IOUtils.readBytes(new CompositeInputStream(bis1, bis2)))).isEqualTo("Hello World!");
       bis1.reset();
@@ -31,7 +31,7 @@ public class CompositeInputStreamTest {
       bis1.reset();
       bis2.reset();
 
-      final CompositeInputStream cis = new CompositeInputStream(bis1, bis2);
+      final var cis = new CompositeInputStream(bis1, bis2);
       assertThat(cis.skip(7)).isEqualTo(7);
       assertThat(new String(IOUtils.readBytes(cis))).isEqualTo("orld!");
    }

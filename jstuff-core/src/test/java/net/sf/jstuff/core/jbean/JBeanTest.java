@@ -82,9 +82,9 @@ public class JBeanTest {
 
    @Test
    public void testJBean() {
-      final PropertyChangelog changeLog = new PropertyChangelog();
+      final var changeLog = new PropertyChangelog();
 
-      final MyEntity entity = new MyEntity();
+      final var entity = new MyEntity();
       entity._subscribe(changeLog);
 
       assertThat(changeLog.isDirty(entity)).isFalse();

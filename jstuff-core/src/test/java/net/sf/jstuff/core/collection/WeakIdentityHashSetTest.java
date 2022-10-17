@@ -7,7 +7,6 @@ package net.sf.jstuff.core.collection;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Objects;
-import java.util.Set;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
@@ -49,7 +48,7 @@ public class WeakIdentityHashSetTest extends TestCase {
    @SuppressWarnings("null")
    @Test
    public void testWeakIdentityHashSet() {
-      final WeakIdentityHashSet<Entity> identitySet = WeakIdentityHashSet.create();
+      final var identitySet = new WeakIdentityHashSet<Entity>();
 
       Entity e1 = new Entity().setName("aa");
       Entity e2 = new Entity().setName("aa");
@@ -70,7 +69,7 @@ public class WeakIdentityHashSetTest extends TestCase {
          .contains(e1) //
          .contains(e2);
 
-      final Set<Entity> identitySet2 = WeakIdentityHashSet.create();
+      final var identitySet2 = new WeakIdentityHashSet<Entity>();
       identitySet2.add(e1);
       identitySet2.add(e2);
 

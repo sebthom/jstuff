@@ -35,7 +35,7 @@ public class ServiceRegistryPerfITest {
    private DefaultServiceRegistry jdkProxyRegistry = lazyNonNull();
 
    public void runPerfTest(final MyService service, final String label) {
-      final StopWatch sw = new StopWatch();
+      final var sw = new StopWatch();
       sw.start();
       for (int i = 0; i < 2_000_000; i++) {
          service.getGreeting();

@@ -20,7 +20,7 @@ public class DummyInputStreamTest {
 
    @Test
    public void testDummyInputStream() throws IOException {
-      try (DummyInputStream stream = new DummyInputStream(5123, (byte) 4)) {
+      try (var stream = new DummyInputStream(5123, (byte) 4)) {
          final byte[] result = IOUtils.readBytes(stream);
          assertThat(result).hasSize(5123);
          final byte[] expected = new byte[5123];

@@ -42,7 +42,7 @@ public class ExtendedBeanDeserializer extends BeanDeserializer {
     * Replaces the existing BeanDeserializer instance in the given mapper
     */
    public static final void registerWith(final ObjectMapper mapper) {
-      final SimpleModule module = new SimpleModule();
+      final var module = new SimpleModule();
       module.setDeserializerModifier(new BeanDeserializerModifier() {
          @Override
          public JsonDeserializer<?> modifyDeserializer(final DeserializationConfig cfg, final BeanDescription beanDescr,

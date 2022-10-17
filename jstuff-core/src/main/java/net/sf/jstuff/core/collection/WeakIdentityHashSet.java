@@ -45,7 +45,7 @@ public class WeakIdentityHashSet<E> extends AbstractSet<E> implements Cloneable 
 
    @Override
    public WeakIdentityHashSet<E> clone() throws CloneNotSupportedException {
-      final WeakIdentityHashSet<E> copy = new WeakIdentityHashSet<>(size());
+      final var copy = new WeakIdentityHashSet<E>(size());
       copy.addAll(this);
       return copy;
    }

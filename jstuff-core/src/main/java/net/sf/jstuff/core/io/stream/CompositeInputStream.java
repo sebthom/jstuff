@@ -116,7 +116,7 @@ public class CompositeInputStream extends InputStream implements Composite<Input
    @Override
    public long skip(long bytesToSkip) throws IOException {
       long bytesSkipped = 0;
-      final byte[] buff = new byte[bytesToSkip > 4096 ? 4096 : (int) bytesToSkip];
+      final var buff = new byte[bytesToSkip > 4096 ? 4096 : (int) bytesToSkip];
       do {
          final int bytes2Read = bytesToSkip > buff.length ? buff.length : (int) bytesToSkip;
          final int read = read(buff, 0, bytes2Read);

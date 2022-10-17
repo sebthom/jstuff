@@ -19,7 +19,7 @@ public class RandomInputStreamTest {
 
    @Test
    public void testDummyInputStream() throws IOException {
-      try (RandomInputStream stream = new RandomInputStream(5123)) {
+      try (var stream = new RandomInputStream(5123)) {
          final byte[] result = IOUtils.readBytes(stream);
          assertThat(result).hasSize(5123);
          final byte[] unexpected = new byte[5123];

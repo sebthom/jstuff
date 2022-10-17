@@ -164,7 +164,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
          }
       }
 
-      final Annotation[][] result = new Annotation[methodParameterTypesCount][];
+      final var result = new Annotation[methodParameterTypesCount][];
       for (int i = 0; i < methodParameterTypesCount; i++) {
          final HashSet<Annotation> paramAnnos = methodParameterAnnotations[i];
          result[i] = paramAnnos == null ? new Annotation[0]

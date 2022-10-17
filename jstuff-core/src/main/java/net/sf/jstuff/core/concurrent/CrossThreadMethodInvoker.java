@@ -141,7 +141,7 @@ public class CrossThreadMethodInvoker {
 
       ensureStarted();
 
-      final MethodInvocation m = new MethodInvocation(target, method, args);
+      final var m = new MethodInvocation(target, method, args);
       invocations.add(m);
 
       if (!m.isDone.await(timeout, TimeUnit.MILLISECONDS)) //

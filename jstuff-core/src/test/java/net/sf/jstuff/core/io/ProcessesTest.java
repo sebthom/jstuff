@@ -23,8 +23,8 @@ public class ProcessesTest {
 
    @Test
    public void testCaptureOutput() throws IOException, InterruptedException {
-      final StringBuilder out = new StringBuilder();
-      final StringBuilder err = new StringBuilder();
+      final var out = new StringBuilder();
+      final var err = new StringBuilder();
       final ProcessWrapper prc = Processes.builder("ping") //
          .withArg("127.0.0.1") //
          .withArgs(SystemUtils.IS_OS_WINDOWS ? "-n" : "-c", 2) //
@@ -41,7 +41,7 @@ public class ProcessesTest {
 
    @Test
    public void testNormalCompletion() throws IOException, InterruptedException {
-      final CountDownLatch signal = new CountDownLatch(2);
+      final var signal = new CountDownLatch(2);
       final ProcessWrapper prc = Processes.builder("ping") //
          .withArg("127.0.0.1") //
          .withArgs(SystemUtils.IS_OS_WINDOWS ? "-n" : "-c", 2) //
@@ -63,7 +63,7 @@ public class ProcessesTest {
 
    @Test
    public void testProgrammaticTermination() throws IOException, InterruptedException {
-      final CountDownLatch signal = new CountDownLatch(2);
+      final var signal = new CountDownLatch(2);
       final ProcessWrapper prc = Processes.builder("ping") //
          .withArgs(SystemUtils.IS_OS_WINDOWS ? "-n" : "-c", 9999) //
          .withArg("127.0.0.1") //

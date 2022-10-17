@@ -142,7 +142,7 @@ public class UnsafePublicationTest {
 
       FAILURES.set(0);
 
-      final List<Thread> threads = new ArrayList<>();
+      final var threads = new ArrayList<Thread>();
       for (int i = 0; i < CPU_COUNT / 2; i++) {
          threads.add(new Thread(publisher));
          threads.add(new Thread(consumer));
@@ -221,7 +221,7 @@ public class UnsafePublicationTest {
                //  http://www.cs.umd.edu/~pugh/java/memoryModel/newFinal.pdf
                //  http://docs.oracle.com/javase/specs/jls/se7/html/jls-17.html#jls-17.5.1
                //  http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java -> FinalWrapper
-               final Ref<Subject> memoryBarrier = new FinalRef<>(new Subject(
+               final var memoryBarrier = new FinalRef<>(new Subject(
                   subjectCtorArg /*must be a non-static, non-final reference to provoke instruction re-ordering on 64bit OracleJVM*/
                ));
                subject = memoryBarrier.get();

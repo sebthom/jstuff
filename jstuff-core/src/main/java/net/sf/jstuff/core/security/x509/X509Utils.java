@@ -186,7 +186,7 @@ public abstract class X509Utils {
 
    public static List<X509Certificate> getCertificates(final KeyStore ks) {
       Args.notNull("ks", ks);
-      final List<X509Certificate> certs = new ArrayList<>();
+      final var certs = new ArrayList<X509Certificate>();
       try {
          for (final Enumeration<String> en = ks.aliases(); en.hasMoreElements();) {
             final Certificate cert = ks.getCertificate(en.nextElement());
@@ -227,7 +227,7 @@ public abstract class X509Utils {
 
    public static List<String> getCNs(final X509Certificate cert) {
       Args.notNull("cert", cert);
-      final List<String> cns = new ArrayList<>();
+      final var cns = new ArrayList<String>();
       try {
          final String subjectPrincipal = cert.getSubjectX500Principal().getName(X500Principal.RFC2253);
          for (final Rdn rdn : new LdapName(subjectPrincipal).getRdns()) {
@@ -298,11 +298,11 @@ public abstract class X509Utils {
       if (crlExtValueRaw == null)
          return Collections.emptyList();
 
-      final List<String> crls = new ArrayList<>();
+      final var crls = new ArrayList<String>();
 
-      final String crlExtValue = new String(crlExtValueRaw, StandardCharsets.UTF_8);
+      final var crlExtValue = new String(crlExtValueRaw, StandardCharsets.UTF_8);
       int searchPos = 0;
-      final int[] foundAt = new int[4];
+      final var foundAt = new int[4];
       final int notFound = -1;
       while (searchPos + 1 < crlExtValue.length()) {
          foundAt[0] = crlExtValue.indexOf("http", searchPos);
@@ -362,7 +362,7 @@ public abstract class X509Utils {
          return null;
 
       final String url;
-      final String ocspExtValue = new String(ocspExtValueRaw, StandardCharsets.US_ASCII);
+      final var ocspExtValue = new String(ocspExtValueRaw, StandardCharsets.US_ASCII);
       if (ocspExtValue.contains("http")) {
          url = "http" + Strings.substringAfter(new String(ocspExtValueRaw, StandardCharsets.US_ASCII), "http").trim();
       } else if (ocspExtValue.contains("ldap")) {
@@ -647,12 +647,12 @@ public abstract class X509Utils {
    }
 
    private static PrivateKey toPrivateKey(final byte[] pkcs8PrivateKey, final String algorithm) throws GeneralSecurityException {
-      final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(pkcs8PrivateKey);
+      final var spec = new PKCS8EncodedKeySpec(pkcs8PrivateKey);
       return KeyFactory.getInstance(algorithm).generatePrivate(spec);
    }
 
    private static PublicKey toPublicKey(final byte[] x509PublicKey, final String algorithm) throws GeneralSecurityException {
-      final X509EncodedKeySpec spec = new X509EncodedKeySpec(x509PublicKey);
+      final var spec = new X509EncodedKeySpec(x509PublicKey);
       return KeyFactory.getInstance(algorithm).generatePublic(spec);
    }
 }

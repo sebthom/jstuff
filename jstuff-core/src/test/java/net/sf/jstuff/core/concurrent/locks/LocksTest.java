@@ -18,8 +18,8 @@ public class LocksTest {
    @Test
    @SuppressWarnings("resource")
    public void testLockAsCloseable() {
-      final ReentrantLock lock = new ReentrantLock();
-      final CloseableLock closeable = Locks.toCloseable(lock);
+      final var lock = new ReentrantLock();
+      final var closeable = Locks.toCloseable(lock);
 
       assertThat(lock.isHeldByCurrentThread()).isFalse();
       try (CloseableLock l = closeable.lockAndGet()) {

@@ -81,7 +81,7 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
 
    @Override
    public Iterator<V> iterator() {
-      final CompositeIterator<V> it = new CompositeIterator<>();
+      final var it = new CompositeIterator<V>();
       for (final Collection<? extends V> coll : components) {
          it.getComponents().add(coll.iterator());
       }
@@ -114,9 +114,9 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
 
    @Override
    public Object[] toArray() {
-      final Object[] result = new Object[this.size()];
+      final var result = new Object[this.size()];
       int idx = 0;
-      for (final Iterator<V> it = this.iterator(); it.hasNext(); idx++) {
+      for (final var it = this.iterator(); it.hasNext(); idx++) {
          result[idx] = it.next();
       }
       return result;

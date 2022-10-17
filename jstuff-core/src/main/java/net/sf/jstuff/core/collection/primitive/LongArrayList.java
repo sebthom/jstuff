@@ -210,7 +210,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    public boolean removeIf(final LongPredicate filter) {
       Assert.isTrue(mutable, "List is immutable!");
 
-      final LongArrayList temp = new LongArrayList();
+      final var temp = new LongArrayList();
       for (int i = 0; i < size; i++) {
          if (filter.test(values[i])) {
             temp.add(values[i]);
@@ -287,7 +287,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    @Deprecated
    @Override
    public Long[] toArray() {
-      final Long[] result = new Long[size];
+      final var result = new Long[size];
       for (int i = 0; i < result.length; i++) {
          result[i] = values[i];
       }
@@ -315,7 +315,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
 
    @Override
    public String toString() {
-      final StringBuilder sb = new StringBuilder("[");
+      final var sb = new StringBuilder("[");
       for (int i = 0; i < size; i++) {
          sb.append(values[i]);
          if (i < size - 1) {

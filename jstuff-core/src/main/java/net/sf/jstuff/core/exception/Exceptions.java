@@ -43,7 +43,7 @@ public abstract class Exceptions extends ExceptionUtils {
     * as it uses StringBuilder instead of StringBuffer.
     */
    public static String getStackTrace(final Throwable ex) {
-      try (StringPrintWriter spw = new StringPrintWriter()) {
+      try (var spw = new StringPrintWriter()) {
          ex.printStackTrace(spw);
          return spw.toString();
       }
@@ -68,7 +68,7 @@ public abstract class Exceptions extends ExceptionUtils {
    }
 
    public static String toString(final StackTraceElement[] stacktrace, final String indention) {
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
       for (final StackTraceElement element : stacktrace) {
          sb.append(indention);
          sb.append(element);
@@ -104,7 +104,7 @@ public abstract class Exceptions extends ExceptionUtils {
       final StackTraceElement caller = StackTrace.getCallerStackTraceElement();
       for (int i = 0; i < stack.length; i++) {
          if (stack[i].equals(caller)) {
-            final StackTraceElement[] newStack = new StackTraceElement[stack.length - i];
+            final var newStack = new StackTraceElement[stack.length - i];
             System.arraycopy(stack, i, newStack, 0, stack.length - i);
             exception.setStackTrace(newStack);
             break;

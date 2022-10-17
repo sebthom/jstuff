@@ -242,7 +242,7 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    @Deprecated
    @Override
    public Boolean[] toArray() {
-      final Boolean[] result = new Boolean[size];
+      final var result = new Boolean[size];
       for (int i = 0; i < result.length; i++) {
          result[i] = values[i];
       }
@@ -270,7 +270,7 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
 
    @Override
    public String toString() {
-      final StringBuilder sb = new StringBuilder("[");
+      final var sb = new StringBuilder("[");
       for (int i = 0; i < size; i++) {
          sb.append(values[i]);
          if (i < size - 1) {

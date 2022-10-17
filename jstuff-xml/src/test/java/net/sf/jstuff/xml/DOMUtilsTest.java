@@ -59,7 +59,7 @@ public class DOMUtilsTest {
    public void testGetXPathNodes() throws XMLException {
       final Element elem = DOMUtils.parseString("<foo id='1'><bar name='name'>blabla</bar></foo>", null).getDocumentElement();
 
-      final XPathNodeConfiguration cfg = new XPathNodeConfiguration();
+      final var cfg = new XPathNodeConfiguration();
       cfg.recursive = true;
       assertThat(DOMUtils.getXPathNodes(elem, cfg)).hasToString(
          "{/foo/@id=1, /foo/bar/@name=name, /foo/bar/text()=blabla, /foo/text()=null}");

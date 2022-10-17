@@ -82,10 +82,10 @@ public class CompressionBenchmark {
 
    @SuppressWarnings("resource")
    public Map<Compression, BenchmarkResult> execute() throws IOException {
-      final Map<Compression, BenchmarkResult> result = new HashMap<>();
+      final var result = new HashMap<Compression, BenchmarkResult>();
       for (final Compression cmp : compressions) {
-         final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
-         final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
+         final var uncompressedIS = new FastByteArrayInputStream(uncompressed);
+         final var compressedOS = new FastByteArrayOutputStream();
          cmp.compress(uncompressedIS, compressedOS);
 
          final BenchmarkResult res = new BenchmarkResult();
@@ -105,14 +105,14 @@ public class CompressionBenchmark {
       for (final Compression cmp : compressions) {
          LOG.info("Warmup [%s]...", cmp);
          for (int i = 0; i < 50; i++) {
-            final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
-            final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
+            final var uncompressedIS = new FastByteArrayInputStream(uncompressed);
+            final var compressedOS = new FastByteArrayOutputStream();
             cmp.compress(uncompressedIS, compressedOS);
 
-            final FastByteArrayInputStream compressedIS = new FastByteArrayInputStream(ArrayUtils.EMPTY_BYTE_ARRAY);
+            final var compressedIS = new FastByteArrayInputStream(ArrayUtils.EMPTY_BYTE_ARRAY);
             compressedIS.setData(compressedOS.toByteArray());
 
-            final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
+            final var uncompressedOS = new FastByteArrayOutputStream();
             cmp.decompress(compressedIS, uncompressedOS);
             if (!Objects.deepEquals(uncompressed, uncompressedOS.toByteArray()))
                throw new IOException("Compression [" + cmp + "] is buggy!");
@@ -122,7 +122,7 @@ public class CompressionBenchmark {
       /*
        * micro benchmark
        */
-      final StopWatch sw = new StopWatch();
+      final var sw = new StopWatch();
       for (final Compression cmp : compressions) {
          LOG.info("Benchmarking compression [%s]...", cmp);
 
@@ -131,8 +131,8 @@ public class CompressionBenchmark {
          System.gc();
          Threads.sleep(100);
 
-         final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
-         final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
+         final var uncompressedIS = new FastByteArrayInputStream(uncompressed);
+         final var compressedOS = new FastByteArrayOutputStream();
 
          sw.reset();
          sw.start();
@@ -152,12 +152,12 @@ public class CompressionBenchmark {
          System.gc();
          Threads.sleep(100);
 
-         final FastByteArrayInputStream uncompressedIS = new FastByteArrayInputStream(uncompressed);
-         final FastByteArrayOutputStream compressedOS = new FastByteArrayOutputStream();
-         final FastByteArrayOutputStream uncompressedOS = new FastByteArrayOutputStream();
+         final var uncompressedIS = new FastByteArrayInputStream(uncompressed);
+         final var compressedOS = new FastByteArrayOutputStream();
+         final var uncompressedOS = new FastByteArrayOutputStream();
          cmp.compress(uncompressedIS, compressedOS);
 
-         final FastByteArrayInputStream compressedIS = new FastByteArrayInputStream(ArrayUtils.EMPTY_BYTE_ARRAY);
+         final var compressedIS = new FastByteArrayInputStream(ArrayUtils.EMPTY_BYTE_ARRAY);
          compressedIS.setData(compressedOS.toByteArray());
 
          sw.reset();

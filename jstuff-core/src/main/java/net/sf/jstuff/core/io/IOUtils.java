@@ -132,7 +132,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
 
    @SuppressWarnings("resource")
    public static byte[] readBytes(final InputStream is) throws IOException {
-      final FastByteArrayOutputStream os = new FastByteArrayOutputStream();
+      final var os = new FastByteArrayOutputStream();
       copyLarge(is, os);
       return os.toByteArray();
    }
@@ -168,13 +168,13 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
     * @param len the exact number of bytes to read.
     */
    public static byte[] readBytes(final InputStream is, final int len) throws IOException {
-      final byte[] bytes = new byte[len];
+      final var bytes = new byte[len];
       readBytes(is, bytes, 0, len);
       return bytes;
    }
 
    public static byte[] readBytesAndClose(final InputStream is) throws IOException {
-      try (FastByteArrayOutputStream os = new FastByteArrayOutputStream()) {
+      try (var os = new FastByteArrayOutputStream()) {
          copyLarge(is, os);
          return os.toByteArray();
       } finally {
@@ -185,7 +185,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
    public static String readChunkAsString(final InputStream is, final int maxSize) throws IOException {
       if (is.available() == 0)
          return "";
-      final byte[] buff = new byte[maxSize];
+      final var buff = new byte[maxSize];
       final int readLen = is.read(buff);
       if (readLen == IOUtils.EOF)
          return "";
@@ -215,7 +215,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
 
    public static List<String> readLines(final Reader reader) throws IOException {
       final BufferedReader bf = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
-      final List<String> lines = new ArrayList<>();
+      final var lines = new ArrayList<String>();
       String line = bf.readLine();
       while (line != null) {
          lines.add(line);
@@ -231,7 +231,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
     */
    public static CharSequence readUntilContainsAny(final InputStream is, final String... searchFor) throws IOException {
       LOG.trace("Reading from stream %s until it contains any of %s", is, searchFor);
-      final StringBuilder result = new StringBuilder();
+      final var result = new StringBuilder();
       while (true) {
          final String output = readChunkAsString(is, 4096);
          LOG.trace("Current output from stream %s: %s", is, output);

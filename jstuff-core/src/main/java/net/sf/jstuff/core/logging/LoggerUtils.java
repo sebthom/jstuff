@@ -77,7 +77,7 @@ abstract class LoggerUtils {
       if (args == null || args.length == 0)
          return METHOD_ENTRY_MARKER_NOARGS;
 
-      final StringBuilder sb = new StringBuilder(METHOD_ENTRY_MARKER);
+      final var sb = new StringBuilder(METHOD_ENTRY_MARKER);
 
       final Parameter[] params = method.getParameters();
       if (params.length == 0) {
@@ -143,7 +143,8 @@ abstract class LoggerUtils {
             || className.startsWith("sun.reflect.") //
          ) {
             continue;
-         } else if (className.startsWith("com.")) {
+         }
+         if (className.startsWith("com.")) {
             if (className.startsWith("sun.proxy.$Proxy", 4)) { // com.sun.proxy.$Proxy
                continue;
             } else if (className.startsWith("ibm.", 4)) { // com.ibm.

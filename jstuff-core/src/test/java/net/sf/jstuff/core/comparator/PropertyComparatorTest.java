@@ -36,18 +36,18 @@ public class PropertyComparatorTest {
 
    @Test
    public void testPropertyComparator() {
-      final Entity e1 = new Entity("444");
-      final Entity e2 = new Entity("222");
-      final Entity e3 = new Entity("333");
-      final Entity e4 = new Entity(null);
+      final var e1 = new Entity("444");
+      final var e2 = new Entity("222");
+      final var e3 = new Entity("333");
+      final var e4 = new Entity(null);
       {
-         final TreeSet<Entity> set = new TreeSet<>(new PropertyComparator<Entity>("name"));
+         final var set = new TreeSet<>(new PropertyComparator<Entity>("name"));
          set.add(e1);
          set.add(e2);
          set.add(e3);
          set.add(e4);
 
-         final Entity[] orderedEntities = set.toArray(new Entity[4]);
+         final var orderedEntities = set.toArray(new Entity[4]);
          assertThat(orderedEntities[0]).isEqualTo(e2);
          assertThat(orderedEntities[1]).isEqualTo(e3);
          assertThat(orderedEntities[2]).isEqualTo(e1);
@@ -58,13 +58,13 @@ public class PropertyComparatorTest {
       e3.child = new Entity(null);
       e4.child = new Entity("BBB");
       {
-         final TreeSet<Entity> set = new TreeSet<>(new PropertyComparator<Entity>("child.name"));
+         final var set = new TreeSet<>(new PropertyComparator<Entity>("child.name"));
          set.add(e1);
          set.add(e2);
          set.add(e3);
          set.add(e4);
 
-         final Entity[] orderedEntities = set.toArray(new Entity[4]);
+         final var orderedEntities = set.toArray(new Entity[4]);
          assertThat(orderedEntities[0]).isEqualTo(e1);
          assertThat(orderedEntities[1]).isEqualTo(e4);
          assertThat(orderedEntities[2]).isEqualTo(e2);

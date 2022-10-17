@@ -109,7 +109,7 @@ public class BeanRowMapper<T> implements RowMapper<T> {
       // get beanInformation from bean e.g. property names
       final BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
 
-      final HashMap<String, String> propsLowerCase = new HashMap<>();
+      final var propsLowerCase = new HashMap<String, String>();
       for (final PropertyDescriptor prop : beanInfo.getPropertyDescriptors()) {
          final String propName = prop.getName();
          if (propsLowerCase.put(propName.toLowerCase(), propName) != null)

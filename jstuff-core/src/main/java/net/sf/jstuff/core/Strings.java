@@ -150,7 +150,7 @@ public abstract class Strings {
 
       public String toCSS() {
          if (isActive()) {
-            final StringBuilder sb = new StringBuilder();
+            final var sb = new StringBuilder();
             if (fgcolor != null) {
                sb.append("color:").append(fgcolor).append(";");
             }
@@ -298,7 +298,7 @@ public abstract class Strings {
          final char ch = txt.charAt(i);
          if (ch == esc && i < txtLen - 1 && txt.charAt(i + 1) == '[') {
             lookAhead.setLength(0);
-            final ANSIState currentState = new ANSIState(effectiveState);
+            final var currentState = new ANSIState(effectiveState);
             int currentGraphicModeParam = 0;
             boolean isValidEscapeSequence = false;
             for (i = i + 2; i < txtLen; i++) {
@@ -970,7 +970,8 @@ public abstract class Strings {
             if (ch == '\n')
                return "\r\n";
             return "\r";
-         } else if (ch == '\n')
+         }
+         if (ch == '\n')
             return "\n";
          lastChar = ch;
       }
@@ -1782,7 +1783,7 @@ public abstract class Strings {
       if (!it.hasNext())
          return Objects.toString(transform.apply(first), EMPTY);
 
-      final StringBuilder sb = new StringBuilder(128);
+      final var sb = new StringBuilder(128);
       sb.append(Objects.toString(transform.apply(first), EMPTY));
 
       while (it.hasNext()) {
@@ -1807,7 +1808,7 @@ public abstract class Strings {
       if (!it.hasNext())
          return Objects.toString(transform.apply(first), EMPTY);
 
-      final StringBuilder sb = new StringBuilder(128);
+      final var sb = new StringBuilder(128);
       sb.append(Objects.toString(transform.apply(first), EMPTY));
 
       while (it.hasNext()) {
@@ -2714,8 +2715,8 @@ public abstract class Strings {
    public static @Nullable String replaceEachNullable(final @Nullable String searchIn, final String @Nullable... tokens) {
       if (searchIn == null || tokens == null)
          return searchIn;
-      final String[] searchFor = new String[tokens.length / 2];
-      final String[] replaceWith = new String[tokens.length / 2];
+      final var searchFor = new String[tokens.length / 2];
+      final var replaceWith = new String[tokens.length / 2];
 
       boolean isNextTokenSearchKey = true;
       int idx = 0;
@@ -3758,7 +3759,7 @@ public abstract class Strings {
          return ((String) txt).toCharArray();
 
       final int txtLen = txt.length();
-      final char[] chars = new char[txtLen];
+      final var chars = new char[txtLen];
 
       if (txt instanceof StringBuilder) {
          ((StringBuilder) txt).getChars(0, txtLen, chars, 0);
@@ -3842,7 +3843,7 @@ public abstract class Strings {
    public static String toString(final @Nullable Object object, final @NonNullByDefault({}) Object... fieldAndValues) {
       if (object == null)
          return "null";
-      final StringBuilder sb = new StringBuilder(object.getClass().getSimpleName());
+      final var sb = new StringBuilder(object.getClass().getSimpleName());
       sb.append('@');
       sb.append(Integer.toHexString(System.identityHashCode(object)));
       if (fieldAndValues != null && fieldAndValues.length > 0) {

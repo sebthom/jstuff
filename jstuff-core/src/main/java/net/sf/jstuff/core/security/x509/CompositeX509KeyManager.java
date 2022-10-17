@@ -77,7 +77,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
 
    @Override
    public @NonNull String @Nullable [] getClientAliases(final String keyType, final @NonNull Principal @Nullable [] issuers) {
-      final List<String> result = new ArrayList<>();
+      final var result = new ArrayList<String>();
       for (final X509KeyManager keyManager : keyManagers) {
          CollectionUtils.addAll(result, keyManager.getClientAliases(keyType, issuers));
       }
@@ -99,7 +99,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
 
    @Override
    public @NonNull String @Nullable [] getServerAliases(final String keyType, final @NonNull Principal @Nullable [] issuers) {
-      final List<String> result = new ArrayList<>();
+      final var result = new ArrayList<String>();
       for (final X509KeyManager keyManager : keyManagers) {
          CollectionUtils.addAll(result, keyManager.getServerAliases(keyType, issuers));
       }

@@ -27,7 +27,7 @@ public class NetUtilsTest {
 
    @Test
    public void testIsPortOpen() throws IOException {
-      try (ServerSocket serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort(), 5, InetAddress.getLoopbackAddress())) {
+      try (var serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort(), 5, InetAddress.getLoopbackAddress())) {
          Threads.sleep(100);
          assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000))
             .isTrue();

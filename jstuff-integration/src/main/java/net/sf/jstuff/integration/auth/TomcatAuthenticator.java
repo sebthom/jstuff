@@ -33,7 +33,7 @@ public class TomcatAuthenticator implements Authenticator {
          // https://stackoverflow.com/questions/6833947/org-apache-catalina-serverfactory-getserver-equivalent-in-tomcat-7
          // https://stackoverflow.com/questions/34657248/tomcat-8-webapp-dynamically-add-postresources
          final MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
-         final ObjectName name = new ObjectName("Catalina", "type", "Server");
+         final var name = new ObjectName("Catalina", "type", "Server");
          final Server server = (Server) mBeanServer.getAttribute(name, "managedResource");
          final Engine engine = server.findService("Catalina").getContainer();
          final Context context = (Context) engine.findChild(engine.getDefaultHost()).findChild(SecurityFilter.HTTP_SERVLET_REQUEST_HOLDER

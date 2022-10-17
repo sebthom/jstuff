@@ -19,22 +19,22 @@ public class CharSequenceReaderTest {
    @SuppressWarnings("resource")
    public void testCharSequenceReader() throws IOException {
       {
-         final char[] buf = new char[5];
-         final CharSequenceReader r = new CharSequenceReader("Hello World!");
+         final var buf = new char[5];
+         final var r = new CharSequenceReader("Hello World!");
          r.read(buf, 0, 5);
          assertThat(new String(buf).intern()).isEqualTo("Hello");
       }
 
       {
-         final char[] buf = new char[5];
-         final CharSequenceReader r = new CharSequenceReader(new StringBuffer("Hello World!"));
+         final var buf = new char[5];
+         final var r = new CharSequenceReader(new StringBuffer("Hello World!"));
          r.read(buf, 0, 5);
          assertThat(new String(buf).intern()).isEqualTo("Hello");
       }
 
       {
-         final char[] buf = new char[5];
-         final CharSequenceReader r = new CharSequenceReader(new StringBuilder("Hello World!"));
+         final var buf = new char[5];
+         final var r = new CharSequenceReader(new StringBuilder("Hello World!"));
          r.read(buf, 0, 5);
          assertThat(new String(buf).intern()).isEqualTo("Hello");
       }

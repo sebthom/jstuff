@@ -52,7 +52,7 @@ public abstract class SpringBeanParanamer {
       }
 
       // as fallback use indexed parameter
-      final String[] names = new String[beanMethod.getParameterTypes().length];
+      final var names = new String[beanMethod.getParameterTypes().length];
       for (int i = 0, l = beanMethod.getParameterTypes().length; i < l; i++) {
          names[i] = "param" + i;
       }

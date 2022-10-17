@@ -53,7 +53,7 @@ public class DelegatingInputStream extends InputStream implements Decorator<Inpu
    }
 
    public byte readByte() throws IOException {
-      final byte[] b = new byte[1];
+      final var b = new byte[1];
       wrapped.read(b);
       return b[0];
    }

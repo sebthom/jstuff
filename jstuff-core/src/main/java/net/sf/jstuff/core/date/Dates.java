@@ -107,7 +107,7 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
     * @param month January = 1
     */
    public static int getDaysOfMonth(final int year, final int month) {
-      final Calendar cal = new GregorianCalendar();
+      final var cal = new GregorianCalendar();
       cal.set(Calendar.YEAR, year);
       cal.set(Calendar.MONTH, month - 1);
       return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -122,7 +122,7 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
     */
    public static boolean isValidDate(final int year, final int month, final int day) {
       try {
-         final GregorianCalendar cal = new GregorianCalendar();
+         final var cal = new GregorianCalendar();
          cal.setLenient(false);
          cal.set(Calendar.YEAR, year);
          cal.set(Calendar.MONTH, month - 1);

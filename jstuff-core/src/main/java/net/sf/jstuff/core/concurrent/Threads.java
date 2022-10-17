@@ -40,11 +40,11 @@ public abstract class Threads {
    public static @NonNull Thread[] all() {
       final ThreadGroup root = rootThreadGroup();
 
-      Thread[] tmp = new Thread[count() + 1];
+      var tmp = new Thread[count() + 1];
       while (true) {
          final int enumerated = root.enumerate(tmp, true);
          if (enumerated < tmp.length) {
-            final Thread[] result = new Thread[enumerated];
+            final var result = new Thread[enumerated];
             System.arraycopy(tmp, 0, result, 0, enumerated);
             return result;
          }

@@ -8,7 +8,6 @@ import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -81,7 +80,7 @@ public class FieldInstantiatingPlugin extends AbstractPlugin {
    public boolean run(final Outline outline, final Options options, final ErrorHandler errorHandler) throws SAXException {
 
       // collect all types defined in the XSD
-      final List<JType> typeDefs = new ArrayList<>();
+      final var typeDefs = new ArrayList<JType>();
       for (final ClassOutline classDef : outline.getClasses()) {
          typeDefs.add(classDef.implClass);
       }

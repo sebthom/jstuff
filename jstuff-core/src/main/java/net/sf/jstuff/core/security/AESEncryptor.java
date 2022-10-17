@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -110,7 +109,7 @@ public class AESEncryptor {
       SecretKey key = cachedAESKeys.get(passphrase);
       if (key == null) {
          final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-         final KeySpec spec = new PBEKeySpec(passphrase.toCharArray(), keySalt, 1024, 128);
+         final var spec = new PBEKeySpec(passphrase.toCharArray(), keySalt, 1024, 128);
          key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
          cachedAESKeys.put(passphrase, key);
       }
@@ -126,7 +125,7 @@ public class AESEncryptor {
          // generate a new initial vector on each invocation
          final byte[] iv = Crypto.createRandomBytes(16);
          cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
-         final AESSealedObject sealedObject = new AESSealedObject(object, cipher);
+         final var sealedObject = new AESSealedObject(object, cipher);
          sealedObject.iv = iv;
          return sealedObject;
       } catch (final Exception ex) {

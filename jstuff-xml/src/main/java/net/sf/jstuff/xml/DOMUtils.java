@@ -135,7 +135,7 @@ public abstract class DOMUtils {
 
       @Override
       protected XPathNodeConfiguration clone() throws CloneNotSupportedException {
-         final XPathNodeConfiguration clone = new XPathNodeConfiguration();
+         final var clone = new XPathNodeConfiguration();
          clone.recursive = recursive;
          clone.useSchemaIdAttributes = useSchemaIdAttributes;
          clone.idAttributesByXMLTagName.putAll(idAttributesByXMLTagName);
@@ -224,7 +224,7 @@ public abstract class DOMUtils {
       /*
        * build the xPath of the current element
        */
-      final StringBuilder xPath = new StringBuilder(parentXPath);
+      final var xPath = new StringBuilder(parentXPath);
       xPath.append('/');
       xPath.append(elem.getTagName());
       final List<Attr> attrs = _getIdAttributes(elem, cfg);
@@ -517,7 +517,7 @@ public abstract class DOMUtils {
    public static SortedMap<String, XPathNode> getXPathNodes(final Element element) {
       Args.notNull("element", element);
 
-      final SortedMap<String, XPathNode> valuesByXPath = new TreeMap<>();
+      final var valuesByXPath = new TreeMap<String, XPathNode>();
       _getXPathNodes(element, XPathNodeConfiguration.INTERNAL_SHARED_INSTANCE, "", valuesByXPath);
       return valuesByXPath;
    }
@@ -529,7 +529,7 @@ public abstract class DOMUtils {
       Args.notNull("element", element);
       Args.notNull("config", config);
 
-      final SortedMap<String, XPathNode> valuesByXPath = new TreeMap<>();
+      final var valuesByXPath = new TreeMap<String, XPathNode>();
       _getXPathNodes(element, config, "", valuesByXPath);
       return valuesByXPath;
    }
@@ -562,7 +562,7 @@ public abstract class DOMUtils {
       Args.notNull("nodesToImport", nodesToImport);
 
       final Document targetDoc = _getOwnerDocument(parent);
-      final List<T> importedNodes = new ArrayList<>(nodesToImport.size());
+      final var importedNodes = new ArrayList<T>(nodesToImport.size());
       for (final T nodeToImport : nodesToImport) {
          final T importedNode = (T) parent.appendChild(targetDoc.importNode(nodeToImport, true));
          importedNodes.add(importedNode);
@@ -585,7 +585,7 @@ public abstract class DOMUtils {
       final Node parent = Args.notNull("sibling.parentNode", sibling.getParentNode());
 
       final Document targetDoc = _getOwnerDocument(parent);
-      final List<T> importedNodes = new ArrayList<>(nodesToImport.size());
+      final var importedNodes = new ArrayList<T>(nodesToImport.size());
       for (final T nodeToImport : nodesToImport) {
          final T importedNode = (T) parent.insertBefore(targetDoc.importNode(nodeToImport, true), sibling);
          importedNodes.add(importedNode);
@@ -603,7 +603,7 @@ public abstract class DOMUtils {
    public static Node[] nodeListToArray(final NodeList nodes) {
       Args.notNull("nodes", nodes);
 
-      final Node[] result = new Node[nodes.getLength()];
+      final var result = new Node[nodes.getLength()];
       for (int i = 0, l = nodes.getLength(); i < l; i++) {
          result[i] = nodes.item(i);
       }
@@ -716,7 +716,7 @@ public abstract class DOMUtils {
          // disabling external DTD resolution to avoid errors like "java.net.UnknownHostException: java.sun.com"
          domBuilder.setEntityResolver(NOREMOTE_DTD_RESOLVER);
 
-         final SAXParseExceptionHandler errorHandler = new SAXParseExceptionHandler();
+         final var errorHandler = new SAXParseExceptionHandler();
          domBuilder.setErrorHandler(errorHandler);
          var domDoc = domBuilder.parse(input);
          final Element domRoot = domDoc.getDocumentElement();
@@ -857,7 +857,7 @@ public abstract class DOMUtils {
          transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
          transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 
-         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8)) {
+         try (var writer = new OutputStreamWriter(new FileOutputStream(targetFile), StandardCharsets.UTF_8)) {
             transformer.transform(new DOMSource(root), new StreamResult(writer));
             writer.flush();
          }
@@ -885,7 +885,7 @@ public abstract class DOMUtils {
       Args.notNull("parentNode", parentNode);
       Args.notNull("comparator", comparator);
 
-      final List<Node> sortedNodes = new ArrayList<>();
+      final var sortedNodes = new ArrayList<Node>();
       for (final Node node : getChildNodes(parentNode)) {
          // Remove empty text nodes
          if (node instanceof Text && ((Text) node).getTextContent().trim().length() > 1) {
@@ -906,7 +906,7 @@ public abstract class DOMUtils {
    public static void sortChildNodesByAttributes(final Node parentNode, final boolean ascending, final String... attributeNames) {
       Args.notNull("parentNode", parentNode);
 
-      final List<Node> children = new ArrayList<>();
+      final var children = new ArrayList<Node>();
       for (final Node node : getChildNodes(parentNode)) {
          // Remove empty text nodes
          if (node instanceof Text && ((Text) node).getTextContent().trim().length() > 1) {
@@ -956,7 +956,7 @@ public abstract class DOMUtils {
    public static String toXML(final Node root, final boolean outputXMLDeclaration, final boolean formatPretty) throws XMLException {
       Args.notNull("root", root);
 
-      final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
+      final var bos = new FastByteArrayOutputStream();
       try {
          toXML(root, bos, outputXMLDeclaration, formatPretty);
       } catch (final IOException e) {

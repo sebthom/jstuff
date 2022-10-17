@@ -149,7 +149,7 @@ public final class ObjectCache<K, V> {
     */
    public Map<K, V> getAll() {
       expungeStaleEntries();
-      final Map<K, V> result = new HashMap<>();
+      final var result = new HashMap<K, V>();
       for (final ValueReference<K, V> ref : cache.values()) {
          final var value = ref.get();
          if (value == null) {

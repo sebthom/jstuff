@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
@@ -46,11 +45,11 @@ public class IdentityHashSetTest {
 
    @Test
    public void testIdentityHashSet() {
-      final Set<Entity> ihs = IdentityHashSet.create();
-      final Set<Entity> hs = new HashSet<>();
+      final var ihs = new IdentityHashSet<Entity>();
+      final var hs = new HashSet<Entity>();
 
-      final Entity e1 = new Entity().setName("aa");
-      final Entity e2 = new Entity().setName("aa");
+      final var e1 = new Entity().setName("aa");
+      final var e2 = new Entity().setName("aa");
 
       assertThat(e2) //
          .isEqualTo(e1) //
@@ -67,7 +66,7 @@ public class IdentityHashSetTest {
       assertThat(ihs).hasSize(2);
       assertThat(hs).hasSize(1);
 
-      final Set<Entity> ihs2 = IdentityHashSet.create();
+      final var ihs2 = new IdentityHashSet<Entity>();
       ihs2.add(e1);
       ihs2.add(e2);
       assertThat(ihs2).isEqualTo(ihs);

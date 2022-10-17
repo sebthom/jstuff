@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang3.SerializationException;
 
@@ -29,9 +28,9 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
    public static String bean2xml(final Object javaBean) throws SerializationException {
       Args.notNull("javaBean", javaBean);
 
-      final List<Exception> exceptions = new ArrayList<>(2);
-      try (FastByteArrayOutputStream bos = new FastByteArrayOutputStream()) {
-         try (XMLEncoder encoder = new XMLEncoder(bos)) {
+      final var exceptions = new ArrayList<Exception>(2);
+      try (var bos = new FastByteArrayOutputStream()) {
+         try (var encoder = new XMLEncoder(bos)) {
             encoder.setExceptionListener(exceptions::add);
             encoder.writeObject(javaBean);
          }
@@ -45,7 +44,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
    public static <T> T deserialize(final byte[] serializedData) throws SerializationException {
       Args.notNull("serializedData", serializedData);
 
-      final FastByteArrayInputStream bin = new FastByteArrayInputStream(serializedData);
+      final var bin = new FastByteArrayInputStream(serializedData);
       return deserialize(bin);
    }
 
@@ -53,7 +52,7 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
    public static <T> T deserialize(final InputStream is) throws SerializationException {
       Args.notNull("is", is);
 
-      try (ObjectInputStream ois = new ObjectInputStream(is)) {
+      try (var ois = new ObjectInputStream(is)) {
          return (T) ois.readObject();
       } catch (final Exception ex) {
          throw new SerializationException("Deserialization failed", ex);
@@ -66,10 +65,10 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
    public static <T> T xml2bean(final String xmlData) throws SerializationException {
       Args.notNull("xmlData", xmlData);
 
-      try (FastByteArrayInputStream bis = new FastByteArrayInputStream(xmlData.getBytes(Charset.defaultCharset()));
-           XMLDecoder decoder = new XMLDecoder(bis) //
+      try (var bis = new FastByteArrayInputStream(xmlData.getBytes(Charset.defaultCharset()));
+           var decoder = new XMLDecoder(bis) //
       ) {
-         final List<Exception> exceptions = new ArrayList<>(2);
+         final var exceptions = new ArrayList<Exception>(2);
          decoder.setExceptionListener(exceptions::add);
          @SuppressWarnings("unchecked")
          final T javaBean = (T) decoder.readObject();

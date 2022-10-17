@@ -73,7 +73,7 @@ public abstract class Images {
 
       final ColorModel cm = image.getColorModel();
       final WritableRaster raster = cm.createCompatibleWritableRaster(image.getWidth(), image.getHeight());
-      final BufferedImage ret = new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), props);
+      final var ret = new BufferedImage(cm, raster, cm.isAlphaPremultiplied(), props);
       image.copyData(raster);
       return ret;
    }
@@ -82,7 +82,7 @@ public abstract class Images {
    public static byte[] toJPEG(final BufferedImage image) throws IOException {
       Args.notNull("image", image);
 
-      final FastByteArrayOutputStream bos = new FastByteArrayOutputStream();
+      final var bos = new FastByteArrayOutputStream();
       ImageIO.write(image, "jpg", bos);
       return bos.toByteArray();
    }
@@ -91,7 +91,7 @@ public abstract class Images {
       Args.notNull("image", image);
 
       final Image scaled = image.getScaledInstance(200, 150, Image.SCALE_SMOOTH);
-      final BufferedImage scaledBuffered = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+      final var scaledBuffered = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
       final Graphics2D g = scaledBuffered.createGraphics();
       g.drawImage(scaled, 0, 0, null);
       g.dispose();

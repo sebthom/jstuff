@@ -27,12 +27,12 @@ public class SpringBeanRefTest {
    @Test
    public void testSpringBeanRef() {
 
-      final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml", SpringBeanRefTest.class);
+      final var ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml", SpringBeanRefTest.class);
 
-      final Entity e = new Entity();
+      final var e = new Entity();
       assertThat(e.springBean).isNotNull();
       assertThat(e.springBean.get()).isNotNull();
-      final Entity e2 = SerializationUtils.clone(e);
+      final var e2 = SerializationUtils.clone(e);
       assertThat(e2.springBean).isNotNull();
       assertThat(e2.springBean.get()).isNotNull();
 

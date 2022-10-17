@@ -30,7 +30,7 @@ public enum ExtendedKeyUsage {
       final var oids = cert.getExtendedKeyUsage();
       if (oids == null || oids.isEmpty())
          return Collections.emptySet();
-      final Set<ExtendedKeyUsage> usages = new HashSet<>();
+      final var usages = new HashSet<ExtendedKeyUsage>();
       for (final ExtendedKeyUsage keyUsage : ExtendedKeyUsage.values()) {
          if (oids.contains(keyUsage.rfcOID)) {
             usages.add(keyUsage);

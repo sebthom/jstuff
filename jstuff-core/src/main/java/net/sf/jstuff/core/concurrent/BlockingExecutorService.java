@@ -160,7 +160,7 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
 
       aquirePermits(tasks.size());
 
-      final Collection<Callable<T>> result = new ArrayList<>(tasks.size());
+      final var result = new ArrayList<Callable<T>>(tasks.size());
       for (final Callable<T> task : tasks) {
          result.add(new CallableWrapper<>(task, limiter));
       }

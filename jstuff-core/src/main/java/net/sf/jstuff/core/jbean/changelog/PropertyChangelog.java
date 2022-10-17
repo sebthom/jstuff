@@ -89,7 +89,7 @@ public class PropertyChangelog implements EventListener<PropertyChangeEvent>, Se
    }
 
    public UndoMarker undoMarker() {
-      final UndoMarker um = new UndoMarker();
+      final var um = new UndoMarker();
       propertyChanges.add(um);
       return um;
    }

@@ -54,7 +54,7 @@ public class LoggingTest {
 
       @Override
       public synchronized String format(final LogRecord entry) {
-         final StringBuilder sb = new StringBuilder(1000);
+         final var sb = new StringBuilder(1000);
          sb.append(df.format(new Date(entry.getMillis()))).append(" ");
          sb.append(entry.getLevel().getName().charAt(0)).append(" ");
          {
@@ -71,7 +71,7 @@ public class LoggingTest {
          }
          sb.append(formatMessage(entry));
          if (entry.getThrown() != null) {
-            final StringWriter errors = new StringWriter();
+            final var errors = new StringWriter();
             entry.getThrown().printStackTrace(new PrintWriter(errors));
             sb.append(errors);
          }
@@ -112,7 +112,7 @@ public class LoggingTest {
       }
 
       final int[] count = {0};
-      final Handler h = new Handler() {
+      final var h = new Handler() {
          @Override
          public void close() throws SecurityException {
          }
@@ -219,8 +219,8 @@ public class LoggingTest {
          handler.setLevel(java.util.logging.Level.ALL);
       }
       java.util.logging.Logger.getLogger(Entity.class.getName()).setLevel(java.util.logging.Level.FINEST);
-      final int[] count = new int[1];
-      final Handler h = new Handler() {
+      final var count = new int[1];
+      final var h = new Handler() {
          @Override
          public void close() throws SecurityException {
          }
@@ -251,7 +251,7 @@ public class LoggingTest {
       };
       Loggers.ROOT_LOGGER.addHandler(h);
       try {
-         final Entity entity = new Entity();
+         final var entity = new Entity();
          final InterfaceA wrapped = Logger.createLogged(entity, InterfaceA.class, InterfaceB.class);
          wrapped.methodA(1, "foo", "bar");
 

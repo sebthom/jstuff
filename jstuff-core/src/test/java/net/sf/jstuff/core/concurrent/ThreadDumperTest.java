@@ -28,8 +28,8 @@ public class ThreadDumperTest {
        * start threads that deadlock on ReentrantLock
        */
       {
-         final ReentrantLock lock1 = new ReentrantLock();
-         final ReentrantLock lock2 = new ReentrantLock();
+         final var lock1 = new ReentrantLock();
+         final var lock2 = new ReentrantLock();
 
          new Thread(() -> {
             lock1.lock();
@@ -55,8 +55,8 @@ public class ThreadDumperTest {
        * start threads that deadlock on ReentrantLock
        */
       {
-         final Object lock1 = new Object();
-         final Object lock2 = new Object();
+         final var lock1 = new Object();
+         final var lock2 = new Object();
 
          new Thread(() -> {
             synchronized (lock1) {
@@ -91,7 +91,7 @@ public class ThreadDumperTest {
       assertThat(Threads.deadlocked()).hasSize(4);
 
       {
-         final StringBuilder out = new StringBuilder();
+         final var out = new StringBuilder();
          final ThreadDumper threadDumper = ThreadDumper.builder() //
             .withDeadlockReport(true) //
             .withFooterPrinter(p -> p.append("#### THREAD DUMP END ####")) //
@@ -104,7 +104,7 @@ public class ThreadDumperTest {
       }
 
       {
-         final StringBuilder out = new StringBuilder();
+         final var out = new StringBuilder();
          final ThreadDumper threadDumper = ThreadDumper.builder() //
             .withDeadlockReport(false) //
             .withThreadFilter(t -> !"Finalizer".equals(t.getThreadName())) //
@@ -125,7 +125,7 @@ public class ThreadDumperTest {
       Threads.sleep(1000);
 
       {
-         final StringBuilder out = new StringBuilder();
+         final var out = new StringBuilder();
          final ThreadDumper threadDumper = ThreadDumper.builder() //
             .withDeadlockReport(true) //
             .withThreadFilter(t -> false) //

@@ -46,7 +46,7 @@ public final class LoggerConfig {
 
       try {
          @SuppressWarnings("unused")
-         final SLF4JLogger test = new SLF4JLogger("");
+         final var test = new SLF4JLogger("");
          isSLF4JAvailable = true;
       } catch (final LinkageError err) {
          isSLF4JAvailable = false;
@@ -59,7 +59,7 @@ public final class LoggerConfig {
    static Logger create(final String name) {
       Args.notNull("name", name);
 
-      final DelegatingLogger logger = new DelegatingLogger(isUsingSLF4J ? new SLF4JLogger(name) : new JULLogger(name));
+      final var logger = new DelegatingLogger(isUsingSLF4J ? new SLF4JLogger(name) : new JULLogger(name));
       synchronized (LOGGERS) {
          LOGGERS.add(logger);
       }

@@ -67,7 +67,7 @@ public abstract class Sets {
       if (initialValues == null || initialValues.length == 0)
          return new HashSet<>();
 
-      final HashSet<K> s = new HashSet<>(initialValues.length);
+      final var s = new HashSet<K>(initialValues.length);
       Collections.addAll(s, initialValues);
       return s;
    }
@@ -85,7 +85,7 @@ public abstract class Sets {
       if (initialValues == null || initialValues.length == 0)
          return new LinkedHashSet<>();
 
-      final LinkedHashSet<K> s = new LinkedHashSet<>(initialValues.length);
+      final var s = new LinkedHashSet<K>(initialValues.length);
       Collections.addAll(s, initialValues);
       return s;
    }
@@ -99,7 +99,7 @@ public abstract class Sets {
          return null;
       Args.notNull("op", op);
 
-      final Set<T> target = Sets.newHashSet(source.size());
+      final var target = new HashSet<T>(source.size());
       for (final S sourceItem : source) {
          target.add(op.apply(sourceItem));
       }

@@ -6,7 +6,6 @@ package net.sf.jstuff.core.concurrent.locks;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -25,7 +24,7 @@ public abstract class Locks {
       if (locks == null || locks.isEmpty())
          return;
 
-      final List<Lock> locked = new ArrayList<>(locks.size());
+      final var locked = new ArrayList<Lock>(locks.size());
       try {
          for (final Lock l : locks) {
             l.lock();
@@ -41,7 +40,7 @@ public abstract class Locks {
       if (locks == null || locks.length == 0)
          return;
 
-      final List<Lock> locked = new ArrayList<>(locks.length);
+      final var locked = new ArrayList<Lock>(locks.length);
       try {
          for (final Lock l : locks) {
             l.lock();
@@ -57,7 +56,7 @@ public abstract class Locks {
       if (locks == null || locks.isEmpty())
          return;
 
-      final List<Lock> locked = new ArrayList<>(locks.size());
+      final var locked = new ArrayList<Lock>(locks.size());
       try {
          for (final Lock l : locks) {
             l.lockInterruptibly();
@@ -73,7 +72,7 @@ public abstract class Locks {
       if (locks == null || locks.length == 0)
          return;
 
-      final List<Lock> locked = new ArrayList<>(locks.length);
+      final var locked = new ArrayList<Lock>(locks.length);
       try {
          for (final Lock l : locks) {
             l.lockInterruptibly();
@@ -224,15 +223,14 @@ public abstract class Locks {
       if (locks == null || locks.isEmpty())
          return true;
 
-      final List<Lock> locked = new ArrayList<>(locks.size());
+      final var locked = new ArrayList<Lock>(locks.size());
       try {
          for (final Lock l : locks) {
-            if (l.tryLock()) {
-               locked.add(l);
-            } else {
+            if (!l.tryLock()) {
                unlockAll(locked);
                return false;
             }
+            locked.add(l);
          }
       } catch (final RuntimeException ex) {
          unlockAll(locked);
@@ -245,15 +243,14 @@ public abstract class Locks {
       if (locks == null || locks.length == 0)
          return true;
 
-      final List<Lock> locked = new ArrayList<>(locks.length);
+      final var locked = new ArrayList<Lock>(locks.length);
       try {
          for (final Lock l : locks) {
-            if (l.tryLock()) {
-               locked.add(l);
-            } else {
+            if (!l.tryLock()) {
                unlockAll(locked);
                return false;
             }
+            locked.add(l);
          }
       } catch (final RuntimeException ex) {
          unlockAll(locked);
@@ -267,17 +264,16 @@ public abstract class Locks {
       if (locks == null || locks.isEmpty())
          return true;
 
-      final List<Lock> locked = new ArrayList<>(locks.size());
+      final var locked = new ArrayList<Lock>(locks.size());
       final long stopAt = System.nanoTime() + unit.toNanos(time);
       try {
          for (final Lock l : locks) {
             final long waitFor = stopAt - System.nanoTime();
-            if (l.tryLock(waitFor, TimeUnit.NANOSECONDS)) {
-               locked.add(l);
-            } else {
+            if (!l.tryLock(waitFor, TimeUnit.NANOSECONDS)) {
                unlockAll(locked);
                return false;
             }
+            locked.add(l);
          }
       } catch (final InterruptedException | RuntimeException ex) {
          unlockAll(locked);
@@ -290,17 +286,16 @@ public abstract class Locks {
       if (locks == null || locks.length == 0)
          return true;
 
-      final List<Lock> locked = new ArrayList<>(locks.length);
+      final var locked = new ArrayList<Lock>(locks.length);
       final long stopAt = System.nanoTime() + unit.toNanos(time);
       try {
          for (final Lock l : locks) {
             final long waitFor = stopAt - System.nanoTime();
-            if (l.tryLock(waitFor, TimeUnit.NANOSECONDS)) {
-               locked.add(l);
-            } else {
+            if (!l.tryLock(waitFor, TimeUnit.NANOSECONDS)) {
                unlockAll(l);
                return false;
             }
+            locked.add(l);
          }
       } catch (final InterruptedException | RuntimeException ex) {
          unlockAll(locked);

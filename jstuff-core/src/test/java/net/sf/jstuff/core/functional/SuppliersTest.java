@@ -76,7 +76,7 @@ public class SuppliersTest {
 
    @Test
    public void testOf() {
-      final Object obj = new Object();
+      final var obj = new Object();
       assertThat(Suppliers.of(obj).get()).isSameAs(obj);
    }
 }

@@ -39,7 +39,7 @@ public class ContentCapturingHttpServletResponseWrapperTest {
       });
 
       {
-         final ContentCapturingHttpServletResponseWrapper wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
+         final var wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
          wrapper.getWriter().print("Hello");
          assertThat(wrapper).hasToString("Hello");
          wrapper.clear();
@@ -53,12 +53,12 @@ public class ContentCapturingHttpServletResponseWrapperTest {
          }
       }
 
-      final String strUTF = "20.00€";
-      final String strISO_8859_1 = new String(strUTF.getBytes("ISO-8859-1"), "ISO-8859-1");
-      final String strISO_8859_15 = new String(strUTF.getBytes("ISO-8859-15"), "ISO-8859-15");
+      final var strUTF = "20.00€";
+      final var strISO_8859_1 = new String(strUTF.getBytes("ISO-8859-1"), "ISO-8859-1");
+      final var strISO_8859_15 = new String(strUTF.getBytes("ISO-8859-15"), "ISO-8859-15");
 
       {
-         final ContentCapturingHttpServletResponseWrapper wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
+         final var wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
          encoding[0] = "UTF-8";
          wrapper.getWriter().write(strUTF);
          LOG.info(encoding[0] + ": " + strUTF + " = " + wrapper.toString());
@@ -68,7 +68,7 @@ public class ContentCapturingHttpServletResponseWrapperTest {
       }
 
       {
-         final ContentCapturingHttpServletResponseWrapper wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
+         final var wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
          encoding[0] = "ISO-8859-1";
          wrapper.getWriter().write(strISO_8859_1);
          LOG.info(encoding[0] + ": " + strISO_8859_1 + " = " + wrapper.toString());
@@ -78,7 +78,7 @@ public class ContentCapturingHttpServletResponseWrapperTest {
       }
 
       {
-         final ContentCapturingHttpServletResponseWrapper wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
+         final var wrapper = new ContentCapturingHttpServletResponseWrapper(mock);
          encoding[0] = "ISO-8859-15";
          wrapper.getWriter().write(strISO_8859_15);
          LOG.info(encoding[0] + ": " + strISO_8859_15 + " = " + wrapper.toString());

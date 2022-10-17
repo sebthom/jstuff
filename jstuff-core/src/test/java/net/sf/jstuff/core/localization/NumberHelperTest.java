@@ -17,7 +17,7 @@ public class NumberHelperTest {
 
    @Test
    public void testIsValidCurrency() {
-      final NumberHelper numberHelper = new NumberHelper(Locale.GERMANY);
+      final var numberHelper = new NumberHelper(Locale.GERMANY);
 
       assertThat(numberHelper.isValidCurrency("10,00 €")).isTrue();
       assertThat(numberHelper.isValidCurrency("1000 €")).isTrue();

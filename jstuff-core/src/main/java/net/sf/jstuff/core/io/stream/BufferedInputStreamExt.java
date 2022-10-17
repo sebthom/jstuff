@@ -45,7 +45,7 @@ public class BufferedInputStreamExt extends BufferedInputStream {
     */
    @Nullable
    public CharSequence readLine() throws IOException {
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
 
       while (true) {
          final int ch = read();

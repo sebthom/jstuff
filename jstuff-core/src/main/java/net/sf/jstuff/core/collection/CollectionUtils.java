@@ -238,7 +238,7 @@ public abstract class CollectionUtils {
 
       Args.notNull("filter", filter);
 
-      final List<T> result = new ArrayList<>();
+      final var result = new ArrayList<T>();
       for (final T item : list)
          if (filter.test(item)) {
             result.add(item);
@@ -320,7 +320,7 @@ public abstract class CollectionUtils {
       if (n < 1)
          return Collections.emptyList();
 
-      final List<T> result = new ArrayList<>(n > list.size() ? list.size() : n);
+      final var result = new ArrayList<T>(n > list.size() ? list.size() : n);
 
       int counter = 1;
       for (final T item : list) {
@@ -346,7 +346,7 @@ public abstract class CollectionUtils {
             return Collections.emptyList();
       }
 
-      final List<T> commonItems = new ArrayList<>();
+      final var commonItems = new ArrayList<T>();
 
       for (final T candidate : lists[0]) {
          boolean isCommon = true;
@@ -377,7 +377,7 @@ public abstract class CollectionUtils {
             return Collections.emptySet();
       }
 
-      final Set<T> commonItems = new LinkedHashSet<>();
+      final var commonItems = new LinkedHashSet<T>();
 
       for (final T candidate : sets[0]) {
          boolean isCommon = true;
@@ -420,7 +420,7 @@ public abstract class CollectionUtils {
       if (initialValues == null || initialValues.length == 0)
          return new ArrayList<>();
 
-      final ArrayList<K> l = new ArrayList<>(initialValues.length);
+      final var l = new ArrayList<K>(initialValues.length);
       Collections.addAll(l, initialValues);
       return l;
    }
@@ -490,7 +490,7 @@ public abstract class CollectionUtils {
       if (list.isEmpty())
          return Collections.emptyList();
 
-      final List<T> reversed = new ArrayList<>(list);
+      final var reversed = new ArrayList<>(list);
       Collections.reverse(reversed);
       return reversed;
    }
@@ -515,7 +515,7 @@ public abstract class CollectionUtils {
          return Collections.emptyList();
 
       final int listSize = list.size();
-      final List<T> result = new ArrayList<>(n > listSize ? listSize : n);
+      final var result = new ArrayList<T>(n > listSize ? listSize : n);
       final int fromIndex = n > listSize ? 0 : listSize - n;
       final int toIndex = listSize - 1;
 

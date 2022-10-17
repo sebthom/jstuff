@@ -15,7 +15,7 @@ public class CountLatchTest {
 
    @Test
    public void testCountLatch() {
-      final CountLatch counter = new CountLatch(2);
+      final var counter = new CountLatch(2);
       assertThat(counter.getCount()).isZero();
       assertThat(counter.getMax()).isEqualTo(2);
 

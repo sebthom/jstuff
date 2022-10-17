@@ -6,7 +6,6 @@ package net.sf.jstuff.core.collection;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -47,9 +46,11 @@ public class WeakIdentityHashMapTest {
 
    @Test
    public void testWeakIdentityHashMap() {
-      final Map<@Nullable Entity, Object> identityMap = WeakIdentityHashMap.create();
+      final var identityMap = new WeakIdentityHashMap<@Nullable Entity, Object>();
 
+      @Nullable
       Entity e1 = new Entity().setName("aa");
+      @Nullable
       Entity e2 = new Entity().setName("aa");
 
       assertThat(e2).isEqualTo(e1).isNotSameAs(e1);
@@ -78,7 +79,7 @@ public class WeakIdentityHashMapTest {
       assertThat(identityMap.keySet()).hasSize(3);
       assertThat(identityMap.values()).hasSize(3);
 
-      final Map<@Nullable Entity, Object> identityMap2 = WeakIdentityHashMap.create();
+      final var identityMap2 = new WeakIdentityHashMap<@Nullable Entity, Object>();
 
       identityMap2.put(e1, Boolean.TRUE);
       identityMap2.put(e2, Boolean.TRUE);

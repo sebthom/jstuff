@@ -244,7 +244,7 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    @Deprecated
    @Override
    public Short[] toArray() {
-      final Short[] result = new Short[size];
+      final var result = new Short[size];
       for (int i = 0; i < result.length; i++) {
          result[i] = values[i];
       }
@@ -272,7 +272,7 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
 
    @Override
    public String toString() {
-      final StringBuilder sb = new StringBuilder("[");
+      final var sb = new StringBuilder("[");
       for (int i = 0; i < size; i++) {
          sb.append(values[i]);
          if (i < size - 1) {

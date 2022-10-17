@@ -44,7 +44,7 @@ public class TcpTunnelService extends Thread {
          @Override
          public void run() {
             try {
-               final byte[] buff = new byte[32 * 1024];
+               final var buff = new byte[32 * 1024];
                while (!interrupted()) {
                   try {
                      final int bytesRead = in.read(buff);

@@ -16,7 +16,7 @@ import net.sf.jstuff.core.concurrent.Threads;
 public class ObjectCacheTest {
    @Test
    public void testObjectCache_SoftRef_NoValuesToKeep() {
-      final ObjectCache<String, Object> cache = new ObjectCache<>();
+      final var cache = new ObjectCache<String, Object>();
       cache.put("1", new Object());
       cache.put("2", new Object());
       cache.put("3", new Object());
@@ -32,7 +32,7 @@ public class ObjectCacheTest {
 
    @Test
    public void testObjectCache_WeakRef_NoValuesToKeep() {
-      final ObjectCache<String, Object> cache = new ObjectCache<>(true);
+      final var cache = new ObjectCache<String, Object>(true);
       cache.put("1", new Object());
       cache.put("2", new Object());
       cache.put("3", new Object());
@@ -48,7 +48,7 @@ public class ObjectCacheTest {
 
    @Test
    public void testObjectCache_WeakRef_Last2ValuesToKeep() {
-      final ObjectCache<String, Object> cache = new ObjectCache<>(2, true);
+      final var cache = new ObjectCache<String, Object>(2, true);
       cache.put("1", new Object());
       cache.put("2", new Object());
       cache.put("3", new Object());

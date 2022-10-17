@@ -9,12 +9,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
@@ -126,7 +124,7 @@ public abstract class MoreFiles {
       if (Files.exists(fileToBackup)) {
          Args.isFileReadable("fileToBackup", fileToBackup); // ensure it is actually a file
 
-         final File backupFile = new File( //
+         final var backupFile = new File( //
             backupFolder.toFile(), //
             FilenameUtils.getBaseName(fileToBackup) //
                + "_" + DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd_hhmmss") //
@@ -247,9 +245,7 @@ public abstract class MoreFiles {
       Args.notNull("target", target);
       Args.notNull("onBytesWritten", onBytesWritten);
 
-      try ( //
-           WritableByteChannel outCh = new DelegatingWritableByteChannel(target, onBytesWritten) //
-      ) {
+      try (var outCh = new DelegatingWritableByteChannel(target, onBytesWritten)) {
          final long size = source.size();
          long position = 0;
 
@@ -398,7 +394,7 @@ public abstract class MoreFiles {
     */
    public static Collection<Path> find(final Path searchRoot, final String globPattern, final boolean includeFiles,
       final boolean includeDirectories) throws IOException {
-      final Collection<Path> result = new ArrayList<>();
+      final var result = new ArrayList<Path>();
       if (includeFiles && includeDirectories) {
          find(searchRoot, globPattern, result::add, result::add);
       } else if (includeDirectories) {
@@ -587,7 +583,7 @@ public abstract class MoreFiles {
 
       final CharsetEncoder encoder = charset.newEncoder();
       try (OutputStream out = Files.newOutputStream(file, options);
-           Writer writer = new OutputStreamWriter(out, encoder)) {
+           var writer = new OutputStreamWriter(out, encoder)) {
          if (text == null) {
             writer.write("null");
             return;
@@ -597,8 +593,8 @@ public abstract class MoreFiles {
             writer.write(text.toString(), 0, len);
             return;
          }
-         final char[] buff = new char[10];
-         final String str = text.toString();
+         final var buff = new char[10];
+         final var str = text.toString();
          int charsWritten = 0;
          while (charsWritten < len) {
             final int charsToWrite = Math.min(10, len - charsWritten);

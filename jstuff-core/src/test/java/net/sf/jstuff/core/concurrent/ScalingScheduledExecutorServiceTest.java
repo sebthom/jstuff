@@ -7,7 +7,6 @@ package net.sf.jstuff.core.concurrent;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -29,13 +28,13 @@ public class ScalingScheduledExecutorServiceTest {
       InterruptedException {
       final int maxPoolSize = executor.getMaximumPoolSize();
 
-      final AtomicInteger threadsExecuting = new AtomicInteger();
-      final CountDownLatch work = new CountDownLatch(maxPoolSize + 2);
+      final var threadsExecuting = new AtomicInteger();
+      final var work = new CountDownLatch(maxPoolSize + 2);
 
       assertThat(executor.getActiveCount()).isZero();
 
       LOG.info("Submitting tasks...");
-      final List<Future<Integer>> futures = new ArrayList<>();
+      final var futures = new ArrayList<Future<Integer>>();
       for (long i = 0, l = work.getCount(); i < l; i++) {
          LOG.info("Submitting #%s", i);
          final long j = i;
@@ -78,7 +77,7 @@ public class ScalingScheduledExecutorServiceTest {
 
    @Test
    public void testAsScheduler() throws ExecutionException, InterruptedException {
-      final ScalingScheduledExecutorService executor = new ScalingScheduledExecutorService(0, 3, 5, TimeUnit.SECONDS);
+      final var executor = new ScalingScheduledExecutorService(0, 3, 5, TimeUnit.SECONDS);
       try {
          testScalingScheduledExecutorServiceTest(executor);
       } finally {
@@ -88,7 +87,7 @@ public class ScalingScheduledExecutorServiceTest {
 
    @Test
    public void testAsThreadPoolExecutor() throws ExecutionException, InterruptedException {
-      final ScalingScheduledExecutorService executor = new ScalingScheduledExecutorService(0, 3, 5, TimeUnit.SECONDS);
+      final var executor = new ScalingScheduledExecutorService(0, 3, 5, TimeUnit.SECONDS);
       try {
          ScalingThreadPoolExecutorTest.testScalingThreadPoolExecutor(executor);
       } finally {

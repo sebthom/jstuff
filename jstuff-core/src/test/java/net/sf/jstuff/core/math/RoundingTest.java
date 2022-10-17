@@ -32,7 +32,7 @@ public class RoundingTest {
    @Test
    public void testIntegerRounding() {
       {
-         final Rounding rounding = new Rounding(-2, RoundingMode.UP);
+         final var rounding = new Rounding(-2, RoundingMode.UP);
          testRounding(100, 1, rounding);
          testRounding(100, 49, rounding);
          testRounding(100, 50, rounding);
@@ -51,7 +51,7 @@ public class RoundingTest {
       }
 
       {
-         final Rounding rounding = new Rounding(-2, RoundingMode.HALF_UP);
+         final var rounding = new Rounding(-2, RoundingMode.HALF_UP);
          testRounding(0, 1, rounding);
          testRounding(0, 49, rounding);
          testRounding(100, 50, rounding);
@@ -73,7 +73,7 @@ public class RoundingTest {
    @Test
    public void testDecimalRounding() {
       {
-         final Rounding rounding = new Rounding(2, RoundingMode.UP);
+         final var rounding = new Rounding(2, RoundingMode.UP);
          testRounding(0.01, 0.0001, rounding);
          testRounding(0.01, 0.0049, rounding);
          testRounding(0.01, 0.0050, rounding);
@@ -92,7 +92,7 @@ public class RoundingTest {
       }
 
       {
-         final Rounding rounding = new Rounding(2, RoundingMode.HALF_UP);
+         final var rounding = new Rounding(2, RoundingMode.HALF_UP);
          testRounding(0.0, 0.0001, rounding);
          testRounding(0.0, 0.0049, rounding);
          testRounding(0.01, 0.0050, rounding);

@@ -79,7 +79,7 @@ public class LinkedByteArrayOutputStream extends OutputStream {
    }
 
    public byte[] toByteArray() {
-      final byte[] result = new byte[size()];
+      final var result = new byte[size()];
       int resultWritePos = 0;
 
       if (blocks != null) {

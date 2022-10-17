@@ -69,7 +69,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
 
    @Override
    public CompositeSet<Entry<K, V>> entrySet() {
-      final CompositeSet<Entry<K, V>> entries = new CompositeSet<>();
+      final var entries = new CompositeSet<Entry<K, V>>();
       for (final Map<? extends K, ? extends V> m : components) {
          final @NonNull Collection<? extends Entry<K, V>> set = Types.cast(m.entrySet());
          entries.getComponents().add(set);
@@ -96,7 +96,7 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
 
    @Override
    public Set<K> keySet() {
-      final CompositeSet<K> keys = new CompositeSet<>();
+      final var keys = new CompositeSet<K>();
       for (final Map<? extends K, ? extends V> m : components) {
          keys.getComponents().add(m.keySet());
       }

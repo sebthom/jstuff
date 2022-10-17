@@ -30,14 +30,12 @@ public class StringToMapConverter extends AbstractConverter {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public @Nullable Object convert(final @Nullable Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
       final String sourceString = (String) source;
       if (sourceString == null || Strings.isBlank(sourceString))
          return Collections.emptyMap();
 
-      @SuppressWarnings("rawtypes")
-      final Map result = new HashMap();
+      final var result = new HashMap<>();
 
       for (final String entry : Strings.split(sourceString, ENTRY_SEPARATOR)) {
          final String[] entryArr = Strings.splitByWholeSeparator(entry, VALUE_ASSIGNMENT);

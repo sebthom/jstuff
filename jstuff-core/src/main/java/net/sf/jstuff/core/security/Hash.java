@@ -81,7 +81,7 @@ public interface Hash<T> {
             cs.update(salt);
          }
 
-         final byte[] buf = new byte[4096];
+         final var buf = new byte[4096];
          int read;
          while ((read = is.read(buf)) > -1) {
             cs.update(buf, 0, read);
@@ -276,7 +276,7 @@ public interface Hash<T> {
             md.update(salt);
          }
 
-         final byte[] buf = new byte[4096];
+         final var buf = new byte[4096];
          int read;
          while ((read = is.read(buf)) > -1) {
             md.update(buf, 0, read);

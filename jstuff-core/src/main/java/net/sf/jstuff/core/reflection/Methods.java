@@ -12,6 +12,7 @@ import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -513,8 +514,8 @@ public abstract class Methods extends Members {
     * Recursively collects all getters (public and non-public), excluding references to overridden methods.
     */
    public static List<Method> getAllGetters(final Class<?> clazz) {
-      final Set<String> overridableGetterNames = new HashSet<>();
-      final List<Method> result = CollectionUtils.newArrayList();
+      final var overridableGetterNames = new HashSet<String>();
+      final var result = new ArrayList<Method>();
 
       Class<?> currentClass = clazz;
       while (currentClass != null) {
@@ -543,8 +544,8 @@ public abstract class Methods extends Members {
     * Recursively collects all setters (public and non-public), excluding references to overridden methods.
     */
    public static List<Method> getAllSetters(final Class<?> clazz) {
-      final Set<String> overridableSetterNames = new HashSet<>();
-      final List<Method> result = CollectionUtils.newArrayList();
+      final var overridableSetterNames = new HashSet<String>();
+      final var result = new ArrayList<Method>();
 
       Class<?> currentClass = clazz;
       while (currentClass != null) {

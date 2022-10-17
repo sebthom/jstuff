@@ -25,9 +25,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
@@ -64,7 +62,7 @@ public abstract class Types {
       Args.notEmpty("mixins", mixins);
       Args.noNulls("mixins", mixins);
 
-      final Map<Method, Tuple2<Object, Method>> mappedMethodsCache = new ConcurrentHashMap<>();
+      final var mappedMethodsCache = new ConcurrentHashMap<Method, Tuple2<Object, Method>>();
       return Proxies.create((proxy, method, args) -> {
          Tuple2<Object, Method> mixedInMethod = mappedMethodsCache.get(method);
          if (mixedInMethod == null) {
@@ -174,7 +172,7 @@ public abstract class Types {
       /*
        * traverse the class hierarchy and collect generic variable => concrete variable argument (type) mappings
        */
-      final Map<TypeVariable<?>, Type> genericVariableToArgumentMappings = new HashMap<>();
+      final var genericVariableToArgumentMappings = new HashMap<TypeVariable<?>, Type>();
       final ParameterizedType[] searchForType = {null};
 
       visit(searchIn, new ClassVisitorWithTypeArguments() {
@@ -219,7 +217,7 @@ public abstract class Types {
       } else {
          genericVariables = searchForType[0].getActualTypeArguments();
       }
-      final Class<?>[] res = new Class<?>[genericVariables.length];
+      final var res = new Class<?>[genericVariables.length];
       for (int i = 0, l = genericVariables.length; i < l; i++) {
          Type genericVariable = genericVariables[i];
          while (genericVariableToArgumentMappings.containsKey(genericVariable)) {
@@ -374,7 +372,7 @@ public abstract class Types {
 
                if (jarEntryName.endsWith("/pom.properties")) {
                   try (InputStream is = jar.getInputStream(jarEntry)) {
-                     final Properties p = new Properties();
+                     final var p = new Properties();
                      p.load(is);
                      final String version = Strings.trimNullable(p.getProperty("version"));
                      if (!Strings.isEmpty(version))
@@ -557,7 +555,7 @@ public abstract class Types {
       Args.notNull("clazz", clazz);
       Args.notNull("visitor", visitor);
 
-      final Queue<Class<?>> toVisit = new LinkedList<>();
+      final var toVisit = new LinkedList<Class<?>>();
       toVisit.add(clazz);
       while (!toVisit.isEmpty()) {
          final Class<?> current = toVisit.remove();
@@ -596,7 +594,7 @@ public abstract class Types {
       Args.notNull("clazz", clazz);
       Args.notNull("visitor", visitor);
 
-      final Queue<Type> toVisit = new LinkedList<>();
+      final var toVisit = new LinkedList<Type>();
       toVisit.add(clazz);
       while (!toVisit.isEmpty()) {
          final Type current = toVisit.remove();

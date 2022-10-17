@@ -18,7 +18,7 @@ public class IOUtilsTest {
 
    @Test
    public void testReadBytes() throws IOException {
-      final ByteArrayInputStream is = new ByteArrayInputStream("Hello World!".getBytes());
+      final var is = new ByteArrayInputStream("Hello World!".getBytes());
       assertThat(IOUtils.readBytes(is, 5)).hasSize(5);
 
       is.reset();

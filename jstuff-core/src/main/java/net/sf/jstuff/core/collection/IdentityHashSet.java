@@ -30,7 +30,7 @@ public class IdentityHashSet<E> extends MapBackedSet<E> implements Cloneable {
 
    @Override
    public IdentityHashSet<E> clone() throws CloneNotSupportedException {
-      final IdentityHashSet<E> copy = new IdentityHashSet<>(size());
+      final var copy = new IdentityHashSet<E>(size());
       copy.addAll(this);
       return copy;
    }

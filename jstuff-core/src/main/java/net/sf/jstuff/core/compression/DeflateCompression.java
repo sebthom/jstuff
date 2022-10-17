@@ -47,7 +47,7 @@ public class DeflateCompression extends AbstractCompression {
 
       @Override
       protected Deflater initialValue() {
-         final Deflater def = new Deflater(compressionLevel);
+         final var def = new Deflater(compressionLevel);
          if (dictionary.length > 0) {
             def.setDictionary(dictionary);
          }
@@ -65,7 +65,7 @@ public class DeflateCompression extends AbstractCompression {
 
       @Override
       protected Inflater initialValue() {
-         final Inflater inf = new Inflater(false);
+         final var inf = new Inflater(false);
          if (dictionary.length > 0) {
             inf.setDictionary(dictionary);
          }
@@ -93,7 +93,7 @@ public class DeflateCompression extends AbstractCompression {
       Args.notNull("uncompressed", uncompressed);
       Args.notNull("output", output);
 
-      try (DeflaterOutputStream compOS = new DeflaterOutputStream(toCloseIgnoring(output), compressor.get())) {
+      try (var compOS = new DeflaterOutputStream(toCloseIgnoring(output), compressor.get())) {
          compOS.write(uncompressed);
          compOS.finish();
       }
@@ -105,7 +105,7 @@ public class DeflateCompression extends AbstractCompression {
       Args.notNull("uncompressed", uncompressed);
       Args.notNull("output", output);
 
-      try (DeflaterOutputStream compOS = new DeflaterOutputStream(toCloseIgnoring(output), compressor.get())) {
+      try (var compOS = new DeflaterOutputStream(toCloseIgnoring(output), compressor.get())) {
          IOUtils.copyLarge(uncompressed, compOS);
          compOS.finish();
       }
@@ -116,7 +116,7 @@ public class DeflateCompression extends AbstractCompression {
    public InputStream createCompressingInputStream(final InputStream uncompressed) throws IOException {
       Args.notNull("uncompressed", uncompressed);
 
-      final Deflater compressor = new Deflater(compressionLevel);
+      final var compressor = new Deflater(compressionLevel);
       if (dictionary.length > 0) {
          compressor.setDictionary(dictionary);
       }
@@ -128,7 +128,7 @@ public class DeflateCompression extends AbstractCompression {
    public OutputStream createCompressingOutputStream(final OutputStream output) {
       Args.notNull("output", output);
 
-      final Deflater compressor = new Deflater(compressionLevel);
+      final var compressor = new Deflater(compressionLevel);
       if (dictionary.length > 0) {
          compressor.setDictionary(dictionary);
       }
@@ -140,7 +140,7 @@ public class DeflateCompression extends AbstractCompression {
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
       Args.notNull("compressed", compressed);
 
-      final Inflater decompressor = new Inflater(false);
+      final var decompressor = new Inflater(false);
       if (dictionary.length > 0) {
          decompressor.setDictionary(dictionary);
       }
@@ -170,7 +170,7 @@ public class DeflateCompression extends AbstractCompression {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);
 
-      try (InflaterInputStream compIS = new InflaterInputStream(new FastByteArrayInputStream(compressed), decompressor.get())) {
+      try (var compIS = new InflaterInputStream(new FastByteArrayInputStream(compressed), decompressor.get())) {
          IOUtils.copyLarge(compIS, output);
          output.flush();
       }
@@ -182,7 +182,7 @@ public class DeflateCompression extends AbstractCompression {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);
 
-      try (InflaterInputStream compIS = new InflaterInputStream(toCloseIgnoring(compressed), decompressor.get())) {
+      try (var compIS = new InflaterInputStream(toCloseIgnoring(compressed), decompressor.get())) {
          IOUtils.copyLarge(compIS, output);
          output.flush();
       }

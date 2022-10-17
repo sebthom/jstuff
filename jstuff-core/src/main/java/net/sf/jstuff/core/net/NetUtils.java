@@ -73,7 +73,7 @@ public abstract class NetUtils {
 
    public static int getAvailableLocalPort() {
       try {
-         final ServerSocket socket = new ServerSocket(0);
+         final var socket = new ServerSocket(0);
          socket.setReuseAddress(true);
          socket.close();
          return socket.getLocalPort();
@@ -84,7 +84,7 @@ public abstract class NetUtils {
 
    public static String getHostName(final String url) {
       try {
-         final URL u = new URL(url);
+         final var u = new URL(url);
          return u.getHost();
       } catch (final MalformedURLException ex) {
          throw new IllegalArgumentException("[url] is not a valid URL.", ex);
@@ -176,7 +176,7 @@ public abstract class NetUtils {
    }
 
    public static boolean isLocalPortAvailable(final int port) {
-      try (ServerSocket socket = new ServerSocket(port)) {
+      try (var socket = new ServerSocket(port)) {
          socket.setReuseAddress(true);
          return true;
       } catch (final IOException ex) {
@@ -186,7 +186,7 @@ public abstract class NetUtils {
 
    public static boolean isRemotePortOpen(final String hostname, final int port, final int connectTimeoutInMS) {
       Args.notNull("hostname", hostname);
-      try (Socket socket = new Socket()) {
+      try (var socket = new Socket()) {
          socket.setReuseAddress(true);
          socket.connect(new InetSocketAddress(hostname, port), connectTimeoutInMS);
          return true;

@@ -35,7 +35,7 @@ public class JAXBUtilsTest {
 
    @Test
    public void testToXML() {
-      final MyEntity e = new MyEntity();
+      final var e = new MyEntity();
       e.name = "a";
       final var child = new MyEntity();
       child.name = "b";

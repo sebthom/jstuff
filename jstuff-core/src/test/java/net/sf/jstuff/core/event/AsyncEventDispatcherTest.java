@@ -19,16 +19,16 @@ public class AsyncEventDispatcherTest {
 
    @Test
    public void testAsyncEventDispatcher() throws InterruptedException, ExecutionException {
-      final EventDispatcher<@Nullable String> em = new AsyncEventDispatcher<>();
+      final var em = new AsyncEventDispatcher<@Nullable String>();
 
-      final AtomicLong listener1Count = new AtomicLong();
+      final var listener1Count = new AtomicLong();
       final EventListener<@Nullable String> listener1 = event -> listener1Count.incrementAndGet();
 
       assertThat(em.subscribe(listener1)).isTrue();
       assertThat(em.subscribe(listener1)).isFalse();
 
-      final AtomicLong listener2Count = new AtomicLong();
-      final EventListener<@Nullable String> listener2 = new FilteringEventListener<>() {
+      final var listener2Count = new AtomicLong();
+      final var listener2 = new FilteringEventListener<@Nullable String>() {
          @Override
          public boolean accept(@Nullable final String event) {
             return event != null && event.length() < 5;

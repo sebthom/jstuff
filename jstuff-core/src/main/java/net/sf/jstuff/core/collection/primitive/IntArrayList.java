@@ -211,7 +211,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    public boolean removeIf(final IntPredicate filter) {
       Assert.isTrue(mutable, "List is immutable!");
 
-      final IntArrayList temp = new IntArrayList();
+      final var temp = new IntArrayList();
       for (int i = 0; i < size; i++) {
          if (filter.test(values[i])) {
             temp.add(values[i]);
@@ -288,7 +288,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    @Deprecated
    @Override
    public Integer[] toArray() {
-      final Integer[] result = new Integer[size];
+      final var result = new Integer[size];
       for (int i = 0; i < result.length; i++) {
          result[i] = values[i];
       }
@@ -316,7 +316,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
 
    @Override
    public String toString() {
-      final StringBuilder sb = new StringBuilder("[");
+      final var sb = new StringBuilder("[");
       for (int i = 0; i < size; i++) {
          sb.append(values[i]);
          if (i < size - 1) {

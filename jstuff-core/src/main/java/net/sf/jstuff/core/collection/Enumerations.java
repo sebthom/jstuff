@@ -95,7 +95,7 @@ public abstract class Enumerations {
       if (en == null)
          return Collections.emptySet();
 
-      final Set<T> result = new HashSet<>();
+      final var result = new HashSet<T>();
       while (en.hasMoreElements()) {
          result.add(en.nextElement());
       }
@@ -106,7 +106,7 @@ public abstract class Enumerations {
       if (en == null)
          return new TreeSet<>();
 
-      final SortedSet<T> result = new TreeSet<>();
+      final var result = new TreeSet<T>();
       while (en.hasMoreElements()) {
          result.add(en.nextElement());
       }

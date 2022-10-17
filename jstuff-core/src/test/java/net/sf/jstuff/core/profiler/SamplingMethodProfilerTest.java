@@ -26,7 +26,7 @@ public class SamplingMethodProfilerTest extends TestCase {
    }
 
    public void testSampler() throws IOException {
-      final SamplingMethodProfiler profiler = new SamplingMethodProfiler(500);
+      final var profiler = new SamplingMethodProfiler(500);
       profiler.start(SamplingMethodProfilerTest.class.getName(), "slowMethod");
       try {
          slowMethod();

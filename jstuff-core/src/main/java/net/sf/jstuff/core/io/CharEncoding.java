@@ -83,7 +83,7 @@ public enum CharEncoding {
    };
 
    private static byte[] from_ebcidc_to_ascii(final byte[] buf) {
-      final byte[] out = new byte[buf.length];
+      final var out = new byte[buf.length];
       for (int i = 0, l = buf.length; i < l; i++) {
          out[i] = (byte) EBCDIC_TO_ASCII[unsignedByte(buf[i])];
       }
@@ -131,14 +131,13 @@ public enum CharEncoding {
       if (unsignedByte(buf[0]) == 0xff && unsignedByte(buf[1]) == 0xfe) {
          isBigEndian = false;
       } else {
-         if (unsignedByte(buf[0]) == 0xfe && unsignedByte(buf[1]) == 0xff) {
-            isBigEndian = true;
-         } else
+         if (unsignedByte(buf[0]) != 0xfe || unsignedByte(buf[1]) != 0xff)
             return 0;
+         isBigEndian = true;
       }
 
       int ubufIdx = 0;
-      final char[] ubuf = new char[l];
+      final var ubuf = new char[l];
       for (int i = 2; i + 1 < l; i += 2) {
 
          if (isBigEndian) {

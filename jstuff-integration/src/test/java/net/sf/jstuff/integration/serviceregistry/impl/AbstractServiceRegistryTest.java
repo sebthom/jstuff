@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.After;
 import org.junit.Test;
 
@@ -103,7 +104,7 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> {
    @Test
    public void testServiceInheritance() {
       {
-         final Service2 srv2 = new DefaultService2();
+         final var srv2 = new DefaultService2();
          assertThat(registry.getService(Service2.ENDPOINT_ID, Service2.class).isServiceAvailable()).isFalse();
 
          registry.addService(Service2.ENDPOINT_ID, Service2.class, srv2);
@@ -116,7 +117,7 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> {
       }
 
       {
-         final Service2Extended srv2Ext = new DefaultService2Extended();
+         final var srv2Ext = new DefaultService2Extended();
          assertThat(registry.getService(Service2.ENDPOINT_ID, Service2.class).isServiceAvailable()).isFalse();
 
          registry.addService(Service2.ENDPOINT_ID, Service2Extended.class, srv2Ext);
@@ -132,11 +133,11 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> {
    @Test
    public void testServiceListener() {
       final ServiceProxy<Service1> srv1Proxy = registry.getService(Service1.ENDPOINT_ID, Service1.class);
-      final AtomicInteger count = new AtomicInteger();
-      final CountingListener<AbstractServiceRegistryTest.Service1> listener = new CountingListener<>(count);
+      final var count = new AtomicInteger();
+      final var listener = new CountingListener<AbstractServiceRegistryTest.Service1>(count);
       srv1Proxy.addServiceListener(listener);
 
-      final DefaultService1 srv1Impl = new DefaultService1();
+      final var srv1Impl = new DefaultService1();
 
       count.set(0);
       registry.addService(Service1.ENDPOINT_ID, Service1.class, srv1Impl);
@@ -157,7 +158,8 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> {
    @Test
    public void testServiceListenerGC() {
       ServiceProxy<Runnable> srv1Proxy = registry.getService(Runnable.class.getName(), Runnable.class);
-      final AtomicInteger count = new AtomicInteger();
+      final var count = new AtomicInteger();
+      @Nullable
       CountingListener<Runnable> listener = new CountingListener<>(count);
       assertThat(srv1Proxy.addServiceListener(listener)).isTrue();
       assertThat(srv1Proxy.addServiceListener(listener)).isFalse();
@@ -192,7 +194,7 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> {
       assertThat(registry.getService(Service2.ENDPOINT_ID, Service2.class).isServiceAvailable()).isFalse();
 
       // test adding one service
-      DefaultService1 srv1Impl = new DefaultService1();
+      var srv1Impl = new DefaultService1();
       registry.addService(Service1.ENDPOINT_ID, Service1.class, srv1Impl);
       final ServiceProxy<Service1> srv1Proxy = registry.getService(Service1.ENDPOINT_ID, Service1.class);
       assertThat(srv1Proxy.isServiceAvailable()).isTrue();
@@ -220,7 +222,7 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> {
       assertThat(srv1Proxy.isServiceAvailable()).isFalse();
 
       // test loading service2
-      final DefaultService2 srv2Impl = new DefaultService2();
+      final var srv2Impl = new DefaultService2();
       registry.addService(Service2.ENDPOINT_ID, Service2.class, srv2Impl);
       assertThat(registry.getService(Service1.ENDPOINT_ID, Service1.class)).isNotNull();
       assertThat(registry.getService(Service2.ENDPOINT_ID, Service2.class)).isNotNull();

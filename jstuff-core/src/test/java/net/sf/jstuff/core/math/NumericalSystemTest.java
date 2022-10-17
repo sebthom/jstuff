@@ -121,7 +121,7 @@ public class NumericalSystemTest {
       assertThat(NumericalSystem.BASE62.encode_slow(number)).isEqualTo(NumericalSystem.BASE62.encode(number));
 
       final int iterations = 1_000_000;
-      final StopWatch sw = new StopWatch();
+      final var sw = new StopWatch();
       sw.start();
       for (int i = 0; i < iterations; i++) {
          NumericalSystem.BASE62.encode(number);

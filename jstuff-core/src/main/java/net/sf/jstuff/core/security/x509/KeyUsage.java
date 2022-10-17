@@ -33,7 +33,7 @@ public enum KeyUsage {
       final boolean[] keyUsage = cert.getKeyUsage();
       if (keyUsage == null || keyUsage.length == 0)
          return Collections.emptySet();
-      final Set<KeyUsage> usages = new HashSet<>();
+      final var usages = new HashSet<KeyUsage>();
       for (int i = 0; i < keyUsage.length; i++) {
          if (keyUsage[i]) {
             final var ku = getByRFCBit(i);

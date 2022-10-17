@@ -15,6 +15,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.ogn.ObjectGraphNavigatorDefaultImpl;
@@ -111,7 +112,7 @@ public abstract class Predicates {
          if (locale == null) {
             locale = Locale.getDefault();
          }
-         final Contains<V> accept = new Contains<>(searchFor.toLowerCase(locale));
+         final var accept = new Contains<V>(searchFor.toLowerCase(locale));
          accept.ignoreCaseLocale = locale;
          return accept;
       }
@@ -139,7 +140,7 @@ public abstract class Predicates {
          if (locale == null) {
             locale = Locale.getDefault();
          }
-         final EndingWith<V> accept = new EndingWith<>(stringify(suffix));
+         final var accept = new EndingWith<V>(stringify(suffix));
          accept.ignoreCaseLocale = locale;
          return accept;
       }
@@ -314,7 +315,7 @@ public abstract class Predicates {
 
       @Override
       @SuppressWarnings("unchecked")
-      public boolean test(final V obj) {
+      public boolean test(final @Nullable V obj) {
          final var accept = this.accept;
          if (obj == null || accept == null)
             return false;
@@ -336,7 +337,7 @@ public abstract class Predicates {
       }
 
       @Override
-      public boolean test(final V obj) {
+      public boolean test(final @Nullable V obj) {
          final var prefix = this.prefix;
          if (obj == null || prefix == null)
             return false;
@@ -344,11 +345,11 @@ public abstract class Predicates {
       }
 
       @Override
-      public StartingWith<V> ignoreCase(Locale locale) {
+      public StartingWith<V> ignoreCase(@Nullable Locale locale) {
          if (locale == null) {
             locale = Locale.getDefault();
          }
-         final StartingWith<V> accept = new StartingWith<>(stringify(prefix));
+         final var accept = new StartingWith<V>(stringify(prefix));
          accept.ignoreCaseLocale = locale;
          return accept;
       }

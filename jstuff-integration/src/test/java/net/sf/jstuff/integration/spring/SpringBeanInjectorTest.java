@@ -65,19 +65,18 @@ public class SpringBeanInjectorTest {
          // expected
       }
 
-      final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("SpringBeanInjectorTest.xml",
-         SpringBeanInjectorTest.class);
+      final var ctx = new ClassPathXmlApplicationContext("SpringBeanInjectorTest.xml", SpringBeanInjectorTest.class);
 
       final SpringBeanInjector injector = SpringBeanInjector.get();
 
-      final Entity e = new Entity();
+      final var e = new Entity();
       injector.inject(e);
       assertThat(e.springBean).isNotNull();
       assertThat(e.springBean2).isNotNull();
       assertThat(e.postConstructCalled).isFalse();
       assertThat(e.afterPropertiesSetCalled).isFalse();
 
-      final Entity e2 = new Entity();
+      final var e2 = new Entity();
       injector.registerSingleton("myBean", e2);
       assertThat(e2.springBean).isNotNull();
       assertThat(e2.springBean2).isNotNull();

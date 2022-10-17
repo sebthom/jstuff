@@ -33,7 +33,7 @@ public abstract class JAXBUtils {
    public static String toXML(final Object obj) throws XMLException {
       Args.notNull("obj", obj);
 
-      final FastByteArrayOutputStream baos = new FastByteArrayOutputStream();
+      final var baos = new FastByteArrayOutputStream();
       toXML(obj, baos);
       return baos.toString();
    }
@@ -62,7 +62,7 @@ public abstract class JAXBUtils {
    public static String toXSD(final Class<?>... xmlRootClasses) throws XMLException {
       Args.notNull("xmlRootClasses", xmlRootClasses);
 
-      final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
+      final var out = new FastByteArrayOutputStream();
       try {
          toXSD(out, xmlRootClasses);
       } catch (final IOException ex) {
@@ -77,7 +77,7 @@ public abstract class JAXBUtils {
       Args.notNull("out", out);
 
       try {
-         final StreamResult result = new StreamResult(out);
+         final var result = new StreamResult(out);
          JAXBContext.newInstance(xmlRootClasses).generateSchema(new SchemaOutputResolver() {
             @Override
             public @Nullable Result createOutput(final String namespaceURI, final String suggestedFileName) throws IOException {

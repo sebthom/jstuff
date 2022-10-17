@@ -47,7 +47,7 @@ public class StAXFactory {
       Args.notNull("xmlFile", xmlFile);
       Args.isFileReadable("xmlFile", xmlFile);
 
-      final InputStream is = new BufferedInputStream(new FileInputStream(xmlFile));
+      final var is = new BufferedInputStream(new FileInputStream(xmlFile));
       final XMLEventReader reader = xmlInputFactory.get().createXMLEventReader(is);
       return new DelegatingXMLEventReader(reader) {
          @Override
@@ -65,7 +65,7 @@ public class StAXFactory {
    public AutoCloseableXMLEventReader createXMLEventReader(final InputStream xmlInput, final boolean autoClose) throws XMLStreamException {
       Args.notNull("xmlInput", xmlInput);
 
-      final InputStream is = xmlInput instanceof BufferedInputStream ? xmlInput : new BufferedInputStream(xmlInput);
+      final var is = xmlInput instanceof BufferedInputStream ? xmlInput : new BufferedInputStream(xmlInput);
       final XMLEventReader reader = xmlInputFactory.get().createXMLEventReader(is);
       if (autoClose)
          return new DelegatingXMLEventReader(reader) {
@@ -130,7 +130,7 @@ public class StAXFactory {
       Args.notNull("xmlFile", xmlFile);
       Args.isFileWriteable("xmlFile", xmlFile);
 
-      final OutputStream is = new BufferedOutputStream(new FileOutputStream(xmlFile));
+      final var is = new BufferedOutputStream(new FileOutputStream(xmlFile));
       final XMLEventWriter writer = xmlOutputFactory.get().createXMLEventWriter(is);
       return new DelegatingXMLEventWriter(writer) {
          @Override
@@ -236,7 +236,7 @@ public class StAXFactory {
       Args.notNull("xmlFile", xmlFile);
       Args.isFileReadable("xmlFile", xmlFile);
 
-      final InputStream is = new BufferedInputStream(new FileInputStream(xmlFile));
+      final var is = new BufferedInputStream(new FileInputStream(xmlFile));
       final XMLStreamReader reader = xmlInputFactory.get().createXMLStreamReader(is);
       return new ExtendedXMLStreamReader(reader) {
          @Override
@@ -319,7 +319,7 @@ public class StAXFactory {
       Args.notNull("xmlFile", xmlFile);
       Args.isFileWriteable("xmlFile", xmlFile);
 
-      final OutputStream is = new BufferedOutputStream(new FileOutputStream(xmlFile));
+      final var is = new BufferedOutputStream(new FileOutputStream(xmlFile));
       final XMLStreamWriter writer = xmlOutputFactory.get().createXMLStreamWriter(is);
       return new ExtendedXMLStreamWriter(writer) {
          @Override

@@ -7,7 +7,6 @@ package net.sf.jstuff.core.collection;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -18,10 +17,10 @@ public class CompositeListTest {
 
    @Test
    public void testCompositeList() {
-      final List<String> l1 = Arrays.asList("a", "b");
-      final List<String> l2 = Arrays.asList("c", "d");
+      final var l1 = Arrays.asList("a", "b");
+      final var l2 = Arrays.asList("c", "d");
 
-      final List<String> cl = new CompositeList<>(l1, l2);
+      final var cl = new CompositeList<>(l1, l2);
       assertThat(cl).hasSize(4);
       assertThat(cl.get(0)).isEqualTo("a");
       assertThat(cl.get(1)).isEqualTo("b");

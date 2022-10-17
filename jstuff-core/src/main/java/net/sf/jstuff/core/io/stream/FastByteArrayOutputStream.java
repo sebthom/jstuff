@@ -56,7 +56,7 @@ public class FastByteArrayOutputStream extends OutputStream {
          dataSize + (dataSize >> 2) /* == dataSize x 1.5 */, //
          minCapacity < initialSize ? initialSize : minCapacity //
       );
-      final byte[] copy = new byte[newCapacity];
+      final var copy = new byte[newCapacity];
       System.arraycopy(data, 0, copy, 0, count);
       data = copy;
    }
@@ -83,7 +83,7 @@ public class FastByteArrayOutputStream extends OutputStream {
    public byte[] toByteArray() {
       if (count == 0)
          return ArrayUtils.EMPTY_BYTE_ARRAY;
-      final byte[] copy = new byte[count];
+      final var copy = new byte[count];
       System.arraycopy(data, 0, copy, 0, count);
       return copy;
    }
@@ -94,7 +94,7 @@ public class FastByteArrayOutputStream extends OutputStream {
     * @return an {@link FastByteArrayInputStream} with this stream's internal buffer.
     */
    public InputStream toInputStream() {
-      final FastByteArrayInputStream in = new FastByteArrayInputStream(data, 0, count);
+      final var in = new FastByteArrayInputStream(data, 0, count);
       data = ArrayUtils.EMPTY_BYTE_ARRAY;
       count = 0;
       return in;

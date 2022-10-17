@@ -31,7 +31,7 @@ public class DuckTypesTest {
    public void testDuckTyping() {
       assertThat(DuckTypes.isDuckType(new Object(), Duck.class)).isFalse();
 
-      final DuckLike duckLike = new DuckLike();
+      final var duckLike = new DuckLike();
       assertThat(DuckTypes.isDuckType(duckLike, Duck.class)).isTrue();
       assertThat(duckLike.count).isZero();
       final Duck duckTyped = DuckTypes.duckType(duckLike, Duck.class);
@@ -41,8 +41,8 @@ public class DuckTypesTest {
 
    @Test
    public void testDuckTypingWithAnonymousInnerClass() {
-      final AtomicInteger count = new AtomicInteger();
-      final Object duckLike = new Object() {
+      final var count = new AtomicInteger();
+      final var duckLike = new Object() {
          @SuppressWarnings("unused")
          public void walk() {
             count.incrementAndGet();

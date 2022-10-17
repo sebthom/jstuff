@@ -178,7 +178,7 @@ public class PredicatesTest {
 
       final Property<Entity, String> a = property("name", equalTo("foobar"));
 
-      final Entity e = new Entity();
+      final var e = new Entity();
 
       e.name = "foobar";
       assertThat(a.test(e)).isTrue();

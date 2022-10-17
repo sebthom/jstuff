@@ -24,7 +24,7 @@ public final class CallTree {
    private final Map<CodeLocation, CallTree> children = new HashMap<>(32);
 
    CallTree markSeen(final String clazz, final String method, final int lineNumber, final boolean isExecuting) {
-      final CodeLocation codeLocation = new CodeLocation(clazz, method, lineNumber);
+      final var codeLocation = new CodeLocation(clazz, method, lineNumber);
       CallTree ct = children.get(codeLocation);
       if (ct == null) {
          ct = new CallTree();
@@ -40,7 +40,7 @@ public final class CallTree {
 
    @Override
    public String toString() {
-      final StringBuilder sb = new StringBuilder();
+      final var sb = new StringBuilder();
       try {
          toString(sb, -1, 0);
       } catch (final IOException ex) {
@@ -49,8 +49,8 @@ public final class CallTree {
       return sb.toString();
    }
 
-   private void toString(final Appendable out, final CallTree tree, final int indent, final long percent, int maxDepth, final int minPercent)
-      throws IOException {
+   private void toString(final Appendable out, final CallTree tree, final int indent, final long percent, int maxDepth,
+      final int minPercent) throws IOException {
       if (maxDepth == 0 || tree.children.isEmpty())
          return;
 

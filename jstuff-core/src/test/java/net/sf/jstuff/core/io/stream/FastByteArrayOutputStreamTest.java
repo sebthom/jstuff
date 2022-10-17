@@ -27,7 +27,7 @@ public class FastByteArrayOutputStreamTest {
          //expected
       }
 
-      final FastByteArrayOutputStream os = new FastByteArrayOutputStream(0);
+      final var os = new FastByteArrayOutputStream(0);
       assertThat(os.size()).isZero();
       os.write(new byte[] {1, 2, 3});
       os.write(new byte[] {4, 5});
@@ -35,7 +35,7 @@ public class FastByteArrayOutputStreamTest {
       assertThat(os.size()).isEqualTo(6);
       assertThat(os.toByteArray()).isEqualTo(new byte[] {1, 2, 3, 4, 5, 6});
 
-      final FastByteArrayOutputStream os2 = new FastByteArrayOutputStream();
+      final var os2 = new FastByteArrayOutputStream();
       os.writeTo(os2);
       assertThat(os2.size()).isEqualTo(6);
       assertThat(os2.toByteArray()).isEqualTo(os2.toByteArray());

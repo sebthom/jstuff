@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -136,7 +135,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
        * when new certificates are added we swap out the current truststore with a new copy holding the previous plus the newly added certificates
        */
       LOG.info("Adding trusted certificates...");
-      final List<X509Certificate> addedCerts = new ArrayList<>();
+      final var addedCerts = new ArrayList<X509Certificate>();
       for (final X509Certificate cert : certs) {
          if (cert == null || trustCertsByAlias.containsValue(cert)) {
             continue;
@@ -220,7 +219,7 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
        * when new certificates are added we swap out the current truststore with a new copy holding the previous plus the newly added certificates
        */
       LOG.info("Removing trusted certificates...");
-      final List<X509Certificate> removedCerts = new ArrayList<>();
+      final var removedCerts = new ArrayList<X509Certificate>();
       final Iterator<Map.Entry<String, X509Certificate>> it = trustCertsByAlias.entrySet().iterator();
       while (it.hasNext()) {
          final Map.Entry<String, X509Certificate> entry = it.next();

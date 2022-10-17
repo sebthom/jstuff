@@ -8,8 +8,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -20,13 +18,13 @@ public class CompositeCollectionTest {
 
    @Test
    public void testCompositeCollection() {
-      final List<String> l1 = Arrays.asList("a", "b");
-      final List<String> l2 = Arrays.asList("c", "d");
+      final var l1 = Arrays.asList("a", "b");
+      final var l2 = Arrays.asList("c", "d");
 
-      final Collection<String> cc = CompositeCollection.of(l1, l2);
+      final var cc = CompositeCollection.of(l1, l2);
       assertThat(cc).hasSize(4);
 
-      final List<String> l3 = new ArrayList<>(cc);
+      final var l3 = new ArrayList<>(cc);
       assertThat(l3.get(0)).isEqualTo("a");
       assertThat(l3.get(1)).isEqualTo("b");
       assertThat(l3.get(2)).isEqualTo("c");

@@ -37,7 +37,7 @@ public final class ClassDescriptor<T> implements Serializable {
          if (metaClass != null)
             return (ClassDescriptor<T>) metaClass;
 
-         final ClassDescriptor<T> newMetaClass = new ClassDescriptor<>(type, name, description, parent);
+         final var newMetaClass = new ClassDescriptor<>(type, name, description, parent);
          REGISTRY.put(type, newMetaClass);
          return newMetaClass;
       }

@@ -32,7 +32,7 @@ public class TypesMixinTest {
 
    @Test
    public void testMixin() {
-      final TestEntityImpl delegate = new TestEntityImpl();
+      final var delegate = new TestEntityImpl();
       final TestEntity proxy = Types.createMixin(TestEntity.class, new Object() {
          @SuppressWarnings("unused")
          public String createGreeting(final String name) {

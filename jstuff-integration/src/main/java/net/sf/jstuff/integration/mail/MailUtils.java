@@ -73,7 +73,7 @@ public abstract class MailUtils {
          session = Session.getDefaultInstance(props, null);
       } else {
          props.put("mail.smtp.auth", "true");
-         final Authenticator auth = new Authenticator() {
+         final var auth = new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                return new PasswordAuthentication(//
@@ -84,7 +84,7 @@ public abstract class MailUtils {
          };
          session = Session.getInstance(props, auth);
       }
-      final MimeMessage msg = new MimeMessage(session);
+      final var msg = new MimeMessage(session);
       msg.setFrom(new InternetAddress(mail.emailFrom));
       msg.setSubject(mail.subject);
       if (mail.emailTo != null) {
@@ -105,14 +105,14 @@ public abstract class MailUtils {
       if (mail.emailReturnReceiptTo != null) {
          msg.setHeader("Return-Receipt-To", mail.emailReturnReceiptTo);
       }
-      final MimeMultipart mp = new MimeMultipart();
-      final MimeBodyPart text = new MimeBodyPart();
+      final var mp = new MimeMultipart();
+      final var text = new MimeBodyPart();
       text.setDisposition(Part.INLINE);
       text.setContent(mail.message, mail.isPlainTextMessage ? "text/plain" : "text/html");
       mp.addBodyPart(text);
 
       if (mail.attachments != null) {
-         final FileTypeMap fileTypeMap = new FileTypeMap() {
+         final var fileTypeMap = new FileTypeMap() {
             @Override
             public String getContentType(final File file) {
                return getContentType(file.getName());
@@ -131,10 +131,10 @@ public abstract class MailUtils {
          };
 
          for (final File file : mail.attachments) {
-            final MimeBodyPart filePart = new MimeBodyPart();
-            final FileDataSource fds = new FileDataSource(file);
+            final var filePart = new MimeBodyPart();
+            final var fds = new FileDataSource(file);
             fds.setFileTypeMap(fileTypeMap);
-            final DataHandler dh = new DataHandler(fds);
+            final var dh = new DataHandler(fds);
             filePart.setFileName(file.getName());
             filePart.setDisposition(Part.ATTACHMENT);
             filePart.setDescription("Attached file: " + file.getName());

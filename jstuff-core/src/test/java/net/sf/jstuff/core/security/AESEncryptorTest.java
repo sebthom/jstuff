@@ -17,7 +17,7 @@ public class AESEncryptorTest {
    public void testAES() {
       final byte[] plain = "Hello World!".getBytes();
 
-      AESEncryptor aes = new AESEncryptor("mySalt");
+      var aes = new AESEncryptor("mySalt");
       final byte[] encrypted = aes.encrypt(plain, "mySecretKey");
       assertThat(plain).isNotEqualTo(encrypted);
 

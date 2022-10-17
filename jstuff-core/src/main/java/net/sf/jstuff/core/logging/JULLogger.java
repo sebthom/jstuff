@@ -95,7 +95,7 @@ final class JULLogger implements LoggerInternal {
       } else {
          final Throwable effectiveException;
          if (LoggerConfig.isCompactExceptionLoggingEnabled) {
-            final StringBuilder sb = new StringBuilder();
+            final var sb = new StringBuilder();
             if (message == null || message.isEmpty()) {
                sb.append("Catched ");
             } else {

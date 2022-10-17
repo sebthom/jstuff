@@ -41,7 +41,7 @@ public abstract class ServletUtils {
       final int port = request.getServerPort();
       final String urlPath = request.getContextPath();
 
-      final StringBuilder url = new StringBuilder();
+      final var url = new StringBuilder();
       url.append(scheme); // http, https
       url.append("://");
       url.append(request.getServerName());

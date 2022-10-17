@@ -73,15 +73,15 @@ public abstract class StAXUtils {
    }
 
    public static List<ElementInfo> findElements(final XMLStreamReader reader, final String xpath, final int max) throws XMLStreamException {
-      final StringBuilder path = new StringBuilder();
+      final var path = new StringBuilder();
 
-      final IntArrayList pathElemSize = new IntArrayList();
-      final StringBuilder pathElem = new StringBuilder();
+      final var pathElemSize = new IntArrayList();
+      final var pathElem = new StringBuilder();
       final boolean evaluteAttributes = Strings.contains(xpath, '[');
       SortedMap<String, String> attrs = null;
       final Pattern xpathPattern = xpathToPattern(xpath);
 
-      final List<ElementInfo> result = new ArrayList<>(max < 10 ? max : 10);
+      final var result = new ArrayList<ElementInfo>(max < 10 ? max : 10);
       ElementInfo elem = null;
       while (reader.hasNext()) {
          reader.next();
@@ -200,7 +200,7 @@ public abstract class StAXUtils {
    private static Pattern xpathToPattern(String xpath) {
       final boolean evaluteAttributes = Strings.contains(xpath, '[');
 
-      final StringBuilder sb = new StringBuilder("^");
+      final var sb = new StringBuilder("^");
 
       xpath = xpath.trim();
       xpath = Strings.replace(xpath, "//", ".*/");

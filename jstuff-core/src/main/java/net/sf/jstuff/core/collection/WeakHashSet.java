@@ -41,7 +41,7 @@ public class WeakHashSet<E> extends MapBackedSet<E> implements Cloneable {
 
    @Override
    protected WeakHashSet<E> clone() {
-      final WeakHashSet<E> copy = new WeakHashSet<>(size());
+      final var copy = new WeakHashSet<E>(size());
       copy.addAll(this);
       return copy;
    }

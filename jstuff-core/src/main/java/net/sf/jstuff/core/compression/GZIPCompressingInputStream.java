@@ -26,8 +26,8 @@ public class GZIPCompressingInputStream extends DeflaterInputStream {
 
    static {
       try {
-         final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
-         final GZIPOutputStream gzip = new GZIPOutputStream(out, 16);
+         final var out = new FastByteArrayOutputStream();
+         final var gzip = new GZIPOutputStream(out, 16);
          GZIP_HEADER = out.toByteArray();
          gzip.close();
       } catch (final IOException ex) {

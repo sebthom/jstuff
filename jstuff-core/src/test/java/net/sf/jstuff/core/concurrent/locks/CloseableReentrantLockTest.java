@@ -16,7 +16,7 @@ public class CloseableReentrantLockTest {
    @Test
    @SuppressWarnings("resource")
    public void testCloseableReentrantLock() {
-      final CloseableReentrantLock lock = new CloseableReentrantLock();
+      final var lock = new CloseableReentrantLock();
 
       assertThat(lock.isHeldByCurrentThread()).isFalse();
       try (CloseableLock l = lock.lockAndGet()) {

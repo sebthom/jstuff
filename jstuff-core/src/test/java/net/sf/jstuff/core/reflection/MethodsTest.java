@@ -39,7 +39,7 @@ public class MethodsTest {
 
    @Test
    public void test_createPublicGetterAccessor() {
-      final EntityB entity = new EntityB();
+      final var entity = new EntityB();
       entity.setProperty3(true);
 
       try {
@@ -54,7 +54,7 @@ public class MethodsTest {
 
    @Test
    public void test_createPublicMethodAccessor() {
-      final EntityB entity = new EntityB();
+      final var entity = new EntityB();
 
       try {
          Methods.createPublicMethodAccessor(EntityB_getProperty2_Accessor.class, EntityB.class, "getProperty2", int.class).invoke(entity);
@@ -77,7 +77,7 @@ public class MethodsTest {
 
    @Test
    public void test_createPublicSetterAccessor() {
-      final EntityB entity = new EntityB();
+      final var entity = new EntityB();
       entity.setProperty3(false);
 
       try {

@@ -26,7 +26,7 @@ public abstract class JPAUtils {
       if (queryString.isEmpty())
          return "";
 
-      final StringBuilder out = new StringBuilder();
+      final var out = new StringBuilder();
       int startSearchAt = 0, foundAt = 0;
 
       for (int i = 1; (foundAt = queryString.indexOf('?', startSearchAt)) >= 0; i++) { // CHECKSTYLE:IGNORE InnerAssignment

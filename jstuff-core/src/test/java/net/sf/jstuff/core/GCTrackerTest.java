@@ -25,11 +25,11 @@ public class GCTrackerTest {
    public void testGCTracker() throws InterruptedException {
       final EventListener<@Nullable Object> countGC = event -> garbageCollected++;
 
-      final GCTracker<@Nullable Object> tracker = new GCTracker<>(100);
+      final var tracker = new GCTracker<>(100);
       tracker.subscribe(countGC);
 
       final int objects = 10000;
-      final Thread t1 = new Thread() {
+      final var t1 = new Thread() {
          @Override
          public void run() {
             for (int i = 0; i < objects; i++) {
@@ -38,7 +38,7 @@ public class GCTrackerTest {
             }
          }
       };
-      final Thread t2 = new Thread() {
+      final var t2 = new Thread() {
          @Override
          public void run() {
             for (int i = 0; i < objects; i++) {

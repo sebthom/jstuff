@@ -39,21 +39,21 @@ public class HashLockManagerTest {
 
    @Test
    public void testWithHashLockManager() throws InterruptedException {
-      final HashLockManager<String> lockManager = new HashLockManager<>(100);
+      final var lockManager = new HashLockManager<String>(100);
 
       final StopWatch sw = new StopWatch();
       sw.start();
       sum = 0;
 
-      final AtomicBoolean lockCountWasZero = new AtomicBoolean(false);
-      final AtomicBoolean lockCountWasGreaterThan1 = new AtomicBoolean(false);
+      final var lockCountWasZero = new AtomicBoolean(false);
+      final var lockCountWasGreaterThan1 = new AtomicBoolean(false);
 
-      final CountDownLatch launch = new CountDownLatch(THREADS);
+      final var launch = new CountDownLatch(THREADS);
 
       for (int i = 0; i < THREADS; i++) {
          es.submit((Callable<@Nullable Void>) () -> {
             // intentionally generated new object to proof synchronization is not based on lock identity but hashcode identity
-            final String namedLock = new String("MY_LOCK");
+            final var namedLock = new String("MY_LOCK");
 
             launch.countDown();
             launch.await();
@@ -90,11 +90,11 @@ public class HashLockManagerTest {
       if ("true".equals(System.getenv("CI")))
          return;
 
-      final StopWatch sw = new StopWatch();
+      final var sw = new StopWatch();
       sw.start();
       sum = 0;
 
-      final CountDownLatch launch = new CountDownLatch(THREADS);
+      final var launch = new CountDownLatch(THREADS);
 
       for (int i = 0; i < THREADS; i++) {
          es.submit((Callable<@Nullable Void>) () -> {

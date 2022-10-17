@@ -88,7 +88,7 @@ public class ByteUnitTest {
 
    @Test
    public void testToHumanReadableString() {
-      final Rounding rounding = new Rounding(2, RoundingMode.HALF_UP);
+      final var rounding = new Rounding(2, RoundingMode.HALF_UP);
       assertThat(BYTES.toHumanReadableString(999, rounding, Locale.US)).isEqualTo("999 B");
       assertThat(BYTES.toHumanReadableString(999 * 1024, rounding, Locale.US)).isEqualTo("999 KiB");
       assertThat(BYTES.toHumanReadableString(999 * 1024 * 1024, rounding, Locale.US)).isEqualTo("999 MiB");

@@ -108,7 +108,7 @@ public class DefaultAuthService implements AuthService {
          return Collections.emptySet();
 
       final Set<String> groupIds = groupDetailsService.getGroupIdsByUserDN(userDN);
-      final Set<String> roles = new HashSet<>();
+      final var roles = new HashSet<String>();
 
       for (final String groupId : groupIds) {
          final Collection<String> coll = groupIdToApplicationRoleMappings.get(groupId);
@@ -158,7 +158,7 @@ public class DefaultAuthService implements AuthService {
       if (!authenticator.authenticate(logonName, password))
          throw new AuthenticationFailedException("Incorrect username or password.");
 
-      final Authentication auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(logonName), password);
+      final var auth = new DefaultAuthentication(userDetailsService.getUserDetailsByLogonName(logonName), password);
       AuthenticationHolder.setAuthentication(auth);
 
       if (listener != null) {

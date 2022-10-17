@@ -50,8 +50,8 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
    private static final ObjectWriter JSON_PRETTY_WRITER = JSON.writerWithDefaultPrettyPrinter();
 
    public static Map<String, Method> buildExportedMethodsByName(final Class<?> serviceInterface) {
-      final Map<String, Method> methodsByMethodName = new TreeMap<>();
-      final Map<String, Class<?>[]> parameterTypesByMethodName = new HashMap<>();
+      final var methodsByMethodName = new TreeMap<String, Method>();
+      final var parameterTypesByMethodName = new HashMap<String, Class<?>[]>();
 
       // loop through the service interface and all super interfaces to collect the public methods
       Class<?> clazz = serviceInterface;
@@ -86,9 +86,9 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
    public static String buildSMDTemplate(final Class<?> serviceInterface, final Object service,
       final Map<String, Method> exportedMethodsByName, final boolean pretty) throws JsonProcessingException {
       // build the method descriptors
-      final Map<String, Object> methodDescriptions = new LinkedHashMap<>();
+      final var methodDescriptions = new LinkedHashMap<String, Object>();
       for (final Method method : exportedMethodsByName.values()) {
-         final Map<String, Object> methodDescriptor = new LinkedHashMap<>();
+         final var methodDescriptor = new LinkedHashMap<String, Object>();
          if (method.getParameterTypes().length > 0) {
             // for some reason parameter names are not preserved in interfaces, therefore we look them up in the service implementing class instead
             final String[] names = SpringBeanParanamer.getParameterNames(method, service);
@@ -113,7 +113,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
       }
 
       // build the final SMD definition object
-      final Map<String, Object> result = new LinkedHashMap<>(2);
+      final var result = new LinkedHashMap<String, Object>(2);
       result.put("SMDVersion", "2.0");
       result.put("id", serviceInterface.getClass().getName());
       result.put("description", "");
@@ -183,7 +183,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
       try {
          // converting method arguments
          final JsonNode paramsNode = requestObject.get("params");
-         final Object[] methodArguments = new Object[paramsNode.size()];
+         final var methodArguments = new Object[paramsNode.size()];
          final Class<?>[] methodParameterTypes = method.getParameterTypes();
          for (int i = 0, l = paramsNode.size(); i < l; i++) {
             final JsonNode paramNode = paramsNode.get(i);

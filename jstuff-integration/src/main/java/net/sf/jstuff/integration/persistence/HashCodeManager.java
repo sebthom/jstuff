@@ -160,7 +160,7 @@ public final class HashCodeManager {
        * register trackingId hashCode with the entity ID
        */
       final var newHca = new HashCodeAssignment(trackingId.hashCode());
-      final FQId id = new FQId(entity.getIdRealm(), asNonNull(entity.getId()));
+      final var id = new FQId(entity.getIdRealm(), asNonNull(entity.getId()));
       HashCodeAssignment hca = HASHCODE_ASSIGNMENT_BY_ID.putIfAbsent(id, newHca);
       if (hca == null) {
          hca = newHca;

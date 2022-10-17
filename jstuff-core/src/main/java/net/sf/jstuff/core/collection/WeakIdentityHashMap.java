@@ -168,7 +168,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
    @Override
    public Set<Map.Entry<K, V>> entrySet() {
       expungeStaleEntries();
-      final Set<Map.Entry<K, V>> entrySet = new HashSet<>();
+      final var entrySet = new HashSet<Map.Entry<K, V>>();
       for (final Map.Entry<KeyWrapper<K>, V> ref : map.entrySet()) {
          final K key = ref.getKey().get();
          final V value = ref.getValue();
@@ -243,7 +243,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
    @Override
    public Set<K> keySet() {
       expungeStaleEntries();
-      final Set<K> keySet = new IdentityHashSet<>();
+      final var keySet = new IdentityHashSet<K>();
       for (final KeyWrapper<K> ref : map.keySet()) {
          keySet.add(ref.get());
       }

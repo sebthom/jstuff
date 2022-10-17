@@ -62,7 +62,7 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
    }
 
    private Set<V> getSnapshot() {
-      final LinkedHashSet<V> values = new LinkedHashSet<>();
+      final var values = new LinkedHashSet<V>();
       for (final Collection<? extends V> coll : components) {
          values.addAll(coll);
       }

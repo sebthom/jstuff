@@ -16,7 +16,7 @@ public class CloseableReentrantReadWriteLockTest {
    @Test
    @SuppressWarnings("resource")
    public void testCloseableReentrantReadWriteLock() {
-      final CloseableReentrantReadWriteLock lock = new CloseableReentrantReadWriteLock();
+      final var lock = new CloseableReentrantReadWriteLock();
 
       assertThat(lock.isWriteLockedByCurrentThread()).isFalse();
       try (CloseableLock l = lock.writeLock().lockAndGet()) {
