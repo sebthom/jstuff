@@ -25,6 +25,7 @@ on:
         required: false
         default: ''
 
+# https://docs.github.com/en/actions/using-jobs/using-concurrency
 concurrency: ci-${{ github.ref }}
 
 jobs:
