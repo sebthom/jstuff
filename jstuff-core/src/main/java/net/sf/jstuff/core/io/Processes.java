@@ -174,7 +174,8 @@ public abstract class Processes {
          return this;
       }
 
-      public Builder withArgs(final List<Object> args) {
+      @SuppressWarnings("null")
+      public Builder withArgs(final List<?> args) {
          Args.notNull("args", args);
          this.args.addAll(args);
          return this;
