@@ -78,7 +78,7 @@ public abstract class MailUtils {
             protected PasswordAuthentication getPasswordAuthentication() {
                return new PasswordAuthentication(//
                   mailServer.smtpUsername, //
-                  mailServer.smtpPassword == null ? "" : mailServer.smtpPassword//
+                  Strings.emptyIfNull(mailServer.smtpPassword) //
                );
             }
          };

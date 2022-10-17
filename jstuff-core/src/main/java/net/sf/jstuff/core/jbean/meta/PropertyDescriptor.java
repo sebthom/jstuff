@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.reflection.Types;
 
@@ -42,7 +43,7 @@ public final class PropertyDescriptor<P> implements Serializable {
             ordered, //
             unique, //
             container, //
-            description == null ? "" : description, //
+            Strings.emptyIfNull(description), //
             properties);
          metaClass.addProperty(p);
          return p;

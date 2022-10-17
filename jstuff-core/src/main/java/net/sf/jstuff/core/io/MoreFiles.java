@@ -379,9 +379,9 @@ public abstract class MoreFiles {
          parentDirectory = getWorkingDirectory();
       }
       while (true) {
-         final String dirName = (prefix == null ? "" : prefix) //
+         final String dirName = Strings.emptyIfNull(prefix) //
             + NumericalSystem.BASE16.encode(_FILE_UNIQUE_ID.getAndIncrement()) //
-            + (extension == null ? extension : "");
+            + Strings.emptyIfNull(extension);
          final Path dir = parentDirectory.resolve(dirName);
          if (!Files.exists(dir, NOFOLLOW_LINKS)) {
             try {
