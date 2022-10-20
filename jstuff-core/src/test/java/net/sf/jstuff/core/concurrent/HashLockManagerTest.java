@@ -25,8 +25,8 @@ import net.sf.jstuff.core.logging.Logger;
 public class HashLockManagerTest {
    private static final Logger LOG = Logger.create();
 
-   private static final int THREADS = 10;
-   private static final int ITERATIONS_PER_THREAD = 40000;
+   private static final int THREADS = 2 * Runtime.getRuntime().availableProcessors();
+   private static final int ITERATIONS_PER_THREAD = 100_000;
 
    private final ExecutorService es = Executors.newFixedThreadPool(THREADS);
    private int sum = -1;
@@ -52,7 +52,7 @@ public class HashLockManagerTest {
 
       for (int i = 0; i < THREADS; i++) {
          es.submit((Callable<@Nullable Void>) () -> {
-            // intentionally generated new object to proof synchronization is not based on lock identity but hashcode identity
+            // intentionally generated new object to prove that synchronization is not based on lock identity but hashcode identity
             final var namedLock = new String("MY_LOCK");
 
             launch.countDown();
@@ -77,9 +77,10 @@ public class HashLockManagerTest {
       assertThat(lockCountWasZero.get()).isFalse();
       assertThat(lockCountWasGreaterThan1.get()).isFalse();
 
-      LOG.info(THREADS * ITERATIONS_PER_THREAD + " thread-safe iterations took " + sw + " sum=" + sum);
+      LOG.info("With HashLockManager:" + THREADS * ITERATIONS_PER_THREAD + " thread-safe iterations took " + sw + " sum=" + sum);
       assertThat(sum).isEqualTo(THREADS * ITERATIONS_PER_THREAD);
-      Threads.sleep(200); // wait for cleanup thread
+
+      Threads.await(() -> lockManager.getLockCount() == 0, 2_000); // wait for cleanup thread
       assertThat(lockManager.getLockCount()).isZero();
    }
 
@@ -115,7 +116,7 @@ public class HashLockManagerTest {
       es.shutdown();
       es.awaitTermination(60, TimeUnit.SECONDS);
       sw.stop();
-      LOG.info(THREADS * ITERATIONS_PER_THREAD + " thread-unsafe iterations took " + sw + " sum=" + sum);
+      LOG.info("Without HashLockManager:" + THREADS * ITERATIONS_PER_THREAD + " thread-unsafe iterations took " + sw + " sum=" + sum);
       assertThat(sum).isNotEqualTo(THREADS * ITERATIONS_PER_THREAD);
    }
 }
