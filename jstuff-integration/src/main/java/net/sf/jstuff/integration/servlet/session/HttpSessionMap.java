@@ -167,7 +167,7 @@ public class HttpSessionMap implements SessionMap {
       if (sess == null)
          return Collections.emptyList();
 
-      final var result = new ArrayList<>();
+      final Collection<Object> result = new ArrayList<>();
       Loops.forEach(sess.getAttributeNames(), key -> result.add(asNonNullUnsafe(sess.getAttribute(key))));
       return result;
    }
