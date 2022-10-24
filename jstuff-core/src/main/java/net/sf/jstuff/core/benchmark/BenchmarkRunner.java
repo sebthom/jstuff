@@ -87,7 +87,7 @@ public final class BenchmarkRunner {
          }
       });
       t.setPriority(Thread.MAX_PRIORITY);
-      t.run();
+      t.start();
       t.join();
    }
 
