@@ -278,15 +278,23 @@ public abstract class Processes {
          return this;
       }
 
-      public Builder withWorkingDirectory(final File path) {
-         Args.notNull("path", path);
-         workDir = path;
+      public Builder withWorkingDirectory(final @Nullable File path) {
+         if (path == null) {
+            workDir = null;
+         } else {
+            Args.isDirectoryReadable("path", path.toPath());
+            workDir = path;
+         }
          return this;
       }
 
-      public Builder withWorkingDirectory(final Path path) {
-         Args.notNull("path", path);
-         workDir = path.toFile();
+      public Builder withWorkingDirectory(final @Nullable Path path) {
+         if (path == null) {
+            workDir = null;
+         } else {
+            Args.isDirectoryReadable("path", path);
+            workDir = path.toFile();
+         }
          return this;
       }
    }
