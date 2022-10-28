@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -301,5 +303,82 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
          return false;
       }
       return true;
+   }
+
+   public static List<String> splitCommandLine(final String commandLine) {
+      if (commandLine.isBlank())
+         return Collections.emptyList();
+
+      final char escapeChar = '\\';
+      boolean isEscaped = false;
+
+      final var tokens = new ArrayList<String>();
+      final var token = new StringBuilder();
+
+      Character quotedWith = null;
+
+      for (final var ch : commandLine.toCharArray()) {
+
+         if (quotedWith == null) {
+
+            if (isEscaped) {
+               if (ch != '"' && ch != '\'' && !Character.isWhitespace(ch)) {
+                  token.append(escapeChar);
+               }
+               token.append(ch);
+               isEscaped = false;
+            } else {
+               switch (ch) {
+                  case escapeChar:
+                     isEscaped = true;
+                     break;
+                  case '\'':
+                  case '"':
+                     quotedWith = ch;
+                     break;
+
+                  default:
+                     if (Character.isWhitespace(ch)) {
+                        if (token.length() > 0) {
+                           tokens.add(token.toString());
+                           token.setLength(0);
+                        }
+                     } else {
+                        token.append(ch);
+                     }
+               }
+            }
+
+         } else { // if (quotedWith != null)
+
+            if (isEscaped) {
+               token.append(ch);
+               isEscaped = false;
+            } else {
+               if (ch == escapeChar) {
+                  isEscaped = true;
+               } else if (ch == quotedWith) {
+                  tokens.add(token.toString());
+                  token.setLength(0);
+                  quotedWith = null;
+               } else {
+                  token.append(ch);
+               }
+            }
+         }
+      }
+
+      if (quotedWith != null)
+         throw new IllegalArgumentException("Unbalanced [" + quotedWith + "] quotes in " + commandLine);
+
+      if (isEscaped) {
+         token.append(escapeChar);
+      }
+
+      if (token.length() > 0) {
+         tokens.add(token.toString());
+      }
+
+      return tokens;
    }
 }
