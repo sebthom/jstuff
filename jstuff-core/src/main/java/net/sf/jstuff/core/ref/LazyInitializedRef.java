@@ -30,4 +30,9 @@ public abstract class LazyInitializedRef<V> implements Ref<V> {
       }
       return result;
    }
+
+   @Override
+   public String toString() {
+      return String.valueOf(get());
+   }
 }

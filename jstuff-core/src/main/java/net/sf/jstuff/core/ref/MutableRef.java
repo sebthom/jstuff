@@ -32,6 +32,11 @@ public interface MutableRef<V> extends Ref<V> {
       public void set(final V value) {
          this.value = value;
       }
+
+      @Override
+      public String toString() {
+         return String.valueOf(get());
+      }
    }
 
    static <@Nullable V> MutableRef<V> create() {

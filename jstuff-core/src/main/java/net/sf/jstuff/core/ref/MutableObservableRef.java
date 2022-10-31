@@ -118,6 +118,11 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
       }
 
       @Override
+      public String toString() {
+         return String.valueOf(get());
+      }
+
+      @Override
       public void unsubscribe(final BiConsumer<V, V> observer) {
          unsubscribe((Object) observer);
       }

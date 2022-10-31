@@ -26,4 +26,9 @@ public class FinalRef<V> implements Ref<V>, Serializable {
    public V get() {
       return value;
    }
+
+   @Override
+   public String toString() {
+      return String.valueOf(get());
+   }
 }
