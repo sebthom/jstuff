@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -2346,6 +2346,14 @@ public abstract class Strings {
       return asNonNullUnsafe(StringUtils.remove(str, remove));
    }
 
+   public static String remove(final String str, final @Nullable List<String> remove) {
+      return asNonNullUnsafe(removeNullable(str, remove));
+   }
+
+   public static String remove(final String str, final String @Nullable... remove) {
+      return asNonNullUnsafe(removeNullable(str, remove));
+   }
+
    /**
     * See {@link StringUtils#removeEnd(String, String)}
     */
@@ -2400,6 +2408,28 @@ public abstract class Strings {
     */
    public static @Nullable String removeNullable(final @Nullable String str, final @Nullable String remove) {
       return StringUtils.remove(str, remove);
+   }
+
+   public static @Nullable String removeNullable(final @Nullable String str, final @Nullable List<String> remove) {
+      if (str == null || remove == null || remove.isEmpty() || str.isEmpty())
+         return str;
+
+      var result = str;
+      for (final var r : remove) {
+         result = StringUtils.remove(str, r);
+      }
+      return result;
+   }
+
+   public static @Nullable String removeNullable(final @Nullable String str, final String @Nullable... remove) {
+      if (str == null || remove == null || remove.length == 0 || str.isEmpty())
+         return str;
+
+      var result = str;
+      for (final var r : remove) {
+         result = StringUtils.remove(str, r);
+      }
+      return result;
    }
 
    /**
