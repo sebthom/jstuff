@@ -33,12 +33,16 @@ import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.concurrent.ScalingScheduledExecutorService;
 import net.sf.jstuff.core.concurrent.Threads;
+import net.sf.jstuff.core.functional.ThrowingConsumer;
+import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Processes {
+
+   private static final Logger LOG = Logger.create();
 
    public static class Builder {
 
@@ -68,6 +72,11 @@ public abstract class Processes {
       }
 
       public Builder onExit(final @Nullable Consumer<ProcessWrapper> action) {
+         onExit = action;
+         return this;
+      }
+
+      public Builder onExit(final @Nullable ThrowingConsumer<ProcessWrapper, Throwable> action) {
          onExit = action;
          return this;
       }
@@ -115,6 +124,7 @@ public abstract class Processes {
             command.add(stringifier.apply(arg));
          }
 
+         LOG.debug("Executing command: " + command);
          final var pb = new ProcessBuilder(command);
          final var env = this.env;
          if (env != null) {
@@ -401,6 +411,21 @@ public abstract class Processes {
       }
 
       public ProcessWrapper onExit(final @Nullable Consumer<ProcessWrapper> action) {
+         if (action == null)
+            return this;
+
+         BACKGROUND_THREADS.submit(() -> {
+            try {
+               process.waitFor();
+               action.accept(this);
+            } catch (final InterruptedException ex) {
+               Threads.handleInterruptedException(ex);
+            }
+         });
+         return this;
+      }
+
+      public ProcessWrapper onExit(final @Nullable ThrowingConsumer<ProcessWrapper, Throwable> action) {
          if (action == null)
             return this;
 
