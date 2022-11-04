@@ -543,7 +543,7 @@ public abstract class MoreFiles {
    }
 
    public static Path getWorkingDirectory() {
-      return Paths.get("").toAbsolutePath();
+      return Paths.get("").toAbsolutePath().normalize();
    }
 
    /**
