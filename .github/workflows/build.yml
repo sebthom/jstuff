@@ -60,7 +60,7 @@ jobs:
     #- name: Calculate Java version checksum
     #  id: java-version-checksum
     #  run: |
-    #    echo "::set-output name=md5sum::$(java -version 2>&1 | md5sum | cut -f1 -d" ")"
+    #    echo "md5sum=$(java -version 2>&1 | md5sum | cut -f1 -d" ")" >> $GITHUB_OUTPUT
     #- name: Cache Java CDS archive
     #  uses: actions/cache@v3
     #  with:
@@ -118,7 +118,7 @@ jobs:
         bash .ci/build.sh ${{ github.event.inputs.additional_maven_args }}
 
         if find . -path "*/target/site/jacoco/jacoco.xml" | grep -q .; then
-          echo '::set-output name=has_jacoco_results::true'
+          echo 'has_jacoco_results=true' >> $GITHUB_OUTPUT
         fi
 
     - name: Publish test coverage to codeclimate.com
