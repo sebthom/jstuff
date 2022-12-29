@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.collection;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
@@ -24,6 +24,13 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
+
+   @SuppressWarnings("unchecked")
+   public static <T> T[] addAll(final T[] arr, final @Nullable Collection<T> coll) {
+      if (coll == null)
+         return arr;
+      return addAll(arr, coll.toArray((T[]) Array.newInstance(asNonNullUnsafe(arr.getClass().getComponentType()), coll.size())));
+   }
 
    @SuppressWarnings("unchecked")
    public static <T> T[] asArray(final T... values) {

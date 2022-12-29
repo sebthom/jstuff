@@ -4,9 +4,10 @@
  */
 package net.sf.jstuff.core.collection;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
@@ -15,6 +16,11 @@ import org.junit.Test;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class ArrayUtilsTest {
+
+   @Test
+   public void testAddAll() {
+      assertThat(ArrayUtils.addAll(new String[] {"a", "b"}, List.of("c", "d"))).isEqualTo(new String[] {"a", "b", "c", "d"});
+   }
 
    @Test
    public void testFilter() {
