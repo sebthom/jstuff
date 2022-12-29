@@ -26,7 +26,6 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.MoreFiles;
 import net.sf.jstuff.core.logging.Logger;
 
@@ -87,16 +86,6 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
                      LOG.debug(ex);
                   }
                }
-            }
-         }
-
-      } else if (IS_OS_MAC) {
-         final Path pathFile = Paths.get("/etc/paths");
-         if (Files.exists(pathFile)) {
-            try {
-               ArrayUtils.addAll(paths, Files.readAllLines(pathFile));
-            } catch (final IOException ex) {
-               LOG.debug(ex);
             }
          }
       }
