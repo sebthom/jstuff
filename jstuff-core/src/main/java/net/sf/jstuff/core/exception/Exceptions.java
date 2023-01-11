@@ -50,6 +50,17 @@ public abstract class Exceptions extends ExceptionUtils {
    }
 
    /**
+    * Faster alternative to {@link ExceptionUtils#getStackTrace(Throwable)}
+    * as it uses StringBuilder instead of StringBuffer.
+    */
+   @Nullable
+   public static String getStackTraceNullable(final @Nullable Throwable ex) {
+      if (ex == null)
+         return null;
+      return getStackTrace(ex);
+   }
+
+   /**
     * IMPORTANT: Checked exceptions thrown with this method are not catched by <code>try { } catch(RuntimeException ex) { }</code>
     * <p>
     * Throws the given exception bypassing the compiler check for checked exceptions.
