@@ -190,39 +190,51 @@ public abstract class MoreFiles {
       final Set<String> sourceSupportedAttrs = sourceFS.supportedFileAttributeViews();
       final Set<String> targetSupportedAttrs = targetFS.supportedFileAttributeViews();
 
-      if (sourceSupportedAttrs.contains("dos") && targetSupportedAttrs.contains("dos")) {
-         final DosFileAttributes sourceDosAttrs = sourceFSP.readAttributes(source, DosFileAttributes.class, NOFOLLOW_LINKS);
-         final DosFileAttributeView targetDosAttrs = targetFSP.getFileAttributeView(target, DosFileAttributeView.class, NOFOLLOW_LINKS);
-         targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
-         targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
-         targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
-         targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
-
-         if (copyACL && sourceSupportedAttrs.contains("acl") && targetSupportedAttrs.contains("acl")) {
-            final AclFileAttributeView sourceAclAttrs = sourceFSP.getFileAttributeView(source, AclFileAttributeView.class, NOFOLLOW_LINKS);
-            final AclFileAttributeView targetAclAttrs = targetFSP.getFileAttributeView(target, AclFileAttributeView.class, NOFOLLOW_LINKS);
-            targetAclAttrs.setAcl(sourceAclAttrs.getAcl());
-            if (SystemUtils.isRunningAsAdmin()) {
-               targetAclAttrs.setOwner(sourceAclAttrs.getOwner());
+      if (sourceSupportedAttrs.contains("posix") && targetSupportedAttrs.contains("posix")) {
+         try {
+            final PosixFileAttributes sourcePosixAttrs = sourceFSP.readAttributes(source, PosixFileAttributes.class, NOFOLLOW_LINKS);
+            final PosixFileAttributeView targetPosixAttrs = targetFSP.getFileAttributeView(target, PosixFileAttributeView.class,
+               NOFOLLOW_LINKS);
+            if (copyACL) {
+               targetPosixAttrs.setOwner(sourcePosixAttrs.owner());
+               targetPosixAttrs.setGroup(sourcePosixAttrs.group());
+               targetPosixAttrs.setPermissions(sourcePosixAttrs.permissions());
             }
+            copyUserAttrs(source, target);
+            copyTimeAttrs(sourcePosixAttrs, targetPosixAttrs);
+            return;
+         } catch (final java.nio.file.FileSystemException ex) {
+            // java.nio.file.FileSystemException: <PATH>: Operation not supported
+            LOG.warn(ex);
          }
-         copyUserAttrs(source, target);
-         copyTimeAttrs(sourceDosAttrs, targetDosAttrs);
-         return;
       }
 
-      if (sourceSupportedAttrs.contains("posix") && targetSupportedAttrs.contains("posix")) {
-         final PosixFileAttributes sourcePosixAttrs = sourceFSP.readAttributes(source, PosixFileAttributes.class, NOFOLLOW_LINKS);
-         final PosixFileAttributeView targetPosixAttrs = targetFSP.getFileAttributeView(target, PosixFileAttributeView.class,
-            NOFOLLOW_LINKS);
-         if (copyACL) {
-            targetPosixAttrs.setOwner(sourcePosixAttrs.owner());
-            targetPosixAttrs.setGroup(sourcePosixAttrs.group());
-            targetPosixAttrs.setPermissions(sourcePosixAttrs.permissions());
+      if (sourceSupportedAttrs.contains("dos") && targetSupportedAttrs.contains("dos")) {
+         try {
+            final DosFileAttributes sourceDosAttrs = sourceFSP.readAttributes(source, DosFileAttributes.class, NOFOLLOW_LINKS);
+            final DosFileAttributeView targetDosAttrs = targetFSP.getFileAttributeView(target, DosFileAttributeView.class, NOFOLLOW_LINKS);
+            targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
+            targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
+            targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
+            targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
+
+            if (copyACL && sourceSupportedAttrs.contains("acl") && targetSupportedAttrs.contains("acl")) {
+               final AclFileAttributeView sourceAclAttrs = sourceFSP.getFileAttributeView(source, AclFileAttributeView.class,
+                  NOFOLLOW_LINKS);
+               final AclFileAttributeView targetAclAttrs = targetFSP.getFileAttributeView(target, AclFileAttributeView.class,
+                  NOFOLLOW_LINKS);
+               targetAclAttrs.setAcl(sourceAclAttrs.getAcl());
+               if (SystemUtils.isRunningAsAdmin()) {
+                  targetAclAttrs.setOwner(sourceAclAttrs.getOwner());
+               }
+            }
+            copyUserAttrs(source, target);
+            copyTimeAttrs(sourceDosAttrs, targetDosAttrs);
+            return;
+         } catch (final java.nio.file.FileSystemException ex) {
+            // java.nio.file.FileSystemException: <PATH>: Operation not supported
+            LOG.warn(ex);
          }
-         copyUserAttrs(source, target);
-         copyTimeAttrs(sourcePosixAttrs, targetPosixAttrs);
-         return;
       }
 
       if (copyACL && sourceSupportedAttrs.contains("owner") && targetSupportedAttrs.contains("owner")) {
@@ -291,7 +303,6 @@ public abstract class MoreFiles {
             out.write(buffer);
          }
       }
-
    }
 
    /**
@@ -569,10 +580,22 @@ public abstract class MoreFiles {
       Args.notNull("path", path);
 
       final FileSystem fs = path.getFileSystem();
-      if (fs.supportedFileAttributeViews().contains("dos"))
-         return Files.readAttributes(path, DosFileAttributes.class, NOFOLLOW_LINKS);
-      if (fs.supportedFileAttributeViews().contains("posix"))
-         return Files.readAttributes(path, PosixFileAttributes.class, NOFOLLOW_LINKS);
+      if (fs.supportedFileAttributeViews().contains("posix")) {
+         try {
+            return Files.readAttributes(path, PosixFileAttributes.class, NOFOLLOW_LINKS);
+         } catch (final java.nio.file.FileSystemException ex) {
+            // java.nio.file.FileSystemException: <PATH>: Operation not supported
+            LOG.warn(ex);
+         }
+      }
+      if (fs.supportedFileAttributeViews().contains("dos")) {
+         try {
+            return Files.readAttributes(path, DosFileAttributes.class, NOFOLLOW_LINKS);
+         } catch (final java.nio.file.FileSystemException ex) {
+            // java.nio.file.FileSystemException: <PATH>: Operation not supported
+            LOG.warn(ex);
+         }
+      }
       return Files.readAttributes(path, BasicFileAttributes.class, NOFOLLOW_LINKS);
    }
 
