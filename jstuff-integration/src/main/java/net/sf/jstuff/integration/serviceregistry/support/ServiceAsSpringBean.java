@@ -62,6 +62,7 @@ public class ServiceAsSpringBean<@NonNull T> implements FactoryBean<T>, Initiali
    }
 
    @Override
+   @Nullable
    public Class<T> getObjectType() {
       return serviceInterface;
    }
