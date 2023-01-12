@@ -1,7 +1,7 @@
 {
   "resources": {
     "includes": [
-      {"pattern": "net/sf/jstuff/core/.*"}
+      {"pattern": "net/sf/jstuff/core/.*[.]properties"}
     ]
   }
 }
