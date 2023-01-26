@@ -4,17 +4,19 @@
  */
 package net.sf.jstuff.core.functional;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
+
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.function.ToIntFunction;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.exception.Exceptions;
 import net.sf.jstuff.core.ref.LazyInitializedRef;
 import net.sf.jstuff.core.validation.Args;
@@ -23,6 +25,10 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Suppliers {
+
+   public interface ExpirationPredicate<V> {
+      boolean isExpired(V value, long ageMS);
+   }
 
    public static <T> Supplier<T> fromCallable(final Callable<? extends T> callable) {
       return () -> {
@@ -62,29 +68,33 @@ public abstract class Suppliers {
       };
    }
 
-   public static <T> Supplier<T> memoize(final Supplier<? extends T> provider, final ToIntFunction<T> ttl) {
+   public static <T> Supplier<T> memoize(final Supplier<? extends T> provider, final ExpirationPredicate<T> isExpired) {
       Args.notNull("provider", provider);
-      Args.notNull("ttl", ttl);
+      Args.notNull("isExpired", isExpired);
 
       return new Supplier<>() {
-         @Nullable
-         private Tuple2<Long, T> cached;
+
+         private T cached = lazyNonNull();
+         private long cachedAt = -1;
 
          @Override
          public synchronized T get() {
-            final var cached = this.cached;
-            if (cached != null && System.currentTimeMillis() - cached.get1() <= ttl.applyAsInt(cached.get2()))
-               return cached.get2();
+            if (cachedAt != -1 && !isExpired.isExpired(cached, System.currentTimeMillis() - cachedAt))
+               return cached;
 
-            final T obj = provider.get();
-            this.cached = new Tuple2<>(System.currentTimeMillis(), obj);
-            return obj;
+            cached = provider.get();
+            cachedAt = System.currentTimeMillis();
+            return cached;
          }
       };
    }
 
-   public static <T> Supplier<T> memoize(final Supplier<? extends T> provider, final int ttl) {
-      return memoize(provider, t -> ttl);
+   public static <T> Supplier<T> memoize(final Supplier<? extends T> provider, final int ttlMS) {
+      return memoize(provider, (v, ageMS) -> ageMS > ttlMS);
+   }
+
+   public static <T> Supplier<T> memoize(final Supplier<? extends T> provider, final int ttl, final TimeUnit unit) {
+      return memoize(provider, (v, ageMS) -> ageMS > unit.toMillis(ttl));
    }
 
    public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider) {
@@ -109,32 +119,37 @@ public abstract class Suppliers {
       };
    }
 
-   public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider, final ToIntFunction<T> ttl) {
+   public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider, final ExpirationPredicate<T> isExpired) {
       Args.notNull("provider", provider);
-      Args.notNull("ttl", ttl);
+      Args.notNull("isExpired", isExpired);
 
       return new Supplier<>() {
-         @Nullable
-         private SoftReference<@Nullable Tuple2<Long, T>> cached;
+
+         private SoftReference<T> cached = lazyNonNull();
+         private long cachedAt = -1;
 
          @Override
          public synchronized T get() {
-            final var cached = this.cached;
-            if (cached != null) {
-               final var val = cached.get();
-               if (val != null && System.currentTimeMillis() - val.get1() <= ttl.applyAsInt(val.get2()))
-                  return val.get2();
+            if (cachedAt != -1) {
+               final var obj = cached.get();
+               if (!cached.isEnqueued() && !isExpired.isExpired(obj, System.currentTimeMillis() - cachedAt))
+                  return obj;
             }
 
             final T obj = provider.get();
-            this.cached = new SoftReference<>(new Tuple2<>(System.currentTimeMillis(), obj));
+            cached = new SoftReference<>(obj);
+            cachedAt = System.currentTimeMillis();
             return obj;
          }
       };
    }
 
-   public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider, final int ttl) {
-      return memoizeSoft(provider, t -> ttl);
+   public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider, final int ttlMS) {
+      return memoizeSoft(provider, (v, ageMS) -> ageMS > ttlMS);
+   }
+
+   public static <T> Supplier<T> memoizeSoft(final Supplier<? extends T> provider, final int ttl, final TimeUnit unit) {
+      return memoizeSoft(provider, (v, ageMS) -> ageMS > unit.toMillis(ttl));
    }
 
    public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider) {
@@ -159,31 +174,37 @@ public abstract class Suppliers {
       };
    }
 
-   public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider, final ToIntFunction<T> ttl) {
+   public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider, final ExpirationPredicate<T> isExpired) {
       Args.notNull("provider", provider);
-      Args.notNull("ttl", ttl);
+      Args.notNull("isExpired", isExpired);
 
       return new Supplier<>() {
-         @Nullable
-         private WeakReference<@Nullable Tuple2<Long, T>> cached;
+
+         private WeakReference<T> cached = lazyNonNull();
+         private long cachedAt = -1;
 
          @Override
          public synchronized T get() {
-            if (cached != null) {
-               final Tuple2<Long, T> val = cached.get();
-               if (val != null && System.currentTimeMillis() - val.get1() <= ttl.applyAsInt(val.get2()))
-                  return val.get2();
+            if (cachedAt != -1) {
+               final var obj = cached.get();
+               if (!cached.isEnqueued() && !isExpired.isExpired(obj, System.currentTimeMillis() - cachedAt))
+                  return obj;
             }
 
             final T obj = provider.get();
-            cached = new WeakReference<>(new Tuple2<>(System.currentTimeMillis(), obj));
+            cached = new WeakReference<>(obj);
+            cachedAt = System.currentTimeMillis();
             return obj;
          }
       };
    }
 
-   public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider, final int ttl) {
-      return memoizeWeak(provider, t -> ttl);
+   public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider, final int ttlMS) {
+      return memoizeWeak(provider, (v, ageMS) -> ageMS > ttlMS);
+   }
+
+   public static <T> Supplier<T> memoizeWeak(final Supplier<? extends T> provider, final int ttl, final TimeUnit unit) {
+      return memoizeWeak(provider, (v, ageMS) -> ageMS > unit.toMillis(ttl));
    }
 
    public static <T> Supplier<T> of(final T object) {
@@ -196,6 +217,20 @@ public abstract class Suppliers {
       return () -> {
          synchronized (delegate) {
             return delegate.get();
+         }
+      };
+   }
+
+   public static <T> Supplier<T> synchronizedSupplier(final Supplier<T> delegate, final Lock lock) {
+      Args.notNull("delegate", delegate);
+      Args.notNull("lock", lock);
+
+      return () -> {
+         lock.lock();
+         try {
+            return delegate.get();
+         } finally {
+            lock.unlock();
          }
       };
    }
@@ -222,7 +257,6 @@ public abstract class Suppliers {
          } finally {
             lock.unlock();
          }
-
       };
    }
 }
