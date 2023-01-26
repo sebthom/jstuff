@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 by Sebastian Thomschke and contributors.
+ * Copyright 2010-2023 by Sebastian Thomschke and contributors.
  * SPDX-License-Identifier: EPL-2.0
  */
 package net.sf.jstuff.core.ref;
@@ -9,8 +9,9 @@ import java.util.function.Supplier;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Ref<V> {
+public interface Ref<V> extends Supplier<V> {
 
+   @Override
    V get();
 
    default boolean isNotNull() {
