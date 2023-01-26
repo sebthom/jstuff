@@ -12,6 +12,7 @@
       <groupId>net.sf.jstuff</groupId>
       <artifactId>jstuff-parent</artifactId>
       <version>7.6.1-SNAPSHOT</version>
+      <relativePath>../pom.xml</relativePath>
    </parent>
 
    <artifactId>jstuff-core</artifactId>
