@@ -1,18 +1,21 @@
 /*
- * Copyright 2010-2022 by Sebastian Thomschke and contributors.
+ * Copyright 2010-2023 by Sebastian Thomschke and contributors.
  * SPDX-License-Identifier: EPL-2.0
  */
 package net.sf.jstuff.core.functional;
 
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.Callable;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.tuple.Tuple2;
+import net.sf.jstuff.core.exception.Exceptions;
 import net.sf.jstuff.core.ref.LazyInitializedRef;
 import net.sf.jstuff.core.validation.Args;
 
@@ -20,6 +23,26 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Suppliers {
+
+   public static <T> Supplier<T> fromCallable(final Callable<? extends T> callable) {
+      return () -> {
+         try {
+            return callable.call();
+         } catch (final Exception ex) {
+            throw Exceptions.wrapAsRuntimeException(ex);
+         }
+      };
+   }
+
+   public static <I, O> Supplier<O> fromFunction(final Function<I, ? extends O> fn, final I input) {
+      return () -> {
+         try {
+            return fn.apply(input);
+         } catch (final Exception ex) {
+            throw Exceptions.wrapAsRuntimeException(ex);
+         }
+      };
+   }
 
    public static <T> Supplier<T> memoize(final Supplier<? extends T> provider) {
       Args.notNull("provider", provider);
