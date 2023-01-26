@@ -42,7 +42,7 @@ jobs:
         - java: 17
           may_create_release: false
           experimental: false
-        - java: 18
+        - java: 19
           may_create_release: false
           experimental: false
     steps:

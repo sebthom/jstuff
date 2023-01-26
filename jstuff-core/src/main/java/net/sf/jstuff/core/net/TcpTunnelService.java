@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.builder.Builder;
 import net.sf.jstuff.core.builder.BuilderFactory;
 import net.sf.jstuff.core.fluent.Fluent;
 import net.sf.jstuff.core.io.IOUtils;
@@ -118,35 +117,35 @@ public class TcpTunnelService extends Thread {
    }
 
    public interface TcpProxyServerBuilder<THIS extends TcpProxyServerBuilder<THIS, T>, T extends TcpTunnelService> extends
-      Builder<TcpTunnelService> {
+      net.sf.jstuff.core.builder.Builder<TcpTunnelService> {
 
       /**
        * Default is -1, i.e. unlimited
        */
       @Fluent
-      @Builder.Property(required = false)
+      @net.sf.jstuff.core.builder.Builder.Property(required = false)
       THIS withMaxConnections(int value);
 
       /**
        * @param address can be null
        */
       @Fluent
-      @Builder.Property(required = true)
+      @net.sf.jstuff.core.builder.Builder.Property(required = true)
       THIS withListener(String address, int port);
 
       @Fluent
-      @Builder.Property(required = false)
+      @net.sf.jstuff.core.builder.Builder.Property(required = false)
       THIS withProxy(Proxy.Type proxyType, String address, int port);
 
       @Fluent
-      @Builder.Property(required = true)
+      @net.sf.jstuff.core.builder.Builder.Property(required = true)
       THIS withTarget(String address, int port);
 
       /**
        * Default is 10.000 milliseconds
        */
       @Fluent
-      @Builder.Property(required = false)
+      @net.sf.jstuff.core.builder.Builder.Property(required = false)
       THIS withTargetConnectTimeout(int valueMS);
    }
 
