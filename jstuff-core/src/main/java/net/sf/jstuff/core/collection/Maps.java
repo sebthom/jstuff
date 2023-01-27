@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.collection;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -302,8 +302,93 @@ public abstract class Maps {
       return map;
    }
 
+   public static <K, V> Map<K, V> putAllIfAbsent(final Map<K, V> map, final Map<? extends K, ? extends V> entriesToAdd) {
+      Args.notNull("map", map);
+      Args.notNull("entriesToAdd", entriesToAdd);
+
+      if (entriesToAdd.isEmpty())
+         return map;
+
+      entriesToAdd.forEach(map::putIfAbsent);
+      return map;
+   }
+
+   public static <K, V, M extends Map<K, V>> M putAllIfAbsent(final M map, final K[] keys, final V[] values) {
+      Args.notNull("map", map);
+      Args.notNull("keys", keys);
+      Args.notNull("values", values);
+
+      if (keys.length != values.length)
+         throw new IllegalArgumentException("Arguments [keys] and [values] must have the same array size.");
+
+      for (int i = 0; i < keys.length; i++) {
+         map.putIfAbsent(keys[i], values[i]);
+      }
+      return map;
+   }
+
+   @SuppressWarnings("unchecked")
+   public static <K, V, KK extends K, VV extends V, M extends Map<K, V>> M putAllIfAbsent(final M map, final KK firstKey,
+      final VV firstValue, final Object... moreKeysAndValues) {
+      Args.notNull("map", map);
+
+      map.put(firstKey, firstValue);
+
+      boolean nextIsValue = false;
+      @Nullable
+      K key = null;
+      for (final Object obj : moreKeysAndValues)
+         if (nextIsValue) {
+            map.putIfAbsent(asNonNullUnsafe(key), (V) obj);
+            nextIsValue = false;
+         } else {
+            key = (K) obj;
+            nextIsValue = true;
+         }
+      return map;
+   }
+
+   @SuppressWarnings("unchecked")
+   public static <K, V, M extends Map<K, V>> M putAllIfAbsent(final M map, final Object @Nullable [] keysAndValues) {
+      Args.notNull("map", map);
+
+      if (keysAndValues == null || keysAndValues.length == 0)
+         return map;
+
+      boolean nextIsValue = false;
+      @Nullable
+      K key = null;
+      for (final Object obj : keysAndValues)
+         if (nextIsValue) {
+            map.putIfAbsent(asNonNullUnsafe(key), (V) obj);
+            nextIsValue = false;
+         } else {
+            key = (K) obj;
+            nextIsValue = true;
+         }
+      return map;
+   }
+
    public static <K, V extends Comparable<V>> Map<K, V> sortByValue(final Map<K, V> map) {
       return sortByValue(map, SortDirection.ASC);
+   }
+
+   public static <K, V> Map<K, V> sortByValue(final Map<K, V> map, final Comparator<V> comparator) {
+      Args.notNull("map", map);
+
+      if (map.isEmpty())
+         return map;
+
+      Args.notNull("comparator", comparator);
+
+      final var entries = new ArrayList<>(map.entrySet());
+      entries.sort((o1, o2) -> comparator.compare(o1.getValue(), o2.getValue()));
+
+      final var sortedMap = new LinkedHashMap<K, V>();
+      for (final Entry<K, V> e : entries) {
+         sortedMap.put(e.getKey(), e.getValue());
+      }
+      return sortedMap;
    }
 
    public static <K, V extends Comparable<V>> Map<K, V> sortByValue(final Map<K, V> map, final SortDirection direction) {
@@ -334,24 +419,6 @@ public abstract class Maps {
          }
          return direction == SortDirection.ASC ? valueCmp : -valueCmp;
       });
-
-      final var sortedMap = new LinkedHashMap<K, V>();
-      for (final Entry<K, V> e : entries) {
-         sortedMap.put(e.getKey(), e.getValue());
-      }
-      return sortedMap;
-   }
-
-   public static <K, V> Map<K, V> sortByValue(final Map<K, V> map, final Comparator<V> comparator) {
-      Args.notNull("map", map);
-
-      if (map.isEmpty())
-         return map;
-
-      Args.notNull("comparator", comparator);
-
-      final var entries = new ArrayList<>(map.entrySet());
-      entries.sort((o1, o2) -> comparator.compare(o1.getValue(), o2.getValue()));
 
       final var sortedMap = new LinkedHashMap<K, V>();
       for (final Entry<K, V> e : entries) {

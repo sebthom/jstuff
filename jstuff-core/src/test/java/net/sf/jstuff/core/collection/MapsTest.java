@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.collection;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +32,22 @@ public class MapsTest {
       public String toString() {
          return value;
       }
+   }
+
+   @Test
+   public void testPutAllIfAbsent() {
+      final var map1 = new HashMap<@Nullable String, Integer>();
+      map1.put("a", 1);
+      map1.put("b", 1);
+
+      final var map2 = new HashMap<@Nullable String, Integer>();
+      map2.put("b", 2);
+      map2.put("c", 2);
+
+      Maps.putAllIfAbsent(map1, map2);
+
+      assertThat(map1).containsEntry("b", 1);
+      assertThat(map1).containsKey("c");
    }
 
    @Test
