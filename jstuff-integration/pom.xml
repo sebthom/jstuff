@@ -99,7 +99,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-framework-bom</artifactId>
             <!-- https://search.maven.org/artifact/org.springframework/spring-beans -->
-            <version>5.3.23</version>
+            <version>6.0.6</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
