@@ -17,7 +17,7 @@
    <artifactId>jstuff-integration</artifactId>
 
    <properties>
-       <!-- https://search.maven.org/artifact/com.fasterxml.jackson.core/jackson-core -->
+       <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-core/2.0.0/versions -->
       <jackson.version>2.14.2</jackson.version>
    </properties>
 
@@ -98,8 +98,8 @@
          <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-framework-bom</artifactId>
-            <!-- https://search.maven.org/artifact/org.springframework/spring-beans -->
-            <version>5.3.23</version>
+            <!-- https://central.sonatype.com/artifact/org.springframework/spring-beans/5.3.0/versions -->
+            <version>5.3.25</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
