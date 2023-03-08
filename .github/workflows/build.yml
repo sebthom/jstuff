@@ -8,13 +8,15 @@ name: Build
 
 on:
   push:
-    branches:
+    branches:    # build all branches
     - '**'
-    tags-ignore:
+    tags-ignore: # but don't build tags
     - '**'
     paths-ignore:
     - '**/*.adoc'
     - '**/*.md'
+    - '.editorconfig'
+    - '.git*'
     - '.github/*.yml'
   pull_request:
   workflow_dispatch:
@@ -24,6 +26,19 @@ on:
         description: 'Additional Maven Args'
         required: false
         default: ''
+      debug-with-ssh:
+        description: "Start an SSH session for debugging purposes after tests ran:"
+        default: never
+        type: choice
+        options: [ always, on_failure, on_failure_or_cancelled, never ]
+      debug-with-ssh-only-for-actor:
+        description: "Limit access to the SSH session to the GitHub user that triggered the job."
+        default: true
+        type: boolean
+      debug-with-ssh-only-jobs-matching:
+        description: "Only start an SSH session for jobs matching this regex pattern:"
+        default: ".*"
+        type: string
 
 # https://docs.github.com/en/actions/using-jobs/using-concurrency
 concurrency: ci-${{ github.ref }}
@@ -170,17 +185,31 @@ jobs:
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
 
 
-  ###########################################################
-  cleanup:
-  ###########################################################
-    runs-on: ubuntu-latest
-    needs: 
-      - build
+    ##################################################
+    # Setup SSH debug session
+    ##################################################
+    - name: "SSH session for debugging: check"
+      id: DEBUG_SSH_SESSSION_CHECK
+      if: always()
+      shell: bash
+      run: |
+        set -eu
+        job_filter_pattern="${{ inputs.debug-with-ssh-only-jobs-matching }}"
+        echo "job_filter: $job_filter_pattern"
 
-    steps:
-    - name: "Delete intermediate build artifacts"
-      if: ${{ !env.ACT }} # https://github.com/nektos/act#skipping-steps
-      uses: geekyeggo/delete-artifact@v2 # https://github.com/GeekyEggo/delete-artifact/
+        job_info=$(echo "$GITHUB_JOB ${{ runner.os }} haxe-${{ matrix.haxe-version }}" | tr -d '\n')
+        echo "job_info: $job_info"
+
+        if [[ "$job_info" =~ .*$job_filter_pattern.* ]] && case "${{ job.status }}" in
+           success)   [[ "${{ inputs.debug-with-ssh }}" == always ]] ;;
+           cancelled) [[ "${{ inputs.debug-with-ssh }}" == on_failure_or_cancelled ]] ;;
+           failure)   [[ "${{ inputs.debug-with-ssh }}" =~ on_failure.* ]] ;;
+        esac; then
+           echo "start_session=true" | tee -a "$GITHUB_OUTPUT"
+        fi
+
+    - name: "SSH session for debugging: start"
+      uses: mxschmitt/action-tmate@v3 # https://github.com/mxschmitt/action-tmate
+      if: always() && steps.DEBUG_SSH_SESSSION_CHECK.outputs.start_session
       with:
-        name: "*"
-        failOnError: false
+        limit-access-to-actor: ${{ inputs.debug-with-ssh-only-for-actor }}
