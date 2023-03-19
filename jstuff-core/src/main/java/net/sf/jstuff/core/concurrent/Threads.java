@@ -29,7 +29,7 @@ public abstract class Threads {
 
    private static final @NonNull Thread[] EMPTY_THREAD_ARRAY = {};
 
-   private static final Comparator<@NonNull Thread> THREAD_PRIORITY_COMPARATOR = (t1, t2) -> t2.getPriority() - t1.getPriority();
+   private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = (t1, t2) -> t2.getPriority() - t1.getPriority();
 
    @Nullable
    private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();

@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.io;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,6 +21,7 @@ import java.util.function.BiPredicate;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import net.sf.jstuff.core.builder.Builder.Property;
 import net.sf.jstuff.core.builder.BuilderFactory;
 import net.sf.jstuff.core.builder.OnPostBuild;
 import net.sf.jstuff.core.logging.Logger;
@@ -45,7 +46,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class DirectoryCleaner {
 
-   @Builder.Property(required = false, nullable = false)
+   @Property(required = false, nullable = false)
    public interface Builder<THIS extends Builder<THIS, T>, T extends DirectoryCleaner> extends net.sf.jstuff.core.builder.Builder<T> {
 
       /**
@@ -56,7 +57,7 @@ public class DirectoryCleaner {
       /**
        * The directory to clean.
        */
-      @Builder.Property(required = true)
+      @Property(required = true)
       THIS directory(Path value);
 
       THIS fileFilter(BiPredicate<Path, BasicFileAttributes> value);

@@ -21,7 +21,7 @@ public class CompositeLock extends Composite.Default<Lock> implements CloseableL
 
    private static final long serialVersionUID = 1L;
 
-   public CompositeLock(final Collection<@NonNull Lock> locks) {
+   public CompositeLock(final Collection<Lock> locks) {
       super(false, locks);
    }
 

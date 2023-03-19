@@ -175,7 +175,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
       username = name;
    }
 
-   public void setUserRoles(final @Nullable Collection<@NonNull String> userRoles) {
+   public void setUserRoles(final @Nullable Collection<String> userRoles) {
       this.userRoles.clear();
       if (userRoles != null) {
          this.userRoles.addAll(userRoles);

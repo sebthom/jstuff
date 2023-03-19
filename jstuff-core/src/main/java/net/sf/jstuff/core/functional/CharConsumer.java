@@ -6,20 +6,18 @@ package net.sf.jstuff.core.functional;
 
 import java.util.function.Consumer;
 
-import org.eclipse.jdt.annotation.NonNull;
-
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @FunctionalInterface
-public interface CharConsumer extends Consumer<@NonNull Character> {
+public interface CharConsumer extends Consumer<Character> {
 
    void accept(char ch);
 
    @Override
-   default void accept(final @NonNull Character c) {
+   default void accept(final Character c) {
       accept(c.charValue());
    }
 

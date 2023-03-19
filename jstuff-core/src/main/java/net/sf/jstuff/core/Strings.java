@@ -3282,14 +3282,14 @@ public abstract class Strings {
    /**
     * Empty tokens are not preserved.
     */
-   public static List<@NonNull String> splitToList(final String text, final char separator) {
+   public static List<String> splitToList(final String text, final char separator) {
       return asNonNullUnsafe(splitToListNullable(text, separator));
    }
 
    /**
     * Empty tokens are not preserved.
     */
-   public static @Nullable List<@NonNull String> splitToListNullable(final @Nullable String text, final char separator) {
+   public static @Nullable List<String> splitToListNullable(final @Nullable String text, final char separator) {
       if (text == null)
          return null;
 

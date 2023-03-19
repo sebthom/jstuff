@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.servlet.session;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,7 +67,7 @@ public class HttpSessionMap implements SessionMap {
       if (sess == null)
          return Collections.emptySet();
 
-      final Map<@NonNull String, @NonNull Object> result = new HashMap<>();
+      final Map<String, Object> result = new HashMap<>();
       Loops.forEach(sess.getAttributeNames(), key -> result.put(key, asNonNullUnsafe(sess.getAttribute(key))));
       return result.entrySet();
    }
@@ -134,7 +134,7 @@ public class HttpSessionMap implements SessionMap {
    }
 
    @Override
-   public void putAll(final Map<? extends String, ? extends @NonNull Object> map) {
+   public void putAll(final Map<? extends String, @NonNull ?> map) {
       final HttpSession sess = request.getSession();
       for (final var entry : map.entrySet()) {
          sess.setAttribute(entry.getKey(), entry.getValue());

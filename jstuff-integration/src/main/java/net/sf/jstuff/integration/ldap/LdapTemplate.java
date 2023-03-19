@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.ldap;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
 
 import java.util.Hashtable;
 
@@ -15,8 +15,6 @@ import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
-
-import org.eclipse.jdt.annotation.NonNull;
 
 import net.sf.jstuff.core.functional.Invocable;
 
@@ -34,7 +32,7 @@ public class LdapTemplate {
     */
    private boolean useStartTSL = false;
 
-   public <T> T execute(final Invocable<T, @NonNull LdapContext, ? extends Exception> callback) {
+   public <T> T execute(final Invocable<T, LdapContext, ? extends Exception> callback) {
       LdapContext ctx = null;
       StartTlsResponse tls = null;
       try {

@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.xml.stream;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.util.function.Consumer;
 
@@ -70,7 +70,7 @@ public class DelegatingXMLEventReader extends Decorator.Default<XMLEventReader> 
    }
 
    @Override
-   public void forEachRemaining(final Consumer<? super @NonNull Object> action) {
+   public void forEachRemaining(final Consumer<@NonNull ? super Object> action) {
       wrapped.forEachRemaining(action);
    }
 

@@ -81,14 +81,14 @@ public abstract class Types {
       }, objectInterface);
    }
 
-   public static <T extends @NonNull Object> T createSynchronized(final Class<T> objectInterface, final T object) {
+   public static <@NonNull T> T createSynchronized(final Class<T> objectInterface, final T object) {
       Args.notNull("objectInterface", objectInterface);
       Args.notNull("object", object);
 
       return createSynchronized(objectInterface, object, object);
    }
 
-   public static <T extends @NonNull Object> T createSynchronized(final Class<T> objectInterface, final T object, final Object lock) {
+   public static <@NonNull T> T createSynchronized(final Class<T> objectInterface, final T object, final Object lock) {
       Args.notNull("objectInterface", objectInterface);
       Args.notNull("object", object);
 
@@ -99,7 +99,7 @@ public abstract class Types {
       }, objectInterface);
    }
 
-   public static <T extends @NonNull Object> T createThreadLocalized(final Class<T> objectInterface, final ThreadLocal<T> threadLocal) {
+   public static <@NonNull T> T createThreadLocalized(final Class<T> objectInterface, final ThreadLocal<T> threadLocal) {
       Args.notNull("objectInterface", objectInterface);
       Args.notNull("threadLocal", threadLocal);
 
@@ -498,8 +498,8 @@ public abstract class Types {
    /**
     * Tries to read the given value using a getter method or direct field access
     */
-   public static <T extends @NonNull Object> T readProperty(final Object obj, final String propertyName,
-      final Class<? extends T> compatibleTo) throws ReflectionException {
+   public static <@NonNull T> T readProperty(final Object obj, final String propertyName, final Class<? extends T> compatibleTo)
+      throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);
 

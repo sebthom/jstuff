@@ -108,7 +108,7 @@ jobs:
           ~/.m2/bin
           ~/.m2/repository
           !~/.m2/repository/net/sf/jstuff
-        key: ${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        key: ${{ runner.os }}-java${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
 
     - name: Test with Maven
       id: maven-test
