@@ -176,7 +176,7 @@
          <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
-            <version>8.5.75</version>
+            <version>8.5.86</version>
          </dependency>
          <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
