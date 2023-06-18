@@ -155,6 +155,23 @@ public abstract class CollectionUtils {
    }
 
    /**
+    * Extends the given list with null elements to ensure the given minimum size.
+    */
+   public static <@Nullable T> void ensureSize(final List<T> list, final int minimumSize) {
+      final int newElements = minimumSize - list.size();
+      if (newElements <= 0)
+         return;
+
+      if (list instanceof final ArrayList) {
+         ((ArrayList<?>) list).ensureCapacity(minimumSize);
+      }
+
+      for (int i = 0; i < newElements; i++) {
+         list.add(null);
+      }
+   }
+
+   /**
     * Returns a new list or set with all items accepted by the filter
     *
     * @throws IllegalArgumentException if <code>filter == null</code>

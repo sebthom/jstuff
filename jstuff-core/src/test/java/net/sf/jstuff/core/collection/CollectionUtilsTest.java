@@ -5,13 +5,15 @@
 package net.sf.jstuff.core.collection;
 
 import static net.sf.jstuff.core.collection.CollectionUtils.*;
-import static net.sf.jstuff.core.collection.Sets.*;
-import static org.assertj.core.api.Assertions.*;
+import static net.sf.jstuff.core.collection.Sets.newLinkedHashSet;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -19,8 +21,17 @@ import org.junit.Test;
  */
 public class CollectionUtilsTest {
 
-   @SuppressWarnings("unchecked")
+   public void testEnsureSize() {
+      final var l = new ArrayList<@Nullable String>();
+      ensureSize(l, 5);
+      assertThat(l).hasSize(5);
+      for (final var e : l) {
+         assertThat(e).isNull();
+      }
+   }
+
    @Test
+   @SuppressWarnings("unchecked")
    public void testIntersectListt() {
       assertThat(intersect((List[]) null)).isEmpty();
       assertThat(intersect(Collections.emptyList())).isEmpty();
@@ -34,8 +45,8 @@ public class CollectionUtilsTest {
       assertThat(intersect(list1, list2)).isEqualTo(newArrayList("foo", "bar"));
    }
 
-   @SuppressWarnings("unchecked")
    @Test
+   @SuppressWarnings("unchecked")
    public void testIntersectSet() {
       assertThat(intersect((Set[]) null)).isEmpty();
       assertThat(intersect(Collections.emptySet())).isEmpty();
