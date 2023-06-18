@@ -162,7 +162,7 @@ public abstract class CollectionUtils {
       if (newElements <= 0)
          return;
 
-      if (list instanceof final ArrayList) {
+      if (list instanceof ArrayList) {
          ((ArrayList<?>) list).ensureCapacity(minimumSize);
       }
 

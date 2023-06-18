@@ -9,7 +9,7 @@ package net.sf.jstuff.core.types;
  */
 public interface Disposable {
 
-   public class Default implements Disposable {
+   class Default implements Disposable {
       @Override
       public void dispose() {
       }
