@@ -24,10 +24,23 @@ public interface ListExt<E> extends List<E>, CollectionExt<E> {
     *
     * @throws IndexOutOfBoundsException if index is out of range
     */
-   default E getAt(final int index) {
-      if (index < 0)
-         return get(size() + index);
+   default E getAt(int index) {
+      if (index < 0) {
+         index = size() + index;
+      }
       return get(index);
+   }
+
+   /**
+    * Gets the n-th element of the list or the default value.
+    *
+    * @param index a negative index selects an element from the end of the list
+    */
+   default E getAtOrDefault(int index, final E defaultValue) {
+      if (index < 0) {
+         index = size() + index;
+      }
+      return index > -1 && index < size() ? get(index) : defaultValue;
    }
 
    /**

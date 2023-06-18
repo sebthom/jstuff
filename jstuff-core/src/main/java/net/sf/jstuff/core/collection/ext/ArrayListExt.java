@@ -6,6 +6,7 @@ package net.sf.jstuff.core.collection.ext;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -29,8 +30,14 @@ public class ArrayListExt<E> extends ArrayList<E> implements ListExt<E> {
    public ArrayListExt() {
    }
 
-   public ArrayListExt(final Collection<? extends E> c) {
-      super(c);
+   public ArrayListExt(final Collection<? extends E> initialValues) {
+      super(initialValues);
+   }
+
+   @SafeVarargs
+   public ArrayListExt(final E... initialValues) {
+      super(Math.max(initialValues.length, 10));
+      Collections.addAll(this, initialValues);
    }
 
    public ArrayListExt(final int initialCapacity) {
