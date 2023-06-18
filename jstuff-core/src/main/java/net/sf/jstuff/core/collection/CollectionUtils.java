@@ -564,6 +564,22 @@ public abstract class CollectionUtils {
       return result;
    }
 
+   public static String toStringWithIndex(final List<?> list) {
+      if (list.isEmpty())
+         return "[]";
+
+      final var sb = new StringBuilder("[");
+      for (int i = 0, l = list.size(); i < l; i++) {
+         final var e = list.get(i);
+         sb.append(i).append(':').append(e == list ? "(this List)" : e);
+         if (i == l - 1) {
+            break;
+         }
+         sb.append(", ");
+      }
+      return sb.append(']').toString();
+   }
+
    public static <S, T> List<T> transform(final List<S> source, final Function<? super S, ? extends T> op) {
       return asNonNullUnsafe(transformNullable(source, op));
    }
