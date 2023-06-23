@@ -116,6 +116,14 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
       }
    }
 
+   public static int getJavaMajorVersion() {
+      final String version = asNonNull(System.getProperty("java.version"));
+      return Integer.parseInt(version.startsWith("1.") //
+         ? version.substring(2, 3) //
+         : Strings.substringBefore(version, '.') //
+      );
+   }
+
    public static String getProperty(final String name, final String defaultValue) {
       final var val = System.getProperty(name);
       if (val == null)
