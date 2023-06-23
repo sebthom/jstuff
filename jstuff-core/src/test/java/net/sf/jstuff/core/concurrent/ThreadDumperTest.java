@@ -4,11 +4,13 @@
  */
 package net.sf.jstuff.core.concurrent;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.Test;
+
+import net.sf.jstuff.core.SystemUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -85,6 +87,12 @@ public class ThreadDumperTest {
    @Test
    @SuppressWarnings("deprecation")
    public void testDumpThreads() {
+      if (SystemUtils.getJavaMajorVersion() >= 20)
+         // https://inside.java/2022/11/09/quality-heads-up/
+         // https://bugs.openjdk.org/browse/JDK-8289610
+         // https://bugs.openjdk.org/browse/JDK-8249627
+         return;
+
       startThreads();
 
       assertThat(Threads.deadlockedIds()).hasSize(4);

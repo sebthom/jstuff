@@ -61,7 +61,7 @@ jobs:
         - java: 17
           may_create_release: false
           experimental: false
-        - java: 19
+        - java: 20
           may_create_release: false
           experimental: false
 
