@@ -8,9 +8,9 @@ name: Build
 
 on:
   push:
-    branches:    # build all branches
-    - '**'
-    tags-ignore: # but don't build tags
+    branches-ignore: # build all branches except:
+      - 'dependabot/**' # prevent GHA triggered twice (once for commit to the branch and once for opening/syncing the PR)
+    tags-ignore: # don't build tags
     - '**'
     paths-ignore:
     - '**/*.adoc'
@@ -56,7 +56,7 @@ jobs:
       matrix:
         include:
         - java: 11
-          may_create_release: ${{ github.ref == 'refs/heads/main' }}
+          may_create_release: ${{ github.ref_name == 'main' }}
           experimental: false
         - java: 17
           may_create_release: false
