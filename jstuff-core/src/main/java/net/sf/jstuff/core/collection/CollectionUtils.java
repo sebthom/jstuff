@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.collection;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -510,6 +510,15 @@ public abstract class CollectionUtils {
       final var reversed = new ArrayList<>(list);
       Collections.reverse(reversed);
       return reversed;
+   }
+
+   /**
+    * Sets the value at the given index. If the index is if the index is out of range (<code>index >= list.size()</code>) the list is
+    * extended by <code>null</code> elements up to the index position.
+    */
+   public static <@Nullable T> void setAt(final List<T> list, final int index, final T value) {
+      ensureSize(list, index);
+      list.set(index, value);
    }
 
    /**
