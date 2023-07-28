@@ -3,7 +3,7 @@
 #
 # Author: Sebastian Thomschke, https://sebthom.de/
 #
-# https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 name: Build
 
 on:
