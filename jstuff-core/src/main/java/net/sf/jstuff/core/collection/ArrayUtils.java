@@ -63,10 +63,10 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
       return false;
    }
 
-   public static <T> Class<?> getComponentType(final T[] array) {
+   public static <T> Class<T> getComponentType(final T[] array) {
       Args.notNull("array", array);
 
-      return asNonNullUnsafe(array.getClass().getComponentType());
+      return asNonNullUnsafe(org.apache.commons.lang3.ArrayUtils.getComponentType(array));
    }
 
    /**

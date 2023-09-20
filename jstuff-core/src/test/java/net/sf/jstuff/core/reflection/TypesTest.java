@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.reflection;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
@@ -54,7 +54,7 @@ public class TypesTest {
    @Test
    public void testGetVersion() {
       // from META-INF/MANIFEST.MF
-      assertThat(Types.getVersion(ObjectUtils.class)).isEqualTo("3.12.0");
+      assertThat(Types.getVersion(ObjectUtils.class)).isEqualTo("3.13.0");
 
       // from META-INF/maven/.../pom.properties
       assertThat(Types.getVersion(JXPathContext.class)).isEqualTo("1.3");
