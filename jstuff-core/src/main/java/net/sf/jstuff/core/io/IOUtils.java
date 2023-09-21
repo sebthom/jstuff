@@ -5,7 +5,6 @@
 package net.sf.jstuff.core.io;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -13,7 +12,6 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
@@ -21,8 +19,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.Selector;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.ObjIntConsumer;
 import java.util.zip.ZipFile;
 
@@ -205,27 +201,6 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       return (ch1 << 24) + (ch2 << 16) + (ch3 << 8) + ch4;
    }
 
-   public static List<String> readLines(final InputStream in) throws IOException {
-      return readLines(new InputStreamReader(in));
-   }
-
-   public static List<String> readLines(final InputStream in, final Charset charset) throws IOException {
-      return readLines(new InputStreamReader(in, charset));
-   }
-
-   public static List<String> readLines(final Reader reader) throws IOException {
-      final BufferedReader bf = reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
-      final var lines = new ArrayList<String>();
-      String line = bf.readLine();
-      while (line != null) {
-         lines.add(line);
-         line = bf.readLine();
-      }
-
-      LOG.trace("Lines read from reader %s: %s", reader, lines);
-      return lines;
-   }
-
    /**
     * @param searchFor single string or an array of strings where one must match
     */
@@ -278,5 +253,9 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       os.write(value >>> 16 & 0xFF);
       os.write(value >>> 8 & 0xFF);
       os.write(value >>> 0 & 0xFF);
+   }
+
+   @SuppressWarnings("deprecation")
+   protected IOUtils() {
    }
 }
