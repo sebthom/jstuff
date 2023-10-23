@@ -19,7 +19,7 @@
 
    <properties>
       <!-- https://search.maven.org/search?q=g:org.glassfish.jaxb -->
-      <jaxb.version>4.0.3</jaxb.version>
+      <jaxb.version>4.0.4</jaxb.version>
 
       <maven-bundle-plugin.import-package>com.sun.codemodel;resolution:="optional",com.sun.tools.xjc;resolution:="optional",com.sun.tools.xjc.outline;resolution:="optional",com.sun.tools.xjc.model;resolution:="optional",*</maven-bundle-plugin.import-package>
    </properties>
