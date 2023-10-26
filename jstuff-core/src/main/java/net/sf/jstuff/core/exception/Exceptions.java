@@ -131,4 +131,8 @@ public abstract class Exceptions extends ExceptionUtils {
    public static RuntimeException wrapAsRuntimeException(final Throwable t) {
       return wrapAs(t, RuntimeException.class);
    }
+
+   @SuppressWarnings("deprecation")
+   protected Exceptions() {
+   }
 }
