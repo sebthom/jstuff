@@ -41,12 +41,12 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
    }
 
    @Override
-   public boolean equals(final @Nullable Object obi) {
-      if (obi == this)
+   public boolean equals(final @Nullable Object other) {
+      if (other == this)
          return true;
-      if (!(obi instanceof Set))
+      if (!(other instanceof Set))
          return false;
-      final Collection<?> c = (Collection<?>) obi;
+      final Collection<?> c = (Collection<?>) other;
       if (c.size() != size())
          return false;
       try {
@@ -67,7 +67,6 @@ public class CompositeSet<V> extends CompositeCollection<V> implements Set<V> {
    @Override
    public int hashCode() {
       int h = 0;
-
       for (final V obj : this)
          if (obj != null) {
             h += obj.hashCode();

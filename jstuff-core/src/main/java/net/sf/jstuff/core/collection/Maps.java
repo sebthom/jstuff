@@ -189,7 +189,7 @@ public abstract class Maps {
       if (initialKeysAndValues == null)
          return new HashMap<>();
 
-      return putAll(new HashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
+      return putAll(new HashMap<>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
    }
 
    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap() {
@@ -209,7 +209,7 @@ public abstract class Maps {
       if (initialKeysAndValues == null)
          return new LinkedHashMap<>();
 
-      return putAll(new LinkedHashMap<K, V>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
+      return putAll(new LinkedHashMap<>(1 + initialKeysAndValues.length / 2), initialKeysAndValues);
    }
 
    public static <K, V> ThreadLocal<HashMap<K, V>> newThreadLocalHashMap() {
@@ -238,7 +238,7 @@ public abstract class Maps {
       if (initialKeysAndValues == null)
          return new TreeMap<>(keyComparator);
 
-      return putAll(new TreeMap<K, V>(keyComparator), initialKeysAndValues);
+      return putAll(new TreeMap<>(keyComparator), initialKeysAndValues);
    }
 
    public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue,

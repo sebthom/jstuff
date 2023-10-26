@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.comparator;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Objects;
 import java.util.TreeSet;
@@ -41,7 +41,7 @@ public class PropertyComparatorTest {
       final var e3 = new Entity("333");
       final var e4 = new Entity(null);
       {
-         final var set = new TreeSet<>(new PropertyComparator<Entity>("name"));
+         final var set = new TreeSet<>(new PropertyComparator<>("name"));
          set.add(e1);
          set.add(e2);
          set.add(e3);
@@ -58,7 +58,7 @@ public class PropertyComparatorTest {
       e3.child = new Entity(null);
       e4.child = new Entity("BBB");
       {
-         final var set = new TreeSet<>(new PropertyComparator<Entity>("child.name"));
+         final var set = new TreeSet<>(new PropertyComparator<>("child.name"));
          set.add(e1);
          set.add(e2);
          set.add(e3);
