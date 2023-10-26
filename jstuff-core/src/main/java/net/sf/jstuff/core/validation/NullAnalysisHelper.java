@@ -19,7 +19,7 @@ import net.sf.jstuff.core.collection.ArrayUtils;
 public abstract class NullAnalysisHelper {
 
    /**
-    * Casts non-null value marked as {@link Nullable} to {@link NonNull} without any validation.
+    * Casts non-null value marked as {@link Nullable} to {@link NonNull}.
     * <p>
     * Only use if you are sure the value is non-null but annotation-based null analysis was not able to determine it.
     * <p>
