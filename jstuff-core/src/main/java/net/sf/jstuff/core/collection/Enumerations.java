@@ -115,12 +115,7 @@ public abstract class Enumerations {
 
    public static <T> Stream<T> toStream(final @Nullable Enumeration<T> en) {
       if (en == null)
-         return StreamSupport.stream(new Spliterators.AbstractSpliterator<T>(Long.MAX_VALUE, Spliterator.ORDERED) {
-            @Override
-            public boolean tryAdvance(final Consumer<? super T> action) {
-               return false;
-            }
-         }, false);
+         return Stream.empty();
 
       return StreamSupport.stream(new Spliterators.AbstractSpliterator<T>(Long.MAX_VALUE, Spliterator.ORDERED) {
          @Override
