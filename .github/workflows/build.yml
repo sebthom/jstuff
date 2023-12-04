@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: © Sebastian Thomschke and contributors
+# SPDX-FileContributor: Sebastian Thomschke (https://sebthom.de/)
 # SPDX-License-Identifier: EPL-2.0
-#
-# Author: Sebastian Thomschke, https://sebthom.de/
+# SPDX-ArtifactOfProjectHomePage: https://github.com/sebthom/jstuff
 #
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 name: Build
@@ -9,7 +9,7 @@ name: Build
 on:
   push:
     branches-ignore: # build all branches except:
-      - 'dependabot/**' # prevent GHA triggered twice (once for commit to the branch and once for opening/syncing the PR)
+    - 'dependabot/**' # prevent GHA triggered twice (once for commit to the branch and once for opening/syncing the PR)
     tags-ignore: # don't build tags
     - '**'
     paths-ignore:
@@ -61,7 +61,7 @@ jobs:
         - java: 17
           may_create_release: false
           experimental: false
-        - java: 20
+        - java: 20 # TODO 21 requires ecj 3.36.0
           may_create_release: false
           experimental: false
 
@@ -81,7 +81,7 @@ jobs:
       uses: actions/checkout@v4 #https://github.com/actions/checkout
 
     - name: Set up JDK ${{ matrix.java }}
-      uses: actions/setup-java@v3 #https://github.com/actions/setup-java
+      uses: actions/setup-java@v4 #https://github.com/actions/setup-java
       with:
         distribution: temurin
         java-version: ${{ matrix.java }}
@@ -214,3 +214,39 @@ jobs:
       if: always() && steps.DEBUG_SSH_SESSSION_CHECK.outputs.start_session
       with:
         limit-access-to-actor: ${{ inputs.debug-with-ssh-only-for-actor }}
+
+
+  dependabot-pr-auto-merge:
+    needs: build
+    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+
+    concurrency: dependabot-pr-auto-merge
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - name: Dependabot metadata
+      id: metadata
+      uses: dependabot/fetch-metadata@v1 # https://github.com/dependabot/fetch-metadata/
+      with:
+        github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+    - name: Enable auto-merge for Dependabot PRs
+      if: |
+        ${{
+          (
+            steps.dependabot-metadata.outputs.package-ecosystem == 'github-actions' && 
+            steps.metadata.outputs.update-type == 'version-update:semver-major'
+          ) || (
+            steps.dependabot-metadata.outputs.package-ecosystem == 'maven' && 
+            steps.metadata.outputs.update-type == 'version-update:semver-minor'
+          )
+        }}
+      run: |
+        gh pr merge --auto --rebase "$PR_URL"
+      env:
+        PR_URL: ${{github.event.pull_request.html_url}}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
