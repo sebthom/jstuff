@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class IdentityHashSetTest {
-   private static class Entity {
+   private static final class Entity {
       @Nullable
       private String name;
 

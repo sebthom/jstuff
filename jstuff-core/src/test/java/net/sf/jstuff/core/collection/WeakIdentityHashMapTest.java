@@ -17,7 +17,7 @@ import net.sf.jstuff.core.concurrent.Threads;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class WeakIdentityHashMapTest {
-   private static class Entity {
+   private static final class Entity {
       @Nullable
       private String name;
 

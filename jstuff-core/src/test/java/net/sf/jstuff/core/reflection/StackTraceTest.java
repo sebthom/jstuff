@@ -13,8 +13,8 @@ import org.junit.Test;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class StackTraceTest {
-   private static class Outer {
-      private static class Inner {
+   private static final class Outer {
+      private static final class Inner {
          private void ensureEquals(@Nullable final Object a, @Nullable final Object b) {
             assertThat(b).isEqualTo(a);
          }

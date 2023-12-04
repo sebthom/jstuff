@@ -27,7 +27,7 @@ import net.sf.jstuff.core.logging.jul.Loggers;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class LoggingTest {
-   private static class Entity implements InterfaceA, InterfaceB {
+   private static final class Entity implements InterfaceA, InterfaceB {
       @Override
       public Object[] methodA(final int a, final String b, final String... c) {
          Threads.sleep(1000);
