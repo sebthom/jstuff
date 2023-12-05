@@ -19,6 +19,12 @@ on:
     - '.git*'
     - '.github/*.yml'
   pull_request:
+    paths-ignore:
+    - '**/*.adoc'
+    - '**/*.md'
+    - '.editorconfig'
+    - '.git*'
+    - '.github/*.yml'
   workflow_dispatch:
     # https://github.blog/changelog/2020-07-06-github-actions-manual-triggers-with-workflow_dispatch/
     inputs:
@@ -27,7 +33,7 @@ on:
         required: false
         default: ''
       debug-with-ssh:
-        description: "Start an SSH session for debugging purposes after tests ran:"
+        description: "Start an SSH session for debugging purposes at the end of the build:"
         default: never
         type: choice
         options: [ always, on_failure, on_failure_or_cancelled, never ]
@@ -40,15 +46,17 @@ on:
         default: ".*"
         type: string
 
-# https://docs.github.com/en/actions/using-jobs/using-concurrency
-concurrency: ci-${{ github.ref }}
 
 defaults:
   run:
     shell: bash
 
+
 jobs:
-  build:
+
+  ###########################################################
+  maven-build:
+  ###########################################################
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     strategy:
@@ -65,6 +73,13 @@ jobs:
           may_create_release: false
           experimental: false
 
+
+    # https://docs.github.com/en/actions/using-jobs/using-concurrency
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.java }}
+      cancel-in-progress: false
+
+
     steps:
     - name: "ACT: Install ping"
       if: runner.os == 'Linux' && env.ACT # https://github.com/nektos/act#skipping-steps
@@ -74,17 +89,21 @@ jobs:
           apt-get -y install iputils-ping
         fi
 
+
     - name: Show environment variables
       run: env | sort
 
-    - name: Git Checkout
-      uses: actions/checkout@v4 #https://github.com/actions/checkout
 
-    - name: Set up JDK ${{ matrix.java }}
-      uses: actions/setup-java@v4 #https://github.com/actions/setup-java
+    - name: Git Checkout
+      uses: actions/checkout@v4 # https://github.com/actions/checkout
+
+
+    - name: "Install: JDK ${{ env.JAVA_VERSION }}"
+      uses: actions/setup-java@v4 # https://github.com/actions/setup-java
       with:
         distribution: temurin
         java-version: ${{ matrix.java }}
+
 
     # reusing CDS archives of the same JVM randomly fails in GitHub Actions with
     # "An error has occurred while processing the shared archive file. shared class paths mismatch"
@@ -99,6 +118,7 @@ jobs:
     #      ~/.xshare/${{ steps.java-version-checksum.outputs.md5sum }}
     #    key: ${{ runner.os }}-xshare-${{ steps.java-version-checksum.outputs.md5sum }}
 
+
     - name: "Cache: Restore"
       id: cache-restore
       if: ${{ !env.ACT }} # https://github.com/nektos/act#skipping-steps
@@ -110,8 +130,8 @@ jobs:
           !~/.m2/repository/net/sf/jstuff
         key: ${{ runner.os }}-java${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
 
+
     - name: Test with Maven
-      id: maven-test
       if: ${{ !matrix.may_create_release || env.ACT }}
       env:
         GITHUB_USER: ${{ github.actor }}
@@ -121,8 +141,8 @@ jobs:
       run: |
         bash .ci/build.sh ${{ github.event.inputs.additional_maven_args }}
 
+
     - name: Build with Maven
-      id: maven-build
       if: ${{ matrix.may_create_release && !env.ACT }}
       env:
         DEPLOY_SNAPSHOTS_TO_GITHUB_BRANCH: true
@@ -146,6 +166,7 @@ jobs:
           echo 'has_jacoco_results=true' >> $GITHUB_OUTPUT
         fi
 
+
     - name: Publish test coverage to codeclimate.com
       uses: paambaati/codeclimate-action@v5.0.0 # https://github.com/paambaati/codeclimate-action
       if: ${{ matrix.may_create_release && steps.maven-build.outputs.has_jacoco_results && !env.ACT }}
@@ -164,7 +185,7 @@ jobs:
 
     ##################################################
     # Cache Update
-    # See https://github.com/actions/cache/issues/342
+    # See https://github.com/actions/cache/issues/342#issuecomment-1399442670
     ##################################################
     - name: "Cache: Delete Previous"
       if: ${{ steps.cache-restore.outputs.cache-hit && !env.ACT }}
@@ -183,6 +204,7 @@ jobs:
           ~/.m2/bin
           ~/.m2/repository
           !~/.m2/repository/net/sf/jstuff
+          !~/.m2/repository/*SNAPSHOT*
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
 
 
@@ -192,32 +214,36 @@ jobs:
     - name: "SSH session for debugging: check"
       id: DEBUG_SSH_SESSSION_CHECK
       if: always()
-      shell: bash
       run: |
         set -eu
         job_filter_pattern="${{ inputs.debug-with-ssh-only-jobs-matching }}"
         echo "job_filter: $job_filter_pattern"
 
-        job_info=$(echo "$GITHUB_JOB ${{ runner.os }} haxe-${{ matrix.haxe-version }}" | tr -d '\n')
+        job_info=$(echo "$GITHUB_JOB ${{ runner.os }} java-${{ matrix.java }}" | tr -d '\n')
         echo "job_info: $job_info"
 
-        if [[ "$job_info" =~ .*$job_filter_pattern.* ]] && case "${{ job.status }}" in
-           success)   [[ "${{ inputs.debug-with-ssh }}" == always ]] ;;
-           cancelled) [[ "${{ inputs.debug-with-ssh }}" == on_failure_or_cancelled ]] ;;
-           failure)   [[ "${{ inputs.debug-with-ssh }}" =~ on_failure.* ]] ;;
+        when="${{ inputs.debug-with-ssh }}"
+
+        if [[ $when == "always" ]] || [[ "$job_info" =~ .*$job_filter_pattern.* ]] && case "${{ job.status }}" in
+          success)   [[ $when == "always" ]] ;;
+          cancelled) [[ $when == "on_failure_or_cancelled" ]] ;;
+          failure)   [[ $when == "on_failure"* ]] ;;
         esac; then
-           echo "start_session=true" | tee -a "$GITHUB_OUTPUT"
+          echo "start_ssh_session=true" | tee -a "$GITHUB_OUTPUT"
         fi
+
 
     - name: "SSH session for debugging: start"
       uses: mxschmitt/action-tmate@v3 # https://github.com/mxschmitt/action-tmate
-      if: always() && steps.DEBUG_SSH_SESSSION_CHECK.outputs.start_session
+      if: always() && steps.DEBUG_SSH_SESSSION_CHECK.outputs.start_ssh_session
       with:
         limit-access-to-actor: ${{ inputs.debug-with-ssh-only-for-actor }}
 
 
+  ###########################################################
   dependabot-pr-auto-merge:
-    needs: build
+  ###########################################################
+    needs: maven-build
     if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
     runs-on: ubuntu-latest
 
@@ -233,6 +259,7 @@ jobs:
       uses: dependabot/fetch-metadata@v1 # https://github.com/dependabot/fetch-metadata/
       with:
         github-token: "${{ secrets.GITHUB_TOKEN }}"
+
 
     - name: Enable auto-merge for Dependabot PRs
       if: |
