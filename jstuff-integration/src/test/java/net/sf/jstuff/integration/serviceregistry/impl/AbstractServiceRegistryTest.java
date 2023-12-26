@@ -4,11 +4,12 @@
  */
 package net.sf.jstuff.integration.serviceregistry.impl;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.After;
 import org.junit.Test;
@@ -21,7 +22,7 @@ import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> {
+public abstract class AbstractServiceRegistryTest<@NonNull R extends ServiceRegistry> {
    public static final class CountingListener<T> implements ServiceListener<T> {
       private final AtomicInteger count;
 

@@ -4,6 +4,10 @@
  */
 package net.sf.jstuff.core.types;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
+
+import org.eclipse.jdt.annotation.NonNull;
+
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
@@ -13,14 +17,13 @@ import net.sf.jstuff.core.validation.Assert;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public interface Decorator<T> {
+public interface Decorator<@NonNull T> {
 
-   abstract class Default<T> implements Decorator<T> {
-      protected T wrapped;
+   abstract class Default<@NonNull T> implements Decorator<T> {
+      protected T wrapped = lazyNonNull();
       protected boolean wrappedGettable = true;
       protected boolean wrappedSettable = true;
 
-      @SuppressWarnings("null")
       protected Default() {
       }
 

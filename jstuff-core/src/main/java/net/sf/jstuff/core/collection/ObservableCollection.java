@@ -7,6 +7,7 @@ package net.sf.jstuff.core.collection;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.ObservableCollection.ItemAction;
@@ -18,7 +19,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObservableCollection<E, C extends Collection<E>> implements Collection<E>, EventListenable<ItemAction<E>> {
+public class ObservableCollection<E, @NonNull C extends Collection<E>> implements Collection<E>, EventListenable<ItemAction<E>> {
    public enum BulkAction {
       ADD_ALL,
       CLEAR,
@@ -59,7 +60,7 @@ public class ObservableCollection<E, C extends Collection<E>> implements Collect
 
    public ObservableCollection(final C coll) {
       Args.notNull("coll", coll);
-      this.wrapped = coll;
+      wrapped = coll;
    }
 
    @Override
