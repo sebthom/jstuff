@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
@@ -136,6 +137,14 @@ public abstract class Maps {
       if (map == null)
          return defaultValue;
       return map.getOrDefault(key, defaultValue);
+   }
+
+   public static <K, V> V getOrThrow(final Map<K, V> map, final K key) throws NoSuchElementException {
+      if (map.containsKey(key)) {
+         final var v = map.get(key);
+         return asNonNullUnsafe(v);
+      }
+      throw new NoSuchElementException("Key [" + key + "] not present");
    }
 
    public static <K, V> ArrayList<K> keysAsArrayList(final Map<K, V> map) {
@@ -463,5 +472,4 @@ public abstract class Maps {
          }
       return result;
    }
-
 }
