@@ -27,6 +27,12 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class CollectionUtils {
 
+   /**
+    * Adds all items to the collection
+    *
+    * @return number of items added
+    * @throws IllegalArgumentException if <code>collection == null</code>
+    */
    public static int addAll(final Collection<Byte> collection, final byte @Nullable... items) {
       Args.notNull("collection", collection);
 
@@ -41,6 +47,12 @@ public abstract class CollectionUtils {
       return count;
    }
 
+   /**
+    * Adds all items to the collection
+    *
+    * @return number of items added
+    * @throws IllegalArgumentException if <code>collection == null</code>
+    */
    public static int addAll(final Collection<Integer> collection, final int @Nullable... items) {
       Args.notNull("collection", collection);
 
@@ -55,6 +67,12 @@ public abstract class CollectionUtils {
       return count;
    }
 
+   /**
+    * Adds all items to the collection
+    *
+    * @return number of items added
+    * @throws IllegalArgumentException if <code>collection == null</code>
+    */
    public static int addAll(final Collection<Long> collection, final long @Nullable... items) {
       Args.notNull("collection", collection);
 
@@ -69,6 +87,12 @@ public abstract class CollectionUtils {
       return count;
    }
 
+   /**
+    * Adds all items to the collection
+    *
+    * @return number of items added
+    * @throws IllegalArgumentException if <code>collection == null</code>
+    */
    public static <T> int addAll(final Collection<T> collection, final @Nullable Iterable<T> items) {
       Args.notNull("collection", collection);
 
@@ -83,6 +107,12 @@ public abstract class CollectionUtils {
       return count;
    }
 
+   /**
+    * Adds all items to the collection
+    *
+    * @return number of items added
+    * @throws IllegalArgumentException if <code>collection == null</code>
+    */
    public static <T> int addAll(final Collection<T> collection, final @Nullable Iterator<T> items) {
       Args.notNull("collection", collection);
 
@@ -92,6 +122,48 @@ public abstract class CollectionUtils {
       int count = 0;
       while (items.hasNext()) {
          if (collection.add(items.next())) {
+            count++;
+         }
+      }
+      return count;
+   }
+
+   /**
+    * Adds all items to the collection accepted by the filter
+    *
+    * @return number of items added
+    * @throws IllegalArgumentException if <code>collection == null</code>
+    */
+   public static <T> int addAll(final Collection<T> collection, final Predicate<T> filter, final @Nullable Iterable<T> items) {
+      Args.notNull("collection", collection);
+
+      if (items == null)
+         return 0;
+
+      int count = 0;
+      for (final T item : items)
+         if (filter.test(item) && collection.add(item)) {
+            count++;
+         }
+      return count;
+   }
+
+   /**
+    * Adds all items to the collection accepted by the filter
+    *
+    * @return number of items added
+    * @throws IllegalArgumentException if <code>collection == null</code>
+    */
+   public static <T> int addAll(final Collection<T> collection, final Predicate<T> filter, final @Nullable Iterator<T> items) {
+      Args.notNull("collection", collection);
+
+      if (items == null)
+         return 0;
+
+      int count = 0;
+      while (items.hasNext()) {
+         final var item = items.next();
+         if (filter.test(item) && collection.add(item)) {
             count++;
          }
       }
@@ -142,14 +214,14 @@ public abstract class CollectionUtils {
    }
 
    /**
-    * Returns true if the given item is contained in the collection based on identity comparison
+    * @return true if the given item is contained in the collection based on identity comparison
     */
-   public static <T> boolean containsIdentical(final @Nullable Collection<T> collection, final T theItem) {
+   public static <T> boolean containsIdentical(final @Nullable Collection<T> collection, final T searchFor) {
       if (collection == null)
          return false;
 
       for (final T t : collection)
-         if (t == theItem)
+         if (t == searchFor)
             return true;
       return false;
    }
@@ -462,6 +534,9 @@ public abstract class CollectionUtils {
       return ThreadLocal.withInitial(WeakHashSet::new);
    }
 
+   /**
+    * @throws IndexOutOfBoundsException if index >= collection.size()
+    */
    public static <T> T remove(final Collection<T> collection, final int index) {
       Args.notNull("collection", collection);
 
