@@ -9,6 +9,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
@@ -252,6 +253,13 @@ public abstract class Threads {
       } else {
          sleep(timeUnit.toMillis(time));
       }
+   }
+
+   /**
+    * Handles InterruptedException correctly.
+    */
+   public static void sleepRandom(final int minMs, final int maxMs) throws RuntimeInterruptedException {
+      Threads.sleep(ThreadLocalRandom.current().nextInt(maxMs + 1 /* make maxMs inclusive */ - minMs) + (long) minMs);
    }
 
    /**
