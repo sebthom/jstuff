@@ -103,6 +103,7 @@ jobs:
       with:
         distribution: temurin
         java-version: ${{ matrix.java }}
+        cache: maven
 
 
     # reusing CDS archives of the same JVM randomly fails in GitHub Actions with
@@ -117,18 +118,6 @@ jobs:
     #    path: |
     #      ~/.xshare/${{ steps.java-version-checksum.outputs.md5sum }}
     #    key: ${{ runner.os }}-xshare-${{ steps.java-version-checksum.outputs.md5sum }}
-
-
-    - name: "Cache: Restore"
-      id: cache-restore
-      if: ${{ !env.ACT }} # https://github.com/nektos/act#skipping-steps
-      uses: actions/cache/restore@v3
-      with:
-        path: |
-          ~/.m2/bin
-          ~/.m2/repository
-          !~/.m2/repository/net/sf/jstuff
-        key: ${{ runner.os }}-java${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
 
 
     - name: Test with Maven
@@ -181,31 +170,6 @@ jobs:
           ${{ github.workspace }}/jstuff-integration/target/site/jacoco-it/jacoco.xml:jacoco
           ${{ github.workspace }}/jstuff-xml/target/site/jacoco/jacoco.xml:jacoco
           ${{ github.workspace }}/jstuff-xml/target/site/jacoco-it/jacoco.xml:jacoco
-
-
-    ##################################################
-    # Cache Update
-    # See https://github.com/actions/cache/issues/342#issuecomment-1399442670
-    ##################################################
-    - name: "Cache: Delete Previous"
-      if: ${{ steps.cache-restore.outputs.cache-hit && !env.ACT }}
-      env:
-        GH_TOKEN: ${{ github.token }}
-      run: |
-        gh extension install actions/gh-actions-cache
-        # "|| true" is to avoid "Error: Resource not accessible by integration" from failing the job 
-        gh actions-cache delete ${{ steps.cache-restore.outputs.cache-primary-key }} --confirm || true
-
-    - name: "Cache: Update"
-      uses: actions/cache/save@v3
-      if: ${{ always() && !cancelled() && !env.ACT }} # save cache even fails
-      with:
-        path: |
-          ~/.m2/bin
-          ~/.m2/repository
-          !~/.m2/repository/net/sf/jstuff
-          !~/.m2/repository/*SNAPSHOT*
-        key: ${{ steps.cache-restore.outputs.cache-primary-key }}
 
 
     ##################################################
