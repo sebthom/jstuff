@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>net.sf.jstuff</groupId>
+  <artifactId>jstuff-integration</artifactId>
+  <versioning>
+    <lastUpdated>20240105113255</lastUpdated>
+    <snapshot>
+      <timestamp>20240105.113255</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>7.7.3-20240105.113255-1</value>
+        <updated>20240105113255</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>7.7.3-20240105.113255-1</value>
+        <updated>20240105113255</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>sources</classifier>
+        <extension>jar</extension>
+        <value>7.7.3-20240105.113255-1</value>
+        <updated>20240105113255</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+  <version>7.7.3-SNAPSHOT</version>
+</metadata>
