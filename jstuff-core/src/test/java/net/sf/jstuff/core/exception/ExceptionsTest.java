@@ -35,6 +35,22 @@ public class ExceptionsTest {
    }
 
    @Test
+   public void testEquals() {
+      final var ex = new Throwable[2];
+
+      for (int i = 0; i < 2; i++) {
+         ex[i] = new CustomException("foo");
+      }
+
+      assertThat(Exceptions.equals(null, null)).isTrue();
+      assertThat(Exceptions.equals(ex[0], null)).isFalse();
+      assertThat(Exceptions.equals(null, ex[0])).isFalse();
+      assertThat(Exceptions.equals(ex[0], ex[0])).isTrue();
+      assertThat(Exceptions.equals(ex[0], ex[1])).isTrue();
+      assertThat(Exceptions.equals(ex[0], new CustomException("foo"))).isFalse();
+   }
+
+   @Test
    public void testThrowSneakily() {
       final var ex = new IOException();
       try {

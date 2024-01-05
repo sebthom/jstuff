@@ -6,6 +6,7 @@ package net.sf.jstuff.core.exception;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Objects;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.jdt.annotation.Nullable;
@@ -24,6 +25,25 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Exceptions extends ExceptionUtils {
 
+   public static boolean equals(final @Nullable Throwable ex1, final @Nullable Throwable ex2) {
+      if (ex1 == ex2)
+         return true;
+      if (ex1 == null || ex2 == null //
+         || !ex1.getClass().equals(ex2.getClass()) //
+         || !Objects.equals(ex1.getMessage(), ex2.getMessage()))
+         return false;
+
+      final StackTraceElement[] stackTrace1 = ex1.getStackTrace();
+      final StackTraceElement[] stackTrace2 = ex2.getStackTrace();
+      if (stackTrace1.length != stackTrace2.length)
+         return false;
+      for (int i = 0; i < stackTrace1.length; i++) {
+         if (!stackTrace1[i].equals(stackTrace2[i]))
+            return false;
+      }
+      return true;
+   }
+
    @Nullable
    public static <T extends Throwable> T getCauseOfType(final @Nullable Throwable ex, final @Nullable Class<T> type) {
       if (ex == null || type == null)
@@ -40,7 +60,7 @@ public abstract class Exceptions extends ExceptionUtils {
 
    /**
     * Faster alternative to {@link ExceptionUtils#getStackTrace(Throwable)}
-    * as it uses StringBuilder instead of StringBuffer.
+    * as it uses StringBuilder internally instead of StringBuffer.
     */
    public static String getStackTrace(final Throwable ex) {
       try (var spw = new StringPrintWriter()) {
@@ -51,7 +71,7 @@ public abstract class Exceptions extends ExceptionUtils {
 
    /**
     * Faster alternative to {@link ExceptionUtils#getStackTrace(Throwable)}
-    * as it uses StringBuilder instead of StringBuffer.
+    * as it uses StringBuilder internally instead of StringBuffer.
     */
    @Nullable
    public static String getStackTraceNullable(final @Nullable Throwable ex) {
