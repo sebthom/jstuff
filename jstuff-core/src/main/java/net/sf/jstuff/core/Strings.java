@@ -3512,7 +3512,7 @@ public abstract class Strings {
     *         Returns an empty string if searchFor is not part of searchIn.
     */
    public static String substringAfter(final String searchIn, final char searchFor) {
-      return asNonNullUnsafe(substringAfterLastNullable(searchIn, searchFor));
+      return asNonNullUnsafe(substringAfterNullable(searchIn, searchFor));
    }
 
    /**
