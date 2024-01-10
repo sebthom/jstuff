@@ -645,31 +645,17 @@ public abstract class Types {
     * Tries to write the given value using a setter method or direct field access
     */
    public static void writeProperty(final Object obj, final String propertyName, final @Nullable Object value) throws ReflectionException {
-      Args.notNull("obj", obj);
-      Args.notNull("propertyName", propertyName);
-
-      final Class<?> clazz = obj.getClass();
-      final Class<?> valueClazz = value == null ? null : value.getClass();
-
-      final Method setter = Methods.findAnySetter(clazz, propertyName, valueClazz);
-      if (setter != null) {
-         Methods.invoke(obj, setter, value);
-         return;
-      }
-
-      final Field field = Fields.findRecursive(clazz, propertyName, valueClazz);
-      if (field != null) {
-         Fields.write(obj, field, value);
-         return;
-      }
-      throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz
-         + "]");
+      writeProperty(obj, propertyName, value, false);
    }
 
    /**
     * Tries to write the given value using a setter method or direct field access
     */
-   public static void writePropertyIgnoringFinal(final Object obj, final String propertyName, final @Nullable Object value)
+   public static void writePropertyIgnoringFinal(final Object obj, final String propertyName, final @Nullable Object value) throws ReflectionException {
+      writeProperty(obj, propertyName, value, true);
+   }
+
+   private static void writeProperty(final Object obj, final String propertyName, final @Nullable Object value, final boolean ignoreFinal)
       throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);
@@ -677,15 +663,46 @@ public abstract class Types {
       final Class<?> clazz = obj.getClass();
       final Class<?> valueClazz = value == null ? null : value.getClass();
 
-      final Method setter = Methods.findAnySetter(clazz, propertyName, valueClazz);
+      Method setter = Methods.findAnySetter(clazz, propertyName, valueClazz);
+      if (setter == null && valueClazz == Boolean.class && propertyName.length() > 2) {
+         if (propertyName.startsWith("is")) {
+            if (Character.isUpperCase(propertyName.charAt(2))) {
+               setter = Methods.findAnySetter(clazz, Strings.lowerCaseFirstChar(propertyName.substring(2)), valueClazz);
+            }
+         } else if (propertyName.startsWith("has")) {
+            if (propertyName.length() > 3 && Character.isUpperCase(propertyName.charAt(3))) {
+               setter = Methods.findAnySetter(clazz, Strings.lowerCaseFirstChar(propertyName.substring(3)), valueClazz);
+            }
+         }
+      }
       if (setter != null) {
          Methods.invoke(obj, setter, value);
          return;
       }
 
-      final Field field = Fields.findRecursive(clazz, propertyName, valueClazz);
+      Field field = Fields.findRecursive(clazz, propertyName, valueClazz);
+      if (field == null && valueClazz == Boolean.class) {
+         if (propertyName.startsWith("is")) {
+            if (propertyName.length() > 2 && Character.isUpperCase(propertyName.charAt(2))) {
+               field = Fields.findRecursive(clazz, Strings.lowerCaseFirstChar(propertyName.substring(2)), valueClazz);
+            }
+         } else if (propertyName.startsWith("has")) {
+            if (propertyName.length() > 3 && Character.isUpperCase(propertyName.charAt(3))) {
+               field = Fields.findRecursive(clazz, Strings.lowerCaseFirstChar(propertyName.substring(3)), valueClazz);
+            }
+         } else {
+            field = Fields.findRecursive(clazz, "is" + Strings.upperCaseFirstChar(propertyName), valueClazz);
+            if (field == null) {
+               field = Fields.findRecursive(clazz, "has" + Strings.upperCaseFirstChar(propertyName), valueClazz);
+            }
+         }
+      }
       if (field != null) {
-         Fields.writeIgnoringFinal(obj, field, value);
+         if (ignoreFinal) {
+            Fields.writeIgnoringFinal(obj, field, value);
+         } else {
+            Fields.write(obj, field, value);
+         }
          return;
       }
       throw new ReflectionException("No corresponding setter method or field found for property [" + propertyName + "] in class [" + clazz
