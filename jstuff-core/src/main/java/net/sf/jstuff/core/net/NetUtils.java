@@ -82,6 +82,9 @@ public abstract class NetUtils {
       }
    }
 
+   /**
+    * @throws IllegalArgumentException if the URL is not well-formed
+    */
    public static String getHostName(final String url) {
       try {
          final var u = new URL(url);
@@ -93,15 +96,19 @@ public abstract class NetUtils {
 
    /**
     * returns the modification date of the given resource.
-    * Get the resource url via this.getClass().getResource("....").
+    * Get the resource URL via this.getClass().getResource("....").
     */
    public static long getLastModified(final URL resourceURL) throws IOException {
-      Args.notNull("resourceURL", resourceURL);
+      return getLastModified(resourceURL.openConnection());
+   }
 
-      final URLConnection con = resourceURL.openConnection();
-
-      if (con instanceof JarURLConnection)
-         return ((JarURLConnection) con).getJarEntry().getTime();
+   /**
+    * returns the modification date of the given resource.
+    * Get the resource URL via this.getClass().getResource("....").
+    */
+   public static long getLastModified(final URLConnection resourceConnection) throws IOException {
+      if (resourceConnection instanceof JarURLConnection)
+         return ((JarURLConnection) resourceConnection).getJarEntry().getTime();
 
       /*
        * Because of a bug in Suns VM regarding FileURLConnection, which for some reason causes 0 to be
@@ -110,10 +117,11 @@ public abstract class NetUtils {
        * getLastmodified() method.
        * http://www.orionserver.com/docs/tutorials/taglibs/8.html
        */
+      final URL resourceURL = resourceConnection.getURL();
       if ("file".equals(resourceURL.getProtocol()))
          return new File(resourceURL.getFile()).lastModified();
 
-      return con.getLastModified();
+      return resourceConnection.getLastModified();
    }
 
    public static String getLocalFQHostName() {
