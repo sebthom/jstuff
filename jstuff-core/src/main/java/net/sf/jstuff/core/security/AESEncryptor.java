@@ -19,7 +19,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SealedObject;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -43,10 +43,14 @@ public class AESEncryptor {
       }
    }
 
+   // https://crypto.stackexchange.com/a/26787
+   private static final int IV_SIZE = 12;
+   private static final int AUTH_TAG_LEN = 128;
+
    private final Map<String, SecretKey> cachedAESKeys = new WeakHashMap<>();
    private final ThreadLocal<Cipher> ciphers = ThreadLocal.withInitial(() -> {
       try {
-         return Cipher.getInstance("AES/CBC/PKCS5Padding");
+         return Cipher.getInstance("AES/GCM/NoPadding");
       } catch (final GeneralSecurityException ex) {
          throw new SecurityException(ex);
       }
@@ -70,10 +74,10 @@ public class AESEncryptor {
       try {
          final SecretKey key = getKey(passphrase);
          final Cipher cipher = ciphers.get();
-         // the first 16 bytes are the initial vector
-         final byte[] iv = ArrayUtils.subarray(data, 0, 16);
-         final byte[] encrypted = Arrays.copyOfRange(data, 16, data.length);
-         cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+         // the first IV_SIZE bytes are the initial vector
+         final byte[] iv = Arrays.copyOfRange(data, 0, IV_SIZE);
+         final byte[] encrypted = Arrays.copyOfRange(data, IV_SIZE, data.length);
+         cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(AUTH_TAG_LEN, iv));
          return cipher.doFinal(encrypted);
       } catch (final GeneralSecurityException ex) {
          throw new SecurityException(ex);
@@ -95,10 +99,10 @@ public class AESEncryptor {
          final SecretKey key = getKey(passphrase);
          final Cipher cipher = ciphers.get();
          // generate a new initial vector for each encryption
-         final byte[] iv = Crypto.createRandomBytes(16);
-         cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
+         final byte[] iv = Crypto.createRandomBytes(IV_SIZE);
+         cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(AUTH_TAG_LEN, iv));
          final byte[] encrypted = cipher.doFinal(data);
-         // the first 16 bytes are the initial vector
+         // the first IV_SIZE bytes are the initial vector
          return ArrayUtils.addAll(iv, encrypted);
       } catch (final GeneralSecurityException ex) {
          throw new SecurityException(ex);
@@ -124,7 +128,7 @@ public class AESEncryptor {
          final Cipher cipher = ciphers.get();
          // generate a new initial vector on each invocation
          final byte[] iv = Crypto.createRandomBytes(16);
-         cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
+         cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(AUTH_TAG_LEN, iv));
          final var sealedObject = new AESSealedObject(object, cipher);
          sealedObject.iv = iv;
          return sealedObject;
@@ -144,7 +148,7 @@ public class AESEncryptor {
       try {
          final SecretKey key = getKey(passphrase);
          final Cipher cipher = ciphers.get();
-         cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(object.iv));
+         cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(AUTH_TAG_LEN, object.iv));
          return (T) object.getObject(cipher);
       } catch (final Exception ex) {
          throw new SecurityException(ex);
