@@ -10,11 +10,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.SecureRandom;
+import java.security.SecureRandomParameters;
 import java.time.Duration;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.SystemUtils;
@@ -205,6 +207,11 @@ public class ThreadLocalSecureRandom extends SecureRandom {
    }
 
    @Override
+   public @Nullable SecureRandomParameters getParameters() {
+      return instances.get().getParameters();
+   }
+
+   @Override
    public IntStream ints() {
       return instances.get().ints();
    }
@@ -255,6 +262,11 @@ public class ThreadLocalSecureRandom extends SecureRandom {
    }
 
    @Override
+   public void nextBytes(final byte @NonNull [] bytes, final SecureRandomParameters params) {
+      instances.get().nextBytes(bytes, params);
+   }
+
+   @Override
    public double nextDouble() {
       return instances.get().nextDouble();
    }
@@ -287,6 +299,16 @@ public class ThreadLocalSecureRandom extends SecureRandom {
    @SuppressWarnings("unused")
    private void readObject(final java.io.ObjectInputStream ois) throws IOException, ClassNotFoundException {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void reseed() {
+      instances.get().reseed();
+   }
+
+   @Override
+   public void reseed(final SecureRandomParameters params) {
+      instances.get().reseed(params);
    }
 
    protected void setAlgorithm(final String algorithm) {
