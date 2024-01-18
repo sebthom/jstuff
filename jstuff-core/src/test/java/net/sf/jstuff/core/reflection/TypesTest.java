@@ -10,6 +10,7 @@ import java.io.File;
 
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.lang3.ObjectUtils;
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 import org.slf4j.helpers.NOPLogger;
 
@@ -74,11 +75,11 @@ public class TypesTest {
    @Test
    public void testWriteBooleanProperty() {
       class Entity {
-         private Boolean isArchived;
+         private @Nullable Boolean isArchived;
          private boolean deleted;
          private boolean hasParent;
 
-         public Boolean isArchived() {
+         public @Nullable Boolean isArchived() {
             return isArchived;
          }
 
