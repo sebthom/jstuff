@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.net;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -201,5 +201,22 @@ public abstract class NetUtils {
       } catch (final IOException ex) {
          return false;
       }
+   }
+
+   public static boolean isValidIP4Address(final String ipAddress) {
+      final var parts = Strings.split(ipAddress, '.');
+      if (parts.length != 4)
+         return false;
+
+      try {
+         for (final var part : parts) {
+            final var val = Short.parseShort(part);
+            if (val < 0 || val > 255)
+               return false;
+         }
+      } catch (final NumberFormatException ex) {
+         return false;
+      }
+      return true;
    }
 }

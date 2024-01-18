@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.net;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -43,5 +43,16 @@ public class NetUtilsTest {
    public void testIsReachable() {
       assertThat(NetUtils.isHostReachable("localhost", 2000)).isTrue();
       assertThat(NetUtils.isHostReachable("qwerwerdfsdfwer", 2000)).isFalse();
+   }
+
+   @Test
+   public void testIsValidIP4Address() {
+      assertThat(NetUtils.isValidIP4Address("0.0.0.0")).isTrue();
+      assertThat(NetUtils.isValidIP4Address("127.0.0.1")).isTrue();
+      assertThat(NetUtils.isValidIP4Address("255.255.255.255")).isTrue();
+      assertThat(NetUtils.isValidIP4Address("1")).isFalse();
+      assertThat(NetUtils.isValidIP4Address("1.2")).isFalse();
+      assertThat(NetUtils.isValidIP4Address("1.2.3")).isFalse();
+      assertThat(NetUtils.isValidIP4Address("256.0.0.0")).isFalse();
    }
 }
