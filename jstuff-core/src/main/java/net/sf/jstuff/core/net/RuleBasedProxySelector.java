@@ -133,7 +133,7 @@ public class RuleBasedProxySelector extends ProxySelector {
          if (systemSelector == this) {
             final var oldDefaultSelector = oldSystemSelector;
             if (oldDefaultSelector != null) {
-               result.addAll(ProxySelector.getDefault().select(uri));
+               result.addAll(oldDefaultSelector.select(uri));
             }
          } else {
             result.addAll(systemSelector.select(uri));
