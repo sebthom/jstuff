@@ -30,11 +30,11 @@ public class RuleBasedProxySelector extends ProxySelector {
    }
 
    public static class PatternProxyRule implements ProxyRule {
-      private static String toURLWithoutCreds(final URI uri) {
+      private static String withoutUserInfo(final URI uri) {
          final String userInfo = uri.getUserInfo();
          if (userInfo == null)
             return uri.toString();
-         return uri.toString().replace(userInfo + "@", "");
+         return uri.toString().replace(userInfo + '@', "");
       }
 
       private final boolean evaluateUserInfo;
@@ -55,7 +55,7 @@ public class RuleBasedProxySelector extends ProxySelector {
       public @Nullable Proxy getProxy(final URI uri) {
          final String url = evaluateUserInfo //
             ? uri.toString() //
-            : toURLWithoutCreds(uri);
+            : withoutUserInfo(uri);
          if (urlPattern.matcher(url).matches())
             return proxy;
          return null;
@@ -65,15 +65,15 @@ public class RuleBasedProxySelector extends ProxySelector {
    private static final Logger LOG = Logger.create();
 
    private final CopyOnWriteArrayList<ProxyRule> proxyRules = new CopyOnWriteArrayList<>();
-   private final boolean includeSystemProxy;
+   private final boolean fallbackToDefaultProxySelector;
    private @Nullable ProxySelector oldSystemSelector;
 
    public RuleBasedProxySelector() {
       this(true);
    }
 
-   public RuleBasedProxySelector(final boolean includeSystemProxy) {
-      this.includeSystemProxy = includeSystemProxy;
+   public RuleBasedProxySelector(final boolean fallbackToDefaultProxySelector) {
+      this.fallbackToDefaultProxySelector = fallbackToDefaultProxySelector;
    }
 
    public ProxyRule addProxyRule(final Proxy proxy, final Pattern urlPattern) {
@@ -94,24 +94,47 @@ public class RuleBasedProxySelector extends ProxySelector {
       proxyRules.clear();
    }
 
+   public boolean removeProxyRule(final ProxyRule rule) {
+      return proxyRules.remove(rule);
+   }
+
    @Override
    public void connectFailed(final URI uri, final SocketAddress addr, final IOException ex) {
       // ignored
    }
 
-   public void installSystemWide() {
+   /**
+    * Installs this proxy selector using {@link ProxySelector#setDefault(ProxySelector)}
+    * and keeps a reference to the previous default proxy selector to be used as fallback if enabled.
+    *
+    * @return the previously set default proxy selector
+    */
+   public @Nullable ProxySelector installAsDefault() {
       synchronized (RuleBasedProxySelector.class) {
          final var current = ProxySelector.getDefault();
          if (current == this)
-            return;
+            return oldSystemSelector;
 
          oldSystemSelector = current;
          ProxySelector.setDefault(this);
+         return oldSystemSelector;
       }
    }
 
-   public boolean removeProxyRule(final ProxyRule rule) {
-      return proxyRules.remove(rule);
+   public boolean isInstalledAsDefault() {
+      return ProxySelector.getDefault() == this;
+   }
+
+   public boolean uninstallAsDefault() {
+      synchronized (RuleBasedProxySelector.class) {
+         final var current = ProxySelector.getDefault();
+         if (current != this)
+            return false;
+
+         oldSystemSelector = current;
+         ProxySelector.setDefault(oldSystemSelector);
+         return true;
+      }
    }
 
    @Override
@@ -128,14 +151,12 @@ public class RuleBasedProxySelector extends ProxySelector {
             LOG.error(ex);
          }
       }
-      if (includeSystemProxy) {
-         final var systemSelector = ProxySelector.getDefault();
+      if (fallbackToDefaultProxySelector) {
+         var systemSelector = ProxySelector.getDefault();
          if (systemSelector == this) {
-            final var oldDefaultSelector = oldSystemSelector;
-            if (oldDefaultSelector != null) {
-               result.addAll(oldDefaultSelector.select(uri));
-            }
-         } else {
+            systemSelector = oldSystemSelector;
+         }
+         if (systemSelector != null) {
             result.addAll(systemSelector.select(uri));
          }
       }
