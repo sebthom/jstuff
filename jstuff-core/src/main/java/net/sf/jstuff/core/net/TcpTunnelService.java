@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: © Sebastian Thomschke and contributors
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package net.sf.jstuff.core.net;
 
 import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
