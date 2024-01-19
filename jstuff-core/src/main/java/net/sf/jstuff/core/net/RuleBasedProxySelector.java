@@ -66,7 +66,7 @@ public class RuleBasedProxySelector extends ProxySelector {
 
    private final CopyOnWriteArrayList<ProxyRule> proxyRules = new CopyOnWriteArrayList<>();
    private final boolean fallbackToDefaultProxySelector;
-   private @Nullable ProxySelector oldSystemSelector;
+   private @Nullable ProxySelector previousDefaultSelector;
 
    public RuleBasedProxySelector() {
       this(true);
@@ -113,11 +113,11 @@ public class RuleBasedProxySelector extends ProxySelector {
       synchronized (RuleBasedProxySelector.class) {
          final var current = ProxySelector.getDefault();
          if (current == this)
-            return oldSystemSelector;
+            return previousDefaultSelector;
 
-         oldSystemSelector = current;
+         previousDefaultSelector = current;
          ProxySelector.setDefault(this);
-         return oldSystemSelector;
+         return previousDefaultSelector;
       }
    }
 
@@ -128,12 +128,12 @@ public class RuleBasedProxySelector extends ProxySelector {
    public boolean uninstallAsDefault() {
       synchronized (RuleBasedProxySelector.class) {
          final var current = ProxySelector.getDefault();
-         if (current != this)
-            return false;
-
-         oldSystemSelector = current;
-         ProxySelector.setDefault(oldSystemSelector);
-         return true;
+         if (current == this) {
+            ProxySelector.setDefault(previousDefaultSelector);
+            previousDefaultSelector = null;
+            return true;
+         }
+         return false;
       }
    }
 
@@ -152,12 +152,12 @@ public class RuleBasedProxySelector extends ProxySelector {
          }
       }
       if (fallbackToDefaultProxySelector) {
-         var systemSelector = ProxySelector.getDefault();
-         if (systemSelector == this) {
-            systemSelector = oldSystemSelector;
+         var defaultSelector = ProxySelector.getDefault();
+         if (defaultSelector == this) {
+            defaultSelector = previousDefaultSelector;
          }
-         if (systemSelector != null) {
-            result.addAll(systemSelector.select(uri));
+         if (defaultSelector != null) {
+            result.addAll(defaultSelector.select(uri));
          }
       }
 
