@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
+import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -2239,6 +2241,32 @@ public abstract class Strings {
       return StringUtils.prependIfMissing(str, prefix, prefixes);
    }
 
+   public static CharSequence prependLines(final CharSequence multiLineText, final CharSequence prefix) {
+      if (prefix.length() == 0)
+         return multiLineText;
+      if (multiLineText.length() == 0)
+         return prefix.toString();
+
+      final var sb = new StringBuilder(multiLineText.length() + prefix.length());
+      sb.append(prefix);
+      final var prevCh = new char[1];
+      multiLineText.chars().forEach(value -> {
+         final char ch = (char) value;
+         if (prevCh[0] == '\r' && ch != '\n') {
+            sb.append(prefix);
+         }
+         sb.append(ch);
+         if (ch == '\n') {
+            sb.append(prefix);
+         }
+         prevCh[0] = ch;
+      });
+      if (prevCh[0] == '\r') {
+         sb.append(prefix);
+      }
+      return sb;
+   }
+
    /**
     * @See {@link StringUtils#wrap(String, char)}
     */
@@ -3906,6 +3934,85 @@ public abstract class Strings {
     */
    public static String trim(final String str) {
       return asNonNullUnsafe(StringUtils.trim(str));
+   }
+
+   public static CharSequence trimIndent(final CharSequence multiLineString, final int tabSize) {
+      final int effetiveTabSize = Math.max(1, tabSize);
+
+      /*
+       * determine common indentation of all lines
+       */
+      final class IndentDetector implements IntConsumer, IntPredicate {
+         int indentToRemove = Integer.MAX_VALUE;
+         int indentOfLine = 0;
+         boolean skipToLineEnd = false;
+         char prevCh = 0;
+         int lineCount = 1;
+
+         @Override
+         public void accept(final int value) {
+            final var ch = (char) value;
+            if (ch == '\r' && prevCh != '\n' || ch == '\n' && prevCh != '\r') {
+               lineCount++;
+               skipToLineEnd = false;
+               indentToRemove = Math.min(indentOfLine, indentToRemove);
+               indentOfLine = 0;
+               if (indentToRemove == 0)
+                  return;
+            } else if (!skipToLineEnd) {
+               if (ch == '\t') {
+                  indentOfLine += effetiveTabSize;
+               } else if (Character.isWhitespace(ch)) {
+                  indentOfLine++;
+               } else {
+                  skipToLineEnd = true;
+               }
+            }
+            prevCh = ch;
+         }
+
+         @Override
+         public boolean test(final int value) {
+            return indentToRemove > 0;
+         }
+      }
+
+      final var indentDetector = new IndentDetector();
+      multiLineString.chars().takeWhile(indentDetector).forEach(indentDetector);
+
+      final var indentToRemove = Math.min(indentDetector.indentOfLine, indentDetector.indentToRemove);
+      if (indentToRemove == 0)
+         return multiLineString;
+
+      /*
+       * remove common indentation of all lines
+       */
+      final var sb = new StringBuilder(Math.max(0, multiLineString.length() - indentDetector.lineCount * indentToRemove));
+      final class IdentRemover implements IntConsumer {
+         int indentOfLineRemoved = 0;
+
+         @Override
+         public void accept(final int value) {
+            final var ch = (char) value;
+            if (ch == '\r' || ch == '\n') {
+               sb.append(ch);
+               indentOfLineRemoved = 0;
+               return;
+            }
+            if (indentOfLineRemoved >= indentToRemove) {
+               sb.append(ch);
+            } else {
+               if (ch == '\t') {
+                  indentOfLineRemoved += effetiveTabSize;
+               } else {
+                  indentOfLineRemoved++;
+               }
+            }
+         }
+      }
+
+      multiLineString.chars().forEach(new IdentRemover());
+      return sb;
    }
 
    /**

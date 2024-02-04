@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,7 +71,7 @@ public class StringsTest {
       assertThat(Strings.defaultIfBlank(null, "DEFAULT")).isEqualTo("DEFAULT");
       assertThat(Strings.defaultIfNull("sometext", "DEFAULT")).isEqualTo("sometext");
       assertThat(Strings.defaultIfNull("  ", "DEFAULT")).isEqualTo("  ");
-      assertThat(Strings.defaultIfNull("", "DEFAULT")).isEqualTo("");
+      assertThat(Strings.defaultIfNull("", "DEFAULT")).isEmpty();
       assertThat(Strings.defaultIfNull(null, "DEFAULT")).isEqualTo("DEFAULT");
 
       // test type interference
@@ -163,6 +163,18 @@ public class StringsTest {
       assertThat(Pattern.compile(Strings.globToRegex("file[!0-9].txt").toString()).matcher("fileA.txt").matches()).isTrue();
    }
 
+   @Test
+   public void testPrependLines() {
+      assertThat(Strings.prependLines("", "foo")).asString().isEqualTo("foo");
+      assertThat(Strings.prependLines("\n", "foo")).asString().isEqualTo("foo\nfoo");
+      assertThat(Strings.prependLines("\r", "foo")).asString().isEqualTo("foo\rfoo");
+      assertThat(Strings.prependLines("\r\n", "foo")).asString().isEqualTo("foo\r\nfoo");
+
+      assertThat(Strings.prependLines("bar\nbar", "foo")).asString().isEqualTo("foobar\nfoobar");
+      assertThat(Strings.prependLines("bar\rbar", "foo")).asString().isEqualTo("foobar\rfoobar");
+      assertThat(Strings.prependLines("bar\r\nbar", "foo")).asString().isEqualTo("foobar\r\nfoobar");
+   }
+
    /**
     * test: replace(string, replacement, start) --> no length argument
     */
@@ -174,7 +186,7 @@ public class StringsTest {
       a = "1234";
       b = "abcdefghijk";
 
-      assertThat(Strings.replaceAt(a, 0, b)).asString().asString().isEqualTo("abcdefghijk");
+      assertThat(Strings.replaceAt(a, 0, b)).asString().isEqualTo("abcdefghijk");
       assertThat(Strings.replaceAt(a, 1, b)).asString().isEqualTo("1abcdefghijk");
       assertThat(Strings.replaceAt(a, 2, b)).asString().isEqualTo("12abcdefghijk");
       assertThat(Strings.replaceAt(a, 3, b)).asString().isEqualTo("123abcdefghijk");
@@ -830,5 +842,17 @@ public class StringsTest {
 
       a = "";
       assertThat(Strings.substringBeforeIgnoreCase(a, "c")).isEmpty();
+   }
+
+   @Test
+   public void testTrimIndent() {
+      assertThat(Strings.trimIndent("\t\t", 2)).asString().isEmpty();
+      assertThat(Strings.trimIndent("foo  ", 2)).asString().isEqualTo("foo  ");
+      assertThat(Strings.trimIndent(" \t foo", 2)).asString().isEqualTo("foo");
+      assertThat(Strings.trimIndent(" foo\n bar", 2)).asString().isEqualTo("foo\nbar");
+      assertThat(Strings.trimIndent("  foo\n\tbar", 2)).asString().isEqualTo("foo\nbar");
+      assertThat(Strings.trimIndent(" foo\n\tbar", 2)).asString().isEqualTo("foo\nbar");
+      assertThat(Strings.trimIndent("\tfoo\n\t\tbar", 2)).asString().isEqualTo("foo\n\tbar");
+      assertThat(Strings.trimIndent("\tfoo\n  \tbar", 2)).asString().isEqualTo("foo\n\tbar");
    }
 }
