@@ -496,7 +496,7 @@ SPDX-License-Identifier: EPL-2.0
       <dependency>
          <groupId>org.aspectj</groupId>
          <artifactId>aspectjweaver</artifactId>
-         <version>1.9.21</version>
+         <version>1.9.21.1</version>
          <scope>test</scope>
       </dependency>
       <dependency>
