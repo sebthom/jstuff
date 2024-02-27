@@ -9,6 +9,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
@@ -28,6 +29,25 @@ public abstract class Images {
    private static final class LazyInitialized {
       private static final GraphicsConfiguration GC = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
          .getDefaultConfiguration();
+   }
+
+   public static BufferedImage resize(final Image image, final int newWidth, final int newHeight) {
+      Args.notNull("image", image);
+      return resize(toBufferedImage(image), newWidth, newHeight);
+   }
+
+   public static BufferedImage resize(final BufferedImage image, final int newWidth, final int newHeight) {
+      Args.notNull("image", image);
+
+      final var resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+      final Graphics2D g2d = resizedImage.createGraphics();
+
+      // use RenderingHints to improve image quality
+      g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+      g2d.drawImage(image, 0, 0, newWidth, newHeight, null);
+      g2d.dispose();
+
+      return resizedImage;
    }
 
    public static BufferedImage toBufferedImage(final Image image) throws HeadlessException {
@@ -85,16 +105,5 @@ public abstract class Images {
       final var bos = new FastByteArrayOutputStream();
       ImageIO.write(image, "jpg", bos);
       return bos.toByteArray();
-   }
-
-   public static BufferedImage toScaledImage(final Image image, final int width, final int height) {
-      Args.notNull("image", image);
-
-      final Image scaled = image.getScaledInstance(200, 150, Image.SCALE_SMOOTH);
-      final var scaledBuffered = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-      final Graphics2D g = scaledBuffered.createGraphics();
-      g.drawImage(scaled, 0, 0, null);
-      g.dispose();
-      return scaledBuffered;
    }
 }
