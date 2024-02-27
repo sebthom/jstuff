@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -23,12 +24,12 @@ public interface Composite<Component> extends Modifiable {
    abstract class Default<Component> extends Modifiable.Default implements Composite<Component>, Serializable {
       private static final long serialVersionUID = 1L;
 
-      protected final Collection<Component> components = createCollection();
-      protected final Collection<Component> componentsUmodifiable = //
+      protected final Collection<@NonNull Component> components = createCollection();
+      protected final Collection<@NonNull Component> componentsUmodifiable = //
          components instanceof List //
-            ? Collections.unmodifiableList((List<Component>) components)
+            ? Collections.unmodifiableList((List<@NonNull Component>) components)
             : components instanceof Set //
-               ? Collections.unmodifiableSet((Set<Component>) components)
+               ? Collections.unmodifiableSet((Set<@NonNull Component>) components)
                : Collections.unmodifiableCollection(components);
 
       protected Default() {
@@ -39,7 +40,7 @@ public interface Composite<Component> extends Modifiable {
 
          for (final var component : initialComponents)
             if (component != null) {
-               this.components.add(component);
+               components.add(component);
             }
          this.isModifiable = isModifiable;
       }
@@ -50,7 +51,7 @@ public interface Composite<Component> extends Modifiable {
 
          for (final var component : initialComponents)
             if (component != null) {
-               this.components.add(component);
+               components.add(component);
             }
          this.isModifiable = isModifiable;
       }
@@ -64,7 +65,7 @@ public interface Composite<Component> extends Modifiable {
          this(true, initialComponents);
       }
 
-      protected Collection<Component> createCollection() {
+      protected Collection<@NonNull Component> createCollection() {
          return new ArrayList<>();
       }
 

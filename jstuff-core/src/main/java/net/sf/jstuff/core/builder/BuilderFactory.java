@@ -32,7 +32,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends TARGET_CLASS>> {
+public class BuilderFactory<TARGET_CLASS, @NonNull BLDR_IFACE extends Builder<? extends TARGET_CLASS>> {
 
    private static final class BuilderImpl implements InvocationHandler {
 
@@ -136,10 +136,9 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
             final Method setterMethod = Methods.findAnyCompatible(targetClass, setterName, propArgs);
             // if no setter found then directly try to set the field
             if (setterMethod == null) {
-               if (propArgs.length == 1) {
-                  Types.writePropertyIgnoringFinal(target, propName, propArgs[0]);
-               } else
+               if (propArgs.length != 1)
                   throw new IllegalStateException("Method [" + targetClass.getName() + "#" + setterName + "()] not found.");
+               Types.writePropertyIgnoringFinal(target, propName, propArgs[0]);
             } else {
                Methods.invoke(target, setterMethod, propArgs);
             }
@@ -254,7 +253,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
       this.constructorArgs = constructorArgs;
    }
 
-   public @NonNull BLDR_IFACE create() {
+   public BLDR_IFACE create() {
       return Proxies.create(new BuilderImpl(builderInterface, targetClass, constructorArgs), builderInterface);
    }
 }
