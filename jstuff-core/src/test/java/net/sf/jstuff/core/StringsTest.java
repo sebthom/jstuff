@@ -809,6 +809,28 @@ public class StringsTest {
    }
 
    @Test
+   public void testSplitLikeShell() {
+      assertThat(Strings.splitLikeShell("")).isEmpty();
+      assertThat(Strings.splitLikeShell("  \t \n")).isEmpty();
+      assertThat(Strings.splitLikeShell("#comment")).isEmpty();
+
+      assertThat(Strings.splitLikeShell("aa\t\tbb   cc #comment")).containsExactlyInAnyOrder("aa", "bb", "cc");
+      assertThat(Strings.splitLikeShell("aa\t\tbb   cc#dd")).containsExactlyInAnyOrder("aa", "bb", "cc#dd");
+
+      assertThat(Strings.splitLikeShell("\"John Doe\"")).containsExactlyInAnyOrder("John Doe");
+      assertThat(Strings.splitLikeShell("'John Doe'")).containsExactlyInAnyOrder("John Doe");
+      assertThat(Strings.splitLikeShell("John\\ Doe")).containsExactlyInAnyOrder("John Doe");
+      assertThat(Strings.splitLikeShell("\"John\"' 'Doe")).containsExactlyInAnyOrder("John Doe");
+      assertThat(Strings.splitLikeShell("\"\\\"John Doe\\\"")).containsExactlyInAnyOrder("\"John Doe\"");
+      assertThat(Strings.splitLikeShell("'John \\\" Doe'")).containsExactlyInAnyOrder("John \\\" Doe");
+
+      assertThat(Strings.splitLikeShell("\"\"")).containsExactly("");
+      assertThat(Strings.splitLikeShell("''")).containsExactly("");
+      assertThat(Strings.splitLikeShell("''''")).containsExactly("");
+      assertThat(Strings.splitLikeShell("'' ''")).containsExactlyInAnyOrder("", "");
+   }
+
+   @Test
    public void testSplitLines() {
       final String lines = "A\nB\n\nC\nD";
       assertThat(Strings.splitLines(lines, true)).hasSize(5);
