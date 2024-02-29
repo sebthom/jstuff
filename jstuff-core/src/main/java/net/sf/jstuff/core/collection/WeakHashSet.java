@@ -7,6 +7,7 @@ package net.sf.jstuff.core.collection;
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectOutputStream;
+import java.util.Collection;
 import java.util.WeakHashMap;
 
 /**
@@ -33,6 +34,10 @@ public class WeakHashSet<E> extends MapBackedSet<E> implements Cloneable {
 
    public WeakHashSet(final int initialCapacity) {
       this(initialCapacity, 0.75f);
+   }
+
+   public WeakHashSet(final Collection<E> initialValues) {
+      this(Math.max(4, initialValues.size()));
    }
 
    public WeakHashSet(final int initialCapacity, final float growthFactor) {
