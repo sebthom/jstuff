@@ -4,8 +4,9 @@
  */
 package net.sf.jstuff.core.concurrent;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -77,7 +78,7 @@ public class ScalingThreadPoolExecutorTest {
 
    @Test
    public void testScalingThreadPoolExecutor() throws ExecutionException, InterruptedException {
-      final var executor = new ScalingThreadPoolExecutor(0, 3, 5, TimeUnit.SECONDS);
+      final var executor = new ScalingThreadPoolExecutor(0, 3, Duration.ofSeconds(5));
       try {
          testScalingThreadPoolExecutor(executor);
       } finally {

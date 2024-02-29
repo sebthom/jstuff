@@ -4,9 +4,11 @@
  */
 package net.sf.jstuff.core.concurrent;
 
+import java.time.Duration;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -43,18 +45,36 @@ public class ScalingThreadPoolExecutor extends ThreadPoolExecutor {
    };
 
    /**
-    * Creates a new <tt>ScalingThreadPoolExecutor</tt> with the given initial parameters and default thread factory and handler.
+    * Creates a new <tt>ScalingThreadPoolExecutor</tt> with the given initial parameters and default {@link ThreadFactory} and a default
+    * {@link RejectedExecutionHandler}.
     *
     * @param minPoolSize the number of threads to keep in the pool, even if they are idle.
     * @param maxPoolSize the maximum number of threads to be allowed alive in the pool.
     * @param keepAliveTime when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks
     *           before terminating.
-    * @param unit the time unit for the keepAliveTime argument.
     *
     * @throws IllegalArgumentException if minPoolSize, or keepAliveTime less than zero, or if maxPoolSize less than or equal to zero, or if minPoolSize greater
     *            than maxPoolSize.
     */
-   public ScalingThreadPoolExecutor(final int minPoolSize, final int maxPoolSize, final long keepAliveTime, final TimeUnit unit) {
-      super(minPoolSize, maxPoolSize, keepAliveTime, unit, new ScalingQueue(), FORCE_QUEUE_POLICY);
+   public ScalingThreadPoolExecutor(final int minPoolSize, final int maxPoolSize, final Duration keepAliveTime) {
+      super(minPoolSize, maxPoolSize, keepAliveTime.toMillis(), TimeUnit.MILLISECONDS, new ScalingQueue(), FORCE_QUEUE_POLICY);
+   }
+
+   /**
+    * Creates a new <tt>ScalingThreadPoolExecutor</tt> with the given initial parameters and a default {@link RejectedExecutionHandler}.
+    *
+    * @param minPoolSize the number of threads to keep in the pool, even if they are idle.
+    * @param maxPoolSize the maximum number of threads to be allowed alive in the pool.
+    * @param keepAliveTime when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks
+    *           before terminating.
+    * @param threadFactory the factory to use when the executor creates a new thread
+    *
+    * @throws IllegalArgumentException if minPoolSize, or keepAliveTime less than zero, or if maxPoolSize less than or equal to zero, or if minPoolSize greater
+    *            than maxPoolSize.
+    */
+   public ScalingThreadPoolExecutor(final int minPoolSize, final int maxPoolSize, final Duration keepAliveTime,
+      final ThreadFactory threadFactory) {
+      super(minPoolSize, maxPoolSize, keepAliveTime.toMillis(), TimeUnit.MILLISECONDS, new ScalingQueue(), threadFactory,
+         FORCE_QUEUE_POLICY);
    }
 }

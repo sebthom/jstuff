@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -489,8 +490,8 @@ public abstract class Processes {
       }
    }
 
-   private static final ScheduledExecutorService BACKGROUND_THREADS = new ScalingScheduledExecutorService(0, Integer.MAX_VALUE, 30,
-      TimeUnit.SECONDS);
+   private static final ScheduledExecutorService BACKGROUND_THREADS = new ScalingScheduledExecutorService(0, Integer.MAX_VALUE, Duration
+      .ofSeconds(30));
 
    public static Builder builder(final File executable) {
       Args.notNull("executable", executable);

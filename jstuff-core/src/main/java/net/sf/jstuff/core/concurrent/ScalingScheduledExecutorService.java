@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.core.concurrent;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Delayed;
@@ -12,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -27,8 +29,13 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
 
    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-   public ScalingScheduledExecutorService(final int minPoolSize, final int maxPoolSize, final long keepAliveTime, final TimeUnit unit) {
-      super(minPoolSize, maxPoolSize, keepAliveTime, unit);
+   public ScalingScheduledExecutorService(final int minPoolSize, final int maxPoolSize, final Duration keepAliveTime) {
+      super(minPoolSize, maxPoolSize, keepAliveTime);
+   }
+
+   public ScalingScheduledExecutorService(final int minPoolSize, final int maxPoolSize, final Duration keepAliveTime,
+      final ThreadFactory threadFactory) {
+      super(minPoolSize, maxPoolSize, keepAliveTime, threadFactory);
    }
 
    @Override
