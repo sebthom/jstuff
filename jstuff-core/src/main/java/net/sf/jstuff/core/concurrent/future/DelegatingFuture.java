@@ -20,6 +20,12 @@ public class DelegatingFuture<V> extends Decorator.Default<Future<V>> implements
       super(wrapped);
    }
 
+   public DelegatingFuture(final Future<V> wrapped, final boolean wrappedGettable, final boolean wrappedSettable) {
+      super(wrapped);
+      this.wrappedGettable = wrappedGettable;
+      this.wrappedSettable = wrappedSettable;
+   }
+
    @Override
    public boolean cancel(final boolean mayInterruptIfRunning) {
       return wrapped.cancel(mayInterruptIfRunning);
