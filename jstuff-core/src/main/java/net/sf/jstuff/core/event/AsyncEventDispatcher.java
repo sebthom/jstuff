@@ -4,15 +4,16 @@
  */
 package net.sf.jstuff.core.event;
 
+import java.time.Duration;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
+import net.sf.jstuff.core.concurrent.ScalingScheduledExecutorService;
 import net.sf.jstuff.core.concurrent.ThreadSafe;
 import net.sf.jstuff.core.validation.Args;
 
@@ -22,7 +23,9 @@ import net.sf.jstuff.core.validation.Args;
 @ThreadSafe
 public class AsyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
    private static final class LazyInitialized {
-      private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors.newSingleThreadScheduledExecutor(
+      private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = new ScalingScheduledExecutorService( //
+         1, Math.max(1, Runtime.getRuntime().availableProcessors() - 1), //
+         Duration.ofSeconds(5), //
          new BasicThreadFactory.Builder().daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("EventManager-thread").build());
    }
 
@@ -40,9 +43,9 @@ public class AsyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
    }
 
    @Override
-   public Future<Integer> fire(final EVENT type) {
+   public CompletableFuture<Integer> fire(final EVENT type) {
       final EventListener<EVENT>[] copy = eventListeners.toArray(EventListener[]::new);
-      return executor.submit(() -> Events.fire(type, copy));
+      return CompletableFuture.supplyAsync(() -> Events.fire(type, copy), executor);
    }
 
    @Override

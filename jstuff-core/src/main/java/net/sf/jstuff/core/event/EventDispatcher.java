@@ -4,14 +4,14 @@
  */
 package net.sf.jstuff.core.event;
 
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface EventDispatcher<EVENT> extends EventListenable<EVENT> {
 
-   Future<Integer> fire(EVENT event);
+   CompletableFuture<Integer> fire(EVENT event);
 
    void unsubscribeAll();
 }
