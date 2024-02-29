@@ -15,9 +15,6 @@ import net.sf.jstuff.core.Strings;
  */
 public class ExtendedXMLStreamReader extends DelegatingXMLStreamReader {
 
-   public ExtendedXMLStreamReader() {
-   }
-
    public ExtendedXMLStreamReader(final XMLStreamReader wrapped) {
       super(wrapped);
    }

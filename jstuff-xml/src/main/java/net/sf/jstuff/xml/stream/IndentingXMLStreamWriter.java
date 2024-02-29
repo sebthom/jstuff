@@ -18,9 +18,6 @@ public class IndentingXMLStreamWriter extends ExtendedXMLStreamWriter {
    private int indentionLevel;
    private boolean indentEndTag = true;
 
-   public IndentingXMLStreamWriter() {
-   }
-
    public IndentingXMLStreamWriter(final XMLStreamWriter wrapped) {
       super(wrapped);
    }

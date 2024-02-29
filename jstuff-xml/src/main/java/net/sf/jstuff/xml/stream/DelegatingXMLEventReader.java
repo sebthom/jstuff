@@ -22,9 +22,6 @@ import net.sf.jstuff.core.types.Decorator;
  */
 public class DelegatingXMLEventReader extends Decorator.Default<XMLEventReader> implements AutoCloseableXMLEventReader {
 
-   public DelegatingXMLEventReader() {
-   }
-
    public DelegatingXMLEventReader(final XMLEventReader wrapped) {
       super(wrapped);
    }

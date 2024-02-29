@@ -19,9 +19,6 @@ import net.sf.jstuff.core.types.Decorator;
  */
 public class DelegatingXMLStreamReader extends Decorator.Default<XMLStreamReader> implements AutoCloseableXMLStreamReader {
 
-   public DelegatingXMLStreamReader() {
-   }
-
    public DelegatingXMLStreamReader(final XMLStreamReader wrapped) {
       super(wrapped);
    }

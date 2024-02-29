@@ -14,9 +14,6 @@ import javax.xml.stream.XMLStreamWriter;
  */
 public class ExtendedXMLStreamWriter extends DelegatingXMLStreamWriter {
 
-   public ExtendedXMLStreamWriter() {
-   }
-
    public ExtendedXMLStreamWriter(final XMLStreamWriter wrapped) {
       super(wrapped);
    }

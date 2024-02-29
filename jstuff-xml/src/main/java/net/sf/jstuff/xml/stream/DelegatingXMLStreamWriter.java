@@ -17,9 +17,6 @@ import net.sf.jstuff.core.types.Decorator;
  */
 public class DelegatingXMLStreamWriter extends Decorator.Default<XMLStreamWriter> implements AutoCloseableXMLStreamWriter {
 
-   public DelegatingXMLStreamWriter() {
-   }
-
    public DelegatingXMLStreamWriter(final XMLStreamWriter wrapped) {
       super(wrapped);
    }

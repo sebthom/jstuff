@@ -4,8 +4,6 @@
  */
 package net.sf.jstuff.core.types;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
-
 import org.eclipse.jdt.annotation.NonNull;
 
 import net.sf.jstuff.core.validation.Args;
@@ -20,16 +18,18 @@ import net.sf.jstuff.core.validation.Assert;
 public interface Decorator<@NonNull T> {
 
    abstract class Default<@NonNull T> implements Decorator<T> {
-      protected T wrapped = lazyNonNull();
-      protected boolean wrappedGettable = true;
-      protected boolean wrappedSettable = true;
-
-      protected Default() {
-      }
+      protected T wrapped;
+      protected boolean wrappedGettable;
+      protected boolean wrappedSettable;
 
       protected Default(final T wrapped) {
-         Args.notNull("wrapped", wrapped);
+         this(wrapped, true, true);
+      }
+
+      protected Default(final T wrapped, final boolean wrappedGettable, final boolean wrappedSettable) {
          this.wrapped = wrapped;
+         this.wrappedGettable = wrappedGettable;
+         this.wrappedSettable = wrappedSettable;
       }
 
       @Override

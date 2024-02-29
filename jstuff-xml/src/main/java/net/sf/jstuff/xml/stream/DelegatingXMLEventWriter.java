@@ -19,9 +19,6 @@ import net.sf.jstuff.core.types.Decorator;
  */
 public class DelegatingXMLEventWriter extends Decorator.Default<XMLEventWriter> implements AutoCloseableXMLEventWriter {
 
-   public DelegatingXMLEventWriter() {
-   }
-
    public DelegatingXMLEventWriter(final XMLEventWriter wrapped) {
       super(wrapped);
    }
