@@ -871,10 +871,17 @@ public class StringsTest {
       assertThat(Strings.trimIndent("\t\t", 2)).asString().isEmpty();
       assertThat(Strings.trimIndent("foo  ", 2)).asString().isEqualTo("foo  ");
       assertThat(Strings.trimIndent(" \t foo", 2)).asString().isEqualTo("foo");
+
       assertThat(Strings.trimIndent(" foo\n bar", 2)).asString().isEqualTo("foo\nbar");
       assertThat(Strings.trimIndent("  foo\n\tbar", 2)).asString().isEqualTo("foo\nbar");
       assertThat(Strings.trimIndent(" foo\n\tbar", 2)).asString().isEqualTo("foo\nbar");
       assertThat(Strings.trimIndent("\tfoo\n\t\tbar", 2)).asString().isEqualTo("foo\n\tbar");
       assertThat(Strings.trimIndent("\tfoo\n  \tbar", 2)).asString().isEqualTo("foo\n\tbar");
+
+      assertThat(Strings.trimIndent(" foo\r\n bar", 2)).asString().isEqualTo("foo\r\nbar");
+      assertThat(Strings.trimIndent("  foo\r\n\tbar", 2)).asString().isEqualTo("foo\r\nbar");
+      assertThat(Strings.trimIndent(" foo\r\n\tbar", 2)).asString().isEqualTo("foo\r\nbar");
+      assertThat(Strings.trimIndent("\tfoo\r\n\t\tbar", 2)).asString().isEqualTo("foo\r\n\tbar");
+      assertThat(Strings.trimIndent("\tfoo\r\n  \tbar", 2)).asString().isEqualTo("foo\r\n\tbar");
    }
 }
