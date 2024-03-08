@@ -3985,27 +3985,40 @@ public abstract class Strings {
    public static CharSequence trimIndent(final CharSequence multiLineString, final int tabSize) {
       final int effetiveTabSize = Math.max(1, tabSize);
 
-      /*
-       * determine common indentation of all lines
-       */
-      final class IndentDetector implements IntConsumer, IntPredicate {
-         int indentToRemove = Integer.MAX_VALUE;
-         int indentOfLine = 0;
-         boolean skipToLineEnd = false;
+      abstract class CharConsumer implements IntConsumer {
+
          char prevCh = 0;
-         int lineCount = 1;
 
          @Override
          public void accept(final int value) {
-            final var ch = (char) value;
+            final char ch = (char) value;
+            onChar(ch);
+            prevCh = ch;
+         }
+
+         abstract void onChar(char ch);
+      }
+
+      /*
+       * determine common indentation of all lines
+       */
+      final class IndentDetector extends CharConsumer implements IntPredicate {
+         int indentToRemove = Integer.MAX_VALUE;
+         int indentOfLine = 0;
+         boolean skipToLineEnd = false;
+         int lineCount = 1;
+
+         @Override
+         public void onChar(final char ch) {
             if (ch == '\r' && prevCh != '\n' || ch == '\n' && prevCh != '\r') {
                lineCount++;
                skipToLineEnd = false;
                indentToRemove = Math.min(indentOfLine, indentToRemove);
                indentOfLine = 0;
-               if (indentToRemove == 0)
-                  return;
-            } else if (!skipToLineEnd) {
+               return;
+            }
+
+            if (!skipToLineEnd) {
                if (ch == '\t') {
                   indentOfLine += effetiveTabSize;
                } else if (Character.isWhitespace(ch)) {
@@ -4014,7 +4027,6 @@ public abstract class Strings {
                   skipToLineEnd = true;
                }
             }
-            prevCh = ch;
          }
 
          @Override
@@ -4034,24 +4046,23 @@ public abstract class Strings {
        * remove common indentation of all lines
        */
       final var sb = new StringBuilder(Math.max(0, multiLineString.length() - indentDetector.lineCount * indentToRemove));
-      final class IdentRemover implements IntConsumer {
-         int indentOfLineRemoved = 0;
+      final class IdentRemover extends CharConsumer {
+         int removedIndentOfLine = 0;
 
          @Override
-         public void accept(final int value) {
-            final var ch = (char) value;
+         public void onChar(final char ch) {
             if (ch == '\r' || ch == '\n') {
                sb.append(ch);
-               indentOfLineRemoved = 0;
+               removedIndentOfLine = 0;
                return;
             }
-            if (indentOfLineRemoved >= indentToRemove) {
+            if (removedIndentOfLine >= indentToRemove) {
                sb.append(ch);
             } else {
                if (ch == '\t') {
-                  indentOfLineRemoved += effetiveTabSize;
+                  removedIndentOfLine += effetiveTabSize;
                } else {
-                  indentOfLineRemoved++;
+                  removedIndentOfLine++;
                }
             }
          }
