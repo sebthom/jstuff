@@ -7,7 +7,7 @@ package net.sf.jstuff.core.event;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
 import net.sf.jstuff.core.concurrent.ThreadSafe;
 import net.sf.jstuff.core.validation.Args;
@@ -34,7 +34,7 @@ public class EventDispatcherWithHistory<EVENT> implements EventDispatcher<EVENT>
    }
 
    @Override
-   public Future<Integer> fire(final EVENT event) {
+   public CompletableFuture<Integer> fire(final EVENT event) {
       addEventToHistory(event);
 
       return wrapped.fire(event);

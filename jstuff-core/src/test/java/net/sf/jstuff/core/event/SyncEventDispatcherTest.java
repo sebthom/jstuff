@@ -4,11 +4,11 @@
  */
 package net.sf.jstuff.core.event;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 
 /**
@@ -17,7 +17,7 @@ import org.junit.Test;
 public class SyncEventDispatcherTest {
 
    @Test
-   public void testSyncEventDispatcher() {
+   public void testSyncEventDispatcher() throws InterruptedException, ExecutionException {
       final var em = new SyncEventDispatcher<String>();
 
       final var listener1Count = new AtomicLong();
@@ -27,17 +27,9 @@ public class SyncEventDispatcherTest {
       assertThat(em.subscribe(listener1)).isFalse();
 
       final var listener2Count = new AtomicLong();
-      final var listener2 = new FilteringEventListener<String>() {
-         @Override
-         public boolean accept(@Nullable final String event) {
-            return event != null && event.length() < 5;
-         }
-
-         @Override
-         public void onEvent(@Nullable final String event) {
-            listener2Count.incrementAndGet();
-         }
-      };
+      final FilteringEventListener<String> listener2 = FilteringEventListener.create( //
+         e -> listener2Count.incrementAndGet(), //
+         e -> e.length() < 5);
 
       assertThat(em.subscribe(listener2)).isTrue();
       assertThat(em.subscribe(listener2)).isFalse();
