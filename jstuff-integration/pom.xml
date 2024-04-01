@@ -149,7 +149,7 @@ SPDX-License-Identifier: EPL-2.0
             <!-- https://search.maven.org/search?q=g:net.bytebuddy -->
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.14.12</version>
+            <version>1.14.13</version>
          </dependency>
          <dependency>
             <groupId>com.h2database</groupId>
