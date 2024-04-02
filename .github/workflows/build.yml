@@ -70,7 +70,7 @@ jobs:
         - java: 17
           may_create_release: false
           experimental: false
-        - java: 20 # TODO 21 requires ecj 3.36.0
+        - java: 21
           may_create_release: false
           experimental: false
 

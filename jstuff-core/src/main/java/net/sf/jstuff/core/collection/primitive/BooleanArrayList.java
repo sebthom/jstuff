@@ -6,6 +6,7 @@ package net.sf.jstuff.core.collection.primitive;
 
 import java.util.AbstractList;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -138,9 +139,9 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    }
 
    @Override
-   public boolean getLast() {
+   public Boolean getLast() {
       if (size < 1)
-         throw new IndexOutOfBoundsException();
+         throw new NoSuchElementException();
 
       return values[size - 1];
    }
@@ -188,11 +189,11 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    }
 
    @Override
-   public boolean removeLast() {
+   public Boolean removeLast() {
       Assert.isTrue(mutable, "List is immutable!");
 
       if (size < 1)
-         throw new IndexOutOfBoundsException();
+         throw new NoSuchElementException();
 
       final boolean old = values[size - 1];
       size--;

@@ -5,6 +5,7 @@
 package net.sf.jstuff.core.collection.primitive;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -31,9 +32,11 @@ public interface LongList extends LongCollection, List<Long> {
    long getAt(int index);
 
    /**
-    * @throws IndexOutOfBoundsException if list is empty
+    * For compatibility with Java 21 must return non-primitive value.
+    *
+    * @throws NoSuchElementException if list is empty
     */
-   long getLast();
+   Long getLast();
 
    /**
     * @return the index of the first occurrence of the specified value, or -1 if this list does not contain the value
@@ -60,9 +63,11 @@ public interface LongList extends LongCollection, List<Long> {
    long removeAt(int index);
 
    /**
-    * @throws IndexOutOfBoundsException if list is empty
+    * For compatibility with Java 21 must return non-primitive value.
+    *
+    * @throws NoSuchElementException if list is empty
     */
-   long removeLast();
+   Long removeLast();
 
    boolean removeValue(long value);
 

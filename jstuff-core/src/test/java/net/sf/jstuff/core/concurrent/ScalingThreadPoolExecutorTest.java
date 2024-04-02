@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,7 +25,7 @@ public class ScalingThreadPoolExecutorTest {
 
    private static final Logger LOG = Logger.create();
 
-   static void testScalingThreadPoolExecutor(final ThreadPoolExecutor executor) throws ExecutionException, InterruptedException {
+   static void testScalingThreadPoolExecutor(final ScalingThreadPoolExecutor executor) throws ExecutionException, InterruptedException {
       final int maxPoolSize = executor.getMaximumPoolSize();
 
       final var threadsExecuting = new AtomicInteger();
@@ -39,7 +38,7 @@ public class ScalingThreadPoolExecutorTest {
       for (long i = 0, l = work.getCount(); i < l; i++) {
          LOG.info("Submitting #%s", i);
          final long j = i;
-         executor.submit(() -> {
+         futures.add(executor.submit(() -> {
             try {
                threadsExecuting.incrementAndGet();
                LOG.info("Executing #%s", j);
@@ -51,7 +50,7 @@ public class ScalingThreadPoolExecutorTest {
                threadsExecuting.decrementAndGet();
                return 0;
             }
-         });
+         }));
       }
 
       for (final Future<Integer> future : futures) {

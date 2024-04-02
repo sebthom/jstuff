@@ -6,6 +6,7 @@ package net.sf.jstuff.core.collection.primitive;
 
 import java.util.AbstractList;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -138,9 +139,9 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    }
 
    @Override
-   public short getLast() {
+   public Short getLast() {
       if (size < 1)
-         throw new IndexOutOfBoundsException();
+         throw new NoSuchElementException();
 
       return values[size - 1];
    }
@@ -190,11 +191,11 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    }
 
    @Override
-   public short removeLast() {
+   public Short removeLast() {
       Assert.isTrue(mutable, "List is immutable!");
 
       if (size < 1)
-         throw new IndexOutOfBoundsException();
+         throw new NoSuchElementException();
 
       final short old = values[size - 1];
       size--;
