@@ -6,6 +6,7 @@ package net.sf.jstuff.core.collection.primitive;
 
 import java.util.AbstractList;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
@@ -156,9 +157,9 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    }
 
    @Override
-   public int getLast() {
+   public Integer getLast() {
       if (size < 1)
-         throw new IndexOutOfBoundsException();
+         throw new NoSuchElementException();
 
       return values[size - 1];
    }
@@ -234,11 +235,11 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    }
 
    @Override
-   public int removeLast() {
+   public Integer removeLast() {
       Assert.isTrue(mutable, "List is immutable!");
 
       if (size < 1)
-         throw new IndexOutOfBoundsException();
+         throw new NoSuchElementException();
 
       final int old = values[size - 1];
       size--;

@@ -6,6 +6,7 @@ package net.sf.jstuff.core.collection.primitive;
 
 import java.util.AbstractList;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 import java.util.function.LongConsumer;
 import java.util.function.LongPredicate;
@@ -155,9 +156,9 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    }
 
    @Override
-   public long getLast() {
+   public Long getLast() {
       if (size < 1)
-         throw new IndexOutOfBoundsException();
+         throw new NoSuchElementException();
 
       return values[size - 1];
    }
@@ -233,11 +234,11 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    }
 
    @Override
-   public long removeLast() {
+   public Long removeLast() {
       Assert.isTrue(mutable, "List is immutable!");
 
       if (size < 1)
-         throw new IndexOutOfBoundsException();
+         throw new NoSuchElementException();
 
       final long old = values[size - 1];
       size--;
