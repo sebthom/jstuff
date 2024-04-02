@@ -164,7 +164,7 @@ jobs:
 
 
     - name: Publish test coverage to codeclimate.com
-      uses: paambaati/codeclimate-action@v5.0.0 # https://github.com/paambaati/codeclimate-action
+      uses: paambaati/codeclimate-action@v5  # https://github.com/paambaati/codeclimate-action
       if: ${{ matrix.may_create_release && steps.maven-build.outputs.has_jacoco_results && !env.ACT }}
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TEST_REPORTER_ID }}
@@ -205,7 +205,7 @@ jobs:
 
 
     - name: "SSH session for debugging: start"
-      uses: mxschmitt/action-tmate@v3 # https://github.com/mxschmitt/action-tmate
+      uses: mxschmitt/action-tmate@v3  # https://github.com/mxschmitt/action-tmate
       if: always() && steps.DEBUG_SSH_SESSSION_CHECK.outputs.start_ssh_session
       with:
         limit-access-to-actor: ${{ inputs.debug-with-ssh-only-for-actor }}
@@ -227,7 +227,7 @@ jobs:
     steps:
     - name: Dependabot metadata
       id: metadata
-      uses: dependabot/fetch-metadata@v1 # https://github.com/dependabot/fetch-metadata/
+      uses: dependabot/fetch-metadata@v2  # https://github.com/dependabot/fetch-metadata/
       with:
         github-token: "${{ secrets.GITHUB_TOKEN }}"
 
