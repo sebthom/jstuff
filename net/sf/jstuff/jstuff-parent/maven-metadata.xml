@@ -4,8 +4,8 @@
   <artifactId>jstuff-parent</artifactId>
   <versioning>
     <versions>
-      <version>7.9.1-SNAPSHOT</version>
+      <version>7.10.1-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20240408124623</lastUpdated>
+    <lastUpdated>20240408132728</lastUpdated>
   </versioning>
 </metadata>
