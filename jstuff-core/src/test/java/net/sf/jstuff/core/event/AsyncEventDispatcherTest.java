@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.event;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -28,17 +28,9 @@ public class AsyncEventDispatcherTest {
       assertThat(em.subscribe(listener1)).isFalse();
 
       final var listener2Count = new AtomicLong();
-      final var listener2 = new FilteringEventListener<@Nullable String>() {
-         @Override
-         public boolean accept(@Nullable final String event) {
-            return event != null && event.length() < 5;
-         }
-
-         @Override
-         public void onEvent(@Nullable final String event) {
-            listener2Count.incrementAndGet();
-         }
-      };
+      final FilteringEventListener<@Nullable String> listener2 = FilteringEventListener.create( //
+         e -> listener2Count.incrementAndGet(), //
+         e -> e != null && e.length() < 5);
 
       assertThat(em.subscribe(listener2)).isTrue();
       assertThat(em.subscribe(listener2)).isFalse();

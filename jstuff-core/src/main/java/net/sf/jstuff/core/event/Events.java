@@ -20,13 +20,14 @@ public abstract class Events {
     * @return the number of listeners notified successfully
     */
    public static <Event> int fire(final Event type, final @Nullable Collection<EventListener<Event>> listeners) {
+      if (listeners == null || listeners.isEmpty())
+         return 0;
+
       int count = 0;
-      if (listeners != null && !listeners.isEmpty()) {
-         for (final EventListener<Event> listener : listeners)
-            if (fire(type, listener)) {
-               count++;
-            }
-      }
+      for (final EventListener<Event> listener : listeners)
+         if (fire(type, listener)) {
+            count++;
+         }
       return count;
    }
 
@@ -34,21 +35,21 @@ public abstract class Events {
     * @return true if the listener was notified successfully
     */
    public static <Event> boolean fire(final Event event, final @Nullable EventListener<Event> listener) {
-      if (listener != null) {
-         try {
-            if (listener instanceof FilteringEventListener) {
-               final FilteringEventListener<Event> flistener = (FilteringEventListener<Event>) listener;
-               if (flistener.accept(event)) {
-                  flistener.onEvent(event);
-               } else
-                  return false;
-            } else {
-               listener.onEvent(event);
-            }
-            return true;
-         } catch (final RuntimeException ex) {
-            LOG.error(ex, "Failed to notify event listener %s", listener);
+      if (listener == null)
+         return false;
+
+      try {
+         if (listener instanceof FilteringEventListener) {
+            final FilteringEventListener<Event> flistener = (FilteringEventListener<Event>) listener;
+            if (!flistener.accept(event))
+               return false;
+            flistener.onEvent(event);
+         } else {
+            listener.onEvent(event);
          }
+         return true;
+      } catch (final RuntimeException ex) {
+         LOG.error(ex, "Failed to notify event listener %s", listener);
       }
       return false;
    }
@@ -58,13 +59,14 @@ public abstract class Events {
     */
    @SafeVarargs
    public static <Event> int fire(final Event type, final EventListener<Event> @Nullable... listeners) {
+      if (listeners == null || listeners.length < 0)
+         return 0;
+
       int count = 0;
-      if (listeners != null && listeners.length > 0) {
-         for (final EventListener<Event> listener : listeners)
-            if (fire(type, listener)) {
-               count++;
-            }
-      }
+      for (final EventListener<Event> listener : listeners)
+         if (fire(type, listener)) {
+            count++;
+         }
       return count;
    }
 }
