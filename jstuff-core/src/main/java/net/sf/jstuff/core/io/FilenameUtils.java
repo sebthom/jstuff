@@ -12,6 +12,7 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("deprecation")
 public abstract class FilenameUtils extends org.apache.commons.io.FilenameUtils {
 
    @Nullable

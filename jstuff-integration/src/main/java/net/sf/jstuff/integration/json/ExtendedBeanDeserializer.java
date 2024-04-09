@@ -44,6 +44,8 @@ public class ExtendedBeanDeserializer extends BeanDeserializer {
    public static final void registerWith(final ObjectMapper mapper) {
       final var module = new SimpleModule();
       module.setDeserializerModifier(new BeanDeserializerModifier() {
+         private static final long serialVersionUID = 1L;
+
          @Override
          public JsonDeserializer<?> modifyDeserializer(final DeserializationConfig cfg, final BeanDescription beanDescr,
             final JsonDeserializer<?> deserializer) {
@@ -87,10 +89,10 @@ public class ExtendedBeanDeserializer extends BeanDeserializer {
             try {
                // instantiate object
                final Object bean = ctor.newInstance(parentObject);
-               p.setCurrentValue(bean);
+               p.assignCurrentValue(bean);
                // deserialize fields
                if (p.hasTokenId(JsonTokenId.ID_FIELD_NAME)) {
-                  String propName = p.getCurrentName();
+                  String propName = p.currentName();
                   do {
                      p.nextToken();
                      final SettableBeanProperty prop = _beanProperties.find(propName);
