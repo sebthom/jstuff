@@ -18,7 +18,7 @@ SPDX-License-Identifier: EPL-2.0
 
    <properties>
        <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-core/2.0.0/versions -->
-      <jackson.version>2.17.0</jackson.version>
+      <jackson.version>2.17.1</jackson.version>
    </properties>
 
    <dependencyManagement>
