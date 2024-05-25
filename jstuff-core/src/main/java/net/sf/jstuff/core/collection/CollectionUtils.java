@@ -356,6 +356,36 @@ public abstract class CollectionUtils {
       return result;
    }
 
+   public static <T> @Nullable T findFirst(final @Nullable Collection<T> coll) {
+      if (coll == null || coll.isEmpty())
+         return null;
+
+      final var it = coll.iterator();
+      if (it.hasNext())
+         return it.next();
+      return null;
+   }
+
+   public static <T> @Nullable T findFirstMatching(final @Nullable Collection<T> coll, final Predicate<T> filter) {
+      if (coll == null || coll.isEmpty())
+         return null;
+
+      for (final T e : coll) {
+         if (filter.test(e))
+            return e;
+      }
+      return null;
+   }
+
+   /**
+    * @return the last element or null if list is empty
+    */
+   public static <T> @Nullable T findLast(final List<T> list) {
+      if (list.isEmpty())
+         return null;
+      return getLast(list);
+   }
+
    /**
     * Gets the n-th element of the list.
     *
@@ -492,24 +522,30 @@ public abstract class CollectionUtils {
       return collection != null && !collection.isEmpty();
    }
 
-   public static <K> ArrayList<K> newArrayList() {
+   public static <T> ArrayList<T> newArrayList() {
       return new ArrayList<>();
    }
 
-   public static <K> ArrayList<K> newArrayList(final @Nullable Collection<K> initialValues) {
+   public static <T> ArrayList<T> newArrayList(final @Nullable Collection<T> initialValues) {
       return initialValues == null ? new ArrayList<>() : new ArrayList<>(initialValues);
    }
 
-   public static <K> ArrayList<K> newArrayList(final int initialSize) {
+   public static <T> ArrayList<T> newArrayList(final int initialSize) {
       return new ArrayList<>(initialSize);
    }
 
+   public static <T> ArrayList<T> newArrayList(final T initialValue) {
+      final var list = new ArrayList<T>();
+      list.add(initialValue);
+      return list;
+   }
+
    @SafeVarargs
-   public static <K> ArrayList<K> newArrayList(final K @Nullable... initialValues) {
+   public static <T> ArrayList<T> newArrayList(final T @Nullable... initialValues) {
       if (initialValues == null || initialValues.length == 0)
          return new ArrayList<>();
 
-      final var l = new ArrayList<K>(initialValues.length);
+      final var l = new ArrayList<T>(initialValues.length);
       Collections.addAll(l, initialValues);
       return l;
    }
@@ -560,14 +596,24 @@ public abstract class CollectionUtils {
    /**
     * Removes the last element in this list.
     *
+    * @return the element previously at the specified position
+    *
+    * @throws IndexOutOfBoundsException if the list is empty
+    * @throws UnsupportedOperationException if the {@code remove} operation is not supported by this list
+    */
+   public static <T> T removeLast(final List<T> list) {
+      return list.remove(list.size() - 1);
+   }
+
+   /**
+    * Removes the last element in this list.
+    *
     * @return the element previously at the specified position or null if the list is empty
     *
     * @throws UnsupportedOperationException if the {@code remove} operation is not supported by this list
     */
-   public static <T> @Nullable T removeLast(final List<T> list) {
-      Args.notNull("list", list);
-
-      if (list.isEmpty())
+   public static <T> @Nullable T removeLastNullable(final @Nullable List<T> list) {
+      if (list == null || list.isEmpty())
          return null;
       return list.remove(list.size() - 1);
    }
