@@ -15,7 +15,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.util.PatternMatchUtils;
 
@@ -184,7 +183,7 @@ public class DefaultAuthService implements AuthService {
     * @param applicationRoles the applicationRoles to set
     */
    @Inject
-   public synchronized void setApplicationRoles(final @NonNull String... applicationRoles) {
+   public synchronized void setApplicationRoles(final String... applicationRoles) {
       this.applicationRoles = new HashSet<>();
       for (final String element : applicationRoles) {
          LOG.trace("Registering application role: %s", element);
@@ -234,8 +233,8 @@ public class DefaultAuthService implements AuthService {
     * @param mappings format = "groupIdXXX=roleXXX"
     */
    @Inject
-   public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final @NonNull String[] mappings)
-      throws UnknownApplicationRoleException {
+   public synchronized void setGroupIdToApplicationRoleMappingsViaStringArray(final String[] mappings)
+         throws UnknownApplicationRoleException {
       groupIdToApplicationRoleMappings = new MapWithSets<>();
       for (final var element : mappings) {
          final var pair = Strings.split(element, '=');
@@ -262,8 +261,7 @@ public class DefaultAuthService implements AuthService {
     * @param mappings format = "/myuri*=roleXXX"
     */
    @Inject
-   public synchronized void setUriPatternsToApplicationRoleMappings(final @NonNull String[] mappings)
-      throws UnknownApplicationRoleException {
+   public synchronized void setUriPatternsToApplicationRoleMappings(final String[] mappings) throws UnknownApplicationRoleException {
       uriPatternsToApplicationRoleMappings = new MapWithSets<>();
       for (final var element : mappings) {
          final var pair = Strings.split(element, '=');

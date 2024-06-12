@@ -70,7 +70,7 @@ public abstract class Beans extends java.beans.Beans {
          for (final PropertyDescriptor prop : props) {
             final var name = prop.getName();
             if (name != null) {
-               beanProperties.put(prop.getName(), prop);
+               beanProperties.put(name, prop);
             }
          }
          final var map = Collections.unmodifiableMap(beanProperties);

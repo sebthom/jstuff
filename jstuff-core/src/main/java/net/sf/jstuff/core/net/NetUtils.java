@@ -107,8 +107,12 @@ public abstract class NetUtils {
     * Get the resource URL via this.getClass().getResource("....").
     */
    public static long getLastModified(final URLConnection resourceConnection) throws IOException {
-      if (resourceConnection instanceof JarURLConnection)
-         return ((JarURLConnection) resourceConnection).getJarEntry().getTime();
+      if (resourceConnection instanceof JarURLConnection) {
+         final var jarURL = (JarURLConnection) resourceConnection;
+         final var entry = jarURL.getJarEntry();
+         if (entry != null)
+            return entry.getTime();
+      }
 
       /*
        * Because of a bug in Suns VM regarding FileURLConnection, which for some reason causes 0 to be

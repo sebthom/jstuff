@@ -14,6 +14,8 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.StartTlsResponse;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
@@ -44,16 +46,18 @@ public abstract class LdapUtils {
       }
    }
 
-   public static <T> T getAttributeValue(@Nullable final SearchResult sr, final String attrName, final T ifNullOrNotExisting)
-      throws NamingException {
+   @NonNullByDefault({})
+   public static <T> T getAttributeValue(@Nullable final SearchResult sr, final @NonNull String attrName, final T ifNullOrNotExisting)
+         throws NamingException {
       if (sr == null)
          return ifNullOrNotExisting;
 
       return getAttributeValue(sr.getAttributes(), attrName, ifNullOrNotExisting);
    }
 
-   public static <T> T getAttributeValue(@Nullable final Attributes attrs, final String attrName, final T ifNullOrNotExisting)
-      throws NamingException {
+   @NonNullByDefault({})
+   public static <T> T getAttributeValue(@Nullable final Attributes attrs, final @NonNull String attrName, final T ifNullOrNotExisting)
+         throws NamingException {
       if (attrs == null)
          return ifNullOrNotExisting;
 
@@ -61,6 +65,7 @@ public abstract class LdapUtils {
    }
 
    @SuppressWarnings("unchecked")
+   @NonNullByDefault({})
    public static <T> T getAttributeValue(@Nullable final Attribute attr, final T ifNullOrNotExisting) throws NamingException {
       if (attr == null)
          return ifNullOrNotExisting;

@@ -4,8 +4,8 @@
  */
 package net.sf.jstuff.integration.json;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.collection.CollectionUtils.newArrayList;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.support.RemoteExporter;
 import org.springframework.web.HttpRequestHandler;
@@ -84,7 +85,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
     */
    @SuppressWarnings("deprecation")
    public static String buildSMDTemplate(final Class<?> serviceInterface, final Object service,
-      final Map<String, Method> exportedMethodsByName, final boolean pretty) throws JsonProcessingException {
+         final Map<String, Method> exportedMethodsByName, final boolean pretty) throws JsonProcessingException {
       // build the method descriptors
       final var methodDescriptions = new LinkedHashMap<String, Object>();
       for (final Method method : exportedMethodsByName.values()) {
@@ -196,7 +197,7 @@ public class SMDServiceExporter extends RemoteExporter implements HttpRequestHan
          final Object methodReturnValue = method.invoke(getProxyForService(), methodArguments);
 
          // creating a JSON object containing the method return value
-         final var result = new LinkedHashMap<String, Object>(2);
+         final var result = new LinkedHashMap<String, @Nullable Object>(2);
          result.put("id", requestObject.get("id").asText());
          result.put("result", methodReturnValue);
          JSON.writeValue(response.getWriter(), result);

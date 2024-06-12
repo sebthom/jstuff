@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.persistence.spring;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -50,8 +50,7 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
 
       for (final var it = new ResultSetDynaClass(resultSet, true).iterator(); it.hasNext();) {
          final DynaBean dynaBean = it.next();
-         @SuppressWarnings("null")
-         T bean = null;
+         T bean = lazyNonNull();
          try {
             bean = this.getBeanClass().getDeclaredConstructor().newInstance();
 
@@ -82,10 +81,10 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
          final String propName = prop.getName();
          if (propsLowerCase.put(propName.toLowerCase(), propName) != null)
             throw new IllegalStateException("Bean Class " + beanClass.getName()
-               + " contains multiple properties with same lowercase representation: " + propName);
+                  + " contains multiple properties with same lowercase representation: " + propName);
       }
 
       this.beanClass = beanClass;
-      this.beanPropertiesLowerCase = propsLowerCase;
+      beanPropertiesLowerCase = propsLowerCase;
    }
 }

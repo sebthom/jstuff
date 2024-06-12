@@ -5,14 +5,12 @@
 package net.sf.jstuff.integration.portlet;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 
 import javax.portlet.ResourceResponse;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 import net.sf.jstuff.core.logging.Logger;
@@ -29,7 +27,8 @@ public class ContentCapturingResourceResponseWrapperTest {
    @Test
    public void testContentCapturingResourceResponseWrapper() throws UnsupportedEncodingException {
 
-      final @NonNull String[] encoding = {"ISO-8859-1"};
+      @SuppressWarnings("null")
+      final String[] encoding = {"ISO-8859-1"};
 
       final ResourceResponse mock = Types.createMixin(ResourceResponse.class, new Object() {
          @SuppressWarnings("unused")

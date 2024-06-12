@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.logging;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -70,9 +70,10 @@ public class LoggingTest {
             sb.append("] ");
          }
          sb.append(formatMessage(entry));
-         if (entry.getThrown() != null) {
+         final var thrown = entry.getThrown();
+         if (thrown != null) {
             final var errors = new StringWriter();
-            entry.getThrown().printStackTrace(new PrintWriter(errors));
+            thrown.printStackTrace(new PrintWriter(errors));
             sb.append(errors);
          }
          sb.append("\n");

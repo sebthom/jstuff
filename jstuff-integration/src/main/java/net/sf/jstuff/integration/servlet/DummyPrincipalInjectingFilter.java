@@ -19,7 +19,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.CollectionUtils;
@@ -61,7 +60,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
 
    // CHECKSTYLE:IGNORE StaticVariableName FOR NEXT 2 LINES
    public static @Nullable String DEFAULT_USER_NAME;
-   public static @NonNull String @Nullable [] DEFAULT_USER_ROLES;
+   public static String @Nullable [] DEFAULT_USER_ROLES;
 
    private final ThreadLocal<HttpServletRequestWrapper> requestWrapper = new ThreadLocal<>() {
       final HttpServletRequest init = Types.createMixin(HttpServletRequest.class, new Object());
@@ -113,7 +112,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
 
    @Override
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-      ServletException {
+         ServletException {
       if (username != null && request instanceof HttpServletRequest) {
          LOG.debug("Injecting dummy user [%s]...", username);
          final HttpServletRequestWrapper wrapper = requestWrapper.get();
@@ -182,7 +181,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
       }
    }
 
-   public void setUserRoles(final @NonNull String @Nullable... userRoles) {
+   public void setUserRoles(final String @Nullable... userRoles) {
       this.userRoles.clear();
       if (userRoles != null) {
          CollectionUtils.addAll(this.userRoles, userRoles);

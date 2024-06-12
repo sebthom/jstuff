@@ -21,8 +21,7 @@ import net.sf.jstuff.core.logging.Logger;
 public abstract class JMXUtils {
    private static final Logger LOG = Logger.create();
 
-   @Nullable
-   private static MBeanServer mbeanServer;
+   private static @Nullable MBeanServer mbeanServer;
 
    public static synchronized MBeanServer getMBeanServer() {
       var mbeanServer = JMXUtils.mbeanServer;
@@ -77,7 +76,7 @@ public abstract class JMXUtils {
       final List<String> args = ManagementFactory.getRuntimeMXBean().getInputArguments();
       for (final String arg : args) {
          if (arg.startsWith("-agentlib:jdwp") && args.contains("-Xdebug") //
-            || arg.startsWith("-Xrunjdwp"))
+               || arg.startsWith("-Xrunjdwp"))
             return true;
       }
       return false;

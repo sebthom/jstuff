@@ -4,12 +4,13 @@
  */
 package net.sf.jstuff.integration.serviceregistry.impl;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
 
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.WeakHashSet;
@@ -107,7 +108,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
          try {
             if (this.listeners.isEmpty())
                return;
-            listeners = this.listeners.toArray(new ServiceListener[this.listeners.size()]);
+            listeners = this.listeners.toArray(new @NonNull ServiceListener[this.listeners.size()]);
          } finally {
             listeners_READ.unlock();
          }
@@ -130,7 +131,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
          try {
             if (this.listeners.isEmpty())
                return;
-            listeners = this.listeners.toArray(new ServiceListener[this.listeners.size()]);
+            listeners = this.listeners.toArray(new @NonNull ServiceListener[this.listeners.size()]);
          } finally {
             listeners_READ.unlock();
          }
@@ -164,8 +165,8 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
    @Override
    public String toString() {
       return ServiceProxy.class.getSimpleName() //
-         + "[serviceEndpointId=" + serviceEndpointId //
-         + ", serviceInterface=" + serviceInterface //
-         + ", service=" + serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) + "]";
+            + "[serviceEndpointId=" + serviceEndpointId //
+            + ", serviceInterface=" + serviceInterface //
+            + ", service=" + serviceEndpointState.getActiveServiceIfCompatible(serviceInterface) + "]";
    }
 }

@@ -13,6 +13,7 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
@@ -35,7 +36,7 @@ public abstract class SQLUtils {
          return "INSERT INTO " + tableName + "(" + columnNames[0] + ") VALUES (?)";
 
       return "INSERT INTO " + tableName + "(" + Strings.join(columnNames, ",") + ") VALUES (" + Strings.repeat("?,", columnNames.length - 1)
-         + "?)";
+            + "?)";
    }
 
    /**
@@ -46,13 +47,13 @@ public abstract class SQLUtils {
     */
    @SuppressWarnings("resource")
    public static PreparedStatement buildInsertStatement(final Connection con, final String tableName, final Map<String, Object> columns)
-      throws SQLException {
+         throws SQLException {
       Args.notNull("con", con);
       Args.notEmpty("tableName", tableName);
       Args.notEmpty("columns", columns);
 
       // convert column names to Array
-      final String[] columnNames = columns.keySet().toArray(new String[columns.size()]);
+      final var columnNames = columns.keySet().toArray(new @NonNull String[columns.size()]);
 
       final var stmt = con.prepareStatement(buildInsertSQL(tableName, columnNames));
       int parameterIndex = 1;
@@ -99,12 +100,12 @@ public abstract class SQLUtils {
     */
    @SuppressWarnings("resource")
    public static PreparedStatement buildUpdateStatement(final Connection con, final String tableName, final Map<String, Object> columns,
-      final String where, final Object @Nullable... whereValues) throws SQLException {
+         final String where, final Object @Nullable... whereValues) throws SQLException {
       Args.notNull("con", con);
       Args.notEmpty("tableName", tableName);
       Args.notEmpty("columns", columns);
 
-      final String[] columnNames = columns.keySet().toArray(new String[columns.size()]);
+      final var columnNames = columns.keySet().toArray(new @NonNull String[columns.size()]);
 
       final PreparedStatement stmt = con.prepareStatement(buildUpdateSQL(tableName, columnNames, where));
 

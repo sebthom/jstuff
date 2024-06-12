@@ -16,6 +16,9 @@ import javax.naming.ldap.LdapContext;
 import javax.naming.ldap.StartTlsRequest;
 import javax.naming.ldap.StartTlsResponse;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 import net.sf.jstuff.core.functional.Invocable;
 
 /**
@@ -32,7 +35,8 @@ public class LdapTemplate {
     */
    private boolean useStartTSL = false;
 
-   public <T> T execute(final Invocable<T, LdapContext, ? extends Exception> callback) {
+   @NonNullByDefault({})
+   public <T> T execute(final @NonNull Invocable<T, @NonNull LdapContext, ? extends Exception> callback) {
       LdapContext ctx = null;
       StartTlsResponse tls = null;
       try {

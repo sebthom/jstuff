@@ -46,8 +46,8 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
 
    private static final Collection<String> WINDOWS_EXE_FILE_EXTENSIONS = List.of(Strings.splitByWholeSeparator( //
       IS_OS_WINDOWS //
-         ? getEnvironmentVariable("PATHEXT", "") //
-         : ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC", //
+            ? getEnvironmentVariable("PATHEXT", "") //
+            : ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC", //
       ";" //
    ));
 
@@ -119,8 +119,8 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    public static int getJavaMajorVersion() {
       final String version = asNonNull(System.getProperty("java.version"));
       return Integer.parseInt(version.startsWith("1.") //
-         ? version.substring(2, 3) //
-         : Strings.substringBefore(version, '.') //
+            ? version.substring(2, 3) //
+            : Strings.substringBefore(version, '.') //
       );
    }
 
@@ -170,7 +170,9 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
          }
 
          final java.util.logging.Logger prefsLogger = LogManager.getLogManager().getLogger("java.util.prefs.WindowsPreferences");
-         prefsLogger.setLevel(Level.SEVERE);
+         if (prefsLogger != null) {
+            prefsLogger.setLevel(Level.SEVERE);
+         }
          try {
             // https://stackoverflow.com/a/23538961/5116073
             final Preferences prefs = Preferences.systemRoot();
@@ -182,7 +184,9 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
             isRunningAsAdmin = true;
             return true;
          } finally {
-            prefsLogger.setLevel(Level.INFO);
+            if (prefsLogger != null) {
+               prefsLogger.setLevel(Level.INFO);
+            }
          }
       } catch (final Exception ex) {
          LOG.debug(ex);

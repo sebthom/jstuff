@@ -13,6 +13,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.types.Decorator;
@@ -67,8 +68,8 @@ public class DelegatingXMLEventReader extends Decorator.Default<XMLEventReader> 
    }
 
    @Override
-   public void forEachRemaining(final Consumer<@NonNull ? super Object> action) {
-      wrapped.forEachRemaining(action);
+   public void forEachRemaining(@NonNullByDefault({}) @NonNull final Consumer<? super Object> action) {
+      AutoCloseableXMLEventReader.super.forEachRemaining(action);
    }
 
    @Override

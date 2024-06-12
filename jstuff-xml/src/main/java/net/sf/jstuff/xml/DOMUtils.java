@@ -42,6 +42,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -156,7 +157,7 @@ public abstract class DOMUtils {
 
       @Override
       public @Nullable InputSource resolveEntity(final @Nullable String schemaId, final @Nullable String schemaLocation)
-         throws SAXException, IOException {
+            throws SAXException, IOException {
          if (schemaLocation != null && !schemaLocation.startsWith("file://")) {
             log.debug("Ignoring DTD [%s] [%s]", schemaId, schemaLocation);
             return new InputSource(new StringReader(""));
@@ -220,7 +221,7 @@ public abstract class DOMUtils {
    }
 
    private static void _getXPathNodes(final Element elem, final XPathNodeConfiguration cfg, final CharSequence parentXPath,
-      final Map<String, XPathNode> valuesByXPath) {
+         final Map<String, XPathNode> valuesByXPath) {
       /*
        * build the xPath of the current element
        */
@@ -339,7 +340,7 @@ public abstract class DOMUtils {
    }
 
    public static Element createElementWithText(final Node parent, final String tagName, final Map<String, String> tagAttributes,
-      final Object text) {
+         final Object text) {
       final Element elem = createElement(parent, tagName, tagAttributes);
       createTextNode(elem, text);
       return elem;
@@ -352,7 +353,7 @@ public abstract class DOMUtils {
    }
 
    public static Element createElementWithTextBefore(final Node sibling, final String tagName, final Map<String, String> tagAttributes,
-      final Object text) {
+         final Object text) {
       final Element elem = createElementBefore(sibling, tagName, tagAttributes);
       createTextNode(elem, text);
       return elem;
@@ -445,7 +446,7 @@ public abstract class DOMUtils {
     * @param recursive return text content of child nodes
     */
    public static @Nullable String findTextContent(final Node searchScope, final String xPathExpression, final boolean recursive)
-      throws XMLException {
+         throws XMLException {
       Args.notNull("searchScope", searchScope);
       Args.notNull("xPathExpression", xPathExpression);
 
@@ -603,9 +604,9 @@ public abstract class DOMUtils {
    public static Node[] nodeListToArray(final NodeList nodes) {
       Args.notNull("nodes", nodes);
 
-      final var result = new Node[nodes.getLength()];
+      final var result = new @NonNull Node[nodes.getLength()];
       for (int i = 0, l = nodes.getLength(); i < l; i++) {
-         result[i] = nodes.item(i);
+         result[i] = asNonNull(nodes.item(i));
       }
       return result;
    }
@@ -651,7 +652,7 @@ public abstract class DOMUtils {
     * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
     */
    public static Document parseFile(final File xmlFile, final @Nullable String defaultNamespace, final File @Nullable... xmlSchemaFiles)
-      throws XMLException {
+         throws XMLException {
       Args.notNull("xmlFile", xmlFile);
       Assert.isFileReadable(xmlFile);
 
@@ -678,7 +679,7 @@ public abstract class DOMUtils {
     * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
     */
    public static Document parseInputSource(final InputSource input, final @Nullable String inputId, final @Nullable String defaultNamespace,
-      final File @Nullable... xmlSchemaFiles) throws XMLException {
+         final File @Nullable... xmlSchemaFiles) throws XMLException {
       Args.notNull("input", input);
 
       try {
@@ -762,7 +763,7 @@ public abstract class DOMUtils {
          }
 
          Assert.isTrue(errorHandler.violations.isEmpty(), errorHandler.violations.size() + " XML schema violation(s) detected in ["
-            + inputId + "]:\n\n => " + Strings.join(errorHandler.violations, "\n => "));
+               + inputId + "]:\n\n => " + Strings.join(errorHandler.violations, "\n => "));
          return domDoc;
       } catch (final ParserConfigurationException | SAXException | IOException ex) {
          throw new XMLException(ex);
@@ -792,7 +793,7 @@ public abstract class DOMUtils {
     */
    @SuppressWarnings("resource")
    public static Document parseString(final CharSequence input, final @Nullable String inputId, final String defaultNamespace,
-      final File... xmlSchemaFiles) throws XMLException {
+         final File... xmlSchemaFiles) throws XMLException {
       Args.notNull("input", input);
 
       return parseInputSource(new InputSource(new CharSequenceReader(input)), inputId, defaultNamespace, xmlSchemaFiles);
@@ -975,7 +976,7 @@ public abstract class DOMUtils {
 
    @SuppressWarnings("resource")
    public static void toXML(final Node root, final OutputStream out, final boolean outputXMLDeclaration, final boolean formatPretty)
-      throws XMLException, IOException {
+         throws XMLException, IOException {
       Args.notNull("root", root);
       Args.notNull("out", out);
 

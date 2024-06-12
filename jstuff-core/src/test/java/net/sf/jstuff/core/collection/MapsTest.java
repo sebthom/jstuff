@@ -9,7 +9,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
@@ -52,7 +51,7 @@ public class MapsTest {
 
    @Test
    public void testSortByValueAsc() {
-      final var map = new HashMap<@Nullable String, Integer>();
+      final var map = new HashMap<@Nullable String, @Nullable Integer>();
       map.put("e", 3);
       map.put("d", 2);
       map.put("c", 2);
@@ -79,7 +78,7 @@ public class MapsTest {
       final UnsortableKey keyA = new UnsortableKey("a");
       final UnsortableKey keyNull = null;
 
-      final var map = new HashMap<UnsortableKey, Integer>();
+      final var map = new HashMap<@Nullable UnsortableKey, @Nullable Integer>();
       map.put(keyE, 3);
       map.put(keyD, 2);
       map.put(keyC, 2);
@@ -88,7 +87,7 @@ public class MapsTest {
       map.put(keyNull, 0);
 
       // {a=null, b=null, null=0, c=2, d=2, e=3}
-      final Map<UnsortableKey, Integer> sortedMap = Maps.sortByValue(map);
+      final var sortedMap = Maps.sortByValue(map);
       System.out.println(sortedMap);
       assertThat(new ArrayList<>(sortedMap.values())).isNotEqualTo(new ArrayList<>(map.values()));
       assertThat(new ArrayList<>(sortedMap.values())).isEqualTo(Arrays.asList((Integer) null, (Integer) null, 0, 2, 2, 3));
@@ -104,7 +103,7 @@ public class MapsTest {
 
    @Test
    public void testSortByValueDesc() {
-      final var map = new HashMap<String, Integer>();
+      final var map = new HashMap<@Nullable String, @Nullable Integer>();
       map.put("e", 3);
       map.put("d", 2);
       map.put("c", 2);
@@ -113,7 +112,7 @@ public class MapsTest {
       map.put(null, 0);
 
       // {e=3, d=2, c=2, null=0, b=null, a=null}
-      final Map<String, Integer> sortedMap = Maps.sortByValue(map, SortDirection.DESC);
+      final var sortedMap = Maps.sortByValue(map, SortDirection.DESC);
 
       assertThat(new ArrayList<>(sortedMap.values())).isNotEqualTo(new ArrayList<>(map.values()));
       assertThat(new ArrayList<>(sortedMap.values())).isEqualTo(Arrays.asList(3, 2, 2, 0, (Integer) null, (Integer) null));

@@ -47,12 +47,10 @@ public abstract class Strings {
 
    public static final class ANSIState {
 
-      @Nullable
-      public String bgcolor;
+      public @Nullable String bgcolor;
       public boolean blink;
       public boolean bold;
-      @Nullable
-      public String fgcolor;
+      public @Nullable String fgcolor;
       public boolean underline;
 
       public ANSIState() {
@@ -266,7 +264,7 @@ public abstract class Strings {
     * See {@link StringUtils#abbreviate(String, String, int, int)}
     */
    public static @Nullable String abbreviateNullable(final @Nullable String str, final @Nullable String abbrevMarker, final int offset,
-      final int maxWidth) {
+         final int maxWidth) {
       return StringUtils.abbreviate(str, abbrevMarker, offset, maxWidth);
    }
 
@@ -388,7 +386,7 @@ public abstract class Strings {
     */
 
    public static String appendIfMissingIgnoreCase(final String str, final @Nullable CharSequence suffix,
-      final CharSequence @Nullable... suffixes) {
+         final CharSequence @Nullable... suffixes) {
       return asNonNullUnsafe(StringUtils.appendIfMissingIgnoreCase(str, suffix, suffixes));
    }
 
@@ -396,7 +394,7 @@ public abstract class Strings {
     * See {@link StringUtils#appendIfMissingIgnoreCase(String, CharSequence, CharSequence[])}
     */
    public static @Nullable String appendIfMissingIgnoreCaseNullable(final @Nullable String str, final @Nullable CharSequence suffix,
-      final CharSequence @Nullable... suffixes) {
+         final CharSequence @Nullable... suffixes) {
       return StringUtils.appendIfMissingIgnoreCase(str, suffix, suffixes);
    }
 
@@ -404,7 +402,7 @@ public abstract class Strings {
     * See {@link StringUtils#appendIfMissing(String, CharSequence, CharSequence[])}
     */
    public static @Nullable String appendIfMissingNullable(final @Nullable String str, final @Nullable CharSequence suffix,
-      final CharSequence @Nullable... suffixes) {
+         final CharSequence @Nullable... suffixes) {
       return StringUtils.appendIfMissing(str, suffix, suffixes);
    }
 
@@ -657,8 +655,8 @@ public abstract class Strings {
     */
    public static int countMatches(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor, final int startAt) {
       if (searchIn == null || searchFor == null //
-         || searchIn.length() == 0 || searchFor.length() == 0 //
-         || startAt >= searchIn.length())
+            || searchIn.length() == 0 || searchFor.length() == 0 //
+            || startAt >= searchIn.length())
          return 0;
 
       int count = 0;
@@ -701,7 +699,7 @@ public abstract class Strings {
     */
    public static int countMatches(final @Nullable String searchIn, final char searchFor, final int startAt) {
       if (searchIn == null || searchIn.isEmpty() //
-         || startAt >= searchIn.length())
+            || startAt >= searchIn.length())
          return 0;
 
       int count = 0;
@@ -744,8 +742,8 @@ public abstract class Strings {
     */
    public static int countMatches(final @Nullable String searchIn, final @Nullable String searchFor, final int startAt) {
       if (searchIn == null || searchFor == null //
-         || searchIn.isEmpty() || searchFor.isEmpty() //
-         || startAt >= searchIn.length())
+            || searchIn.isEmpty() || searchFor.isEmpty() //
+            || startAt >= searchIn.length())
          return 0;
 
       int count = 0;
@@ -1645,7 +1643,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(boolean[], char, int, int)}
     */
    public static @Nullable String joinNullable(final boolean @Nullable [] array, final char separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(array, separator, startIndex, endIndex);
    }
 
@@ -1660,7 +1658,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(byte[], char, int, int)}
     */
    public static @Nullable String joinNullable(final byte @Nullable [] array, final char separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(array, separator, startIndex, endIndex);
    }
 
@@ -1675,7 +1673,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(char[], char, int, int)}
     */
    public static @Nullable String joinNullable(final char @Nullable [] array, final char separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(array, separator, startIndex, endIndex);
    }
 
@@ -1690,7 +1688,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(double[], char, int, int)}
     */
    public static @Nullable String joinNullable(final double @Nullable [] array, final char separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(array, separator, startIndex, endIndex);
    }
 
@@ -1705,7 +1703,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(float[], char, int, int)}
     */
    public static @Nullable String joinNullable(final float @Nullable [] array, final char separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(array, separator, startIndex, endIndex);
    }
 
@@ -1720,7 +1718,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(int[], char, int, int)}
     */
    public static @Nullable String joinNullable(final int @Nullable [] array, final char separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(array, separator, startIndex, endIndex);
    }
 
@@ -1743,7 +1741,7 @@ public abstract class Strings {
    }
 
    public static <T> @Nullable String joinNullable(final @Nullable Iterable<T> it, final char separator,
-      final Function<T, Object> transform) {
+         final Function<T, Object> transform) {
       if (it == null)
          return null;
 
@@ -1751,7 +1749,7 @@ public abstract class Strings {
    }
 
    public static <T> @Nullable String joinNullable(final @Nullable Iterable<T> it, final @Nullable CharSequence separator,
-      final Function<T, Object> transform) {
+         final Function<T, Object> transform) {
       if (it == null)
          return null;
 
@@ -1773,7 +1771,7 @@ public abstract class Strings {
    }
 
    public static <T> @Nullable String joinNullable(final @Nullable Iterator<T> it, final char separator,
-      final Function<T, Object> transform) {
+         final Function<T, Object> transform) {
       if (it == null)
          return null;
       if (!it.hasNext())
@@ -1798,7 +1796,7 @@ public abstract class Strings {
    }
 
    public static <T> @Nullable String joinNullable(final @Nullable Iterator<T> it, final @Nullable CharSequence separator,
-      final Function<T, Object> transform) {
+         final Function<T, Object> transform) {
       if (it == null)
          return null;
       if (!it.hasNext())
@@ -1834,7 +1832,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(List, char, int, int)}
     */
    public static @Nullable String joinNullable(final @Nullable List<?> list, final char separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(list, separator, startIndex, endIndex);
    }
 
@@ -1848,7 +1846,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(List, String, int, int)}
     */
    public static @Nullable String joinNullable(final @Nullable List<?> list, final @Nullable String separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(list, separator, startIndex, endIndex);
    }
 
@@ -1863,7 +1861,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(long[], char, int, int)}
     */
    public static @Nullable String joinNullable(final long @Nullable [] array, final char separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(array, separator, startIndex, endIndex);
    }
 
@@ -1878,7 +1876,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(Object[], char, int, int)}
     */
    public static @Nullable String joinNullable(final Object @Nullable [] array, final char separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(array, separator, startIndex, endIndex);
    }
 
@@ -1893,7 +1891,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(Object[], String, int, int)}
     */
    public static @Nullable String joinNullable(final Object @Nullable [] array, final @Nullable String separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(array, separator, startIndex, endIndex);
    }
 
@@ -1908,7 +1906,7 @@ public abstract class Strings {
     * See {@link StringUtils#join(short[], char, int, int)}
     */
    public static @Nullable String joinNullable(final short @Nullable [] array, final char separator, final int startIndex,
-      final int endIndex) {
+         final int endIndex) {
       return StringUtils.join(array, separator, startIndex, endIndex);
    }
 
@@ -1982,7 +1980,7 @@ public abstract class Strings {
     * See {@link StringUtils#lastIndexOfIgnoreCase(CharSequence, CharSequence, int)}
     */
    public static int lastIndexOfIgnoreCase(final @Nullable CharSequence searchIn, final @Nullable CharSequence searchFor,
-      final int startPos) {
+         final int startPos) {
       return StringUtils.lastIndexOfIgnoreCase(searchIn, searchFor, startPos);
    }
 
@@ -2202,7 +2200,7 @@ public abstract class Strings {
     * See {@link StringUtils#overlay(String, String, int, int)}
     */
    public static @Nullable String overlayNullable(final @Nullable String str, final @Nullable String overlay, final int start,
-      final int end) {
+         final int end) {
       return StringUtils.overlay(str, overlay, start, end);
    }
 
@@ -2221,7 +2219,7 @@ public abstract class Strings {
     * See {@link StringUtils#prependIfMissingIgnoreCase(String, CharSequence, CharSequence[])}
     */
    public static String prependIfMissingIgnoreCase(final String str, final @Nullable CharSequence prefix,
-      final CharSequence @Nullable... prefixes) {
+         final CharSequence @Nullable... prefixes) {
       return asNonNullUnsafe(StringUtils.prependIfMissingIgnoreCase(str, prefix, prefixes));
    }
 
@@ -2229,7 +2227,7 @@ public abstract class Strings {
     * See {@link StringUtils#prependIfMissingIgnoreCase(String, CharSequence, CharSequence[])}
     */
    public static @Nullable String prependIfMissingIgnoreCaseNullable(final @Nullable String str, final @Nullable CharSequence prefix,
-      final CharSequence @Nullable... prefixes) {
+         final CharSequence @Nullable... prefixes) {
       return StringUtils.prependIfMissingIgnoreCase(str, prefix, prefixes);
    }
 
@@ -2237,7 +2235,7 @@ public abstract class Strings {
     * See {@link StringUtils#prependIfMissing(String, CharSequence, CharSequence[])}
     */
    public static @Nullable String prependIfMissingNullable(final @Nullable String str, final @Nullable CharSequence prefix,
-      final CharSequence @Nullable... prefixes) {
+         final CharSequence @Nullable... prefixes) {
       return StringUtils.prependIfMissing(str, prefix, prefixes);
    }
 
@@ -2327,7 +2325,7 @@ public abstract class Strings {
     * See {@link String#regionMatches(boolean, int, String, int, int)}
     */
    public static boolean regionMatches(final @Nullable CharSequence searchIn, final boolean ignoreCase, final int searchInOffset,
-      @Nullable final CharSequence searchFor, final int searchForOffset, int length) {
+         @Nullable final CharSequence searchFor, final int searchForOffset, int length) {
       if (searchIn == null || searchFor == null)
          return false;
 
@@ -2335,8 +2333,8 @@ public abstract class Strings {
          return ((String) searchIn).regionMatches(ignoreCase, searchInOffset, (String) searchFor, searchForOffset, length);
 
       if (searchInOffset < 0 || searchForOffset < 0 //
-         || searchInOffset > searchIn.length() - length //
-         || searchForOffset > searchFor.length() - length)
+            || searchInOffset > searchIn.length() - length //
+            || searchForOffset > searchFor.length() - length)
          return false;
 
       int searchInIndex = searchInOffset;
@@ -2569,7 +2567,7 @@ public abstract class Strings {
     * See {@link StringUtils#replace(String, String, String, int)}
     */
    public static String replace(final String searchIn, final @Nullable String searchFor, final @Nullable String replaceWith,
-      final int max) {
+         final int max) {
       return asNonNullUnsafe(StringUtils.replace(searchIn, searchFor, replaceWith, max));
    }
 
@@ -2592,7 +2590,7 @@ public abstract class Strings {
     * Replace all occurrences of searchFor in searchIn with replaceWith.
     */
    public static void replace(final @Nullable StringBuilder searchIn, final @Nullable String searchFor,
-      final @Nullable String replaceWith) {
+         final @Nullable String replaceWith) {
       if (searchIn == null || searchFor == null || replaceWith == null)
          return;
       final int searchForLen = searchFor.length();
@@ -2637,7 +2635,7 @@ public abstract class Strings {
     * @param length number of characters to replace
     */
    public static CharSequence replaceAt(final @Nullable CharSequence searchIn, final int startAt, final int length,
-      final CharSequence replaceWith) {
+         final CharSequence replaceWith) {
       return asNonNullUnsafe(replaceAtNullable(searchIn, startAt, length, replaceWith));
    }
 
@@ -2653,7 +2651,7 @@ public abstract class Strings {
     * @param startAt position where to insert the text (0=before 1st character, 1=after 1st character, 2=after 2nd character)
     */
    public static @Nullable CharSequence replaceAtNullable(final @Nullable CharSequence searchIn, final int startAt,
-      final @Nullable CharSequence replaceWith) {
+         final @Nullable CharSequence replaceWith) {
       if (searchIn == null)
          return searchIn;
       return replaceAtNullable(searchIn, startAt, searchIn.length(), replaceWith);
@@ -2677,7 +2675,7 @@ public abstract class Strings {
     * @param length number of characters to replace
     */
    public static @Nullable CharSequence replaceAtNullable(final @Nullable CharSequence searchIn, int startAt, int length,
-      final @Nullable CharSequence replaceWith) {
+         final @Nullable CharSequence replaceWith) {
       if (searchIn == null || replaceWith == null)
          return searchIn;
 
@@ -2720,7 +2718,7 @@ public abstract class Strings {
     * See {@link StringUtils#replaceChars(String, String, String)}
     */
    public static @Nullable String replaceCharsNullable(final @Nullable String searchIn, final @Nullable String searchChars,
-      final @Nullable String replaceChars) {
+         final @Nullable String replaceChars) {
       return StringUtils.replaceChars(searchIn, searchChars, replaceChars);
    }
 
@@ -2739,17 +2737,17 @@ public abstract class Strings {
    }
 
    public static CharSequence replaceEachGroup(final @Nullable Pattern regex, final CharSequence searchIn, final int groupToReplace,
-      final @Nullable String replaceWith) {
+         final @Nullable String replaceWith) {
       return asNonNullUnsafe(replaceEachGroupNullable(regex, searchIn, groupToReplace, replaceWith));
    }
 
    public static CharSequence replaceEachGroup(final @Nullable String regex, final CharSequence searchIn, final int groupToReplace,
-      final @Nullable String replaceWith) {
+         final @Nullable String replaceWith) {
       return asNonNullUnsafe(replaceEachGroupNullable(regex, searchIn, groupToReplace, replaceWith));
    }
 
    public static @Nullable CharSequence replaceEachGroupNullable(final @Nullable Pattern regex, final @Nullable CharSequence searchIn,
-      final int groupToReplace, final @Nullable String replaceWith) {
+         final int groupToReplace, final @Nullable String replaceWith) {
       if (regex == null || searchIn == null || replaceWith == null)
          return searchIn;
       final var m = regex.matcher(searchIn);
@@ -2761,7 +2759,7 @@ public abstract class Strings {
    }
 
    public static @Nullable CharSequence replaceEachGroupNullable(final @Nullable String regex, final @Nullable CharSequence searchIn,
-      final int groupToReplace, final @Nullable String replaceWith) {
+         final int groupToReplace, final @Nullable String replaceWith) {
       if (regex == null)
          return searchIn;
       return replaceEachGroupNullable(Pattern.compile(regex), searchIn, groupToReplace, replaceWith);
@@ -2794,7 +2792,7 @@ public abstract class Strings {
     * See {@link StringUtils#replaceEach(String, String[], String[])}
     */
    public static @Nullable String replaceEachNullable(final @Nullable String searchIn, final String @Nullable [] searchFor,
-      final String @Nullable [] replaceWith) {
+         final String @Nullable [] replaceWith) {
       return StringUtils.replaceEach(searchIn, searchFor, replaceWith);
    }
 
@@ -2802,7 +2800,7 @@ public abstract class Strings {
     * See {@link StringUtils#replaceEachRepeatedly(String, String[], String[])}
     */
    public static String replaceEachRepeatedly(final String searchIn, final String @Nullable [] searchFor,
-      final String @Nullable [] replaceWith) {
+         final String @Nullable [] replaceWith) {
       return asNonNullUnsafe(StringUtils.replaceEachRepeatedly(searchIn, searchFor, replaceWith));
    }
 
@@ -2810,7 +2808,7 @@ public abstract class Strings {
     * See {@link StringUtils#replaceEachRepeatedly(String, String[], String[])}
     */
    public static @Nullable String replaceEachRepeatedlyNullable(final @Nullable String searchIn, final String @Nullable [] searchFor,
-      final String @Nullable [] replaceWith) {
+         final String @Nullable [] replaceWith) {
       return StringUtils.replaceEachRepeatedly(searchIn, searchFor, replaceWith);
    }
 
@@ -2825,7 +2823,7 @@ public abstract class Strings {
     * Replace the first occurrence of searchFor in searchIn with replaceWith.
     */
    public static void replaceFirst(final @Nullable StringBuffer searchIn, final @Nullable String searchFor,
-      final @Nullable String replaceWith) {
+         final @Nullable String replaceWith) {
       if (searchIn == null || searchFor == null || replaceWith == null)
          return;
       final int index = searchIn.indexOf(searchFor);
@@ -2838,7 +2836,7 @@ public abstract class Strings {
     * Replace the first occurrence of searchFor in searchIn with replaceWith.
     */
    public static void replaceFirst(final @Nullable StringBuilder searchIn, final @Nullable String searchFor,
-      final @Nullable String replaceWith) {
+         final @Nullable String replaceWith) {
       if (searchIn == null || searchFor == null || replaceWith == null)
          return;
       final int index = searchIn.indexOf(searchFor);
@@ -2851,7 +2849,7 @@ public abstract class Strings {
     * See {@link StringUtils#replaceOnceIgnoreCase(String, String, String)}
     */
    public static String replaceFirstIgnoreCase(final String searchIn, final @Nullable String searchFor,
-      final @Nullable String replaceWith) {
+         final @Nullable String replaceWith) {
       return asNonNullUnsafe(StringUtils.replaceOnceIgnoreCase(searchIn, searchFor, replaceWith));
    }
 
@@ -2859,7 +2857,7 @@ public abstract class Strings {
     * See {@link StringUtils#replaceOnceIgnoreCase(String, String, String)}
     */
    public static @Nullable String replaceFirstIgnoreCaseNullable(final @Nullable String searchIn, final @Nullable String searchFor,
-      final @Nullable String replaceWith) {
+         final @Nullable String replaceWith) {
       return StringUtils.replaceOnceIgnoreCase(searchIn, searchFor, replaceWith);
    }
 
@@ -2867,7 +2865,7 @@ public abstract class Strings {
     * See {@link StringUtils#replaceOnce(String, String, String)}
     */
    public static @Nullable String replaceFirstNullable(final @Nullable String searchIn, final @Nullable String searchFor,
-      final @Nullable String replaceWith) {
+         final @Nullable String replaceWith) {
       return StringUtils.replaceOnce(searchIn, searchFor, replaceWith);
    }
 
@@ -2881,7 +2879,7 @@ public abstract class Strings {
     * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be returned.
     */
    public static CharSequence replaceIgnoreCase(final String searchIn, @Nullable final String searchFor,
-      @Nullable final CharSequence replaceWith) {
+         @Nullable final CharSequence replaceWith) {
       return asNonNullUnsafe(replaceIgnoreCaseNullable(searchIn, searchFor, replaceWith));
    }
 
@@ -2896,7 +2894,7 @@ public abstract class Strings {
     * See {@link StringUtils#replaceIgnoreCase(String, String, String, int)}
     */
    public static String replaceIgnoreCase(final String searchIn, final @Nullable String searchFor, final @Nullable String replaceWith,
-      final int max) {
+         final int max) {
       return asNonNullUnsafe(StringUtils.replaceIgnoreCase(searchIn, searchFor, replaceWith, max));
    }
 
@@ -2910,7 +2908,7 @@ public abstract class Strings {
     * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be returned.
     */
    public static @Nullable CharSequence replaceIgnoreCaseNullable(final @Nullable String searchIn, @Nullable String searchFor,
-      @Nullable final CharSequence replaceWith) {
+         @Nullable final CharSequence replaceWith) {
       if (searchIn == null || searchFor == null || replaceWith == null)
          return searchIn;
       final int searchInLen = searchIn.length();
@@ -2939,7 +2937,7 @@ public abstract class Strings {
     * See {@link StringUtils#replaceIgnoreCase(String, String, String)}
     */
    public static @Nullable String replaceIgnoreCaseNullable(final @Nullable String searchIn, final @Nullable String searchFor,
-      final @Nullable String replaceWith) {
+         final @Nullable String replaceWith) {
       return StringUtils.replaceIgnoreCase(searchIn, searchFor, replaceWith);
    }
 
@@ -2947,7 +2945,7 @@ public abstract class Strings {
     * See {@link StringUtils#replaceIgnoreCase(String, String, String, int)}
     */
    public static @Nullable String replaceIgnoreCaseNullable(final @Nullable String searchIn, final @Nullable String searchFor,
-      final @Nullable String replaceWith, final int max) {
+         final @Nullable String replaceWith, final int max) {
       return StringUtils.replaceIgnoreCase(searchIn, searchFor, replaceWith, max);
    }
 
@@ -2962,7 +2960,7 @@ public abstract class Strings {
     * See {@link StringUtils#replace(String, String, String)}
     */
    public static @Nullable String replaceNullable(final @Nullable String searchIn, final @Nullable String searchFor,
-      final @Nullable String replaceWith) {
+         final @Nullable String replaceWith) {
       return StringUtils.replace(searchIn, searchFor, replaceWith);
    }
 
@@ -2970,7 +2968,7 @@ public abstract class Strings {
     * See {@link StringUtils#replace(String, String, String, int)}
     */
    public static @Nullable String replaceNullable(final @Nullable String searchIn, final @Nullable String searchFor,
-      final @Nullable String replaceWith, final int max) {
+         final @Nullable String replaceWith, final int max) {
       return StringUtils.replace(searchIn, searchFor, replaceWith, max);
    }
 
@@ -3153,7 +3151,7 @@ public abstract class Strings {
     * See {@link StringUtils#splitByWholeSeparator(String, String, int)}
     */
    public static @NonNull String @Nullable [] splitByWholeSeparatorNullable(final @Nullable String str, final @Nullable String separator,
-      final int max) {
+         final int max) {
       return StringUtils.splitByWholeSeparator(str, separator, max);
    }
 
@@ -3168,7 +3166,7 @@ public abstract class Strings {
     * See {@link StringUtils#splitByWholeSeparatorPreserveAllTokens(String, String)}
     */
    public static @NonNull String[] splitByWholeSeparatorPreserveAllTokens(final String str, final @Nullable String separator,
-      final int max) {
+         final int max) {
       return asNonNullUnsafe(StringUtils.splitByWholeSeparatorPreserveAllTokens(str, separator, max));
    }
 
@@ -3176,7 +3174,7 @@ public abstract class Strings {
     * See {@link StringUtils#splitByWholeSeparatorPreserveAllTokens(String, String)}
     */
    public static @NonNull String @Nullable [] splitByWholeSeparatorPreserveAllTokensNullable(final @Nullable String str,
-      final @Nullable String separator) {
+         final @Nullable String separator) {
       return StringUtils.splitByWholeSeparatorPreserveAllTokens(str, separator);
    }
 
@@ -3184,7 +3182,7 @@ public abstract class Strings {
     * See {@link StringUtils#splitByWholeSeparatorPreserveAllTokens(String, String)}
     */
    public static @NonNull String @Nullable [] splitByWholeSeparatorPreserveAllTokensNullable(final @Nullable String str,
-      final @Nullable String separator, final int max) {
+         final @Nullable String separator, final int max) {
       return StringUtils.splitByWholeSeparatorPreserveAllTokens(str, separator, max);
    }
 
@@ -3291,7 +3289,7 @@ public abstract class Strings {
     * See {@link StringUtils#split(String, String, int)}
     */
    public static @NonNull String @Nullable [] splitNullable(final @Nullable String str, final @Nullable String separatorChars,
-      final int max) {
+         final int max) {
       return StringUtils.split(str, separatorChars, max);
    }
 
@@ -3341,7 +3339,7 @@ public abstract class Strings {
     * See {@link StringUtils#splitPreserveAllTokens(String, String)}
     */
    public static @NonNull String @Nullable [] splitPreserveAllTokensNullable(final @Nullable String str,
-      final @Nullable String separatorChars) {
+         final @Nullable String separatorChars) {
       return StringUtils.splitPreserveAllTokens(str, separatorChars);
    }
 
@@ -3349,7 +3347,7 @@ public abstract class Strings {
     * See {@link StringUtils#splitPreserveAllTokens(String, String, int)}
     */
    public static @NonNull String @Nullable [] splitPreserveAllTokensNullable(final @Nullable String str,
-      final @Nullable String separatorChars, final int max) {
+         final @Nullable String separatorChars, final int max) {
       return StringUtils.splitPreserveAllTokens(str, separatorChars, max);
    }
 
@@ -3723,8 +3721,8 @@ public abstract class Strings {
 
       final int pos = searchIn.toLowerCase().indexOf(searchFor.toLowerCase());
       return pos < 0 //
-         ? EMPTY
-         : searchIn.substring(0, pos);
+            ? EMPTY
+            : searchIn.substring(0, pos);
    }
 
    /**
@@ -3802,7 +3800,7 @@ public abstract class Strings {
     * See {@link StringUtils#substringBetween(String, String, String)}
     */
    public static @Nullable String substringBetweenNullable(final @Nullable String str, final @Nullable String open,
-      final @Nullable String close) {
+         final @Nullable String close) {
       return StringUtils.substringBetween(str, open, close);
    }
 
@@ -3831,7 +3829,7 @@ public abstract class Strings {
     * See {@link StringUtils#substringsBetween(String, String, String)}
     */
    public static String @Nullable [] substringsBetweenNullable(final @Nullable String str, final @Nullable String open,
-      final @Nullable String close) {
+         final @Nullable String close) {
       return StringUtils.substringsBetween(str, open, close);
    }
 

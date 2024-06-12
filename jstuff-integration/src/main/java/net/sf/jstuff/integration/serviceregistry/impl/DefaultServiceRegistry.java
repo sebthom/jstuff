@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.serviceregistry.impl;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
@@ -23,7 +23,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.WeakHashSet;
@@ -69,7 +68,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
          }
       }
 
-      private <@NonNull T> ServiceProxyInternal<T> findOrCreateServiceProxy(final Class<T> serviceInterface) {
+      private <T> ServiceProxyInternal<T> findOrCreateServiceProxy(final Class<T> serviceInterface) {
          var proxy = findServiceProxy(serviceInterface);
          if (proxy == null) {
             proxy = createServiceProxy(this, serviceInterface);
@@ -133,8 +132,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
          }
       }
 
-      private <@NonNull SERVICE_INTERFACE> void setActiveService(final Class<SERVICE_INTERFACE> serviceInterface,
-         final SERVICE_INTERFACE service) {
+      private <SERVICE_INTERFACE> void setActiveService(final Class<SERVICE_INTERFACE> serviceInterface, final SERVICE_INTERFACE service) {
          LOG.info("Registering service:\n  serviceEndpointId : %s\n  serviceInterface  : %s [%s]\n  serviceInstance   : %s [%s]",
             serviceEndpointId, //
             serviceInterface.getName(), toString(serviceInterface.getClassLoader()), //
@@ -188,8 +186,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
    }
 
    @Override
-   public <@NonNull SERVICE_INTERFACE> boolean addService(final Class<SERVICE_INTERFACE> serviceInterface,
-      final SERVICE_INTERFACE serviceInstance) throws IllegalArgumentException, IllegalStateException {
+   public <SERVICE_INTERFACE> boolean addService(final Class<SERVICE_INTERFACE> serviceInterface, final SERVICE_INTERFACE serviceInstance)
+         throws IllegalArgumentException, IllegalStateException {
       Args.notNull("serviceInterface", serviceInterface);
       Args.notNull("serviceInstance", serviceInstance);
 
@@ -197,8 +195,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
    }
 
    @Override
-   public <@NonNull SERVICE_INTERFACE> boolean addService(final String serviceEndpointId, final Class<SERVICE_INTERFACE> serviceInterface,
-      final SERVICE_INTERFACE serviceInstance) throws IllegalArgumentException, IllegalStateException {
+   public <SERVICE_INTERFACE> boolean addService(final String serviceEndpointId, final Class<SERVICE_INTERFACE> serviceInterface,
+         final SERVICE_INTERFACE serviceInstance) throws IllegalArgumentException, IllegalStateException {
       Args.notNull("serviceEndpointId", serviceEndpointId);
       Args.notNull("serviceInterface", serviceInterface);
       Args.notNull("serviceInstance", serviceInstance);
@@ -225,7 +223,7 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
             return false;
 
          throw new IllegalStateException("Cannot register service [" + serviceInstance + "] at endpoint [" + serviceEndpointId
-            + "] because service [" + srvConfig.activeService + "] is already registered.");
+               + "] because service [" + srvConfig.activeService + "] is already registered.");
       } finally {
          serviceEndpoints_WRITE.unlock();
       }
@@ -234,8 +232,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
    /**
     * This method is intended for sub-classing
     */
-   protected <@NonNull SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(
-      final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
+   protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointState serviceEndpointState,
+         final Class<SERVICE_INTERFACE> serviceInterface) {
       final var advice = new DefaultServiceProxyAdvice<>(serviceEndpointState, serviceInterface);
       final ServiceProxyInternal<SERVICE_INTERFACE> serviceProxy = Proxies.create((proxy, method, args) -> {
          if (method.getDeclaringClass() == ServiceProxy.class || method.getDeclaringClass() == ServiceProxyInternal.class)
@@ -283,8 +281,8 @@ public class DefaultServiceRegistry implements ServiceRegistry, DefaultServiceRe
    }
 
    @Override
-   public <@NonNull SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(final String serviceEndpointId,
-      final Class<SERVICE_INTERFACE> serviceInterface) {
+   public <SERVICE_INTERFACE> ServiceProxy<SERVICE_INTERFACE> getService(final String serviceEndpointId,
+         final Class<SERVICE_INTERFACE> serviceInterface) {
       Args.notNull("serviceEndpointId", serviceEndpointId);
       Args.notNull("serviceInterface", serviceInterface);
 

@@ -4,9 +4,8 @@
  */
 package net.sf.jstuff.integration.serviceregistry.support;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -33,7 +32,7 @@ import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ServiceAsSpringBean<@NonNull T> implements FactoryBean<T>, InitializingBean {
+public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean {
 
    private ServiceRegistry serviceRegistry = lazyNonNull();
 

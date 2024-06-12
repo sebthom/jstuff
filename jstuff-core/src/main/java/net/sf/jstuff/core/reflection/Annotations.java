@@ -4,8 +4,8 @@
  */
 package net.sf.jstuff.core.reflection;
 
-import static net.sf.jstuff.core.reflection.Members.*;
-import static net.sf.jstuff.core.reflection.Types.*;
+import static net.sf.jstuff.core.reflection.Members.isPublic;
+import static net.sf.jstuff.core.reflection.Types.getInterfacesRecursive;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -41,7 +41,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
       /*
        * build the final map of attributes to be used
        */
-      final var attrValues = new HashMap<String, Object>();
+      final var attrValues = new HashMap<String, @Nullable Object>();
       int count = 0;
       for (final Method m : annotationType.getDeclaredMethods()) {
          final String attrName = m.getName();
@@ -174,11 +174,11 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
       return result;
    }
 
-   public static Map<String, Object> getParameters(final Annotation annotation) throws ReflectionException {
+   public static Map<String, @Nullable Object> getParameters(final Annotation annotation) throws ReflectionException {
       Args.notNull("annotation", annotation);
 
       final var methods = annotation.annotationType().getDeclaredMethods();
-      final var parameters = new HashMap<String, Object>(methods.length);
+      final var parameters = new HashMap<String, @Nullable Object>(methods.length);
       for (final Method m : methods) {
          try {
             parameters.put(m.getName(), m.invoke(annotation));

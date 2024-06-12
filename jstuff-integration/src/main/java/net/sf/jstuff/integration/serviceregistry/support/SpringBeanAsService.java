@@ -6,7 +6,6 @@ package net.sf.jstuff.integration.serviceregistry.support;
 
 import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -34,7 +33,7 @@ import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanAsService<@NonNull T> implements InitializingBean, DisposableBean {
+public class SpringBeanAsService<T> implements InitializingBean, DisposableBean {
 
    private boolean isInitialized;
    private ServiceRegistry serviceRegistry = lazyNonNull();
@@ -72,7 +71,7 @@ public class SpringBeanAsService<@NonNull T> implements InitializingBean, Dispos
       Args.notNull("service", service);
       Assert.isFalse(isInitialized, "Already initialized!");
 
-      this.springBean = service;
+      springBean = service;
    }
 
    public synchronized void setServiceInterface(final Class<T> serviceInterface) {

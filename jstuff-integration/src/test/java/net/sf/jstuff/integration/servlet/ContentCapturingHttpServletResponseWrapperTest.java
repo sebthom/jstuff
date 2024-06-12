@@ -5,14 +5,12 @@
 package net.sf.jstuff.integration.servlet;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 
 import net.sf.jstuff.core.logging.Logger;
@@ -30,7 +28,8 @@ public class ContentCapturingHttpServletResponseWrapperTest {
    @SuppressWarnings("unused")
    public void testContentCapturingHttpServletResponseWrapper() throws UnsupportedEncodingException {
 
-      final @NonNull String[] encoding = {"ISO-8859-1"};
+      @SuppressWarnings("null")
+      final String[] encoding = {"ISO-8859-1"};
 
       final HttpServletResponse mock = Types.createMixin(HttpServletResponse.class, new Object() {
          public String getCharacterEncoding() {

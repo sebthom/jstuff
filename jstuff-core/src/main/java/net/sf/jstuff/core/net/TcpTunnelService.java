@@ -74,11 +74,12 @@ public class TcpTunnelService extends Thread {
       protected TcpTunnel(final Socket clientSocket) throws SocketException {
          this.clientSocket = clientSocket;
          tunnelName = clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort() + " > " //
-            + clientSocket.getLocalAddress().getHostName() + ":" + clientSocket.getLocalPort() + " > " //
-            + (Strings.isBlank(proxyAddress) ? "" : proxyAddress + ":" + proxyPort + " > ") //
-            + targetAddress + ":" + targetPort;
+               + clientSocket.getLocalAddress().getHostName() + ":" + clientSocket.getLocalPort() + " > " //
+               + (Strings.isBlank(proxyAddress) ? "" : proxyAddress + ":" + proxyPort + " > ") //
+               + targetAddress + ":" + targetPort;
 
-         if (Strings.isBlank(proxyAddress)) {
+         final var proxyType = TcpTunnelService.this.proxyType;
+         if (proxyType == null || Strings.isBlank(proxyAddress)) {
             targetSocket = new Socket();
          } else {
             targetSocket = new Socket(new Proxy(proxyType, new InetSocketAddress(proxyAddress, proxyPort)));
@@ -121,7 +122,7 @@ public class TcpTunnelService extends Thread {
    }
 
    public interface TcpProxyServerBuilder<THIS extends TcpProxyServerBuilder<THIS, T>, T extends TcpTunnelService> extends
-      net.sf.jstuff.core.builder.Builder<TcpTunnelService> {
+         net.sf.jstuff.core.builder.Builder<TcpTunnelService> {
 
       /**
        * Default is -1, i.e. unlimited

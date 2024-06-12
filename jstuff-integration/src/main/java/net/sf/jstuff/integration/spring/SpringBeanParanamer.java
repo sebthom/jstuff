@@ -6,6 +6,7 @@ package net.sf.jstuff.integration.spring;
 
 import java.lang.reflect.Method;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.springframework.aop.support.AopUtils;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
@@ -24,6 +25,7 @@ public abstract class SpringBeanParanamer {
 
    private static final Paranamer PARANAMER = new CachingParanamer(new BytecodeReadingParanamer());
 
+   @SuppressWarnings("null")
    public static String[] getParameterNames(final Method beanMethod, final Object bean) {
       if (beanMethod.getParameterTypes().length == 0)
          return ArrayUtils.EMPTY_STRING_ARRAY;
@@ -52,7 +54,7 @@ public abstract class SpringBeanParanamer {
       }
 
       // as fallback use indexed parameter
-      final var names = new String[beanMethod.getParameterTypes().length];
+      final var names = new @NonNull String[beanMethod.getParameterTypes().length];
       for (int i = 0, l = beanMethod.getParameterTypes().length; i < l; i++) {
          names[i] = "param" + i;
       }

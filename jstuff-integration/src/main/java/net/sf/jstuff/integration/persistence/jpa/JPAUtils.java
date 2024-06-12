@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.persistence.jpa;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
+
 import java.util.function.Supplier;
 
 import javax.persistence.EntityManager;
@@ -66,7 +68,7 @@ public abstract class JPAUtils {
       final EntityTransaction tx = em.getTransaction();
       tx.begin();
       try {
-         final T result = em.merge(entity);
+         final T result = asNonNull(em.merge(entity));
          tx.commit();
          return result;
       } catch (final RuntimeException ex) {

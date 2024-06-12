@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.core.net;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.InetSocketAddress;
@@ -26,6 +27,6 @@ public class RuleBasedProxySelectorTest {
 
       assertThat(selector.select(new URI("https://foobar.com/entry"))).isEmpty();
       assertThat(selector.select(new URI("https://example.com/entry"))).hasSize(1) //
-         .anyMatch(p -> ((InetSocketAddress) p.address()).getHostName().equals("daproxy"));
+         .anyMatch(p -> ((InetSocketAddress) asNonNull(p.address())).getHostName().equals("daproxy"));
    }
 }

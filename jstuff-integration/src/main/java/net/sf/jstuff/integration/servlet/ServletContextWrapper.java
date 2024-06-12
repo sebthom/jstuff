@@ -24,7 +24,6 @@ import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.validation.Args;
@@ -101,7 +100,7 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
-   public void declareRoles(final @NonNull String... roleNames) {
+   public void declareRoles(final String... roleNames) {
       delegate.declareRoles(roleNames);
    }
 

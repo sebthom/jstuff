@@ -98,10 +98,10 @@ public final class DebouncingEventDispatcher<EVENT> extends AbstractRateLimiting
    }
 
    private DebouncingEventDispatcher( //
-      final Duration delay, //
-      final @Nullable EventDispatcher<EVENT> delegate, //
-      final @Nullable Function<EVENT, Object> eventKeyProvider, //
-      final @Nullable ScheduledExecutorService scheduler //
+         final Duration delay, //
+         final @Nullable EventDispatcher<EVENT> delegate, //
+         final @Nullable Function<EVENT, Object> eventKeyProvider, //
+         final @Nullable ScheduledExecutorService scheduler //
    ) {
       super(delegate, eventKeyProvider, scheduler);
 
@@ -115,8 +115,8 @@ public final class DebouncingEventDispatcher<EVENT> extends AbstractRateLimiting
    @Override
    public CompletableFuture<Integer> fire(final EVENT event) {
       final long deadline = System.currentTimeMillis() + delayMS;
-      return rateLimitedEvents.compute(eventKeyProvider.apply(event), (k, debouncedEvent) -> {
-         if (asNullable(debouncedEvent) == null) {
+      return asNonNull(rateLimitedEvents.compute(eventKeyProvider.apply(event), (k, debouncedEvent) -> {
+         if (debouncedEvent == null) {
             debouncedEvent = new DebouncedEvent(event, deadline);
             final var remainingMS = Math.max(0, debouncedEvent.deadline - System.currentTimeMillis());
             debouncedEvent.scheduledFuture = scheduler.schedule(debouncedEvent::fireEvent, remainingMS, TimeUnit.MILLISECONDS);
@@ -126,11 +126,11 @@ public final class DebouncingEventDispatcher<EVENT> extends AbstractRateLimiting
 
             final var remainingMS = debouncedEvent.deadline - System.currentTimeMillis();
             debouncedEvent.scheduledFuture = remainingMS < 1 //
-               ? scheduler.submit(debouncedEvent::fireEvent) //
-               : scheduler.schedule(debouncedEvent::fireEvent, //
-                  remainingMS, TimeUnit.MILLISECONDS);
+                  ? scheduler.submit(debouncedEvent::fireEvent) //
+                  : scheduler.schedule(debouncedEvent::fireEvent, //
+                     remainingMS, TimeUnit.MILLISECONDS);
          }
          return debouncedEvent;
-      }).resultFuture;
+      })).resultFuture;
    }
 }

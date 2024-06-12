@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.userregistry.ldap;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
 
 import javax.inject.Inject;
 import javax.naming.CompositeName;
@@ -99,7 +99,7 @@ public class LdapUserDetailsService implements UserDetailsService {
    }
 
    protected NamingEnumeration<SearchResult> searchUser(final DirContext ctx, final String filter, final String[] attrs)
-      throws NamingException {
+         throws NamingException {
       final var options = new SearchControls();
       options.setSearchScope(userSearchSubtree ? SearchControls.SUBTREE_SCOPE : SearchControls.ONELEVEL_SCOPE);
       options.setReturningAttributes(attrs);

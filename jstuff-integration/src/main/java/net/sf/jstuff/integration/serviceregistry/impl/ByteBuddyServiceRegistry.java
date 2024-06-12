@@ -6,7 +6,6 @@ package net.sf.jstuff.integration.serviceregistry.impl;
 
 import java.lang.reflect.Method;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.bytebuddy.ByteBuddy;
@@ -31,7 +30,7 @@ public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
       private final Class<SERVICE_INTERFACE> serviceInterface;
 
       protected ByteBuddyServiceInterceptor(final ServiceEndpointState serviceEPState, final Class<SERVICE_INTERFACE> serviceInterface) {
-         this.serviceEndpointState = serviceEPState;
+         serviceEndpointState = serviceEPState;
          this.serviceInterface = serviceInterface;
       }
 
@@ -46,8 +45,8 @@ public class ByteBuddyServiceRegistry extends DefaultServiceRegistry {
 
    @Override
    @SuppressWarnings({"rawtypes", "resource"})
-   protected <@NonNull SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(
-      final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
+   protected <SERVICE_INTERFACE> ServiceProxyInternal<SERVICE_INTERFACE> createServiceProxy(final ServiceEndpointState serviceEndpointState,
+         final Class<SERVICE_INTERFACE> serviceInterface) {
 
       final MethodDelegation interceptor = MethodDelegation.to(new ByteBuddyServiceInterceptor<>(serviceEndpointState, serviceInterface));
 

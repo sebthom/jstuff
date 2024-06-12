@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
@@ -32,7 +31,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class BuilderFactory<TARGET_CLASS, @NonNull BLDR_IFACE extends Builder<? extends TARGET_CLASS>> {
+public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends TARGET_CLASS>> {
 
    private static final class BuilderImpl implements InvocationHandler {
 
@@ -47,7 +46,7 @@ public class BuilderFactory<TARGET_CLASS, @NonNull BLDR_IFACE extends Builder<? 
       /**
        * ordered list of the values of all wither/setter invocations on the builder instance
        */
-      private final List<Tuple2<String, Object[]>> properties = new ArrayList<>();
+      private final List<Tuple2<String, @Nullable Object[]>> properties = new ArrayList<>();
 
       BuilderImpl(final Class<?> builderInterface, final Class<?> targetClass, final Object... constructorArgs) {
          this.builderInterface = builderInterface;
@@ -124,14 +123,13 @@ public class BuilderFactory<TARGET_CLASS, @NonNull BLDR_IFACE extends Builder<? 
          final Object target = Types.newInstance(targetClass, constructorArgs);
 
          // setting properties
-         for (final Tuple2<String, Object[]> property : properties) {
-            @NonNull
+         for (final Tuple2<String, @Nullable Object[]> property : properties) {
             String propName = property.get1();
             // remove "with" prefix from withSomeProperty(...) named properties
             if (propName.length() > 4 && propName.startsWith("with")) {
                propName = Strings.lowerCaseFirstChar(propName.substring(4));
             }
-            final Object[] propArgs = property.get2();
+            final @Nullable Object[] propArgs = property.get2();
             final String setterName = "set" + Strings.upperCaseFirstChar(propName);
             final Method setterMethod = Methods.findAnyCompatible(targetClass, setterName, propArgs);
             // if no setter found then directly try to set the field
@@ -151,7 +149,7 @@ public class BuilderFactory<TARGET_CLASS, @NonNull BLDR_IFACE extends Builder<? 
                final Builder.Property propConfig = prop.getValue();
 
                boolean wasPropertySet = false;
-               for (final Tuple2<String, Object[]> property : properties) {
+               for (final Tuple2<String, @Nullable Object[]> property : properties) {
                   if (propName.equals(property.get1())) {
                      final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
                      if (!isNullable && property.get2()[0] == null)
@@ -189,7 +187,7 @@ public class BuilderFactory<TARGET_CLASS, @NonNull BLDR_IFACE extends Builder<? 
        * handles invocation of withXYZ on builder interface
        */
       @Override
-      public @Nullable Object invoke(final Object proxy, final Method method, final Object @Nullable [] args) throws Throwable {
+      public @Nullable Object invoke(final Object proxy, final Method method, final @Nullable Object @Nullable [] args) throws Throwable {
          final boolean isBuildMethod = "build".equals(method.getName()) //
             && method.getParameterTypes().length == 0 //
             && method.getReturnType().isAssignableFrom(targetClass);
@@ -202,7 +200,7 @@ public class BuilderFactory<TARGET_CLASS, @NonNull BLDR_IFACE extends Builder<? 
 
          // collect values from setter invocations
          if (method.getReturnType().isAssignableFrom(builderInterface)) {
-            properties.add(Tuple2.create(method.getName(), args == null ? ArrayUtils.EMPTY_OBJECT_ARRAY : args));
+            properties.add(new Tuple2<>(method.getName(), args == null ? new @Nullable Object[0] : args));
             return proxy;
          }
          throw new UnsupportedOperationException(method.toString());

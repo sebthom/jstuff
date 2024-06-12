@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.collection;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,6 +21,8 @@ import java.util.TreeMap;
 import java.util.WeakHashMap;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
@@ -49,7 +51,7 @@ public abstract class Maps {
          public final @Nullable V rightValue;
 
          public EntryValueDiff(final Map<K, V> leftMap, final Map<K, V> rightMap, final K key, final @Nullable V leftValue,
-            final @Nullable V rightValue) {
+               final @Nullable V rightValue) {
             this.leftMap = leftMap;
             this.rightMap = rightMap;
             this.key = key;
@@ -84,7 +86,7 @@ public abstract class Maps {
       @Override
       public String toString() {
          return MapDiff.class.getSimpleName() + " [entryValueDiffs=" + entryValueDiffs + ", leftOnlyEntries=" + leftOnlyEntries
-            + ", rightOnlyEntries=" + rightOnlyEntries + "]";
+               + ", rightOnlyEntries=" + rightOnlyEntries + "]";
       }
    }
 
@@ -186,7 +188,7 @@ public abstract class Maps {
    }
 
    public static <K, V, KK extends K, VV extends V> HashMap<K, V> newHashMap(final KK firstKey, final VV firstValue,
-      final Object... moreInitialKeysAndValues) {
+         final Object... moreInitialKeysAndValues) {
       return putAll(new HashMap<>(1 + moreInitialKeysAndValues.length / 2), firstKey, firstValue, moreInitialKeysAndValues);
    }
 
@@ -210,7 +212,7 @@ public abstract class Maps {
    }
 
    public static <K, V, KK extends K, VV extends V> LinkedHashMap<K, V> newLinkedHashMap(final KK firstKey, final VV firstValue,
-      final Object... moreInitialKeysAndValues) {
+         final Object... moreInitialKeysAndValues) {
       return putAll(new LinkedHashMap<>(1 + moreInitialKeysAndValues.length / 2), firstKey, firstValue, moreInitialKeysAndValues);
    }
 
@@ -238,12 +240,12 @@ public abstract class Maps {
    }
 
    public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator, final KK firstKey,
-      final VV firstValue, final Object... moreInitialKeysAndValues) {
+         final VV firstValue, final Object... moreInitialKeysAndValues) {
       return putAll(new TreeMap<>(keyComparator), firstKey, firstValue, moreInitialKeysAndValues);
    }
 
    public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator,
-      final Object @Nullable [] initialKeysAndValues) {
+         final Object @Nullable [] initialKeysAndValues) {
       if (initialKeysAndValues == null)
          return new TreeMap<>(keyComparator);
 
@@ -251,7 +253,7 @@ public abstract class Maps {
    }
 
    public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final KK firstKey, final VV firstValue,
-      final Object... moreInitialKeysAndValues) {
+         final Object... moreInitialKeysAndValues) {
       return putAll(new TreeMap<>(), firstKey, firstValue, moreInitialKeysAndValues);
    }
 
@@ -271,7 +273,7 @@ public abstract class Maps {
 
    @SuppressWarnings("unchecked")
    public static <K, V, KK extends K, VV extends V, M extends Map<K, V>> M putAll(final M map, final KK firstKey, final VV firstValue,
-      final Object... moreKeysAndValues) {
+         final Object... moreKeysAndValues) {
       Args.notNull("map", map);
 
       map.put(firstKey, firstValue);
@@ -338,7 +340,7 @@ public abstract class Maps {
 
    @SuppressWarnings("unchecked")
    public static <K, V, KK extends K, VV extends V, M extends Map<K, V>> M putAllIfAbsent(final M map, final KK firstKey,
-      final VV firstValue, final Object... moreKeysAndValues) {
+         final VV firstValue, final Object... moreKeysAndValues) {
       Args.notNull("map", map);
 
       map.put(firstKey, firstValue);
@@ -378,7 +380,8 @@ public abstract class Maps {
       return map;
    }
 
-   public static <K, V extends Comparable<V>> Map<K, V> sortByValue(final Map<K, V> map) {
+   @NonNullByDefault({})
+   public static <K, V extends Comparable<V>> @NonNull Map<K, V> sortByValue(final @NonNull Map<K, V> map) {
       return sortByValue(map, SortDirection.ASC);
    }
 
@@ -400,7 +403,9 @@ public abstract class Maps {
       return sortedMap;
    }
 
-   public static <K, V extends Comparable<V>> Map<K, V> sortByValue(final Map<K, V> map, final SortDirection direction) {
+   @NonNullByDefault({})
+   public static <K, V extends Comparable<V>> @NonNull Map<K, V> sortByValue(final @NonNull Map<K, V> map,
+         final @NonNull SortDirection direction) {
       Args.notNull("map", map);
 
       if (map.isEmpty())
@@ -460,14 +465,13 @@ public abstract class Maps {
 
       final var result = new HashMap<T, T>();
       boolean isKey = true;
-      @Nullable
-      T key = null;
+      T key = lazyNonNull();
       for (final T item : keysAndValues)
          if (isKey) {
             key = item;
             isKey = false;
          } else {
-            result.put(key, item);
+            result.put(asNonNullUnsafe(key), item);
             isKey = true;
          }
       return result;

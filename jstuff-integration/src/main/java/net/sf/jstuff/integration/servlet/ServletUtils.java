@@ -25,10 +25,11 @@ public abstract class ServletUtils {
       return (T) request.getAttribute(name);
    }
 
+   @SuppressWarnings("null")
    public static @Nullable X509Certificate getClientCertificate(final ServletRequest request) {
       Args.notNull("request", request);
 
-      final X509Certificate[] certChain = getAttribute(request, "javax.servlet.request.X509Certificate");
+      final X509Certificate @Nullable [] certChain = getAttribute(request, "javax.servlet.request.X509Certificate");
       if (certChain == null || certChain.length == 0)
          return null;
       return certChain[0];
@@ -46,7 +47,7 @@ public abstract class ServletUtils {
       url.append("://");
       url.append(request.getServerName());
       if (port != 80 && "http".equals(scheme) //
-         || port != 443 && "https".equals(scheme) //
+            || port != 443 && "https".equals(scheme) //
       ) {
          url.append(':');
          url.append(request.getServerPort());
