@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <!--
    SPDX-FileCopyrightText: © Sebastian Thomschke and contributors
@@ -18,7 +16,7 @@
 
    <groupId>net.sf.jstuff</groupId>
    <artifactId>jstuff-parent</artifactId>
-   <version>7.10.1-SNAPSHOT</version>
+   <version>7.11.0</version>
    <packaging>pom</packaging>
 
    <name>jstuff</name>
@@ -64,7 +62,7 @@
       <url>https://github.com/sebthom/jstuff</url>
       <connection>scm:git:https://github.com/sebthom/jstuff.git</connection>
       <developerConnection>scm:git:https://github.com/sebthom/jstuff.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>7.11.0</tag>
    </scm>
 
 
