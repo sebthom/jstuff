@@ -19,6 +19,8 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.eclipse.jdt.annotation.NonNull;
@@ -378,6 +380,39 @@ public abstract class Maps {
             nextIsValue = true;
          }
       return map;
+   }
+
+   public static <KK, V> Map<KK, V> remap(final Map<?, V> map, final Function<V, KK> keyMapper) {
+      final var newMap = new HashMap<KK, V>();
+      for (final V v : map.values()) {
+         newMap.put(keyMapper.apply(v), v);
+      }
+      return newMap;
+   }
+
+   public static <KK, V, VV> Map<KK, VV> remap(final Map<?, V> map, final Function<V, KK> keyMapper, final Function<V, VV> valueMapper) {
+      final var newMap = new HashMap<KK, VV>();
+      for (final V v : map.values()) {
+         newMap.put(keyMapper.apply(v), valueMapper.apply(v));
+      }
+      return newMap;
+   }
+
+   public static <K, KK, V> Map<KK, V> remap(final Map<K, V> map, final BiFunction<K, V, KK> keyMapper) {
+      final var newMap = new HashMap<KK, V>();
+      for (final var e : map.entrySet()) {
+         newMap.put(keyMapper.apply(e.getKey(), e.getValue()), e.getValue());
+      }
+      return newMap;
+   }
+
+   public static <K, KK, V, VV> Map<KK, VV> remap(final Map<K, V> map, final BiFunction<K, V, KK> keyMapper,
+         final BiFunction<K, V, VV> valueMapper) {
+      final var newMap = new HashMap<KK, VV>();
+      for (final var e : map.entrySet()) {
+         newMap.put(keyMapper.apply(e.getKey(), e.getValue()), valueMapper.apply(e.getKey(), e.getValue()));
+      }
+      return newMap;
    }
 
    @NonNullByDefault({})

@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
@@ -47,6 +48,38 @@ public class MapsTest {
 
       assertThat(map1).containsEntry("b", 1);
       assertThat(map1).containsKey("c");
+   }
+
+   @Test
+   public void testRemap() {
+      final Map<String, Integer> map = new HashMap<>();
+      map.put("one", 1);
+      map.put("two", 2);
+      map.put("three", 3);
+
+      assertThat(Maps.remap(map, Object::toString)).isNotNull() //
+         .hasSize(3) //
+         .containsEntry("1", 1) //
+         .containsEntry("2", 2) //
+         .containsEntry("3", 3);
+
+      assertThat(Maps.remap(map, Object::toString, value -> "Number " + value)).isNotNull() //
+         .hasSize(3) //
+         .containsEntry("1", "Number 1") //
+         .containsEntry("2", "Number 2") //
+         .containsEntry("3", "Number 3");
+
+      assertThat(Maps.remap(map, (key, value) -> key + "_" + value)).isNotNull() //
+         .hasSize(3) //
+         .containsEntry("one_1", 1) //
+         .containsEntry("two_2", 2) //
+         .containsEntry("three_3", 3);
+
+      assertThat(Maps.remap(map, (key, value) -> key + "_" + value, (key, value) -> key.toUpperCase() + " " + value * 10)).isNotNull() //
+         .hasSize(3) //
+         .containsEntry("one_1", "ONE 10") //
+         .containsEntry("two_2", "TWO 20") //
+         .containsEntry("three_3", "THREE 30");
    }
 
    @Test
