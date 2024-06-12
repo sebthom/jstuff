@@ -59,7 +59,7 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
    }
 
    /**
-    * Removed in JDK9
+    * Removed in JDK19
     */
    @Deprecated
    public void checkAwtEventQueueAccess() {
@@ -139,7 +139,7 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
    }
 
    /**
-    * Removed in JDK9
+    * Removed in JDK19
     */
    @Deprecated
    public void checkMemberAccess(final Class<?> clazz, final int which) {
