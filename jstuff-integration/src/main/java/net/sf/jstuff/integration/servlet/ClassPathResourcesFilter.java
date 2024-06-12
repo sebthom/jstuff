@@ -68,7 +68,7 @@ public class ClassPathResourcesFilter implements Filter {
       return resource;
    }
 
-   protected ServletContext ctx = lazyNonNull();
+   protected ServletContext ctx = lateNonNull();
 
    protected int maxAgeInSeconds;
 

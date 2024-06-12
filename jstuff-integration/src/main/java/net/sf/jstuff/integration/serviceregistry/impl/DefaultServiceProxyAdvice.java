@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.serviceregistry.impl;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -34,7 +34,7 @@ public class DefaultServiceProxyAdvice<SERVICE_INTERFACE> implements ServiceProx
    private final Lock listeners_READ;
    private final Lock listeners_WRITE;
 
-   private ServiceProxyInternal<SERVICE_INTERFACE> proxy = lazyNonNull();
+   private ServiceProxyInternal<SERVICE_INTERFACE> proxy = lateNonNull();
 
    public DefaultServiceProxyAdvice(final ServiceEndpointState serviceEndpointState, final Class<SERVICE_INTERFACE> serviceInterface) {
       Args.notNull("serviceEndpointState", serviceEndpointState);

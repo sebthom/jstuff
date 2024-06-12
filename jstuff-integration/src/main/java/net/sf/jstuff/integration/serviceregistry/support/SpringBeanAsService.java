@@ -36,14 +36,14 @@ import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
 public class SpringBeanAsService<T> implements InitializingBean, DisposableBean {
 
    private boolean isInitialized;
-   private ServiceRegistry serviceRegistry = lazyNonNull();
+   private ServiceRegistry serviceRegistry = lateNonNull();
 
    /**
     * @optional by default the fully qualified name of the service interface is used
     */
    private @Nullable String serviceEndpointId;
-   private Class<T> serviceInterface = lazyNonNull();
-   private T springBean = lazyNonNull();
+   private Class<T> serviceInterface = lateNonNull();
+   private T springBean = lateNonNull();
 
    @Override
    public synchronized void afterPropertiesSet() throws Exception {

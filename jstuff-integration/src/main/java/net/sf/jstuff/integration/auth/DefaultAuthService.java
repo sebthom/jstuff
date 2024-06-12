@@ -30,13 +30,13 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
 public class DefaultAuthService implements AuthService {
    private static final Logger LOG = Logger.create();
 
-   protected Set<String> applicationRoles = lazyNonNull();
-   protected Authenticator authenticator = lazyNonNull();
-   protected GroupDetailsService groupDetailsService = lazyNonNull();
-   protected MapWithSets<String, String> groupIdToApplicationRoleMappings = lazyNonNull();
+   protected Set<String> applicationRoles = lateNonNull();
+   protected Authenticator authenticator = lateNonNull();
+   protected GroupDetailsService groupDetailsService = lateNonNull();
+   protected MapWithSets<String, String> groupIdToApplicationRoleMappings = lateNonNull();
    protected @Nullable AuthListener listener;
-   protected MapWithSets<String, String> uriPatternsToApplicationRoleMappings = lazyNonNull();
-   protected UserDetailsService userDetailsService = lazyNonNull();
+   protected MapWithSets<String, String> uriPatternsToApplicationRoleMappings = lateNonNull();
+   protected UserDetailsService userDetailsService = lateNonNull();
 
    public DefaultAuthService() {
       LOG.infoNew(this);

@@ -172,7 +172,7 @@ public class TcpTunnelService extends Thread {
    protected @Nullable String proxyAddress;
    protected int proxyPort;
 
-   protected String targetAddress = lazyNonNull();
+   protected String targetAddress = lateNonNull();
    protected int targetPort;
 
    protected int targetConnectTimeout = 10_000;

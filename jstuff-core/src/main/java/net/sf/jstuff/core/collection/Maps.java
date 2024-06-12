@@ -500,7 +500,7 @@ public abstract class Maps {
 
       final var result = new HashMap<T, T>();
       boolean isKey = true;
-      T key = lazyNonNull();
+      T key = lateNonNull();
       for (final T item : keysAndValues)
          if (isKey) {
             key = item;

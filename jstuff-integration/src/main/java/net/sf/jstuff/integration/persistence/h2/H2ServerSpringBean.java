@@ -23,7 +23,7 @@ import net.sf.jstuff.core.logging.Logger;
 public class H2ServerSpringBean {
    private static final Logger LOG = Logger.create();
 
-   private String dataDir = lazyNonNull();
+   private String dataDir = lateNonNull();
    private boolean enabled = true;
    private int tcpPort = 10040;
    private @Nullable Server tcpServer;

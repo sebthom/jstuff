@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.serviceregistry.support;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.beans.factory.FactoryBean;
@@ -34,14 +34,14 @@ import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
  */
 public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean {
 
-   private ServiceRegistry serviceRegistry = lazyNonNull();
+   private ServiceRegistry serviceRegistry = lateNonNull();
 
    /**
     * @optional by default the fully qualified name of the service interface is used
     */
    private @Nullable String serviceEndpointId;
-   private Class<T> serviceInterface = lazyNonNull();
-   private T service = lazyNonNull();
+   private Class<T> serviceInterface = lateNonNull();
+   private T service = lateNonNull();
 
    @Override
    public synchronized void afterPropertiesSet() throws Exception {

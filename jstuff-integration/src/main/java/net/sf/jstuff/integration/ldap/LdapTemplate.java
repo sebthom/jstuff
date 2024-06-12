@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.ldap;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import java.util.Hashtable;
 
@@ -26,8 +26,8 @@ import net.sf.jstuff.core.functional.Invocable;
  */
 public class LdapTemplate {
    private String initialContextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
-   private Hashtable<String, Object> ldapSettings = lazyNonNull();
-   private String ldapURL = lazyNonNull();
+   private Hashtable<String, Object> ldapSettings = lateNonNull();
+   private String ldapURL = lateNonNull();
    private boolean pooled = true;
 
    /**

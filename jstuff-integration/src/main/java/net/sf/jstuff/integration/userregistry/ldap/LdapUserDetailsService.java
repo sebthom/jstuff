@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.userregistry.ldap;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import javax.inject.Inject;
 import javax.naming.CompositeName;
@@ -33,13 +33,13 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
 public class LdapUserDetailsService implements UserDetailsService {
    private static final Logger LOG = Logger.create();
 
-   protected LdapTemplate ldapTemplate = lazyNonNull();
-   protected String userAttributeDisplayName = lazyNonNull();
-   protected String userAttributeEMailAdress = lazyNonNull();
-   protected String userAttributeLogonName = lazyNonNull();
-   protected String userAttributeUserId = lazyNonNull();
-   protected String userSearchBase = lazyNonNull();
-   protected String userSearchFilter = lazyNonNull();
+   protected LdapTemplate ldapTemplate = lateNonNull();
+   protected String userAttributeDisplayName = lateNonNull();
+   protected String userAttributeEMailAdress = lateNonNull();
+   protected String userAttributeLogonName = lateNonNull();
+   protected String userAttributeUserId = lateNonNull();
+   protected String userSearchBase = lateNonNull();
+   protected String userSearchFilter = lateNonNull();
    protected boolean userSearchSubtree = true;
 
    public LdapUserDetailsService() {

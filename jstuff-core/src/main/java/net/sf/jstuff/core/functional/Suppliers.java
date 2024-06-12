@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.functional;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -74,7 +74,7 @@ public abstract class Suppliers {
 
       return new Supplier<>() {
 
-         private T cached = lazyNonNull();
+         private T cached = lateNonNull();
          private long cachedAt = -1;
 
          @Override
@@ -125,7 +125,7 @@ public abstract class Suppliers {
 
       return new Supplier<>() {
 
-         private SoftReference<T> cached = lazyNonNull();
+         private SoftReference<T> cached = lateNonNull();
          private long cachedAt = -1;
 
          @Override
@@ -180,7 +180,7 @@ public abstract class Suppliers {
 
       return new Supplier<>() {
 
-         private WeakReference<T> cached = lazyNonNull();
+         private WeakReference<T> cached = lateNonNull();
          private long cachedAt = -1;
 
          @Override

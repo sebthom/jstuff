@@ -102,20 +102,20 @@ public abstract class NullAnalysisHelper {
       return object;
    }
 
+   @NonNull
+   @SuppressWarnings("null")
+   public static <T> T lateNonNull() {
+      return (@NonNull T) null;
+   }
+
    /**
-    * @deprecated use {@link #lazyNonNull()}
+    * @deprecated use {@link #lateNonNull()}
     */
    @Deprecated
    @NonNull
    @SuppressWarnings("null")
-   public static <T> T eventuallyNonNull() {
-      return asNonNullUnsafe((T) null);
-   }
-
-   @NonNull
-   @SuppressWarnings("null")
    public static <T> T lazyNonNull() {
-      return asNonNullUnsafe((T) null);
+      return (@NonNull T) null;
    }
 
    protected NullAnalysisHelper() {

@@ -29,7 +29,7 @@ public final class DebouncingEventDispatcher<EVENT> extends AbstractRateLimiting
    private final class DebouncedEvent {
       private final EVENT event;
       private volatile long deadline;
-      private volatile Future<?> scheduledFuture = lazyNonNull();
+      private volatile Future<?> scheduledFuture = lateNonNull();
       private final CompletableFuture<Integer> resultFuture = new CompletableFuture<>();
 
       DebouncedEvent(final EVENT event, final long deadline) {

@@ -34,14 +34,14 @@ import net.sf.jstuff.integration.userregistry.GroupDetailsService;
 public class LdapGroupDetailsService implements GroupDetailsService {
    private static final Logger LOG = Logger.create();
 
-   protected String groupAttributeDisplayName = lazyNonNull();
-   protected String groupAttributeGroupId = lazyNonNull();
-   protected String groupAttributeMember = lazyNonNull();
-   protected String groupSearchBase = lazyNonNull();
-   protected String groupSearchFilter = lazyNonNull();
+   protected String groupAttributeDisplayName = lateNonNull();
+   protected String groupAttributeGroupId = lateNonNull();
+   protected String groupAttributeMember = lateNonNull();
+   protected String groupSearchBase = lateNonNull();
+   protected String groupSearchFilter = lateNonNull();
    protected boolean groupSearchSubtree = true;
 
-   private LdapTemplate ldapTemplate = lazyNonNull();
+   private LdapTemplate ldapTemplate = lateNonNull();
 
    public LdapGroupDetailsService() {
       LOG.infoNew(this);

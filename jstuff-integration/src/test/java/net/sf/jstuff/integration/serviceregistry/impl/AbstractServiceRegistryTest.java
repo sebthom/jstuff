@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.serviceregistry.impl;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -94,11 +94,11 @@ public abstract class AbstractServiceRegistryTest<R extends ServiceRegistry> {
       boolean validate();
    }
 
-   protected R registry = lazyNonNull();
+   protected R registry = lateNonNull();
 
    @After
    public void tearDown() throws Exception {
-      registry = lazyNonNull();
+      registry = lateNonNull();
    }
 
    @Test

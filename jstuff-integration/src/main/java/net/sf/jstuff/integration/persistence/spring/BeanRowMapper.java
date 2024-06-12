@@ -54,12 +54,12 @@ public class BeanRowMapper<T> implements RowMapper<T> {
       BUB = new BeanUtilsBean(converter);
    }
 
-   private Class<T> beanClass = lazyNonNull();
+   private Class<T> beanClass = lateNonNull();
 
    /**
     * propertyNameLowerCase => propertyName
     */
-   private Map<String, String> beanPropertyNames = lazyNonNull();
+   private Map<String, String> beanPropertyNames = lateNonNull();
 
    private final WeakHashMap<ResultSet, ResultSetDynaClass> rsDynaClassesCache = new WeakHashMap<>();
 

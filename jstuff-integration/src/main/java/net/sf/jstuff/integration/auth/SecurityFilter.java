@@ -34,8 +34,8 @@ public class SecurityFilter implements Filter {
 
    public static final ThreadLocal<HttpServletRequest> HTTP_SERVLET_REQUEST_HOLDER = new ThreadLocal<>();
 
-   private AuthService authService = lazyNonNull();
-   private UserDetailsService userDetailsService = lazyNonNull();
+   private AuthService authService = lateNonNull();
+   private UserDetailsService userDetailsService = lateNonNull();
 
    public SecurityFilter() {
       LOG.infoNew(this);

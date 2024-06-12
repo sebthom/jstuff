@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.concurrent;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import java.time.Duration;
 import java.util.concurrent.Executors;
@@ -32,7 +32,7 @@ public class ScalingThreadPoolExecutor extends ThreadPoolExecutor {
    private static final class ScalingQueue extends LinkedTransferQueue<Runnable> {
       private static final long serialVersionUID = 1L;
 
-      ScalingThreadPoolExecutor executor = lazyNonNull();
+      ScalingThreadPoolExecutor executor = lateNonNull();
 
       @Override
       public boolean offer(final Runnable runnable) {

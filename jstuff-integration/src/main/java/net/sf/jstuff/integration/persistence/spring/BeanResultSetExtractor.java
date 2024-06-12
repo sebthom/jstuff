@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.persistence.spring;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.lazyNonNull;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -35,8 +35,8 @@ import net.sf.jstuff.core.validation.Assert;
 public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
    private static final Logger LOG = Logger.create();
 
-   private Class<T> beanClass = lazyNonNull();
-   private Map<String, String> beanPropertiesLowerCase = lazyNonNull();
+   private Class<T> beanClass = lateNonNull();
+   private Map<String, String> beanPropertiesLowerCase = lateNonNull();
 
    public BeanResultSetExtractor(final Class<T> beanClass) throws IntrospectionException {
       setBeanClass(beanClass);
@@ -50,7 +50,7 @@ public class BeanResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
 
       for (final var it = new ResultSetDynaClass(resultSet, true).iterator(); it.hasNext();) {
          final DynaBean dynaBean = it.next();
-         T bean = lazyNonNull();
+         T bean = lateNonNull();
          try {
             bean = this.getBeanClass().getDeclaredConstructor().newInstance();
 

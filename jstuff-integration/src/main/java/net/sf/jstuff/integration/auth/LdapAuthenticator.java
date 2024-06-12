@@ -21,8 +21,8 @@ import net.sf.jstuff.integration.userregistry.UserDetailsService;
 public class LdapAuthenticator implements Authenticator {
    private static final Logger LOG = Logger.create();
 
-   protected LdapTemplate ldapTemplate = lazyNonNull();
-   protected UserDetailsService userDetailsService = lazyNonNull();
+   protected LdapTemplate ldapTemplate = lateNonNull();
+   protected UserDetailsService userDetailsService = lateNonNull();
 
    public LdapAuthenticator() {
       LOG.infoNew(this);

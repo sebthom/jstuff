@@ -31,8 +31,8 @@ public class ServiceRegistryPerfITest {
       }
    };
 
-   private ByteBuddyServiceRegistry byteBuddyRegistry = lazyNonNull();
-   private DefaultServiceRegistry jdkProxyRegistry = lazyNonNull();
+   private ByteBuddyServiceRegistry byteBuddyRegistry = lateNonNull();
+   private DefaultServiceRegistry jdkProxyRegistry = lateNonNull();
 
    public void runPerfTest(final MyService service, final String label) {
       final var sw = new StopWatch();
@@ -52,8 +52,8 @@ public class ServiceRegistryPerfITest {
 
    @After
    public void tearDown() throws Exception {
-      byteBuddyRegistry = lazyNonNull();
-      jdkProxyRegistry = lazyNonNull();
+      byteBuddyRegistry = lateNonNull();
+      jdkProxyRegistry = lateNonNull();
    }
 
    @Test
