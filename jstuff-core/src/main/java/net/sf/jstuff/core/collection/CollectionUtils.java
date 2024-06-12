@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -360,10 +361,23 @@ public abstract class CollectionUtils {
       if (coll == null || coll.isEmpty())
          return null;
 
+      if (coll instanceof List)
+         return ((List<T>) coll).get(0);
+
+      if (coll instanceof Queue)
+         return ((Queue<T>) coll).peek();
+
       final var it = coll.iterator();
       if (it.hasNext())
          return it.next();
       return null;
+   }
+
+   public static <T> @Nullable T findFirst(final @Nullable List<T> list) {
+      if (list == null || list.isEmpty())
+         return null;
+
+      return list.get(0);
    }
 
    public static <T> @Nullable T findFirstMatching(final @Nullable Collection<T> coll, final Predicate<T> filter) {
