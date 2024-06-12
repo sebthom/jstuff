@@ -19,62 +19,79 @@ import net.sf.jstuff.core.collection.ArrayUtils;
 public abstract class NullAnalysisHelper {
 
    /**
-    * Casts non-null value marked as {@link Nullable} to {@link NonNull}.
+    * Casts a non-null value marked as {@link Nullable} to {@link NonNull}.
     * <p>
     * Only use if you are sure the value is non-null but annotation-based null analysis was not able to determine it.
     * <p>
     * This method is not meant for non-null input validation.
     *
-    * @throws AssertionError if the given value is null
+    * @throws IllegalStateException if the given value is null
     */
-   @NonNull
-   public static <T> T asNonNull(final T value) {
+
+   public static <T> @NonNull T asNonNull(final T value) {
       if (value == null)
-         throw new AssertionError("Cannot cast null to non-null value.");
+         throw new IllegalStateException("Null cannot be cast to non-null value!");
       return value;
    }
 
    /**
-    * Casts non-null value marked as {@link Nullable} to {@link NonNull}.
+    * Casts a non-null value marked as {@link Nullable} to {@link NonNull}.
     * <p>
     * Only use if you are sure the value is non-null but annotation-based null analysis was not able to determine it.
     * <p>
     * This method is not meant for non-null input validation.
     *
-    * @throws AssertionError if the given value is null or contains nulls
+    * @throws IllegalStateException with the given <code>errorMessage</code> if the given value is null
+    */
+
+   public static <T> @NonNull T asNonNull(final T value, final String errorMessage) {
+      if (value == null)
+         throw new IllegalStateException(errorMessage);
+      return value;
+   }
+
+   /**
+    * Casts an array with non-null elements as {@link Nullable} to {@link NonNull}.
+    * <p>
+    * Only use if you are sure the value is non-null but annotation-based null analysis was not able to determine it.
+    * <p>
+    * This method is not meant for non-null input validation.
+    *
+    * @throws IllegalStateException if the given value is null or contains nulls
     */
    @SuppressWarnings("null")
    @SafeVarargs
    public static <T> @NonNull T @NonNull [] asNonNull(final T... value) {
-      if (value == null || ArrayUtils.containsNulls(value))
-         throw new AssertionError("Array is null of contains null element!");
+      if (value == null)
+         throw new IllegalStateException("Null cannot be cast to non-null array!");
+      if (ArrayUtils.containsNulls(value))
+         throw new IllegalStateException("Array with null elements cannot be cast to array with non-null elements!");
       return value;
    }
 
    /**
-    * Casts non-null value marked as {@link Nullable} to {@link NonNull} without any validation.
+    * Casts the given value to {@link NonNull} without any validation.
     * <p>
     * Only use if you are sure the value is non-null but annotation-based null analysis was not able to determine it.
     */
    @SuppressWarnings("null")
-   @NonNull
-   public static <T> T asNonNullUnsafe(final T value) {
+   public static <T> @NonNull T asNonNullUnsafe(final T value) {
       return value;
    }
 
    /**
-    * Casts non-null value marked as {@link Nullable} to {@link NonNull} without any validation.
+    * Casts the elements of given array to {@link NonNull} without any validation.
     * <p>
     * Only use if you are sure the value is non-null but annotation-based null analysis was not able to determine it.
     */
-   @SuppressWarnings("null")
    @SafeVarargs
+   @SuppressWarnings("null")
    public static <T> @NonNull T @NonNull [] asNonNullUnsafe(final T... value) {
       return value;
    }
 
    /**
-    * Casts a non-null value as {@link Nullable}.
+    * Casts the given non-null value as {@link Nullable}.
     */
 
    public static <T> @Nullable T asNullable(final T value) {
@@ -82,11 +99,11 @@ public abstract class NullAnalysisHelper {
    }
 
    /**
-    * Casts a non-null value as {@link Nullable}.
+    * Casts the elements of the given array as {@link Nullable}.
     */
    @SuppressWarnings("null")
    @SafeVarargs
-   public static <T> @Nullable T @Nullable [] asNullable(final T... value) {
+   public static <T> @Nullable T[] asNullableElements(final T... value) {
       return value;
    }
 
@@ -102,9 +119,8 @@ public abstract class NullAnalysisHelper {
       return object;
    }
 
-   @NonNull
    @SuppressWarnings("null")
-   public static <T> T lateNonNull() {
+   public static <T> @NonNull T lateNonNull() {
       return (@NonNull T) null;
    }
 
@@ -112,9 +128,9 @@ public abstract class NullAnalysisHelper {
     * @deprecated use {@link #lateNonNull()}
     */
    @Deprecated
-   @NonNull
+
    @SuppressWarnings("null")
-   public static <T> T lazyNonNull() {
+   public static <T> @NonNull T lazyNonNull() {
       return (@NonNull T) null;
    }
 
