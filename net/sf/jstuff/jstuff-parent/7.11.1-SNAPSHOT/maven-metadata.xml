@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>net.sf.jstuff</groupId>
+  <artifactId>jstuff-parent</artifactId>
+  <versioning>
+    <lastUpdated>20240615134243</lastUpdated>
+    <snapshot>
+      <timestamp>20240615.134243</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>7.11.1-20240615.134243-1</value>
+        <updated>20240615134243</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+  <version>7.11.1-SNAPSHOT</version>
+</metadata>
