@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import java.util.Set;
@@ -802,12 +802,164 @@ public class StringsTest {
    }
 
    @Test
-   public void testRepleaceEach() {
+   public void testReplaceEach() {
       assertThat(Strings.replaceEach("There was a man with seven kids.", //
          "man", "woman", //
          "seven", "three", //
          "kids", "cats" //
       )).isEqualTo("There was a woman with three cats.");
+   }
+
+   @Test
+   @SuppressWarnings("null")
+   public void testReplaceEach_String() {
+      // Test 1: Basic replacement
+      {
+         final var searchIn = "Hello world! This is a test. Hello everyone!";
+         final @NonNull String[] searchFor = {"Hello", "test"};
+         final @NonNull String[] replaceWith = {"Hi", "experiment"};
+
+         assertThat(Strings.replaceEach(searchIn, searchFor, replaceWith)) //
+            .hasToString("Hi world! This is a experiment. Hi everyone!");
+      }
+
+      // Test 2: No match
+      {
+         final var searchIn = "Hello world! This is a test. Hello everyone!";
+         final @NonNull String[] searchFor = {"Goodbye", "example"};
+         final @NonNull String[] replaceWith = {"Farewell", "sample"};
+
+         assertThat(Strings.replaceEach(searchIn, searchFor, replaceWith)) //
+            .hasToString("Hello world! This is a test. Hello everyone!");
+      }
+
+      // Test 3: Partial match
+      {
+         final var searchIn = "Hello world! This is a test. Hello everyone!";
+         final @NonNull String[] searchFor = {"Hello", "example"};
+         final @NonNull String[] replaceWith = {"Hi", "sample"};
+
+         assertThat(Strings.replaceEach(searchIn, searchFor, replaceWith)) //
+            .hasToString("Hi world! This is a test. Hi everyone!");
+      }
+
+      // Test 4: Empty searchIn
+      {
+         final var searchIn = "";
+         final @NonNull String[] searchFor = {"Hello", "test"};
+         final @NonNull String[] replaceWith = {"Hi", "experiment"};
+
+         assertThat(Strings.replaceEach(searchIn, searchFor, replaceWith)) //
+            .hasToString("");
+      }
+
+      // Test 5: Empty search list
+      {
+         final var searchIn = "Hello world! This is a test. Hello everyone!";
+         final @NonNull String[] searchFor = {};
+         final @NonNull String[] replaceWith = {};
+
+         assertThat(Strings.replaceEach(searchIn, searchFor, replaceWith)) //
+            .hasToString("Hello world! This is a test. Hello everyone!");
+      }
+
+      // Test 6: Different lengths for search and replacement lists
+      {
+         final var searchIn = "Hello world! This is a test. Hello everyone!";
+         final @NonNull String[] searchFor = {"Hello", "test"};
+         final @NonNull String[] replaceWith = {"Hi"};
+
+         assertThatThrownBy(() -> Strings.replaceEach(searchIn, searchFor, replaceWith)) //
+            .isInstanceOf(IllegalArgumentException.class) //
+            .hasMessage("searchFor and replaceWith array lengths don't match.");
+      }
+
+      // Test 7: Repeated matches
+      {
+         // Test: Repeated matches of multiple replacements
+         final var searchIn = "ababcdcdababcdcd";
+         final String @NonNull [] searchFor = {"ab", "cd"};
+         final String @NonNull [] replaceWith = {"xy", "uv"};
+
+         assertThat(Strings.replaceEach(searchIn, searchFor, replaceWith)) //
+            .hasToString("xyxyuvuvxyxyuvuv");
+      }
+   }
+
+   @Test
+   @SuppressWarnings("null")
+   public void testReplaceEach_StringBuilder() {
+      // Test 1: Basic replacement
+      {
+         final var searchIn = new StringBuilder("Hello world! This is a test. Hello everyone!");
+         final @NonNull String[] searchFor = {"Hello", "test"};
+         final @NonNull String[] replaceWith = {"Hi", "experiment"};
+
+         Strings.replaceEach(searchIn, searchFor, replaceWith);
+         assertThat(searchIn).hasToString("Hi world! This is a experiment. Hi everyone!");
+      }
+
+      // Test 2: No match
+      {
+         final var searchIn = new StringBuilder("Hello world! This is a test. Hello everyone!");
+         final @NonNull String[] searchFor = {"Goodbye", "example"};
+         final @NonNull String[] replaceWith = {"Farewell", "sample"};
+
+         Strings.replaceEach(searchIn, searchFor, replaceWith);
+         assertThat(searchIn).hasToString("Hello world! This is a test. Hello everyone!");
+      }
+
+      // Test 3: Partial match
+      {
+         final var searchIn = new StringBuilder("Hello world! This is a test. Hello everyone!");
+         final @NonNull String[] searchFor = {"Hello", "example"};
+         final @NonNull String[] replaceWith = {"Hi", "sample"};
+
+         Strings.replaceEach(searchIn, searchFor, replaceWith);
+         assertThat(searchIn).hasToString("Hi world! This is a test. Hi everyone!");
+      }
+
+      // Test 4: Empty searchIn
+      {
+         final var searchIn = new StringBuilder("");
+         final @NonNull String[] searchFor = {"Hello", "test"};
+         final @NonNull String[] replaceWith = {"Hi", "experiment"};
+
+         Strings.replaceEach(searchIn, searchFor, replaceWith);
+         assertThat(searchIn).hasToString("");
+      }
+
+      // Test 5: Empty search list
+      {
+         final var searchIn = new StringBuilder("Hello world! This is a test. Hello everyone!");
+         final @NonNull String[] searchFor = {};
+         final @NonNull String[] replaceWith = {};
+
+         Strings.replaceEach(searchIn, searchFor, replaceWith);
+         assertThat(searchIn).hasToString("Hello world! This is a test. Hello everyone!");
+      }
+
+      // Test 6: Different lengths for search and replacement lists
+      {
+         final var searchIn = new StringBuilder("Hello world! This is a test. Hello everyone!");
+         final @NonNull String[] searchFor = {"Hello", "test"};
+         final @NonNull String[] replaceWith = {"Hi"};
+
+         assertThatThrownBy(() -> Strings.replaceEach(searchIn, searchFor, replaceWith)) //
+            .isInstanceOf(IllegalArgumentException.class) //
+            .hasMessage("searchFor and replaceWith array lengths don't match.");
+      }
+
+      // Test 7: Repeated matches
+      {
+         // Test: Repeated matches of multiple replacements
+         final var searchIn = new StringBuilder("ababcdcdababcdcd");
+         final String @NonNull [] searchFor = {"ab", "cd"};
+         final String @NonNull [] replaceWith = {"xy", "uv"};
+
+         Strings.replaceEach(searchIn, searchFor, replaceWith);
+         assertThat(searchIn).hasToString("xyxyuvuvxyxyuvuv");
+      }
    }
 
    @Test

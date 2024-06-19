@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -2737,11 +2737,84 @@ public abstract class Strings {
       return asNonNullUnsafe(replaceEachNullable(searchIn, tokens));
    }
 
-   /**
-    * See {@link StringUtils#replaceEach(String, String[], String[])}
-    */
    public static String replaceEach(final String searchIn, final String @Nullable [] searchFor, final String @Nullable [] replaceWith) {
-      return asNonNullUnsafe(StringUtils.replaceEach(searchIn, searchFor, replaceWith));
+      if (searchFor == null && replaceWith == null || searchIn.length() == 0)
+         return searchIn;
+      if (searchFor == null || replaceWith == null || searchFor.length != replaceWith.length)
+         throw new IllegalArgumentException("searchFor and replaceWith array lengths don't match.");
+      if (searchFor.length == 0)
+         return searchIn;
+
+      final var sb = new StringBuilder();
+      int startAt = 0;
+      String searchString = lateNonNull();
+      String replaceString = lateNonNull();
+
+      while (true) {
+         int closestIndex = -1;
+
+         // Find the closest match at the current position
+         for (int j = 0; j < searchFor.length; j++) {
+            final String currSearchFor = searchFor[j];
+            final String currReplaceWith = replaceWith[j];
+            if (currSearchFor == null || currReplaceWith == null || currSearchFor.isEmpty()) {
+               continue;
+            }
+            final int index = searchIn.indexOf(currSearchFor, startAt);
+            if (index != -1 && (closestIndex == -1 || index < closestIndex)) {
+               closestIndex = index;
+               searchString = currSearchFor;
+               replaceString = currReplaceWith;
+            }
+         }
+
+         if (closestIndex == -1) {
+            sb.append(searchIn.substring(startAt));
+            return sb.toString();
+         }
+
+         sb.append(searchIn, startAt, closestIndex);
+         sb.append(replaceString);
+         startAt = closestIndex + searchString.length();
+      }
+   }
+
+   public static void replaceEach(final @Nullable StringBuilder searchIn, final String @Nullable [] searchFor,
+         final String @Nullable [] replaceWith) {
+      if (searchIn == null || searchFor == null && replaceWith == null || searchIn.length() == 0)
+         return;
+      if (searchFor == null || replaceWith == null || searchFor.length != replaceWith.length)
+         throw new IllegalArgumentException("searchFor and replaceWith array lengths don't match.");
+      if (searchFor.length == 0)
+         return;
+
+      int startAt = 0;
+      String searchString = lateNonNull();
+      String replaceString = lateNonNull();
+      while (true) {
+         int closestIndex = -1;
+
+         // Find the closest match at the current position
+         for (int j = 0; j < searchFor.length; j++) {
+            final String currSearchFor = searchFor[j];
+            final String currReplaceWith = replaceWith[j];
+            if (currSearchFor == null || currReplaceWith == null || currSearchFor.isEmpty()) {
+               continue;
+            }
+            final int foundAt = searchIn.indexOf(currSearchFor, startAt);
+            if (foundAt != -1 && (closestIndex == -1 || foundAt < closestIndex)) {
+               closestIndex = foundAt;
+               searchString = currSearchFor;
+               replaceString = currReplaceWith;
+            }
+         }
+
+         if (closestIndex == -1)
+            return;
+
+         searchIn.replace(closestIndex, closestIndex + searchString.length(), replaceString);
+         startAt = closestIndex + replaceString.length();
+      }
    }
 
    public static CharSequence replaceEachGroup(final @Nullable Pattern regex, final CharSequence searchIn, final int groupToReplace,
@@ -2784,7 +2857,7 @@ public abstract class Strings {
 
       boolean isNextTokenSearchKey = true;
       int idx = 0;
-      for (final String token : tokens)
+      for (final String token : tokens) {
          if (isNextTokenSearchKey) {
             searchFor[idx] = token;
             isNextTokenSearchKey = false;
@@ -2793,7 +2866,8 @@ public abstract class Strings {
             idx++;
             isNextTokenSearchKey = true;
          }
-      return replaceEach(searchIn, searchFor, replaceWith);
+      }
+      return StringUtils.replaceEach(searchIn, searchFor, replaceWith);
    }
 
    /**
@@ -2801,7 +2875,9 @@ public abstract class Strings {
     */
    public static @Nullable String replaceEachNullable(final @Nullable String searchIn, final String @Nullable [] searchFor,
          final String @Nullable [] replaceWith) {
-      return StringUtils.replaceEach(searchIn, searchFor, replaceWith);
+      if (searchIn == null || searchFor == null || replaceWith == null)
+         return searchIn;
+      return replaceEach(searchIn, searchFor, replaceWith);
    }
 
    /**
