@@ -15,15 +15,23 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 import javax.swing.text.html.parser.ParserDelegator;
@@ -3099,6 +3107,172 @@ public abstract class Strings {
    }
 
    /**
+    * Empty tokens are not preserved.
+    */
+   public static Iterable<String> splitAsIterable(final String text, final char separator) {
+      return () -> new Iterator<>() {
+         private int searchAt = 0;
+         private String nextPart = "";
+
+         @Override
+         public boolean hasNext() {
+            while (searchAt < text.length()) {
+               final int foundAt = text.indexOf(separator, searchAt);
+               if (foundAt == -1) {
+                  nextPart = text.substring(searchAt);
+                  searchAt = text.length();
+               } else {
+                  nextPart = text.substring(searchAt, foundAt);
+                  searchAt = foundAt + 1;
+               }
+
+               if (!nextPart.isEmpty())
+                  return true;
+
+            }
+            return false;
+         }
+
+         @Override
+         public String next() {
+            if (nextPart.isEmpty() && !hasNext())
+               throw new NoSuchElementException();
+            final String result = nextPart;
+            nextPart = "";
+            return result;
+         }
+      };
+   }
+
+   /**
+    * Empty tokens are not preserved.
+    */
+   public static @Nullable Iterable<String> splitAsIterableNullable(final @Nullable String text, final char separator) {
+      return text == null ? null : splitAsIterable(text, separator);
+   }
+
+   /**
+    * Empty tokens are not preserved.
+    */
+   public static List<String> splitAsList(final String text, final char separator) {
+      final int len = text.length();
+      if (text.length() == 0)
+         return Collections.emptyList();
+
+      if (len == 1) {
+         if (text.charAt(0) == separator)
+            return Collections.emptyList();
+         return List.of(text);
+      }
+
+      final var tokens = new ArrayList<String>(len < 5 ? 2 : 4);
+      int searchAt = 0;
+      int foundAt;
+      while ((foundAt = text.indexOf(separator, searchAt)) != Strings.INDEX_NOT_FOUND) {
+         if (searchAt < foundAt) {
+            tokens.add(text.substring(searchAt, foundAt));
+         }
+         searchAt = foundAt + 1;
+      }
+
+      if (searchAt == 0) { // separator not found
+         tokens.add(text);
+         return tokens;
+      }
+
+      if (searchAt < len) {
+         tokens.add(text.substring(searchAt, len));
+      }
+      return tokens;
+   }
+
+   /**
+    * Empty tokens are not preserved.
+    */
+   public static @Nullable List<String> splitAsListNullable(final @Nullable String text, final char separator) {
+      return text == null ? null : splitAsList(text, separator);
+   }
+
+   /**
+    * Empty tokens are not preserved.
+    */
+   public static Set<String> splitAsSet(final String text, final char separator) {
+      final int len = text.length();
+      if (text.length() == 0)
+         return Collections.emptySet();
+
+      if (len == 1) {
+         if (text.charAt(0) == separator)
+            return Collections.emptySet();
+         return Set.of(text);
+      }
+
+      final var tokens = new HashSet<String>(len < 5 ? 2 : 4);
+      int searchAt = 0;
+      int foundAt;
+      while ((foundAt = text.indexOf(separator, searchAt)) != Strings.INDEX_NOT_FOUND) {
+         if (searchAt < foundAt) {
+            tokens.add(text.substring(searchAt, foundAt));
+         }
+         searchAt = foundAt + 1;
+      }
+
+      if (searchAt == 0) { // separator not found
+         tokens.add(text);
+         return tokens;
+      }
+
+      if (searchAt < len) {
+         tokens.add(text.substring(searchAt, len));
+      }
+      return tokens;
+   }
+
+   /**
+    * Empty tokens are not preserved.
+    */
+   public static @Nullable Set<String> splitAsSetNullable(final @Nullable String text, final char separator) {
+      return text == null ? null : splitAsSet(text, separator);
+   }
+
+   /**
+    * Empty tokens are not preserved.
+    */
+   public static Stream<String> splitAsStream(final String text, final char separator) {
+      return StreamSupport.stream(new Spliterators.AbstractSpliterator<String>(Long.MAX_VALUE, Spliterator.ORDERED | Spliterator.NONNULL) {
+         private int searchAt = 0;
+
+         @Override
+         public boolean tryAdvance(final Consumer<? super String> action) {
+            while (searchAt < text.length()) {
+               final int foundAt = text.indexOf(separator, searchAt);
+               final String part;
+               if (foundAt == -1) {
+                  part = text.substring(searchAt);
+                  searchAt = text.length();
+               } else {
+                  part = text.substring(searchAt, foundAt);
+                  searchAt = foundAt + 1;
+               }
+
+               if (!part.isEmpty()) {
+                  action.accept(part);
+                  return true;
+               }
+            }
+            return false;
+         }
+      }, false);
+   }
+
+   /**
+    * Empty tokens are not preserved.
+    */
+   public static @Nullable Stream<String> splitAsStreamNullable(final @Nullable String text, final char separator) {
+      return text == null ? null : splitAsStream(text, separator);
+   }
+
+   /**
     * See {@link StringUtils#splitByCharacterType(String)}
     */
    public static @NonNull String[] splitByCharacterType(final String str) {
@@ -3353,47 +3527,22 @@ public abstract class Strings {
 
    /**
     * Empty tokens are not preserved.
+    *
+    * @deprecated use {@link #splitAsList(String, char)}
     */
+   @Deprecated
    public static List<String> splitToList(final String text, final char separator) {
-      return asNonNullUnsafe(splitToListNullable(text, separator));
+      return splitAsList(text, separator);
    }
 
    /**
     * Empty tokens are not preserved.
+    *
+    * @deprecated use {@link #splitAsListNullable(String, char)}
     */
+   @Deprecated
    public static @Nullable List<String> splitToListNullable(final @Nullable String text, final char separator) {
-      if (text == null)
-         return null;
-
-      final int len = text.length();
-      if (text.length() == 0)
-         return Collections.emptyList();
-
-      if (len == 1) {
-         if (text.charAt(0) == separator)
-            return Collections.emptyList();
-         return List.of(text);
-      }
-
-      final var tokens = new ArrayList<String>(len < 5 ? 2 : 4);
-      int searchAt = 0;
-      int foundAt;
-      while ((foundAt = text.indexOf(separator, searchAt)) != Strings.INDEX_NOT_FOUND) {
-         if (searchAt < foundAt) {
-            tokens.add(text.substring(searchAt, foundAt));
-         }
-         searchAt = foundAt + 1;
-      }
-
-      if (searchAt == 0) { // separator not found
-         tokens.add(text);
-         return tokens;
-      }
-
-      if (searchAt < len) {
-         tokens.add(text.substring(searchAt, len));
-      }
-      return tokens;
+      return text == null ? null : splitAsList(text, separator);
    }
 
    public static boolean startsWith(final @Nullable CharSequence str, final char ch) {

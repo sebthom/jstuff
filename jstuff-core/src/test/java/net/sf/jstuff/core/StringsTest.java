@@ -6,13 +6,15 @@ package net.sf.jstuff.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
+
+import net.sf.jstuff.core.collection.CollectionUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -838,23 +840,61 @@ public class StringsTest {
    }
 
    @Test
-   public void testSplitToList() {
-      assertThat(Strings.splitToListNullable(null, '.')).isNull();
-      assertThat(Strings.splitToList("", '.')).isEmpty();
-      assertThat(Strings.splitToList(".", '.')).isEmpty();
-      assertThat(Strings.splitToList("...", '.')).isEmpty();
-      assertThat(Strings.splitToList("f", '.')).isEqualTo(Arrays.asList("f"));
-      assertThat(Strings.splitToList("foo", '.')).isEqualTo(Arrays.asList("foo"));
-      assertThat(Strings.splitToList(".foo.", '.')).isEqualTo(Arrays.asList("foo"));
-      assertThat(Strings.splitToList("foo.bar", '.')).isEqualTo(Arrays.asList("foo", "bar"));
-      assertThat(Strings.splitToList(".foo..bar..", '.')).isEqualTo(Arrays.asList("foo", "bar"));
+   public void testSplitAsIterable() {
+      //assertThat(Strings.splitAsIterableNullable(null, '.')).isNull();
+      assertThat(Strings.splitAsIterable("", '.')).isEmpty();
+      assertThat(Strings.splitAsIterable(".", '.')).isEmpty();
+      assertThat(Strings.splitAsIterable("...", '.')).isEmpty();
+      assertThat(CollectionUtils.toList(Strings.splitAsIterable("f", '.'))).isEqualTo(List.of("f"));
+      assertThat(CollectionUtils.toList(Strings.splitAsIterable("foo", '.'))).isEqualTo(List.of("foo"));
+      assertThat(CollectionUtils.toList(Strings.splitAsIterable(".foo.", '.'))).isEqualTo(List.of("foo"));
+      assertThat(CollectionUtils.toList(Strings.splitAsIterable("foo.bar", '.'))).isEqualTo(List.of("foo", "bar"));
+      assertThat(CollectionUtils.toList(Strings.splitAsIterable(".foo..bar..", '.'))).isEqualTo(List.of("foo", "bar"));
+   }
+
+   @Test
+   public void testSplitAsList() {
+      assertThat(Strings.splitAsListNullable(null, '.')).isNull();
+      assertThat(Strings.splitAsList("", '.')).isEmpty();
+      assertThat(Strings.splitAsList(".", '.')).isEmpty();
+      assertThat(Strings.splitAsList("...", '.')).isEmpty();
+      assertThat(Strings.splitAsList("f", '.')).isEqualTo(List.of("f"));
+      assertThat(Strings.splitAsList("foo", '.')).isEqualTo(List.of("foo"));
+      assertThat(Strings.splitAsList(".foo.", '.')).isEqualTo(List.of("foo"));
+      assertThat(Strings.splitAsList("foo.bar", '.')).isEqualTo(List.of("foo", "bar"));
+      assertThat(Strings.splitAsList(".foo..bar..", '.')).isEqualTo(List.of("foo", "bar"));
+   }
+
+   @Test
+   public void testSplitAsSet() {
+      assertThat(Strings.splitAsSetNullable(null, '.')).isNull();
+      assertThat(Strings.splitAsSet("", '.')).isEmpty();
+      assertThat(Strings.splitAsSet(".", '.')).isEmpty();
+      assertThat(Strings.splitAsSet("...", '.')).isEmpty();
+      assertThat(Strings.splitAsSet("f", '.')).isEqualTo(Set.of("f"));
+      assertThat(Strings.splitAsSet("foo", '.')).isEqualTo(Set.of("foo"));
+      assertThat(Strings.splitAsSet(".foo.", '.')).isEqualTo(Set.of("foo"));
+      assertThat(Strings.splitAsSet("foo.bar", '.')).isEqualTo(Set.of("foo", "bar"));
+      assertThat(Strings.splitAsSet(".foo..bar..", '.')).isEqualTo(Set.of("foo", "bar"));
+   }
+
+   @Test
+   public void testSplitAsStream() {
+      //assertThat(Strings.splitAsStreamNullable(null, '.')).isNull();
+      assertThat(Strings.splitAsStream("", '.')).isEmpty();
+      assertThat(Strings.splitAsStream(".", '.')).isEmpty();
+      assertThat(Strings.splitAsStream("...", '.')).isEmpty();
+      assertThat(Strings.splitAsStream("f", '.')).isEqualTo(List.of("f"));
+      assertThat(Strings.splitAsStream("foo", '.')).isEqualTo(List.of("foo"));
+      assertThat(Strings.splitAsStream(".foo.", '.')).isEqualTo(List.of("foo"));
+      assertThat(Strings.splitAsStream("foo.bar", '.')).isEqualTo(List.of("foo", "bar"));
+      assertThat(Strings.splitAsStream(".foo..bar..", '.')).isEqualTo(List.of("foo", "bar"));
    }
 
    @Test
    public void testSubstringBeforeIgnoreCase() {
-      String a;
+      String a = "abcdef";
 
-      a = "abcdef";
       assertThat(Strings.substringBeforeIgnoreCase(a, "c")).isEqualTo("ab");
       assertThat(Strings.substringBeforeIgnoreCase(a, "C")).isEqualTo("ab");
       assertThat(Strings.substringBeforeIgnoreCase(a, "X")).isEmpty();
