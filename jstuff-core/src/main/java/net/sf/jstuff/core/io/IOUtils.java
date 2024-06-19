@@ -100,7 +100,7 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
     */
    @SuppressWarnings("resource")
    public static long copy(final InputStream in, final OutputStream out, final byte[] buffer, final ObjIntConsumer<byte[]> onBeforeWrite)
-      throws IOException {
+         throws IOException {
       Args.notNull("in", in);
       Args.notNull("out", out);
 
@@ -240,7 +240,6 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
       return new BufferedInputStream(input, blockSize);
    }
 
-   @SuppressWarnings("null")
    public static String toString(final InputStream input) throws IOException {
       return toString(input, Charset.defaultCharset());
    }

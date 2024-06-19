@@ -34,6 +34,8 @@ public class LZ4BlockCompression extends AbstractCompression {
 
    private static final LZ4Compressor COMP = LZ4Factory.fastestInstance().fastCompressor();
    private static final LZ4FastDecompressor DECOMP = LZ4Factory.fastestInstance().fastDecompressor();
+
+   @SuppressWarnings("resource")
    private static final ThreadLocal<Checksum> CHECKSUM = ThreadLocal.withInitial( //
       () -> XXHashFactory.fastestInstance().newStreamingHash32(0x97_47B_28C /* LZ4BlockOutputStream.DEFAULT_SEED*/).asChecksum() //
    );
@@ -49,10 +51,10 @@ public class LZ4BlockCompression extends AbstractCompression {
       Args.notNull("output", output);
 
       final int blockSize = uncompressed.length >= DEFAULT_BLOCK_SIZE //
-         ? DEFAULT_BLOCK_SIZE //
-         : uncompressed.length < 65 //
-            ? 64 //
-            : uncompressed.length;
+            ? DEFAULT_BLOCK_SIZE //
+            : uncompressed.length < 65 //
+                  ? 64 //
+                  : uncompressed.length;
 
       try (var compOS = new LZ4BlockOutputStream(toCloseIgnoring(output), blockSize, COMP, CHECKSUM.get(), false)) {
          compOS.write(uncompressed);
