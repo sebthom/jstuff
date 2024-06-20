@@ -47,21 +47,17 @@ public abstract class Processes {
 
    public static class Builder {
 
+      private Function<Object, String> stringifier = Objects::toString;
+
       private final String executable;
       private final List<Object> args = new ArrayList<>(2);
-      @Nullable
-      private Map<String, Object> env;
-      private Function<Object, String> stringifier = Objects::toString;
-      @Nullable
-      private Consumer<ProcessWrapper> onExit;
-      @Nullable
-      private File workDir;
-
+      private @Nullable Map<String, Object> env;
+      private @Nullable File workDir;
+      private @Nullable Consumer<ProcessWrapper> onExit;
       private boolean redirectErrorToOutput;
-      @Nullable
-      private Object redirectError;
-      @Nullable
-      private Object redirectOutput;
+      private @Nullable Object redirectError;
+      private @Nullable Object input;
+      private @Nullable Object redirectOutput;
 
       protected Builder(final String exe) {
          executable = exe;
@@ -83,10 +79,10 @@ public abstract class Processes {
       }
 
       @SuppressWarnings("null")
-      private CompletableFuture<Void> redirect(final InputStream in, final Appendable consumer) {
+      private CompletableFuture<Void> redirect(final InputStream in, final Appendable out) {
          return CompletableFuture.runAsync(() -> {
             try {
-               IOUtils.copy(new InputStreamReader(in, StandardCharsets.UTF_8), consumer);
+               IOUtils.copy(new InputStreamReader(in, StandardCharsets.UTF_8), out);
             } catch (final IOException ex) {
                throw new RuntimeIOException(ex);
             }
@@ -115,6 +111,30 @@ public abstract class Processes {
          }, BACKGROUND_THREADS);
       }
 
+      @SuppressWarnings("null")
+      private CompletableFuture<Void> writeToStdIn(final CharSequence in, final Process proc) {
+         return CompletableFuture.runAsync(() -> {
+            try (var out = proc.getOutputStream()) {
+               IOUtils.write(in, out, StandardCharsets.UTF_8);
+            } catch (final IOException ex) {
+               throw new RuntimeIOException(ex);
+            }
+         }, BACKGROUND_THREADS);
+      }
+
+      @SuppressWarnings("null")
+      private CompletableFuture<Void> writeToStdIn(final InputStream in, final Process proc) {
+         return CompletableFuture.runAsync(() -> {
+            try (var out = proc.getOutputStream()) {
+               IOUtils.copy(in, out);
+            } catch (final IOException ex) {
+               throw new RuntimeIOException(ex);
+            } finally {
+               IOUtils.closeQuietly(in);
+            }
+         }, BACKGROUND_THREADS);
+      }
+
       /**
        * Runs the command in the background and immediately returns.
        */
@@ -139,6 +159,17 @@ public abstract class Processes {
          }
 
          final Process proc = pb.start();
+
+         if (input != null) {
+            final var input = this.input;
+            if (input instanceof File) {
+               pb.redirectInput((File) input);
+            } else if (input instanceof InputStream) {
+               writeToStdIn((InputStream) input, proc);
+            } else if (input instanceof CharSequence) {
+               writeToStdIn((CharSequence) input, proc);
+            }
+         }
          if (redirectErrorToOutput) {
             pb.redirectError();
          } else if (redirectError != null) {
@@ -166,6 +197,7 @@ public abstract class Processes {
                redirect(proc.getInputStream(), (Consumer<String>) redirectOutput);
             }
          }
+
          return new ProcessWrapper(proc) //
             .onExit(onExit);
       }
@@ -214,6 +246,16 @@ public abstract class Processes {
          return this;
       }
 
+      public Builder withInput(final @Nullable CharSequence input) {
+         this.input = input;
+         return this;
+      }
+
+      public Builder withInput(final @Nullable InputStream input) {
+         this.input = input;
+         return this;
+      }
+
       public Builder withRedirectError(final @Nullable Appendable target) {
          assertRedirectErrorToOuputNotConfigured();
          redirectError = target;
@@ -242,6 +284,10 @@ public abstract class Processes {
          return withRedirectError(target == null ? null : target.toFile());
       }
 
+      /**
+       * @deprecated use {@link #withRedirectError(OutputStream)}
+       */
+      @Deprecated
       public Builder withRedirectError(final @Nullable PrintStream target) {
          return withRedirectError((OutputStream) target);
       }
@@ -277,6 +323,10 @@ public abstract class Processes {
          return this;
       }
 
+      /**
+       * @deprecated use {@link #withRedirectOutput(OutputStream)}
+       */
+      @Deprecated
       public Builder withRedirectOutput(final @Nullable PrintStream target) {
          return withRedirectOutput((OutputStream) target);
       }
@@ -516,7 +566,7 @@ public abstract class Processes {
     * @return false if the given process was not alive, true if it was destroyed by this method.
     */
    public static boolean destroy(final Process process, final int gracePeriod, final TimeUnit gracePeriodTimeUnit)
-      throws InterruptedException {
+         throws InterruptedException {
       Args.notNull("process", process);
       Args.notNegative("gracePeriod", gracePeriod);
       Args.notNull("gracePeriodTimeUnit", gracePeriodTimeUnit);

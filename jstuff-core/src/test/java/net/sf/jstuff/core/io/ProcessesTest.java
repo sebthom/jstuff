@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.io;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
@@ -19,7 +19,28 @@ import net.sf.jstuff.core.io.Processes.ProcessWrapper;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("deprecation")
 public class ProcessesTest {
+
+   @Test
+   public void testWithStdInput() throws IOException, InterruptedException {
+      final var pwb = SystemUtils.IS_OS_WINDOWS ? Processes.builder("findstr").withArg("x*") : Processes.builder("cat");
+
+      final var stdout = new StringBuilder();
+      pwb.withInput("Hello World!\n");
+      pwb.withRedirectOutput(stdout);
+      pwb.withRedirectErrorToOutput();
+
+      final var pw = pwb.start();
+
+      // Wait for the process to exit
+      pw.waitForExit(2, TimeUnit.SECONDS);
+
+      // Assert the output and exit code
+      assertThat(pw.exitStatus()).isZero();
+      assertThat(stdout).hasToString("Hello World!\n");
+
+   }
 
    @Test
    public void testCaptureOutput() throws IOException, InterruptedException {
