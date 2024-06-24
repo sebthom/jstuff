@@ -7,7 +7,6 @@ package net.sf.jstuff.core.io.stream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import net.sf.jstuff.core.io.IOUtils;
 
@@ -27,11 +26,11 @@ public class CharSequenceInputStream extends InputStream {
    private int mark = -1;
 
    public CharSequenceInputStream(final CharSequence input) {
-      this(input, Math.min(8196, input.length()), StandardCharsets.UTF_8);
+      this(input, Math.min(IOUtils.DEFAULT_BUFFER_SIZE, input.length() * 2), Charset.defaultCharset());
    }
 
    public CharSequenceInputStream(final CharSequence input, final int bufferSize) {
-      this(input, bufferSize, StandardCharsets.UTF_8);
+      this(input, bufferSize, Charset.defaultCharset());
    }
 
    public CharSequenceInputStream(final CharSequence input, final int bufferSize, final Charset charset) {
