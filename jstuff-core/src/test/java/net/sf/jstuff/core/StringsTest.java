@@ -6,6 +6,7 @@ package net.sf.jstuff.core;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -105,6 +106,72 @@ public class StringsTest {
       final @NonNull CharSequence defaultIfNull6 = Strings.defaultIfNull((CharSequence) null, "");
       final @NonNull CharSequence defaultIfNull7 = Strings.defaultIfNull(null, (CharSequence) "");
       final @NonNull StringBuilder defaultIfNull8 = Strings.defaultIfNull(null, new StringBuilder());
+   }
+
+   @Test
+   public void testLengthUTF8() {
+      // Test with regular ASCII characters
+      final String asciiString = "Hello, world!";
+      long lengthUtf8 = Strings.lengthUTF8(asciiString);
+      assertThat(lengthUtf8).isEqualTo(asciiString.getBytes(StandardCharsets.UTF_8).length);
+
+      // Test with extended characters
+      final String extendedString = "こんにちは世界"; // "Hello World" in Japanese
+      lengthUtf8 = Strings.lengthUTF8(extendedString);
+      assertThat(lengthUtf8).isEqualTo(extendedString.getBytes(StandardCharsets.UTF_8).length);
+
+      // Test with mixed characters
+      final String mixedString = "Hello, 世界!";
+      lengthUtf8 = Strings.lengthUTF8(mixedString);
+      assertThat(lengthUtf8).isEqualTo(mixedString.getBytes(StandardCharsets.UTF_8).length);
+
+      // Test with emoji characters
+      final String emojiString = "Hello, 😊!";
+      lengthUtf8 = Strings.lengthUTF8(emojiString);
+      assertThat(lengthUtf8).isEqualTo(emojiString.getBytes(StandardCharsets.UTF_8).length);
+
+      // Test with empty string
+      final String emptyString = "";
+      lengthUtf8 = Strings.lengthUTF8(emptyString);
+      assertThat(lengthUtf8).isEqualTo(emptyString.getBytes(StandardCharsets.UTF_8).length);
+
+      // Test with null string
+      final String nullString = null;
+      lengthUtf8 = Strings.lengthUTF8(nullString);
+      assertThat(lengthUtf8).isZero();
+   }
+
+   @Test
+   public void testLengthUTF16() {
+      // Test with regular ASCII characters
+      final String asciiString = "Hello, world!";
+      long lengthUtf16 = Strings.lengthUTF16(asciiString);
+      assertThat(lengthUtf16).isEqualTo(asciiString.getBytes(StandardCharsets.UTF_16).length);
+
+      // Test with extended characters
+      final String extendedString = "こんにちは世界"; // "Hello World" in Japanese
+      lengthUtf16 = Strings.lengthUTF16(extendedString);
+      assertThat(lengthUtf16).isEqualTo(extendedString.getBytes(StandardCharsets.UTF_16).length);
+
+      // Test with mixed characters
+      final String mixedString = "Hello, 世界!";
+      lengthUtf16 = Strings.lengthUTF16(mixedString);
+      assertThat(lengthUtf16).isEqualTo(mixedString.getBytes(StandardCharsets.UTF_16).length);
+
+      // Test with emoji characters
+      final String emojiString = "Hello, 😊!";
+      lengthUtf16 = Strings.lengthUTF16(emojiString);
+      assertThat(lengthUtf16).isEqualTo(emojiString.getBytes(StandardCharsets.UTF_16).length);
+
+      // Test with empty string
+      final String emptyString = "";
+      lengthUtf16 = Strings.lengthUTF16(emptyString);
+      assertThat(lengthUtf16).isEqualTo(emptyString.getBytes(StandardCharsets.UTF_16).length);
+
+      // Test with null string
+      final String nullString = null;
+      lengthUtf16 = Strings.lengthUTF16(nullString);
+      assertThat(lengthUtf16).isZero();
    }
 
    @Test

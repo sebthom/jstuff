@@ -2062,6 +2062,32 @@ public abstract class Strings {
       return StringUtils.length(cs);
    }
 
+   /**
+    * Memory optimized alternative to <code>string.getBytes(StandardCharsets.UTF8).length()</code>
+    *
+    * @return length in bytes of UTF8 encoded string
+    */
+   public static int lengthUTF8(final @Nullable CharSequence cs) {
+      if (cs == null || cs.length() == 0)
+         return 0;
+      final int[] len = {0};
+      cs.codePoints().forEach(cp -> len[0] += cp < 0x80 ? 1 : cp < 0x800 ? 2 : cp < 0x1_0000 ? 3 : 4);
+      return len[0];
+   }
+
+   /**
+    * Memory optimized alternative to <code>string.getBytes(StandardCharsets.UTF16).length()</code>
+    *
+    * @return length in bytes of UTF16 encoded string
+    */
+   public static int lengthUTF16(final @Nullable CharSequence cs) {
+      if (cs == null || cs.length() == 0)
+         return 0;
+      final int[] len = {2}; // 2 bytes BOM header
+      cs.codePoints().forEach(cp -> len[0] += cp < 0x1_0000 ? 2 : 4);
+      return len[0];
+   }
+
    public static String lowerCase(final CharSequence txt) {
       return asNonNullUnsafe(lowerCaseNullable(txt));
    }
@@ -4104,14 +4130,16 @@ public abstract class Strings {
     * See {@link StringUtils#toCodePoints(CharSequence)}
     */
    public static int[] toCodePoints(final CharSequence cs) {
-      return asNonNullUnsafe(StringUtils.toCodePoints(cs));
+      return cs.codePoints().toArray();
    }
 
    /**
     * See {@link StringUtils#toCodePoints(CharSequence)}
     */
    public static int @Nullable [] toCodePointsNullable(final @Nullable CharSequence cs) {
-      return StringUtils.toCodePoints(cs);
+      if (cs == null)
+         return null;
+      return cs.codePoints().toArray();
    }
 
    /**
