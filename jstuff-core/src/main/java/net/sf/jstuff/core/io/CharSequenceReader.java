@@ -17,8 +17,8 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class CharSequenceReader extends Reader {
-   @Nullable
-   private CharSequence text;
+
+   private @Nullable CharSequence text;
    private int next;
    private int mark;
 
@@ -102,14 +102,13 @@ public class CharSequenceReader extends Reader {
    @Override
    public long skip(final long ns) throws IOException {
       final var text = ensureOpen();
-
       if (next >= text.length())
          return 0;
+
       // Bound skip by beginning and end of the source
       long n = Math.min(text.length() - next, ns);
       n = Math.max(-next, n);
       next += n;
       return n;
    }
-
 }
