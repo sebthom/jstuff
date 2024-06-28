@@ -4,8 +4,8 @@
  */
 package net.sf.jstuff.core.validation;
 
-import static net.sf.jstuff.core.reflection.StackTrace.*;
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.reflection.StackTrace.removeFirstStackTraceElement;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -48,7 +48,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value <= bound)
-         throw _createIllegalArgumentException(argumentName, "must be greater than " + bound);
+         throw _createIllegalArgumentException(argumentName, "must be greater than " + bound + " but is " + value);
       return value;
    }
 
@@ -56,7 +56,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value <= bound)
-         throw _createIllegalArgumentException(argumentName, "must be greater than " + bound);
+         throw _createIllegalArgumentException(argumentName, "must be greater than " + bound + " but is " + value);
       return value;
    }
 
@@ -64,7 +64,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value <= bound)
-         throw _createIllegalArgumentException(argumentName, "must be greater than " + bound);
+         throw _createIllegalArgumentException(argumentName, "must be greater than " + bound + " but is " + value);
       return value;
    }
 
@@ -72,7 +72,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value <= bound)
-         throw _createIllegalArgumentException(argumentName, "must be greater than " + bound);
+         throw _createIllegalArgumentException(argumentName, "must be greater than " + bound + " but is " + value);
       return value;
    }
 
@@ -80,7 +80,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value < min || value > max)
-         throw _createIllegalArgumentException(argumentName, "must be in range of " + min + " to " + max);
+         throw _createIllegalArgumentException(argumentName, "must be in range of " + min + " to " + max + " but is " + value);
       return value;
    }
 
@@ -88,7 +88,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value < min || value > max)
-         throw _createIllegalArgumentException(argumentName, "must be in range of " + min + " to " + max);
+         throw _createIllegalArgumentException(argumentName, "must be in range of " + min + " to " + max + " but is " + value);
       return value;
    }
 
@@ -96,7 +96,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value < min || value > max)
-         throw _createIllegalArgumentException(argumentName, "must be in range of " + min + " to " + max);
+         throw _createIllegalArgumentException(argumentName, "must be in range of " + min + " to " + max + " but is " + value);
       return value;
    }
 
@@ -106,7 +106,7 @@ public abstract class Args {
 
       final long lValue = value.longValue();
       if (lValue < min || lValue > max)
-         throw _createIllegalArgumentException(argumentName, "must be in range of " + min + " to " + max);
+         throw _createIllegalArgumentException(argumentName, "must be in range of " + min + " to " + max + " but is " + value);
       return value;
    }
 
@@ -200,7 +200,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value > max)
-         throw _createIllegalArgumentException(argumentName, "must be " + max + " or smaller");
+         throw _createIllegalArgumentException(argumentName, "must be " + max + " or smaller but is " + value);
       return value;
    }
 
@@ -208,7 +208,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value > max)
-         throw _createIllegalArgumentException(argumentName, "must be " + max + " or smaller");
+         throw _createIllegalArgumentException(argumentName, "must be " + max + " or smaller but is " + value);
       return value;
    }
 
@@ -216,7 +216,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value > max)
-         throw _createIllegalArgumentException(argumentName, "must be " + max + " or smaller");
+         throw _createIllegalArgumentException(argumentName, "must be " + max + " or smaller but is " + value);
       return value;
    }
 
@@ -224,7 +224,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value > max)
-         throw _createIllegalArgumentException(argumentName, "must be " + max + " or smaller");
+         throw _createIllegalArgumentException(argumentName, "must be " + max + " or smaller but is " + value);
       return value;
    }
 
@@ -241,7 +241,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value < min)
-         throw _createIllegalArgumentException(argumentName, "must be " + min + " or greater");
+         throw _createIllegalArgumentException(argumentName, "must be " + min + " or greater but is " + value);
       return value;
    }
 
@@ -249,7 +249,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value < min)
-         throw _createIllegalArgumentException(argumentName, "must be " + min + " or greater");
+         throw _createIllegalArgumentException(argumentName, "must be " + min + " or greater but is " + value);
       return value;
    }
 
@@ -257,7 +257,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value < min)
-         throw _createIllegalArgumentException(argumentName, "must be " + min + " or greater");
+         throw _createIllegalArgumentException(argumentName, "must be " + min + " or greater but is " + value);
       return value;
    }
 
@@ -265,7 +265,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value < min)
-         throw _createIllegalArgumentException(argumentName, "must be " + min + " or greater");
+         throw _createIllegalArgumentException(argumentName, "must be " + min + " or greater but is " + value);
       return value;
    }
 
@@ -459,7 +459,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value >= bound)
-         throw _createIllegalArgumentException(argumentName, "must be smaller than " + bound);
+         throw _createIllegalArgumentException(argumentName, "must be smaller than " + bound + " but is " + value);
       return value;
    }
 
@@ -467,7 +467,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value >= bound)
-         throw _createIllegalArgumentException(argumentName, "must be smaller than " + bound);
+         throw _createIllegalArgumentException(argumentName, "must be smaller than " + bound + " but is " + value);
       return value;
    }
 
@@ -475,7 +475,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value >= bound)
-         throw _createIllegalArgumentException(argumentName, "must be smaller than " + bound);
+         throw _createIllegalArgumentException(argumentName, "must be smaller than " + bound + " but is " + value);
       return value;
    }
 
@@ -483,7 +483,7 @@ public abstract class Args {
       _notNull("argumentName", argumentName);
 
       if (value >= bound)
-         throw _createIllegalArgumentException(argumentName, "must be smaller than " + bound);
+         throw _createIllegalArgumentException(argumentName, "must be smaller than " + bound + " but is " + value);
       return value;
    }
 }
