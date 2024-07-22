@@ -27,8 +27,7 @@ public abstract class NullAnalysisHelper {
     *
     * @throws IllegalStateException if the given value is null
     */
-
-   public static <T> @NonNull T asNonNull(final T value) {
+   public static <T> @NonNull T asNonNull(final @Nullable T value) {
       if (value == null)
          throw new IllegalStateException("Null cannot be cast to non-null value!");
       return value;
@@ -43,8 +42,7 @@ public abstract class NullAnalysisHelper {
     *
     * @throws IllegalStateException with the given <code>errorMessage</code> if the given value is null
     */
-
-   public static <T> @NonNull T asNonNull(final T value, final String errorMessage) {
+   public static <T> @NonNull T asNonNull(final @Nullable T value, final String errorMessage) {
       if (value == null)
          throw new IllegalStateException(errorMessage);
       return value;
@@ -61,7 +59,7 @@ public abstract class NullAnalysisHelper {
     */
    @SuppressWarnings("null")
    @SafeVarargs
-   public static <T> @NonNull T @NonNull [] asNonNull(final T... value) {
+   public static <T> @NonNull T @NonNull [] asNonNull(final T @Nullable... value) {
       if (value == null)
          throw new IllegalStateException("Null cannot be cast to non-null array!");
       if (ArrayUtils.containsNulls(value))
@@ -107,13 +105,13 @@ public abstract class NullAnalysisHelper {
       return value;
    }
 
-   public static <T> @NonNull T defaultIfNull(final T object, final @NonNull Supplier<@NonNull T> defaultValue) {
+   public static <T> @NonNull T defaultIfNull(final @Nullable T object, final @NonNull Supplier<@NonNull T> defaultValue) {
       if (object == null)
          return defaultValue.get();
       return object;
    }
 
-   public static <T> @NonNull T defaultIfNull(final T object, final @NonNull T defaultValue) {
+   public static <T> @NonNull T defaultIfNull(final @Nullable T object, final @NonNull T defaultValue) {
       if (object == null)
          return defaultValue;
       return object;
@@ -128,10 +126,8 @@ public abstract class NullAnalysisHelper {
     * @deprecated use {@link #lateNonNull()}
     */
    @Deprecated
-
-   @SuppressWarnings("null")
    public static <T> @NonNull T lazyNonNull() {
-      return (@NonNull T) null;
+      return lateNonNull();
    }
 
    protected NullAnalysisHelper() {
