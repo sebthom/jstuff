@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.io.stream;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,6 +17,7 @@ import net.sf.jstuff.core.io.IOUtils;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@Deprecated
 public class LinePrefixingTeeInputStreamTest {
 
    @Test
@@ -29,7 +30,7 @@ public class LinePrefixingTeeInputStreamTest {
 
          assertThat(IOUtils.toString(tee)).isEqualTo("Line 1" + Strings.NEW_LINE + "Line 2" + Strings.NEW_LINE + "Line 3");
          assertThat(branch.toString()).isEqualTo("prefix: Line 1" + Strings.NEW_LINE + "prefix: Line 2" + Strings.NEW_LINE
-            + "prefix: Line 3");
+               + "prefix: Line 3");
       }
    }
 }

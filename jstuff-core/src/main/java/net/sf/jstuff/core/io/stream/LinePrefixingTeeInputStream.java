@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.io.stream;
 
-import static org.apache.commons.io.IOUtils.*;
+import static org.apache.commons.io.IOUtils.EOF;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +16,9 @@ import net.sf.jstuff.core.collection.ArrayUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
+ * @deprecated use {@link LineCapturingInputStream}
  */
+@Deprecated
 public final class LinePrefixingTeeInputStream extends InputStream {
 
    private final InputStream input;
