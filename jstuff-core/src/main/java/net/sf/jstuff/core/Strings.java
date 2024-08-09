@@ -1761,7 +1761,7 @@ public abstract class Strings {
       if (it == null)
          return null;
 
-      return join(it.iterator(), separator, transform);
+      return joinNullable(it.iterator(), separator, transform);
    }
 
    /**
