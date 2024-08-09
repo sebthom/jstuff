@@ -8,9 +8,10 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 
-import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.lang3.ObjectUtils;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.tm4e.core.TMException;
+import org.eclipse.urischeme.IUriSchemeHandler;
+import org.jdom.CDATA;
 import org.junit.Test;
 import org.slf4j.helpers.NOPLogger;
 
@@ -55,14 +56,14 @@ public class TypesTest {
 
    @Test
    public void testGetVersion() {
-      // from META-INF/MANIFEST.MF
-      assertThat(Types.getVersion(ObjectUtils.class)).isEqualTo("3.15.0");
+      // from META-INF/MANIFEST.MF Implementation-Version
+      assertThat(Types.getVersion(CDATA.class)).isEqualTo("1.0 beta7");
 
       // from META-INF/maven/.../pom.properties
-      assertThat(Types.getVersion(JXPathContext.class)).isEqualTo("1.3");
+      assertThat(Types.getVersion(TMException.class)).isEqualTo("0.2.0-SNAPSHOT");
 
       // from jar name
-      // assertThat(Types.getVersion(TestCase.class)).isEqualTo("4.13.2");
+      assertThat(Types.getVersion(IUriSchemeHandler.class)).isEqualTo("1.0.0");
    }
 
    @Test

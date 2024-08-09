@@ -33,3 +33,5 @@ updates:
   ignore:
   - dependency-name: "org.springframework:*"
     update-types: ["version-update:semver-major"]
+  - dependency-name: "jdom:jdom"
+  - dependency-name: "org.eclipse.platform:org.eclipse.urischeme"
