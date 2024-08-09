@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.concurrent;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
+
 import java.lang.Thread.State;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
@@ -13,7 +15,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
@@ -28,7 +29,7 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Threads {
    private static final Logger LOG = Logger.create();
 
-   private static final @NonNull Thread[] EMPTY_THREAD_ARRAY = {};
+   private static final Thread[] EMPTY_THREAD_ARRAY = {};
 
    private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = (t1, t2) -> t2.getPriority() - t1.getPriority();
 
@@ -38,7 +39,7 @@ public abstract class Threads {
    @Nullable
    private static ThreadGroup rootTG;
 
-   public static @NonNull Thread[] all() {
+   public static Thread[] all() {
       final ThreadGroup root = rootThreadGroup();
 
       var tmp = new Thread[count() + 1];
@@ -211,12 +212,11 @@ public abstract class Threads {
    public static ThreadGroup rootThreadGroup() {
       if (rootTG != null)
          return rootTG;
-      ThreadGroup child = Thread.currentThread().getThreadGroup();
-      ThreadGroup parent;
-      while ((parent = child.getParent()) != null) {
-         child = parent;
+      var group = asNonNull(Thread.currentThread().getThreadGroup());
+      while (group.getParent() != null) {
+         group = asNonNull(group.getParent());
       }
-      rootTG = child;
+      rootTG = group;
       return rootTG;
    }
 

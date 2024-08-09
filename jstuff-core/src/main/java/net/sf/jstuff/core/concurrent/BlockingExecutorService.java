@@ -16,6 +16,9 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -50,7 +53,7 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
     * @param maxWaitTime max time to wait for a tasks being added to the queue
     */
    public BlockingExecutorService(final ExecutorService executorService, final int maxQueueSize, final int maxWaitTime,
-      final TimeUnit maxWaitTimeUnit) {
+         final TimeUnit maxWaitTimeUnit) {
       super(executorService, maxQueueSize, maxWaitTime, maxWaitTimeUnit);
       this.executorService = executorService;
    }
@@ -71,25 +74,28 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
    }
 
    @Override
-   public <T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> tasks) throws InterruptedException {
+   public <@NonNullByDefault({}) T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> tasks) throws InterruptedException {
       return executorService.invokeAll(wrapTasks(tasks));
    }
 
    @Override
-   public <T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit)
-      throws InterruptedException {
+   public <@NonNullByDefault({}) T> List<Future<T>> invokeAll(final Collection<? extends Callable<T>> tasks, final long timeout,
+         final TimeUnit unit) throws InterruptedException {
       return executorService.invokeAll(wrapTasks(tasks), timeout, unit);
    }
 
    @Override
-   public <T> T invokeAny(final Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-      return executorService.invokeAny(wrapTasks(tasks));
+   public <@NonNullByDefault({}) T> T invokeAny(final Collection<? extends Callable<T>> tasks) throws InterruptedException,
+         ExecutionException {
+      final var wrappedTasks = wrapTasks(tasks);
+      return executorService.invokeAny(wrappedTasks);
    }
 
    @Override
-   public <T> T invokeAny(final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit)
-      throws InterruptedException, ExecutionException, TimeoutException {
-      return executorService.invokeAny(wrapTasks(tasks), timeout, unit);
+   public <@NonNullByDefault({}) T> T invokeAny(final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit)
+         throws InterruptedException, ExecutionException, TimeoutException {
+      final var wrappedTasks = wrapTasks(tasks);
+      return executorService.invokeAny(wrappedTasks, timeout, unit);
    }
 
    @Override
@@ -141,7 +147,8 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
    }
 
    @Override
-   public <T> Future<T> submit(final Runnable task, final T result) throws RejectedExecutionException {
+   @NonNullByDefault({})
+   public <T> @NonNull Future<T> submit(final @NonNull Runnable task, final T result) throws RejectedExecutionException {
       Args.notNull("task", task);
 
       aquirePermit();
@@ -154,7 +161,8 @@ public class BlockingExecutorService extends BlockingExecutor implements Executo
       }
    }
 
-   protected <T> Collection<Callable<T>> wrapTasks(final Collection<? extends Callable<T>> tasks) throws RejectedExecutionException {
+   protected <@NonNullByDefault({}) T> Collection<Callable<T>> wrapTasks(final Collection<? extends Callable<T>> tasks)
+         throws RejectedExecutionException {
       Args.notNull("tasks", tasks);
       Args.noNulls("tasks", tasks);
 

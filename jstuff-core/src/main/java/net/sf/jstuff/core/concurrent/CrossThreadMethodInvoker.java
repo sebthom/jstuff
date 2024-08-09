@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.fluent.Fluent;
@@ -32,17 +32,14 @@ public class CrossThreadMethodInvoker {
    }
 
    private static final class MethodInvocation {
-      @Nullable
-      final Object target;
+      final @Nullable Object target;
       final Method method;
-      final Object @Nullable [] args;
-      @Nullable
-      volatile Object result;
-      @Nullable
-      volatile Exception exception;
+      final @NonNullByDefault({}) Object @Nullable [] args;
+      volatile @Nullable Object result;
+      volatile @Nullable Exception exception;
       final CountDownLatch isDone = new CountDownLatch(1);
 
-      MethodInvocation(final @Nullable Object target, final Method method, final Object @Nullable [] args) {
+      MethodInvocation(final @Nullable Object target, final Method method, final @NonNullByDefault({}) Object @Nullable [] args) {
          this.target = target;
          this.method = method;
          this.args = args;
@@ -65,8 +62,7 @@ public class CrossThreadMethodInvoker {
     * queue of method invocations that shall be executed in another thread
     */
    private final ConcurrentLinkedQueue<MethodInvocation> invocations = new ConcurrentLinkedQueue<>();
-   @Nullable
-   private volatile Thread owner;
+   private volatile @Nullable Thread owner;
    private final int timeout;
    private AtomicInteger backgroundThreadCount = new AtomicInteger(Integer.MIN_VALUE);
 
@@ -86,8 +82,8 @@ public class CrossThreadMethodInvoker {
    /**
     * Creates a JDK proxy executing all method in the {@link CrossThreadMethodInvoker}'s owner thread
     */
-   public <@NonNull INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
-      final @NonNull Class<?>... targetInterfaces) {
+   public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
+         final Class<?>... targetInterfaces) {
 
       return Proxies.create((proxy, method, args) -> {
          if (method.getDeclaringClass() == CrossThreadProxy.class) {
@@ -103,8 +99,8 @@ public class CrossThreadMethodInvoker {
    /**
     * Creates a JDK proxy executing all method in the {@link CrossThreadMethodInvoker}'s owner thread
     */
-   public <@NonNull INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
-      final Function<@Nullable Object, ?> resultTransformer, final @NonNull Class<?>... targetInterfaces) {
+   public <INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
+         final Function<@Nullable Object, ?> resultTransformer, final Class<?>... targetInterfaces) {
 
       return Proxies.create(Thread.currentThread().getContextClassLoader(), (proxy, method, args) -> {
          if (method.getDeclaringClass() == CrossThreadProxy.class) {
@@ -135,7 +131,8 @@ public class CrossThreadMethodInvoker {
     * performs the given method invocation in the owner thread
     */
    @Nullable
-   public Object invokeInOwnerThread(final @Nullable Object target, final Method method, final Object @Nullable [] args) throws Exception {
+   public Object invokeInOwnerThread(final @Nullable Object target, final Method method,
+         final @NonNullByDefault({}) Object @Nullable [] args) throws Exception {
       if (Thread.currentThread() == owner) //
          return Methods.invoke(target, method, args);
 
@@ -189,7 +186,7 @@ public class CrossThreadMethodInvoker {
          try {
             final long startedAt = System.currentTimeMillis();
             while (backgroundThreadCount.get() > 0 // still background threads alive?
-               && System.currentTimeMillis() - startedAt < timeout) { // timeout not yet reached?
+                  && System.currentTimeMillis() - startedAt < timeout) { // timeout not yet reached?
                final MethodInvocation m = invocations.poll();
                if (m != null) {
                   m.invoke();
