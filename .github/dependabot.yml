@@ -33,3 +33,7 @@ updates:
   ignore:
   - dependency-name: "org.springframework:*"
     update-types: ["version-update:semver-major"]
+  # these dependencies are only used by TypesTest and need to have stable versions
+  - dependency-name: "jdom:jdom"
+  - dependency-name: "org.eclipse.platform:org.eclipse.urischeme"
+  - dependency-name: "org.netbeans.external:*"
