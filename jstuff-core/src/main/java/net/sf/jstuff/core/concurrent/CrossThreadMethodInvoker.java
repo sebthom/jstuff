@@ -32,14 +32,11 @@ public class CrossThreadMethodInvoker {
    }
 
    private static final class MethodInvocation {
-      @Nullable
-      final Object target;
+      final @Nullable Object target;
       final Method method;
       final Object @Nullable [] args;
-      @Nullable
-      volatile Object result;
-      @Nullable
-      volatile Exception exception;
+      volatile @Nullable Object result;
+      volatile @Nullable Exception exception;
       final CountDownLatch isDone = new CountDownLatch(1);
 
       MethodInvocation(final @Nullable Object target, final Method method, final Object @Nullable [] args) {
@@ -65,8 +62,7 @@ public class CrossThreadMethodInvoker {
     * queue of method invocations that shall be executed in another thread
     */
    private final ConcurrentLinkedQueue<MethodInvocation> invocations = new ConcurrentLinkedQueue<>();
-   @Nullable
-   private volatile Thread owner;
+   private volatile @Nullable Thread owner;
    private final int timeout;
    private AtomicInteger backgroundThreadCount = new AtomicInteger(Integer.MIN_VALUE);
 
@@ -87,7 +83,7 @@ public class CrossThreadMethodInvoker {
     * Creates a JDK proxy executing all method in the {@link CrossThreadMethodInvoker}'s owner thread
     */
    public <@NonNull INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
-      final @NonNull Class<?>... targetInterfaces) {
+         final @NonNull Class<?>... targetInterfaces) {
 
       return Proxies.create((proxy, method, args) -> {
          if (method.getDeclaringClass() == CrossThreadProxy.class) {
@@ -104,7 +100,7 @@ public class CrossThreadMethodInvoker {
     * Creates a JDK proxy executing all method in the {@link CrossThreadMethodInvoker}'s owner thread
     */
    public <@NonNull INTERFACE, IMPL extends INTERFACE> CrossThreadProxy<INTERFACE> createProxy(final IMPL target,
-      final Function<@Nullable Object, ?> resultTransformer, final @NonNull Class<?>... targetInterfaces) {
+         final Function<@Nullable Object, ?> resultTransformer, final @NonNull Class<?>... targetInterfaces) {
 
       return Proxies.create(Thread.currentThread().getContextClassLoader(), (proxy, method, args) -> {
          if (method.getDeclaringClass() == CrossThreadProxy.class) {
@@ -189,7 +185,7 @@ public class CrossThreadMethodInvoker {
          try {
             final long startedAt = System.currentTimeMillis();
             while (backgroundThreadCount.get() > 0 // still background threads alive?
-               && System.currentTimeMillis() - startedAt < timeout) { // timeout not yet reached?
+                  && System.currentTimeMillis() - startedAt < timeout) { // timeout not yet reached?
                final MethodInvocation m = invocations.poll();
                if (m != null) {
                   m.invoke();

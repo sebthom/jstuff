@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.concurrent;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
+
 import java.lang.Thread.State;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
@@ -211,7 +213,7 @@ public abstract class Threads {
    public static ThreadGroup rootThreadGroup() {
       if (rootTG != null)
          return rootTG;
-      ThreadGroup child = Thread.currentThread().getThreadGroup();
+      var child = asNonNull(Thread.currentThread().getThreadGroup());
       ThreadGroup parent;
       while ((parent = child.getParent()) != null) {
          child = parent;

@@ -4,9 +4,10 @@
  */
 package net.sf.jstuff.core.security;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -40,7 +41,7 @@ public abstract class KeyTool {
    private static final Logger LOG = Logger.create();
 
    public static Tuple2<X509Certificate, PrivateKey> createSelfSignedCertificate(final String subjectDN, final String keyAlgo,
-      final int keySize, final int daysValid) throws GeneralSecurityException {
+         final int keySize, final int daysValid) throws GeneralSecurityException {
 
       final Path keyStoreFile = MoreFiles.getTempDirectory().resolve(UUID.randomUUID().toString() + ".jks");
       final @NonNull String[] args = { //
@@ -77,8 +78,8 @@ public abstract class KeyTool {
    public static void main(final @NonNull String[] args) throws IOException { // CHECKSTYLE:IGNORE UncommentedMain
       try {
          final ProcessWrapper prc = Processes.builder(SystemUtils.getJavaHome().toPath().resolve("bin/keytool")).withArgs(args)
-            .withRedirectOutput(System.out) //
-            .withRedirectError(System.err) //
+            .withRedirectOutput((OutputStream) System.out) //
+            .withRedirectError((OutputStream) System.err) //
             .start() //
             .waitForExit(10, TimeUnit.SECONDS) //
             .terminate(5, TimeUnit.SECONDS);
