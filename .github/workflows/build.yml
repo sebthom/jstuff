@@ -32,7 +32,7 @@ on:
       additional_maven_args:
         description: 'Additional Maven Args'
         required: false
-        default: ''
+        default: '-Dmaven.javadoc.skip=false'
       debug-with-ssh:
         description: "Start an SSH session for debugging purposes at the end of the build:"
         default: never
