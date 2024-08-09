@@ -112,7 +112,7 @@ SPDX-License-Identifier: EPL-2.0
          <!-- added for test case TypesTest.testGetVersion() -->
          <groupId>org.netbeans.external</groupId>
          <artifactId>org.eclipse.tm4e.core_0.2.0.201809031154</artifactId>
-         <version>RELEASE110</version>
+         <version>RELEASE123</version>
          <scope>test</scope>
          <exclusions>
             <exclusion>
