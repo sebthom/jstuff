@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.compression;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -59,14 +59,14 @@ public class CompressionBenchmark {
    }
 
    public static final Comparator<BenchmarkResult> COMPARATOR_COMPRESS_SPEED = //
-      (o1, o2) -> o1.compressTimeMS < o2.compressTimeMS ? -1 : o1.compressTimeMS == o2.compressTimeMS ? 0 : 1;
+         (o1, o2) -> o1.compressTimeMS < o2.compressTimeMS ? -1 : o1.compressTimeMS == o2.compressTimeMS ? 0 : 1;
    public static final Comparator<BenchmarkResult> COMPARATOR_DECOMPRESS_SPEED = //
-      (o1, o2) -> o1.decompressTimeMS < o2.decompressTimeMS ? -1 : o1.decompressTimeMS == o2.decompressTimeMS ? 0 : 1;
+         (o1, o2) -> o1.decompressTimeMS < o2.decompressTimeMS ? -1 : o1.decompressTimeMS == o2.decompressTimeMS ? 0 : 1;
    public static final Comparator<BenchmarkResult> COMPARATOR_RATIO = //
-      (o1, o2) -> o1.compressedSize < o2.compressedSize ? -1 : o1.compressedSize == o2.compressedSize ? 0 : 1;
+         (o1, o2) -> o1.compressedSize < o2.compressedSize ? -1 : o1.compressedSize == o2.compressedSize ? 0 : 1;
    public static final Comparator<BenchmarkResult> COMPARATOR_ROUNDTRIP_SPEED = //
-      (o1, o2) -> o1.compressTimeMS + o1.decompressTimeMS < o2.compressTimeMS + o2.decompressTimeMS ? -1
-         : o1.compressTimeMS + o1.decompressTimeMS == o2.compressTimeMS + o2.decompressTimeMS ? 0 : 1;
+         (o1, o2) -> o1.compressTimeMS + o1.decompressTimeMS < o2.compressTimeMS + o2.decompressTimeMS ? -1
+               : o1.compressTimeMS + o1.decompressTimeMS == o2.compressTimeMS + o2.decompressTimeMS ? 0 : 1;
 
    private static final Logger LOG = Logger.create();
 
@@ -142,7 +142,7 @@ public class CompressionBenchmark {
             cmp.compress(uncompressedIS, compressedOS);
          }
          sw.stop();
-         asNonNull(result.get(cmp)).compressTimeMS = sw.getTime();
+         asNonNull(result.get(cmp)).compressTimeMS = sw.getDuration().toMillis();
       }
       for (final Compression cmp : compressions) {
          LOG.info("Benchmarking decompression [%s]...", cmp);
@@ -168,7 +168,7 @@ public class CompressionBenchmark {
             cmp.decompress(compressedIS, uncompressedOS);
          }
          sw.stop();
-         asNonNull(result.get(cmp)).decompressTimeMS = sw.getTime();
+         asNonNull(result.get(cmp)).decompressTimeMS = sw.getDuration().toMillis();
       }
 
       Thread.currentThread().setPriority(Thread.NORM_PRIORITY);

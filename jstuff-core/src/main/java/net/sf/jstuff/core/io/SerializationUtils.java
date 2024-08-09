@@ -22,6 +22,10 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class SerializationUtils extends org.apache.commons.lang3.SerializationUtils {
 
+   @SuppressWarnings("deprecation")
+   protected SerializationUtils() {
+   }
+
    /**
     * @see XMLEncoder
     */

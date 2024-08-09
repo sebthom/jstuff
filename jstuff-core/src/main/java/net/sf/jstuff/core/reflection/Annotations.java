@@ -28,6 +28,11 @@ import net.sf.jstuff.core.validation.Args;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Annotations extends org.apache.commons.lang3.AnnotationUtils {
+
+   @SuppressWarnings("deprecation")
+   protected Annotations() {
+   }
+
    public static <T extends Annotation> T create(final Class<T> annotationType) throws ReflectionException {
       Args.notNull("annotationType", annotationType);
 
@@ -35,7 +40,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
    }
 
    public static <T extends Annotation> T create(final Class<T> annotationType, final @Nullable Map<String, Object> attributes)
-      throws ReflectionException {
+         throws ReflectionException {
       Args.notNull("annotationType", annotationType);
 
       /*
@@ -168,7 +173,7 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
       for (int i = 0; i < methodParameterTypesCount; i++) {
          final HashSet<Annotation> paramAnnos = methodParameterAnnotations[i];
          result[i] = paramAnnos == null ? new Annotation[0]
-            : methodParameterAnnotations[i].toArray(new Annotation[methodParameterAnnotations[i].size()]);
+               : methodParameterAnnotations[i].toArray(new Annotation[methodParameterAnnotations[i].size()]);
 
       }
       return result;

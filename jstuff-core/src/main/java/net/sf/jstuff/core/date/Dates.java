@@ -24,6 +24,10 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
    private static final Logger LOG = Logger.create();
 
+   @SuppressWarnings("deprecation")
+   protected Dates() {
+   }
+
    /**
     * e.g. 2022-05-03T15:00:00.000+02:00
     */
@@ -43,15 +47,15 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
    private static final FastDateFormat RFC3399_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ssXXX");
 
    public static final String DURATION_REGEX = "" //
-      + "((\\d+)(d((ay)s?)?)+)?" // 1d, 1day, 2days
-      + "\\s*" //
-      + "((\\d+)(h((our)s?)?)+)?" // 1h, 1hour, 2hours
-      + "\\s*" //
-      + "((\\d+)(m(in)?)+)?" // 1m, 1min
-      + "\\s*" //
-      + "((\\d+)(s((ec)s?)?)+)?" // 1s, 1sec, 2secs
-      + "\\s*" //
-      + "((\\d+)(ms)+)?"; // 1ms;
+         + "((\\d+)(d((ay)s?)?)+)?" // 1d, 1day, 2days
+         + "\\s*" //
+         + "((\\d+)(h((our)s?)?)+)?" // 1h, 1hour, 2hours
+         + "\\s*" //
+         + "((\\d+)(m(in)?)+)?" // 1m, 1min
+         + "\\s*" //
+         + "((\\d+)(s((ec)s?)?)+)?" // 1s, 1sec, 2secs
+         + "\\s*" //
+         + "((\\d+)(ms)+)?"; // 1ms;
 
    private static final Pattern DURATION_PATTERN = Pattern.compile("^" + DURATION_REGEX + "$");
 

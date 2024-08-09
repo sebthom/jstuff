@@ -23,6 +23,10 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
 
+   @SuppressWarnings("deprecation")
+   protected Numbers() {
+   }
+
    public static final int MILLION = 1000 * 1000;
    public static final int BILLION = 1000 * MILLION;
    public static final int TRILLION = 1000 * BILLION;
@@ -59,13 +63,13 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return true;
 
       if (number instanceof Integer //
-         || number instanceof Short //
-         || number instanceof AtomicLong //
-         || number instanceof AtomicInteger //
-         || number instanceof LongAdder //
-         || number instanceof MutableLong //
-         || number instanceof MutableInt //
-         || number instanceof MutableShort //
+            || number instanceof Short //
+            || number instanceof AtomicLong //
+            || number instanceof AtomicInteger //
+            || number instanceof LongAdder //
+            || number instanceof MutableLong //
+            || number instanceof MutableInt //
+            || number instanceof MutableShort //
       ) {
          final long longValue = number.longValue();
          return longValue <= Byte.MAX_VALUE && longValue >= Byte.MIN_VALUE;
@@ -99,18 +103,18 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return false;
 
       if (number instanceof Integer //
-         || number instanceof Short //
-         || number instanceof Byte //
-         || number instanceof AtomicInteger //
-         || number instanceof MutableInt //
-         || number instanceof MutableShort //
-         || number instanceof MutableByte //
+            || number instanceof Short //
+            || number instanceof Byte //
+            || number instanceof AtomicInteger //
+            || number instanceof MutableInt //
+            || number instanceof MutableShort //
+            || number instanceof MutableByte //
       )
          return true;
 
       if (number instanceof AtomicLong //
-         || number instanceof LongAdder //
-         || number instanceof MutableLong) {
+            || number instanceof LongAdder //
+            || number instanceof MutableLong) {
          final long longValue = number.longValue();
          return longValue <= Integer.MAX_VALUE && longValue >= Integer.MIN_VALUE;
       }
@@ -132,16 +136,16 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return false;
 
       if (number instanceof Long //
-         || number instanceof Integer //
-         || number instanceof Short //
-         || number instanceof Byte //
-         || number instanceof AtomicLong //
-         || number instanceof AtomicInteger //
-         || number instanceof LongAdder //
-         || number instanceof MutableLong //
-         || number instanceof MutableInt //
-         || number instanceof MutableShort //
-         || number instanceof MutableByte //
+            || number instanceof Integer //
+            || number instanceof Short //
+            || number instanceof Byte //
+            || number instanceof AtomicLong //
+            || number instanceof AtomicInteger //
+            || number instanceof LongAdder //
+            || number instanceof MutableLong //
+            || number instanceof MutableInt //
+            || number instanceof MutableShort //
+            || number instanceof MutableByte //
       )
          return true;
 
@@ -162,18 +166,18 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return false;
 
       if (number instanceof Short //
-         || number instanceof Byte //
-         || number instanceof MutableShort //
-         || number instanceof MutableByte //
+            || number instanceof Byte //
+            || number instanceof MutableShort //
+            || number instanceof MutableByte //
       )
          return true;
 
       if (number instanceof Integer //
-         || number instanceof AtomicLong //
-         || number instanceof LongAdder //
-         || number instanceof AtomicInteger //
-         || number instanceof MutableInt //
-         || number instanceof MutableLong) {
+            || number instanceof AtomicLong //
+            || number instanceof LongAdder //
+            || number instanceof AtomicInteger //
+            || number instanceof MutableInt //
+            || number instanceof MutableLong) {
          final long longValue = number.longValue();
          return longValue <= Short.MAX_VALUE && longValue >= Short.MIN_VALUE;
       }
@@ -195,17 +199,17 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return false;
 
       if (number instanceof BigInteger //
-         || number instanceof Long //
-         || number instanceof Integer //
-         || number instanceof Short //
-         || number instanceof Byte //
-         || number instanceof AtomicLong //
-         || number instanceof AtomicInteger //
-         || number instanceof LongAdder //
-         || number instanceof MutableLong //
-         || number instanceof MutableInt //
-         || number instanceof MutableShort //
-         || number instanceof MutableByte //
+            || number instanceof Long //
+            || number instanceof Integer //
+            || number instanceof Short //
+            || number instanceof Byte //
+            || number instanceof AtomicLong //
+            || number instanceof AtomicInteger //
+            || number instanceof LongAdder //
+            || number instanceof MutableLong //
+            || number instanceof MutableInt //
+            || number instanceof MutableShort //
+            || number instanceof MutableByte //
       )
          return true;
 

@@ -25,6 +25,10 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
+   @SuppressWarnings("deprecation")
+   protected ArrayUtils() {
+   }
+
    @SuppressWarnings("unchecked")
    public static <T> T[] addAll(final T[] arr, final @Nullable Collection<T> coll) {
       if (coll == null)
@@ -274,7 +278,7 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static <S, T> T @Nullable [] transformNullable(final S @Nullable [] source, final Class<T> targetType,
-      final Function<? super S, ? extends T> op) {
+         final Function<? super S, ? extends T> op) {
       if (source == null)
          return null;
       Args.notNull("targetType", targetType);
