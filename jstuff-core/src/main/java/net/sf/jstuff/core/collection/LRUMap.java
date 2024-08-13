@@ -25,7 +25,7 @@ public class LRUMap<K, V> extends LinkedHashMap<K, V> {
     * @param maxCapacity the maximum capacity of the cache. When maxCapacity is exceeded the oldest entry in the cache is removed.
     */
    public LRUMap(final int maxCapacity) {
-      super(maxCapacity, 1.0f, true);
+      super(8, 1.0f, true);
       Args.min("maxCapacity", maxCapacity, 1);
       this.maxCapacity = maxCapacity;
    }
