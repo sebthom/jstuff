@@ -3,27 +3,27 @@
   <groupId>net.sf.jstuff</groupId>
   <artifactId>jstuff-integration</artifactId>
   <versioning>
-    <lastUpdated>20240813190709</lastUpdated>
+    <lastUpdated>20240813193752</lastUpdated>
     <snapshot>
-      <timestamp>20240813.190709</timestamp>
+      <timestamp>20240813.193752</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>7.13.1-20240813.190709-1</value>
-        <updated>20240813190709</updated>
+        <value>7.13.1-20240813.193752-1</value>
+        <updated>20240813193752</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>jar</extension>
-        <value>7.13.1-20240813.190709-1</value>
-        <updated>20240813190709</updated>
+        <value>7.13.1-20240813.193752-1</value>
+        <updated>20240813193752</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>sources</classifier>
         <extension>jar</extension>
-        <value>7.13.1-20240813.190709-1</value>
-        <updated>20240813190709</updated>
+        <value>7.13.1-20240813.193752-1</value>
+        <updated>20240813193752</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
