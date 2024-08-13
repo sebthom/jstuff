@@ -8,18 +8,21 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentMap;
 
 import org.eclipse.jdt.annotation.Nullable;
+
+import net.sf.jstuff.core.concurrent.ThreadSafe;
 
 /**
  * Thread-safe in-memory object cache.
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@ThreadSafe
 public final class ObjectCache<K, V> {
    private static final class SoftValueReference<K, V> extends SoftReference<V> implements ValueReference<K, V> {
       private final K key;
@@ -56,6 +59,8 @@ public final class ObjectCache<K, V> {
       }
    }
 
+   private static final int UNLIMITED_CACHE = -1;
+
    private final ConcurrentMap<K, ValueReference<K, V>> cache = new ConcurrentHashMap<>();
    private final ReferenceQueue<V> garbageCollectedRefs = new ReferenceQueue<>();
    private final int maxObjectsToKeep;
@@ -65,19 +70,18 @@ public final class ObjectCache<K, V> {
     * hard referencing the last n-th items to avoid their garbage collection.
     * the first item is the latest accessed item.
     */
-   @Nullable
-   private final LinkedList<V> mru;
+   private final @Nullable ConcurrentLinkedDeque<V> mru;
    private final boolean useWeakReferences;
 
    /**
     * Creates a new cache where all cached objects are soft-referenced (i.e. only garbage collected if JVM needs to free memory)
     */
    public ObjectCache() {
-      this(-1, false);
+      this(UNLIMITED_CACHE, false);
    }
 
    public ObjectCache(final boolean useWeakValueReferences) {
-      this(-1, useWeakValueReferences);
+      this(UNLIMITED_CACHE, useWeakValueReferences);
    }
 
    /**
@@ -94,8 +98,8 @@ public final class ObjectCache<K, V> {
     */
    public ObjectCache(final int maxObjectsToKeep, final boolean useWeakValueReferences) {
       this.maxObjectsToKeep = maxObjectsToKeep;
-      mru = maxObjectsToKeep > -1 ? new LinkedList<>() : null;
-      this.useWeakReferences = useWeakValueReferences;
+      mru = maxObjectsToKeep > UNLIMITED_CACHE ? new ConcurrentLinkedDeque<>() : null;
+      useWeakReferences = useWeakValueReferences;
    }
 
    public void clear() {
@@ -167,12 +171,16 @@ public final class ObjectCache<K, V> {
 
    public void put(final K key, final V value) {
       cache.put(key, useWeakReferences //
-         ? new WeakValueReference<>(key, value, garbageCollectedRefs) //
-         : new SoftValueReference<>(key, value, garbageCollectedRefs) //
+            ? new WeakValueReference<>(key, value, garbageCollectedRefs) //
+            : new SoftValueReference<>(key, value, garbageCollectedRefs) //
       );
    }
 
    public void remove(final K key) {
       cache.remove(key);
+   }
+
+   public int size() {
+      return cache.size();
    }
 }
