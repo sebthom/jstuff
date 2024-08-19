@@ -4,76 +4,47 @@
  */
 package net.sf.jstuff.core.io.stream;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
-
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.IntSupplier;
-
-import org.apache.commons.io.IOUtils;
-
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * Memory friendly input stream for character sequences.
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CharSequenceInputStream extends InputStream {
+public class CharSequenceInputStream extends AbstractCharsInputStream {
 
    @FunctionalInterface
    public interface CharsSupplier {
-      char charAt(int index);
+      char charAt(int index) throws Exception;
    }
-
-   private enum EncoderState {
-      ENCODING,
-      FLUSHING,
-      DONE
-   }
-
-   /** 1024 surrogate character pairs */
-   private static final int DEFAULT_BUFFER_SIZE = 1024;
-
-   private final int bufferSize;
-   private final CharBuffer charBuffer;
-   private final ByteBuffer byteBuffer;
-   private final CharsetEncoder encoder;
-   private EncoderState encoderState = EncoderState.ENCODING;
-
-   private ByteBuffer markedByteBuffer = lateNonNull();
-   private int markedCharIndex = -1;
 
    private final CharsSupplier chars;
    private final IntSupplier charsLength;
-   private int charIndex = 0;
 
-   public CharSequenceInputStream(final char[] chars) {
+   public CharSequenceInputStream(final String chars) {
       this(chars, Charset.defaultCharset());
    }
 
-   public CharSequenceInputStream(final char[] chars, final Charset charset) {
+   public CharSequenceInputStream(final String chars, final Charset charset) {
       this(chars, charset, DEFAULT_BUFFER_SIZE);
    }
 
    /**
     * @param bufferSize number of surrogate character pairs to encode at once.
     */
-   public CharSequenceInputStream(final char[] chars, final Charset charset, final int bufferSize) {
-      this(i -> chars[i], () -> chars.length, charset, bufferSize);
+   public CharSequenceInputStream(final String chars, final Charset charset, final int bufferSize) {
+      this(chars::charAt, chars::length, charset, Math.min(bufferSize, chars.length() + 1 / CHAR_BUFFER_MULTIPLIER));
    }
 
    /**
     * @param bufferSize number of surrogate character pairs to encode at once.
     */
-   public CharSequenceInputStream(final char[] chars, final int bufferSize) {
+   public CharSequenceInputStream(final String chars, final int bufferSize) {
       this(chars, Charset.defaultCharset(), bufferSize);
    }
 
@@ -121,16 +92,9 @@ public class CharSequenceInputStream extends InputStream {
     * @param bufferSize number of surrogate character pairs to encode at once.
     */
    public CharSequenceInputStream(final CharsSupplier chars, final IntSupplier charsLength, final Charset charset, final int bufferSize) {
-      Args.min("bufferSize", bufferSize, 1);
-      encoder = charset.newEncoder();
-
-      this.bufferSize = bufferSize;
-      charBuffer = CharBuffer.allocate(bufferSize * 2); // buffer for 2 chars (high/low surrogate)
-      byteBuffer = ByteBuffer.allocate(bufferSize * 4); // buffer for one UTF character (up to 4 bytes)
+      super(charset, bufferSize);
       this.chars = chars;
       this.charsLength = charsLength;
-      byteBuffer.flip();
-      charBuffer.flip();
    }
 
    /**
@@ -168,79 +132,8 @@ public class CharSequenceInputStream extends InputStream {
       return remaining == 0 ? charsLength.getAsInt() - charIndex : remaining;
    }
 
-   private boolean flushEncoder() throws IOException {
-      if (encoderState == EncoderState.DONE)
-         return false;
-
-      if (encoderState == EncoderState.ENCODING) {
-         encoderState = EncoderState.FLUSHING;
-      }
-
-      // flush
-      byteBuffer.clear();
-      final CoderResult result = encoder.flush(byteBuffer);
-      byteBuffer.flip();
-
-      if (result.isOverflow()) // byteBuffer too small
-         return true;
-
-      if (result.isError()) {
-         result.throwException();
-      }
-
-      encoderState = EncoderState.DONE;
-      return byteBuffer.hasRemaining();
-   }
-
-   public Charset getCharset() {
-      return encoder.charset();
-   }
-
    @Override
-   public synchronized void mark(final int readlimit) {
-      markedCharIndex = charIndex;
-      markedByteBuffer = byteBuffer.duplicate();
-   }
-
-   @Override
-   public boolean markSupported() {
-      return true;
-   }
-
-   @Override
-   public int read() throws IOException {
-      if (!byteBuffer.hasRemaining() && !refillBuffer())
-         return IOUtils.EOF;
-      return byteBuffer.get() & 0xFF; // next byte as an unsigned integer (0 to 255)
-   }
-
-   @Override
-   public int read(final byte[] buf, final int off, final int bytesToRead) throws IOException {
-      Objects.checkFromIndexSize(off, bytesToRead, buf.length);
-      if (bytesToRead == 0)
-         return 0;
-
-      int bytesRead = 0;
-      int bytesReadable = byteBuffer.remaining();
-
-      while (bytesRead < bytesToRead) {
-         if (bytesReadable == 0) {
-            if (refillBuffer()) {
-               bytesReadable = byteBuffer.remaining();
-            } else
-               return bytesRead == 0 ? IOUtils.EOF : bytesRead;
-         }
-
-         final int bytesToReadNow = Math.min(bytesToRead - bytesRead, bytesReadable);
-         byteBuffer.get(buf, off + bytesRead, bytesToReadNow);
-         bytesRead += bytesToReadNow;
-         bytesReadable -= bytesToReadNow;
-      }
-
-      return bytesRead;
-   }
-
-   private boolean refillBuffer() throws IOException {
+   protected boolean refillBuffer() throws IOException {
       if (encoderState == EncoderState.DONE)
          return false;
 
@@ -294,27 +187,10 @@ public class CharSequenceInputStream extends InputStream {
          if (result.isError()) {
             result.throwException();
          }
-      } catch (final RuntimeException ex) {
+      } catch (final Exception ex) {
          throw new IOException(ex);
       }
 
       return true;
-   }
-
-   @Override
-   public synchronized void reset() throws IOException {
-      charBuffer.clear();
-      byteBuffer.clear();
-      if (markedCharIndex == -1) {
-         charIndex = 0;
-      } else {
-         charIndex = markedCharIndex;
-         byteBuffer.put(markedByteBuffer);
-      }
-      charBuffer.flip();
-      byteBuffer.flip();
-
-      encoderState = EncoderState.ENCODING;
-      encoder.reset();
    }
 }
