@@ -7,7 +7,6 @@ package net.sf.jstuff.core.io.stream;
 import java.io.IOException;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CoderResult;
 import java.util.List;
 import java.util.function.IntSupplier;
 
@@ -18,6 +17,10 @@ import java.util.function.IntSupplier;
  */
 public class CharSequenceInputStream extends AbstractCharsInputStream {
 
+   /**
+    * Functional interface for supplying characters at a specified index.
+    * Implementations can define how characters are fetched.
+    */
    @FunctionalInterface
    public interface CharsSupplier {
       char charAt(int index) throws Exception;
@@ -133,7 +136,7 @@ public class CharSequenceInputStream extends AbstractCharsInputStream {
    }
 
    @Override
-   protected boolean refillBuffer() throws IOException {
+   protected boolean refillByteBuffer() throws IOException {
       if (encoderState == EncoderState.DONE)
          return false;
 
@@ -145,12 +148,7 @@ public class CharSequenceInputStream extends AbstractCharsInputStream {
       // if EOF is reached transition to flushing
       if (charIndex >= charsLen) {
          // finalize encoding before switching to flushing
-         byteBuffer.clear();
-         final CoderResult result = encoder.encode(CharBuffer.allocate(0), byteBuffer, true /* signal EOF */);
-         byteBuffer.flip();
-         if (result.isError()) {
-            result.throwException();
-         }
+         encodeChars(CharBuffer.allocate(0), true /* signal EOF */);
          return flushEncoder();
       }
 
@@ -167,11 +165,11 @@ public class CharSequenceInputStream extends AbstractCharsInputStream {
                      charBuffer.put(lowSurrogate);
                   } else {
                      // missing low surrogate - fallback to replacement character
-                     charBuffer.put('\uFFFD');
+                     charBuffer.put(UNICODE_REPLACEMENT_CHAR);
                   }
                } else {
                   // missing low surrogate - fallback to replacement character
-                  charBuffer.put('\uFFFD');
+                  charBuffer.put(UNICODE_REPLACEMENT_CHAR);
                   break;
                }
             } else {
@@ -181,12 +179,7 @@ public class CharSequenceInputStream extends AbstractCharsInputStream {
          charBuffer.flip();
 
          // encode chars into bytes
-         byteBuffer.clear();
-         final CoderResult result = encoder.encode(charBuffer, byteBuffer, false);
-         byteBuffer.flip();
-         if (result.isError()) {
-            result.throwException();
-         }
+         encodeChars(charBuffer, false);
       } catch (final Exception ex) {
          throw new IOException(ex);
       }

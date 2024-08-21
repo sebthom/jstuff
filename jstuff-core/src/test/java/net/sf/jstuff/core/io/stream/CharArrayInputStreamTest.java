@@ -29,7 +29,7 @@ public class CharArrayInputStreamTest {
    public void testAvailable() throws IOException {
       try (var is = new CharArrayInputStream(TEST_ASCII.toCharArray())) {
          assertThat(is.available()).isEqualTo(TEST_ASCII.length());
-         final byte[] buffer = new byte[4];
+         final var buffer = new byte[4];
          is.read(buffer);
          assertThat(is.available()).isEqualTo(TEST_ASCII.length() - 4);
          is.readAllBytes();
@@ -87,7 +87,7 @@ public class CharArrayInputStreamTest {
             bytesRead.add((byte) b);
          }
 
-         final byte[] byteArray = new byte[bytesRead.size()];
+         final var byteArray = new byte[bytesRead.size()];
          for (int i = 0; i < bytesRead.size(); i++) {
             byteArray[i] = bytesRead.get(i);
          }
@@ -97,7 +97,7 @@ public class CharArrayInputStreamTest {
 
    @Test
    public void testReadIntoByteArray() throws IOException {
-      final byte[] buffer = new byte[1024]; // Buffer to read a portion of the text
+      final var buffer = new byte[1024]; // Buffer to read a portion of the text
 
       try (var is = new CharArrayInputStream(TEST_UNICODE.toCharArray())) {
          final int bytesRead = is.read(buffer, 0, buffer.length);
@@ -110,7 +110,7 @@ public class CharArrayInputStreamTest {
    @Test
    public void testResetWithoutMark() throws IOException {
       try (var is = new CharArrayInputStream(TEST_UNICODE.toCharArray())) {
-         final byte[] buffer = new byte[EMOJI_BYTES_LEN];
+         final var buffer = new byte[EMOJI_BYTES_LEN];
 
          // read the first few bytes (the emoji)
          assertThat(is.read(buffer)).isEqualTo(EMOJI_BYTES_LEN);
@@ -130,7 +130,7 @@ public class CharArrayInputStreamTest {
          final long skipped = is.skip(EMOJI_BYTES_LEN);
          assertThat(skipped).isEqualTo(EMOJI_BYTES_LEN);
 
-         final byte[] japanese = new byte[TEST_UNICODE_BYTES_LEN];
+         final var japanese = new byte[TEST_UNICODE_BYTES_LEN];
          final int bytesRead = is.read(japanese);
 
          assertThat(new String(japanese, 0, bytesRead, UTF_8)).isEqualTo(JAPANESE);
@@ -142,7 +142,7 @@ public class CharArrayInputStreamTest {
       final char[] invalidSequence = {'A', '\uD800'}; // valid char followed by an isolated high surrogate
       try (var is = new CharArrayInputStream(invalidSequence, UTF_8)) {
          final byte[] result = is.readAllBytes();
-         final String output = new String(result, UTF_8);
+         final var output = new String(result, UTF_8);
 
          // the high surrogate at the end should be replaced by the Unicode replacement char
          assertThat(output).isEqualTo("A" + "\uFFFD");
@@ -154,7 +154,7 @@ public class CharArrayInputStreamTest {
       final char[] invalidSequence = {'\uD800', 'A'}; // \uD800 is a high surrogate, followed by 'A'
       try (var is = new CharArrayInputStream(invalidSequence, UTF_8)) {
          final byte[] result = is.readAllBytes();
-         final String output = new String(result, UTF_8);
+         final var output = new String(result, UTF_8);
 
          // the invalid surrogate pair should be replaced by the Unicode replacement char
          assertThat(output).isEqualTo("\uFFFD" + "A");

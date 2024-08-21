@@ -7,7 +7,6 @@ package net.sf.jstuff.core.io.stream;
 import java.io.IOException;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CoderResult;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -46,7 +45,7 @@ public class CharArrayInputStream extends AbstractCharsInputStream {
    }
 
    @Override
-   protected boolean refillBuffer() throws IOException {
+   protected boolean refillByteBuffer() throws IOException {
       if (encoderState == EncoderState.DONE)
          return false;
 
@@ -58,12 +57,7 @@ public class CharArrayInputStream extends AbstractCharsInputStream {
       // if EOF is reached transition to flushing
       if (charIndex >= charsLen) {
          // finalize encoding before switching to flushing
-         byteBuffer.clear();
-         final CoderResult result = encoder.encode(CharBuffer.allocate(0), byteBuffer, true /* signal EOF */);
-         byteBuffer.flip();
-         if (result.isError()) {
-            result.throwException();
-         }
+         encodeChars(CharBuffer.allocate(0), true /* signal EOF */);
          return flushEncoder();
       }
 
@@ -80,11 +74,11 @@ public class CharArrayInputStream extends AbstractCharsInputStream {
                      charBuffer.put(lowSurrogate);
                   } else {
                      // missing low surrogate - fallback to replacement character
-                     charBuffer.put('\uFFFD');
+                     charBuffer.put(UNICODE_REPLACEMENT_CHAR);
                   }
                } else {
                   // missing low surrogate - fallback to replacement character
-                  charBuffer.put('\uFFFD');
+                  charBuffer.put(UNICODE_REPLACEMENT_CHAR);
                   break;
                }
             } else {
@@ -94,12 +88,7 @@ public class CharArrayInputStream extends AbstractCharsInputStream {
          charBuffer.flip();
 
          // encode chars into bytes
-         byteBuffer.clear();
-         final CoderResult result = encoder.encode(charBuffer, byteBuffer, false);
-         byteBuffer.flip();
-         if (result.isError()) {
-            result.throwException();
-         }
+         encodeChars(charBuffer, false);
       } catch (final RuntimeException ex) {
          throw new IOException(ex);
       }
