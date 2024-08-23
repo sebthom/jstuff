@@ -86,7 +86,7 @@ public class LdapGroupDetailsService implements GroupDetailsService {
    }
 
    protected NamingEnumeration<SearchResult> searchGroup(final DirContext ctx, final String filter, final String[] attrs)
-      throws NamingException {
+         throws NamingException {
       final var options = new SearchControls();
       options.setSearchScope(groupSearchSubtree ? SearchControls.SUBTREE_SCOPE : SearchControls.ONELEVEL_SCOPE);
       options.setReturningAttributes(attrs);

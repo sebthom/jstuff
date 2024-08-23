@@ -83,7 +83,7 @@ public class ClassPathResourcesFilter implements Filter {
    @Override
    @SuppressWarnings("resource")
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-      ServletException {
+         ServletException {
       if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
          chain.doFilter(request, response);
          return;

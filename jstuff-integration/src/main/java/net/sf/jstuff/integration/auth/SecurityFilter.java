@@ -48,7 +48,7 @@ public class SecurityFilter implements Filter {
 
    @Override
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-      ServletException {
+         ServletException {
       final HttpServletRequest req = (HttpServletRequest) request;
       HTTP_SERVLET_REQUEST_HOLDER.set(req);
 

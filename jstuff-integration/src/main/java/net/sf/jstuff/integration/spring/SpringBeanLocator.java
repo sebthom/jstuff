@@ -73,11 +73,11 @@ public final class SpringBeanLocator {
       final Map<?, ?> beans = factory.getBeansOfType(beanType, true, true);
       if (beans.isEmpty())
          throw new IllegalArgumentException("No Spring managed bean for type '" + beanType.getName() //
-            + "' was found.");
+               + "' was found.");
 
       if (beans.size() > 1)
          throw new IllegalStateException("More than one Spring managed bean for type '" + beanType.getName() //
-            + "' was found.");
+               + "' was found.");
 
       return (T) beans.values().iterator().next();
    }

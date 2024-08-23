@@ -20,7 +20,7 @@ public class DefaultUserDetails implements UserDetails {
    private final String userId;
 
    public DefaultUserDetails(final String userId, final String displayName, final @Nullable String logonName,
-      final @Nullable String distinguishedName, final @Nullable String mailAddress) {
+         final @Nullable String distinguishedName, final @Nullable String mailAddress) {
       this.userId = userId;
       this.displayName = displayName;
       this.logonName = logonName;

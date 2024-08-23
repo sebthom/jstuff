@@ -37,11 +37,11 @@ public abstract class StAXUtils {
       public final SortedMap<String, String> attrs;
 
       private ElementInfo( //
-         final String localName, //
-         final @Nullable String nsPrefix, //
-         final @Nullable String nsURI, //
-         final @Nullable Location location, //
-         final SortedMap<String, String> attrs //
+            final String localName, //
+            final @Nullable String nsPrefix, //
+            final @Nullable String nsURI, //
+            final @Nullable Location location, //
+            final SortedMap<String, String> attrs //
       ) {
          this.localName = localName;
          this.nsPrefix = nsPrefix;
@@ -113,11 +113,11 @@ public abstract class StAXUtils {
                final boolean isMatch = xpathPattern.matcher(path).matches();
                if (LOG.isDebugEnabled()) {
                   LOG.debug("\n--------------------------------\n" //
-                     + "    PATH: " + path + "\n" //
-                     + "   XPATH: " + xpath + "\n" //
-                     + "   REGEX: " + xpathPattern + "\n" //
-                     + "IS_MATCH: " + isMatch + "\n" //
-                     + "--------------------------------");
+                        + "    PATH: " + path + "\n" //
+                        + "   XPATH: " + xpath + "\n" //
+                        + "   REGEX: " + xpathPattern + "\n" //
+                        + "IS_MATCH: " + isMatch + "\n" //
+                        + "--------------------------------");
                }
                if (isMatch) {
                   if (attrs == null) {

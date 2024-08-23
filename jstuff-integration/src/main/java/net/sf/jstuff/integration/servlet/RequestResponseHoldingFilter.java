@@ -52,7 +52,7 @@ public class RequestResponseHoldingFilter implements Filter {
 
    @Override
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
-      ServletException {
+         ServletException {
       REQ.set(request);
       try {
          RESP.set(response);

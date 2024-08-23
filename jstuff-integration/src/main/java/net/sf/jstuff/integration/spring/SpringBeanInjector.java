@@ -52,7 +52,7 @@ public final class SpringBeanInjector {
    public static SpringBeanInjector get() {
       return Assert.notNull(instance, //
          "No SpringBeanInjector instance created yet. Add <bean class=\"" + SpringBeanInjector.class.getName()
-            + "\" /> to your spring configuration!");
+               + "\" /> to your spring configuration!");
    }
 
    private final ObjectCache<String, Object> registeredSingletons = new ObjectCache<>(true);

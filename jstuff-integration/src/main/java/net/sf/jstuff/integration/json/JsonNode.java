@@ -207,7 +207,7 @@ public final class JsonNode extends ObjectNode {
     */
    @Override
    public com.fasterxml.jackson.databind.JsonNode replace(final String fieldName,
-      final com.fasterxml.jackson.databind.@Nullable JsonNode value) {
+         final com.fasterxml.jackson.databind.@Nullable JsonNode value) {
       final com.fasterxml.jackson.databind.JsonNode replacedValue = super.replace(fieldName, value);
       return replacedValue;
    }
@@ -234,7 +234,7 @@ public final class JsonNode extends ObjectNode {
    @Override
    @SuppressWarnings("unchecked")
    public <T extends com.fasterxml.jackson.databind.JsonNode> T setAll(
-      final Map<String, ? extends com.fasterxml.jackson.databind.JsonNode> properties) {
+         final Map<String, ? extends com.fasterxml.jackson.databind.JsonNode> properties) {
       super.setAll(properties);
       return (T) this;
    }

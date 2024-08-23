@@ -100,7 +100,7 @@ public class FieldInstantiatingPlugin extends AbstractPlugin {
             final Field memberValueFields = Fields.get(JAnnotationUse.class, "memberValues");
             for (final JAnnotationUse a : fieldDecl.annotations()) {
                if (jakarta.xml.bind.annotation.XmlElementRefs.class.getName().equals(a.getAnnotationClass().binaryName()) //
-                  || "javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName()) //
+                     || "javax.xml.bind.annotation.XmlElementRefs".equals(a.getAnnotationClass().binaryName()) //
                ) {
                   for (final JAnnotationUse xmlElementRefAnno : ((JAnnotationArrayMember) asNonNull(a.getAnnotationMembers().get("value")))
                      .annotations()) {

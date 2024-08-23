@@ -48,7 +48,7 @@ public class ExtendedBeanDeserializer extends BeanDeserializer {
 
          @Override
          public JsonDeserializer<?> modifyDeserializer(final DeserializationConfig cfg, final BeanDescription beanDescr,
-            final JsonDeserializer<?> deserializer) {
+               final JsonDeserializer<?> deserializer) {
             if (deserializer instanceof BeanDeserializer)
                return new ExtendedBeanDeserializer((BeanDeserializer) deserializer);
             return deserializer;

@@ -75,7 +75,7 @@ public class DOMFile {
     * @param rootNamespace optional, may be null
     */
    public DOMFile(final File xmlFile, final @Nullable String rootNamespace, final File @Nullable... xmlSchemaFiles) throws IOException,
-      XMLException {
+         XMLException {
       Args.notNull("xmlFile", xmlFile);
       Assert.isFileReadable(xmlFile);
 
@@ -143,7 +143,7 @@ public class DOMFile {
    }
 
    public Element createElementWithText(final Node parent, final String tagName, final @Nullable Map<String, String> tagAttributes,
-      final Object text) {
+         final Object text) {
       final Element elem = createElement(parent, tagName, tagAttributes);
       createTextNode(elem, text);
       return elem;
@@ -156,7 +156,7 @@ public class DOMFile {
    }
 
    public Element createElementWithTextBefore(final Node sibling, final String tagName, final @Nullable Map<String, String> tagAttributes,
-      final Object text) {
+         final Object text) {
       final Element elem = createElementBefore(sibling, tagName, tagAttributes);
       createTextNode(elem, text);
       return elem;
@@ -263,7 +263,7 @@ public class DOMFile {
     * @param recursive return text content of child nodes
     */
    public @Nullable String findTextContent(final Node searchScope, final String xPathExpression, final boolean recursive)
-      throws XMLException {
+         throws XMLException {
       Args.notNull("searchScope", searchScope);
       assertNodeBelongsToDocument("parent", searchScope);
 

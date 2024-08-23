@@ -23,7 +23,7 @@ public class DefaultGroupDetails implements GroupDetails {
    private SortedSet<String> memberDNs;
 
    public DefaultGroupDetails(final String groupId, final String displayName, final String distinguishedName,
-      final Collection<String> memberDNs) {
+         final Collection<String> memberDNs) {
       this.displayName = displayName;
       this.distinguishedName = distinguishedName;
       this.groupId = groupId;

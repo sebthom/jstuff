@@ -42,7 +42,7 @@ public class PrivateFieldsPlugin extends AbstractPlugin {
 
          for (final JFieldVar fieldDef : classDef.implClass.fields().values()) {
             if ((fieldDef.mods().getValue() & JMod.STATIC) != 0 // ignore static fields
-               || (fieldDef.mods().getValue() & JMod.PRIVATE) != 0 // ignore private fields
+                  || (fieldDef.mods().getValue() & JMod.PRIVATE) != 0 // ignore private fields
             ) {
                continue;
             }

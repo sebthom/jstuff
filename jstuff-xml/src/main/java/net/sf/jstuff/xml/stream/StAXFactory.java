@@ -108,7 +108,7 @@ public class StAXFactory {
     * @param autoClose if true xmlSourcegetReader()/getInputStream().close() is invoked when XMLStreamReader.close() is called
     */
    public AutoCloseableXMLEventReader createXMLEventReader(final StreamSource xmlSource, final boolean autoClose)
-      throws XMLStreamException {
+         throws XMLStreamException {
       Args.notNull("xmlSource", xmlSource);
 
       final XMLEventReader reader = xmlInputFactory.get().createXMLEventReader(xmlSource);
@@ -146,7 +146,7 @@ public class StAXFactory {
     */
    @SuppressWarnings("resource")
    public AutoCloseableXMLEventWriter createXMLEventWriter(final OutputStream xmlOutput, final Charset encoding, final boolean autoClose)
-      throws XMLStreamException {
+         throws XMLStreamException {
       Args.notNull("xmlOutput", xmlOutput);
       Args.notNull("encoding", encoding);
 
@@ -175,7 +175,7 @@ public class StAXFactory {
     * @param autoClose if true xmlResult.[getWriter()/getOutputStream()].close() is invoked when ExtendedXMLEventWriter.close() is called
     */
    public AutoCloseableXMLEventWriter createXMLEventWriter(final StreamResult xmlResult, final boolean autoClose)
-      throws XMLStreamException {
+         throws XMLStreamException {
       Args.notNull("xmlResult", xmlResult);
 
       final XMLEventWriter writer = xmlOutputFactory.get().createXMLEventWriter(xmlResult);
@@ -335,7 +335,7 @@ public class StAXFactory {
     */
    @SuppressWarnings("resource")
    public ExtendedXMLStreamWriter createXMLStreamWriter(final OutputStream xmlOutput, final Charset encoding, final boolean autoClose)
-      throws XMLStreamException {
+         throws XMLStreamException {
       Args.notNull("xmlOutput", xmlOutput);
       Args.notNull("encoding", encoding);
 

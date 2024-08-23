@@ -48,8 +48,8 @@ public final class SpringBeanRef<T> implements Serializable {
    public T get() {
       if (springBean == null) {
          springBean = (T) (beanName == null //
-            ? SpringBeanLocator.get().byClass(asNonNullUnsafe(beanType))
-            : SpringBeanLocator.get().byName(asNonNullUnsafe(beanName)));
+               ? SpringBeanLocator.get().byClass(asNonNullUnsafe(beanType))
+               : SpringBeanLocator.get().byName(asNonNullUnsafe(beanName)));
       }
       return asNonNullUnsafe(springBean);
    }

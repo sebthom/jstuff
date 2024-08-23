@@ -73,7 +73,7 @@ public class DelegatingXMLStreamWriter extends Decorator.Default<XMLStreamWriter
 
    @Override
    public void writeAttribute(final String prefix, final String namespaceURI, final String localName, final String value)
-      throws XMLStreamException {
+         throws XMLStreamException {
       wrapped.writeAttribute(prefix, namespaceURI, localName, value);
    }
 
