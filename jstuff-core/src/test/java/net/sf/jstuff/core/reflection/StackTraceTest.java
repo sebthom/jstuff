@@ -46,7 +46,7 @@ public class StackTraceTest {
       final var ex = new RuntimeException();
       final var stackLength = ex.getStackTrace().length;
       StackTrace.removeFirstStackTraceElement(ex);
-      assertThat(ex.getStackTrace().length).isEqualTo(stackLength - 1);
+      assertThat(ex.getStackTrace()).hasSize(stackLength - 1);
    }
 
    @Test

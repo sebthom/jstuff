@@ -42,7 +42,7 @@ public class LimitedInputStreamTest {
 
       assertThat(inLimited.readAllBytes()).hasSize(45);
       assertThat(in.available()).isEqualTo(50);
-      assertThat(inLimited.available()).isEqualTo(0);
+      assertThat(inLimited.available()).isZero();
 
       inLimited.close();
       assertThat(in.read()).isNotEqualTo(-1);

@@ -161,7 +161,7 @@ public class UnsafePublicationTest {
             + " accesses to not fully initialized objects seen");
 
       if (isExpectedToFail) {
-         assertThat(FAILURES.get() > 0).isTrue();
+         assertThat(FAILURES.get()).isPositive();
       } else {
          assertThat(FAILURES.get()).isZero();
       }

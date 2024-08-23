@@ -272,8 +272,8 @@ public class MethodsTest {
 
    @Test
    public void test_getAllGetters() {
-      assertThat(Methods.getAllGetters(EntityA.class).size()).isEqualTo(2 + 1 /*Object#getClass()*/);
-      assertThat(Methods.getAllGetters(EntityB.class).size()).isEqualTo(3 + 1 /*Object#getClass()*/);
+      assertThat(Methods.getAllGetters(EntityA.class)).hasSize(2 + 1 /*Object#getClass()*/);
+      assertThat(Methods.getAllGetters(EntityB.class)).hasSize(3 + 1 /*Object#getClass()*/);
    }
 
    @Test
@@ -284,8 +284,8 @@ public class MethodsTest {
 
    @Test
    public void test_getPublicGetters() {
-      assertThat(Methods.getPublicGetters(EntityA.class).size()).isEqualTo(0 + 1 /*Object#getClass()*/);
-      assertThat(Methods.getPublicGetters(EntityB.class).size()).isEqualTo(2 + 1 /*Object#getClass()*/);
+      assertThat(Methods.getPublicGetters(EntityA.class)).hasSize(0 + 1 /*Object#getClass()*/);
+      assertThat(Methods.getPublicGetters(EntityB.class)).hasSize(2 + 1 /*Object#getClass()*/);
       assertThat(Methods.getPublicGetters(EntityB.class, Boolean.class)).hasSize(1);
       assertThat(Methods.getPublicGetters(EntityB.class, boolean.class)).hasSize(1);
       assertThat(Methods.getPublicGetters(EntityB.class, EntityA.class)).hasSize(1);

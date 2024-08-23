@@ -17,12 +17,12 @@ public class ThreadsTest {
    public void testSleep() {
       final long now = System.currentTimeMillis();
       Threads.sleep(100);
-      assertThat(System.currentTimeMillis() - now >= 100).isTrue();
+      assertThat(System.currentTimeMillis() - now).isGreaterThanOrEqualTo(100);
    }
 
    @Test
    public void testThreads() {
-      assertThat(Threads.count() > 0).isTrue();
+      assertThat(Threads.count()).isPositive();
       assertThat(Threads.all()).hasSize(Threads.count());
       assertThat(Threads.allSortedByPriority()).hasSize(Threads.count());
       assertThat(Threads.rootThreadGroup()).isNotNull();

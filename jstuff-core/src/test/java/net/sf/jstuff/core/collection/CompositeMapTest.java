@@ -24,8 +24,8 @@ public class CompositeMapTest {
       assertThat(cm).hasSize(5);
       assertThat(cm.keySet()).hasSize(5);
       assertThat(cm.values()).hasSize(5);
-      assertThat(cm.get("a")).isEqualTo("1");
-      assertThat(cm.get("c")).isEqualTo("3");
+      assertThat(cm).containsEntry("a", "1");
+      assertThat(cm).containsEntry("c", "3");
 
       m1.put("a", "X");
       m1.put("d", "Y");

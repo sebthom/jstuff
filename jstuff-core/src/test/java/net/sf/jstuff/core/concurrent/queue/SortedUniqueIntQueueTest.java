@@ -21,9 +21,9 @@ public class SortedUniqueIntQueueTest {
       final var q = new SortedUniqueIntQueue(0);
       assertThat(q.isEmpty()).isTrue();
       assertThat(q.isNotEmpty()).isFalse();
-      assertThat(q.toString()).isEqualTo("[]");
+      assertThat(q).hasToString("[]");
       assertThat(q.size()).isZero();
-      assertThat(q.items.length).isZero();
+      assertThat(q.items).isEmpty();
       assertThat(q.headIndex).isEqualTo(-1);
 
       assertThat(q.headIndex).isEqualTo(-1);
@@ -35,18 +35,18 @@ public class SortedUniqueIntQueueTest {
       assertThat(q.offer(5)).isFalse();
       assertThat(q.isEmpty()).isFalse();
       assertThat(q.isNotEmpty()).isTrue();
-      assertThat(q.toString()).isEqualTo("[5]");
+      assertThat(q).hasToString("[5]");
       assertThat(q.size()).isEqualTo(1);
-      assertThat(q.items.length).isEqualTo(1);
+      assertThat(q.items).hasSize(1);
       assertThat(q.headIndex).isZero();
       assertThat(q.peek(-1)).isEqualTo(5);
       assertThat(q.isFirstElement(5)).isTrue();
       assertThat(q.contains(5)).isTrue();
 
       assertThat(q.offer(7)).isTrue();
-      assertThat(q.toString()).isEqualTo("[5,7]");
+      assertThat(q).hasToString("[5,7]");
       assertThat(q.size()).isEqualTo(2);
-      assertThat(q.items.length).isEqualTo(2);
+      assertThat(q.items).hasSize(2);
       assertThat(q.headIndex).isZero();
       assertThat(q.peek(-1)).isEqualTo(5);
       assertThat(q.isFirstElement(5)).isTrue();
@@ -54,9 +54,9 @@ public class SortedUniqueIntQueueTest {
       assertThat(q.contains(7)).isTrue();
 
       assertThat(q.offer(3)).isTrue();
-      assertThat(q.toString()).isEqualTo("[3,5,7]");
+      assertThat(q).hasToString("[3,5,7]");
       assertThat(q.size()).isEqualTo(3);
-      assertThat(q.items.length).isEqualTo(3);
+      assertThat(q.items).hasSize(3);
       assertThat(q.headIndex).isZero();
       assertThat(q.peek(-1)).isEqualTo(3);
       assertThat(q.isFirstElement(5)).isFalse();
@@ -65,16 +65,16 @@ public class SortedUniqueIntQueueTest {
       assertThat(q.contains(7)).isTrue();
 
       assertThat(q.offer(6)).isTrue();
-      assertThat(q.toString()).isEqualTo("[3,5,6,7]");
+      assertThat(q).hasToString("[3,5,6,7]");
       assertThat(q.size()).isEqualTo(4);
-      assertThat(q.items.length).isEqualTo(4);
+      assertThat(q.items).hasSize(4);
       assertThat(q.headIndex).isZero();
       assertThat(q.peek(-1)).isEqualTo(3);
 
       assertThat(q.offer(4)).isTrue();
-      assertThat(q.toString()).isEqualTo("[3,4,5,6,7]");
+      assertThat(q).hasToString("[3,4,5,6,7]");
       assertThat(q.size()).isEqualTo(5);
-      assertThat(q.items.length).isEqualTo(6);
+      assertThat(q.items).hasSize(6);
       assertThat(q.headIndex).isZero();
       assertThat(q.peek(-1)).isEqualTo(3);
    }
@@ -84,16 +84,16 @@ public class SortedUniqueIntQueueTest {
       // tests insert at head on index 0 if underlying array has no capacity left
       var q = new SortedUniqueIntQueue(1);
       q.offer(4);
-      assertThat(q.toString()).isEqualTo("[4]");
+      assertThat(q).hasToString("[4]");
       assertThat(q.size()).isEqualTo(1);
-      assertThat(q.items.length).isEqualTo(1);
+      assertThat(q.items).hasSize(1);
       assertThat(q.headIndex).isZero();
       assertThat(q.peek(-1)).isEqualTo(4);
 
       q.offer(2);
-      assertThat(q.toString()).isEqualTo("[2,4]");
+      assertThat(q).hasToString("[2,4]");
       assertThat(q.size()).isEqualTo(2);
-      assertThat(q.items.length).isEqualTo(2);
+      assertThat(q.items).hasSize(2);
       assertThat(q.headIndex).isZero();
       assertThat(q.peek(-1)).isEqualTo(2);
 
@@ -101,9 +101,9 @@ public class SortedUniqueIntQueueTest {
       q = new SortedUniqueIntQueue(4);
       q.offer(4);
       q.offer(2);
-      assertThat(q.toString()).isEqualTo("[2,4]");
+      assertThat(q).hasToString("[2,4]");
       assertThat(q.size()).isEqualTo(2);
-      assertThat(q.items.length).isEqualTo(4);
+      assertThat(q.items).hasSize(4);
       assertThat(q.headIndex).isZero();
       assertThat(q.peek(-1)).isEqualTo(2);
    }
@@ -115,32 +115,32 @@ public class SortedUniqueIntQueueTest {
       q.offer(4);
       q.offer(5);
       q.offer(6);
-      assertThat(q.toString()).isEqualTo("[3,4,5,6]");
+      assertThat(q).hasToString("[3,4,5,6]");
       assertThat(q.headIndex).isZero();
       assertThat(q.size()).isEqualTo(4);
 
       assertThat(q.take()).isEqualTo(3);
-      assertThat(q.toString()).isEqualTo("[4,5,6]");
+      assertThat(q).hasToString("[4,5,6]");
       assertThat(q.headIndex).isEqualTo(1);
       assertThat(q.size()).isEqualTo(3);
 
       assertThat(q.take()).isEqualTo(4);
-      assertThat(q.toString()).isEqualTo("[5,6]");
+      assertThat(q).hasToString("[5,6]");
       assertThat(q.headIndex).isEqualTo(2);
       assertThat(q.size()).isEqualTo(2);
-      assertThat(q.items.length).isEqualTo(4);
+      assertThat(q.items).hasSize(4);
 
       q.offer(2);
-      assertThat(q.toString()).isEqualTo("[2,5,6]");
+      assertThat(q).hasToString("[2,5,6]");
       assertThat(q.headIndex).isEqualTo(1);
       assertThat(q.size()).isEqualTo(3);
-      assertThat(q.items.length).isEqualTo(4);
+      assertThat(q.items).hasSize(4);
 
       q.offer(1);
-      assertThat(q.toString()).isEqualTo("[1,2,5,6]");
+      assertThat(q).hasToString("[1,2,5,6]");
       assertThat(q.headIndex).isZero();
       assertThat(q.size()).isEqualTo(4);
-      assertThat(q.items.length).isEqualTo(4);
+      assertThat(q.items).hasSize(4);
 
       // empty the queue
       assertThat(q.take()).isEqualTo(1);
@@ -157,7 +157,7 @@ public class SortedUniqueIntQueueTest {
    @Test
    public void testTakeFromEmptyQueue() throws InterruptedException {
       final var q = new SortedUniqueIntQueue(-1);
-      assertThat(q.items.length).isZero();
+      assertThat(q.items).isEmpty();
 
       new Timer().schedule(new TimerTask() {
          @Override

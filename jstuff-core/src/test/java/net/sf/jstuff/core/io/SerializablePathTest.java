@@ -42,7 +42,7 @@ public class SerializablePathTest {
 
       assertThat(deserializedPath).isEqualTo(serializablePath);
       assertThat(deserializedPath).isEqualTo(serializablePath.getWrapped());
-      assertThat(deserializedPath.toString()).isEqualTo(originalPath.toString());
+      assertThat(deserializedPath).hasToString(originalPath.toString());
       assertThat(deserializedPath.getFileSystem()).isEqualTo(serializablePath.getFileSystem());
    }
 }

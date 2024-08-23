@@ -57,8 +57,8 @@ public class IdentityHashSetTest {
 
       ihs.add(e1);
       ihs.add(e2);
-      assertThat(ihs.contains(e1)).isTrue();
-      assertThat(ihs.contains(e2)).isTrue();
+      assertThat(ihs).contains(e1);
+      assertThat(ihs).contains(e2);
 
       hs.add(e1);
       hs.add(e2);
@@ -71,6 +71,6 @@ public class IdentityHashSetTest {
       ihs2.add(e2);
       assertThat(ihs2).isEqualTo(ihs);
       ihs2.remove(e2);
-      assertThat(ihs.equals(ihs2)).isFalse();
+      assertThat(ihs).isNotEqualTo(ihs2);
    }
 }
