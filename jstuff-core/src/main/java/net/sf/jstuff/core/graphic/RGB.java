@@ -82,18 +82,18 @@ public class RGB implements Serializable {
 
       // step two:
       final Function<Double, Double> sRGBtoLin = colorChannel -> colorChannel <= 0.04045 //
-         ? colorChannel / 12.92
-         : Math.pow((colorChannel + 0.055) / 1.055, 2.4);
+            ? colorChannel / 12.92
+            : Math.pow((colorChannel + 0.055) / 1.055, 2.4);
 
       // step three: find Luminance (Y)
       final double Y = 0.2126 * sRGBtoLin.apply(vR) // CHECKSTYLE:IGNORE .*
-         + 0.7152 * sRGBtoLin.apply(vG) //
-         + 0.0722 * sRGBtoLin.apply(vB);
+            + 0.7152 * sRGBtoLin.apply(vG) //
+            + 0.0722 * sRGBtoLin.apply(vB);
 
       // step four: YtoLstar
       return Y <= 216 / 24389.0 //
-         ? Y * (24389.0 / 27.0)
-         : Math.pow(Y, 1.0 / 3.0) * 116 - 16;
+            ? Y * (24389.0 / 27.0)
+            : Math.pow(Y, 1.0 / 3.0) * 116 - 16;
    }
 
    @Override

@@ -50,7 +50,7 @@ public final class CallTree {
    }
 
    private void toString(final Appendable out, final CallTree tree, final int indent, final long percent, int maxDepth,
-      final int minPercent) throws IOException {
+         final int minPercent) throws IOException {
       if (maxDepth == 0 || tree.children.isEmpty())
          return;
 

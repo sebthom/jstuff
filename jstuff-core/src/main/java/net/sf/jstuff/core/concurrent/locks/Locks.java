@@ -260,7 +260,7 @@ public abstract class Locks {
    }
 
    public static boolean tryLockAll(final long time, final TimeUnit unit, final @Nullable Collection<? extends Lock> locks)
-      throws InterruptedException {
+         throws InterruptedException {
       if (locks == null || locks.isEmpty())
          return true;
 

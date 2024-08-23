@@ -127,8 +127,8 @@ public abstract class MoreFiles {
          final var backupFile = new File( //
             backupFolder.toFile(), //
             FilenameUtils.getBaseName(fileToBackup) //
-               + "_" + DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd_hhmmss") //
-               + "." + FilenameUtils.getExtension(fileToBackup) //
+                  + "_" + DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd_hhmmss") //
+                  + "." + FilenameUtils.getExtension(fileToBackup) //
          );
          LOG.debug("Backing up [%s] to [%s]", fileToBackup, backupFile);
          FileUtils.copyFile(fileToBackup.toFile(), backupFile, true);
@@ -252,7 +252,7 @@ public abstract class MoreFiles {
     */
    @SuppressWarnings("resource")
    public static void copyContent(final FileChannel source, final FileChannel target, final BiLongConsumer onBytesWritten)
-      throws IOException {
+         throws IOException {
       Args.notNull("source", source);
       Args.notNull("target", target);
       Args.notNull("onBytesWritten", onBytesWritten);
@@ -284,7 +284,7 @@ public abstract class MoreFiles {
     * @param onBeforeWrite a callback that is called before each write operation
     */
    public static void copyContent(final Path source, final Path target, final ByteBuffer buffer, final Consumer<ByteBuffer> onBeforeWrite)
-      throws IOException {
+         throws IOException {
       Args.notNull("source", source);
       Args.notNull("target", target);
       Args.notNull("onBeforeWrite", onBeforeWrite);
@@ -362,7 +362,7 @@ public abstract class MoreFiles {
     * @param parentDirectory if null, then create in system temp directory
     */
    public static Path createTempDirectory(final @Nullable Path parentDirectory, final String prefix, final String extension)
-      throws IOException {
+         throws IOException {
       final Path tmpDir = createUniqueDirectory(parentDirectory == null ? getTempDirectory() : parentDirectory, prefix, extension);
       forceDeleteOnExit(tmpDir);
       return tmpDir;
@@ -381,14 +381,14 @@ public abstract class MoreFiles {
     * @param parentDirectory if null, then create in current working directory
     */
    public static Path createUniqueDirectory(@Nullable Path parentDirectory, final @Nullable String prefix, final @Nullable String extension)
-      throws IOException {
+         throws IOException {
       if (parentDirectory == null) {
          parentDirectory = getWorkingDirectory();
       }
       while (true) {
          final String dirName = Strings.emptyIfNull(prefix) //
-            + NumericalSystem.BASE16.encode(_FILE_UNIQUE_ID.getAndIncrement()) //
-            + Strings.emptyIfNull(extension);
+               + NumericalSystem.BASE16.encode(_FILE_UNIQUE_ID.getAndIncrement()) //
+               + Strings.emptyIfNull(extension);
          final Path dir = parentDirectory.resolve(dirName);
          if (!Files.exists(dir, NOFOLLOW_LINKS)) {
             try {
@@ -404,7 +404,7 @@ public abstract class MoreFiles {
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
     */
    public static Collection<Path> find(final Path searchRoot, final String globPattern, final boolean includeFiles,
-      final boolean includeDirectories) throws IOException {
+         final boolean includeDirectories) throws IOException {
       final var result = new ArrayList<Path>();
       if (includeFiles && includeDirectories) {
          find(searchRoot, globPattern, result::add, result::add);
@@ -420,7 +420,7 @@ public abstract class MoreFiles {
     * @param globPattern Pattern in the Glob syntax style, see https://docs.oracle.com/javase/tutorial/essential/io/fileOps.html#glob
     */
    public static void find(Path searchRoot, final String globPattern, final @Nullable Consumer<Path> onDirMatch,
-      final @Nullable Consumer<Path> onFileMatch) throws IOException {
+         final @Nullable Consumer<Path> onFileMatch) throws IOException {
       Args.notNull("searchRoot", searchRoot);
       Args.notNull("globPattern", globPattern);
 
@@ -600,7 +600,7 @@ public abstract class MoreFiles {
    }
 
    public static void write(final Path file, final @Nullable CharSequence text, final Charset charset, final OpenOption... options)
-      throws IOException {
+         throws IOException {
       Args.notNull("file", file);
       Args.notNull("charset", charset);
 

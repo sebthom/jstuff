@@ -28,7 +28,7 @@ public class ObjectGraphNavigationResult {
    public final Object target;
 
    public ObjectGraphNavigationResult(final Object root, final String path, final Object targetParent,
-      final AccessibleObject targetAccessor, @Nullable final Object target) {
+         final AccessibleObject targetAccessor, @Nullable final Object target) {
       this.root = root;
       this.path = path;
       this.targetParent = targetParent;

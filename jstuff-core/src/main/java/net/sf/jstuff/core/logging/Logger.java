@@ -86,7 +86,7 @@ public interface Logger {
     * @param arg5 Argument referenced by the format specifiers in the message template.
     */
    void debug(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4,
-      @Nullable Object arg5);
+         @Nullable Object arg5);
 
    void debug(Throwable ex);
 
@@ -175,7 +175,7 @@ public interface Logger {
     * @param arg5 Argument referenced by the format specifiers in the message template.
     */
    void error(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4,
-      @Nullable Object arg5);
+         @Nullable Object arg5);
 
    void error(Throwable ex);
 
@@ -265,7 +265,7 @@ public interface Logger {
     * @param arg5 Argument referenced by the format specifiers in the message template.
     */
    void info(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4,
-      @Nullable Object arg5);
+         @Nullable Object arg5);
 
    void info(Throwable ex);
 
@@ -334,7 +334,7 @@ public interface Logger {
     * @param arg5 Argument referenced by the format specifiers in the message template.
     */
    void trace(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4,
-      @Nullable Object arg5);
+         @Nullable Object arg5);
 
    void trace(Throwable ex);
 
@@ -388,7 +388,7 @@ public interface Logger {
     * @param arg5 Argument referenced by the format specifiers in the message template.
     */
    void warn(String messageTemplate, @Nullable Object arg1, @Nullable Object arg2, @Nullable Object arg3, @Nullable Object arg4,
-      @Nullable Object arg5);
+         @Nullable Object arg5);
 
    void warn(Throwable ex);
 

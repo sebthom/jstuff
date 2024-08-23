@@ -306,8 +306,8 @@ public abstract class CollectionUtils {
       Args.notNull("filter", filter);
 
       final Collection<T> result = iterable instanceof Set //
-         ? iterable instanceof LinkedHashSet ? new LinkedHashSet<>() : new HashSet<>() //
-         : new ArrayList<>();
+            ? iterable instanceof LinkedHashSet ? new LinkedHashSet<>() : new HashSet<>() //
+            : new ArrayList<>();
       for (final T item : iterable)
          if (filter.test(item)) {
             result.add(item);

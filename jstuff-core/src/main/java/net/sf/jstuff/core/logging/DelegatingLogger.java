@@ -43,13 +43,13 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
 
    @Override
    public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       wrapped.debug(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       wrapped.debug(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
@@ -100,7 +100,7 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
 
    @Override
    public void entry(final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3, final @Nullable Object arg4,
-      final @Nullable Object arg5) {
+         final @Nullable Object arg5) {
       wrapped.entry(arg1, arg2, arg3, arg4, arg5);
    }
 
@@ -126,13 +126,13 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
 
    @Override
    public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       wrapped.error(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       wrapped.error(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
@@ -203,13 +203,13 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
 
    @Override
    public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       wrapped.info(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       wrapped.info(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
@@ -290,13 +290,13 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
 
    @Override
    public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       wrapped.trace(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       wrapped.trace(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 
@@ -337,13 +337,13 @@ final class DelegatingLogger extends Decorator.Default<LoggerInternal> implement
 
    @Override
    public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       wrapped.warn(messageTemplate, arg1, arg2, arg3, arg4);
    }
 
    @Override
    public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       wrapped.warn(messageTemplate, arg1, arg2, arg3, arg4, arg5);
    }
 

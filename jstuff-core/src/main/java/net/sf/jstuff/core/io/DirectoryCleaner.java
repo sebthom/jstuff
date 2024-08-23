@@ -135,7 +135,7 @@ public class DirectoryCleaner {
     * Cleans the given directory, ignoring the directory specified via the builder.
     */
    public void cleanDirectory(final Path directory, final @Nullable BiConsumer<Path, BasicFileAttributes> onFileDeleted)
-      throws IOException {
+         throws IOException {
       Args.notNull("directory", directory);
 
       if (!Files.isDirectory(directory)) {
@@ -167,8 +167,8 @@ public class DirectoryCleaner {
          @Override
          public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
             if (!fileFilter.test(file, attrs) //
-               || minimumFileSize > 0 && attrs.size() < minimumFileSize //
-               || minimumFileAge != null && attrs.lastModifiedTime().toMillis() > deleteBefore)
+                  || minimumFileSize > 0 && attrs.size() < minimumFileSize //
+                  || minimumFileAge != null && attrs.lastModifiedTime().toMillis() > deleteBefore)
                return FileVisitResult.CONTINUE;
 
             Files.delete(file);

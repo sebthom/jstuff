@@ -26,11 +26,11 @@ public interface Composite<Component> extends Modifiable {
 
       protected final Collection<@NonNull Component> components = createCollection();
       protected final Collection<@NonNull Component> componentsUmodifiable = //
-         components instanceof List //
-            ? Collections.unmodifiableList((List<@NonNull Component>) components)
-            : components instanceof Set //
-               ? Collections.unmodifiableSet((Set<@NonNull Component>) components)
-               : Collections.unmodifiableCollection(components);
+            components instanceof List //
+                  ? Collections.unmodifiableList((List<@NonNull Component>) components)
+                  : components instanceof Set //
+                        ? Collections.unmodifiableSet((Set<@NonNull Component>) components)
+                        : Collections.unmodifiableCollection(components);
 
       protected Default() {
       }

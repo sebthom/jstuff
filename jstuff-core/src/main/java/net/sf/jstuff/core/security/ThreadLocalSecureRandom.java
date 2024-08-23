@@ -88,7 +88,7 @@ public class ThreadLocalSecureRandom extends SecureRandom {
    }
 
    public static ThreadLocalSecureRandom getInstance(final String algorithm, final String provider) throws NoSuchAlgorithmException,
-      NoSuchProviderException {
+         NoSuchProviderException {
       final ThreadLocalSecureRandom random = builder().algorithm(algorithm, provider).build();
       try {
          random.instances.get();

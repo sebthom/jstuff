@@ -28,7 +28,7 @@ public final class ClassDescriptor<T> implements Serializable {
 
    @SuppressWarnings("unchecked")
    public static <T> ClassDescriptor<T> of(final Class<T> type, final String name, final @Nullable String description,
-      final @Nullable ClassDescriptor<?> parent) {
+         final @Nullable ClassDescriptor<?> parent) {
       Args.notNull("type", type);
       Args.notNull("name", name);
       Assert.isFalse(REGISTRY.containsKey(type), "A meta class for [" + type.getName() + "] exists already.");
@@ -55,7 +55,7 @@ public final class ClassDescriptor<T> implements Serializable {
    private final transient Map<String, PropertyDescriptor<?>> propertiesRecursivelyReadOnly;
 
    private ClassDescriptor(final Class<T> type, final String name, final @Nullable String description,
-      final @Nullable ClassDescriptor<?> parent) {
+         final @Nullable ClassDescriptor<?> parent) {
       this.type = type;
       this.name = name;
       this.description = description;
@@ -65,7 +65,7 @@ public final class ClassDescriptor<T> implements Serializable {
 
    void addProperty(final PropertyDescriptor<?> prop) {
       Assert.isFalse(properties.containsKey(prop.getName()), "A meta property with name [" + prop.getName() + "] exists already for class ["
-         + type.getName() + "]");
+            + type.getName() + "]");
       properties.put(prop.getName(), prop);
    }
 

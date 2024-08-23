@@ -36,7 +36,7 @@ public abstract class TypeSafeEnum<ID> implements Serializable {
 
    private static final ConcurrentMap<Class<? extends TypeSafeEnum<?>>, ConcurrentMap<?, ? extends TypeSafeEnum<?>>> ENUMS_BY_TYPE = new ConcurrentHashMap<>();
    private static final Comparator<TypeSafeEnum<?>> ORDINAL_COMPARATOR = (o1, o2) -> o1.ordinal == o2.ordinal ? 0
-      : o1.ordinal < o2.ordinal ? -1 : 1;
+         : o1.ordinal < o2.ordinal ? -1 : 1;
    private static final AtomicInteger ORDINAL_COUNTER = new AtomicInteger();
 
    @Nullable

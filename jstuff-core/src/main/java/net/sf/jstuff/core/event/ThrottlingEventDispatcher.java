@@ -95,10 +95,10 @@ public final class ThrottlingEventDispatcher<EVENT> extends AbstractRateLimiting
    }
 
    private ThrottlingEventDispatcher(//
-      final Duration interval, //
-      final @Nullable EventDispatcher<EVENT> delegate, //
-      final @Nullable Function<EVENT, Object> eventKeyProvider, //
-      final @Nullable ScheduledExecutorService scheduler //
+         final Duration interval, //
+         final @Nullable EventDispatcher<EVENT> delegate, //
+         final @Nullable Function<EVENT, Object> eventKeyProvider, //
+         final @Nullable ScheduledExecutorService scheduler //
    ) {
       super(delegate, eventKeyProvider, scheduler);
 

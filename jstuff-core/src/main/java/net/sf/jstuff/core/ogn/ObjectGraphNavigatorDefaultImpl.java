@@ -53,7 +53,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
             if (field == null) {
                if (strict)
                   throw new IllegalArgumentException("Invalid object navigation path from root object class [" + root.getClass().getName()
-                     + "] path: " + path);
+                        + "] path: " + path);
                return null;
             }
             target = Fields.read(parent, field);
@@ -89,7 +89,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
             if (field == null) {
                if (strict)
                   throw new IllegalArgumentException("Invalid object navigation path from root object class [" + root.getClass().getName()
-                     + "] path: " + path);
+                        + "] path: " + path);
                return null;
             }
             target = Fields.read(parent, field);

@@ -45,7 +45,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
 
    @Override
    public @Nullable String chooseClientAlias(final @NonNull String[] keyType, final @NonNull Principal @Nullable [] issuers,
-      final @Nullable Socket socket) {
+         final @Nullable Socket socket) {
       for (final X509KeyManager keyManager : keyManagers) {
          final String alias = keyManager.chooseClientAlias(keyType, issuers, socket);
          if (alias != null)
@@ -56,7 +56,7 @@ public class CompositeX509KeyManager implements X509KeyManager {
 
    @Override
    public @Nullable String chooseServerAlias(final String keyType, final @NonNull Principal @Nullable [] issuers,
-      final @Nullable Socket socket) {
+         final @Nullable Socket socket) {
       for (final X509KeyManager keyManager : keyManagers) {
          final String alias = keyManager.chooseServerAlias(keyType, issuers, socket);
          if (alias != null)

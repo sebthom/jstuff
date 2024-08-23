@@ -21,7 +21,7 @@ public class SetValueEvent extends PropertyChangeEvent {
    public final Object newValue;
 
    public SetValueEvent(final JBean<?> bean, final PropertyDescriptor<?> property, final @Nullable Object oldValue,
-      final @Nullable Object newValue) {
+         final @Nullable Object newValue) {
       super(bean, property);
       this.oldValue = oldValue;
       this.newValue = newValue;

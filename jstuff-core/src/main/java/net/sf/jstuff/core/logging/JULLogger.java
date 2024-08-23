@@ -161,7 +161,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_DEBUG)
          return;
@@ -171,7 +171,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_DEBUG)
          return;
@@ -269,7 +269,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void entry(final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3, final @Nullable Object arg4,
-      final @Nullable Object arg5) {
+         final @Nullable Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_TRACE)
          return;
@@ -315,7 +315,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_ERROR)
          return;
@@ -325,7 +325,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_ERROR)
          return;
@@ -469,7 +469,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_INFO)
          return;
@@ -479,7 +479,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_INFO)
          return;
@@ -606,7 +606,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_TRACE)
          return;
@@ -616,7 +616,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_TRACE)
          return;
@@ -689,7 +689,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_WARN)
          return;
@@ -699,7 +699,7 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_WARN)
          return;

@@ -196,7 +196,7 @@ public enum Trilean {
          state = UNKNOWN;
       }
       if (this == TRUE && state == TRUE //
-         || this == FALSE && state == FALSE)
+            || this == FALSE && state == FALSE)
          return FALSE;
 
       if (this == UNKNOWN || state == UNKNOWN)

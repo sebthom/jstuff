@@ -32,8 +32,8 @@ public class CodeLocation {
          return false;
       final CodeLocation other = (CodeLocation) obj;
       if (lineNumber != other.lineNumber //
-         || !Objects.equals(clazz, other.clazz) //
-         || !Objects.equals(method, other.method))
+            || !Objects.equals(clazz, other.clazz) //
+            || !Objects.equals(method, other.method))
          return false;
       return true;
    }

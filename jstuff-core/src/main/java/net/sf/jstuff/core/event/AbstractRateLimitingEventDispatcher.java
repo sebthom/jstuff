@@ -33,9 +33,9 @@ public abstract class AbstractRateLimitingEventDispatcher<EVENT> implements Even
    protected final Function<EVENT, Object> eventKeyProvider;
 
    protected AbstractRateLimitingEventDispatcher( //
-      final @Nullable EventDispatcher<EVENT> delegate, //
-      final @Nullable Function<EVENT, Object> eventKeyProvider, //
-      final @Nullable ScheduledExecutorService scheduler //
+         final @Nullable EventDispatcher<EVENT> delegate, //
+         final @Nullable Function<EVENT, Object> eventKeyProvider, //
+         final @Nullable ScheduledExecutorService scheduler //
    ) {
       this.scheduler = scheduler == null ? LazyInitialized.DEFAULT_NOTIFICATION_THREAD : scheduler;
       this.delegate = delegate == null ? new SyncEventDispatcher<>() : delegate;

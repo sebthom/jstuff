@@ -427,12 +427,12 @@ public abstract class Predicates {
 
    @NonNull
    public static <V, PropertyType> Property<V, PropertyType> property(@SuppressWarnings("unused") final Class<V> castingHelper,
-      final @NonNull String propertyPath, final Predicate<PropertyType> accept) {
+         final @NonNull String propertyPath, final Predicate<PropertyType> accept) {
       return new Property<>(propertyPath, accept);
    }
 
    public static <V, PropertyType> Property<V, PropertyType> property(final @NonNull String propertyPath,
-      final Predicate<PropertyType> accept) {
+         final Predicate<PropertyType> accept) {
       return new Property<>(propertyPath, accept);
    }
 

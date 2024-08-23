@@ -40,9 +40,9 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
 
       protected boolean isModification(final V oldValue, final V newValue) {
          if (newValue == oldValue //
-            || isScalarValue(newValue) //
-               && isScalarValue(oldValue) //
-               && Objects.equals(newValue, oldValue))
+               || isScalarValue(newValue) //
+                     && isScalarValue(oldValue) //
+                     && Objects.equals(newValue, oldValue))
             return false;
 
          return true;
@@ -60,13 +60,13 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
 
       protected boolean isScalarValue(final V value) {
          return value == null //
-            || value instanceof String //
-            || value instanceof BigInteger //
-            || value instanceof Long //
-            || value instanceof Integer //
-            || value instanceof Short //
-            || value instanceof Byte //
-            || value instanceof Character;
+               || value instanceof String //
+               || value instanceof BigInteger //
+               || value instanceof Long //
+               || value instanceof Integer //
+               || value instanceof Short //
+               || value instanceof Byte //
+               || value instanceof Character;
       }
 
       @Override

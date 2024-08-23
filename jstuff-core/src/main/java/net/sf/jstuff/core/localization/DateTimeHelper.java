@@ -240,10 +240,10 @@ public class DateTimeHelper implements Serializable {
 
    public boolean isValidDateTime(final @Nullable String dateTime) {
       return Strings.isNotBlank(dateTime) //
-         && (isValidDateTime(DateFormatStyle.SHORT, dateTime) //
-            || isValidDateTime(DateFormatStyle.MEDIUM, dateTime) //
-            || isValidDateTime(DateFormatStyle.LONG, dateTime) //
-            || isValidDateTime(DateFormatStyle.FULL, dateTime));
+            && (isValidDateTime(DateFormatStyle.SHORT, dateTime) //
+                  || isValidDateTime(DateFormatStyle.MEDIUM, dateTime) //
+                  || isValidDateTime(DateFormatStyle.LONG, dateTime) //
+                  || isValidDateTime(DateFormatStyle.FULL, dateTime));
    }
 
    protected boolean isValidTime(final DateFormatStyle style, final @Nullable String time) {
@@ -265,10 +265,10 @@ public class DateTimeHelper implements Serializable {
 
    public boolean isValidTime(final @Nullable String time) {
       return Strings.isNotBlank(time) //
-         && (isValidTime(DateFormatStyle.SHORT, time) //
-            || isValidTime(DateFormatStyle.MEDIUM, time) //
-            || isValidTime(DateFormatStyle.LONG, time) //
-            || isValidTime(DateFormatStyle.FULL, time));
+            && (isValidTime(DateFormatStyle.SHORT, time) //
+                  || isValidTime(DateFormatStyle.MEDIUM, time) //
+                  || isValidTime(DateFormatStyle.LONG, time) //
+                  || isValidTime(DateFormatStyle.FULL, time));
    }
 
    /**

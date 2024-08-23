@@ -29,8 +29,8 @@ public abstract class Exceptions extends ExceptionUtils {
       if (ex1 == ex2)
          return true;
       if (ex1 == null || ex2 == null //
-         || !ex1.getClass().equals(ex2.getClass()) //
-         || !Objects.equals(ex1.getMessage(), ex2.getMessage()))
+            || !ex1.getClass().equals(ex2.getClass()) //
+            || !Objects.equals(ex1.getMessage(), ex2.getMessage()))
          return false;
 
       final StackTraceElement[] stackTrace1 = ex1.getStackTrace();

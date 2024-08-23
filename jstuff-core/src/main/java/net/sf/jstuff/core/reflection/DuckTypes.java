@@ -39,7 +39,7 @@ public abstract class DuckTypes {
          final Method duckLikeMethod = Methods.findPublicCompatible(duckLikeClass, duckMethod.getName(), duckMethod.getParameterTypes());
          if (duckLikeMethod == null || Methods.isAbstract(duckLikeMethod) || !Methods.isPublic(duckLikeMethod))
             throw new ReflectionException("Duck typed object " + duckLikeObject + " does not implement duck method " + duckLikeMethod
-               + ".");
+                  + ".");
 
          // the public method might be inaccessible if it was declared on a non-public class
          duckLikeMethod.trySetAccessible();

@@ -23,7 +23,7 @@ public class CertificateAliasPreselectingX509KeyManager extends DelegatingX509Ke
    private final String serverCertAlias;
 
    public CertificateAliasPreselectingX509KeyManager(final X509KeyManager wrapped, final @Nullable String clientCertAlias,
-      final @Nullable String serverCertAlias) {
+         final @Nullable String serverCertAlias) {
       super(wrapped);
       this.clientCertAlias = clientCertAlias;
       this.serverCertAlias = serverCertAlias;
@@ -31,13 +31,13 @@ public class CertificateAliasPreselectingX509KeyManager extends DelegatingX509Ke
 
    @Override
    public @Nullable String chooseClientAlias(final @NonNull String[] keyType, final @NonNull Principal @Nullable [] issuers,
-      final @Nullable Socket socket) {
+         final @Nullable Socket socket) {
       return clientCertAlias == null ? super.chooseClientAlias(keyType, issuers, socket) : clientCertAlias;
    }
 
    @Override
    public @Nullable String chooseServerAlias(final String keyType, final @NonNull Principal @Nullable [] issuers,
-      final @Nullable Socket socket) {
+         final @Nullable Socket socket) {
       return serverCertAlias == null ? super.chooseServerAlias(keyType, issuers, socket) : serverCertAlias;
    }
 }

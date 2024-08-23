@@ -186,7 +186,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       if (!logger.isDebugEnabled())
          return;
 
@@ -195,7 +195,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void debug(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       if (!logger.isDebugEnabled())
          return;
 
@@ -283,7 +283,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void entry(final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3, final @Nullable Object arg4,
-      final @Nullable Object arg5) {
+         final @Nullable Object arg5) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -324,7 +324,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -333,7 +333,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void error(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       if (!logger.isErrorEnabled())
          return;
 
@@ -451,7 +451,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       if (!logger.isInfoEnabled())
          return;
 
@@ -460,7 +460,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void info(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       if (!logger.isInfoEnabled())
          return;
 
@@ -573,7 +573,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -582,7 +582,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void trace(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       if (!logger.isTraceEnabled())
          return;
 
@@ -647,7 +647,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4) {
+         final @Nullable Object arg4) {
       if (!logger.isWarnEnabled())
          return;
 
@@ -656,7 +656,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void warn(final String messageTemplate, final @Nullable Object arg1, final @Nullable Object arg2, final @Nullable Object arg3,
-      final @Nullable Object arg4, final @Nullable Object arg5) {
+         final @Nullable Object arg4, final @Nullable Object arg5) {
       if (!logger.isWarnEnabled())
          return;
 

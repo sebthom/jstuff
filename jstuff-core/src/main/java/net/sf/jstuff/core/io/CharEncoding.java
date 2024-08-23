@@ -230,9 +230,9 @@ public enum CharEncoding {
 
    private static boolean looks_utf8_with_bom(final byte[] buf) {
       if (buf.length > 3 //
-         && unsignedByte(buf[0]) == 0xef //
-         && unsignedByte(buf[1]) == 0xbb //
-         && unsignedByte(buf[2]) == 0xbf //
+            && unsignedByte(buf[0]) == 0xef //
+            && unsignedByte(buf[1]) == 0xbb //
+            && unsignedByte(buf[2]) == 0xbf //
       )
          return looks_utf8(buf, 3) > 0;
       return false;

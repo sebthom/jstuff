@@ -24,7 +24,7 @@ import net.sf.jstuff.core.security.Hash;
 public class MoreFilesTest {
 
    private void _testFind(final String rootPath, final String globPattern, final int exceptedFiles, final int exceptedFolders)
-      throws IOException {
+         throws IOException {
       assertThat(MoreFiles.findFiles(Paths.get(rootPath), globPattern)).hasSize(exceptedFiles);
       assertThat(MoreFiles.findDirectories(Paths.get(rootPath), globPattern)).hasSize(exceptedFolders);
       assertThat(MoreFiles.find(Paths.get(rootPath), globPattern, true, true)).hasSize(exceptedFiles + exceptedFolders);

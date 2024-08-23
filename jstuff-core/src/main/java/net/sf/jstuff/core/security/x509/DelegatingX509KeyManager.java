@@ -27,13 +27,13 @@ public class DelegatingX509KeyManager implements X509KeyManager {
 
    @Override
    public @Nullable String chooseClientAlias(final @NonNull String[] keyType, final @NonNull Principal @Nullable [] issuers,
-      final @Nullable Socket socket) {
+         final @Nullable Socket socket) {
       return wrapped.chooseClientAlias(keyType, issuers, socket);
    }
 
    @Override
    public @Nullable String chooseServerAlias(final String keyType, final @NonNull Principal @Nullable [] issuers,
-      final @Nullable Socket socket) {
+         final @Nullable Socket socket) {
       return wrapped.chooseServerAlias(keyType, issuers, socket);
    }
 

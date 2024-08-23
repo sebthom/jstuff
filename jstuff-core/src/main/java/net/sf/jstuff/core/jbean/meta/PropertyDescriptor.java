@@ -23,16 +23,16 @@ public final class PropertyDescriptor<P> implements Serializable {
    private static final long serialVersionUID = 1L;
 
    public static <P> PropertyDescriptor<P> create( // CHECKSTYLE:IGNORE ParameterNumber
-      final ClassDescriptor<?> metaClass, //
-      final String name, //
-      final Class<P> type, //
-      final int lowerBound, //
-      final int upperBound, //
-      final boolean ordered, //
-      final boolean unique, //
-      final boolean container, //
-      final @Nullable String description, //
-      final Map<String, ? extends Serializable> properties //
+         final ClassDescriptor<?> metaClass, //
+         final String name, //
+         final Class<P> type, //
+         final int lowerBound, //
+         final int upperBound, //
+         final boolean ordered, //
+         final boolean unique, //
+         final boolean container, //
+         final @Nullable String description, //
+         final Map<String, ? extends Serializable> properties //
    ) {
       synchronized (metaClass) {
          final var p = new PropertyDescriptor<>(metaClass, //
@@ -64,15 +64,15 @@ public final class PropertyDescriptor<P> implements Serializable {
    private transient Map<String, ? extends Serializable> properties;
 
    private PropertyDescriptor(final ClassDescriptor<?> metaClass, // CHECKSTYLE:IGNORE ParameterNumber
-      final String name, //
-      final Class<P> type, //
-      final int lowerBound, //
-      final int upperBound, //
-      final boolean ordered, //
-      final boolean unique, //
-      final boolean container, //
-      final String description, //
-      final Map<String, ? extends Serializable> properties //
+         final String name, //
+         final Class<P> type, //
+         final int lowerBound, //
+         final int upperBound, //
+         final boolean ordered, //
+         final boolean unique, //
+         final boolean container, //
+         final String description, //
+         final Map<String, ? extends Serializable> properties //
    ) {
       this.metaClass = metaClass;
       this.name = name;
@@ -156,7 +156,7 @@ public final class PropertyDescriptor<P> implements Serializable {
    @Override
    public String toString() {
       return "PropertyDescriptor [name=" + name + ", description=" + description + ", lowerBound=" + lowerBound + ", upperBound="
-         + upperBound + ", type=" + type + ", container=" + container + ", ordered=" + ordered + ", unique=" + unique + ", writable="
-         + writable + "]";
+            + upperBound + ", type=" + type + ", container=" + container + ", ordered=" + ordered + ", unique=" + unique + ", writable="
+            + writable + "]";
    }
 }

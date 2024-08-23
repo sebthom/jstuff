@@ -54,8 +54,8 @@ public class RuleBasedProxySelector extends ProxySelector {
       @Override
       public @Nullable Proxy getProxy(final URI uri) {
          final String url = evaluateUserInfo //
-            ? uri.toString() //
-            : withoutUserInfo(uri);
+               ? uri.toString() //
+               : withoutUserInfo(uri);
          if (urlPattern.matcher(url).matches())
             return proxy;
          return null;

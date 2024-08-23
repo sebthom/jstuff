@@ -124,7 +124,7 @@ public class ThreadDumper {
             return false;
 
          return Object.class.getName().equals(stack[0].getClassName()) //
-            && "wait".equals(stack[0].getMethodName());
+               && "wait".equals(stack[0].getMethodName());
       }
 
       public boolean isAtThreadSleep() {
@@ -133,7 +133,7 @@ public class ThreadDumper {
             return false;
 
          return Thread.class.getName().equals(stack[0].getClassName()) //
-            && "sleep".equals(stack[0].getMethodName());
+               && "sleep".equals(stack[0].getMethodName());
       }
 
       public boolean isAtUnsafePark() {
@@ -142,7 +142,7 @@ public class ThreadDumper {
             return false;
 
          return "sun.misc.Unsafe".equals(stack[0].getClassName()) //
-            && "park".equals(stack[0].getMethodName());
+               && "park".equals(stack[0].getMethodName());
       }
 
       public boolean isInNative() {

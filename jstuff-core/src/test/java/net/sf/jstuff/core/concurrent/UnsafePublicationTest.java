@@ -83,19 +83,19 @@ public class UnsafePublicationTest {
 
       // fields must be non-final to provoke instruction re-ordering
       int f01, f02, f03, f04, f05, f06, f07, f08, f09, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, f21, f22, f23, f24, f25, f26,
-         f27, f28, f29, f30, f31, f32, f33, f34, f35, f36, f37, f38, f39, f40;
+            f27, f28, f29, f30, f31, f32, f33, f34, f35, f36, f37, f38, f39, f40;
 
       Subject(final int externalValue) {
          // CHECKSTYLE:IGNORE InnerAssignment FOR NEXT 3 LINES
          // the more field assignments we have, the higher the chance to encounter uninitialized values
          f40 = f39 = f38 = f37 = f36 = f35 = f34 = f33 = f32 = f31 = f30 = f29 = f28 = f27 = f26 = f25 = f24 = f23 = f22 = f21 = f20 = f19 = f18 = f17 = //
-            f16 = f15 = f14 = f13 = f12 = f11 = f10 = f09 = f08 = f07 = f06 = f05 = f04 = f03 = f02 = f01 = externalValue;
+               f16 = f15 = f14 = f13 = f12 = f11 = f10 = f09 = f08 = f07 = f06 = f05 = f04 = f03 = f02 = f01 = externalValue;
       }
 
       public boolean isFullyInitialized() {
          return NUMBER_OF_FIELDS - (f01 + f02 + f03 + f04 + f05 + f06 + f07 + f08 + f09 + f10 + f11 + f12 + f13 + f14 + f15 + f16 + f17
-            + f18 + f19 + f20 + f21 + f22 + f23 + f24 + f25 + f26 + f27 + f28 + f29 + f30 + f31 + f32 + f33 + f34 + f35 + f36 + f37 + f38
-            + f39 + f40) == 0;
+               + f18 + f19 + f20 + f21 + f22 + f23 + f24 + f25 + f26 + f27 + f28 + f29 + f30 + f31 + f32 + f33 + f34 + f35 + f36 + f37 + f38
+               + f39 + f40) == 0;
       }
    }
 
@@ -136,7 +136,7 @@ public class UnsafePublicationTest {
    }
 
    protected void _testPublication(final boolean isExpectedToFail, final Runnable publisher, final Runnable consumer)
-      throws InterruptedException {
+         throws InterruptedException {
       if (isExpectedToFail && !_isJVMSupported())
          return;
 
@@ -158,7 +158,7 @@ public class UnsafePublicationTest {
 
       final String methodName = StackTrace.getCallerMethodName();
       LOG.info(methodName + "() -> " + new NumberHelper().getWholeNumberFormatted(FAILURES)
-         + " accesses to not fully initialized objects seen");
+            + " accesses to not fully initialized objects seen");
 
       if (isExpectedToFail) {
          assertThat(FAILURES.get() > 0).isTrue();

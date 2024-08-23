@@ -127,8 +127,8 @@ public class CompositeCollection<V> extends Composite.Default<Collection<? exten
    public <T> T[] toArray(final T[] array) {
       final int size = this.size();
       final var result = array.length >= size //
-         ? array
-         : (T[]) Array.newInstance(asNonNullUnsafe(array.getClass().getComponentType()), size);
+            ? array
+            : (T[]) Array.newInstance(asNonNullUnsafe(array.getClass().getComponentType()), size);
       int idx = 0;
       for (final Collection<? extends V> coll : components) {
          for (final V v : coll) {

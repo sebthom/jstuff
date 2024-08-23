@@ -44,7 +44,7 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
 
    @Override
    public CompletableFuture<Void> acceptEitherAsync(final CompletionStage<? extends T> other, final Consumer<? super T> action,
-      final Executor executor) {
+         final Executor executor) {
       return wrapped.acceptEitherAsync(other, action, executor);
    }
 
@@ -60,7 +60,7 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
 
    @Override
    public <U> CompletableFuture<U> applyToEitherAsync(final CompletionStage<? extends T> other, final Function<? super T, U> fn,
-      final Executor executor) {
+         final Executor executor) {
       return wrapped.applyToEitherAsync(other, fn, executor);
    }
 
@@ -246,19 +246,19 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
 
    @Override
    public <U> CompletableFuture<Void> thenAcceptBoth(final CompletionStage<? extends U> other,
-      final BiConsumer<? super T, ? super U> action) {
+         final BiConsumer<? super T, ? super U> action) {
       return wrapped.thenAcceptBoth(other, action);
    }
 
    @Override
    public <U> CompletableFuture<Void> thenAcceptBothAsync(final CompletionStage<? extends U> other,
-      final BiConsumer<? super T, ? super U> action) {
+         final BiConsumer<? super T, ? super U> action) {
       return wrapped.thenAcceptBothAsync(other, action);
    }
 
    @Override
    public <U> CompletableFuture<Void> thenAcceptBothAsync(final CompletionStage<? extends U> other,
-      final BiConsumer<? super T, ? super U> action, final Executor executor) {
+         final BiConsumer<? super T, ? super U> action, final Executor executor) {
       return wrapped.thenAcceptBothAsync(other, action, executor);
    }
 
@@ -279,19 +279,19 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
 
    @Override
    public <U, V> @NonNull CompletableFuture<V> thenCombine(@NonNull final CompletionStage<? extends U> other,
-      @NonNull final BiFunction<? super T, ? super U, ? extends V> fn) {
+         @NonNull final BiFunction<? super T, ? super U, ? extends V> fn) {
       return wrapped.thenCombine(other, fn);
    }
 
    @Override
    public <U, V> @NonNull CompletableFuture<V> thenCombineAsync(@NonNull final CompletionStage<? extends U> other,
-      @NonNull final BiFunction<? super T, ? super U, ? extends V> fn) {
+         @NonNull final BiFunction<? super T, ? super U, ? extends V> fn) {
       return wrapped.thenCombineAsync(other, fn);
    }
 
    @Override
    public <U, V> @NonNull CompletableFuture<V> thenCombineAsync(@NonNull final CompletionStage<? extends U> other,
-      @NonNull final BiFunction<? super T, ? super U, ? extends V> fn, @NonNull final Executor executor) {
+         @NonNull final BiFunction<? super T, ? super U, ? extends V> fn, @NonNull final Executor executor) {
       return wrapped.thenCombineAsync(other, fn, executor);
    }
 

@@ -108,7 +108,7 @@ public class HashLockManager<KeyType> {
     * @param key the lock name/identifier
     */
    public <R, A, E extends Exception> R executeReadLocked(final KeyType key, final Invocable<R, A, E> invocable, final A arguments)
-      throws E {
+         throws E {
       Args.notNull("key", key);
       Args.notNull("invocable", invocable);
 

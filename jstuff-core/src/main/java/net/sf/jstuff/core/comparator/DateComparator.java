@@ -32,9 +32,9 @@ public class DateComparator implements Comparator<Date>, Serializable {
       final long n2 = o2.getTime();
 
       return n1 < n2 //
-         ? -1
-         : n1 > n2 //
-            ? 1
-            : 0;
+            ? -1
+            : n1 > n2 //
+                  ? 1
+                  : 0;
    }
 }

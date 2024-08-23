@@ -154,7 +154,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
                      final boolean isNullable = propConfig == null ? propertyDefaults.nullable() : propConfig.nullable();
                      if (!isNullable && property.get2()[0] == null)
                         throw new IllegalArgumentException(builderInterface.getSimpleName() + "." + propName
-                           + "(...) must not be set to null.");
+                              + "(...) must not be set to null.");
                      wasPropertySet = true;
                   }
                }
@@ -189,8 +189,8 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
       @Override
       public @Nullable Object invoke(final Object proxy, final Method method, final @Nullable Object @Nullable [] args) throws Throwable {
          final boolean isBuildMethod = "build".equals(method.getName()) //
-            && method.getParameterTypes().length == 0 //
-            && method.getReturnType().isAssignableFrom(targetClass);
+               && method.getParameterTypes().length == 0 //
+               && method.getReturnType().isAssignableFrom(targetClass);
 
          if (isBuildMethod)
             return buildTarget();
@@ -212,12 +212,12 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
     * @param targetClass if <code>null</code> the builder factory tries to extract the generic argument type information from the builderInterface class
     */
    public static <TARGET_CLASS, BLDR_IFACE extends Builder<? extends TARGET_CLASS>> BuilderFactory<TARGET_CLASS, BLDR_IFACE> //
-      of(final Class<BLDR_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {
+         of(final Class<BLDR_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {
       return new BuilderFactory<>(builderInterface, targetClass, constructorArgs);
    }
 
    public static <TARGET_CLASS, BLDR_IFACE extends Builder<? extends TARGET_CLASS>> BuilderFactory<TARGET_CLASS, BLDR_IFACE> //
-      of(final Class<BLDR_IFACE> builderInterface, final Object... constructorArgs) {
+         of(final Class<BLDR_IFACE> builderInterface, final Object... constructorArgs) {
       return new BuilderFactory<>(builderInterface, null, constructorArgs);
    }
 
@@ -228,7 +228,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
 
    @SuppressWarnings("unchecked")
    protected BuilderFactory(final Class<BLDR_IFACE> builderInterface, @Nullable Class<TARGET_CLASS> targetClass,
-      final Object... constructorArgs) {
+         final Object... constructorArgs) {
       Args.notNull("builderInterface", builderInterface);
 
       if (!builderInterface.isInterface())

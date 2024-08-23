@@ -78,12 +78,12 @@ public class ScalingThreadPoolExecutor extends ThreadPoolExecutor {
     *            or if minPoolSize greater than maxPoolSize.
     */
    public ScalingThreadPoolExecutor(final int minPoolSize, final int maxPoolSize, final Duration keepAliveTime,
-      final ThreadFactory threadFactory) {
+         final ThreadFactory threadFactory) {
       this(minPoolSize, maxPoolSize, keepAliveTime, threadFactory, new AbortPolicy());
    }
 
    private ScalingThreadPoolExecutor(final int minPoolSize, final int maxPoolSize, final Duration keepAliveTime,
-      final ThreadFactory threadFactory, final RejectedExecutionHandler handler) {
+         final ThreadFactory threadFactory, final RejectedExecutionHandler handler) {
       super(minPoolSize, maxPoolSize, keepAliveTime.toMillis(), TimeUnit.MILLISECONDS, new ScalingQueue(), threadFactory, handler);
       ((ScalingQueue) getQueue()).executor = this;
    }

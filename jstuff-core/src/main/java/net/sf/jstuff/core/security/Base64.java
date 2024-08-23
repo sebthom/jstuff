@@ -63,7 +63,7 @@ public abstract class Base64 {
       for (final byte ch : bytes) {
          // test a-z, A-Z, +, /, \n, \r, =
          if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '+' || ch == '/' || ch == '\r' || ch == '\n'
-            || ch == '=') {
+               || ch == '=') {
             continue;
          }
          return false;
@@ -79,7 +79,7 @@ public abstract class Base64 {
       for (final byte ch : bytes) {
          // test a-z, A-Z, -, _, \n, \r, =
          if (ch > 47 && ch < 58 || ch > 64 && ch < 91 || ch > 96 && ch < 123 || ch == '-' || ch == '_' || ch == '\r' || ch == '\n'
-            || ch == '=') {
+               || ch == '=') {
             continue;
          }
          return false;

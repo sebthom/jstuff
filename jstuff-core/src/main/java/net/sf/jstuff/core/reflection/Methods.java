@@ -50,7 +50,7 @@ public abstract class Methods extends Members {
 
    @SuppressWarnings("unchecked")
    public static <O, P> GetterAccessor<O, P> createPublicGetterAccessor(final Class<O> beanClass, final String propertyName,
-      final Class<P> propertyType) throws ReflectionException {
+         final Class<P> propertyType) throws ReflectionException {
       try {
          return createPublicMethodAccessor(GetterAccessor.class, beanClass, "is" + Strings.capitalize(propertyName), propertyType);
       } catch (final Exception ex) {
@@ -62,7 +62,7 @@ public abstract class Methods extends Members {
     * @param accessor FunctionalInterface where the first parameter is the targetObject followed by the parameters for the target method
     */
    public static <ACCESSOR> ACCESSOR createPublicMethodAccessor(final Class<ACCESSOR> accessor, final Class<?> targetClass,
-      final String methodName) {
+         final String methodName) {
       Args.notNull("accessor", accessor);
 
       if (!accessor.isAnnotationPresent(FunctionalInterface.class))
@@ -78,7 +78,7 @@ public abstract class Methods extends Members {
     * @param accessor FunctionalInterface where the first parameter is the targetObject followed by the parameters for the target method
     */
    public static <ACCESSOR> ACCESSOR createPublicMethodAccessor(final Class<ACCESSOR> accessor, final Class<?> targetClass,
-      final String methodName, @Nullable Class<?> methodReturnType, final @NonNull Class<?>... methodParameterTypes) {
+         final String methodName, @Nullable Class<?> methodReturnType, final @NonNull Class<?>... methodParameterTypes) {
       Args.notNull("accessor", accessor);
       Args.notNull("targetClass", targetClass);
       Args.notNull("methodName", methodName);
@@ -108,7 +108,7 @@ public abstract class Methods extends Members {
 
    @SuppressWarnings("unchecked")
    public static <O, P> SetterAccessor<O, P> createPublicSetterAccessor(final Class<O> beanClass, final String propertyName,
-      final Class<P> propertyType) throws ReflectionException {
+         final Class<P> propertyType) throws ReflectionException {
       return createPublicMethodAccessor(SetterAccessor.class, beanClass, "set" + Strings.capitalize(propertyName), void.class,
          propertyType);
    }
@@ -683,7 +683,7 @@ public abstract class Methods extends Members {
     */
    @SuppressWarnings("unchecked")
    public static <T> T invoke(final @Nullable Object obj, final Method method, final Object @Nullable... args)
-      throws InvokingMethodFailedException {
+         throws InvokingMethodFailedException {
       Args.notNull("method", method);
 
       try {
@@ -696,7 +696,7 @@ public abstract class Methods extends Members {
 
    @SuppressWarnings("unchecked")
    public static <T> T invoke(final Object obj, final String methodName, final Object @Nullable... args)
-      throws InvokingMethodFailedException {
+         throws InvokingMethodFailedException {
       Args.notNull("obj", obj);
       Args.notNull("methodName", methodName);
 
@@ -754,14 +754,14 @@ public abstract class Methods extends Members {
       final Class<?>[] methodParameterTypes = method.getParameterTypes();
 
       if (methodParameterTypes.length != 1 //
-         || !isReturningVoid(method) && !Types.isAssignableTo(method.getReturnType(), method.getDeclaringClass()))
+            || !isReturningVoid(method) && !Types.isAssignableTo(method.getReturnType(), method.getDeclaringClass()))
          return false;
 
       final String methodName = method.getName();
 
       if (methodName.length() < 4 //
-         || !methodName.startsWith("set") //
-         || !Character.isUpperCase(methodName.charAt(3)))
+            || !methodName.startsWith("set") //
+            || !Character.isUpperCase(methodName.charAt(3)))
          return false;
 
       return true;

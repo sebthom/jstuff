@@ -31,9 +31,9 @@ public class NumberComparator implements Comparator<Number>, Serializable {
       final double d2 = o2.doubleValue();
 
       return d1 < d2 //
-         ? -1
-         : d1 > d2 //
-            ? 1
-            : 0;
+            ? -1
+            : d1 > d2 //
+                  ? 1
+                  : 0;
    }
 }

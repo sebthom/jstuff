@@ -46,7 +46,7 @@ public abstract class Loops {
    }
 
    public static <T, X extends Throwable> void forEach(final @Nullable Enumeration<T> en, final @Nullable ThrowingConsumer<T, X> consumer)
-      throws X {
+         throws X {
       if (en == null || consumer == null)
          return;
 
@@ -66,7 +66,7 @@ public abstract class Loops {
    }
 
    public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Enumeration<T> en, @Nullable final ExecutorService workers,
-      final @Nullable Consumer<T> consumer) {
+         final @Nullable Consumer<T> consumer) {
       if (en == null || consumer == null)
          return DONE;
 
@@ -75,7 +75,7 @@ public abstract class Loops {
 
    @SuppressWarnings("null")
    public static <T> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Enumeration<T> en, @Nullable ExecutorService workers,
-      final @Nullable ObjIntConsumer<T> consumer) {
+         final @Nullable ObjIntConsumer<T> consumer) {
       if (en == null || consumer == null)
          return DONE;
 
@@ -106,7 +106,7 @@ public abstract class Loops {
    }
 
    public static <T, X extends Throwable> void forEach(final @Nullable Iterable<T> it, final @Nullable ThrowingConsumer<T, X> consumer)
-      throws X {
+         throws X {
       if (it == null || consumer == null)
          return;
 
@@ -126,7 +126,7 @@ public abstract class Loops {
    }
 
    public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Iterable<T> it, @Nullable final ExecutorService workers,
-      final @Nullable Consumer<T> consumer) {
+         final @Nullable Consumer<T> consumer) {
       if (it == null || consumer == null)
          return DONE;
 
@@ -134,7 +134,7 @@ public abstract class Loops {
    }
 
    public static <T> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Iterable<T> it,
-      @Nullable final ExecutorService workers, final @Nullable ObjIntConsumer<T> consumer) {
+         @Nullable final ExecutorService workers, final @Nullable ObjIntConsumer<T> consumer) {
       if (it == null || consumer == null)
          return DONE;
 
@@ -155,7 +155,7 @@ public abstract class Loops {
    }
 
    public static <T, X extends Throwable> void forEach(final @Nullable Iterator<T> it, final @Nullable ThrowingConsumer<T, X> consumer)
-      throws X {
+         throws X {
       if (it == null || consumer == null)
          return;
 
@@ -175,7 +175,7 @@ public abstract class Loops {
    }
 
    public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Iterator<T> it, @Nullable final ExecutorService workers,
-      final @Nullable Consumer<T> consumer) {
+         final @Nullable Consumer<T> consumer) {
       if (it == null || consumer == null)
          return DONE;
 
@@ -184,7 +184,7 @@ public abstract class Loops {
 
    @SuppressWarnings("null")
    public static <T> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Iterator<T> it, @Nullable ExecutorService workers,
-      final @Nullable ObjIntConsumer<T> consumer) {
+         final @Nullable ObjIntConsumer<T> consumer) {
       if (it == null || consumer == null)
          return DONE;
 
@@ -222,7 +222,7 @@ public abstract class Loops {
    }
 
    public static <K, V, X extends Throwable> void forEach(final @Nullable Map<K, V> map,
-      final @Nullable ThrowingConsumer<Entry<K, V>, X> consumer) throws X {
+         final @Nullable ThrowingConsumer<Entry<K, V>, X> consumer) throws X {
       if (map == null || consumer == null)
          return;
 
@@ -249,7 +249,7 @@ public abstract class Loops {
    }
 
    public static <K, V> CompletableFuture<?> forEachConcurrent(final @Nullable Map<K, V> map, @Nullable final ExecutorService workers,
-      final @Nullable BiConsumer<K, V> consumer) {
+         final @Nullable BiConsumer<K, V> consumer) {
       if (map == null || consumer == null)
          return DONE;
 
@@ -257,7 +257,7 @@ public abstract class Loops {
    }
 
    public static <K, V> CompletableFuture<?> forEachConcurrent(final @Nullable Map<K, V> map, @Nullable final ExecutorService workers,
-      final @Nullable Consumer<Entry<K, V>> consumer) {
+         final @Nullable Consumer<Entry<K, V>> consumer) {
       if (map == null || consumer == null)
          return DONE;
 
@@ -265,7 +265,7 @@ public abstract class Loops {
    }
 
    public static <K, V> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Map<K, V> map,
-      @Nullable final ExecutorService workers, final @Nullable BiObjIntConsumer<K, V> consumer) {
+         @Nullable final ExecutorService workers, final @Nullable BiObjIntConsumer<K, V> consumer) {
       if (map == null || consumer == null)
          return DONE;
 
@@ -273,7 +273,7 @@ public abstract class Loops {
    }
 
    public static <K, V> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Map<K, V> map,
-      @Nullable final ExecutorService workers, final @Nullable ObjIntConsumer<Entry<K, V>> consumer) {
+         @Nullable final ExecutorService workers, final @Nullable ObjIntConsumer<Entry<K, V>> consumer) {
       if (map == null || consumer == null)
          return DONE;
 
@@ -294,7 +294,7 @@ public abstract class Loops {
    }
 
    public static <T, X extends Throwable> void forEach(final T @Nullable [] array, final @Nullable ThrowingConsumer<T, X> consumer)
-      throws X {
+         throws X {
       if (array == null || consumer == null)
          return;
 
@@ -310,7 +310,7 @@ public abstract class Loops {
 
    @SafeVarargs
    public static <T, X extends Throwable> void forEach(final @Nullable ThrowingConsumer<T, X> consumer, final T @Nullable... array)
-      throws X {
+         throws X {
       forEach(array, consumer);
    }
 
@@ -418,7 +418,7 @@ public abstract class Loops {
    }
 
    public static void forRange(final long startInclusive, final long endExclusive, final long offset,
-      final @Nullable LongConsumer consumer) {
+         final @Nullable LongConsumer consumer) {
       if (consumer == null)
          return;
 

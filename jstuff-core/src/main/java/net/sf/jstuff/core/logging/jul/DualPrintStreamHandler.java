@@ -27,7 +27,7 @@ public class DualPrintStreamHandler extends PrintStreamHandler {
    }
 
    public DualPrintStreamHandler(final PrintStream stdout, final PrintStream stderr, final Formatter formatter,
-      final Level maxStdOutLevel) {
+         final Level maxStdOutLevel) {
       super(stdout, formatter);
       Args.notNull("maxStdOutLevel", maxStdOutLevel);
 

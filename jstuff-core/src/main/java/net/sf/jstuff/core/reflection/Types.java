@@ -455,12 +455,12 @@ public abstract class Types {
       Args.notNull("type", type);
 
       return type == Boolean.class //
-         || type == Character.class //
-         || type.isPrimitive() //
-         || Enum.class.isAssignableFrom(type) //
-         || Number.class.isAssignableFrom(type) //
-         || CharSequence.class.isAssignableFrom(type) //
-         || Date.class.isAssignableFrom(type);
+            || type == Character.class //
+            || type.isPrimitive() //
+            || Enum.class.isAssignableFrom(type) //
+            || Number.class.isAssignableFrom(type) //
+            || CharSequence.class.isAssignableFrom(type) //
+            || Date.class.isAssignableFrom(type);
    }
 
    /**
@@ -499,7 +499,7 @@ public abstract class Types {
     * Tries to read the given value using a getter method or direct field access
     */
    public static <@NonNull T> T readProperty(final Object obj, final String propertyName, final Class<? extends T> compatibleTo)
-      throws ReflectionException {
+         throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);
 
@@ -514,7 +514,7 @@ public abstract class Types {
          return Fields.read(obj, field);
 
       throw new ReflectionException("No corresponding getter method or field found for property [" + propertyName + "] in class [" + clazz
-         + "]");
+            + "]");
    }
 
    @Nullable
@@ -651,12 +651,13 @@ public abstract class Types {
    /**
     * Tries to write the given value using a setter method or direct field access
     */
-   public static void writePropertyIgnoringFinal(final Object obj, final String propertyName, final @Nullable Object value) throws ReflectionException {
+   public static void writePropertyIgnoringFinal(final Object obj, final String propertyName, final @Nullable Object value)
+         throws ReflectionException {
       writeProperty(obj, propertyName, value, true);
    }
 
    private static void writeProperty(final Object obj, final String propertyName, final @Nullable Object value, final boolean ignoreFinal)
-      throws ReflectionException {
+         throws ReflectionException {
       Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);
 
@@ -706,6 +707,6 @@ public abstract class Types {
          return;
       }
       throw new ReflectionException("No corresponding setter method or field found for property [" + propertyName + "] in class [" + clazz
-         + "]");
+            + "]");
    }
 }

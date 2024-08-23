@@ -19,7 +19,7 @@ public abstract class Proxies {
 
    @SuppressWarnings("unchecked")
    public static <T> T create(final @Nullable ClassLoader loader, final InvocationHandler handler,
-      final @NonNull Class<?>... interfaceTypes) {
+         final @NonNull Class<?>... interfaceTypes) {
       Args.notNull("loader", loader);
       Args.notNull("handler", handler);
       Args.notEmpty("interfaceTypes", interfaceTypes);

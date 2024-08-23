@@ -139,8 +139,8 @@ abstract class LoggerUtils {
          final StackTraceElement ste = stack[i];
          final String className = ste.getClassName();
          if ("java.lang.reflect.Method".equals(className) //
-            || className.startsWith("org.springframework.aop.") //
-            || className.startsWith("sun.reflect.") //
+               || className.startsWith("org.springframework.aop.") //
+               || className.startsWith("sun.reflect.") //
          ) {
             continue;
          }
@@ -149,9 +149,9 @@ abstract class LoggerUtils {
                continue;
             } else if (className.startsWith("ibm.", 4)) { // com.ibm.
                if (className.startsWith("io.async.", 8) // com.ibm.io.async.
-                  || className.startsWith("wps.", 8) // com.ibm.wps.
-                  || className.startsWith("ws.", 8) // com.ibm.ws.
-                  || className.startsWith("_jsp.", 8) // com.ibm._jsp.
+                     || className.startsWith("wps.", 8) // com.ibm.wps.
+                     || className.startsWith("ws.", 8) // com.ibm.ws.
+                     || className.startsWith("_jsp.", 8) // com.ibm._jsp.
                ) {
                   continue;
                } else if (className.startsWith("jsse2.", 8)) { // com.ibm.jsse2.
@@ -162,13 +162,13 @@ abstract class LoggerUtils {
             }
          } else if (className.startsWith("org.codehaus.groovy.")) {
             if (className.startsWith("runtime.", 20) // org.codehaus.groovy.runtime.
-               || className.startsWith("reflection.", 20) // org.codehaus.groovy.runtime.reflection.
+                  || className.startsWith("reflection.", 20) // org.codehaus.groovy.runtime.reflection.
             ) {
                continue;
             }
          } else if (className.startsWith("groovy.lang.")) {
             if (className.startsWith("Meta", 12) // groovy.lang.Meta
-               || className.startsWith("Closure", 12) // groovy.lang.Closure
+                  || className.startsWith("Closure", 12) // groovy.lang.Closure
             ) {
                continue;
             }

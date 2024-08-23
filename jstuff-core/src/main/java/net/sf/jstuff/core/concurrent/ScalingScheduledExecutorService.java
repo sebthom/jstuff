@@ -34,7 +34,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
    }
 
    public ScalingScheduledExecutorService(final int minPoolSize, final int maxPoolSize, final Duration keepAliveTime,
-      final ThreadFactory threadFactory) {
+         final ThreadFactory threadFactory) {
       super(minPoolSize, maxPoolSize, keepAliveTime, threadFactory);
    }
 
@@ -48,7 +48,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
    }
 
    private <V> ScheduledFuture<V> createDelegatingFuture(final ScheduledFuture<?> scheduledFuture,
-      final MutableRef<@Nullable Future<V>> workFuture) {
+         final MutableRef<@Nullable Future<V>> workFuture) {
 
       return new ScheduledFuture<>() {
          @Override
@@ -157,7 +157,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
 
    @Override
    public ScheduledFuture<?> scheduleWithFixedDelay(final Runnable command, final long initialDelay, final long delay,
-      final TimeUnit unit) {
+         final TimeUnit unit) {
       final var workFuture = MutableRef.of((@Nullable Future<Object>) null);
 
       @SuppressWarnings("unchecked")

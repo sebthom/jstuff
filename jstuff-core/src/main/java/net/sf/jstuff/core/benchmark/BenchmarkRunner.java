@@ -19,7 +19,7 @@ public final class BenchmarkRunner {
    private static final String SEPARATOR = "--------------------------------";
 
    public static void run(final int warmUpRounds, final int benchmarkRounds, final int opsPerBenchmarkRound, final Runnable benchmark)
-      throws InterruptedException {
+         throws InterruptedException {
       Locale.setDefault(Locale.ENGLISH);
       System.out.println("JVM Vendor: " + System.getProperty("java.vendor"));
       System.out.println("JVM Version: " + System.getProperty("java.version"));
@@ -50,7 +50,7 @@ public final class BenchmarkRunner {
    }
 
    private static void runRound(final String label, final int round, final int totalRounds, final int iterations,
-      final boolean measureHeapUsage, final Runnable benchmark) throws InterruptedException {
+         final boolean measureHeapUsage, final Runnable benchmark) throws InterruptedException {
       // spinning up a thread so the JVM hopefully runs the benchmark on different cores each round
       final var t = new Thread(() -> {
          System.out.println(label + " " + round + "/" + totalRounds + "...");
