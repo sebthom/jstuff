@@ -31,22 +31,11 @@ public enum Trilean {
       if (value == null)
          return UNKNOWN;
 
-      switch (value.toLowerCase()) {
-         case "1":
-         case "true":
-         case "t":
-         case "yes":
-         case "y":
-            return TRUE;
-         case "0":
-         case "no":
-         case "n":
-         case "false":
-         case "f":
-            return FALSE;
-         default:
-            return UNKNOWN;
-      }
+      return switch (value.toLowerCase()) {
+         case "1", "true", "t", "yes", "y" -> TRUE;
+         case "0", "no", "n", "false", "f" -> FALSE;
+         default -> UNKNOWN;
+      };
    }
 
    public Trilean and(@Nullable Trilean state) {
@@ -77,14 +66,11 @@ public enum Trilean {
    }
 
    public Trilean negate() {
-      switch (this) {
-         case TRUE:
-            return FALSE;
-         case FALSE:
-            return TRUE;
-         default:
-            return UNKNOWN;
-      }
+      return switch (this) {
+         case TRUE -> FALSE;
+         case FALSE -> TRUE;
+         default -> UNKNOWN;
+      };
    }
 
    public Trilean or(@Nullable Trilean state) {
@@ -103,92 +89,68 @@ public enum Trilean {
     */
    @Nullable
    public Boolean toBoolean() {
-      switch (this) {
-         case TRUE:
-            return Boolean.TRUE;
-         case FALSE:
-            return Boolean.FALSE;
-         default:
-            return null; // CHECKSTYLE:IGNORE ReturnNullInsteadOfBooleanCheck
-      }
+      return switch (this) {
+         case TRUE -> Boolean.TRUE;
+         case FALSE -> Boolean.FALSE;
+         default -> null; // CHECKSTYLE:IGNORE ReturnNullInsteadOfBooleanCheck
+      };
    }
 
    public boolean toBoolean(final boolean unknownValue) {
-      switch (this) {
-         case TRUE:
-            return true;
-         case FALSE:
-            return false;
-         default:
-            return unknownValue;
-      }
+      return switch (this) {
+         case TRUE -> true;
+         case FALSE -> false;
+         default -> unknownValue;
+      };
    }
 
    public byte toByte() {
-      switch (this) {
-         case TRUE:
-            return 1;
-         case FALSE:
-            return 0;
-         default:
-            return -1;
-      }
+      return switch (this) {
+         case TRUE -> 1;
+         case FALSE -> 0;
+         default -> -1;
+      };
    }
 
    public byte toByte(final byte trueValue, final byte falseValue, final byte unknownValue) {
-      switch (this) {
-         case TRUE:
-            return trueValue;
-         case FALSE:
-            return falseValue;
-         default:
-            return unknownValue;
-      }
+      return switch (this) {
+         case TRUE -> trueValue;
+         case FALSE -> falseValue;
+         default -> unknownValue;
+      };
    }
 
    public int toInt(final int trueValue, final int falseValue, final int unknownValue) {
-      switch (this) {
-         case TRUE:
-            return trueValue;
-         case FALSE:
-            return falseValue;
-         default:
-            return unknownValue;
-      }
+      return switch (this) {
+         case TRUE -> trueValue;
+         case FALSE -> falseValue;
+         default -> unknownValue;
+      };
    }
 
    public long toLong(final long trueValue, final long falseValue, final long unknownValue) {
-      switch (this) {
-         case TRUE:
-            return trueValue;
-         case FALSE:
-            return falseValue;
-         default:
-            return unknownValue;
-      }
+      return switch (this) {
+         case TRUE -> trueValue;
+         case FALSE -> falseValue;
+         default -> unknownValue;
+      };
    }
 
    public <T> T toObject(final T trueValue, final T falseValue, final T unknownValue) {
-      switch (this) {
-         case TRUE:
-            return trueValue;
-         case FALSE:
-            return falseValue;
-         default:
-            return unknownValue;
-      }
+      return switch (this) {
+         case TRUE -> trueValue;
+         case FALSE -> falseValue;
+         default -> unknownValue;
+      };
    }
 
    @Override
    public String toString() {
-      switch (this) {
-         case TRUE:
-            return "true";
-         case FALSE:
-            return "false";
-         default:
-            return "unknown";
-      }
+      return switch (this) {
+         case TRUE -> "true";
+         case FALSE -> "false";
+         default -> "unknown";
+      };
    }
 
    public Trilean xor(@Nullable Trilean state) {

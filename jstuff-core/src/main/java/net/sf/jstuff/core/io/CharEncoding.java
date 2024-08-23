@@ -157,15 +157,10 @@ public enum CharEncoding {
 
    private static boolean looks_utf7(final byte[] buf) {
       if (buf.length > 4 && buf[0] == '+' && buf[1] == '/' && buf[2] == 'v') {
-         switch (buf[3]) {
-            case '8':
-            case '9':
-            case '+':
-            case '/':
-               return true;
-            default:
-               return false;
-         }
+         return switch (buf[3]) {
+            case '8', '9', '+', '/' -> true;
+            default -> false;
+         };
       }
       return false;
    }

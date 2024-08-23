@@ -47,28 +47,18 @@ public enum KeyUsage {
 
    @Nullable
    private static KeyUsage getByRFCBit(final int bit) {
-      switch (bit) {
-         case 0:
-            return DIGITAL_SIGNATURE;
-         case 1:
-            return NON_REPUDIATION;
-         case 2:
-            return KEY_ENCIPHERMENT;
-         case 3:
-            return DATA_ENCIPHERMENT;
-         case 4:
-            return KEY_AGREEMENT;
-         case 5:
-            return KEY_CERT_SIGN;
-         case 6:
-            return CRL_SIGN;
-         case 7:
-            return ENCIPHER_ONLY;
-         case 8:
-            return DECIPHER_ONLY;
-         default:
-            return null;
-      }
+      return switch (bit) {
+         case 0 -> DIGITAL_SIGNATURE;
+         case 1 -> NON_REPUDIATION;
+         case 2 -> KEY_ENCIPHERMENT;
+         case 3 -> DATA_ENCIPHERMENT;
+         case 4 -> KEY_AGREEMENT;
+         case 5 -> KEY_CERT_SIGN;
+         case 6 -> CRL_SIGN;
+         case 7 -> ENCIPHER_ONLY;
+         case 8 -> DECIPHER_ONLY;
+         default -> null;
+      };
    }
 
    public final int rfcBit;

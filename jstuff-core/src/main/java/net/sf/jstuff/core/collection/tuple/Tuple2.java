@@ -30,14 +30,11 @@ public final class Tuple2<T1, T2> extends AbstractList<Object> implements Tuple 
    @Override
    @SuppressWarnings("null")
    public Object get(final int index) {
-      switch (index) {
-         case 0:
-            return v1;
-         case 1:
-            return v2;
-         default:
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
-      }
+      return switch (index) {
+         case 0 -> v1;
+         case 1 -> v2;
+         default -> throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
+      };
    }
 
    public T1 get1() {

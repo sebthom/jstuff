@@ -37,20 +37,14 @@ public final class Tuple5<T1, T2, T3, T4, T5> extends AbstractList<Object> imple
    @Override
    @SuppressWarnings("null")
    public Object get(final int index) {
-      switch (index) {
-         case 0:
-            return v1;
-         case 1:
-            return v2;
-         case 2:
-            return v3;
-         case 3:
-            return v4;
-         case 4:
-            return v5;
-         default:
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
-      }
+      return switch (index) {
+         case 0 -> v1;
+         case 1 -> v2;
+         case 2 -> v3;
+         case 3 -> v4;
+         case 4 -> v5;
+         default -> throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
+      };
    }
 
    public T1 get1() {

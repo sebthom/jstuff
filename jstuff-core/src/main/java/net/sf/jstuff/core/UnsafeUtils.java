@@ -37,14 +37,11 @@ public abstract class UnsafeUtils {
    public static long addressOf(final Object obj) {
       Args.notNull("obj", obj);
 
-      switch (UNSAFE.addressSize()) {
-         case 4:
-            return UNSAFE.getInt(new Object[] {obj}, UNSAFE.arrayBaseOffset(Object[].class));
-         case 8:
-            return UNSAFE.getLong(new Object[] {obj}, UNSAFE.arrayBaseOffset(Object[].class));
-         default:
-            throw new IllegalStateException("Unsupported address size: " + UNSAFE.addressSize());
-      }
+      return switch (UNSAFE.addressSize()) {
+         case 4 -> UNSAFE.getInt(new Object[] {obj}, UNSAFE.arrayBaseOffset(Object[].class));
+         case 8 -> UNSAFE.getLong(new Object[] {obj}, UNSAFE.arrayBaseOffset(Object[].class));
+         default -> throw new IllegalStateException("Unsupported address size: " + UNSAFE.addressSize());
+      };
    }
 
    public static void openModule(final @Nullable Module module) {
