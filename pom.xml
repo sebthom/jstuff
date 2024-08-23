@@ -79,7 +79,7 @@
 
 
    <properties>
-      <java.version>11</java.version>
+      <java.version>17</java.version>
 
       <skip.japicmp.cmp>true</skip.japicmp.cmp>
 

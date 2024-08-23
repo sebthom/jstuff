@@ -64,11 +64,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - java: 11
-          may_create_release: ${{ github.ref_name == 'main' }}
-          experimental: false
         - java: 17
-          may_create_release: false
+          may_create_release: ${{ github.ref_name == 'main' }}
           experimental: false
         - java: 21
           may_create_release: false

@@ -29,7 +29,9 @@ jstuff 1.x-4.x requires Java 5 or newer.
 
 jstuff 5.x requires Java 8 or newer.
 
-jstuff 6.x requires Java 11 or newer.
+jstuff 6.x-7.x requires Java 11 or newer.
+
+jstuff 8.x requires Java 17 or newer.
 
 
 ## <a name="binaries"></a>Binaries
