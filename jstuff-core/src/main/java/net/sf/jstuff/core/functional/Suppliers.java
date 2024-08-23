@@ -127,16 +127,18 @@ public abstract class Suppliers {
 
          private SoftReference<T> cached = lateNonNull();
          private long cachedAt = -1;
+         private boolean cachedNull = false;
 
          @Override
          public synchronized T get() {
             if (cachedAt != -1) {
                final var obj = cached.get();
-               if (!cached.isEnqueued() && !isExpired.isExpired(obj, System.currentTimeMillis() - cachedAt))
+               if ((cachedNull || obj != null) && !isExpired.isExpired(obj, System.currentTimeMillis() - cachedAt))
                   return obj;
             }
 
             final T obj = provider.get();
+            cachedNull = obj == null;
             cached = new SoftReference<>(obj);
             cachedAt = System.currentTimeMillis();
             return obj;
@@ -182,16 +184,18 @@ public abstract class Suppliers {
 
          private WeakReference<T> cached = lateNonNull();
          private long cachedAt = -1;
+         private boolean cachedNull = false;
 
          @Override
          public synchronized T get() {
             if (cachedAt != -1) {
                final var obj = cached.get();
-               if (!cached.isEnqueued() && !isExpired.isExpired(obj, System.currentTimeMillis() - cachedAt))
+               if ((cachedNull || obj != null) && !isExpired.isExpired(obj, System.currentTimeMillis() - cachedAt))
                   return obj;
             }
 
             final T obj = provider.get();
+            cachedNull = obj == null;
             cached = new WeakReference<>(obj);
             cachedAt = System.currentTimeMillis();
             return obj;

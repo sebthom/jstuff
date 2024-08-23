@@ -87,7 +87,7 @@ public abstract class X509Utils {
    /**
     * Converts a javax.security.cert.X509Certificate to java.security.cert.X509Certificate
     */
-   @SuppressWarnings("deprecation")
+   @Deprecated
    public static X509Certificate convert(final javax.security.cert.X509Certificate cert) {
       Args.notNull("cert", cert);
       try (var bis = new FastByteArrayInputStream(cert.getEncoded())) {
@@ -100,7 +100,7 @@ public abstract class X509Utils {
    /**
     * Converts a java.security.cert.X509Certificate to javax.security.cert.X509Certificate
     */
-   @SuppressWarnings("deprecation")
+   @Deprecated
    public static javax.security.cert.X509Certificate convert(final X509Certificate cert) {
       Args.notNull("cert", cert);
       try {
@@ -391,7 +391,7 @@ public abstract class X509Utils {
     */
    @SuppressWarnings("resource")
    public static PrivateKey getPrivateKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException,
-      IOException {
+         IOException {
       Args.notNull("pemStream", pemStream);
       Args.notNull("algorithm", algorithm);
       try {
@@ -439,7 +439,7 @@ public abstract class X509Utils {
     */
    @SuppressWarnings("resource")
    public static PublicKey getPublicKeyFromPEM(final InputStream pemStream, final String algorithm) throws GeneralSecurityException,
-      IOException {
+         IOException {
       Args.notNull("pemStream", pemStream);
       Args.notNull("algorithm", algorithm);
       try {

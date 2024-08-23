@@ -18,6 +18,7 @@ import net.sf.jstuff.core.validation.Args;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@Deprecated
 public class DelegatingSecurityManager extends NoOpSecurityManager {
 
    @Nullable

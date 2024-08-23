@@ -13,6 +13,7 @@ import org.eclipse.jdt.annotation.Nullable;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@Deprecated
 public class NoExitSecurityManager extends DelegatingSecurityManagerWithThreadLocalControl {
 
    public static class ExitNotAllowedException extends SecurityException {

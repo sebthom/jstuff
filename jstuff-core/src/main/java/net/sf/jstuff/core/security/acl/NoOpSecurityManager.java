@@ -15,6 +15,7 @@ import net.sf.jstuff.core.logging.Logger;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@Deprecated
 public class NoOpSecurityManager extends SecurityManager {
 
    private static final Logger LOG = Logger.create();
