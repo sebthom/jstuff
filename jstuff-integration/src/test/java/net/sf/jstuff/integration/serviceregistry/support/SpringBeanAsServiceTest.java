@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.serviceregistry.support;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

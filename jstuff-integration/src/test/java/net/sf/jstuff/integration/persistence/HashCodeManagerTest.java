@@ -5,7 +5,7 @@
 package net.sf.jstuff.integration.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 

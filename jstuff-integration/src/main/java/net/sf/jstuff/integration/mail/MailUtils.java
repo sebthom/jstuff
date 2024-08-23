@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.mail;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.io.File;
 import java.io.Serializable;

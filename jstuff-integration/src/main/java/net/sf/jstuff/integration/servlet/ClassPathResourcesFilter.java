@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.servlet;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import java.io.IOException;
 import java.io.InputStream;

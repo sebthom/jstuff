@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.spring;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.Serializable;
 

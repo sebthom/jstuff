@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.userregistry.ldap;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import java.util.HashSet;
 import java.util.Set;

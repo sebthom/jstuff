@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.xml.xjc;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import java.lang.reflect.Field;
 import java.util.Map;

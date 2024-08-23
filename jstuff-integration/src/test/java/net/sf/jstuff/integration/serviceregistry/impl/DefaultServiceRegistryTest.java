@@ -5,7 +5,7 @@
 
 package net.sf.jstuff.integration.serviceregistry.impl;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.servlet;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;

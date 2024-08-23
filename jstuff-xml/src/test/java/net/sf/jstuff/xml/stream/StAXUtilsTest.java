@@ -4,8 +4,8 @@
  */
 package net.sf.jstuff.xml.stream;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
-import static org.assertj.core.api.Assertions.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.util.List;

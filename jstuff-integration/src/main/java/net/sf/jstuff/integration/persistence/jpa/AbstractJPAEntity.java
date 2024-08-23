@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.persistence.jpa;
 
-import static net.sf.jstuff.core.Strings.*;
+import static net.sf.jstuff.core.Strings.NEW_LINE;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;

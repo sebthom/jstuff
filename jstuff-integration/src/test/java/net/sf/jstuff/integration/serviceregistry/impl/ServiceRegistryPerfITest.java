@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.serviceregistry.impl;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.After;
