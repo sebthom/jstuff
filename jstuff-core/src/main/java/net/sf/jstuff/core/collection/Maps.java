@@ -82,7 +82,7 @@ public abstract class Maps {
       }
 
       public boolean isDifferent() {
-         return entryValueDiffs.size() > 0 || leftOnlyEntries.size() > 0 || rightOnlyEntries.size() > 0;
+         return !entryValueDiffs.isEmpty() || !leftOnlyEntries.isEmpty() || !rightOnlyEntries.isEmpty();
       }
 
       @Override
@@ -246,7 +246,7 @@ public abstract class Maps {
       return putAll(new TreeMap<>(keyComparator), firstKey, firstValue, moreInitialKeysAndValues);
    }
 
-   public static <K, V, KK extends K, VV extends V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator,
+   public static <K, V> TreeMap<K, V> newTreeMap(final Comparator<? super K> keyComparator,
          final Object @Nullable [] initialKeysAndValues) {
       if (initialKeysAndValues == null)
          return new TreeMap<>(keyComparator);
