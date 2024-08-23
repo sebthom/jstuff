@@ -84,18 +84,17 @@ public class ClassPathResourcesFilter implements Filter {
    @SuppressWarnings("resource")
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
          ServletException {
-      if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
+      if (!(request instanceof final HttpServletRequest httpRequest) || !(response instanceof HttpServletResponse)) {
          chain.doFilter(request, response);
          return;
       }
 
-      final HttpServletRequest req = (HttpServletRequest) request;
-      final String resourcePath = req.getServletPath();
+      final String resourcePath = httpRequest.getServletPath();
 
       URL resource = ctx.getResource(resourcePath);
       // if resource was found on file system simply continue
       if (resource != null) {
-         chain.doFilter(request, response);
+         chain.doFilter(httpRequest, response);
          return;
       }
 
@@ -104,14 +103,14 @@ public class ClassPathResourcesFilter implements Filter {
 
       // resource not found in classpath
       if (resource == null) {
-         chain.doFilter(request, response);
+         chain.doFilter(httpRequest, response);
          return;
       }
 
       // check for if-modified-since, prior to any other headers
       long ifModifiedSince = 0;
       try {
-         ifModifiedSince = req.getDateHeader("If-Modified-Since");
+         ifModifiedSince = httpRequest.getDateHeader("If-Modified-Since");
       } catch (final IllegalArgumentException ex) {
          // ignore if date is unconvertible
       }
