@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.math;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

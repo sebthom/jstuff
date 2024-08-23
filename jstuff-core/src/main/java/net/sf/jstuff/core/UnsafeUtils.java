@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.lang.module.ModuleDescriptor;
 import java.lang.reflect.Field;

@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.reflection;
 
-import static net.sf.jstuff.core.reflection.Types.*;
+import static net.sf.jstuff.core.reflection.Types.findGenericTypeArguments;
 import static org.apache.commons.lang3.ArrayUtils.*;
 import static org.assertj.core.api.Assertions.*;
 

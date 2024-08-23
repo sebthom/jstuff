@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.concurrent;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.rmi.UnknownHostException;
 import java.util.concurrent.TimeUnit;

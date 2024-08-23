@@ -5,7 +5,7 @@
 package net.sf.jstuff.core.math;
 
 import static net.sf.jstuff.core.math.NumericalSystem.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigInteger;
 

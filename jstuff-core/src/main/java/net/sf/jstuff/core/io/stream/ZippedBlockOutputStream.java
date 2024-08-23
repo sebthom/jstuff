@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.io.stream;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

@@ -4,8 +4,8 @@
  */
 package net.sf.jstuff.core.jbean.meta;
 
-import static java.util.Collections.*;
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static java.util.Collections.unmodifiableMap;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.io.Serializable;
 import java.util.Map;

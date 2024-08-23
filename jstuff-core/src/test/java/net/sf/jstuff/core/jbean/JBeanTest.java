@@ -4,8 +4,8 @@
  */
 package net.sf.jstuff.core.jbean;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
-import static org.assertj.core.api.Assertions.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Objects;
 

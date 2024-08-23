@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.security.x509;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.net.Socket;
 import java.security.Principal;

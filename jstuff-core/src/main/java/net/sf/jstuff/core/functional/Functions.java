@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.functional;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.io.Serializable;
 import java.util.function.Function;

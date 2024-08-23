@@ -5,7 +5,7 @@
 package net.sf.jstuff.core.types;
 
 import static net.sf.jstuff.core.types.Trilean.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 

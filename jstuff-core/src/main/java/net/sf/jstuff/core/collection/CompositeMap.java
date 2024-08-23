@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.collection;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.util.AbstractList;
 import java.util.Collection;

@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.concurrent;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;

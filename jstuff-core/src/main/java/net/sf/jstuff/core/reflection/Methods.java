@@ -4,8 +4,8 @@
  */
 package net.sf.jstuff.core.reflection;
 
-import static net.sf.jstuff.core.collection.CollectionUtils.*;
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.collection.CollectionUtils.newArrayList;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;

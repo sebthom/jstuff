@@ -5,7 +5,7 @@
 package net.sf.jstuff.core.concurrent;
 
 import static net.sf.jstuff.core.Strings.*;
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import java.io.IOException;
 import java.lang.Thread.State;

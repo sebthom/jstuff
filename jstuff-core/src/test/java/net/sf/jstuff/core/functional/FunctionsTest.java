@@ -5,7 +5,7 @@
 package net.sf.jstuff.core.functional;
 
 import static net.sf.jstuff.core.functional.Functions.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 

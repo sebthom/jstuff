@@ -5,7 +5,7 @@
 package net.sf.jstuff.core.io;
 
 import static net.sf.jstuff.core.io.ByteUnit.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.RoundingMode;
 import java.util.Locale;

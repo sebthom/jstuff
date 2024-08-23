@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.io.stream;
 
-import static net.sf.jstuff.core.Strings.*;
+import static net.sf.jstuff.core.Strings.NEW_LINE;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;

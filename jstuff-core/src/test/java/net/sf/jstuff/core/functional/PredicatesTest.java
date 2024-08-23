@@ -5,8 +5,7 @@
 package net.sf.jstuff.core.functional;
 
 import static net.sf.jstuff.core.functional.Predicates.*;
-import static net.sf.jstuff.core.functional.Predicates.not;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.function.Predicate;
 

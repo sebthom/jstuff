@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.exception;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;

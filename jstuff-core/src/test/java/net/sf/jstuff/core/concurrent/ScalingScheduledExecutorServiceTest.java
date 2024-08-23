@@ -26,7 +26,7 @@ public class ScalingScheduledExecutorServiceTest {
    private static final Logger LOG = Logger.create();
 
    static void testScalingScheduledExecutorServiceTest(final ScalingScheduledExecutorService executor) throws ExecutionException,
-      InterruptedException {
+         InterruptedException {
       final int maxPoolSize = executor.getMaximumPoolSize();
 
       final var threadsExecuting = new AtomicInteger();

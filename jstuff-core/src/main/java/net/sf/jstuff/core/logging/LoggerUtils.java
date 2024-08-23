@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.logging;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

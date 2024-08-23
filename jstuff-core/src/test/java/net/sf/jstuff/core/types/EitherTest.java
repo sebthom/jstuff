@@ -5,7 +5,7 @@
 package net.sf.jstuff.core.types;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 

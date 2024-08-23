@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.core.compression;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
