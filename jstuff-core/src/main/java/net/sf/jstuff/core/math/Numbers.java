@@ -75,8 +75,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return longValue <= Byte.MAX_VALUE && longValue >= Byte.MIN_VALUE;
       }
 
-      if (number instanceof BigInteger) {
-         final BigInteger numberBI = (BigInteger) number;
+      if (number instanceof final BigInteger numberBI) {
          return BYTE_MAX_VALUE.compareTo(numberBI) >= 0 && BYTE_MIN_VALUE.compareTo(numberBI) <= 0;
       }
 
@@ -119,8 +118,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return longValue <= Integer.MAX_VALUE && longValue >= Integer.MIN_VALUE;
       }
 
-      if (number instanceof BigInteger) {
-         final BigInteger numberBI = (BigInteger) number;
+      if (number instanceof final BigInteger numberBI) {
          return INTEGER_MAX_VALUE.compareTo(numberBI) >= 0 && INTEGER_MIN_VALUE.compareTo(numberBI) <= 0;
       }
 
@@ -149,8 +147,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
       )
          return true;
 
-      if (number instanceof BigInteger) {
-         final BigInteger numberBI = (BigInteger) number;
+      if (number instanceof final BigInteger numberBI) {
          return LONG_MAX_VALUE.compareTo(numberBI) >= 0 && LONG_MIN_VALUE.compareTo(numberBI) <= 0;
       }
 
@@ -182,8 +179,7 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return longValue <= Short.MAX_VALUE && longValue >= Short.MIN_VALUE;
       }
 
-      if (number instanceof BigInteger) {
-         final BigInteger numberBI = (BigInteger) number;
+      if (number instanceof final BigInteger numberBI) {
          return SHORT_MAX_VALUE.compareTo(numberBI) >= 0 && SHORT_MIN_VALUE.compareTo(numberBI) <= 0;
       }
 

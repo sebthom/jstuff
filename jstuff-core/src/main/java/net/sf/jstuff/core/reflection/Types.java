@@ -616,8 +616,7 @@ public abstract class Types {
          if (visitor.isVisitingSuperclass(currentClass, currentType)) {
             final Type sclass = currentClass.getGenericSuperclass();
             if (sclass != null) {
-               if (sclass instanceof ParameterizedType) {
-                  final ParameterizedType sptype = (ParameterizedType) sclass;
+               if (sclass instanceof final ParameterizedType sptype) {
                   if (visitor.isVisiting((Class<?>) sptype.getRawType(), sptype)) {
                      toVisit.add(sclass);
                   }
@@ -629,8 +628,7 @@ public abstract class Types {
 
          if (visitor.isVisitingInterfaces(currentClass, currentType)) {
             for (final Type itype : currentClass.getGenericInterfaces())
-               if (itype instanceof ParameterizedType) {
-                  final ParameterizedType iptype = (ParameterizedType) itype;
+               if (itype instanceof final ParameterizedType iptype) {
                   if (visitor.isVisiting((Class<?>) iptype.getRawType(), iptype)) {
                      toVisit.add(itype);
                   }

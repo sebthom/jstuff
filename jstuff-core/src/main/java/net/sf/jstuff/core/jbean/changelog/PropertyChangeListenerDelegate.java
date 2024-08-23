@@ -21,14 +21,11 @@ public class PropertyChangeListenerDelegate implements EventListener<PropertyCha
 
    @Override
    public void onEvent(final PropertyChangeEvent event) {
-      if (event instanceof SetValueEvent) {
-         final SetValueEvent ev = (SetValueEvent) event;
+      if (event instanceof final SetValueEvent ev) {
          listener.propertyChange(new java.beans.PropertyChangeEvent(ev.bean, ev.property.getName(), ev.oldValue, ev.newValue));
-      } else if (event instanceof AddItemEvent) {
-         final AddItemEvent ev = (AddItemEvent) event;
+      } else if (event instanceof final AddItemEvent ev) {
          listener.propertyChange(new IndexedPropertyChangeEvent(ev.bean, ev.property.getName(), null, ev.item, ev.index));
-      } else if (event instanceof RemoveItemEvent) {
-         final RemoveItemEvent ev = (RemoveItemEvent) event;
+      } else if (event instanceof final RemoveItemEvent ev) {
          listener.propertyChange(new IndexedPropertyChangeEvent(ev.bean, ev.property.getName(), ev.item, null, ev.index));
       }
    }

@@ -187,8 +187,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    @Deprecated
    @Override
    public boolean remove(final @Nullable Object o) {
-      if (o instanceof Number) {
-         final Number n = (Number) o;
+      if (o instanceof final Number n) {
          return Numbers.isLong(n) && removeValue(n.longValue());
       }
       return false;

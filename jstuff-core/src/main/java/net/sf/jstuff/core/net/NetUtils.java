@@ -107,8 +107,7 @@ public abstract class NetUtils {
     * Get the resource URL via this.getClass().getResource("....").
     */
    public static long getLastModified(final URLConnection resourceConnection) throws IOException {
-      if (resourceConnection instanceof JarURLConnection) {
-         final var jarURL = (JarURLConnection) resourceConnection;
+      if (resourceConnection instanceof final JarURLConnection jarURL) {
          final var entry = jarURL.getJarEntry();
          if (entry != null)
             return entry.getTime();

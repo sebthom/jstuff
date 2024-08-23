@@ -170,8 +170,8 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    @Deprecated
    @Override
    public boolean remove(final @Nullable Object o) {
-      if (o instanceof Boolean)
-         return removeValue((Boolean) o);
+      if (o instanceof final Boolean bool)
+         return removeValue(bool);
       return false;
    }
 
