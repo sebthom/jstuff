@@ -59,7 +59,7 @@ public abstract class Events {
     */
    @SafeVarargs
    public static <Event> int fire(final Event type, final EventListener<Event> @Nullable... listeners) {
-      if (listeners == null || listeners.length < 0)
+      if (listeners == null || listeners.length == 0)
          return 0;
 
       int count = 0;
