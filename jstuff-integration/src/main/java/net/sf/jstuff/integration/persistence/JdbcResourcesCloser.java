@@ -26,12 +26,12 @@ public class JdbcResourcesCloser {
          return false;
 
       try {
-         if (resource instanceof Connection) {
-            ((Connection) resource).close();
-         } else if (resource instanceof Statement) {
-            ((Statement) resource).close();
-         } else if (resource instanceof ResultSet) {
-            ((ResultSet) resource).close();
+         if (resource instanceof final Connection conn) {
+            conn.close();
+         } else if (resource instanceof final Statement stmt) {
+            stmt.close();
+         } else if (resource instanceof final ResultSet rs) {
+            rs.close();
          } else
             return false;
       } catch (final SQLException ex) {
