@@ -10,7 +10,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -166,13 +165,12 @@ public class CompressionITest {
 
       System.out.println("Benchmark results by roundtrip speed:");
       int i = 1;
-      for (final BenchmarkResult r : result.values().stream().sorted(CompressionBenchmark.COMPARATOR_ROUNDTRIP_SPEED).collect(Collectors
-         .toList())) {
+      for (final BenchmarkResult r : result.values().stream().sorted(CompressionBenchmark.COMPARATOR_ROUNDTRIP_SPEED).toList()) {
          System.out.println(" " + i++ + ". " + r);
       }
       System.out.println("Benchmark results by ratio:");
       i = 1;
-      for (final BenchmarkResult r : result.values().stream().sorted(CompressionBenchmark.COMPARATOR_RATIO).collect(Collectors.toList())) {
+      for (final BenchmarkResult r : result.values().stream().sorted(CompressionBenchmark.COMPARATOR_RATIO).toList()) {
          System.out.println(" " + i++ + ". " + r);
       }
    }
