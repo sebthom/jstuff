@@ -25,11 +25,7 @@ public final class CallTree {
 
    CallTree markSeen(final String clazz, final String method, final int lineNumber, final boolean isExecuting) {
       final var codeLocation = new CodeLocation(clazz, method, lineNumber);
-      CallTree ct = children.get(codeLocation);
-      if (ct == null) {
-         ct = new CallTree();
-         children.put(codeLocation, ct);
-      }
+      final CallTree ct = children.computeIfAbsent(codeLocation, key -> new CallTree());
       if (isExecuting) {
          ct.executingSeen++;
       } else {
