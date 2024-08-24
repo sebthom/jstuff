@@ -26,15 +26,15 @@ public class RequestResponseHoldingFilter implements Filter {
 
    public static @Nullable HttpServletRequest getHttpServletRequest() {
       final ServletRequest req = REQ.get();
-      if (req instanceof HttpServletRequest)
-         return (HttpServletRequest) req;
+      if (req instanceof final HttpServletRequest httpReq)
+         return httpReq;
       return null;
    }
 
    public static @Nullable HttpServletResponse getHttpServletResponse() {
       final ServletResponse resp = RESP.get();
-      if (resp instanceof HttpServletResponse)
-         return (HttpServletResponse) resp;
+      if (resp instanceof final HttpServletResponse httpResp)
+         return httpResp;
       return null;
    }
 

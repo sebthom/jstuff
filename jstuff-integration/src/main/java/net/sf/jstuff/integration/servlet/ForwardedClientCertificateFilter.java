@@ -45,11 +45,11 @@ public class ForwardedClientCertificateFilter implements Filter {
    @Override
    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException,
          ServletException {
-      if (request instanceof HttpServletRequest) {
+      if (request instanceof final HttpServletRequest httpReq) {
          try {
             final var certsEncoded = new ArrayList<String>();
 
-            Loops.forEach(((HttpServletRequest) request).getHeaders(REQUEST_HEADER), header -> {
+            Loops.forEach(httpReq.getHeaders(REQUEST_HEADER), header -> {
                if (Strings.isBlank(header))
                   return;
                header = header.trim();
@@ -74,7 +74,7 @@ public class ForwardedClientCertificateFilter implements Filter {
                   certs.add(X509Utils.getCertificate(certDecoded));
                }
                if (!certs.isEmpty()) {
-                  request.setAttribute(SERVLET_ATTRIBUTE, certs.toArray(new X509Certificate[certs.size()]));
+                  httpReq.setAttribute(SERVLET_ATTRIBUTE, certs.toArray(new X509Certificate[certs.size()]));
                }
             }
          } catch (final Exception ex) {

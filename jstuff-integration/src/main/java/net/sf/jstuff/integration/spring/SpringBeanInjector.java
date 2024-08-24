@@ -82,8 +82,8 @@ public final class SpringBeanInjector {
          destructor.postProcessBeforeDestruction(unmanagedBean, "bean");
       }
 
-      if (unmanagedBean instanceof DisposableBean) {
-         ((DisposableBean) unmanagedBean).destroy();
+      if (unmanagedBean instanceof final DisposableBean disposable) {
+         disposable.destroy();
       }
 
       LOG.exit();
