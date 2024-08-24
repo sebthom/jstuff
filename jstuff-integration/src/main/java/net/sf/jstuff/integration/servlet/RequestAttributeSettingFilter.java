@@ -75,8 +75,7 @@ public class RequestAttributeSettingFilter implements Filter {
 
    @Override
    public void init(final FilterConfig filterConfig) throws ServletException {
-      Loops.forEach(filterConfig.getInitParameterNames(), param -> {
-         attributes.put(param, asNonNullUnsafe(filterConfig.getInitParameter(param)));
-      });
+      Loops.forEach(filterConfig.getInitParameterNames(), //
+         param -> attributes.put(param, asNonNullUnsafe(filterConfig.getInitParameter(param))));
    }
 }
