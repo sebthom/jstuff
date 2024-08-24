@@ -6,7 +6,6 @@ package net.sf.jstuff.integration.userregistry.ldap;
 
 import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
-import javax.inject.Inject;
 import javax.naming.CompositeName;
 import javax.naming.Name;
 import javax.naming.NameParser;
@@ -19,6 +18,7 @@ import javax.naming.directory.SearchResult;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import jakarta.inject.Inject;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.integration.ldap.LdapTemplate;

@@ -8,11 +8,11 @@ import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 
 import java.util.function.Supplier;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
-
 import org.eclipse.jdt.annotation.Nullable;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>

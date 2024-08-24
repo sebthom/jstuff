@@ -7,8 +7,6 @@ package net.sf.jstuff.integration.spring;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.annotation.PreDestroy;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +14,14 @@ import org.springframework.beans.factory.config.DestructionAwareBeanPostProcesso
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PreDestroy;
 import net.sf.jstuff.core.collection.ObjectCache;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
  * Injects spring beans into unmanaged Java objects having {@link org.springframework.beans.factory.annotation.Autowired},
- * {@link org.springframework.beans.factory.annotation.Value} and {@link javax.inject.Inject} annotations.
+ * {@link org.springframework.beans.factory.annotation.Value} and {@link jakarta.inject.Inject} annotations.
  *
  * <pre>
  * &lt;context:annotation-config /&gt;

@@ -6,14 +6,13 @@ package net.sf.jstuff.integration.spring;
 
 import java.util.Map;
 
-import javax.annotation.PreDestroy;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PreDestroy;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;

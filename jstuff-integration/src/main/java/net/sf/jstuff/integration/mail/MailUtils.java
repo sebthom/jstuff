@@ -11,24 +11,22 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Properties;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.activation.FileTypeMap;
-import javax.mail.Authenticator;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
 import org.eclipse.jdt.annotation.NonNull;
 
+import jakarta.activation.DataHandler;
+import jakarta.activation.FileDataSource;
+import jakarta.activation.FileTypeMap;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message.RecipientType;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Part;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.validation.Args;
 
@@ -59,7 +57,7 @@ public abstract class MailUtils {
       public String smtpUsername;
    }
 
-   public static void sendMail(final @NonNull Mail mail, final @NonNull MailServer mailServer) throws AddressException, MessagingException {
+   public static void sendMail(final @NonNull Mail mail, final @NonNull MailServer mailServer) throws MessagingException {
       Args.notNull("mail", mail);
       Args.notNull("mailServer", mailServer);
       Args.notNull("mailServer.smtpHostname", mailServer.smtpHostname);

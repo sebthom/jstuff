@@ -9,10 +9,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.servlet.ServletContext;
-
 import org.eclipse.jdt.annotation.Nullable;
 
+import jakarta.servlet.ServletContext;
 import net.sf.jstuff.core.logging.Logger;
 
 /**

@@ -5,14 +5,13 @@ import java.net.URLDecoder;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.collection.Loops;
@@ -22,7 +21,7 @@ import net.sf.jstuff.core.security.Base64;
 import net.sf.jstuff.core.security.x509.X509Utils;
 
 /**
- * A servlet {@link Filter} that transforms the {@code "X-Forwarded-Client-Cert"} HTTP header to the {@code "javax.servlet.request.X509Certificate"} Servlet
+ * A servlet {@link Filter} that transforms the {@code "X-Forwarded-Client-Cert"} HTTP header to the {@code "jakarta.servlet.request.X509Certificate"} Servlet
  * attribute.
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -31,7 +30,7 @@ public class ForwardedClientCertificateFilter implements Filter {
 
    private static final Logger LOG = Logger.create();
 
-   public static final String SERVLET_ATTRIBUTE = "javax.servlet.request.X509Certificate";
+   public static final String SERVLET_ATTRIBUTE = "jakarta.servlet.request.X509Certificate";
    public static final String REQUEST_HEADER = "X-Forwarded-Client-Cert";
 
    public ForwardedClientCertificateFilter() {

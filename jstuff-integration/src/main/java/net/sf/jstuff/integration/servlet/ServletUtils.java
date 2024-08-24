@@ -7,12 +7,11 @@ package net.sf.jstuff.integration.servlet;
 import java.io.IOException;
 import java.security.cert.X509Certificate;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.jdt.annotation.Nullable;
 
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -29,7 +28,7 @@ public abstract class ServletUtils {
    public static @Nullable X509Certificate getClientCertificate(final ServletRequest request) {
       Args.notNull("request", request);
 
-      final X509Certificate @Nullable [] certChain = getAttribute(request, "javax.servlet.request.X509Certificate");
+      final X509Certificate @Nullable [] certChain = getAttribute(request, "jakarta.servlet.request.X509Certificate");
       if (certChain == null || certChain.length == 0)
          return null;
       return certChain[0];

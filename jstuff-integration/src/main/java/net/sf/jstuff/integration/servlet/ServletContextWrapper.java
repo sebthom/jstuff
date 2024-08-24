@@ -12,20 +12,19 @@ import java.util.EventListener;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.ServletRegistration.Dynamic;
-import javax.servlet.SessionCookieConfig;
-import javax.servlet.SessionTrackingMode;
-import javax.servlet.descriptor.JspConfigDescriptor;
-
 import org.eclipse.jdt.annotation.Nullable;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.ServletRegistration.Dynamic;
+import jakarta.servlet.SessionCookieConfig;
+import jakarta.servlet.SessionTrackingMode;
+import jakarta.servlet.descriptor.JspConfigDescriptor;
 import net.sf.jstuff.core.validation.Args;
 
 /**
@@ -52,6 +51,11 @@ public class ServletContextWrapper implements ServletContext {
    @Override
    public FilterRegistration.Dynamic addFilter(final String filterName, final String className) {
       return delegate.addFilter(filterName, className);
+   }
+
+   @Override
+   public Dynamic addJspFile(final String servletName, final String jspFile) {
+      return delegate.addJspFile(servletName, jspFile);
    }
 
    @Override
@@ -204,6 +208,11 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
+   public String getRequestCharacterEncoding() {
+      return delegate.getRequestCharacterEncoding();
+   }
+
+   @Override
    public @Nullable RequestDispatcher getRequestDispatcher(final String path) {
       return delegate.getRequestDispatcher(path);
    }
@@ -224,25 +233,18 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
+   public String getResponseCharacterEncoding() {
+      return delegate.getResponseCharacterEncoding();
+   }
+
+   @Override
    public String getServerInfo() {
       return delegate.getServerInfo();
    }
 
    @Override
-   @Deprecated
-   public @Nullable Servlet getServlet(final String name) throws ServletException {
-      return delegate.getServlet(name);
-   }
-
-   @Override
    public String getServletContextName() {
       return delegate.getServletContextName();
-   }
-
-   @Override
-   @Deprecated
-   public Enumeration<String> getServletNames() {
-      return delegate.getServletNames();
    }
 
    @Override
@@ -256,25 +258,18 @@ public class ServletContextWrapper implements ServletContext {
    }
 
    @Override
-   @Deprecated
-   public Enumeration<Servlet> getServlets() {
-      return delegate.getServlets();
-   }
-
-   @Override
    public SessionCookieConfig getSessionCookieConfig() {
       return delegate.getSessionCookieConfig();
    }
 
    @Override
-   public String getVirtualServerName() {
-      return delegate.getVirtualServerName();
+   public int getSessionTimeout() {
+      return delegate.getSessionTimeout();
    }
 
    @Override
-   @Deprecated
-   public void log(final @Nullable Exception exception, final @Nullable String msg) {
-      delegate.log(exception, msg);
+   public String getVirtualServerName() {
+      return delegate.getVirtualServerName();
    }
 
    @Override
@@ -305,6 +300,21 @@ public class ServletContextWrapper implements ServletContext {
    @Override
    public boolean setInitParameter(final String name, final String value) {
       return delegate.setInitParameter(name, value);
+   }
+
+   @Override
+   public void setRequestCharacterEncoding(final String encoding) {
+      delegate.setRequestCharacterEncoding(encoding);
+   }
+
+   @Override
+   public void setResponseCharacterEncoding(final String encoding) {
+      delegate.setRequestCharacterEncoding(encoding);
+   }
+
+   @Override
+   public void setSessionTimeout(final int sessionTimeout) {
+      delegate.setSessionTimeout(sessionTimeout);
    }
 
    @Override

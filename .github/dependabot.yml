@@ -37,3 +37,4 @@ updates:
   - dependency-name: "jdom:jdom"
   - dependency-name: "org.eclipse.platform:org.eclipse.urischeme"
   - dependency-name: "org.netbeans.external:*"
+  - dependency-name: "jakarta.*"

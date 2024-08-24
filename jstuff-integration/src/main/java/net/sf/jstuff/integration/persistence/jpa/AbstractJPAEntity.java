@@ -11,18 +11,17 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Objects;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PostPersist;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Version;
-
 import org.eclipse.jdt.annotation.Nullable;
 
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.Version;
 import net.sf.jstuff.core.date.ImmutableDate;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Fields;
@@ -41,7 +40,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
    /* ******************************************************************************
     * Consistent HashCode Management
     * ******************************************************************************/
-   @javax.persistence.Transient
+   @jakarta.persistence.Transient
    private final String _hashCodeTrackingId;
 
    /* ******************************************************************************

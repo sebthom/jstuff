@@ -15,12 +15,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import net.sf.jstuff.core.collection.Enumerations;
 import net.sf.jstuff.core.collection.Loops;
 import net.sf.jstuff.core.validation.Args;

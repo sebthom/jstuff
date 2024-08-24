@@ -11,12 +11,11 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.jdt.annotation.Nullable;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+import jakarta.servlet.http.HttpServletResponse;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.IOUtils;
 import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;

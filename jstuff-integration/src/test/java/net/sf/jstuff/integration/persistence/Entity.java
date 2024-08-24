@@ -13,11 +13,11 @@ import net.sf.jstuff.core.types.Identifiable;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-@javax.persistence.Entity
+@jakarta.persistence.Entity
 public class Entity extends Identifiable.Default<Integer> {
    private static final long serialVersionUID = 1L;
 
-   @javax.persistence.Transient
+   @jakarta.persistence.Transient
    private final String _hashCodeTrackingId;
 
    private @Nullable Integer id;

@@ -8,8 +8,6 @@ import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import java.util.Hashtable;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
@@ -19,6 +17,8 @@ import javax.naming.ldap.StartTlsResponse;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 import net.sf.jstuff.core.functional.Invocable;
 
 /**

@@ -9,7 +9,6 @@ import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.inject.Inject;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
@@ -19,6 +18,7 @@ import javax.naming.directory.SearchResult;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import jakarta.inject.Inject;
 import net.sf.jstuff.core.collection.Loops;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;

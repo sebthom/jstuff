@@ -6,10 +6,10 @@ package net.sf.jstuff.integration.servlet;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-
 import org.eclipse.jdt.annotation.Nullable;
+
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -42,18 +42,5 @@ public class StatusCapturingHttpServletResponseWrapper extends HttpServletRespon
    public void setStatus(final int sc) {
       httpStatus = sc;
       super.setStatus(sc);
-   }
-
-   /**
-    * @deprecated As of version 2.1, due to ambiguous meaning of the
-    *             message parameter. To set a status code
-    *             use {@link #setStatus(int)}, to send an error with a description
-    *             use {@link #sendError(int, String)}
-    */
-   @Deprecated
-   @Override
-   public void setStatus(final int sc, final @Nullable String sm) {
-      httpStatus = sc;
-      super.setStatus(sc, sm);
    }
 }

@@ -9,10 +9,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Test;
 
+import jakarta.servlet.http.HttpServletResponse;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.Types;
 

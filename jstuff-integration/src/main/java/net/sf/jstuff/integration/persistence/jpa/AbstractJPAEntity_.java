@@ -6,10 +6,10 @@ package net.sf.jstuff.integration.persistence.jpa;
 
 import java.util.Date;
 
-import javax.persistence.metamodel.SingularAttribute;
-import javax.persistence.metamodel.StaticMetamodel;
-
 import org.eclipse.jdt.annotation.Nullable;
+
+import jakarta.persistence.metamodel.SingularAttribute;
+import jakarta.persistence.metamodel.StaticMetamodel;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>

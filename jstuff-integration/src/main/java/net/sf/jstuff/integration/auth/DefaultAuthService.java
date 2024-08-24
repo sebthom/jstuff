@@ -13,11 +13,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.inject.Inject;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.springframework.util.PatternMatchUtils;
 
+import jakarta.inject.Inject;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.MapWithSets;
 import net.sf.jstuff.core.logging.Logger;

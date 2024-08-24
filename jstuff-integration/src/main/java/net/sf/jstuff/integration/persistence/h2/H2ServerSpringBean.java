@@ -8,13 +8,12 @@ import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.sql.SQLException;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.h2.tools.Server;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
 import net.sf.jstuff.core.logging.Logger;
 
 /**
