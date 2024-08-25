@@ -3,16 +3,16 @@
   <groupId>net.sf.jstuff</groupId>
   <artifactId>jstuff-parent</artifactId>
   <versioning>
-    <lastUpdated>20240824121725</lastUpdated>
+    <lastUpdated>20240825122926</lastUpdated>
     <snapshot>
-      <timestamp>20240824.121725</timestamp>
+      <timestamp>20240825.122926</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>8.0.0-20240824.121725-1</value>
-        <updated>20240824121725</updated>
+        <value>8.0.0-20240825.122926-1</value>
+        <updated>20240825122926</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
