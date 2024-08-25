@@ -732,7 +732,7 @@ public abstract class DOMUtils {
 
             domRoot.setAttribute("jstuffNS", defaultNamespace);
             final String newXML = toXML(domDoc) //
-               .replaceFirst("xmlns\\s*=\\s*(['][^']*[']|[\"][^\"]*[\"])", "") //
+               .replaceFirst("xmlns\\s*=\\s*('[^']*'|\"[^\"]*\")", "") //
                .replaceFirst("jstuffNS", "xmlns");
 
             /* unfortunately the following does not seem to work reliable on all JVM implementations
