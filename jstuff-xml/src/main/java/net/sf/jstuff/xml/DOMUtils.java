@@ -213,8 +213,8 @@ public abstract class DOMUtils {
 
    static Document _getOwnerDocument(final Node node) {
       final Document doc = node.getOwnerDocument();
-      if (doc == null && node instanceof Document)
-         return (Document) node;
+      if (doc == null && node instanceof final Document nodeDoc)
+         return nodeDoc;
       if (doc == null)
          throw new IllegalArgumentException("Node " + node + " has no owner document!");
       return doc;
@@ -259,8 +259,8 @@ public abstract class DOMUtils {
        */
       boolean foundTextNode = false;
       for (final Node child : DOMUtils.nodeListToList(elem.getChildNodes()))
-         if (cfg.recursive && child instanceof Element) {
-            _getXPathNodes((Element) child, cfg, xPath, valuesByXPath);
+         if (cfg.recursive && child instanceof final Element childElem) {
+            _getXPathNodes(childElem, cfg, xPath, valuesByXPath);
          } else if ("#text".equals(child.getNodeName())) {
             foundTextNode = true;
             final String nodeValue = child.getNodeValue().trim();
@@ -889,7 +889,7 @@ public abstract class DOMUtils {
       final var sortedNodes = new ArrayList<Node>();
       for (final Node node : getChildNodes(parentNode)) {
          // Remove empty text nodes
-         if (node instanceof Text && ((Text) node).getTextContent().trim().length() > 1) {
+         if (node instanceof final Text text && text.getTextContent().trim().length() > 1) {
             continue;
          }
          sortedNodes.add(node);
@@ -910,7 +910,7 @@ public abstract class DOMUtils {
       final var children = new ArrayList<Node>();
       for (final Node node : getChildNodes(parentNode)) {
          // Remove empty text nodes
-         if (node instanceof Text && ((Text) node).getTextContent().trim().length() > 1) {
+         if (node instanceof final Text text && text.getTextContent().trim().length() > 1) {
             continue;
          }
          children.add(node);
