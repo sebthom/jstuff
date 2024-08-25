@@ -84,7 +84,7 @@ public class StAXUtilsTest {
       assertThat(elem.localName).isEqualTo("item");
       assertThat(elem.nsPrefix).isEqualTo("ns1");
       assertThat(elem.nsURI).isEqualTo("http://ns1");
-      assertThat(elem.attrs.get("anchor")).isEqualTo("#car");
+      assertThat(elem.attrs).containsEntry("anchor", "#car");
    }
 
    @Test
