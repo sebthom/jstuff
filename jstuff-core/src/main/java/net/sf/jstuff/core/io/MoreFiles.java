@@ -424,7 +424,7 @@ public abstract class MoreFiles {
       Args.notNull("searchRoot", searchRoot);
       Args.notNull("globPattern", globPattern);
 
-      searchRoot = searchRoot.normalize().toAbsolutePath();
+      searchRoot = searchRoot.toAbsolutePath().normalize();
       final String searchRootPath = searchRoot.toString();
       final int searchRootLen = searchRootPath.length();
       final String searchRegEx = Strings.globToRegex(globPattern).toString();
