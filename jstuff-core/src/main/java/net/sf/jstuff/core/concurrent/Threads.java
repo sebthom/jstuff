@@ -61,9 +61,9 @@ public abstract class Threads {
       return result;
    }
 
-   public static void await(final BooleanSupplier condition, final int checkIntervallMS) {
+   public static void await(final BooleanSupplier condition, final int checkIntervalMS) {
       while (!condition.getAsBoolean()) {
-         Threads.sleep(checkIntervallMS);
+         Threads.sleep(checkIntervalMS);
       }
    }
 
