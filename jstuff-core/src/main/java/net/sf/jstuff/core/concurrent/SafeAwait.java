@@ -32,7 +32,7 @@ public abstract class SafeAwait {
       while (waitForMS > 0) {
          if (condition.await(waitForMS, TimeUnit.MILLISECONDS))
             return true;
-         waitForMS = waitForMS - (started - System.currentTimeMillis());
+         waitForMS = waitForMS - (System.currentTimeMillis() - started);
       }
       return false;
    }
@@ -62,7 +62,7 @@ public abstract class SafeAwait {
             if (condition.getAsBoolean())
                return true;
             waitObject.wait(waitForMS);
-            waitForMS = waitForMS - (started - System.currentTimeMillis());
+            waitForMS = waitForMS - (System.currentTimeMillis() - started);
          }
          return condition.getAsBoolean();
       }
