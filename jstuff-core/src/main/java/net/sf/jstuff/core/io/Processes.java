@@ -78,8 +78,7 @@ public abstract class Processes {
          return this;
       }
 
-      @SuppressWarnings("null")
-      private CompletableFuture<Void> redirect(final InputStream in, final Appendable out) {
+      private CompletableFuture<@Nullable Void> redirect(final InputStream in, final Appendable out) {
          return CompletableFuture.runAsync(() -> {
             try {
                IOUtils.copy(new InputStreamReader(in, StandardCharsets.UTF_8), out);
@@ -90,7 +89,7 @@ public abstract class Processes {
       }
 
       @SuppressWarnings("null")
-      private CompletableFuture<Void> redirect(final InputStream in, final Consumer<String> lineConsumer) {
+      private CompletableFuture<@Nullable Void> redirect(final InputStream in, final Consumer<String> lineConsumer) {
          return CompletableFuture.runAsync(() -> {
             try (var sc = new Scanner(in)) {
                while (sc.hasNextLine()) {
@@ -100,8 +99,7 @@ public abstract class Processes {
          }, BACKGROUND_THREADS);
       }
 
-      @SuppressWarnings("null")
-      private CompletableFuture<Void> redirect(final InputStream in, final OutputStream out) {
+      private CompletableFuture<@Nullable Void> redirect(final InputStream in, final OutputStream out) {
          return CompletableFuture.runAsync(() -> {
             try {
                IOUtils.copy(in, out);
@@ -111,8 +109,7 @@ public abstract class Processes {
          }, BACKGROUND_THREADS);
       }
 
-      @SuppressWarnings("null")
-      private CompletableFuture<Void> writeToStdIn(final CharSequence in, final Process proc) {
+      private CompletableFuture<@Nullable Void> writeToStdIn(final CharSequence in, final Process proc) {
          return CompletableFuture.runAsync(() -> {
             try (var out = proc.getOutputStream()) {
                IOUtils.write(in, out, StandardCharsets.UTF_8);
@@ -122,8 +119,7 @@ public abstract class Processes {
          }, BACKGROUND_THREADS);
       }
 
-      @SuppressWarnings("null")
-      private CompletableFuture<Void> writeToStdIn(final InputStream in, final Process proc) {
+      private CompletableFuture<@Nullable Void> writeToStdIn(final InputStream in, final Process proc) {
          return CompletableFuture.runAsync(() -> {
             try (var out = proc.getOutputStream()) {
                IOUtils.copy(in, out);
