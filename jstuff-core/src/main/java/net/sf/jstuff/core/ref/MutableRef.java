@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.core.ref;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -43,7 +44,11 @@ public interface MutableRef<V> extends Ref<V> {
       return new Default<>();
    }
 
-   static <V> MutableRef<V> of(final V initialValue) {
+   static <@NonNull V> MutableRef<V> of(final V initialValue) {
+      return new Default<>(initialValue);
+   }
+
+   static <@Nullable V extends @Nullable Object> MutableRef<V> ofNullable(final V initialValue) {
       return new Default<>(initialValue);
    }
 

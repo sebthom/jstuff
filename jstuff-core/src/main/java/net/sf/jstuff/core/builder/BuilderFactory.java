@@ -54,7 +54,7 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
          this.constructorArgs = constructorArgs;
 
          // collecting annotation information on builder interface
-         final var propertyDefaultsRef = MutableRef.of((Builder.@Nullable Property) null);
+         final MutableRef<Builder.@Nullable Property> propertyDefaultsRef = MutableRef.create();
          Types.visit(builderInterface, new DefaultClassVisitor() {
             @Override
             public boolean isVisitingFields(final Class<?> clazz) {
@@ -209,7 +209,8 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
    }
 
    /**
-    * @param targetClass if <code>null</code> the builder factory tries to extract the generic argument type information from the builderInterface class
+    * @param targetClass if <code>null</code> the builder factory tries to extract the generic argument type information from the
+    *           builderInterface class
     */
    public static <TARGET_CLASS, BLDR_IFACE extends Builder<? extends TARGET_CLASS>> BuilderFactory<TARGET_CLASS, BLDR_IFACE> //
          of(final Class<BLDR_IFACE> builderInterface, final Class<TARGET_CLASS> targetClass, final Object... constructorArgs) {

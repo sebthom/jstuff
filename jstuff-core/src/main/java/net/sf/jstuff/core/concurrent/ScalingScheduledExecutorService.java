@@ -119,7 +119,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
 
    @Override
    public <V> ScheduledFuture<V> schedule(final Callable<V> callable, final long delay, final TimeUnit unit) {
-      final var workFuture = MutableRef.of((@Nullable Future<V>) null);
+      final MutableRef<@Nullable Future<V>> workFuture = MutableRef.create();
 
       final var scheduledFuture = scheduler.schedule(() -> {
          workFuture.set(submit(callable));
@@ -131,7 +131,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
 
    @Override
    public ScheduledFuture<?> schedule(final Runnable command, final long delay, final TimeUnit unit) {
-      final var workFuture = MutableRef.of((@Nullable Future<Object>) null);
+      final MutableRef<@Nullable Future<Object>> workFuture = MutableRef.create();
 
       @SuppressWarnings("unchecked")
       final var scheduledFuture = scheduler.schedule(() -> {
@@ -144,7 +144,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
 
    @Override
    public ScheduledFuture<?> scheduleAtFixedRate(final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {
-      final var workFuture = MutableRef.of((@Nullable Future<Object>) null);
+      final MutableRef<@Nullable Future<Object>> workFuture = MutableRef.create();
 
       @SuppressWarnings("unchecked")
       final var scheduledFuture = scheduler.scheduleAtFixedRate( //
@@ -158,7 +158,7 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
    @Override
    public ScheduledFuture<?> scheduleWithFixedDelay(final Runnable command, final long initialDelay, final long delay,
          final TimeUnit unit) {
-      final var workFuture = MutableRef.of((@Nullable Future<Object>) null);
+      final MutableRef<@Nullable Future<Object>> workFuture = MutableRef.create();
 
       @SuppressWarnings("unchecked")
       final var scheduledFuture = scheduler.scheduleWithFixedDelay( //
