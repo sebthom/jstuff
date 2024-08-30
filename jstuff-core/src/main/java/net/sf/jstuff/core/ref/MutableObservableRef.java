@@ -7,11 +7,13 @@ package net.sf.jstuff.core.ref;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import net.sf.jstuff.core.concurrent.SafeAwait;
 import net.sf.jstuff.core.logging.Logger;
 
 /**
@@ -31,6 +33,16 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
 
       protected Default(final V initialValue) {
          super(initialValue);
+      }
+
+      @Override
+      public void await(final V desiredValue) throws InterruptedException {
+         SafeAwait.await(() -> !isModification(value, desiredValue), this);
+      }
+
+      @Override
+      public boolean await(final V desiredValue, final long timeout, final TimeUnit unit) throws InterruptedException {
+         return SafeAwait.await(() -> !isModification(value, desiredValue), this, unit.toMillis(timeout));
       }
 
       @Override
@@ -78,12 +90,15 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
          if (!isModification(oldValue, newValue))
             return;
 
-         value = newValue;
+         synchronized (this) {
+            value = newValue;
+            notifyAll();
+         }
 
          for (final Object observer : observers) {
             try {
-               if (observer instanceof Runnable) {
-                  ((Runnable) observer).run();
+               if (observer instanceof final Runnable r) {
+                  r.run();
                } else if (observer instanceof Consumer) {
                   ((Consumer<V>) observer).accept(newValue);
                } else if (observer instanceof BiConsumer) {
