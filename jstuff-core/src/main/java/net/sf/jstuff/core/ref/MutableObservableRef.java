@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.concurrent.SafeAwait;
@@ -165,7 +166,12 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
       return new Default<>();
    }
 
-   static <V> MutableObservableRef<V> of(final V initialValue) {
+   static <@NonNull V> MutableObservableRef<V> of(final V initialValue) {
       return new Default<>(initialValue);
    }
+
+   static <@Nullable V extends @Nullable Object> MutableObservableRef<V> ofNullable(final V initialValue) {
+      return new Default<>(initialValue);
+   }
+
 }
