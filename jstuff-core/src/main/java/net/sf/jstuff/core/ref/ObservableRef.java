@@ -7,6 +7,7 @@ package net.sf.jstuff.core.ref;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Observable mutable reference holder.
@@ -14,6 +15,10 @@ import java.util.function.Consumer;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public interface ObservableRef<V> extends Ref<V> {
+
+   void await(Predicate<V> condition) throws InterruptedException;
+
+   boolean await(Predicate<V> condition, long timeout, TimeUnit unit) throws InterruptedException;
 
    void await(V desiredValue) throws InterruptedException;
 

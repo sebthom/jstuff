@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -34,6 +35,16 @@ public interface MutableObservableRef<V> extends MutableRef<V>, ObservableRef<V>
 
       protected Default(final V initialValue) {
          super(initialValue);
+      }
+
+      @Override
+      public void await(final Predicate<V> condition) throws InterruptedException {
+         SafeAwait.await(() -> condition.test(value), this);
+      }
+
+      @Override
+      public boolean await(final Predicate<V> condition, final long timeout, final TimeUnit unit) throws InterruptedException {
+         return SafeAwait.await(() -> condition.test(value), this, unit.toMillis(timeout));
       }
 
       @Override
