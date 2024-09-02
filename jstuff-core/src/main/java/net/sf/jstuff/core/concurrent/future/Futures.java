@@ -108,12 +108,28 @@ public abstract class Futures {
    }
 
    /**
+    * Propagates the cancellation of a {@link CompletableFuture} to other {@link Future}.
+    * <p>
+    * If the specified {@code from} future is cancelled, all futures in the provided {@code to} array will be cancelled too.
+    *
+    * @param from the {@link CompletableFuture} whose cancellation should be propagated
+    * @param to the {@link Future} instance that should be cancelled if {@code from} is cancelled
+    */
+   public static void forwardCancellation(final CompletableFuture<?> from, final Future<?> to) {
+      from.whenComplete((result, ex) -> {
+         if (ex instanceof CancellationException) {
+            to.cancel(true);
+         }
+      });
+   }
+
+   /**
     * Propagates the cancellation of a {@link CompletableFuture} to other {@link Future}s.
     * <p>
     * If the specified {@code from} future is cancelled, all futures in the provided {@code to} array will be cancelled too.
     *
     * @param from the {@link CompletableFuture} whose cancellation should be propagated
-    * @param to the collection of {@link Future} instances that should be cancelled if {@code from} is cancelled
+    * @param to the array of {@link Future} instances that should be cancelled if {@code from} is cancelled
     */
    public static void forwardCancellation(final CompletableFuture<?> from, final Future<?>... to) {
       from.whenComplete((result, ex) -> {
@@ -149,29 +165,6 @@ public abstract class Futures {
    }
 
    /**
-    * Returns the result of the given {@link Future} if it is already completed, or the specified
-    * {@code defaultValue} if the future is not done or completed exceptionally.
-    *
-    * @return the result of the future if completed, otherwise {@code defaultValue}
-    */
-   public static <T> T getNow(final Future<T> future, final T defaultValue) {
-      if (future.isDone()) {
-         try {
-            return future.get(0, TimeUnit.SECONDS);
-         } catch (final TimeoutException ex) {
-            // ignore
-         } catch (final InterruptedException ex) {
-            Threads.handleInterruptedException(ex);
-         } catch (final CancellationException ex) {
-            LOG.debug(ex);
-         } catch (final ExecutionException ex) {
-            LOG.error(ex);
-         }
-      }
-      return defaultValue;
-   }
-
-   /**
     * Returns a list of results from all successfully completed futures in the given collection.
     * <p>
     * Futures that are incomplete, canceled, or failed are ignored.
@@ -198,6 +191,46 @@ public abstract class Futures {
          }
       }
       return result;
+   }
+
+   /**
+    * Returns the result of the given {@link Future} if it is already completed, or the specified
+    * {@code defaultValue} if the future is not done or completed exceptionally.
+    *
+    * @return the result of the future if completed, otherwise {@code defaultValue}
+    */
+   public static <T> T getNow(final CompletableFuture<T> future, final T defaultValue) {
+      if (future.isDone()) {
+         try {
+            return future.getNow(defaultValue);
+         } catch (final CancellationException ex) {
+            LOG.debug(ex);
+         }
+      }
+      return defaultValue;
+   }
+
+   /**
+    * Returns the result of the given {@link Future} if it is already completed, or the specified
+    * {@code defaultValue} if the future is not done or completed exceptionally.
+    *
+    * @return the result of the future if completed, otherwise {@code defaultValue}
+    */
+   public static <T> T getNow(final Future<T> future, final T defaultValue) {
+      if (future.isDone()) {
+         try {
+            return future.get(0, TimeUnit.SECONDS);
+         } catch (final TimeoutException ex) {
+            // ignore
+         } catch (final InterruptedException ex) {
+            Threads.handleInterruptedException(ex);
+         } catch (final CancellationException ex) {
+            LOG.debug(ex);
+         } catch (final ExecutionException ex) {
+            LOG.error(ex);
+         }
+      }
+      return defaultValue;
    }
 
    /**
@@ -232,22 +265,6 @@ public abstract class Futures {
    }
 
    /**
-    * Combines two {@link CompletableFuture}s containing {@link Collection}s into a single {@link CompletableFuture}
-    * that returns a {@link List} with all elements from both collections.
-    * <p>
-    * Cancellation of the result future is propagated to the input futures.
-    *
-    * @return A {@link CompletableFuture} that completes with a combined {@link List}.
-    */
-   public static <T> CompletableFuture<List<T>> join(final CompletableFuture<? extends T> future1,
-         final CompletableFuture<? extends T> future2) {
-      @SuppressWarnings("null")
-      final CompletableFuture<List<T>> combinedFuture = future1.thenCombine(future2, List::of);
-      forwardCancellation(combinedFuture, future1, future2);
-      return combinedFuture;
-   }
-
-   /**
     * Combines two {@link CompletableFuture}s into a single {@link CompletableFuture}
     * that returns a {@link List} with results from both futures.
     * <p>
@@ -272,6 +289,22 @@ public abstract class Futures {
       }
       forwardCancellation(combinedFuture, future1);
       forwardCancellation(combinedFuture, moreFutures);
+      return combinedFuture;
+   }
+
+   /**
+    * Combines two {@link CompletableFuture}s containing {@link Collection}s into a single {@link CompletableFuture}
+    * that returns a {@link List} with all elements from both collections.
+    * <p>
+    * Cancellation of the result future is propagated to the input futures.
+    *
+    * @return A {@link CompletableFuture} that completes with a combined {@link List}.
+    */
+   public static <T> CompletableFuture<List<T>> join(final CompletableFuture<? extends T> future1,
+         final CompletableFuture<? extends T> future2) {
+      @SuppressWarnings("null")
+      final CompletableFuture<List<T>> combinedFuture = future1.thenCombine(future2, List::of);
+      forwardCancellation(combinedFuture, future1, future2);
       return combinedFuture;
    }
 
