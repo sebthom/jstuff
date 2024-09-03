@@ -61,10 +61,23 @@ public abstract class Threads {
       return result;
    }
 
-   public static void await(final BooleanSupplier condition, final int checkIntervalMS) {
+   public static void await(final BooleanSupplier condition, final int checkIntervalMS) throws InterruptedException {
       while (!condition.getAsBoolean()) {
-         Threads.sleep(checkIntervalMS);
+         Thread.sleep(checkIntervalMS);
       }
+   }
+
+   public static boolean await(final BooleanSupplier condition, final int checkIntervalMS, final long timeout, final TimeUnit unit)
+         throws InterruptedException {
+      final long timeoutMillis = unit.toMillis(timeout);
+      final long startTime = System.currentTimeMillis();
+
+      while (!condition.getAsBoolean()) {
+         if (System.currentTimeMillis() - startTime >= timeoutMillis)
+            return false;
+         Thread.sleep(checkIntervalMS);
+      }
+      return true;
    }
 
    /**
