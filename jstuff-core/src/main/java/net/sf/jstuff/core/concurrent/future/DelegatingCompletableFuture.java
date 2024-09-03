@@ -135,17 +135,17 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
    }
 
    @Override
-   public <U> CompletableFuture<U> handle(final BiFunction<? super T, Throwable, ? extends U> fn) {
+   public <U> CompletableFuture<U> handle(final BiFunction<? super T, @Nullable Throwable, ? extends U> fn) {
       return wrapped.handle(fn);
    }
 
    @Override
-   public <U> CompletableFuture<U> handleAsync(final BiFunction<? super T, Throwable, ? extends U> fn) {
+   public <U> CompletableFuture<U> handleAsync(final BiFunction<? super T, @Nullable Throwable, ? extends U> fn) {
       return wrapped.handleAsync(fn);
    }
 
    @Override
-   public <U> CompletableFuture<U> handleAsync(final BiFunction<? super T, Throwable, ? extends U> fn, final Executor executor) {
+   public <U> CompletableFuture<U> handleAsync(final BiFunction<? super T, @Nullable Throwable, ? extends U> fn, final Executor executor) {
       return wrapped.handleAsync(fn, executor);
    }
 
@@ -336,17 +336,17 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
    }
 
    @Override
-   public CompletableFuture<T> whenComplete(final BiConsumer<? super T, ? super Throwable> action) {
+   public CompletableFuture<T> whenComplete(final BiConsumer<? super T, ? super @Nullable Throwable> action) {
       return wrapped.whenComplete(action);
    }
 
    @Override
-   public CompletableFuture<T> whenCompleteAsync(final BiConsumer<? super T, ? super Throwable> action) {
+   public CompletableFuture<T> whenCompleteAsync(final BiConsumer<? super T, ? super @Nullable Throwable> action) {
       return wrapped.whenCompleteAsync(action);
    }
 
    @Override
-   public CompletableFuture<T> whenCompleteAsync(final BiConsumer<? super T, ? super Throwable> action, final Executor executor) {
+   public CompletableFuture<T> whenCompleteAsync(final BiConsumer<? super T, ? super @Nullable Throwable> action, final Executor executor) {
       return wrapped.whenCompleteAsync(action, executor);
    }
 }
