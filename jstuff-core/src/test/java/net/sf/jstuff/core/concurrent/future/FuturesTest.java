@@ -18,6 +18,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
@@ -113,9 +114,9 @@ public class FuturesTest {
       }
       // Test case with a future that completes exceptionally
       {
-         final CompletableFuture<String> futureException = new CompletableFuture<>();
-         futureException.completeExceptionally(new RuntimeException());
-         final var futures = List.of(future1, futureException);
+         final var futureCompletedExceptionally = new CompletableFuture<String>();
+         futureCompletedExceptionally.completeExceptionally(new RuntimeException());
+         final var futures = List.of(future1, futureCompletedExceptionally);
          final var result = Futures.getNow(futures);
          assertThat(result).containsExactly("First");
       }
@@ -138,9 +139,12 @@ public class FuturesTest {
 
       // Test case for future completed exceptionally
       {
-         final var futureException = new CompletableFuture<String>();
-         futureException.completeExceptionally(new RuntimeException());
-         final var result = Futures.getNow(futureException, "Default");
+         final var futureCompletedExceptionally = new CompletableFuture<String>();
+         futureCompletedExceptionally.completeExceptionally(new RuntimeException());
+         var result = Futures.getNow(futureCompletedExceptionally, "Default");
+         assertThat(result).isEqualTo("Default");
+
+         result = Futures.get(futureCompletedExceptionally, 1, TimeUnit.SECONDS, "Default");
          assertThat(result).isEqualTo("Default");
       }
    }

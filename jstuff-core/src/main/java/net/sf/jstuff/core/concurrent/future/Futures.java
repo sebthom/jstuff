@@ -141,35 +141,30 @@ public abstract class Futures {
 
    /**
     * Attempts to retrieve the result of the given {@link Future} within the specified timeout.
-    * <p>
-    * If the future is not completed within the timeout, or if an exception occurs, the provided
-    * {@code defaultValue} is returned.
     *
-    * @return the future's value or <code>defaultValue</code> if future is not done or completed exceptionally
+    * @return the result of the future if completed normally, otherwise {@code fallback}
     */
-   public static <T> T get(final Future<T> future, final long timeout, final TimeUnit unit, final T defaultValue) {
+   public static <T> T get(final Future<T> future, final long timeout, final TimeUnit unit, final T fallback) {
       try {
          return future.get(timeout, unit);
       } catch (final TimeoutException ex) {
-         if (LOG.isWarnEnabled()) {
-            LOG.warn("Could not get result within " + timeout + " " + unit.toString().toLowerCase() + "(s)", ex);
+         if (LOG.isDebugEnabled()) {
+            LOG.debug("Could not get result within " + timeout + " " + unit.toString().toLowerCase() + "(s)", ex);
          }
       } catch (final InterruptedException ex) {
          Threads.handleInterruptedException(ex);
-      } catch (final CancellationException ex) {
+      } catch (final Exception ex) {
          LOG.debug(ex);
-      } catch (final ExecutionException ex) {
-         LOG.error(ex);
       }
-      return defaultValue;
+      return fallback;
    }
 
    /**
-    * Returns a list of results from all successfully completed futures in the given collection.
+    * Returns a list of results from all normally completed futures in the given collection.
     * <p>
-    * Futures that are incomplete, canceled, or failed are ignored.
+    * Futures that are incomplete, canceled, or completed exceptionally are ignored.
     *
-    * @return a list of results from all completed futures; an empty list if no futures are completed
+    * @return a list of results from all normally completed futures; an empty list if no futures are completed
     */
    public static <T> List<T> getNow(final Collection<? extends Future<? extends T>> futures) {
       if (futures.isEmpty())
@@ -179,14 +174,10 @@ public abstract class Futures {
          if (future.isDone()) {
             try {
                result.add(future.get(0, TimeUnit.SECONDS));
-            } catch (final TimeoutException ex) {
-               // ignore
             } catch (final InterruptedException ex) {
                Threads.handleInterruptedException(ex);
-            } catch (final CancellationException ex) {
+            } catch (final Exception ex) {
                LOG.debug(ex);
-            } catch (final ExecutionException ex) {
-               LOG.error(ex);
             }
          }
       }
@@ -195,42 +186,38 @@ public abstract class Futures {
 
    /**
     * Returns the result of the given {@link Future} if it is already completed, or the specified
-    * {@code defaultValue} if the future is not done or completed exceptionally.
+    * {@code fallback} if the future is incomplete, cancelled or completed exceptionally.
     *
-    * @return the result of the future if completed, otherwise {@code defaultValue}
+    * @return the result of the future if completed normally, otherwise {@code fallback}
     */
-   public static <T> T getNow(final CompletableFuture<T> future, final T defaultValue) {
+   public static <T> T getNow(final CompletableFuture<T> future, final T fallback) {
       if (future.isDone()) {
          try {
-            return future.getNow(defaultValue);
-         } catch (final CancellationException ex) {
+            return future.getNow(fallback);
+         } catch (final Exception ex) {
             LOG.debug(ex);
          }
       }
-      return defaultValue;
+      return fallback;
    }
 
    /**
     * Returns the result of the given {@link Future} if it is already completed, or the specified
-    * {@code defaultValue} if the future is not done or completed exceptionally.
+    * {@code fallback} if the future is incomplete or completed exceptionally.
     *
-    * @return the result of the future if completed, otherwise {@code defaultValue}
+    * @return the result of the future if completed, otherwise {@code fallback}
     */
-   public static <T> T getNow(final Future<T> future, final T defaultValue) {
+   public static <T> T getNow(final Future<T> future, final T fallback) {
       if (future.isDone()) {
          try {
             return future.get(0, TimeUnit.SECONDS);
-         } catch (final TimeoutException ex) {
-            // ignore
          } catch (final InterruptedException ex) {
             Threads.handleInterruptedException(ex);
-         } catch (final CancellationException ex) {
+         } catch (final Exception ex) {
             LOG.debug(ex);
-         } catch (final ExecutionException ex) {
-            LOG.error(ex);
          }
       }
-      return defaultValue;
+      return fallback;
    }
 
    /**
@@ -251,9 +238,7 @@ public abstract class Futures {
       for (final var future : futures) {
          if (future.isDone()) {
             try {
-               result.add(future.get(0, TimeUnit.SECONDS));
-            } catch (final TimeoutException ex) {
-               // ignore
+               result.add(future.get());
             } catch (final InterruptedException ex) {
                Threads.handleInterruptedException(ex);
             } catch (final CancellationException | ExecutionException ex) {

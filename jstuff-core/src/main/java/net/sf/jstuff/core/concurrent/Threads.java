@@ -69,11 +69,11 @@ public abstract class Threads {
 
    public static boolean await(final BooleanSupplier condition, final int checkIntervalMS, final long timeout, final TimeUnit unit)
          throws InterruptedException {
-      final long timeoutMillis = unit.toMillis(timeout);
+      final long timeoutMS = unit.toMillis(timeout);
       final long startTime = System.currentTimeMillis();
 
       while (!condition.getAsBoolean()) {
-         if (System.currentTimeMillis() - startTime >= timeoutMillis)
+         if (System.currentTimeMillis() - startTime >= timeoutMS)
             return false;
          Thread.sleep(checkIntervalMS);
       }
