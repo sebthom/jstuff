@@ -16,14 +16,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-@NonNullByDefault({})
 public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
 
    private CompletableFuture<T> wrapped;
@@ -33,17 +30,17 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
    }
 
    @Override
-   public CompletableFuture<Void> acceptEither(final CompletionStage<? extends T> other, final Consumer<? super T> action) {
+   public CompletableFuture<@Nullable Void> acceptEither(final CompletionStage<? extends T> other, final Consumer<? super T> action) {
       return wrapped.acceptEither(other, action);
    }
 
    @Override
-   public CompletableFuture<Void> acceptEitherAsync(final CompletionStage<? extends T> other, final Consumer<? super T> action) {
+   public CompletableFuture<@Nullable Void> acceptEitherAsync(final CompletionStage<? extends T> other, final Consumer<? super T> action) {
       return wrapped.acceptEitherAsync(other, action);
    }
 
    @Override
-   public CompletableFuture<Void> acceptEitherAsync(final CompletionStage<? extends T> other, final Consumer<? super T> action,
+   public CompletableFuture<@Nullable Void> acceptEitherAsync(final CompletionStage<? extends T> other, final Consumer<? super T> action,
          final Executor executor) {
       return wrapped.acceptEitherAsync(other, action, executor);
    }
@@ -112,6 +109,32 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
    @Override
    public CompletableFuture<T> exceptionally(final Function<Throwable, ? extends T> fn) {
       return wrapped.exceptionally(fn);
+   }
+
+   @Override
+   public CompletableFuture<T> exceptionallyAsync(final Function<Throwable, ? extends T> fn) {
+      return wrapped.exceptionallyAsync(fn);
+   }
+
+   @Override
+   public CompletableFuture<T> exceptionallyAsync(final Function<Throwable, ? extends T> fn, final Executor executor) {
+      return wrapped.exceptionallyAsync(fn, executor);
+   }
+
+   @Override
+   public CompletableFuture<T> exceptionallyCompose(final Function<Throwable, ? extends CompletionStage<T>> fn) {
+      return wrapped.exceptionallyCompose(fn);
+   }
+
+   @Override
+   public CompletableFuture<T> exceptionallyComposeAsync(final Function<Throwable, ? extends CompletionStage<T>> fn) {
+      return wrapped.exceptionallyComposeAsync(fn);
+   }
+
+   @Override
+   public CompletableFuture<T> exceptionallyComposeAsync(final Function<Throwable, ? extends CompletionStage<T>> fn,
+         final Executor executor) {
+      return wrapped.exceptionallyComposeAsync(fn, executor);
    }
 
    @Override
@@ -200,64 +223,66 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
    }
 
    @Override
-   public CompletableFuture<Void> runAfterBoth(final CompletionStage<?> other, final Runnable action) {
+   public CompletableFuture<@Nullable Void> runAfterBoth(final CompletionStage<?> other, final Runnable action) {
       return wrapped.runAfterBoth(other, action);
    }
 
    @Override
-   public CompletableFuture<Void> runAfterBothAsync(final CompletionStage<?> other, final Runnable action) {
+   public CompletableFuture<@Nullable Void> runAfterBothAsync(final CompletionStage<?> other, final Runnable action) {
       return wrapped.runAfterBothAsync(other, action);
    }
 
    @Override
-   public CompletableFuture<Void> runAfterBothAsync(final CompletionStage<?> other, final Runnable action, final Executor executor) {
+   public CompletableFuture<@Nullable Void> runAfterBothAsync(final CompletionStage<?> other, final Runnable action,
+         final Executor executor) {
       return wrapped.runAfterBothAsync(other, action, executor);
    }
 
    @Override
-   public CompletableFuture<Void> runAfterEither(final CompletionStage<?> other, final Runnable action) {
+   public CompletableFuture<@Nullable Void> runAfterEither(final CompletionStage<?> other, final Runnable action) {
       return wrapped.runAfterEither(other, action);
    }
 
    @Override
-   public CompletableFuture<Void> runAfterEitherAsync(final CompletionStage<?> other, final Runnable action) {
+   public CompletableFuture<@Nullable Void> runAfterEitherAsync(final CompletionStage<?> other, final Runnable action) {
       return wrapped.runAfterEitherAsync(other, action);
    }
 
    @Override
-   public CompletableFuture<Void> runAfterEitherAsync(final CompletionStage<?> other, final Runnable action, final Executor executor) {
+   public CompletableFuture<@Nullable Void> runAfterEitherAsync(final CompletionStage<?> other, final Runnable action,
+         final Executor executor) {
       return wrapped.runAfterEitherAsync(other, action, executor);
    }
 
    @Override
-   public CompletableFuture<Void> thenAccept(final Consumer<? super T> action) {
+   public CompletableFuture<@Nullable Void> thenAccept(final Consumer<? super T> action) {
       return wrapped.thenAccept(action);
    }
 
    @Override
-   public CompletableFuture<Void> thenAcceptAsync(final Consumer<? super T> action) {
+   public CompletableFuture<@Nullable Void> thenAcceptAsync(final Consumer<? super T> action) {
       return wrapped.thenAcceptAsync(action);
    }
 
    @Override
-   public CompletableFuture<Void> thenAcceptAsync(final Consumer<? super T> action, final Executor executor) {
+   public CompletableFuture<@Nullable Void> thenAcceptAsync(final Consumer<? super T> action, final Executor executor) {
       return wrapped.thenAcceptAsync(action, executor);
    }
 
    @Override
-   public <U> CompletableFuture<Void> thenAcceptBoth(final CompletionStage<? extends U> other,
+   public <U> CompletableFuture<@Nullable Void> thenAcceptBoth(final CompletionStage<? extends U> other,
          final BiConsumer<? super T, ? super U> action) {
       return wrapped.thenAcceptBoth(other, action);
    }
 
    @Override
-   public <U> CompletableFuture<Void> thenAcceptBothAsync(final CompletionStage<? extends U> other,
+   public <U> CompletableFuture<@Nullable Void> thenAcceptBothAsync(final CompletionStage<? extends U> other,
          final BiConsumer<? super T, ? super U> action) {
       return wrapped.thenAcceptBothAsync(other, action);
    }
 
    @Override
-   public <U> CompletableFuture<Void> thenAcceptBothAsync(final CompletionStage<? extends U> other,
+   public <U> CompletableFuture<@Nullable Void> thenAcceptBothAsync(final CompletionStage<? extends U> other,
          final BiConsumer<? super T, ? super U> action, final Executor executor) {
       return wrapped.thenAcceptBothAsync(other, action, executor);
    }
@@ -278,20 +303,20 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
    }
 
    @Override
-   public <U, V> @NonNull CompletableFuture<V> thenCombine(@NonNull final CompletionStage<? extends U> other,
-         @NonNull final BiFunction<? super T, ? super U, ? extends V> fn) {
+   public <U, V> CompletableFuture<V> thenCombine(final CompletionStage<? extends U> other,
+         final BiFunction<? super T, ? super U, ? extends V> fn) {
       return wrapped.thenCombine(other, fn);
    }
 
    @Override
-   public <U, V> @NonNull CompletableFuture<V> thenCombineAsync(@NonNull final CompletionStage<? extends U> other,
-         @NonNull final BiFunction<? super T, ? super U, ? extends V> fn) {
+   public <U, V> CompletableFuture<V> thenCombineAsync(final CompletionStage<? extends U> other,
+         final BiFunction<? super T, ? super U, ? extends V> fn) {
       return wrapped.thenCombineAsync(other, fn);
    }
 
    @Override
-   public <U, V> @NonNull CompletableFuture<V> thenCombineAsync(@NonNull final CompletionStage<? extends U> other,
-         @NonNull final BiFunction<? super T, ? super U, ? extends V> fn, @NonNull final Executor executor) {
+   public <U, V> CompletableFuture<V> thenCombineAsync(final CompletionStage<? extends U> other,
+         final BiFunction<? super T, ? super U, ? extends V> fn, final Executor executor) {
       return wrapped.thenCombineAsync(other, fn, executor);
    }
 
@@ -311,17 +336,17 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
    }
 
    @Override
-   public CompletableFuture<Void> thenRun(final Runnable action) {
+   public CompletableFuture<@Nullable Void> thenRun(final Runnable action) {
       return wrapped.thenRun(action);
    }
 
    @Override
-   public CompletableFuture<Void> thenRunAsync(final Runnable action) {
+   public CompletableFuture<@Nullable Void> thenRunAsync(final Runnable action) {
       return wrapped.thenRunAsync(action);
    }
 
    @Override
-   public CompletableFuture<Void> thenRunAsync(final Runnable action, final Executor executor) {
+   public CompletableFuture<@Nullable Void> thenRunAsync(final Runnable action, final Executor executor) {
       return wrapped.thenRunAsync(action, executor);
    }
 
