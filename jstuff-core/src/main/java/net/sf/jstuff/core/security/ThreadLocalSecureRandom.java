@@ -49,7 +49,8 @@ public class ThreadLocalSecureRandom extends SecureRandom {
       /**
        * Specifies to use the strongest but probably blocking crypto source available (e.g. /dev/random on Unix).
        *
-       * {@link ThreadLocalSecureRandomBuilder#useStrongInstances(boolean)} and {@link ThreadLocalSecureRandomBuilder#algorithm(String)} are mutually exclusive
+       * {@link ThreadLocalSecureRandomBuilder#useStrongInstances(boolean)} and {@link ThreadLocalSecureRandomBuilder#algorithm(String)} are
+       * mutually exclusive
        */
       @Fluent
       ThreadLocalSecureRandomBuilder useStrongInstances(boolean value);

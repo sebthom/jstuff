@@ -15,8 +15,8 @@ public interface ObjectGraphNavigator {
     *
     * @param root the root object to start the navigation from
     * @param path the object navigation path relative to the root object. The path format is implementation specific.
-    * @return the result of the navigation operation. <code>null</code> is returned if the target could not be determined, e.g. because of null values in the
-    *         path.
+    * @return the result of the navigation operation. <code>null</code> is returned if the target could not be determined, e.g. because of
+    *         null values in the path.
     * @throws IllegalArgumentException if the given path is invalid, e.g. because of non-existing fields/properties named in the path.
     */
    @Nullable

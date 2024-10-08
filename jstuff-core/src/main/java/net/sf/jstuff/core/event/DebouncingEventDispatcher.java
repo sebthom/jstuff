@@ -75,8 +75,8 @@ public final class DebouncingEventDispatcher<EVENT> extends AbstractRateLimiting
    }
 
    /**
-    * @param eventType the type of events accepted by this dispatcher. This parameter is only used as a workaround for Java's generic type interference
-    *           limitations.
+    * @param eventType the type of events accepted by this dispatcher. This parameter is only used as a workaround for Java's generic type
+    *           interference limitations.
     */
    public static <EVENT> Builder<EVENT> builder(@SuppressWarnings("unused") final Class<EVENT> eventType, final Duration delay) {
       return new Builder<>() {

@@ -85,16 +85,16 @@ public final class ObjectCache<K, V> {
    }
 
    /**
-    * @param maxObjectsToKeep the maximum number of cached objects that is guaranteed not to be garbage collected, a value lower 1 means all objects are
-    *           subject to garbage collection
+    * @param maxObjectsToKeep the maximum number of cached objects that is guaranteed not to be garbage collected, a value lower 1 means all
+    *           objects are subject to garbage collection
     */
    public ObjectCache(final int maxObjectsToKeep) {
       this(maxObjectsToKeep, false);
    }
 
    /**
-    * @param maxObjectsToKeep the maximum number of cached objects that is guaranteed not to be garbage collected, a value lower 1 means all objects are
-    *           subject to garbage collection
+    * @param maxObjectsToKeep the maximum number of cached objects that is guaranteed not to be garbage collected, a value lower 1 means all
+    *           objects are subject to garbage collection
     */
    public ObjectCache(final int maxObjectsToKeep, final boolean useWeakValueReferences) {
       this.maxObjectsToKeep = maxObjectsToKeep;

@@ -382,8 +382,8 @@ public abstract class DOMUtils {
    }
 
    /**
-    * @param returnType one of {@link XPathConstants#NUMBER NUMBER}, {@link XPathConstants#STRING STRING}, {@link XPathConstants#BOOLEAN BOOLEAN},
-    *           {@link XPathConstants#NODE NODE}, {@link XPathConstants#NODESET NODESET}
+    * @param returnType one of {@link XPathConstants#NUMBER NUMBER}, {@link XPathConstants#STRING STRING}, {@link XPathConstants#BOOLEAN
+    *           BOOLEAN}, {@link XPathConstants#NODE NODE}, {@link XPathConstants#NODESET NODESET}
     */
    @SuppressWarnings("unchecked")
    private static <T> T evaluate(final Node searchScope, final String xPathExpression, final QName returnType) throws XMLException {
@@ -816,7 +816,8 @@ public abstract class DOMUtils {
     *               <li>NOT_FOUND_ERR: Raised if <code>oldChild</code> is not a child
     *               of this node.</li>
     *               <li>NOT_SUPPORTED_ERR: if this node is of type <code>Document</code>, this exception might be raised if the DOM
-    *               implementation doesn't support the removal of the <code>DocumentType</code> child or the <code>Element</code> child.</li>
+    *               implementation doesn't support the removal of the <code>DocumentType</code> child or the <code>Element</code>
+    *               child.</li>
     */
    public static boolean removeNode(final Node node) throws DOMException {
       final Node parent = node.getParentNode();

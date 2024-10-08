@@ -901,7 +901,7 @@ public abstract class Strings {
     * See {@link StringUtils#firstNonBlank(CharSequence[])}
     */
    @SafeVarargs
-   public static <T extends @Nullable CharSequence> T firstNonBlank(final T @Nullable... values) {
+   public static <@Nullable T extends CharSequence> T firstNonBlank(final T @Nullable... values) {
       return StringUtils.firstNonBlank(values);
    }
 
@@ -909,7 +909,7 @@ public abstract class Strings {
     * See {@link StringUtils#firstNonEmpty(CharSequence[])}
     */
    @SafeVarargs
-   public static <T extends @Nullable CharSequence> T firstNonEmpty(final T... values) {
+   public static <@Nullable T extends CharSequence> T firstNonEmpty(final T... values) {
       return StringUtils.firstNonEmpty(values);
    }
 
@@ -2652,7 +2652,8 @@ public abstract class Strings {
    }
 
    /**
-    * Replaces the substring starting at <code>startAt</code> having a length of <code>length</code> with the string <code>replaceWith</code>.<br/>
+    * Replaces the substring starting at <code>startAt</code> having a length of <code>length</code> with the string
+    * <code>replaceWith</code>.<br/>
     * <br/>
     * <b>startAt:</b><br/>
     * If startAt is positive, the replacing will begin at the startAt'th offset into searchIn.<br/>
@@ -2692,7 +2693,8 @@ public abstract class Strings {
    }
 
    /**
-    * Replaces the substring starting at <code>startAt</code> having a length of <code>length</code> with the string <code>replaceWith</code>.<br/>
+    * Replaces the substring starting at <code>startAt</code> having a length of <code>length</code> with the string
+    * <code>replaceWith</code>.<br/>
     * <br/>
     * <b>startAt:</b><br/>
     * If startAt is positive, the replacing will begin at the startAt'th offset into searchIn.<br/>
@@ -2986,7 +2988,8 @@ public abstract class Strings {
     * @param searchIn The string to search
     * @param searchFor The string to find
     * @param replaceWith The string to replace searchFor with.
-    * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be returned.
+    * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be
+    *         returned.
     */
    public static CharSequence replaceIgnoreCase(final String searchIn, @Nullable final String searchFor,
          @Nullable final CharSequence replaceWith) {
@@ -3015,7 +3018,8 @@ public abstract class Strings {
     * @param searchIn The string to search
     * @param searchFor The string to find
     * @param replaceWith The string to replace searchFor with.
-    * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be returned.
+    * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be
+    *         returned.
     */
    public static @Nullable CharSequence replaceIgnoreCaseNullable(final @Nullable String searchIn, @Nullable String searchFor,
          @Nullable final CharSequence replaceWith) {
@@ -3956,8 +3960,8 @@ public abstract class Strings {
     * substringBeforeIgnoreCare("this is a test", "s") -> "thi"
     *
     * @param searchIn The string whose leftmost characters you want to find.
-    * @param searchFor A substring of searchIn. Left returns the characters to the left of searchFor. It finds searchFor by searching searchIn from left to
-    *           right.
+    * @param searchFor A substring of searchIn. Left returns the characters to the left of searchFor. It finds searchFor by searching
+    *           searchIn from left to right.
     * @return The leftmost characters in searchIn.
     *         The number of characters returned is determined by searchFor.
     *         Returns "" if searchFor is not part of searchIn.

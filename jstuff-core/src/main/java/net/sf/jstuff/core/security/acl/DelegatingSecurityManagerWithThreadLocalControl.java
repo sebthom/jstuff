@@ -15,7 +15,8 @@ public abstract class DelegatingSecurityManagerWithThreadLocalControl extends De
    private boolean isEnabledByDefault = true;
 
    /**
-    * Determines if custom security checks implemented by this class are executed or if calls are only delegated to the underlying security manager
+    * Determines if custom security checks implemented by this class are executed or if calls are only delegated to the underlying security
+    * manager
     */
    private final ThreadLocal<@Nullable Boolean> isEnabledForThread = new ThreadLocal<>();
 

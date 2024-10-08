@@ -5,7 +5,8 @@
 package net.sf.jstuff.integration.serviceregistry;
 
 /**
- * This exception is thrown when a service method on a {@link ServiceProxy} object is invoked whose backing service instance is currently not available.
+ * This exception is thrown when a service method on a {@link ServiceProxy} object is invoked whose backing service instance is currently
+ * not available.
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */

@@ -58,8 +58,8 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
    }
 
    /**
-    * Wrapper used as key in the hash map that overrides equals and hashCode to ensure key comparisons by the underlying WeakHashMap is made based on the
-    * object's identity.
+    * Wrapper used as key in the hash map that overrides equals and hashCode to ensure key comparisons by the underlying WeakHashMap is made
+    * based on the object's identity.
     */
    private static final class WeakKeyWrapper<K> extends WeakReference<K> implements KeyWrapper<K> {
       private final int identityHashCode;

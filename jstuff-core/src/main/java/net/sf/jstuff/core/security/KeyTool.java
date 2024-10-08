@@ -32,7 +32,8 @@ import net.sf.jstuff.core.logging.Logger;
 /**
  * Allows programmatic execution of the KeyTool on Oracle and IBM JVMs.
  *
- * During execution this class tries to install a custom security manager to prevent JVM exist calls by the underlying KeyTool class implementation.
+ * During execution this class tries to install a custom security manager to prevent JVM exist calls by the underlying KeyTool class
+ * implementation.
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */

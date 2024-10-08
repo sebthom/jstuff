@@ -94,8 +94,8 @@ public interface Logger {
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra
-    *           arguments are ignored.
+    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers,
+    *           the extra arguments are ignored.
     */
    void debug(Throwable ex, String messageTemplate, Object... args);
 
@@ -183,8 +183,8 @@ public interface Logger {
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra
-    *           arguments are ignored.
+    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers,
+    *           the extra arguments are ignored.
     */
    void error(Throwable ex, String messageTemplate, Object... args);
 
@@ -214,8 +214,8 @@ public interface Logger {
     * Creates a log entry at ERROR level and always logs the full stack trace.
     *
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra
-    *           arguments are ignored.
+    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers,
+    *           the extra arguments are ignored.
     */
    void fatal(Throwable ex, String messageTemplate, Object... args);
 
@@ -273,8 +273,8 @@ public interface Logger {
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra
-    *           arguments are ignored.
+    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers,
+    *           the extra arguments are ignored.
     */
    void info(Throwable ex, String messageTemplate, Object... args);
 
@@ -342,8 +342,8 @@ public interface Logger {
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra
-    *           arguments are ignored.
+    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers,
+    *           the extra arguments are ignored.
     */
    void trace(Throwable ex, String messageTemplate, Object... args);
 
@@ -396,8 +396,8 @@ public interface Logger {
 
    /**
     * @param messageTemplate A format string understandable by {@link java.util.Formatter}.
-    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers, the extra
-    *           arguments are ignored.
+    * @param args Arguments referenced by the format specifiers in the message template. If there are more arguments than format specifiers,
+    *           the extra arguments are ignored.
     */
    void warn(Throwable ex, String messageTemplate, Object... args);
 

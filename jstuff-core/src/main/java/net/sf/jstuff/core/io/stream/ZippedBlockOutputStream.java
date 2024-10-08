@@ -49,7 +49,8 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
 
    /**
     * @param os the underlying output stream to send the data in compressed form to
-    * @param blockSize the number of bytes that need to be written to the stream before the data is compressed and send to the underlying stream
+    * @param blockSize the number of bytes that need to be written to the stream before the data is compressed and send to the underlying
+    *           stream
     */
    public ZippedBlockOutputStream(final OutputStream os, final int blockSize) {
       this(os, blockSize, Deflater.DEFAULT_COMPRESSION);
@@ -57,7 +58,8 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
 
    /**
     * @param os the underlying output stream to send the data in compressed form to
-    * @param blockSize the number of bytes that need to be written to the stream before the data is compressed and send to the underlying stream
+    * @param blockSize the number of bytes that need to be written to the stream before the data is compressed and send to the underlying
+    *           stream
     */
    @SuppressWarnings("resource")
    public ZippedBlockOutputStream(final OutputStream os, final int blockSize, final @Nullable Deflater compressor) {
@@ -74,7 +76,8 @@ public class ZippedBlockOutputStream extends FilterOutputStream {
 
    /**
     * @param os the underlying output stream to send the data in compressed form to
-    * @param blockSize the number of bytes that need to be written to the stream before the data is compressed and send to the underlying stream
+    * @param blockSize the number of bytes that need to be written to the stream before the data is compressed and send to the underlying
+    *           stream
     * @param compressionLevel the java.util.zip.Deflater compression level (0-9)
     */
    @SuppressWarnings("resource")

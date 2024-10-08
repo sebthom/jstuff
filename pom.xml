@@ -11,7 +11,7 @@
    <parent>
       <groupId>com.vegardit.maven</groupId>
       <artifactId>vegardit-maven-parent</artifactId>
-      <version>3.1.7</version>
+      <version>6.1.2</version>
    </parent>
 
    <groupId>net.sf.jstuff</groupId>
@@ -82,8 +82,6 @@
       <java.version>17</java.version>
 
       <skip.japicmp.cmp>true</skip.japicmp.cmp>
-
-      <nexus-staging-maven-plugin.nexusUrl>https://s01.oss.sonatype.org/</nexus-staging-maven-plugin.nexusUrl>
    </properties>
 
 
@@ -96,6 +94,13 @@
          <version>2.3.0</version>
          <scope>provided</scope>
       </dependency>
+      <!--External Eclipse null Annotations, see https://github.com/vegardit/no-npe-->
+      <dependency>
+         <groupId>com.vegardit.no-npe</groupId>
+         <artifactId>no-npe-eea-all</artifactId>
+         <version>1.2.0</version>
+         <scope>provided</scope>
+       </dependency>
 
       <!-- test dependencies -->
       <dependency>

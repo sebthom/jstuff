@@ -169,9 +169,9 @@ public class CrossThreadMethodInvoker {
    }
 
    /**
-    * Executes the queued method invocations in the current thread until N background threads signal via {@link #backgroundThreadDone()} that they are
-    * finished.
-    * or the {@link #getTimeout()} is reached. N = numberOfBackgroundThreads provided to the {@link #start(int)} method.
+    * Executes the queued method invocations in the current thread until N background threads signal via {@link #backgroundThreadDone()}
+    * that they are finished or the {@link #getTimeout()} is reached.
+    * N = numberOfBackgroundThreads provided to the {@link #start(int)} method.
     *
     * @return <code>true</code> if all background threads finished within time, <code>false</code> if a timeout occured
     */

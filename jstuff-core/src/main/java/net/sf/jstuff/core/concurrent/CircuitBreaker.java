@@ -30,8 +30,10 @@ import net.sf.jstuff.core.validation.Assert;
  * See:
  * <ul>
  * <li><a href="http://martinfowler.com/bliki/CircuitBreaker.html">http://martinfowler.com/bliki/CircuitBreaker.html</a>
- * <li><a href="http://doc.akka.io/docs/akka/current/common/circuitbreaker.html">http://doc.akka.io/docs/akka/current/common/circuitbreaker.html</a>
- * <li><a href="https://docs.wso2.com/display/MSF4J200/Implementing+a+Circuit+Breaker">https://docs.wso2.com/display/MSF4J200/Implementing+a+Circuit+Breaker</a>
+ * <li><a href=
+ * "http://doc.akka.io/docs/akka/current/common/circuitbreaker.html">http://doc.akka.io/docs/akka/current/common/circuitbreaker.html</a>
+ * <li><a href=
+ * "https://docs.wso2.com/display/MSF4J200/Implementing+a+Circuit+Breaker">https://docs.wso2.com/display/MSF4J200/Implementing+a+Circuit+Breaker</a>
  * </ul>
  *
  * <p>
@@ -271,7 +273,8 @@ public class CircuitBreaker implements EventListenable<State> {
    }
 
    /**
-    * Resets the subsequent failures counter and switches the circuit breaker to {@link State#CLOSE} when currently in {@link State#HALF_OPEN}
+    * Resets the subsequent failures counter and switches the circuit breaker to {@link State#CLOSE} when currently in
+    * {@link State#HALF_OPEN}
     */
    public void reportSuccess() {
       synchronized (synchronizer) {
@@ -378,7 +381,8 @@ public class CircuitBreaker implements EventListenable<State> {
    /**
     * Tries to execute the given runnable after acquiring a permit.
     *
-    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be
+    *         acquired.
     */
    public boolean tryExecute(final Callable<?> callable) throws Exception {
       Args.notNull("callable", callable);
@@ -403,7 +407,8 @@ public class CircuitBreaker implements EventListenable<State> {
     *
     * @param errorTimeout if the execution of the code takes longer than <code>errorTimeout</code> and error is reported
     *
-    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be
+    *         acquired.
     */
    public boolean tryExecute(final Callable<?> callable, final int errorTimeout, final TimeUnit timeUnit) throws Exception {
       Args.notNull("callable", callable);
@@ -432,7 +437,8 @@ public class CircuitBreaker implements EventListenable<State> {
    /**
     * Tries to execute the given invocable after acquiring a permit.
     *
-    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be
+    *         acquired.
     */
    @SuppressWarnings("unchecked")
    public <A, E extends Exception> boolean tryExecute(final Invocable<?, A, E> invocable, final A args) throws E {
@@ -461,7 +467,8 @@ public class CircuitBreaker implements EventListenable<State> {
     *
     * @param errorTimeout if the execution of the code takes longer than <code>errorTimeout</code> and error is reported
     *
-    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be
+    *         acquired.
     */
    public <A, E extends Exception> boolean tryExecute(final Invocable<?, A, E> invocable, final A args, final int errorTimeout,
          final TimeUnit timeUnit) throws E {
@@ -491,7 +498,8 @@ public class CircuitBreaker implements EventListenable<State> {
    /**
     * Tries to execute the given runnable after acquiring a permit.
     *
-    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be
+    *         acquired.
     */
    public boolean tryExecute(final Runnable runnable) {
       Args.notNull("runnable", runnable);
@@ -516,7 +524,8 @@ public class CircuitBreaker implements EventListenable<State> {
     *
     * @param errorTimeout if the execution of the code takes longer than <code>errorTimeout</code> and error is reported
     *
-    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be acquired.
+    * @return <code>true</code> if the code was executed. <code>false</code> if the code was not executed because no permit could be
+    *         acquired.
     */
    public boolean tryExecute(final Runnable runnable, final int errorTimeout, final TimeUnit timeUnit) {
       Args.notNull("runnable", runnable);

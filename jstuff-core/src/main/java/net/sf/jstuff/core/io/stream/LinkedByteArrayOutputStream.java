@@ -15,8 +15,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import net.sf.jstuff.core.validation.Args;
 
 /**
- * An unsynchronized implementation of {@link java.io.ByteArrayOutputStream} that uses an internal linked list of byte blocks instead of resizing/copying a
- * single internal byte array.
+ * An unsynchronized implementation of {@link java.io.ByteArrayOutputStream} that uses an internal linked list of byte blocks instead of
+ * resizing/copying a single internal byte array.
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */

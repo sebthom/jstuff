@@ -152,7 +152,8 @@ public abstract class Fields extends Members {
    }
 
    /**
-    * @param compatibleWith the field type must assignable from this type, i.e. objects of type <code>compatibleWith</code> must be assignable to the field
+    * @param compatibleWith the field type must assignable from this type, i.e. objects of type <code>compatibleWith</code> must be
+    *           assignable to the field
     * @throws ReflectionException if field cannot be found
     */
    public static Field get(final Class<?> clazz, final String fieldName, final @Nullable Class<?> compatibleWith) {

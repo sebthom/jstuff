@@ -53,7 +53,8 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
    private final SyncEventDispatcher<EVENT> events = new SyncEventDispatcher<>();
 
    /**
-    * synchronized list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage collected
+    * synchronized list that holds the GCReference objects to prevent them from being garbage collected before their reference is garbage
+    * collected
     */
    private final Queue<GCReference> monitoredReferences = new ConcurrentLinkedQueue<>();
    private final ReferenceQueue<Object> garbageCollectedRefs = new ReferenceQueue<>();
@@ -100,8 +101,8 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
    }
 
    /**
-    * <b>Important:</b> <code>eventToFireOnGC</code> must not have a direct or indirect hard reference to <code>target</code>, otherwise you are producing a
-    * memory leak by preventing garbage collection of <code>target</code>.
+    * <b>Important:</b> <code>eventToFireOnGC</code> must not have a direct or indirect hard reference to <code>target</code>, otherwise you
+    * are producing a memory leak by preventing garbage collection of <code>target</code>.
     *
     * @param subject the object whose garbage collection should be tracked
     * @param eventToFireOnGC an event that is fired on garbage collection of <code>target</code>

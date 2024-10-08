@@ -70,8 +70,8 @@ public final class ThrottlingEventDispatcher<EVENT> extends AbstractRateLimiting
    }
 
    /**
-    * @param eventType the type of events accepted by this dispatcher. This parameter is only used as a workaround for Java's generic type interference
-    *           limitations.
+    * @param eventType the type of events accepted by this dispatcher. This parameter is only used as a workaround for Java's generic type
+    *           interference limitations.
     */
    public static <EVENT> Builder<EVENT> builder(@SuppressWarnings("unused") final Class<EVENT> eventType, final Duration interval) {
       return new Builder<>() {

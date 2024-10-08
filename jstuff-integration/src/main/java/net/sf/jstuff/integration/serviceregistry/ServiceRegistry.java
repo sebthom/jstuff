@@ -40,7 +40,8 @@ public interface ServiceRegistry {
          SERVICE_INTERFACE serviceInstance) throws IllegalArgumentException, IllegalStateException;
 
    /**
-    * @return <code>true</code> if the serviceInstance was removed successfully, <code>false</code> if the given serviceInstance was not registered
+    * @return <code>true</code> if the serviceInstance was removed successfully, <code>false</code> if the given serviceInstance was not
+    *         registered
     *
     * @throws IllegalArgumentException if serviceEndpointId == null or serviceInstance == null
     */
