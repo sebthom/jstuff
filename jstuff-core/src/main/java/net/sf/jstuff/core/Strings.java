@@ -2300,56 +2300,56 @@ public abstract class Strings {
    }
 
    /**
-    * @See {@link StringUtils#wrap(String, char)}
+    * @see StringUtils#wrap(String, char)
     */
    public static String quote(final String str, final char quoteWith) {
       return asNonNullUnsafe(StringUtils.wrap(str, quoteWith));
    }
 
    /**
-    * @See {@link StringUtils#wrap(String, String)}
+    * @see StringUtils#wrap(String, String)
     */
    public static String quote(final String str, final @Nullable String quoteWith) {
       return asNonNullUnsafe(StringUtils.wrap(str, quoteWith));
    }
 
    /**
-    * @See {@link StringUtils#wrapIfMissing(String, char)}
+    * @see StringUtils#wrapIfMissing(String, char)
     */
    public static String quoteIfMissing(final String str, final char quoteWith) {
       return asNonNullUnsafe(StringUtils.wrapIfMissing(str, quoteWith));
    }
 
    /**
-    * @See {@link StringUtils#wrapIfMissing(String, String)}
+    * @see StringUtils#wrapIfMissing(String, String)
     */
    public static String quoteIfMissing(final String str, final @Nullable String quoteWith) {
       return asNonNullUnsafe(StringUtils.wrapIfMissing(str, quoteWith));
    }
 
    /**
-    * @See {@link StringUtils#wrapIfMissing(String, char)}
+    * @see StringUtils#wrapIfMissing(String, char)
     */
    public static @Nullable String quoteIfMissingNullable(final @Nullable String str, final char quoteWith) {
       return StringUtils.wrapIfMissing(str, quoteWith);
    }
 
    /**
-    * @See {@link StringUtils#wrapIfMissing(String, String)}
+    * @see StringUtils#wrapIfMissing(String, String)
     */
    public static @Nullable String quoteIfMissingNullable(final @Nullable String str, final @Nullable String quoteWith) {
       return StringUtils.wrapIfMissing(str, quoteWith);
    }
 
    /**
-    * @See {@link StringUtils#wrap(String, char)}
+    * @see StringUtils#wrap(String, char)
     */
    public static @Nullable String quoteNullable(final @Nullable String str, final char quoteWith) {
       return StringUtils.wrap(str, quoteWith);
    }
 
    /**
-    * @See {@link StringUtils#wrap(String, String)}
+    * @see StringUtils#wrap(String, String)
     */
    public static @Nullable String quoteNullable(final @Nullable String str, final @Nullable String quoteWith) {
       return StringUtils.wrap(str, quoteWith);
@@ -4163,28 +4163,28 @@ public abstract class Strings {
    }
 
    /**
-    * @See {@link StringUtils#toRootLowerCase(String)}
+    * @see StringUtils#toRootLowerCase(String)
     */
    public static String toRootLowerCase(final String source) {
       return asNonNullUnsafe(StringUtils.toRootLowerCase(source));
    }
 
    /**
-    * @See {@link StringUtils#toRootLowerCase(String)}
+    * @see StringUtils#toRootLowerCase(String)
     */
    public static @Nullable String toRootLowerCaseNullable(final @Nullable String source) {
       return StringUtils.toRootLowerCase(source);
    }
 
    /**
-    * @See {@link StringUtils#toRootUpperCase(String)}
+    * @see StringUtils#toRootUpperCase(String)
     */
    public static String toRootUpperCase(final String source) {
       return asNonNullUnsafe(StringUtils.toRootUpperCase(source));
    }
 
    /**
-    * @See {@link StringUtils#toRootUpperCase(String)}
+    * @see StringUtils#toRootUpperCase(String)
     */
    public static @Nullable String toRootUpperCaseNullable(final @Nullable String source) {
       return StringUtils.toRootUpperCase(source);
@@ -4231,7 +4231,7 @@ public abstract class Strings {
    }
 
    /**
-    * @See {@link StringUtils#trimToEmpty(String)}
+    * @see StringUtils#trimToEmpty(String)
     */
    public static String trim(final String str) {
       return asNonNullUnsafe(StringUtils.trim(str));
@@ -4351,105 +4351,105 @@ public abstract class Strings {
    }
 
    /**
-    * @See {@link StringUtils#trimToEmpty(String)}
+    * @see StringUtils#trimToEmpty(String)
     */
    public static @Nullable String trimNullable(final @Nullable String str) {
       return StringUtils.trim(str);
    }
 
    /**
-    * @See {@link StringUtils#trimToEmpty(String)}
+    * @see StringUtils#trimToEmpty(String)
     */
    public static String trimToEmpty(final String str) {
       return asNonNullUnsafe(StringUtils.trimToEmpty(str));
    }
 
    /**
-    * @See {@link StringUtils#trimToEmpty(String)}
+    * @see StringUtils#trimToEmpty(String)
     */
    public static String trimToEmptyNullable(final @Nullable String str) {
       return asNonNullUnsafe(StringUtils.trimToEmpty(str));
    }
 
    /**
-    * @See {@link StringUtils#trimToNull(String)}
+    * @see StringUtils#trimToNull(String)
     */
    public static String trimToNull(final String str) {
       return asNonNullUnsafe(StringUtils.trimToNull(str));
    }
 
    /**
-    * @See {@link StringUtils#trimToNull(String)}
+    * @see StringUtils#trimToNull(String)
     */
    public static @Nullable String trimToNullNullable(final @Nullable String str) {
       return StringUtils.trimToNull(str);
    }
 
    /**
-    * @See {@link StringUtils#truncate(String, int)}
+    * @see StringUtils#truncate(String, int)
     */
    public static String truncate(final String str, final int maxWidth) {
       return asNonNullUnsafe(StringUtils.truncate(str, maxWidth));
    }
 
    /**
-    * @See {@link StringUtils#truncate(String, int, int)}
+    * @see StringUtils#truncate(String, int, int)
     */
    public static String truncate(final String str, final int offset, final int maxWidth) {
       return asNonNullUnsafe(StringUtils.truncate(str, offset, maxWidth));
    }
 
    /**
-    * @See {@link StringUtils#truncate(String, int)}
+    * @see StringUtils#truncate(String, int)
     */
    public static @Nullable String truncateNullable(final @Nullable String str, final int maxWidth) {
       return StringUtils.truncate(str, maxWidth);
    }
 
    /**
-    * @See {@link StringUtils#truncate(String, int, int)}
+    * @see StringUtils#truncate(String, int, int)
     */
    public static @Nullable String truncateNullable(final @Nullable String str, final int offset, final int maxWidth) {
       return StringUtils.truncate(str, offset, maxWidth);
    }
 
    /**
-    * @See {@link StringUtils#uncapitalize(String)}
+    * @see StringUtils#uncapitalize(String)
     */
    public static String uncapitalize(final String str) {
       return asNonNullUnsafe(StringUtils.uncapitalize(str));
    }
 
    /**
-    * @See {@link StringUtils#uncapitalize(String)}
+    * @see StringUtils#uncapitalize(String)
     */
    public static @Nullable String uncapitalizeNullable(final @Nullable String str) {
       return StringUtils.uncapitalize(str);
    }
 
    /**
-    * @See {@link StringUtils#unwrap(String, char)}
+    * @see StringUtils#unwrap(String, char)
     */
    public static String unquote(final String str, final char quotedWith) {
       return asNonNullUnsafe(StringUtils.unwrap(str, quotedWith));
    }
 
    /**
-    * @See {@link StringUtils#unwrap(String, String)}
+    * @see StringUtils#unwrap(String, String)
     */
    public static String unquote(final String str, final @Nullable String quotedWith) {
       return asNonNullUnsafe(StringUtils.unwrap(str, quotedWith));
    }
 
    /**
-    * @See {@link StringUtils#unwrap(String, char)}
+    * @see StringUtils#unwrap(String, char)
     */
    public static @Nullable String unquoteNullable(final @Nullable String str, final char quotedWith) {
       return StringUtils.unwrap(str, quotedWith);
    }
 
    /**
-    * @See {@link StringUtils#unwrap(String, String)}
+    * @see StringUtils#unwrap(String, String)
     */
    public static @Nullable String unquoteNullable(final @Nullable String str, final @Nullable String quotedWith) {
       return StringUtils.unwrap(str, quotedWith);
@@ -4468,14 +4468,14 @@ public abstract class Strings {
    }
 
    /**
-    * @See {@link StringUtils#upperCase(String)}
+    * @see StringUtils#upperCase(String)
     */
    public static String upperCase(final String str) {
       return asNonNullUnsafe(StringUtils.upperCase(str));
    }
 
    /**
-    * @See {@link StringUtils#upperCase(String, Locale)}
+    * @see StringUtils#upperCase(String, Locale)
     */
    public static String upperCase(final String str, final @Nullable Locale locale) {
       return asNonNullUnsafe(StringUtils.upperCase(str, locale));
@@ -4535,14 +4535,14 @@ public abstract class Strings {
    }
 
    /**
-    * @See {@link StringUtils#upperCase(String)}
+    * @see StringUtils#upperCase(String)
     */
    public static @Nullable String upperCaseNullable(final @Nullable String str) {
       return StringUtils.upperCase(str);
    }
 
    /**
-    * @See {@link StringUtils#upperCase(String, Locale)}
+    * @see StringUtils#upperCase(String, Locale)
     */
    public static @Nullable String upperCaseNullable(final @Nullable String str, final @Nullable Locale locale) {
       return StringUtils.upperCase(str, locale);
@@ -4581,14 +4581,14 @@ public abstract class Strings {
    }
 
    /**
-    * @See {@link StringUtils#valueOf(char[])}
+    * @see StringUtils#valueOf(char[])
     */
    public static String valueOf(final char[] value) {
       return asNonNullUnsafe(StringUtils.valueOf(value));
    }
 
    /**
-    * @See {@link StringUtils#valueOf(char[])}
+    * @see StringUtils#valueOf(char[])
     */
    public static @Nullable String valueOfNullable(final char @Nullable [] value) {
       return StringUtils.valueOf(value);
