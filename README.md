@@ -1,10 +1,13 @@
 # jstuff - toolbox for Java
 
-[![Build Status](https://github.com/sebthom/jstuff/workflows/Build/badge.svg "GitHub Actions")](https://github.com/sebthom/jstuff/actions?query=workflow%3A%22Build%22)
+[![Build Status](https://github.com/sebthom/jstuff/workflows/Build/badge.svg "GitHub Actions")](https://github.com/sebthom/jstuff/actions/workflows/build.yml)
+[![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://sebthom.github.io/jstuff/javadoc/)
 [![License](https://img.shields.io/github/license/sebthom/jstuff.svg?color=blue)](LICENSE.txt)
 [![Maintainability](https://api.codeclimate.com/v1/badges/7559e7b3c129d5ecc4db/maintainability)](https://codeclimate.com/github/sebthom/jstuff/maintainability)
-[![Maven Central](https://img.shields.io/maven-central/v/net.sf.jstuff/jstuff-parent)](https://search.maven.org/artifact/net.sf.jstuff/jstuff-parent)
+[![Maven Central](https://img.shields.io/maven-central/v/net.sf.jstuff/jstuff-parent)](https://central.sonatype.com/search?namespace=net.sf.jstuff)
 
+
+## Table of Contents
 
 1. [What is it?](#what-is-it)
 1. [Java Compatibility](#compatibility)

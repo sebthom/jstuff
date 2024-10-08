@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © Sebastian Thomschke and contributors
+# SPDX-FileCopyrightText: © Sebastian Thomschke
 # SPDX-FileContributor: Sebastian Thomschke (https://sebthom.de/)
 # SPDX-License-Identifier: EPL-2.0
 # SPDX-ArtifactOfProjectHomePage: https://github.com/sebthom/jstuff
@@ -32,7 +32,7 @@ on:
       additional_maven_args:
         description: 'Additional Maven Args'
         required: false
-        default: '-Dmaven.javadoc.skip=false'
+        default: ''
       debug-with-ssh:
         description: "Start an SSH session for debugging purposes at the end of the build:"
         default: never
@@ -75,6 +75,10 @@ jobs:
           experimental: false
 
 
+    env:
+      JAVA_VERSION: ${{ matrix.java }}
+
+
     # https://docs.github.com/en/actions/using-jobs/using-concurrency
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.java }}
@@ -113,21 +117,12 @@ jobs:
         cache: maven
 
 
-    - name: "Install: Maven"
-      uses: stCarolas/setup-maven@v5  # https://github.com/stCarolas/setup-maven
-      with:
-        maven-version: 3.9.8
-
-
-    - name: Test with Maven
+    - name: "Test with Maven 🔨"
       if: ${{ !matrix.may_create_release || env.ACT }}
       env:
-        GITHUB_USER: ${{ github.actor }}
-        GITHUB_API_KEY: ${{ github.token }}
-        JAVA_VERSION: ${{ matrix.java }}
         MAY_CREATE_RELEASE: false
       run: |
-        bash .ci/build.sh ${{ github.event.inputs.additional_maven_args }}
+        bash .ci/build.sh ${{ github.event.inputs.additional_maven_args }} -Djava.version=${{ matrix.java }}
 
 
     - name: "Build with Maven 🔨"
@@ -136,19 +131,15 @@ jobs:
         DEPLOY_SNAPSHOTS_TO_GITHUB_BRANCH: true
         GITHUB_USER: ${{ github.actor }}
         GITHUB_API_KEY: ${{ secrets.GH_API_TOKEN }}
-        JAVA_VERSION: ${{ matrix.java }}
         MAY_CREATE_RELEASE: true
         SIGN_KEY: ${{ secrets.GPG_SIGN_KEY }}
         SIGN_KEY_PASS: ${{ secrets.GPG_SIGN_KEY_PWD }}
-        SONATYPE_OSSRH_USER: ${{ secrets.SONATYPE_OSSRH_USER }}
-        SONATYPE_OSSRH_USER_TOKEN: ${{ secrets.SONATYPE_OSSRH_USER_TOKEN }}
+        SONATYPE_CENTRAL_USER: ${{ vars.SONATYPE_CENTRAL_USER }}
+        SONATYPE_CENTRAL_TOKEN: ${{ secrets.SONATYPE_CENTRAL_TOKEN }}
       run: |
         set -eu
 
-        # https://github.community/t/github-actions-bot-email-address/17204
-        git config user.name "github-actions[bot]"
-        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        bash .ci/build.sh ${{ github.event.inputs.additional_maven_args }}
+        bash .ci/build.sh ${{ github.event.inputs.additional_maven_args }} -Djava.version=${{ matrix.java }}
 
         if find . -path "*/target/site/jacoco/jacoco.xml" | grep -q .; then
           echo 'has_jacoco_results=true' >> $GITHUB_OUTPUT
