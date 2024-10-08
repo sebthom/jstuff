@@ -179,7 +179,7 @@ public class LoggingTest {
       for (final Handler handler : Loggers.ROOT_LOGGER.getHandlers()) {
          handler.setLevel(java.util.logging.Level.INFO);
          if (handler instanceof ConsoleHandler) {
-            ((ConsoleHandler) handler).setFormatter(ROOT_LOGGER_FORMATTER);
+            handler.setFormatter(ROOT_LOGGER_FORMATTER);
          }
       }
 

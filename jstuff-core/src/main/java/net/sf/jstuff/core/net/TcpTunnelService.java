@@ -73,7 +73,7 @@ public class TcpTunnelService extends Thread {
 
       protected TcpTunnel(final Socket clientSocket) throws SocketException {
          this.clientSocket = clientSocket;
-         tunnelName = clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort() + " > " //
+         tunnelName = asNonNull(clientSocket.getInetAddress()).getHostAddress() + ":" + clientSocket.getPort() + " > " //
                + clientSocket.getLocalAddress().getHostName() + ":" + clientSocket.getLocalPort() + " > " //
                + (Strings.isBlank(proxyAddress) ? "" : proxyAddress + ":" + proxyPort + " > ") //
                + targetAddress + ":" + targetPort;
@@ -205,11 +205,11 @@ public class TcpTunnelService extends Thread {
             final Socket clientSocket = serverSocket.accept();
             if (maxConnections >= 0 && getConnectionCount() >= maxConnections) {
                IOUtils.closeQuietly(clientSocket);
-               LOG.warn("Client from [%s:%s] denied. Max connections [%s] reached.", clientSocket.getInetAddress().getHostAddress(),
-                  clientSocket.getPort(), maxConnections);
+               LOG.warn("Client from [%s:%s] denied. Max connections [%s] reached.", asNonNull(clientSocket.getInetAddress())
+                  .getHostAddress(), clientSocket.getPort(), maxConnections);
                continue;
             }
-            LOG.info("Accepting client from [%s:%s]...", clientSocket.getInetAddress().getHostAddress(), clientSocket.getPort());
+            LOG.info("Accepting client from [%s:%s]...", asNonNull(clientSocket.getInetAddress()).getHostAddress(), clientSocket.getPort());
             startTunnel(clientSocket);
          } catch (final IOException ex) {
             LOG.error(ex);

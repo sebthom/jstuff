@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.core.net;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
@@ -29,13 +30,13 @@ public class NetUtilsTest {
    public void testIsPortOpen() throws IOException {
       try (var serverSocket = new ServerSocket(NetUtils.getAvailableLocalPort(), 5, InetAddress.getLoopbackAddress())) {
          Threads.sleep(100);
-         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000))
-            .isTrue();
+         assertThat(NetUtils.isRemotePortOpen(asNonNull(serverSocket.getInetAddress()).getCanonicalHostName(), serverSocket.getLocalPort(),
+            5_000)).isTrue();
 
          NetUtils.closeQuietly(serverSocket);
          Threads.sleep(1000);
-         assertThat(NetUtils.isRemotePortOpen(serverSocket.getInetAddress().getCanonicalHostName(), serverSocket.getLocalPort(), 5_000))
-            .isFalse();
+         assertThat(NetUtils.isRemotePortOpen(asNonNull(serverSocket.getInetAddress()).getCanonicalHostName(), serverSocket.getLocalPort(),
+            5_000)).isFalse();
       }
    }
 
