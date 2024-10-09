@@ -280,10 +280,6 @@ public abstract class Processes {
          return withRedirectError(target == null ? null : target.toFile());
       }
 
-      /**
-       * @deprecated use {@link #withRedirectError(OutputStream)}
-       */
-      @Deprecated
       public Builder withRedirectError(final @Nullable PrintStream target) {
          return withRedirectError((OutputStream) target);
       }
@@ -319,10 +315,6 @@ public abstract class Processes {
          return this;
       }
 
-      /**
-       * @deprecated use {@link #withRedirectOutput(OutputStream)}
-       */
-      @Deprecated
       public Builder withRedirectOutput(final @Nullable PrintStream target) {
          return withRedirectOutput((OutputStream) target);
       }

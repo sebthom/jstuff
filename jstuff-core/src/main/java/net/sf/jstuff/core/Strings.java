@@ -3631,26 +3631,6 @@ public abstract class Strings {
       return StringUtils.splitPreserveAllTokens(str, separatorChars, max);
    }
 
-   /**
-    * Empty tokens are not preserved.
-    *
-    * @deprecated use {@link #splitAsList(String, char)}
-    */
-   @Deprecated
-   public static List<String> splitToList(final String text, final char separator) {
-      return splitAsList(text, separator);
-   }
-
-   /**
-    * Empty tokens are not preserved.
-    *
-    * @deprecated use {@link #splitAsListNullable(String, char)}
-    */
-   @Deprecated
-   public static @Nullable List<String> splitToListNullable(final @Nullable String text, final char separator) {
-      return text == null ? null : splitAsList(text, separator);
-   }
-
    public static boolean startsWith(final @Nullable CharSequence str, final char ch) {
       return str != null && str.length() > 0 && str.charAt(0) == ch;
    }

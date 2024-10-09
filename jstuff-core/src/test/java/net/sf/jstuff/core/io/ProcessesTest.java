@@ -19,7 +19,6 @@ import net.sf.jstuff.core.io.Processes.ProcessWrapper;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-@SuppressWarnings("deprecation")
 class ProcessesTest {
 
    @Test

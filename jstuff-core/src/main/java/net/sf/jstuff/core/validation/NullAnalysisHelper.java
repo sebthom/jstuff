@@ -163,14 +163,6 @@ public abstract class NullAnalysisHelper {
       return (@NonNull T) null;
    }
 
-   /**
-    * @deprecated use {@link #lateNonNull()}
-    */
-   @Deprecated
-   public static <T> @NonNull T lazyNonNull() {
-      return lateNonNull();
-   }
-
    protected NullAnalysisHelper() {
    }
 }
