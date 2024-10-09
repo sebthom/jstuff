@@ -30,7 +30,7 @@ public class BufferedInputStreamExt extends BufferedInputStream {
    /**
     * @param in the underlying input stream
     * @param size the buffer size
-    * @throws IllegalArgumentException if size <= 0
+    * @throws IllegalArgumentException if {@code size <= 0}
     */
    public BufferedInputStreamExt(final InputStream in, final int size) {
       super(in, size);

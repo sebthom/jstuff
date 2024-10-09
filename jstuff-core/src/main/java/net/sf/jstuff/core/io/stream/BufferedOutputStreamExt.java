@@ -41,7 +41,7 @@ public class BufferedOutputStreamExt extends BufferedOutputStream {
    /**
     * @param out the underlying output stream
     * @param size the buffer size
-    * @throws IllegalArgumentException if size <= 0.
+    * @throws IllegalArgumentException if {@code size <= 0}
     */
    public BufferedOutputStreamExt(final OutputStream out, final int size) {
       super(out, size);
@@ -50,7 +50,7 @@ public class BufferedOutputStreamExt extends BufferedOutputStream {
    /**
     * @param out the underlying output stream
     * @param size the buffer size
-    * @throws IllegalArgumentException if size <= 0.
+    * @throws IllegalArgumentException if {@code size <= 0}
     */
    public BufferedOutputStreamExt(final OutputStream out, final int size, final Charset charset) {
       super(out, size);

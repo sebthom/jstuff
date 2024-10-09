@@ -171,7 +171,7 @@ public abstract class MoreFiles {
    }
 
    /**
-    * @experimental
+    * <b>experimental</b>
     *
     * @see java.nio.file.attribute.AclFileAttributeView
     * @see java.nio.file.attribute.DosFileAttributes
