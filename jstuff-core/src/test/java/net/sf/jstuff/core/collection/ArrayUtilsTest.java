@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -19,7 +20,7 @@ class ArrayUtilsTest {
 
    @Test
    void testAddAll() {
-      assertThat(ArrayUtils.addAll(new String[] {"a", "b"}, List.of("c", "d"))).isEqualTo(new String[] {"a", "b", "c", "d"});
+      assertThat(ArrayUtils.addAll(new @NonNull String[] {"a", "b"}, List.of("c", "d"))).isEqualTo(new String[] {"a", "b", "c", "d"});
    }
 
    @Test

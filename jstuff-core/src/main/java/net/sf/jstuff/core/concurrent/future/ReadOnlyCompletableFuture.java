@@ -9,13 +9,11 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-@NonNullByDefault({})
 public final class ReadOnlyCompletableFuture<T> extends DelegatingCompletableFuture<T> {
 
    public ReadOnlyCompletableFuture(final CompletableFuture<T> wrapped) {
