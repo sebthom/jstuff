@@ -172,7 +172,7 @@ SPDX-License-Identifier: EPL-2.0
             <!-- https://search.maven.org/artifact/org.apache.tomcat/tomcat-catalina -->
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
-            <version>10.1.28</version>
+            <version>10.1.30</version>
          </dependency>
          <dependency>
             <groupId>jakarta.persistence</groupId>
@@ -493,7 +493,7 @@ SPDX-License-Identifier: EPL-2.0
       <dependency>
          <groupId>ch.qos.logback</groupId>
          <artifactId>logback-classic</artifactId>
-         <version>1.5.8</version>
+         <version>1.5.9</version>
          <scope>test</scope>
       </dependency>
    </dependencies>
