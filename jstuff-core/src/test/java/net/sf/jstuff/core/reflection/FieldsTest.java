@@ -9,12 +9,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.lang.reflect.Field;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FieldsTest {
+class FieldsTest {
 
    static class Entity {
       @Nullable
@@ -26,7 +26,7 @@ public class FieldsTest {
       }
    }
 
-   public void testAccessFieldModifiers() {
+   void testAccessFieldModifiers() {
       // Field.class.getDeclaredField("modifiers") throws NoSuchFieldException on JDK 12+
       // this is to ensure we can still access it
       assertThat(Fields.find(Field.class, "modifiers")).isNotNull();
@@ -35,7 +35,7 @@ public class FieldsTest {
    }
 
    @Test
-   public void testWriteIgnoringFinal() throws SecurityException {
+   void testWriteIgnoringFinal() throws SecurityException {
       // instance field test
       final var e = new Entity("foo");
       assertThat(e.name).isEqualTo("foo");

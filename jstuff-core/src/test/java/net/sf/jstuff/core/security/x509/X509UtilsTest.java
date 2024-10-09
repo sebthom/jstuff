@@ -11,7 +11,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.security.KeyTool;
@@ -19,11 +19,11 @@ import net.sf.jstuff.core.security.KeyTool;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class X509UtilsTest {
+class X509UtilsTest {
 
    @SuppressWarnings("null")
    @Test
-   public void testWithSelfSignedCert() throws GeneralSecurityException {
+   void testWithSelfSignedCert() throws GeneralSecurityException {
       final var selfSigned = KeyTool.createSelfSignedCertificate("cn=foo", "RSA", 512, 1);
       final var selfSignedCert = selfSigned.get1();
 
@@ -64,7 +64,7 @@ public class X509UtilsTest {
    }
 
    @Test
-   public void testIsEqualDN() {
+   void testIsEqualDN() {
       assertThat(X509Utils.isEqualDN("cn=Foo, o=BAR", "CN=foo,o=bar")).isTrue();
       assertThat(X509Utils.isEqualDN("cn=Foo, o=BAR", null)).isFalse();
       assertThat(X509Utils.isEqualDN("cn=Foo, o=BAR", "")).isFalse();

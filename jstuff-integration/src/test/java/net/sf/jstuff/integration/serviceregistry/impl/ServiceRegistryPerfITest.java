@@ -7,14 +7,14 @@ package net.sf.jstuff.integration.serviceregistry.impl;
 import static net.sf.jstuff.core.validation.NullAnalysisHelper.lateNonNull;
 
 import org.apache.commons.lang3.time.StopWatch;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ServiceRegistryPerfITest {
+class ServiceRegistryPerfITest {
 
    public interface MyService {
       String getGreeting();
@@ -34,7 +34,7 @@ public class ServiceRegistryPerfITest {
    private ByteBuddyServiceRegistry byteBuddyRegistry = lateNonNull();
    private DefaultServiceRegistry jdkProxyRegistry = lateNonNull();
 
-   public void runPerfTest(final MyService service, final String label) {
+   void runPerfTest(final MyService service, final String label) {
       final var sw = new StopWatch();
       sw.start();
       for (int i = 0; i < 2_000_000; i++) {
@@ -44,20 +44,20 @@ public class ServiceRegistryPerfITest {
       System.out.println(label + ": " + sw.toString());
    }
 
-   @Before
-   public void setup() throws Exception {
+   @BeforeEach
+   void setup() throws Exception {
       byteBuddyRegistry = new ByteBuddyServiceRegistry();
       jdkProxyRegistry = new DefaultServiceRegistry();
    }
 
-   @After
-   public void tearDown() throws Exception {
+   @AfterEach
+   void tearDown() throws Exception {
       byteBuddyRegistry = lateNonNull();
       jdkProxyRegistry = lateNonNull();
    }
 
    @Test
-   public void testPerformance() {
+   void testPerformance() {
       byteBuddyRegistry.addService("MyService", MyService.class, MY_SERVICE);
       jdkProxyRegistry.addService("MyService", MyService.class, MY_SERVICE);
 

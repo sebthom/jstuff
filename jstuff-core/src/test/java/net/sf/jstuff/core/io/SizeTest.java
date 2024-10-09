@@ -6,15 +6,15 @@ package net.sf.jstuff.core.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SizeTest {
+class SizeTest {
 
    @Test
-   public void testSize() {
+   void testSize() {
       assertThat(Size.ofBytes(0).getBytes().longValue()).isZero();
       assertThat(Size.ofKiB(0).getBytes().longValue()).isZero();
       assertThat(Size.ofMiB(0).getBytes().longValue()).isZero();

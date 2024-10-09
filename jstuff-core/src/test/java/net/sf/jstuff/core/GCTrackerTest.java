@@ -7,7 +7,7 @@ package net.sf.jstuff.core;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.event.EventListener;
@@ -16,13 +16,13 @@ import net.sf.jstuff.core.logging.Logger;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class GCTrackerTest {
+class GCTrackerTest {
    private static final Logger LOG = Logger.create();
 
    private volatile int garbageCollected;
 
    @Test
-   public void testGCTracker() throws InterruptedException {
+   void testGCTracker() throws InterruptedException {
       final EventListener<@Nullable Object> countGC = event -> garbageCollected++;
 
       final var tracker = new GCTracker<>(100);

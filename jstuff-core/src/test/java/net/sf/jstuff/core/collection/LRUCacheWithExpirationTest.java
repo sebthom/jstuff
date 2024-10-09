@@ -4,34 +4,36 @@
  */
 package net.sf.jstuff.core.collection;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class LRUCacheWithExpirationTest {
+class LRUCacheWithExpirationTest {
 
    private static final Duration TTL = Duration.ofSeconds(1);
 
    private final LRUMapWithExpiration<String, String> cache = new LRUMapWithExpiration<>(3, TTL);
 
    @Test
-   public void testPutAndGet() {
+   void testPutAndGet() {
       cache.put("key1", "value1");
       cache.put("key2", "value2");
       cache.put("key3", "value3");
 
-      assertEquals("value1", cache.get("key1"));
-      assertEquals("value2", cache.get("key2"));
-      assertEquals("value3", cache.get("key3"));
+      assertThat(cache) //
+         .containsEntry("key1", "value1") //
+         .containsEntry("key2", "value2") //
+         .containsEntry("key3", "value3");
    }
 
    @Test
-   public void testLastRecentlyAccessed() {
+   void testLastRecentlyAccessed() {
       cache.put("key1", "value1");
       cache.put("key2", "value2");
       cache.put("key3", "value3");
@@ -43,15 +45,16 @@ public class LRUCacheWithExpirationTest {
       cache.put("key4", "value4");
 
       // key2 should be evicted now
-      assertNull(cache.get("key2"));
+      assertThat(cache.get("key2")).isNull();
 
-      assertEquals("value1", cache.get("key1"));
-      assertEquals("value3", cache.get("key3"));
-      assertEquals("value4", cache.get("key4"));
+      assertThat(cache) //
+         .containsEntry("key1", "value1") //
+         .containsEntry("key3", "value3") //
+         .containsEntry("key4", "value4");
    }
 
    @Test
-   public void testExpiration() throws InterruptedException {
+   void testExpiration() throws InterruptedException {
       cache.put("key1", "value1");
       cache.put("key2", "value2");
 
@@ -60,15 +63,16 @@ public class LRUCacheWithExpirationTest {
       cache.put("key3", "value3");
       cache.put("key4", "value4");
 
-      assertEquals("value3", cache.get("key3"));
-      assertEquals("value4", cache.get("key4"));
+      assertThat(cache) //
+         .containsEntry("key3", "value3") //
+         .containsEntry("key4", "value4");
 
-      assertNull(cache.get("key1"));
-      assertNull(cache.get("key2"));
+      assertThat(cache.get("key1")).isNull();
+      assertThat(cache.get("key2")).isNull();
    }
 
    @Test
-   public void testUpdateResetsExpiration() throws InterruptedException {
+   void testUpdateResetsExpiration() throws InterruptedException {
       cache.put("key1", "value1");
 
       // wait for half the TTL

@@ -5,11 +5,10 @@
 package net.sf.jstuff.integration.servlet;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.assertEquals;
 
 import java.io.UnsupportedEncodingException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.http.HttpServletResponse;
 import net.sf.jstuff.core.logging.Logger;
@@ -19,19 +18,19 @@ import net.sf.jstuff.core.reflection.Types;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @SuppressWarnings("resource")
-public class ContentCapturingHttpServletResponseWrapperTest {
+class ContentCapturingHttpServletResponseWrapperTest {
 
    private static final Logger LOG = Logger.create();
 
    @Test
    @SuppressWarnings("unused")
-   public void testContentCapturingHttpServletResponseWrapper() throws UnsupportedEncodingException {
+   void testContentCapturingHttpServletResponseWrapper() throws UnsupportedEncodingException {
 
       @SuppressWarnings("null")
       final String[] encoding = {"ISO-8859-1"};
 
       final HttpServletResponse mock = Types.createMixin(HttpServletResponse.class, new Object() {
-         public String getCharacterEncoding() {
+         String getCharacterEncoding() {
             return encoding[0];
          }
       });
@@ -41,7 +40,7 @@ public class ContentCapturingHttpServletResponseWrapperTest {
          wrapper.getWriter().print("Hello");
          assertThat(wrapper).hasToString("Hello");
          wrapper.clear();
-         assertEquals("", wrapper.toString());
+         assertThat(wrapper.toString()).isEqualTo("");
 
          try {
             wrapper.getOutputStream();

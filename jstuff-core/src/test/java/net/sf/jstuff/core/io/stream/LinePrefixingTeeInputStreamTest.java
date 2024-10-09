@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.io.IOUtils;
@@ -18,10 +18,10 @@ import net.sf.jstuff.core.io.IOUtils;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @Deprecated
-public class LinePrefixingTeeInputStreamTest {
+class LinePrefixingTeeInputStreamTest {
 
    @Test
-   public void testLinePrefixingOuputStream() throws IOException {
+   void testLinePrefixingOuputStream() throws IOException {
       final byte[] inputData = Strings.join(Arrays.asList("Line 1", "Line 2", "Line 3"), Strings.NEW_LINE).getBytes();
 
       try (var input = new FastByteArrayInputStream(inputData);

@@ -17,8 +17,8 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.logging.jul.Loggers;
@@ -26,7 +26,7 @@ import net.sf.jstuff.core.logging.jul.Loggers;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class LoggingTest {
+class LoggingTest {
    private static final class Entity implements InterfaceA, InterfaceB {
       @Override
       public Object[] methodA(final int a, final String b, final String... c) {
@@ -168,8 +168,8 @@ public class LoggingTest {
       }
    }
 
-   @Before
-   public void setUp() throws Exception {
+   @BeforeEach
+   void setUp() throws Exception {
       System.out.println(LOG.isDebugEnabled());
 
       System.out.println("############################################");
@@ -188,7 +188,7 @@ public class LoggingTest {
    }
 
    @Test
-   public void test1LoggingJUL() {
+   void test1LoggingJUL() {
       LoggerConfig.setPreferSLF4J(false);
       LoggerConfig.setCompactExceptionLogging(true);
       LoggerConfig.setAddLocationToDebugMessages(true);
@@ -198,7 +198,7 @@ public class LoggingTest {
    }
 
    @Test
-   public void test2LoggingSLF4J() {
+   void test2LoggingSLF4J() {
       System.out.println(LOG.isDebugEnabled());
 
       LoggerConfig.setPreferSLF4J(true);
@@ -211,7 +211,7 @@ public class LoggingTest {
    }
 
    @Test
-   public void testCreateLogged() {
+   void testCreateLogged() {
       LoggerConfig.setPreferSLF4J(false);
       LoggerConfig.setCompactExceptionLogging(false);
       LoggerConfig.setAddLocationToDebugMessages(true);

@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.function.Predicate;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.functional.Predicates.Contains;
 import net.sf.jstuff.core.functional.Predicates.EndingWith;
@@ -20,10 +20,10 @@ import net.sf.jstuff.core.functional.Predicates.StartingWith;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class PredicatesTest {
+class PredicatesTest {
 
    @Test
-   public void testPredicateChaining() {
+   void testPredicateChaining() {
       {
          final Predicate<@Nullable String> a = startingWith("#").and2(endingWith("#"));
          assertThat(a.test(null)).isFalse();
@@ -60,7 +60,7 @@ public class PredicatesTest {
    }
 
    @Test
-   public void testContains() {
+   void testContains() {
       final Contains<@Nullable String> a = contains("oo");
       assertThat(a.test(null)).isFalse();
       assertThat(a.test("")).isFalse();
@@ -78,7 +78,7 @@ public class PredicatesTest {
    }
 
    @Test
-   public void testEndingWith() {
+   void testEndingWith() {
       final EndingWith<@Nullable String> a = endingWith("o#");
       assertThat(a.test(null)).isFalse();
       assertThat(a.test("#foo")).isFalse();
@@ -99,7 +99,7 @@ public class PredicatesTest {
    }
 
    @Test
-   public void testEqualTo() {
+   void testEqualTo() {
       final Predicate<@Nullable String> a = equalTo("123");
       assertThat(a.test(null)).isFalse();
       assertThat(a.test("1234")).isFalse();
@@ -112,7 +112,7 @@ public class PredicatesTest {
    }
 
    @Test
-   public void testGreaterThan() {
+   void testGreaterThan() {
       final Predicate<@Nullable Integer> a = greaterThan(10);
       assertThat(a.test(null)).isFalse();
       assertThat(a.test(9)).isFalse();
@@ -127,7 +127,7 @@ public class PredicatesTest {
    }
 
    @Test
-   public void testLessThan() {
+   void testLessThan() {
       final Predicate<@Nullable Integer> a = lessThan(10);
       assertThat(a.test(null)).isTrue();
       assertThat(a.test(9)).isTrue();
@@ -142,7 +142,7 @@ public class PredicatesTest {
    }
 
    @Test
-   public void testNonNull() {
+   void testNonNull() {
       final Predicate<@Nullable Object> a = notNull();
       assertThat(a.test(null)).isFalse();
       assertThat(a.test("")).isTrue();
@@ -153,7 +153,7 @@ public class PredicatesTest {
    }
 
    @Test
-   public void testNull() {
+   void testNull() {
       final Predicate<@Nullable Object> a = isNull();
       assertThat(a.test(null)).isTrue();
       assertThat(a.test("")).isFalse();
@@ -164,7 +164,7 @@ public class PredicatesTest {
    }
 
    @Test
-   public void testProperty() {
+   void testProperty() {
       class Entity {
          @SuppressWarnings("unused")
          @Nullable
@@ -199,7 +199,7 @@ public class PredicatesTest {
    }
 
    @Test
-   public void testStartingWith() {
+   void testStartingWith() {
       final StartingWith<@Nullable String> a = startingWith("#f");
       assertThat(a.test(null)).isFalse();
       assertThat(a.test("#foo")).isTrue();

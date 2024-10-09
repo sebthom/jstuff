@@ -14,14 +14,14 @@ import java.nio.file.Paths;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Consumer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.security.Hash;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MoreFilesTest {
+class MoreFilesTest {
 
    private void _testFind(final String rootPath, final String globPattern, final int exceptedFiles, final int exceptedFolders)
          throws IOException {
@@ -31,7 +31,7 @@ public class MoreFilesTest {
    }
 
    @Test
-   public void testCopyContent() throws IOException {
+   void testCopyContent() throws IOException {
       final var hasher = Hash.MD5.newHasher();
       final var bytesRead = new LongAdder();
       final Consumer<ByteBuffer> onBeforeWrite = bytes -> {
@@ -53,7 +53,7 @@ public class MoreFilesTest {
    }
 
    @Test
-   public void testFind() throws IOException {
+   void testFind() throws IOException {
       _testFind("", "**/MoreFiles.java", 1, 0);
       _testFind(".", "**/MoreFiles.java", 1, 0);
       _testFind("./", "**/MoreFiles.java", 1, 0);

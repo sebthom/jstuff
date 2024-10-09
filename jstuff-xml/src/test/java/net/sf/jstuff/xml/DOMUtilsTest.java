@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,17 +24,17 @@ import net.sf.jstuff.xml.DOMUtils.XPathNodeConfiguration;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DOMUtilsTest {
+class DOMUtilsTest {
 
    @Test
-   public void testCreateCommentBefore() {
+   void testCreateCommentBefore() {
       final Element elem = DOMUtils.parseString("<foo id='myid'><bar/></foo>", null).getDocumentElement();
       DOMUtils.createCommentBefore(asNonNull(DOMUtils.findNode(elem, "/foo/bar")), "MY_COMMENT");
       assertThat(DOMUtils.toXML(elem, false, false)).isEqualTo("<foo id=\"myid\"><!--MY_COMMENT--><bar/></foo>");
    }
 
    @Test
-   public void testEvaluate() {
+   void testEvaluate() {
       final Element elem = DOMUtils.parseString("<foo id='myid'><bar name='a'/><bar name='b'/><bar /></foo>", null).getDocumentElement();
 
       assertThat(DOMUtils.evaluateAsString(elem, "/foo/@id")).isEqualTo("myid");
@@ -45,7 +45,7 @@ public class DOMUtilsTest {
    }
 
    @Test
-   public void testFindTextContent() {
+   void testFindTextContent() {
       final Element elem = DOMUtils.parseString("<foo id='1'>1111<bar name='name'>2222</bar></foo>", null).getDocumentElement();
 
       assertThat(DOMUtils.findTextContent(elem, "/foo", true)).isEqualTo("11112222");
@@ -56,7 +56,7 @@ public class DOMUtilsTest {
    }
 
    @Test
-   public void testGetXPathNodes() throws XMLException {
+   void testGetXPathNodes() throws XMLException {
       final Element elem = DOMUtils.parseString("<foo id='1'><bar name='name'>blabla</bar></foo>", null).getDocumentElement();
 
       final var cfg = new XPathNodeConfiguration();
@@ -102,14 +102,14 @@ public class DOMUtilsTest {
 
    @Test
    @SuppressWarnings("resource")
-   public void testParseFile() throws XMLException {
+   void testParseFile() throws XMLException {
       assertThat(DOMUtils.parseInputSource( //
          new InputSource(DOMUtils.class.getResourceAsStream("wrong-dtd-location.xml")), "wrong-dtd-location.xml", null, (File[]) null //
       )).isNotNull();
    }
 
    @Test
-   public void testSortNodes() throws XMLException {
+   void testSortNodes() throws XMLException {
       {
          final Document doc = DOMUtils.parseString("<foo><bar name='CC'/><bar name='AA'/><bar name='BB'/></foo>", null);
          DOMUtils.sortChildNodesByAttributes(doc.getDocumentElement(), true, "name");
@@ -156,7 +156,7 @@ public class DOMUtilsTest {
    }
 
    @Test
-   public void testToXML() throws XMLException {
+   void testToXML() throws XMLException {
       final Document doc = DOMUtils.parseString("<foo id='1'><bar name='name'>blabla</bar></foo>", null);
       assertThat(DOMUtils.toXML(asNonNull(asNonNull(doc.getFirstChild()).getFirstChild()), false, false)).isEqualTo(
          "<bar name=\"name\">blabla</bar>");

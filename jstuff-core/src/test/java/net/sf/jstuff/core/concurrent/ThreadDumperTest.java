@@ -8,14 +8,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.SystemUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ThreadDumperTest {
+class ThreadDumperTest {
 
    private void startThreads() {
 
@@ -86,7 +86,7 @@ public class ThreadDumperTest {
     */
    @Test
    @SuppressWarnings("deprecation")
-   public void testDumpThreads() {
+   void testDumpThreads() {
       if (SystemUtils.getJavaMajorVersion() >= 20)
          // https://inside.java/2022/11/09/quality-heads-up/
          // https://bugs.openjdk.org/browse/JDK-8289610

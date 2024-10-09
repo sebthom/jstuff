@@ -10,12 +10,12 @@ import java.util.Objects;
 import java.util.TreeSet;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class PropertyComparatorTest {
+class PropertyComparatorTest {
    private static final class Entity {
       @Nullable
       String name;
@@ -35,7 +35,7 @@ public class PropertyComparatorTest {
    }
 
    @Test
-   public void testPropertyComparator() {
+   void testPropertyComparator() {
       final var e1 = new Entity("444");
       final var e2 = new Entity("222");
       final var e3 = new Entity("333");

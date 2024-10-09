@@ -9,15 +9,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeIteratorTest {
+class CompositeIteratorTest {
 
    @Test
-   public void testCompositeIterator() {
+   void testCompositeIterator() {
       final List<String> list1 = List.of("a");
       final List<Object> list2 = List.of("b");
       final List<String> list3 = List.of("c");

@@ -8,16 +8,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class LocksTest {
+class LocksTest {
 
    @Test
    @SuppressWarnings("resource")
-   public void testLockAsCloseable() {
+   void testLockAsCloseable() {
       final var lock = new ReentrantLock();
       final var closeable = Locks.toCloseable(lock);
 

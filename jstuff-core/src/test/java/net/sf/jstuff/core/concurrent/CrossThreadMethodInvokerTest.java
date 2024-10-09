@@ -7,7 +7,7 @@ package net.sf.jstuff.core.concurrent;
 import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.concurrent.CrossThreadMethodInvoker.CrossThreadProxy;
 import net.sf.jstuff.core.logging.Logger;
@@ -16,12 +16,12 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CrossThreadMethodInvokerTest {
-   public interface IService {
+class CrossThreadMethodInvokerTest {
+   interface IService {
       String work(String input);
    }
 
-   public static class Service implements IService {
+   static class Service implements IService {
       private final Thread owner = Thread.currentThread();
 
       int invocations = 0;
@@ -42,7 +42,7 @@ public class CrossThreadMethodInvokerTest {
    private static final Logger LOG = Logger.create();
 
    @Test
-   public void testCrossThreadMethodInvoker() {
+   void testCrossThreadMethodInvoker() {
       final var service = new Service();
 
       final var methodInvoker = new CrossThreadMethodInvoker(2000);

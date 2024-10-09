@@ -6,12 +6,12 @@ package net.sf.jstuff.core.reflection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TypesMixinTest {
+class TypesMixinTest {
    protected interface TestEntity {
       String createGreeting(String name);
 
@@ -31,11 +31,11 @@ public class TypesMixinTest {
    }
 
    @Test
-   public void testMixin() {
+   void testMixin() {
       final var delegate = new TestEntityImpl();
       final TestEntity proxy = Types.createMixin(TestEntity.class, new Object() {
          @SuppressWarnings("unused")
-         public String createGreeting(final String name) {
+         String createGreeting(final String name) {
             return delegate.createGreeting(name) + " How are you?";
          }
       }, delegate);

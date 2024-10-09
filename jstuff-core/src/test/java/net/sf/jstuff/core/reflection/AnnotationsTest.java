@@ -8,29 +8,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.collection.Maps;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AnnotationsTest {
+class AnnotationsTest {
 
    @Test
-   public void testCreate() {
+   void testCreate() {
       final Map<String, Object> m1 = Maps.newHashMap("value", "hello!");
       final Map<String, Object> m2 = Maps.newHashMap("value", "hi!");
 
-      final Ignore a1a = Annotations.create(Ignore.class, m1);
-      final Ignore a1b = Annotations.create(Ignore.class, m1);
-      final Ignore a2 = Annotations.create(Ignore.class, m2);
+      final Disabled a1a = Annotations.create(Disabled.class, m1);
+      final Disabled a1b = Annotations.create(Disabled.class, m1);
+      final Disabled a2 = Annotations.create(Disabled.class, m2);
 
       assertThat(a1b) //
          .isEqualTo(a1a) //
          .isNotEqualTo(a2);
-      assertThat(a1a).hasToString("@org.junit.Ignore(value=hello!)");
-      assertThat(a2).hasToString("@org.junit.Ignore(value=hi!)");
+      assertThat(a1a).hasToString("@org.junit.jupiter.api.Disabled(value=hello!)");
+      assertThat(a2).hasToString("@org.junit.jupiter.api.Disabled(value=hi!)");
    }
 }

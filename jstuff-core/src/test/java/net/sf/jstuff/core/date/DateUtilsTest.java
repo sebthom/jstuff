@@ -8,15 +8,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.ParseException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DateUtilsTest {
+class DateUtilsTest {
 
    @Test
-   public void testParseDuration() throws ParseException {
+   void testParseDuration() throws ParseException {
       assertThat(Dates.parseDuration("1ms")).isEqualTo(1);
       assertThat(Dates.parseDuration("1s")).isEqualTo(1000);
       assertThat(Dates.parseDuration(" 1sec ")).isEqualTo(1000);

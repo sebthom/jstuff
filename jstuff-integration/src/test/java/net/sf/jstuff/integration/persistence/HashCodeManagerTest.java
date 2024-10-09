@@ -5,9 +5,8 @@
 package net.sf.jstuff.integration.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.io.SerializationUtils;
@@ -15,10 +14,10 @@ import net.sf.jstuff.core.io.SerializationUtils;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class HashCodeManagerTest {
+class HashCodeManagerTest {
 
    @Test
-   public void testManagedHashCode() {
+   void testManagedHashCode() {
       /*
        * #1 client: new()
        */
@@ -94,13 +93,13 @@ public class HashCodeManagerTest {
        */
       final Entity server_e3 = new Entity().setLabel("server_e3");
       server_e3.setId(22);
-      assertNotEquals(server_e3.hashCode(), server_HC);
+      assertThat(server_HC).isNotEqualTo(server_e3.hashCode());
 
       /*
        * #8 client: receive()
        */
       final Entity client_e3 = SerializationUtils.clone(server_e3);
-      assertNotEquals(client_e3.hashCode(), client_HC);
+      assertThat(client_HC).isNotEqualTo(client_e3.hashCode());
 
       assertThat(HashCodeManager.getManagedIdsCount()).isEqualTo(1);
       assertThat(HashCodeManager.getManagedTrackingIdsCount()).isEqualTo(1);

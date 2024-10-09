@@ -8,15 +8,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NumberHelperTest {
+class NumberHelperTest {
 
    @Test
-   public void testIsValidCurrency() {
+   void testIsValidCurrency() {
       final var numberHelper = new NumberHelper(Locale.GERMANY);
 
       assertThat(numberHelper.isValidCurrency("10,00 €")).isTrue();

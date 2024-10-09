@@ -9,16 +9,16 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FastByteArrayOutputStreamTest {
+class FastByteArrayOutputStreamTest {
 
    @Test
    @SuppressWarnings({"resource", "unused"})
-   public void testFastByteArrayOutputStream() throws IOException {
+   void testFastByteArrayOutputStream() throws IOException {
 
       try {
          new FastByteArrayOutputStream(-1);

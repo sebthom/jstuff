@@ -9,19 +9,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.concurrent.Threads;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class WeakIdentityHashMapTest {
+class WeakIdentityHashMapTest {
    private static final class Entity {
       @Nullable
       private String name;
 
-      public Entity setName(final String name) {
+      Entity setName(final String name) {
          this.name = name;
          return this;
       }
@@ -45,7 +45,7 @@ public class WeakIdentityHashMapTest {
    }
 
    @Test
-   public void testWeakIdentityHashMap() {
+   void testWeakIdentityHashMap() {
       final var identityMap = new WeakIdentityHashMap<@Nullable Entity, Object>();
 
       @Nullable

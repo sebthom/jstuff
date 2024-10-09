@@ -9,14 +9,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.event.annotation.AfterTestClass;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
 import net.sf.jstuff.integration.serviceregistry.ServiceRegistry;
@@ -25,12 +25,12 @@ import net.sf.jstuff.integration.serviceregistry.impl.DefaultServiceRegistry;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"spring-test-context.xml"})
 // enforces closing of application context:
 // http://stackoverflow.com/questions/7498202/springjunit4classrunner-does-not-close-the-application-context-at-the-end-of-jun
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class SpringBeanAsServiceTest {
+class SpringBeanAsServiceTest {
    public static class AlternativeGreetingInterceptor implements MethodInterceptor {
 
       @Override
@@ -59,15 +59,15 @@ public class SpringBeanAsServiceTest {
 
    public static final ServiceRegistry REGISTRY = new DefaultServiceRegistry();
 
-   @BeforeClass
-   @AfterClass
-   public static void testServiceNotRegistered() {
+   @BeforeTestClass
+   @AfterTestClass
+   static void testServiceNotRegistered() {
       final ServiceProxy<TestService> service = REGISTRY.getService(TestService.class.getName(), TestService.class);
       assertThat(service.isServiceAvailable()).isFalse();
    }
 
    @Test
-   public void testSpringBeanRegistrator() throws SecurityException, IllegalArgumentException {
+   void testSpringBeanRegistrator() throws SecurityException, IllegalArgumentException {
       final TestService service = REGISTRY.getService(TestService.class.getName(), TestService.class).get();
       // ensure we get the spring AOP adviced service that returns the alternative greeting instead the one implemented by DefaultTestService
       assertThat(service.getGreeting()).isEqualTo("Hi!");

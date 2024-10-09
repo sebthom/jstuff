@@ -7,19 +7,19 @@ package net.sf.jstuff.core.reflection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class StackTraceTest {
+class StackTraceTest {
    private static final class Outer {
       private static final class Inner {
          private void ensureEquals(@Nullable final Object a, @Nullable final Object b) {
             assertThat(b).isEqualTo(a);
          }
 
-         public void innerMethod() {
+         void innerMethod() {
             ensureEquals("net.sf.jstuff.core.reflection.StackTraceTest$Outer$Inner", StackTrace.getThisStackTraceElement().getClassName());
             ensureEquals("innerMethod", StackTrace.getThisMethodName());
             ensureEquals("innerMethod", StackTrace.getThisStackTraceElement().getMethodName());
@@ -36,13 +36,13 @@ public class StackTraceTest {
 
       private final Inner caller2 = new Inner();
 
-      public void outerMethod() {
+      void outerMethod() {
          caller2.innerMethod();
       }
    }
 
    @Test
-   public void testRemoveFirstStackTraceElement() {
+   void testRemoveFirstStackTraceElement() {
       final var ex = new RuntimeException();
       final var stackLength = ex.getStackTrace().length;
       StackTrace.removeFirstStackTraceElement(ex);
@@ -50,7 +50,7 @@ public class StackTraceTest {
    }
 
    @Test
-   public void testStackTrace() {
+   void testStackTrace() {
       new Outer().outerMethod();
    }
 }

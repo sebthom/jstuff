@@ -8,18 +8,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.io.IOUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeInputStreamTest {
+class CompositeInputStreamTest {
 
    @Test
    @SuppressWarnings("resource")
-   public void testCompositeInputStream() throws IOException {
+   void testCompositeInputStream() throws IOException {
       final var bis1 = new FastByteArrayInputStream("Hello ".getBytes());
       final var bis2 = new FastByteArrayInputStream("World!".getBytes());
 

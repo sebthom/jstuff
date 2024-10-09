@@ -9,17 +9,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.rmi.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.concurrent.CircuitBreaker.State;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CircuitBreakerTest {
+class CircuitBreakerTest {
 
    @Test
-   public void testCircuitBreaker() {
+   void testCircuitBreaker() {
       @SuppressWarnings("unchecked")
       final CircuitBreaker cb = CircuitBreaker.builder() //
          .name("test") //

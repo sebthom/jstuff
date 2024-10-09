@@ -7,15 +7,15 @@ package net.sf.jstuff.core.functional;
 import static net.sf.jstuff.core.functional.Functions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FunctionsTest {
+class FunctionsTest {
 
    @Test
-   public void testConverts() {
+   void testConverts() {
       final var t1 = objectToString() //
          .andThen(trim()) //
          .andThen(stringToInt()) //

@@ -11,7 +11,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.io.Processes.ProcessWrapper;
@@ -20,10 +20,10 @@ import net.sf.jstuff.core.io.Processes.ProcessWrapper;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @SuppressWarnings("deprecation")
-public class ProcessesTest {
+class ProcessesTest {
 
    @Test
-   public void testWithStdInput() throws IOException, InterruptedException {
+   void testWithStdInput() throws IOException, InterruptedException {
       final var pwb = SystemUtils.IS_OS_WINDOWS ? Processes.builder("findstr").withArg("x*") : Processes.builder("cat");
 
       final var stdout = new StringBuilder();
@@ -43,7 +43,7 @@ public class ProcessesTest {
    }
 
    @Test
-   public void testCaptureOutput() throws IOException, InterruptedException {
+   void testCaptureOutput() throws IOException, InterruptedException {
       final var out = new StringBuilder();
       final var err = new StringBuilder();
       final ProcessWrapper prc = Processes.builder("ping") //
@@ -61,7 +61,7 @@ public class ProcessesTest {
    }
 
    @Test
-   public void testNormalCompletion() throws IOException, InterruptedException {
+   void testNormalCompletion() throws IOException, InterruptedException {
       final var signal = new CountDownLatch(2);
       final ProcessWrapper prc = Processes.builder("ping") //
          .withArg("127.0.0.1") //
@@ -83,7 +83,7 @@ public class ProcessesTest {
    }
 
    @Test
-   public void testProgrammaticTermination() throws IOException, InterruptedException {
+   void testProgrammaticTermination() throws IOException, InterruptedException {
       final var signal = new CountDownLatch(2);
       final ProcessWrapper prc = Processes.builder("ping") //
          .withArgs(SystemUtils.IS_OS_WINDOWS ? "-n" : "-c", 9999) //

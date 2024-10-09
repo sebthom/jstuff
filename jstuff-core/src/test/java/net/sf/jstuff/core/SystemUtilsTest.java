@@ -6,15 +6,15 @@ package net.sf.jstuff.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SystemUtilsTest {
+class SystemUtilsTest {
 
    @Test
-   public void testFindExecutable() {
+   void testFindExecutable() {
       assertThat(SystemUtils.findExecutable("sort", false)).isNotNull();
       if (SystemUtils.IS_OS_WINDOWS) {
          assertThat(SystemUtils.findExecutable("sort.exe", false)).isNotNull();
@@ -22,7 +22,7 @@ public class SystemUtilsTest {
    }
 
    @Test
-   public void testSplitCommandLine() {
+   void testSplitCommandLine() {
       assertThat(SystemUtils.splitCommandLine("")).isEmpty();
       assertThat(SystemUtils.splitCommandLine("  ")).isEmpty();
       assertThat(SystemUtils.splitCommandLine(" echo ")).containsExactly("echo");

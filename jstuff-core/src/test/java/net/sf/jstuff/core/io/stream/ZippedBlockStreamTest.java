@@ -13,17 +13,17 @@ import java.io.IOException;
 import java.util.zip.Deflater;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.io.IOUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ZippedBlockStreamTest {
+class ZippedBlockStreamTest {
 
    @Test
-   public void testZippedBlockStreamPartialRead() throws IOException {
+   void testZippedBlockStreamPartialRead() throws IOException {
 
       final var bos = new ByteArrayOutputStream();
       try (var zos = new ZippedBlockOutputStream(bos, 16, Deflater.BEST_SPEED)) {
@@ -37,7 +37,7 @@ public class ZippedBlockStreamTest {
    }
 
    @Test
-   public void testZippedBlockStream() throws IOException {
+   void testZippedBlockStream() throws IOException {
 
       final String content = RandomStringUtils.random(4096);
 

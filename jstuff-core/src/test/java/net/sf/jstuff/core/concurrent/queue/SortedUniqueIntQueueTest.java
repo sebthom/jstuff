@@ -9,15 +9,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SortedUniqueIntQueueTest {
+class SortedUniqueIntQueueTest {
 
    @Test
-   public void testoffer() {
+   void testoffer() {
       final var q = new SortedUniqueIntQueue(0);
       assertThat(q.isEmpty()).isTrue();
       assertThat(q.isNotEmpty()).isFalse();
@@ -80,7 +80,7 @@ public class SortedUniqueIntQueueTest {
    }
 
    @Test
-   public void testofferToHead() {
+   void testofferToHead() {
       // tests insert at head on index 0 if underlying array has no capacity left
       var q = new SortedUniqueIntQueue(1);
       q.offer(4);
@@ -109,7 +109,7 @@ public class SortedUniqueIntQueueTest {
    }
 
    @Test
-   public void testTakeFromNonEmptyQueue() throws InterruptedException {
+   void testTakeFromNonEmptyQueue() throws InterruptedException {
       final var q = new SortedUniqueIntQueue(4);
       q.offer(3);
       q.offer(4);
@@ -155,7 +155,7 @@ public class SortedUniqueIntQueueTest {
    }
 
    @Test
-   public void testTakeFromEmptyQueue() throws InterruptedException {
+   void testTakeFromEmptyQueue() throws InterruptedException {
       final var q = new SortedUniqueIntQueue(-1);
       assertThat(q.items).isEmpty();
 

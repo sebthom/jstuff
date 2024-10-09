@@ -6,7 +6,7 @@ package net.sf.jstuff.integration.spring;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +20,9 @@ import jakarta.inject.Named;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanInjectorTest {
+class SpringBeanInjectorTest {
 
-   public static class Entity implements InitializingBean, DisposableBean {
+   static class Entity implements InitializingBean, DisposableBean {
       @Autowired
       Object springBean;
 
@@ -57,7 +57,7 @@ public class SpringBeanInjectorTest {
    }
 
    @Test
-   public void testSpringBeanInjector() throws Exception {
+   void testSpringBeanInjector() throws Exception {
       try {
          SpringBeanInjector.get(); // must fail, since the spring context is not yet opened
          failBecauseExceptionWasNotThrown(IllegalStateException.class);

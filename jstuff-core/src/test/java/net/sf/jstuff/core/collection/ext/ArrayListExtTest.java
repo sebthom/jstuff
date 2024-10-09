@@ -6,15 +6,15 @@ package net.sf.jstuff.core.collection.ext;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ArrayListExtTest {
+class ArrayListExtTest {
 
    @Test
-   public void testArrayListExt() {
+   void testArrayListExt() {
       final var l = new ArrayListExt<>("a", "b");
 
       assertThat(l.getAt(0)).isEqualTo("a");

@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.jbean.changelog.PropertyChangelog;
@@ -22,15 +22,15 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class JBeanTest {
+class JBeanTest {
 
    private static final class MyEntity extends AbstractJBean {
       private static final long serialVersionUID = 1L;
 
-      public static final ClassDescriptor<MyEntity> META = ClassDescriptor.of(MyEntity.class, "MyEntity", "", null);
+      static final ClassDescriptor<MyEntity> META = ClassDescriptor.of(MyEntity.class, "MyEntity", "", null);
 
       // CHECKSTYLE:IGNORE ConstantName FOR NEXT 2 LINES
-      public static final PropertyDescriptor<String> PROP_comment = PropertyDescriptor.create(META, //
+      static final PropertyDescriptor<String> PROP_comment = PropertyDescriptor.create(META, //
          "comment", String.class, 0, 1, false, false, true, //
          "the entity's comment", Maps.newHashMap( //
             "length", 64, //
@@ -66,11 +66,11 @@ public class JBeanTest {
       }
 
       @Nullable
-      public String getComment() {
+      String getComment() {
          return comment;
       }
 
-      public void setComment(@Nullable String newValue) {
+      void setComment(@Nullable String newValue) {
          newValue = newValue == null ? null : newValue.trim();
          final String oldValue = getComment();
          if (!Objects.equals(oldValue, newValue)) {
@@ -81,7 +81,7 @@ public class JBeanTest {
    }
 
    @Test
-   public void testJBean() {
+   void testJBean() {
       final var changeLog = new PropertyChangelog();
 
       final var entity = new MyEntity();

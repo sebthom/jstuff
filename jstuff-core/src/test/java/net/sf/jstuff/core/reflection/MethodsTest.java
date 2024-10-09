@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.lang3.JavaVersion;
 import org.apache.commons.lang3.SystemUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.reflection.MethodsTestEntities.EntityA;
 import net.sf.jstuff.core.reflection.MethodsTestEntities.EntityB;
@@ -20,7 +20,7 @@ import net.sf.jstuff.core.reflection.exception.ReflectionException;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MethodsTest {
+class MethodsTest {
 
    @FunctionalInterface
    interface EntityB_getProperty2_Accessor {
@@ -38,7 +38,7 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_createPublicGetterAccessor() {
+   void test_createPublicGetterAccessor() {
       final var entity = new EntityB();
       entity.setProperty3(true);
 
@@ -53,7 +53,7 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_createPublicMethodAccessor() {
+   void test_createPublicMethodAccessor() {
       final var entity = new EntityB();
 
       try {
@@ -76,7 +76,7 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_createPublicSetterAccessor() {
+   void test_createPublicSetterAccessor() {
       final var entity = new EntityB();
       entity.setProperty3(false);
 
@@ -104,7 +104,7 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_findNonPublicGetterInSuperclass() {
+   void test_findNonPublicGetterInSuperclass() {
       {
          final Method m = Methods.findAnyGetter(EntityB.class, "property2");
          assert m != null;
@@ -133,7 +133,7 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_findNonPublicSetterInSuperclass() {
+   void test_findNonPublicSetterInSuperclass() {
       {
          final Method m = Methods.findAnySetter(EntityB.class, "property2");
          assert m != null;
@@ -162,7 +162,7 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_findPublicNonOverloadedGetter() {
+   void test_findPublicNonOverloadedGetter() {
       {
          final Method m = Methods.findAnyGetter(EntityB.class, "property3");
          assert m != null;
@@ -191,7 +191,7 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_findPublicNonOverloadedSetter() {
+   void test_findPublicNonOverloadedSetter() {
       {
          final Method m = Methods.findAnySetter(EntityB.class, "property3");
          assert m != null;
@@ -220,7 +220,7 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_findPublicOverloadedGetter() {
+   void test_findPublicOverloadedGetter() {
       {
          final Method m = Methods.findPublicGetter(EntityB.class, "property1");
          assert m != null;
@@ -242,7 +242,7 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_findPublicOverloadedSetter() {
+   void test_findPublicOverloadedSetter() {
       {
          final Method m = Methods.findPublicSetter(EntityB.class, "property1");
          assert m != null;
@@ -271,19 +271,19 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_getAllGetters() {
+   void test_getAllGetters() {
       assertThat(Methods.getAllGetters(EntityA.class)).hasSize(2 + 1 /*Object#getClass()*/);
       assertThat(Methods.getAllGetters(EntityB.class)).hasSize(3 + 1 /*Object#getClass()*/);
    }
 
    @Test
-   public void test_getAllSetters() {
+   void test_getAllSetters() {
       assertThat(Methods.getAllSetters(EntityA.class)).hasSize(2);
       assertThat(Methods.getAllSetters(EntityB.class)).hasSize(3);
    }
 
    @Test
-   public void test_getPublicGetters() {
+   void test_getPublicGetters() {
       assertThat(Methods.getPublicGetters(EntityA.class)).hasSize(0 + 1 /*Object#getClass()*/);
       assertThat(Methods.getPublicGetters(EntityB.class)).hasSize(2 + 1 /*Object#getClass()*/);
       assertThat(Methods.getPublicGetters(EntityB.class, Boolean.class)).hasSize(1);
@@ -293,7 +293,7 @@ public class MethodsTest {
    }
 
    @Test
-   public void test_getPublicSetters() {
+   void test_getPublicSetters() {
       assertThat(Methods.getPublicSetters(EntityA.class)).isEmpty();
       assertThat(Methods.getPublicSetters(EntityB.class)).hasSize(2);
       assertThat(Methods.getPublicSetters(EntityB.class, Boolean.class)).hasSize(1);

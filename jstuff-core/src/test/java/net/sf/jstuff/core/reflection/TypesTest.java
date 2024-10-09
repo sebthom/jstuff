@@ -12,7 +12,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.tm4e.core.TMException;
 import org.eclipse.urischeme.IUriSchemeHandler;
 import org.jdom.CDATA;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.helpers.NOPLogger;
 
 import net.sf.jstuff.core.collection.ObjectCache;
@@ -21,11 +21,11 @@ import net.sf.jstuff.core.reflection.exception.ReflectionException;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TypesTest {
+class TypesTest {
 
    @Test
    @SuppressWarnings("null")
-   public void testFindLibrary() {
+   void testFindLibrary() {
       File library;
 
       // locate JDK class
@@ -55,7 +55,7 @@ public class TypesTest {
    }
 
    @Test
-   public void testGetVersion() {
+   void testGetVersion() {
       // from META-INF/MANIFEST.MF Implementation-Version
       assertThat(Types.getVersion(CDATA.class)).isEqualTo("1.0 beta7");
 
@@ -67,28 +67,29 @@ public class TypesTest {
    }
 
    @Test
-   public void testIsAssignableTo() {
+   void testIsAssignableTo() {
       assertThat(Types.isAssignableTo(Integer.class, Number.class)).isTrue();
       assertThat(Types.isAssignableTo(Number.class, Integer.class)).isFalse();
       assertThat(Types.isAssignableTo(String.class, Object.class)).isTrue();
    }
 
    @Test
-   public void testWriteBooleanProperty() {
+   void testWriteBooleanProperty() {
       class Entity {
          private @Nullable Boolean isArchived;
          private boolean deleted;
          private boolean hasParent;
 
-         public @Nullable Boolean isArchived() {
+         @Nullable
+         Boolean isArchived() {
             return isArchived;
          }
 
-         public boolean isDeleted() {
+         boolean isDeleted() {
             return deleted;
          }
 
-         public boolean hasParent() {
+         boolean hasParent() {
             return hasParent;
          }
       }

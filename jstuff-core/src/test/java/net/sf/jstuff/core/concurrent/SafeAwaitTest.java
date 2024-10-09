@@ -11,17 +11,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.reflection.DuckTypes;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SafeAwaitTest {
+class SafeAwaitTest {
 
    @Test
-   public void testAwait_condition_timeout() throws InterruptedException {
+   void testAwait_condition_timeout() throws InterruptedException {
       final Condition condition = DuckTypes.duckType(new Object() {
          final long startAt = System.currentTimeMillis();
 
@@ -38,7 +38,7 @@ public class SafeAwaitTest {
    }
 
    @Test
-   public void testAwait_waitObject_noTimeout() throws InterruptedException {
+   void testAwait_waitObject_noTimeout() throws InterruptedException {
       final var objectWithState = new AtomicBoolean(false);
 
       CompletableFuture.runAsync(() -> {
@@ -59,7 +59,7 @@ public class SafeAwaitTest {
    }
 
    @Test
-   public void testAwait_waitObject_timeout() throws InterruptedException {
+   void testAwait_waitObject_timeout() throws InterruptedException {
       final var objectWithState = new AtomicBoolean(false);
 
       CompletableFuture.runAsync(() -> {

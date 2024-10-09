@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CollectionUtilsTest {
+class CollectionUtilsTest {
 
-   public void testEnsureSize() {
+   void testEnsureSize() {
       final var l = new ArrayList<@Nullable String>();
       ensureSize(l, 5);
       assertThat(l).hasSize(5);
@@ -32,7 +32,7 @@ public class CollectionUtilsTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testIntersectListt() {
+   void testIntersectListt() {
       assertThat(intersect((List[]) null)).isEmpty();
       assertThat(intersect(Collections.emptyList())).isEmpty();
       assertThat(intersect(Collections.emptyList(), null)).isEmpty();
@@ -47,7 +47,7 @@ public class CollectionUtilsTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testIntersectSet() {
+   void testIntersectSet() {
       assertThat(intersect((Set[]) null)).isEmpty();
       assertThat(intersect(Collections.emptySet())).isEmpty();
       assertThat(intersect(Collections.emptySet(), null)).isEmpty();
@@ -61,7 +61,7 @@ public class CollectionUtilsTest {
    }
 
    @Test
-   public void testHead() {
+   void testHead() {
       final List<String> testList = newArrayList("1", "2", "3");
 
       assertThat(head(testList, 1)).isEqualTo(newArrayList("1"));
@@ -72,7 +72,7 @@ public class CollectionUtilsTest {
    }
 
    @Test
-   public void testTail() {
+   void testTail() {
       final List<String> testList = newArrayList("1", "2", "3");
 
       assertThat(tail(testList, 1)).isEqualTo(newArrayList("3"));

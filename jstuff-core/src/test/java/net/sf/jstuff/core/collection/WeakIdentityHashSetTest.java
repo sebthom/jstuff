@@ -9,20 +9,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestCase;
 import net.sf.jstuff.core.concurrent.Threads;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class WeakIdentityHashSetTest extends TestCase {
+class WeakIdentityHashSetTest {
    private static final class Entity {
       @Nullable
       private String name;
 
-      public Entity setName(final String name) {
+      Entity setName(final String name) {
          this.name = name;
          return this;
       }
@@ -47,7 +46,7 @@ public class WeakIdentityHashSetTest extends TestCase {
 
    @SuppressWarnings("null")
    @Test
-   public void testWeakIdentityHashSet() {
+   void testWeakIdentityHashSet() {
       final var identitySet = new WeakIdentityHashSet<Entity>();
 
       Entity e1 = new Entity().setName("aa");

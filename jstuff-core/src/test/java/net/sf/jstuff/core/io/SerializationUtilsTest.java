@@ -9,21 +9,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SerializationUtilsTest {
+class SerializationUtilsTest {
 
    public static final class Entity {
       @Nullable
       private String name;
 
-      public Entity() {
+      public Entity() { // CHECKSTYLE:IGNORE .*
       }
 
-      public Entity(final String name) {
+      public Entity(final String name) { // CHECKSTYLE:IGNORE .*
          this.name = name;
       }
 
@@ -55,7 +55,7 @@ public class SerializationUtilsTest {
    }
 
    @Test
-   public void testBean2XML() {
+   void testBean2XML() {
       final var bean = new Entity("foobar");
       System.out.println(SerializationUtils.bean2xml(bean));
       final Entity clone = SerializationUtils.xml2bean(SerializationUtils.bean2xml(bean));

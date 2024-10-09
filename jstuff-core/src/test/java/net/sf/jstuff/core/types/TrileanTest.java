@@ -7,22 +7,22 @@ package net.sf.jstuff.core.types;
 import static net.sf.jstuff.core.types.Trilean.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TrileanTest {
+class TrileanTest {
 
    @Test
-   public void testNegate() {
+   void testNegate() {
       assertThat(TRUE.negate()).isEqualTo(FALSE);
       assertThat(FALSE.negate()).isEqualTo(TRUE);
       assertThat(UNKNOWN.negate()).isEqualTo(UNKNOWN);
    }
 
    @Test
-   public void testAnd() {
+   void testAnd() {
       assertThat(TRUE.and(TRUE)).isEqualTo(TRUE);
       assertThat(TRUE.and(FALSE)).isEqualTo(FALSE);
       assertThat(TRUE.and(UNKNOWN)).isEqualTo(UNKNOWN);
@@ -40,7 +40,7 @@ public class TrileanTest {
    }
 
    @Test
-   public void testOr() {
+   void testOr() {
       assertThat(TRUE.or(TRUE)).isEqualTo(TRUE);
       assertThat(TRUE.or(FALSE)).isEqualTo(TRUE);
       assertThat(TRUE.or(UNKNOWN)).isEqualTo(TRUE);
@@ -58,7 +58,7 @@ public class TrileanTest {
    }
 
    @Test
-   public void testXor() {
+   void testXor() {
       assertThat(TRUE.xor(TRUE)).isEqualTo(FALSE);
       assertThat(TRUE.xor(FALSE)).isEqualTo(TRUE);
       assertThat(TRUE.xor(UNKNOWN)).isEqualTo(UNKNOWN);

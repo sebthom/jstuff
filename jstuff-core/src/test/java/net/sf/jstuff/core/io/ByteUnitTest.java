@@ -10,17 +10,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.RoundingMode;
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.math.Rounding;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ByteUnitTest {
+class ByteUnitTest {
 
    @Test
-   public void testToBytes() {
+   void testToBytes() {
       assertThat(BYTES.toBytes(0).longValue()).isZero();
       assertThat(KIBIBYTES.toBytes(0).longValue()).isZero();
       assertThat(MEBIBYTES.toBytes(0).longValue()).isZero();
@@ -53,7 +53,7 @@ public class ByteUnitTest {
    }
 
    @Test
-   public void testKiBFrom() {
+   void testKiBFrom() {
       assertThat(KIBIBYTES.of(0, BYTES)).isZero();
       assertThat(KIBIBYTES.of(0, KIBIBYTES)).isZero();
       assertThat(KIBIBYTES.of(0, MEBIBYTES)).isZero();
@@ -87,7 +87,7 @@ public class ByteUnitTest {
    }
 
    @Test
-   public void testToHumanReadableString() {
+   void testToHumanReadableString() {
       final var rounding = new Rounding(2, RoundingMode.HALF_UP);
       assertThat(BYTES.toHumanReadableString(999, rounding, Locale.US)).isEqualTo("999 B");
       assertThat(BYTES.toHumanReadableString(999 * 1024, rounding, Locale.US)).isEqualTo("999 KiB");

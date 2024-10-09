@@ -14,9 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.localization.NumberHelper;
@@ -42,8 +42,8 @@ import net.sf.jstuff.core.reflection.StackTrace;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UnsafePublicationTest {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+class UnsafePublicationTest {
    private abstract static class AbstractConsumingActor implements Runnable {
       @Nullable
       protected abstract Subject getSubject();
@@ -92,7 +92,7 @@ public class UnsafePublicationTest {
                f16 = f15 = f14 = f13 = f12 = f11 = f10 = f09 = f08 = f07 = f06 = f05 = f04 = f03 = f02 = f01 = externalValue;
       }
 
-      public boolean isFullyInitialized() {
+      boolean isFullyInitialized() {
          return NUMBER_OF_FIELDS - (f01 + f02 + f03 + f04 + f05 + f06 + f07 + f08 + f09 + f10 + f11 + f12 + f13 + f14 + f15 + f16 + f17
                + f18 + f19 + f20 + f21 + f22 + f23 + f24 + f25 + f26 + f27 + f28 + f29 + f30 + f31 + f32 + f33 + f34 + f35 + f36 + f37 + f38
                + f39 + f40) == 0;
@@ -168,7 +168,7 @@ public class UnsafePublicationTest {
    }
 
    @Test
-   public void test1PublicationWithoutIndirection() throws Exception {
+   void test1PublicationWithoutIndirection() throws Exception {
       _testPublication( //
          true, // expected to fail
          new AbstractPublishingActor() {
@@ -188,7 +188,7 @@ public class UnsafePublicationTest {
    }
 
    @Test
-   public void test2PublicationWithBrokenMemoryBarrier() throws Exception {
+   void test2PublicationWithBrokenMemoryBarrier() throws Exception {
       _testPublication( //
          true, // expected to fail
          new AbstractPublishingActor() {
@@ -211,7 +211,7 @@ public class UnsafePublicationTest {
    }
 
    @Test
-   public void test3PublicationWithFinalMemoryBarrier() throws Exception {
+   void test3PublicationWithFinalMemoryBarrier() throws Exception {
       _testPublication( //
          false, // not expected to fail
          new AbstractPublishingActor() {
@@ -237,7 +237,7 @@ public class UnsafePublicationTest {
    }
 
    @Test
-   public void test4PublicationWithVolatileMemoryBarrier() throws Exception {
+   void test4PublicationWithVolatileMemoryBarrier() throws Exception {
       _testPublication( //
          false, // not expected to fail
          new AbstractPublishingActor() {

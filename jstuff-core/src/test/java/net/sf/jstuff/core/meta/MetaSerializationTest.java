@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.Serializable;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.collection.Maps;
 import net.sf.jstuff.core.io.SerializationUtils;
@@ -20,14 +20,14 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MetaSerializationTest {
-   public static class Entity<SELF_TYPE extends Entity<SELF_TYPE>> {
-      public static final ClassDescriptor<EntityMeta> META_CLASS = EntityMeta.META_CLASS;
+class MetaSerializationTest {
+   static class Entity<SELF_TYPE extends Entity<SELF_TYPE>> {
+      static final ClassDescriptor<EntityMeta> META_CLASS = EntityMeta.META_CLASS;
 
       private String comment;
 
       @SuppressWarnings("unchecked")
-      public <T> T _get(final PropertyDescriptor<T> property) {
+      <T> T _get(final PropertyDescriptor<T> property) {
          Args.notNull("property", property);
 
          if (property.equals(EntityMeta.PROP_comment))
@@ -35,11 +35,11 @@ public class MetaSerializationTest {
          throw new UnsupportedOperationException();
       }
 
-      public ClassDescriptor<EntityMeta> _getMetaClass() {
+      ClassDescriptor<EntityMeta> _getMetaClass() {
          return EntityMeta.META_CLASS;
       }
 
-      public <T> SELF_TYPE _set(final PropertyDescriptor<T> property, final T value) {
+      <T> SELF_TYPE _set(final PropertyDescriptor<T> property, final T value) {
          Args.notNull("property", property);
 
          if (property.equals(EntityMeta.PROP_comment)) {
@@ -48,21 +48,21 @@ public class MetaSerializationTest {
          throw new UnsupportedOperationException();
       }
 
-      public String getComment() {
+      String getComment() {
          return comment;
       }
 
-      public void setComment(final String comment) {
+      void setComment(final String comment) {
          this.comment = comment;
       }
    }
 
-   public static class EntityMeta {
+   static class EntityMeta {
       @NonNull
-      public static final ClassDescriptor<EntityMeta> META_CLASS = ClassDescriptor.of(EntityMeta.class, "Entity", null, null);
+      static final ClassDescriptor<EntityMeta> META_CLASS = ClassDescriptor.of(EntityMeta.class, "Entity", null, null);
 
       // CHECKSTYLE:IGNORE ConstantName FOR NEXT 2 LINES
-      public static final PropertyDescriptor<String> PROP_comment = PropertyDescriptor.create(META_CLASS, //
+      static final PropertyDescriptor<String> PROP_comment = PropertyDescriptor.create(META_CLASS, //
          "comment", String.class, 0, 1, false, false, true, //
          "", Maps.newHashMap( //
             "descr", (Serializable) "this entity's comment" //
@@ -70,7 +70,7 @@ public class MetaSerializationTest {
    }
 
    @Test
-   public void testSerialization() {
+   void testSerialization() {
       assertThat(Entity.META_CLASS).isNotNull();
       assertThat(SerializationUtils.clone(Entity.META_CLASS)).isSameAs(Entity.META_CLASS);
       assertThat(SerializationUtils.clone(EntityMeta.PROP_comment.getMetaClass())).isSameAs(Entity.META_CLASS);

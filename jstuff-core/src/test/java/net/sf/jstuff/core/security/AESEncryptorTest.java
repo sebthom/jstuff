@@ -6,15 +6,15 @@ package net.sf.jstuff.core.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AESEncryptorTest {
+class AESEncryptorTest {
 
    @Test
-   public void testAES() {
+   void testAES() {
       final byte[] plain = "Hello World!".getBytes();
 
       var aes = new AESEncryptor("mySalt");

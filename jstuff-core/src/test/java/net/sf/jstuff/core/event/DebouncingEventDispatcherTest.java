@@ -10,28 +10,28 @@ import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DebouncingEventDispatcherTest {
+class DebouncingEventDispatcherTest {
 
    final int delayMS = 100;
    final DebouncingEventDispatcher<String> ed = new DebouncingEventDispatcher<>(Duration.ofMillis(delayMS));
    final AtomicLong eventCount = new AtomicLong();
    final EventListener<String> listener1 = event -> eventCount.incrementAndGet();
 
-   @Before
-   public void setup() {
+   @BeforeEach
+   void setup() {
       assertThat(ed.subscribe(listener1)).isTrue();
       assertThat(ed.subscribe(listener1)).isFalse();
       assertThat(eventCount.get()).isZero();
    }
 
    @Test
-   public void testSingleEvent() throws InterruptedException, ExecutionException {
+   void testSingleEvent() throws InterruptedException, ExecutionException {
       final var future = ed.fire("123");
 
       Thread.sleep(delayMS + 50);
@@ -41,7 +41,7 @@ public class DebouncingEventDispatcherTest {
    }
 
    @Test
-   public void testFireSameEventMultipleTimesWithinInterval() throws InterruptedException, ExecutionException {
+   void testFireSameEventMultipleTimesWithinInterval() throws InterruptedException, ExecutionException {
       final var futureA = ed.fire("123");
       ed.fire("123");
       final var futureB = ed.fire("123");
@@ -54,7 +54,7 @@ public class DebouncingEventDispatcherTest {
    }
 
    @Test
-   public void testFireSameEventMultipleTimesAcrossIntervals() throws InterruptedException {
+   void testFireSameEventMultipleTimesAcrossIntervals() throws InterruptedException {
       for (int i = 0; i < 5; i++) {
          Thread.sleep(delayMS - 50);
          ed.fire("123");

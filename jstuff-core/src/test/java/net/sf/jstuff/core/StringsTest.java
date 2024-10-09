@@ -13,16 +13,16 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.collection.CollectionUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class StringsTest {
+class StringsTest {
    @Test
-   public void testAnsiToHTML() {
+   void testAnsiToHTML() {
       assertThat(Strings.ansiColorsToHTML("\u001B[33;40mHello World!\u001B[40;42mHow are you?")).hasToString(
          "<span style=\"color:yellow;background-color:black;\">Hello World!</span><span style=\"color:yellow;background-color:green;\">How are you?</span>");
 
@@ -33,7 +33,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testContainsAny() {
+   void testContainsAny() {
       assertThat(Strings.containsAny("abcdef", "abcdef")).isTrue();
       assertThat(Strings.containsAny("abcdef", "123", "bc")).isTrue();
       assertThat(Strings.containsAny("abcdef", "123", "456")).isFalse();
@@ -46,7 +46,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testCountMatches() {
+   void testCountMatches() {
       assertThat(Strings.countMatches("1234512345", "1", 0)).isEqualTo(2);
       assertThat(Strings.countMatches("1234512345", "1", 1)).isEqualTo(1);
       assertThat(Strings.countMatches("1234512345", "1", 5)).isEqualTo(1);
@@ -63,7 +63,7 @@ public class StringsTest {
 
    @Test
    @SuppressWarnings("unused")
-   public void testDefaultIf() {
+   void testDefaultIf() {
       assertThat(Strings.defaultIfBlank("sometext", "DEFAULT")).isEqualTo("sometext");
       assertThat(Strings.defaultIfBlank("  ", "DEFAULT")).isEqualTo("DEFAULT");
       assertThat(Strings.defaultIfBlank("", "DEFAULT")).isEqualTo("DEFAULT");
@@ -109,7 +109,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testLengthUTF8() {
+   void testLengthUTF8() {
       // Test with regular ASCII characters
       final String asciiString = "Hello, world!";
       long lengthUtf8 = Strings.lengthUTF8(asciiString);
@@ -142,7 +142,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testLengthUTF16() {
+   void testLengthUTF16() {
       // Test with regular ASCII characters
       final String asciiString = "Hello, world!";
       long lengthUtf16 = Strings.lengthUTF16(asciiString);
@@ -176,7 +176,7 @@ public class StringsTest {
 
    @Test
    @SuppressWarnings("unused")
-   public void testNullIf() {
+   void testNullIf() {
       assertThat(Strings.nullIfBlank("a")).isEqualTo("a");
       assertThat(Strings.nullIfBlank(" ")).isNull();
       assertThat(Strings.nullIfBlank("")).isNull();
@@ -203,7 +203,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testGetNewLineSeparator() {
+   void testGetNewLineSeparator() {
       assertThat(Strings.getNewLineSeparator("abc\ndef")).isEqualTo("\n");
       assertThat(Strings.getNewLineSeparator("abc\n")).isEqualTo("\n");
       assertThat(Strings.getNewLineSeparator("\n")).isEqualTo("\n");
@@ -220,7 +220,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testGlobToRegEx() {
+   void testGlobToRegEx() {
       assertThat(Pattern.compile(Strings.globToRegex("**/file?.txt").toString()).matcher("aa/bb/file1.txt").matches()).isTrue();
       assertThat(Pattern.compile(Strings.globToRegex("*.txt").toString()).matcher("file.txt").matches()).isTrue();
       assertThat(Pattern.compile(Strings.globToRegex("*.txt").toString()).matcher("file.pdf").matches()).isFalse();
@@ -233,7 +233,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testPrependLines() {
+   void testPrependLines() {
       assertThat(Strings.prependLines("", "foo")).asString().isEqualTo("foo");
       assertThat(Strings.prependLines("\n", "foo")).asString().isEqualTo("foo\nfoo");
       assertThat(Strings.prependLines("\r", "foo")).asString().isEqualTo("foo\rfoo");
@@ -248,7 +248,7 @@ public class StringsTest {
     * test: replace(string, replacement, start) --> no length argument
     */
    @Test
-   public void testReplaceAt1() {
+   void testReplaceAt1() {
       String a;
       String b;
 
@@ -347,7 +347,7 @@ public class StringsTest {
     * test: replace(string, replacement, start, length) --> length = 0
     */
    @Test
-   public void testReplaceAt2() {
+   void testReplaceAt2() {
       String a;
       String b;
       int c;
@@ -452,7 +452,7 @@ public class StringsTest {
     * test: replace(string, replacement, start, length) --> length = 1
     */
    @Test
-   public void testReplaceAt3() {
+   void testReplaceAt3() {
       String a;
       String b;
       int c;
@@ -557,7 +557,7 @@ public class StringsTest {
     * test: replace(string, replacement, start, length) --> length = 1_000_000
     */
    @Test
-   public void testReplaceAt4() {
+   void testReplaceAt4() {
       String a;
       String b;
       int c;
@@ -662,7 +662,7 @@ public class StringsTest {
     * test: replace(string, replacement, start, length) --> length = -1
     */
    @Test
-   public void testReplaceAt5() {
+   void testReplaceAt5() {
       String a;
       String b;
       int c;
@@ -767,7 +767,7 @@ public class StringsTest {
     * test: replace(string, replacement, start, length) --> length = -1_000_000
     */
    @Test
-   public void testReplaceAt6() {
+   void testReplaceAt6() {
       String a;
       String b;
       int c;
@@ -869,7 +869,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testReplaceEach() {
+   void testReplaceEach() {
       assertThat(Strings.replaceEach("There was a man with seven kids.", //
          "man", "woman", //
          "seven", "three", //
@@ -879,7 +879,7 @@ public class StringsTest {
 
    @Test
    @SuppressWarnings("null")
-   public void testReplaceEach_String() {
+   void testReplaceEach_String() {
       // Test 1: Basic replacement
       {
          final var searchIn = "Hello world! This is a test. Hello everyone!";
@@ -955,7 +955,7 @@ public class StringsTest {
 
    @Test
    @SuppressWarnings("null")
-   public void testReplaceEach_StringBuilder() {
+   void testReplaceEach_StringBuilder() {
       // Test 1: Basic replacement
       {
          final var searchIn = new StringBuilder("Hello world! This is a test. Hello everyone!");
@@ -1030,7 +1030,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testSplitLikeShell() {
+   void testSplitLikeShell() {
       assertThat(Strings.splitLikeShell("")).isEmpty();
       assertThat(Strings.splitLikeShell("  \t \n")).isEmpty();
       assertThat(Strings.splitLikeShell("#comment")).isEmpty();
@@ -1052,14 +1052,14 @@ public class StringsTest {
    }
 
    @Test
-   public void testSplitLines() {
+   void testSplitLines() {
       final String lines = "A\nB\n\nC\nD";
       assertThat(Strings.splitLines(lines, true)).hasSize(5);
       assertThat(Strings.splitLines(lines, false)).hasSize(4);
    }
 
    @Test
-   public void testSplitAsIterable() {
+   void testSplitAsIterable() {
       //assertThat(Strings.splitAsIterableNullable(null, '.')).isNull();
       assertThat(Strings.splitAsIterable("", '.')).isEmpty();
       assertThat(Strings.splitAsIterable(".", '.')).isEmpty();
@@ -1072,7 +1072,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testSplitAsList() {
+   void testSplitAsList() {
       assertThat(Strings.splitAsListNullable(null, '.')).isNull();
       assertThat(Strings.splitAsList("", '.')).isEmpty();
       assertThat(Strings.splitAsList(".", '.')).isEmpty();
@@ -1085,7 +1085,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testSplitAsSet() {
+   void testSplitAsSet() {
       assertThat(Strings.splitAsSetNullable(null, '.')).isNull();
       assertThat(Strings.splitAsSet("", '.')).isEmpty();
       assertThat(Strings.splitAsSet(".", '.')).isEmpty();
@@ -1098,7 +1098,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testSplitAsStream() {
+   void testSplitAsStream() {
       //assertThat(Strings.splitAsStreamNullable(null, '.')).isNull();
       assertThat(Strings.splitAsStream("", '.')).isEmpty();
       assertThat(Strings.splitAsStream(".", '.')).isEmpty();
@@ -1111,7 +1111,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testSubstringBeforeIgnoreCase() {
+   void testSubstringBeforeIgnoreCase() {
       String a = "abcdef";
 
       assertThat(Strings.substringBeforeIgnoreCase(a, "c")).isEqualTo("ab");
@@ -1126,7 +1126,7 @@ public class StringsTest {
    }
 
    @Test
-   public void testTrimIndent() {
+   void testTrimIndent() {
       assertThat(Strings.trimIndent("\t\t", 2)).asString().isEmpty();
       assertThat(Strings.trimIndent("foo  ", 2)).asString().isEqualTo("foo  ");
       assertThat(Strings.trimIndent(" \t foo", 2)).asString().isEqualTo("foo");

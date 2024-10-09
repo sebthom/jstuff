@@ -13,15 +13,15 @@ import java.net.Proxy.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RuleBasedProxySelectorTest {
+class RuleBasedProxySelectorTest {
 
    @Test
-   public void testRuleBasedProxySelector() throws URISyntaxException {
+   void testRuleBasedProxySelector() throws URISyntaxException {
       final var selector = new RuleBasedProxySelector(false);
       selector.addProxyRule(new Proxy(Type.HTTP, new InetSocketAddress("daproxy", 8080)), ".*//example.com/.*");
 

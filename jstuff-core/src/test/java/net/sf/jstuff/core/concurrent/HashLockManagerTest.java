@@ -15,14 +15,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class HashLockManagerTest {
+class HashLockManagerTest {
    private static final Logger LOG = Logger.create();
 
    private static final int THREADS = 2 * Runtime.getRuntime().availableProcessors();
@@ -38,7 +38,7 @@ public class HashLockManagerTest {
    };
 
    @Test
-   public void testWithHashLockManager() throws InterruptedException {
+   void testWithHashLockManager() throws InterruptedException {
       final var lockManager = new HashLockManager<String>(100);
 
       final StopWatch sw = new StopWatch();
@@ -85,7 +85,7 @@ public class HashLockManagerTest {
    }
 
    @Test
-   public void testWithoutHashLockManager() throws InterruptedException {
+   void testWithoutHashLockManager() throws InterruptedException {
 
       // ignore on CI systems, like Travis/GitHub Actions
       if ("true".equals(System.getenv("CI")))

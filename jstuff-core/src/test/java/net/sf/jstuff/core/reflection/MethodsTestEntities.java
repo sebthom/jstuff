@@ -12,9 +12,9 @@ import org.eclipse.jdt.annotation.Nullable;
  *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public abstract class MethodsTestEntities {
+abstract class MethodsTestEntities {
 
-   public static class EntityA {
+   static class EntityA {
       @Nullable
       private EntityA property1;
       private int property2;
@@ -40,7 +40,7 @@ public abstract class MethodsTestEntities {
 
    }
 
-   public static class EntityB extends EntityA {
+   static class EntityB extends EntityA {
 
       private boolean property3;
 

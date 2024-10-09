@@ -10,15 +10,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EventDispatcherWithHistoryTest {
+class EventDispatcherWithHistoryTest {
 
    @Test
-   public void testEventDispatcherWithHistory() throws InterruptedException, ExecutionException {
+   void testEventDispatcherWithHistory() throws InterruptedException, ExecutionException {
       final var em = new EventDispatcherWithHistory<>(new SyncEventDispatcher<@Nullable String>());
 
       assertThat(em.fire("123").get()).isZero();

@@ -10,12 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CharArrayInputStreamTest {
+class CharArrayInputStreamTest {
 
    private static final String TEST_ASCII = "Hello, World!";
 
@@ -26,7 +26,7 @@ public class CharArrayInputStreamTest {
    private static final int TEST_UNICODE_BYTES_LEN = TEST_UNICODE.getBytes(UTF_8).length;
 
    @Test
-   public void testAvailable() throws IOException {
+   void testAvailable() throws IOException {
       try (var is = new CharArrayInputStream(TEST_ASCII.toCharArray())) {
          assertThat(is.available()).isEqualTo(TEST_ASCII.length());
          final var buffer = new byte[4];
@@ -46,7 +46,7 @@ public class CharArrayInputStreamTest {
    }
 
    @Test
-   public void testEndOfStream() throws IOException {
+   void testEndOfStream() throws IOException {
       try (var is = new CharArrayInputStream(TEST_UNICODE.toCharArray())) {
          is.skip(Long.MAX_VALUE);
          assertThat(is.read()).isEqualTo(-1);
@@ -54,7 +54,7 @@ public class CharArrayInputStreamTest {
    }
 
    @Test
-   public void testMarkAndReset() throws IOException {
+   void testMarkAndReset() throws IOException {
       try (var is = new CharArrayInputStream(TEST_UNICODE.toCharArray())) {
          // read the first few bytes (the emoji)
          byte[] buffer = new byte[EMOJI_BYTES_LEN];
@@ -79,7 +79,7 @@ public class CharArrayInputStreamTest {
    }
 
    @Test
-   public void testReadEachByte() throws IOException {
+   void testReadEachByte() throws IOException {
       try (var is = new CharArrayInputStream(TEST_UNICODE.toCharArray())) {
          final var bytesRead = new ArrayList<Byte>();
          int b;
@@ -96,7 +96,7 @@ public class CharArrayInputStreamTest {
    }
 
    @Test
-   public void testReadIntoByteArray() throws IOException {
+   void testReadIntoByteArray() throws IOException {
       final var buffer = new byte[1024]; // Buffer to read a portion of the text
 
       try (var is = new CharArrayInputStream(TEST_UNICODE.toCharArray())) {
@@ -108,7 +108,7 @@ public class CharArrayInputStreamTest {
    }
 
    @Test
-   public void testResetWithoutMark() throws IOException {
+   void testResetWithoutMark() throws IOException {
       try (var is = new CharArrayInputStream(TEST_UNICODE.toCharArray())) {
          final var buffer = new byte[EMOJI_BYTES_LEN];
 
@@ -124,7 +124,7 @@ public class CharArrayInputStreamTest {
    }
 
    @Test
-   public void testSkip() throws IOException {
+   void testSkip() throws IOException {
       try (var is = new CharArrayInputStream(TEST_UNICODE.toCharArray())) {
          // skip emoji
          final long skipped = is.skip(EMOJI_BYTES_LEN);
@@ -138,7 +138,7 @@ public class CharArrayInputStreamTest {
    }
 
    @Test
-   public void testHighSurrogateAtEndOfInput() throws IOException {
+   void testHighSurrogateAtEndOfInput() throws IOException {
       final char[] invalidSequence = {'A', '\uD800'}; // valid char followed by an isolated high surrogate
       try (var is = new CharArrayInputStream(invalidSequence, UTF_8)) {
          final byte[] result = is.readAllBytes();
@@ -150,7 +150,7 @@ public class CharArrayInputStreamTest {
    }
 
    @Test
-   public void testHighSurrogateWithoutLowSurrogate() throws IOException {
+   void testHighSurrogateWithoutLowSurrogate() throws IOException {
       final char[] invalidSequence = {'\uD800', 'A'}; // \uD800 is a high surrogate, followed by 'A'
       try (var is = new CharArrayInputStream(invalidSequence, UTF_8)) {
          final byte[] result = is.readAllBytes();

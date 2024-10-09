@@ -5,36 +5,38 @@
 package net.sf.jstuff.xml;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class JAXBUtilsTest {
+class JAXBUtilsTest {
 
-   public static class MyEntity {
+   static class MyEntity {
       private @Nullable MyEntity child;
       private @Nullable String name;
 
-      public @Nullable MyEntity getChild() {
+      @Nullable
+      MyEntity getChild() {
          return child;
       }
 
-      public @Nullable String getName() {
+      @Nullable
+      String getName() {
          return name;
       }
 
-      public void setChild(final MyEntity child) {
+      void setChild(final MyEntity child) {
          this.child = child;
       }
 
-      public void setName(final String name) {
+      void setName(final String name) {
          this.name = name;
       }
    }
 
    @Test
-   public void testToXML() {
+   void testToXML() {
       final var e = new MyEntity();
       e.name = "a";
       final var child = new MyEntity();
@@ -44,7 +46,7 @@ public class JAXBUtilsTest {
    }
 
    @Test
-   public void testToXSD() {
+   void testToXSD() {
       System.out.println(JAXBUtils.toXSD(MyEntity.class));
    }
 }

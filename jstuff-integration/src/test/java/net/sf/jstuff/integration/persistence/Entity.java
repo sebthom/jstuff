@@ -14,7 +14,7 @@ import net.sf.jstuff.core.types.Identifiable;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @jakarta.persistence.Entity
-public class Entity extends Identifiable.Default<Integer> {
+class Entity extends Identifiable.Default<Integer> {
    private static final long serialVersionUID = 1L;
 
    @jakarta.persistence.Transient
@@ -24,7 +24,7 @@ public class Entity extends Identifiable.Default<Integer> {
 
    private @Nullable String label;
 
-   public Entity() {
+   Entity() {
       _hashCodeTrackingId = HashCodeManager.onEntityInstantiated(this);
    }
 
@@ -65,7 +65,7 @@ public class Entity extends Identifiable.Default<Integer> {
       HashCodeManager.onIdSet(this, _hashCodeTrackingId);
    }
 
-   public Entity setLabel(final String label) {
+   Entity setLabel(final String label) {
       this.label = label;
       return this;
    }

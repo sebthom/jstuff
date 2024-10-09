@@ -6,15 +6,15 @@ package net.sf.jstuff.core.collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class FIFOMapTest {
+class FIFOMapTest {
 
    @Test
-   public void testFIFOMap() {
+   void testFIFOMap() {
       final FIFOMap<String, String> map = FIFOMap.create(3);
       map.put("1", "1");
       map.put("2", "2");

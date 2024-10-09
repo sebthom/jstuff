@@ -9,15 +9,15 @@ import static org.assertj.core.api.Assertions.*;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AssertTest {
+class AssertTest {
 
    @Test
-   public void testAssert_IsFalse() {
+   void testAssert_IsFalse() {
       try {
          Assert.isFalse(true, "foo");
          failBecauseExceptionWasNotThrown(IllegalStateException.class);
@@ -29,7 +29,7 @@ public class AssertTest {
    }
 
    @Test
-   public void testAssert_IsFileReadable() throws IOException {
+   void testAssert_IsFileReadable() throws IOException {
       try {
          Assert.isFileReadable(new File("foo"));
          failBecauseExceptionWasNotThrown(IllegalStateException.class);
@@ -46,7 +46,7 @@ public class AssertTest {
    }
 
    @Test
-   public void testAssert_IsTrue() {
+   void testAssert_IsTrue() {
       try {
          Assert.isTrue(false, "foo");
          failBecauseExceptionWasNotThrown(IllegalStateException.class);
@@ -58,7 +58,7 @@ public class AssertTest {
    }
 
    @Test
-   public void testAssert_NotEmpty() {
+   void testAssert_NotEmpty() {
       try {
          Assert.notEmpty("", "foo");
          failBecauseExceptionWasNotThrown(IllegalStateException.class);
@@ -93,7 +93,7 @@ public class AssertTest {
    }
 
    @Test
-   public void testAssert_NotNull() {
+   void testAssert_NotNull() {
       try {
          Assert.notNull(null, "foo");
          failBecauseExceptionWasNotThrown(IllegalStateException.class);

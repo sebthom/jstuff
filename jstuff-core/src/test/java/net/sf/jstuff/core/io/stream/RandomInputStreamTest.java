@@ -8,17 +8,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.io.IOUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RandomInputStreamTest {
+class RandomInputStreamTest {
 
    @Test
-   public void testDummyInputStream() throws IOException {
+   void testDummyInputStream() throws IOException {
       try (var stream = new RandomInputStream(5123)) {
          final byte[] result = IOUtils.readBytes(stream);
          assertThat(result).hasSize(5123);

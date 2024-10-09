@@ -8,15 +8,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ThreadLocalSecureRandomTest {
+class ThreadLocalSecureRandomTest {
 
    @Test
-   public void testThreadLocalSecureRandom() {
+   void testThreadLocalSecureRandom() {
       final ThreadLocalSecureRandom rand = ThreadLocalSecureRandom.builder() //
          .reseedEvery(Duration.ofMinutes(30)) //
          .useStrongInstances(true) //

@@ -10,16 +10,16 @@ import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.concurrent.Threads;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ObjectCacheTest {
+class ObjectCacheTest {
    @Test
-   public void testObjectCache_SoftRef_NoValuesToKeep() {
+   void testObjectCache_SoftRef_NoValuesToKeep() {
       final var cache = new ObjectCache<String, Object>();
       cache.put("1", new Object());
       cache.put("2", new Object());
@@ -35,7 +35,7 @@ public class ObjectCacheTest {
    }
 
    @Test
-   public void testObjectCache_WeakRef_NoValuesToKeep() {
+   void testObjectCache_WeakRef_NoValuesToKeep() {
       final var cache = new ObjectCache<String, Object>(true);
       cache.put("1", new Object());
       cache.put("2", new Object());
@@ -51,7 +51,7 @@ public class ObjectCacheTest {
    }
 
    @Test
-   public void testObjectCache_WeakRef_Last2ValuesToKeep() {
+   void testObjectCache_WeakRef_Last2ValuesToKeep() {
       final var cache = new ObjectCache<String, Object>(2, true);
       cache.put("1", new Object());
       cache.put("2", new Object());
@@ -67,7 +67,7 @@ public class ObjectCacheTest {
    }
 
    @Test
-   public void testThreadSafety() throws InterruptedException {
+   void testThreadSafety() throws InterruptedException {
       final int threadCount = 100;
       final int operationsPerThread = 100_000;
       final ObjectCache<Integer, String> cache = new ObjectCache<>(10);

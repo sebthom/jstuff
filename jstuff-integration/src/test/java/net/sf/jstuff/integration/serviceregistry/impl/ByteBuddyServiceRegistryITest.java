@@ -6,8 +6,8 @@ package net.sf.jstuff.integration.serviceregistry.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
@@ -15,15 +15,15 @@ import net.sf.jstuff.integration.serviceregistry.ServiceProxy;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ByteBuddyServiceRegistryITest extends AbstractServiceRegistryTest<ByteBuddyServiceRegistry> {
+class ByteBuddyServiceRegistryITest extends AbstractServiceRegistryTest<ByteBuddyServiceRegistry> {
 
-   @Before
-   public void setUp() throws Exception {
+   @BeforeEach
+   void setUp() throws Exception {
       registry = new ByteBuddyServiceRegistry();
    }
 
    @Test
-   public void testGarbageCollection() {
+   void testGarbageCollection() {
       assertThat(registry.getServiceEndpointsCount()).isZero();
       @SuppressWarnings("unused")
       final ServiceProxy<Service1> srv1Proxy = registry.getService(Service1.ENDPOINT_ID, Service1.class);

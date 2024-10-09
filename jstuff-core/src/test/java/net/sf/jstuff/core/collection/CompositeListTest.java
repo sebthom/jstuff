@@ -8,15 +8,15 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeListTest {
+class CompositeListTest {
 
    @Test
-   public void testCompositeList() {
+   void testCompositeList() {
       final var l1 = Arrays.asList("a", "b");
       final var l2 = Arrays.asList("c", "d");
 

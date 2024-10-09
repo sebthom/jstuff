@@ -14,14 +14,14 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.logging.Logger;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ScalingThreadPoolExecutorTest {
+class ScalingThreadPoolExecutorTest {
 
    private static final Logger LOG = Logger.create();
 
@@ -76,7 +76,7 @@ public class ScalingThreadPoolExecutorTest {
    }
 
    @Test
-   public void testScalingThreadPoolExecutor() throws ExecutionException, InterruptedException {
+   void testScalingThreadPoolExecutor() throws ExecutionException, InterruptedException {
       final var executor = new ScalingThreadPoolExecutor(0, 3, Duration.ofSeconds(5));
       try {
          testScalingThreadPoolExecutor(executor);

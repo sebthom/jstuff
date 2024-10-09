@@ -12,16 +12,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Path;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SerializablePathTest {
+class SerializablePathTest {
 
    @Test
    @SuppressWarnings("resource")
-   public void testSerializablePath() throws Exception {
+   void testSerializablePath() throws Exception {
       final var originalPath = Path.of("some/path/to/test.txt");
       final var serializablePath = SerializablePath.of(originalPath);
 

@@ -10,12 +10,12 @@ import static org.assertj.core.api.Assertions.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ExceptionsTest {
+class ExceptionsTest {
 
    private static final class CustomException extends Exception {
 
@@ -35,7 +35,7 @@ public class ExceptionsTest {
    }
 
    @Test
-   public void testEquals() {
+   void testEquals() {
       final var ex = new Throwable[2];
 
       for (int i = 0; i < 2; i++) {
@@ -51,7 +51,7 @@ public class ExceptionsTest {
    }
 
    @Test
-   public void testThrowSneakily() {
+   void testThrowSneakily() {
       final var ex = new IOException();
       try {
          Exceptions.throwSneakily(ex);
@@ -68,7 +68,7 @@ public class ExceptionsTest {
    }
 
    @Test
-   public void testWrapAs() {
+   void testWrapAs() {
       final var ex = new IOException(new GeneralSecurityException());
       assertThat(Exceptions.wrapAs(ex, IOException.class)).isSameAs(ex);
       assertThat(Exceptions.wrapAs(ex, Exception.class)).isSameAs(ex);

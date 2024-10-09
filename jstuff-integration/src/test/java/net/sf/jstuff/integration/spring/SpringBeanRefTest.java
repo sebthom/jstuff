@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.Serializable;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import net.sf.jstuff.core.io.SerializationUtils;
@@ -16,16 +16,16 @@ import net.sf.jstuff.core.io.SerializationUtils;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanRefTest {
+class SpringBeanRefTest {
 
-   public static class Entity implements Serializable {
+   static class Entity implements Serializable {
       private static final long serialVersionUID = 1L;
 
-      public SpringBeanRef<Object> springBean = SpringBeanRef.of("springBean");
+      SpringBeanRef<Object> springBean = SpringBeanRef.of("springBean");
    }
 
    @Test
-   public void testSpringBeanRef() {
+   void testSpringBeanRef() {
 
       final var ctx = new ClassPathXmlApplicationContext("SpringBeanLocatorTest.xml", SpringBeanRefTest.class);
 

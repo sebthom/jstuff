@@ -8,16 +8,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CharSequenceReaderTest {
+class CharSequenceReaderTest {
 
    @Test
    @SuppressWarnings("resource")
-   public void testCharSequenceReader() throws IOException {
+   void testCharSequenceReader() throws IOException {
       {
          final var buf = new char[5];
          final var r = new CharSequenceReader("Hello World!");

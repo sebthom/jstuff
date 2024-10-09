@@ -6,16 +6,16 @@ package net.sf.jstuff.integration.spring;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SpringBeanLocatorTest {
+class SpringBeanLocatorTest {
 
    @Test
-   public void testSpringBeanLocator() {
+   void testSpringBeanLocator() {
       try {
          SpringBeanLocator.get().byClass(Object.class); // must fail, since the spring context is not yet opened
          failBecauseExceptionWasNotThrown(IllegalStateException.class);

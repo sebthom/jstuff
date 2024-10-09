@@ -10,14 +10,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigInteger;
 
 import org.apache.commons.lang3.time.StopWatch;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class NumericalSystemTest {
+class NumericalSystemTest {
    @Test
-   public void testBase16Decode() {
+   void testBase16Decode() {
       assertThat(BASE16.decodeAsLong("0")).isZero();
       assertThat(BASE16.decodeAsLong("1")).isEqualTo(1);
       assertThat(BASE16.decodeAsLong(BASE16.encode(123_456_789))).isEqualTo(123_456_789);
@@ -30,7 +30,7 @@ public class NumericalSystemTest {
    }
 
    @Test
-   public void testBase36Decode() {
+   void testBase36Decode() {
       assertThat(BASE36.decodeAsLong("0")).isZero();
       assertThat(BASE36.decodeAsLong("1")).isEqualTo(1);
       assertThat(BASE36.decodeAsLong(BASE36.encode(123_456_789))).isEqualTo(123_456_789);
@@ -43,7 +43,7 @@ public class NumericalSystemTest {
    }
 
    @Test
-   public void testBase62Decode() {
+   void testBase62Decode() {
       assertThat(BASE62.decodeAsLong("0")).isZero();
       assertThat(BASE62.decodeAsLong("1")).isEqualTo(1);
       assertThat(BASE62.decodeAsLong(BASE62.encode(123_456_789))).isEqualTo(123_456_789);
@@ -56,7 +56,7 @@ public class NumericalSystemTest {
    }
 
    @Test
-   public void testToBase16Encode() {
+   void testToBase16Encode() {
       assertThat(BASE16.encode(0)).isEqualTo("0");
       assertThat(BASE16.encode(1)).isEqualTo("1");
       assertThat(BASE16.encode(15)).isEqualTo("f");
@@ -75,7 +75,7 @@ public class NumericalSystemTest {
    }
 
    @Test
-   public void testToBase36Encode() {
+   void testToBase36Encode() {
       assertThat(BASE36.encode(0)).isEqualTo("0");
       assertThat(BASE36.encode(1)).isEqualTo("1");
       assertThat(BASE36.encode(15)).isEqualTo("f");
@@ -94,7 +94,7 @@ public class NumericalSystemTest {
    }
 
    @Test
-   public void testToBase62Encode() {
+   void testToBase62Encode() {
       assertThat(BASE62.encode(0)).isEqualTo("0");
       assertThat(BASE62.encode(1)).isEqualTo("1");
       assertThat(BASE62.encode(15)).isEqualTo("f");
@@ -114,7 +114,7 @@ public class NumericalSystemTest {
    }
 
    @Test
-   public void testToBase62EncodeBigIntPerf() {
+   void testToBase62EncodeBigIntPerf() {
 
       final BigInteger number = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(Long.MAX_VALUE));
 

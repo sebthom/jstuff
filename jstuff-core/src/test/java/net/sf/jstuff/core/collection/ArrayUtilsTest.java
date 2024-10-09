@@ -10,20 +10,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ArrayUtilsTest {
+class ArrayUtilsTest {
 
    @Test
-   public void testAddAll() {
+   void testAddAll() {
       assertThat(ArrayUtils.addAll(new String[] {"a", "b"}, List.of("c", "d"))).isEqualTo(new String[] {"a", "b", "c", "d"});
    }
 
    @Test
-   public void testFilter() {
+   void testFilter() {
       final String[] filtered = ArrayUtils.filter(obj -> "foo".equals(obj) || "bar".equals(obj), "dog", "foo", "bar", "cat");
 
       assertThat(filtered).hasSize(2);
@@ -32,7 +32,7 @@ public class ArrayUtilsTest {
    }
 
    @Test
-   public void testIntersect() {
+   void testIntersect() {
       assertThat(ArrayUtils.intersect((Object[]) null)).isEmpty();
       assertThat(ArrayUtils.intersect(ArrayUtils.EMPTY_OBJECT_ARRAY)).isEmpty();
       assertThat(ArrayUtils.intersect(ArrayUtils.EMPTY_OBJECT_ARRAY, null)).isEmpty();
@@ -46,7 +46,7 @@ public class ArrayUtilsTest {
    }
 
    @Test
-   public void testToByteArray() {
+   void testToByteArray() {
       final String str = RandomStringUtils.random(250);
       assertThat(ArrayUtils.toByteArray(str.toCharArray(), StandardCharsets.UTF_8)).isEqualTo(str.getBytes(StandardCharsets.UTF_8));
    }

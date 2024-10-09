@@ -10,22 +10,19 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.Timeout;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import net.sf.jstuff.core.concurrent.Threads;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MutableObservableRefTest {
-
-   @Rule
-   public final Timeout timeout = Timeout.seconds(5);
+class MutableObservableRefTest {
 
    @Test
-   public void testObservers() {
+   @Timeout(value = 5, unit = TimeUnit.SECONDS)
+   void testObservers() {
       final var ref = new MutableObservableRef.Default<>("foo");
       assertThat(ref.get()).isEqualTo("foo");
       assertThat(ref.isObserved()).isFalse();
@@ -66,7 +63,8 @@ public class MutableObservableRefTest {
    }
 
    @Test
-   public void testAwait() throws InterruptedException {
+   @Timeout(value = 5, unit = TimeUnit.SECONDS)
+   void testAwait() throws InterruptedException {
       final var ref = new MutableObservableRef.Default<>("foo");
       assertThat(ref.get()).isEqualTo("foo");
 

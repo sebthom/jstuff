@@ -10,15 +10,15 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DateTimeHelperTest {
+class DateTimeHelperTest {
 
    @Test
-   public void testIsValidDate() {
+   void testIsValidDate() {
       DateTimeHelper c;
       DateFormat df;
 
@@ -68,7 +68,7 @@ public class DateTimeHelperTest {
       assertThat(c.isValidDate(df.format(new Date()))).isFalse();
    }
 
-   public void testIsValidDateTime() {
+   void testIsValidDateTime() {
       DateTimeHelper c;
       DateFormat df;
 
@@ -118,7 +118,7 @@ public class DateTimeHelperTest {
       assertThat(c.isValidDateTime(df.format(new Date()))).isFalse();
    }
 
-   public void testIsValidTime() {
+   void testIsValidTime() {
       DateTimeHelper c;
       DateFormat df;
 

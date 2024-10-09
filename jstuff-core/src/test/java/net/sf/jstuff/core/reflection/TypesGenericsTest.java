@@ -12,58 +12,58 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class TypesGenericsTest {
-   public static class ClassA_1 {
+class TypesGenericsTest {
+   static class ClassA_1 {
    }
 
-   public static class ClassA_2<T> extends ClassA_1 implements InterfaceA_5<T> {
+   static class ClassA_2<T> extends ClassA_1 implements InterfaceA_5<T> {
    }
 
-   public static class ClassA_3<T1, T2> extends ClassA_2<T1> implements InterfaceB<T1, T2> {
+   static class ClassA_3<T1, T2> extends ClassA_2<T1> implements InterfaceB<T1, T2> {
    }
 
-   public static class ClassA_4 extends ClassA_3<String, Integer> implements InterfaceC {
+   static class ClassA_4 extends ClassA_3<String, Integer> implements InterfaceC {
    }
 
-   public static class ClassA_5 extends ClassA_4 {
+   static class ClassA_5 extends ClassA_4 {
    }
 
-   public static class ClassB<T> {
+   static class ClassB<T> {
    }
 
-   public interface InterfaceA_1 {
+   interface InterfaceA_1 {
    }
 
-   public interface InterfaceA_2<T> extends InterfaceA_1 {
+   interface InterfaceA_2<T> extends InterfaceA_1 {
    }
 
-   public interface InterfaceA_3 extends InterfaceA_2<Double> {
+   interface InterfaceA_3 extends InterfaceA_2<Double> {
    }
 
-   public interface InterfaceA_4<T> extends InterfaceA_3 {
+   interface InterfaceA_4<T> extends InterfaceA_3 {
    }
 
-   public interface InterfaceA_5<T> extends InterfaceA_4<T> {
+   interface InterfaceA_5<T> extends InterfaceA_4<T> {
    }
 
-   public interface InterfaceB<T, T2> {
+   interface InterfaceB<T, T2> {
    }
 
-   public interface InterfaceC {
+   interface InterfaceC {
    }
 
-   public <T> void assertEquals(final List<T> actual, @SuppressWarnings("unchecked") final T... expected) {
+   <T> void assertEquals(final List<T> actual, @SuppressWarnings("unchecked") final T... expected) {
       assertThat(Arrays.asList(expected)).isEqualTo(new ArrayList<>(actual));
    }
 
    @Test
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public void testGenerics() {
+   void testGenerics() {
       // CLASSES: good behavior tests
       assertThat(findGenericTypeArguments(ClassA_1.class, ClassA_1.class)).isEqualTo(EMPTY_CLASS_ARRAY);
 

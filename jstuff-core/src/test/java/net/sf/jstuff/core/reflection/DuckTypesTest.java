@@ -8,19 +8,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class DuckTypesTest {
+class DuckTypesTest {
 
    private interface Duck {
       void walk();
    }
 
-   public static class DuckLike {
-      public int count = 0;
+   static class DuckLike {
+      int count = 0;
 
       public void walk() {
          count++;
@@ -28,7 +28,7 @@ public class DuckTypesTest {
    }
 
    @Test
-   public void testDuckTyping() {
+   void testDuckTyping() {
       assertThat(DuckTypes.isDuckType(new Object(), Duck.class)).isFalse();
 
       final var duckLike = new DuckLike();
@@ -40,7 +40,7 @@ public class DuckTypesTest {
    }
 
    @Test
-   public void testDuckTypingWithAnonymousInnerClass() {
+   void testDuckTypingWithAnonymousInnerClass() {
       final var count = new AtomicInteger();
       final var duckLike = new Object() {
          @SuppressWarnings("unused")

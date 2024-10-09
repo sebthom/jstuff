@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.github.javafaker.Faker;
 import com.github.luben.zstd.ZstdException;
@@ -27,7 +27,7 @@ import net.sf.jstuff.core.io.stream.FastByteArrayOutputStream;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompressionITest {
+class CompressionITest {
 
    protected static final byte[] TEST_TEXT_BYTES;
 
@@ -48,7 +48,7 @@ public class CompressionITest {
    }
 
    @SuppressWarnings("resource")
-   public static void testByteArrayCompression(final Compression cmp) throws IOException {
+   static void testByteArrayCompression(final Compression cmp) throws IOException {
 
       for (int i = 0; i < 4; i++) { // testing instance re-use
 
@@ -94,7 +94,7 @@ public class CompressionITest {
    }
 
    @SuppressWarnings("resource")
-   public static void testInputStreamCompression(final Compression cmp) throws IOException {
+   static void testInputStreamCompression(final Compression cmp) throws IOException {
       for (int i = 0; i < 4; i++) { // testing instance re-use
          final var compressedOS = new FastByteArrayOutputStream();
          final var uncompressedOS = new FastByteArrayOutputStream();
@@ -110,43 +110,43 @@ public class CompressionITest {
    }
 
    @Test
-   public void testBrotli() throws IOException {
+   void testBrotli() throws IOException {
       testByteArrayCompression(BrotliCompression.INSTANCE);
       testInputStreamCompression(BrotliCompression.INSTANCE);
    }
 
    @Test
-   public void testDeflate() throws IOException {
+   void testDeflate() throws IOException {
       testByteArrayCompression(DeflateCompression.INSTANCE);
       testInputStreamCompression(DeflateCompression.INSTANCE);
    }
 
    @Test
-   public void testGZip() throws IOException {
+   void testGZip() throws IOException {
       testByteArrayCompression(GZipCompression.INSTANCE);
       testInputStreamCompression(GZipCompression.INSTANCE);
    }
 
    @Test
-   public void testLZ4Block() throws IOException {
+   void testLZ4Block() throws IOException {
       testByteArrayCompression(LZ4BlockCompression.INSTANCE);
       testInputStreamCompression(LZ4BlockCompression.INSTANCE);
    }
 
    @Test
-   public void testLZ4Frame() throws IOException {
+   void testLZ4Frame() throws IOException {
       testByteArrayCompression(LZ4FrameCompression.INSTANCE);
       testInputStreamCompression(LZ4FrameCompression.INSTANCE);
    }
 
    @Test
-   public void testLZFFrame() throws IOException {
+   void testLZFFrame() throws IOException {
       testByteArrayCompression(LZFCompression.INSTANCE);
       testInputStreamCompression(LZFCompression.INSTANCE);
    }
 
    @Test
-   public void testPerformance() throws IOException {
+   void testPerformance() throws IOException {
       final var benchmark = new CompressionBenchmark() //
          .setTestData(TEST_TEXT_BYTES) //
          .setIterations(500) //
@@ -176,13 +176,13 @@ public class CompressionITest {
    }
 
    @Test
-   public void testSnappy() throws IOException {
+   void testSnappy() throws IOException {
       testByteArrayCompression(SnappyCompression.INSTANCE);
       testInputStreamCompression(SnappyCompression.INSTANCE);
    }
 
    @Test
-   public void testZStd() throws IOException {
+   void testZStd() throws IOException {
       testByteArrayCompression(ZStdCompression.INSTANCE);
       testInputStreamCompression(ZStdCompression.INSTANCE);
    }

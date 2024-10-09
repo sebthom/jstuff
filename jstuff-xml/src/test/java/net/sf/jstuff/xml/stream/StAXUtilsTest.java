@@ -15,14 +15,14 @@ import java.util.logging.Logger;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.xml.stream.StAXUtils.ElementInfo;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class StAXUtilsTest {
+class StAXUtilsTest {
 
    private static final StAXFactory STAX_FACTORY = new StAXFactory();
 
@@ -55,7 +55,7 @@ public class StAXUtilsTest {
    }
 
    @Test
-   public void testElementWithAttributeMatch() throws XMLStreamException {
+   void testElementWithAttributeMatch() throws XMLStreamException {
       assertThat(getElementText("/root/group/item[@id='2']")).isEqualTo("<Cat>");
       assertThat(getElementText("root/group/item[@id='2']")).isEqualTo("<Cat>");
       assertThat(getElementText("group/item[@id='2']")).isEqualTo("<Cat>");
@@ -88,7 +88,7 @@ public class StAXUtilsTest {
    }
 
    @Test
-   public void testFindElement() throws XMLStreamException {
+   void testFindElement() throws XMLStreamException {
       assertThat(getElementText("/root/group/item")).isEqualTo("Dog");
       assertThat(getElementText("root/group/item")).isEqualTo("Dog");
       assertThat(getElementText("group/item")).isEqualTo("Dog");
@@ -101,7 +101,7 @@ public class StAXUtilsTest {
    }
 
    @Test
-   public void testFindElements() throws XMLStreamException {
+   void testFindElements() throws XMLStreamException {
       assertThat(findElements("/root/group/item")).hasSize(5);
       assertThat(findElements("root/group/item")).hasSize(5);
       assertThat(findElements("group/item")).hasSize(5);

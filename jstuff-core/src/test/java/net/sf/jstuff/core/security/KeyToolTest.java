@@ -10,7 +10,7 @@ import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.collection.tuple.Tuple2;
 import net.sf.jstuff.core.logging.Logger;
@@ -18,12 +18,12 @@ import net.sf.jstuff.core.logging.Logger;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class KeyToolTest {
+class KeyToolTest {
 
    private static final Logger LOG = Logger.create();
 
    @Test
-   public void testCreateSelfSignedCertificate() throws GeneralSecurityException {
+   void testCreateSelfSignedCertificate() throws GeneralSecurityException {
 
       LOG.info("Testing illegal subject DN...");
       try {

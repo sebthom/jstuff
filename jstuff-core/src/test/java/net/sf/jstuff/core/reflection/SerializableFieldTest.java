@@ -6,19 +6,19 @@ package net.sf.jstuff.core.reflection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.io.SerializationUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SerializableFieldTest {
+class SerializableFieldTest {
 
-   public String testField = "";
+   String testField = "";
 
    @Test
-   public void testSerializableField() throws SecurityException, NoSuchFieldException {
+   void testSerializableField() throws SecurityException, NoSuchFieldException {
       final var f = SerializableFieldTest.class.getDeclaredField("testField");
 
       final var sf = new SerializableField(f);

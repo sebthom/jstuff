@@ -6,15 +6,15 @@ package net.sf.jstuff.core.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class HashTest {
+class HashTest {
 
    @Test
-   public void testHashCategories() {
+   void testHashCategories() {
       assertThat(Hash.ADLER32.getCategory()).isEqualTo(Hash.Category.CHECKSUM);
       assertThat(Hash.CRC32.getCategory()).isEqualTo(Hash.Category.CRC);
       assertThat(Hash.MD5.getCategory()).isEqualTo(Hash.Category.UNKEYED_CRYPTOGRAPHIC);
@@ -25,7 +25,7 @@ public class HashTest {
    }
 
    @Test
-   public void testHash() {
+   void testHash() {
       assertThat(Hash.ADLER32.hash("HelloWorld!")).isEqualTo(427_033_630L);
       assertThat(Hash.ADLER32.withSalt("foo".getBytes()).hash("HelloWorld!")).isEqualTo(702_678_370L);
 
@@ -55,7 +55,7 @@ public class HashTest {
    }
 
    @Test
-   public void testHasher() {
+   void testHasher() {
       assertThat(Hash.ADLER32.newHasher().update("HelloWorld!".getBytes()).hash()).isEqualTo(427_033_630L);
       assertThat(Hash.ADLER32.withSalt("foo".getBytes()).newHasher().update("HelloWorld!".getBytes()).hash()).isEqualTo(702_678_370L);
       assertThat(Hash.ADLER32.withSalt("foo".getBytes()).newHasher().update("Whatever".getBytes()).reset().update("HelloWorld!".getBytes())

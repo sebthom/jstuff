@@ -9,16 +9,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class LimitedInputStreamTest {
+class LimitedInputStreamTest {
 
    @Test
    @SuppressWarnings({"resource", "unused"})
-   public void testLimitedInputStream() throws IOException {
+   void testLimitedInputStream() throws IOException {
 
       final var in = new ByteArrayInputStream(new byte[100]);
       final var inLimited = new LimitedInputStream(in, 50, false);

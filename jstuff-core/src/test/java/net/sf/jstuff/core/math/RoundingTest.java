@@ -10,12 +10,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RoundingTest {
+class RoundingTest {
 
    private void testRounding(final long expected, final long input, final Rounding rounding) {
       assertThat(rounding.round(input)).isEqualTo(expected);
@@ -30,7 +30,7 @@ public class RoundingTest {
    }
 
    @Test
-   public void testIntegerRounding() {
+   void testIntegerRounding() {
       {
          final var rounding = new Rounding(-2, RoundingMode.UP);
          testRounding(100, 1, rounding);
@@ -71,7 +71,7 @@ public class RoundingTest {
    }
 
    @Test
-   public void testDecimalRounding() {
+   void testDecimalRounding() {
       {
          final var rounding = new Rounding(2, RoundingMode.UP);
          testRounding(0.01, 0.0001, rounding);

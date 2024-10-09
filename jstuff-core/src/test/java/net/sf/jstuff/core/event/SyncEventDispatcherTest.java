@@ -9,15 +9,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class SyncEventDispatcherTest {
+class SyncEventDispatcherTest {
 
    @Test
-   public void testSyncEventDispatcher() throws InterruptedException, ExecutionException {
+   void testSyncEventDispatcher() throws InterruptedException, ExecutionException {
       final var em = new SyncEventDispatcher<String>();
 
       final var listener1Count = new AtomicLong();

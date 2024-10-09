@@ -7,18 +7,18 @@ package net.sf.jstuff.core.builder;
 import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class BuilderTest {
+class BuilderTest {
 
-   public static class EntityA {
+   static class EntityA {
 
-      public interface EntityABuilder<THIS extends EntityABuilder<THIS, T>, T extends EntityA> extends Builder<T> {
+      interface EntityABuilder<THIS extends EntityABuilder<THIS, T>, T extends EntityA> extends Builder<T> {
 
          @Builder.Property(required = true, nullable = false)
          THIS propertyA(@Nullable String value);
@@ -29,7 +29,7 @@ public class BuilderTest {
       }
 
       @SuppressWarnings("unchecked")
-      public static EntityABuilder<?, ? extends EntityA> builder() {
+      static EntityABuilder<?, ? extends EntityA> builder() {
          return (EntityABuilder<?, ? extends EntityA>) BuilderFactory.of(EntityABuilder.class).create();
       }
 
@@ -50,9 +50,9 @@ public class BuilderTest {
       }
    }
 
-   public static class EntityB extends EntityA {
+   static class EntityB extends EntityA {
 
-      public interface EntityBBuilder<THIS extends EntityBBuilder<THIS, T>, T extends EntityB> extends EntityABuilder<THIS, T> {
+      interface EntityBBuilder<THIS extends EntityBBuilder<THIS, T>, T extends EntityB> extends EntityABuilder<THIS, T> {
 
          THIS propertyC(Long value);
 
@@ -64,11 +64,11 @@ public class BuilderTest {
       }
 
       @SuppressWarnings("unchecked")
-      public static EntityBBuilder<?, ? extends EntityB> builder() {
+      static EntityBBuilder<?, ? extends EntityB> builder() {
          return (EntityBBuilder<?, ? extends EntityB>) BuilderFactory.of(EntityBBuilder.class).create();
       }
 
-      public long propertyC = -1;
+      long propertyC = -1;
       @Nullable
       private String propertyD;
       @Nullable
@@ -83,13 +83,13 @@ public class BuilderTest {
             throw new IllegalArgumentException("propertyD not set via setter");
       }
 
-      public void setPropertyD(final String value) {
+      void setPropertyD(final String value) {
          propertyD = value + "_setWithSetter";
       }
    }
 
    @Test
-   public void testEntityABuilder() {
+   void testEntityABuilder() {
       EntityA.builder() //
          .propertyA("foo") //
          .propertyB(1) //
@@ -129,7 +129,7 @@ public class BuilderTest {
    }
 
    @Test
-   public void testEntityBBuilder() {
+   void testEntityBBuilder() {
       final EntityB entity = EntityB.builder() //
          .propertyA("foo") //
          .propertyB(1) //

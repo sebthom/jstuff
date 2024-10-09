@@ -9,15 +9,15 @@ import static org.assertj.core.api.Assertions.*;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ArgsTest {
+class ArgsTest {
 
    @Test
-   public void testArgs_NotEmpty() {
+   void testArgs_NotEmpty() {
       try {
          Args.notEmpty("password", (String) null);
          failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
@@ -53,7 +53,7 @@ public class ArgsTest {
    }
 
    @Test
-   public void testArgs_NotNull() {
+   void testArgs_NotNull() {
       try {
          Args.notNull("password", null);
          failBecauseExceptionWasNotThrown(IllegalArgumentException.class);
@@ -66,7 +66,7 @@ public class ArgsTest {
    }
 
    @Test
-   public void testArgs_IsFileReadable() throws IOException {
+   void testArgs_IsFileReadable() throws IOException {
       try {
          Args.isFileReadable("file", new File("foo"));
          failBecauseExceptionWasNotThrown(IllegalArgumentException.class);

@@ -12,17 +12,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.comparator.SortDirection;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class MapsTest {
+class MapsTest {
 
    private static class UnsortableKey {
-      public final String value;
+      final String value;
 
       UnsortableKey(final String value) {
          this.value = value;
@@ -35,7 +35,7 @@ public class MapsTest {
    }
 
    @Test
-   public void testPutAllIfAbsent() {
+   void testPutAllIfAbsent() {
       final var map1 = new HashMap<@Nullable String, Integer>();
       map1.put("a", 1);
       map1.put("b", 1);
@@ -51,7 +51,7 @@ public class MapsTest {
    }
 
    @Test
-   public void testRemap() {
+   void testRemap() {
       final Map<String, Integer> map = new HashMap<>();
       map.put("one", 1);
       map.put("two", 2);
@@ -83,7 +83,7 @@ public class MapsTest {
    }
 
    @Test
-   public void testSortByValueAsc() {
+   void testSortByValueAsc() {
       final var map = new HashMap<@Nullable String, @Nullable Integer>();
       map.put("e", 3);
       map.put("d", 2);
@@ -103,7 +103,7 @@ public class MapsTest {
    }
 
    @Test
-   public void testSortByValueAsc_UnsortableKeys() {
+   void testSortByValueAsc_UnsortableKeys() {
       final UnsortableKey keyE = new UnsortableKey("e");
       final UnsortableKey keyD = new UnsortableKey("d");
       final UnsortableKey keyC = new UnsortableKey("c");
@@ -135,7 +135,7 @@ public class MapsTest {
    }
 
    @Test
-   public void testSortByValueDesc() {
+   void testSortByValueDesc() {
       final var map = new HashMap<@Nullable String, @Nullable Integer>();
       map.put("e", 3);
       map.put("d", 2);

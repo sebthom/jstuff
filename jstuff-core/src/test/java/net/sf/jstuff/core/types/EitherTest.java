@@ -4,18 +4,17 @@
  */
 package net.sf.jstuff.core.types;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.assertj.core.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EitherTest {
+class EitherTest {
 
    @Test
-   public void testEitherLeft() {
+   void testEitherLeft() {
       final Either<String, Integer> either = Either.left("foo");
 
       assertThat(either.value()).isEqualTo("foo");
@@ -27,21 +26,21 @@ public class EitherTest {
       assertThat(either.leftOrElse("bar")).isEqualTo("foo");
       assertThat(either.mapLeft(left -> "bar")).isEqualTo(Either.left("bar"));
 
-      assertThrows(IllegalStateException.class, () -> either.right());
+      assertThatThrownBy(() -> either.right()).isInstanceOf(IllegalStateException.class);
       assertThat(either.isRight()).isFalse();
       assertThat(either.rightOrElse(100)).isEqualTo(100);
       assertThat(either.mapRight(right -> "bar")).isEqualTo(either);
    }
 
    @Test
-   public void testEitherRight() {
+   void testEitherRight() {
       final Either<Integer, String> either = Either.right("foo");
 
       assertThat(either.value()).isEqualTo("foo");
       final String value = either.map(left -> "left", right -> "right");
       assertThat(value).isEqualTo("right");
 
-      assertThrows(IllegalStateException.class, () -> either.left());
+      assertThatThrownBy(() -> either.left()).isInstanceOf(IllegalStateException.class);
       assertThat(either.isLeft()).isFalse();
       assertThat(either.leftOrElse(100)).isEqualTo(100);
       assertThat(either.mapLeft(left -> "bar")).isEqualTo(either);

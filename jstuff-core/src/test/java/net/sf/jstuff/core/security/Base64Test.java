@@ -9,15 +9,15 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.nio.charset.StandardCharsets;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class Base64Test {
+class Base64Test {
 
    @Test
-   public void testDecode() {
+   void testDecode() {
 
       /*
        * Base64.decode( //

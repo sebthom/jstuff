@@ -10,15 +10,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class AsyncEventDispatcherTest {
+class AsyncEventDispatcherTest {
 
    @Test
-   public void testAsyncEventDispatcher() throws InterruptedException, ExecutionException {
+   void testAsyncEventDispatcher() throws InterruptedException, ExecutionException {
       final var em = new AsyncEventDispatcher<@Nullable String>();
 
       final var listener1Count = new AtomicLong();

@@ -11,17 +11,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import net.sf.jstuff.core.Strings;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class LineCapturingOutputStreamTest {
+class LineCapturingOutputStreamTest {
 
    @Test
-   public void testLinePrefixingOuputStream() throws IOException {
+   void testLinePrefixingOuputStream() throws IOException {
       final var inputLines = List.of("Line 1", "Line 2", "Line 3");
       final var capturedLines = new ArrayList<String>();
 

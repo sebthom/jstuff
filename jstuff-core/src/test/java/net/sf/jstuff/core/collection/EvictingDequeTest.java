@@ -8,15 +8,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class EvictingDequeTest {
+class EvictingDequeTest {
 
    @Test
-   public void testEvictingDeque() {
+   void testEvictingDeque() {
       final var q = new EvictingDeque<String>(3);
       assertThat(q).isEmpty();
       assertThat(q.remainingCapacity()).isEqualTo(3);

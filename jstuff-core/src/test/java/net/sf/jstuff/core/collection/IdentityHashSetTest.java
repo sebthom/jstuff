@@ -10,17 +10,17 @@ import java.util.HashSet;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class IdentityHashSetTest {
+class IdentityHashSetTest {
    private static final class Entity {
       @Nullable
       private String name;
 
-      public Entity setName(final String name) {
+      Entity setName(final String name) {
          this.name = name;
          return this;
       }
@@ -44,7 +44,7 @@ public class IdentityHashSetTest {
    }
 
    @Test
-   public void testIdentityHashSet() {
+   void testIdentityHashSet() {
       final var ihs = new IdentityHashSet<Entity>();
       final var hs = new HashSet<Entity>();
 

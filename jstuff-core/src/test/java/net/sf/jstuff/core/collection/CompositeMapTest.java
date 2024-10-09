@@ -8,15 +8,15 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class CompositeMapTest {
+class CompositeMapTest {
 
    @Test
-   public void testCompositeList() {
+   void testCompositeList() {
       final Map<String, String> m1 = Maps.toMap("a=1;b=2;c=3", ";", "=");
       final Map<String, String> m2 = Maps.toMap("c=4;d=5;e=6", ";", "=");
 
