@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata modelVersion="1.1.0">
   <groupId>net.sf.jstuff</groupId>
-  <artifactId>jstuff-core</artifactId>
+  <artifactId>jstuff-xml</artifactId>
   <versioning>
     <lastUpdated>20241009130436</lastUpdated>
     <snapshot>
