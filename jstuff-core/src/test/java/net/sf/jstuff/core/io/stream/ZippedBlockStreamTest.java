@@ -39,7 +39,7 @@ class ZippedBlockStreamTest {
    @Test
    void testZippedBlockStream() throws IOException {
 
-      final String content = RandomStringUtils.random(4096);
+      final String content = RandomStringUtils.insecure().next(4096);
 
       final var bos = new ByteArrayOutputStream();
       try (var zos = new ZippedBlockOutputStream(bos, 512)) {

@@ -47,7 +47,7 @@ class ArrayUtilsTest {
 
    @Test
    void testToByteArray() {
-      final String str = RandomStringUtils.random(250);
+      final String str = RandomStringUtils.insecure().next(250);
       assertThat(ArrayUtils.toByteArray(str.toCharArray(), StandardCharsets.UTF_8)).isEqualTo(str.getBytes(StandardCharsets.UTF_8));
    }
 }
