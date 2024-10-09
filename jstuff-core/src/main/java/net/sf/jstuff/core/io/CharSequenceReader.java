@@ -72,12 +72,12 @@ public class CharSequenceReader extends Reader {
 
       final int n = Math.min(text.length() - next, len);
 
-      if (text instanceof String) {
-         ((String) text).getChars(next, next + n, cbuf, off);
-      } else if (text instanceof StringBuilder) {
-         ((StringBuilder) text).getChars(next, next + n, cbuf, off);
-      } else if (text instanceof StringBuffer) {
-         ((StringBuffer) text).getChars(next, next + n, cbuf, off);
+      if (text instanceof final String str) {
+         str.getChars(next, next + n, cbuf, off);
+      } else if (text instanceof final StringBuilder sb) {
+         sb.getChars(next, next + n, cbuf, off);
+      } else if (text instanceof final StringBuffer sb) {
+         sb.getChars(next, next + n, cbuf, off);
       } else {
          for (int i = next, l = next + n; i < l; i++) {
             cbuf[off + i] = text.charAt(i);

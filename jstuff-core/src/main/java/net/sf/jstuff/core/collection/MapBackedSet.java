@@ -38,7 +38,7 @@ public class MapBackedSet<E> implements Set<E>, Serializable {
       if (!emptyMap.isEmpty())
          throw new IllegalArgumentException("Argument [map] is not an empty map");
 
-      this.map = emptyMap;
+      map = emptyMap;
       keys = emptyMap.keySet();
    }
 

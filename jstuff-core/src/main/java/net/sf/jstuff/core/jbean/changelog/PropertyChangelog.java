@@ -52,8 +52,8 @@ public class PropertyChangelog implements EventListener<PropertyChangeEvent>, Se
       try {
          for (final var it = propertyChanges.listIterator(propertyChanges.size()); it.hasPrevious();) {
             final var change = it.previous();
-            if (change instanceof PropertyChangeEvent) {
-               ((PropertyChangeEvent) change).undo();
+            if (change instanceof final PropertyChangeEvent ev) {
+               ev.undo();
             }
             it.remove();
          }
@@ -73,8 +73,8 @@ public class PropertyChangelog implements EventListener<PropertyChangeEvent>, Se
       try {
          for (final var it = propertyChanges.listIterator(propertyChanges.size()); it.hasPrevious();) {
             final var change = it.previous();
-            if (change instanceof PropertyChangeEvent) {
-               ((PropertyChangeEvent) change).undo();
+            if (change instanceof final PropertyChangeEvent ev) {
+               ev.undo();
             }
             it.remove();
 

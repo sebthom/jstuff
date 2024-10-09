@@ -39,11 +39,10 @@ public abstract class Events {
          return false;
 
       try {
-         if (listener instanceof FilteringEventListener) {
-            final FilteringEventListener<Event> flistener = (FilteringEventListener<Event>) listener;
-            if (!flistener.accept(event))
+         if (listener instanceof final FilteringEventListener<Event> filteringListener) {
+            if (!filteringListener.accept(event))
                return false;
-            flistener.onEvent(event);
+            filteringListener.onEvent(event);
          } else {
             listener.onEvent(event);
          }

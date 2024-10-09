@@ -60,8 +60,8 @@ public abstract class Images {
       Args.notNull("image", image);
       Args.notNull("gc", gc);
 
-      if (image instanceof BufferedImage)
-         return (BufferedImage) image;
+      if (image instanceof final BufferedImage buffImg)
+         return buffImg;
 
       final int w = image.getWidth(null);
       final int h = image.getHeight(null);
@@ -77,8 +77,8 @@ public abstract class Images {
    public static BufferedImage toBufferedImage(final RenderedImage image) {
       Args.notNull("image", image);
 
-      if (image instanceof BufferedImage)
-         return (BufferedImage) image;
+      if (image instanceof final BufferedImage buffImg)
+         return buffImg;
 
       final var keys = image.getPropertyNames();
       final Hashtable<String, Object> props;

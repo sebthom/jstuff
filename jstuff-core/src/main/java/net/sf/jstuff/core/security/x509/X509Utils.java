@@ -190,8 +190,8 @@ public abstract class X509Utils {
       try {
          for (final Enumeration<String> en = ks.aliases(); en.hasMoreElements();) {
             final Certificate cert = ks.getCertificate(en.nextElement());
-            if (cert instanceof X509Certificate) {
-               certs.add((X509Certificate) cert);
+            if (cert instanceof final X509Certificate xcert) {
+               certs.add(xcert);
             }
          }
       } catch (final KeyStoreException ex) {

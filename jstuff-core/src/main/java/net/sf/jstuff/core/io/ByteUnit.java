@@ -96,10 +96,10 @@ public enum ByteUnit {
    }
 
    public BigInteger toBytes(final Number value) {
-      if (value instanceof BigInteger) {
+      if (value instanceof final BigInteger bigint) {
          if (this == BYTES)
-            return (BigInteger) value;
-         return ((BigInteger) value).multiply(toBytesMultiplierBI);
+            return bigint;
+         return bigint.multiply(toBytesMultiplierBI);
       }
 
       final BigDecimal bd = Numbers.toBigDecimal(value);

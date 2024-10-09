@@ -27,7 +27,7 @@ public class InvokingMethodFailedException extends ReflectionException {
       super("Invoking method [" + method.getDeclaringClass().getName() + "." + method.getName() + "] failed.", cause);
       this.method = new SerializableMethod(method);
       this.targetObject = targetObject;
-      targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
+      targetSerializableObject = targetObject instanceof final Serializable s ? s : null;
    }
 
    public Method getMethod() {

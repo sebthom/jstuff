@@ -97,10 +97,10 @@ public final class ClassDescriptor<T> implements Serializable {
 
    private Object readResolve() throws ObjectStreamException {
       synchronized (type) {
-         final ClassDescriptor<?> metaClass = REGISTRY.get(this.type);
+         final ClassDescriptor<?> metaClass = REGISTRY.get(type);
          if (metaClass != null)
             return metaClass;
-         throw new InvalidObjectException("MetaClass instance for type [" + this.type.getName() + "] not found in registry!");
+         throw new InvalidObjectException("MetaClass instance for type [" + type.getName() + "] not found in registry!");
       }
    }
 }

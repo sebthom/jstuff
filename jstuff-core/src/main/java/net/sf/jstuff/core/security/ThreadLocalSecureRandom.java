@@ -68,8 +68,8 @@ public class ThreadLocalSecureRandom extends SecureRandom {
          random.instances.get();
       } catch (final RuntimeSecurityException ex) {
          final var cause = ex.getCause();
-         if (cause instanceof NoSuchAlgorithmException)
-            throw (NoSuchAlgorithmException) cause;
+         if (cause instanceof final NoSuchAlgorithmException noSuchAlgoEx)
+            throw noSuchAlgoEx;
          throw ex;
       }
       return random;
@@ -81,8 +81,8 @@ public class ThreadLocalSecureRandom extends SecureRandom {
          random.instances.get();
       } catch (final RuntimeSecurityException ex) {
          final var cause = ex.getCause();
-         if (cause instanceof NoSuchAlgorithmException)
-            throw (NoSuchAlgorithmException) cause;
+         if (cause instanceof final NoSuchAlgorithmException noSuchAlgoEx)
+            throw noSuchAlgoEx;
          throw ex;
       }
       return random;
@@ -95,10 +95,10 @@ public class ThreadLocalSecureRandom extends SecureRandom {
          random.instances.get();
       } catch (final RuntimeSecurityException ex) {
          final var cause = ex.getCause();
-         if (cause instanceof NoSuchAlgorithmException)
-            throw (NoSuchAlgorithmException) cause;
-         if (cause instanceof NoSuchProviderException)
-            throw (NoSuchProviderException) cause;
+         if (cause instanceof final NoSuchAlgorithmException noSuchAlgoEx)
+            throw noSuchAlgoEx;
+         if (cause instanceof final NoSuchProviderException noSuchProviderEx)
+            throw noSuchProviderEx;
          throw ex;
       }
       return random;
@@ -110,8 +110,8 @@ public class ThreadLocalSecureRandom extends SecureRandom {
          random.instances.get();
       } catch (final RuntimeSecurityException ex) {
          final var cause = ex.getCause();
-         if (cause instanceof NoSuchAlgorithmException)
-            throw (NoSuchAlgorithmException) cause;
+         if (cause instanceof final NoSuchAlgorithmException noSuchAlgoEx)
+            throw noSuchAlgoEx;
          throw ex;
       }
       return random;
@@ -137,10 +137,10 @@ public class ThreadLocalSecureRandom extends SecureRandom {
          try {
             final var algorithm = ThreadLocalSecureRandom.this.algorithm;
             if (algorithm != null) {
-               if (algorithmProvider instanceof String)
-                  return SecureRandom.getInstance(algorithm, (String) algorithmProvider);
-               if (algorithmProvider instanceof Provider)
-                  return SecureRandom.getInstance(algorithm, (Provider) algorithmProvider);
+               if (algorithmProvider instanceof final String str)
+                  return SecureRandom.getInstance(algorithm, str);
+               if (algorithmProvider instanceof final Provider prov)
+                  return SecureRandom.getInstance(algorithm, prov);
                return SecureRandom.getInstance(algorithm);
             }
 

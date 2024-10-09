@@ -235,8 +235,8 @@ public abstract class CollectionUtils {
       if (newElements <= 0)
          return;
 
-      if (list instanceof ArrayList) {
-         ((ArrayList<?>) list).ensureCapacity(minimumSize);
+      if (list instanceof final ArrayList<?> arrayList) {
+         arrayList.ensureCapacity(minimumSize);
       }
 
       for (int i = 0; i < newElements; i++) {
@@ -361,11 +361,11 @@ public abstract class CollectionUtils {
       if (coll == null || coll.isEmpty())
          return null;
 
-      if (coll instanceof List)
-         return ((List<T>) coll).get(0);
+      if (coll instanceof final List<T> list)
+         return list.get(0);
 
-      if (coll instanceof Queue)
-         return ((Queue<T>) coll).peek();
+      if (coll instanceof final Queue<T> queue)
+         return queue.peek();
 
       final var it = coll.iterator();
       if (it.hasNext())
@@ -590,8 +590,8 @@ public abstract class CollectionUtils {
    public static <T> T remove(final Collection<T> collection, final int index) {
       Args.notNull("collection", collection);
 
-      if (collection instanceof List)
-         return ((List<T>) collection).remove(index);
+      if (collection instanceof final List<T> list)
+         return list.remove(index);
       if (index >= collection.size())
          throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + collection.size());
 

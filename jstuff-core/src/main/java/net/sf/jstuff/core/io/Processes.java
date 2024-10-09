@@ -158,24 +158,24 @@ public abstract class Processes {
 
          if (input != null) {
             final var input = this.input;
-            if (input instanceof File) {
-               pb.redirectInput((File) input);
-            } else if (input instanceof InputStream) {
-               writeToStdIn((InputStream) input, proc);
-            } else if (input instanceof CharSequence) {
-               writeToStdIn((CharSequence) input, proc);
+            if (input instanceof final File f) {
+               pb.redirectInput(f);
+            } else if (input instanceof final InputStream is) {
+               writeToStdIn(is, proc);
+            } else if (input instanceof final CharSequence cs) {
+               writeToStdIn(cs, proc);
             }
          }
          if (redirectErrorToOutput) {
             pb.redirectError();
          } else if (redirectError != null) {
             final var redirectError = this.redirectError;
-            if (redirectError instanceof File) {
-               pb.redirectError((File) redirectError);
-            } else if (redirectError instanceof OutputStream) {
-               redirect(proc.getErrorStream(), (OutputStream) redirectError);
-            } else if (redirectError instanceof Appendable) {
-               redirect(proc.getErrorStream(), (Appendable) redirectError);
+            if (redirectError instanceof final File f) {
+               pb.redirectError(f);
+            } else if (redirectError instanceof final OutputStream os) {
+               redirect(proc.getErrorStream(), os);
+            } else if (redirectError instanceof final Appendable appendable) {
+               redirect(proc.getErrorStream(), appendable);
             } else {
                redirect(proc.getErrorStream(), (Consumer<String>) redirectError);
             }
@@ -183,12 +183,12 @@ public abstract class Processes {
 
          if (redirectOutput != null) {
             final var redirectOutput = this.redirectOutput;
-            if (redirectOutput instanceof File) {
-               pb.redirectOutput((File) redirectOutput);
-            } else if (redirectOutput instanceof OutputStream) {
-               redirect(proc.getInputStream(), (OutputStream) redirectOutput);
-            } else if (redirectOutput instanceof Appendable) {
-               redirect(proc.getInputStream(), (Appendable) redirectOutput);
+            if (redirectOutput instanceof final File f) {
+               pb.redirectOutput(f);
+            } else if (redirectOutput instanceof final OutputStream os) {
+               redirect(proc.getInputStream(), os);
+            } else if (redirectOutput instanceof final Appendable appendable) {
+               redirect(proc.getInputStream(), appendable);
             } else {
                redirect(proc.getInputStream(), (Consumer<String>) redirectOutput);
             }

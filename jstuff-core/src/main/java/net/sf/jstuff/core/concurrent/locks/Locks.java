@@ -87,8 +87,8 @@ public abstract class Locks {
    public static CloseableLock toCloseable(final Lock lock) {
       Args.notNull("lock", lock);
 
-      if (lock instanceof CloseableLock)
-         return (CloseableLock) lock;
+      if (lock instanceof final CloseableLock cl)
+         return cl;
 
       return new CloseableLock() {
          @Override
@@ -141,8 +141,8 @@ public abstract class Locks {
    public static CloseableReentrantLock toCloseable(final ReentrantLock lock) {
       Args.notNull("lock", lock);
 
-      if (lock instanceof CloseableLock)
-         return (CloseableReentrantLock) lock;
+      if (lock instanceof final CloseableReentrantLock cl)
+         return cl;
 
       return new CloseableReentrantLock() {
          private static final long serialVersionUID = 1L;

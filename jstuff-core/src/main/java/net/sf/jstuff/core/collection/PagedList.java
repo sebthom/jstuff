@@ -62,7 +62,7 @@ public class PagedList<E> extends ArrayList<E> {
    }
 
    public void setTotalCount(final int total) {
-      this.totalCount = total;
+      totalCount = total;
    }
 
    @Override

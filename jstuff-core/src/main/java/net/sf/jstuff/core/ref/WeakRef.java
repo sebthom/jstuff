@@ -28,7 +28,7 @@ public class WeakRef<V> implements Ref<V>, Serializable {
    }
 
    public WeakRef(final V value) {
-      this.ref = new WeakReference<>(value);
+      ref = new WeakReference<>(value);
    }
 
    @Override

@@ -27,7 +27,7 @@ public class AccessingFieldValueFailedException extends ReflectionException {
       super("Accessing value of field " + field.getName() + " failed.", cause);
       this.field = new SerializableField(field);
       this.targetObject = targetObject;
-      targetSerializableObject = targetObject instanceof Serializable ? (Serializable) targetObject : null;
+      targetSerializableObject = targetObject instanceof final Serializable s ? s : null;
    }
 
    public Field getField() {

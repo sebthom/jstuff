@@ -119,12 +119,12 @@ public abstract class Exceptions extends ExceptionUtils {
          return (T) ex;
 
       if (type == RuntimeException.class) {
-         if (ex instanceof InterruptedException)
-            return (T) new RuntimeInterruptedException((InterruptedException) ex);
-         if (ex instanceof GeneralSecurityException)
-            return (T) new RuntimeSecurityException((GeneralSecurityException) ex);
-         if (ex instanceof IOException)
-            return (T) new RuntimeIOException((IOException) ex);
+         if (ex instanceof final InterruptedException iex)
+            return (T) new RuntimeInterruptedException(iex);
+         if (ex instanceof final GeneralSecurityException gse)
+            return (T) new RuntimeSecurityException(gse);
+         if (ex instanceof final IOException iox)
+            return (T) new RuntimeIOException(iox);
          return (T) new DelegatingRuntimeException(ex);
       }
 

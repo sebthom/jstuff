@@ -187,9 +187,8 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    @Deprecated
    @Override
    public boolean remove(final @Nullable Object o) {
-      if (o instanceof final Number n) {
+      if (o instanceof final Number n)
          return Numbers.isByte(n) && removeValue(n.byteValue());
-      }
       return false;
    }
 

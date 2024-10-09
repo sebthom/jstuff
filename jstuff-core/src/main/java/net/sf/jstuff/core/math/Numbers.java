@@ -75,9 +75,8 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return longValue <= Byte.MAX_VALUE && longValue >= Byte.MIN_VALUE;
       }
 
-      if (number instanceof final BigInteger numberBI) {
+      if (number instanceof final BigInteger numberBI)
          return BYTE_MAX_VALUE.compareTo(numberBI) >= 0 && BYTE_MIN_VALUE.compareTo(numberBI) <= 0;
-      }
 
       final BigDecimal bd = toBigDecimal(number);
       if (!isWhole(bd))
@@ -118,9 +117,8 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return longValue <= Integer.MAX_VALUE && longValue >= Integer.MIN_VALUE;
       }
 
-      if (number instanceof final BigInteger numberBI) {
+      if (number instanceof final BigInteger numberBI)
          return INTEGER_MAX_VALUE.compareTo(numberBI) >= 0 && INTEGER_MIN_VALUE.compareTo(numberBI) <= 0;
-      }
 
       final BigDecimal bd = toBigDecimal(number);
       if (!isWhole(bd))
@@ -147,9 +145,8 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
       )
          return true;
 
-      if (number instanceof final BigInteger numberBI) {
+      if (number instanceof final BigInteger numberBI)
          return LONG_MAX_VALUE.compareTo(numberBI) >= 0 && LONG_MIN_VALUE.compareTo(numberBI) <= 0;
-      }
 
       final BigDecimal bd = toBigDecimal(number);
       if (!isWhole(bd))
@@ -179,9 +176,8 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
          return longValue <= Short.MAX_VALUE && longValue >= Short.MIN_VALUE;
       }
 
-      if (number instanceof final BigInteger numberBI) {
+      if (number instanceof final BigInteger numberBI)
          return SHORT_MAX_VALUE.compareTo(numberBI) >= 0 && SHORT_MIN_VALUE.compareTo(numberBI) <= 0;
-      }
 
       final BigDecimal bd = toBigDecimal(number);
       if (!isWhole(bd))
@@ -215,10 +211,10 @@ public class Numbers extends org.apache.commons.lang3.math.NumberUtils {
 
    public static BigDecimal toBigDecimal(final Number number) {
       final BigDecimal bd;
-      if (number instanceof BigDecimal) {
-         bd = (BigDecimal) number;
-      } else if (number instanceof BigInteger) {
-         bd = new BigDecimal((BigInteger) number);
+      if (number instanceof final BigDecimal bigdec) {
+         bd = bigdec;
+      } else if (number instanceof final BigInteger bigint) {
+         bd = new BigDecimal(bigint);
       } else if (number instanceof Long || number instanceof Integer || number instanceof Short || number instanceof Byte) {
          bd = BigDecimal.valueOf(number.longValue());
       } else {

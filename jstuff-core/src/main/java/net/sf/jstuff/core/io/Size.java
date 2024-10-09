@@ -47,8 +47,8 @@ public final class Size implements Serializable, Comparable<Size> {
       Args.notNull("value", value);
 
       if (unit == BYTES) {
-         if (value instanceof BigInteger)
-            return new Size((BigInteger) value);
+         if (value instanceof final BigInteger bigint)
+            return new Size(bigint);
 
          if (value instanceof Long //
                || value instanceof Integer //

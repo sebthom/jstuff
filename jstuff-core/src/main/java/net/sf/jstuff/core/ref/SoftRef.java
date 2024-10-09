@@ -28,7 +28,7 @@ public class SoftRef<V> implements Ref<V>, Serializable {
    }
 
    public SoftRef(final V value) {
-      this.ref = new SoftReference<>(value);
+      ref = new SoftReference<>(value);
    }
 
    @Override

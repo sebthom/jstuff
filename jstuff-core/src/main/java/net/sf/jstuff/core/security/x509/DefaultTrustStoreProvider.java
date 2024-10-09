@@ -111,8 +111,8 @@ public class DefaultTrustStoreProvider extends Modifiable.Default implements Tru
             if (cert == null) {
                continue;
             }
-            if (cert instanceof X509Certificate) {
-               certs.add((X509Certificate) cert);
+            if (cert instanceof final X509Certificate xcert) {
+               certs.add(xcert);
             } else {
                LOG.warn("Ignoring non-X509Certificate [%s] with alias [%s].", cert, certAlias);
             }

@@ -2144,8 +2144,8 @@ public abstract class Strings {
          return null;
       if (txt.length() == 0)
          return EMPTY;
-      if (txt instanceof String)
-         return ((String) txt).toLowerCase();
+      if (txt instanceof final String str)
+         return str.toLowerCase();
 
       final var len = txt.length();
       final var chars = new char[len];
@@ -2363,8 +2363,8 @@ public abstract class Strings {
       if (searchIn == null || searchFor == null)
          return false;
 
-      if (searchIn instanceof String && searchFor instanceof String)
-         return ((String) searchIn).regionMatches(ignoreCase, searchInOffset, (String) searchFor, searchForOffset, length);
+      if (searchIn instanceof final String searchInStr && searchFor instanceof final String searchForStr)
+         return searchInStr.regionMatches(ignoreCase, searchInOffset, searchForStr, searchForOffset, length);
 
       if (searchInOffset < 0 || searchForOffset < 0 //
             || searchInOffset > searchIn.length() - length //
@@ -4112,16 +4112,16 @@ public abstract class Strings {
       if (txt.length() == 0)
          return ArrayUtils.EMPTY_CHAR_ARRAY;
 
-      if (txt instanceof String)
-         return ((String) txt).toCharArray();
+      if (txt instanceof final String str)
+         return str.toCharArray();
 
       final int txtLen = txt.length();
       final var chars = new char[txtLen];
 
-      if (txt instanceof StringBuilder) {
-         ((StringBuilder) txt).getChars(0, txtLen, chars, 0);
-      } else if (txt instanceof StringBuffer) {
-         ((StringBuffer) txt).getChars(0, txtLen, chars, 0);
+      if (txt instanceof final StringBuilder sb) {
+         sb.getChars(0, txtLen, chars, 0);
+      } else if (txt instanceof final StringBuffer sb) {
+         sb.getChars(0, txtLen, chars, 0);
       } else {
          for (int i = 0; i < txtLen - 1; i++) {
             chars[i] = txt.charAt(i);
@@ -4511,8 +4511,8 @@ public abstract class Strings {
          return null;
       if (txt.length() == 0)
          return EMPTY;
-      if (txt instanceof String)
-         return ((String) txt).toUpperCase();
+      if (txt instanceof final String str)
+         return str.toUpperCase();
 
       final var len = txt.length();
       final var chars = new char[len];

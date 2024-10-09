@@ -524,8 +524,8 @@ public abstract class Types {
          return null;
 
       Type bound = bounds[0];
-      if (bound instanceof TypeVariable) {
-         bound = resolveBound((TypeVariable<?>) bound);
+      if (bound instanceof final TypeVariable<?> tv) {
+         bound = resolveBound(tv);
       }
 
       return bound == Object.class ? null : bound;
@@ -535,12 +535,12 @@ public abstract class Types {
    public static Class<?> resolveUnderlyingClass(final @Nullable Type type) {
       if (type == null)
          return null;
-      if (type instanceof Class)
-         return (Class<?>) type;
-      if (type instanceof ParameterizedType)
-         return resolveUnderlyingClass(((ParameterizedType) type).getRawType());
-      if (type instanceof GenericArrayType) {
-         final var ctype = ((GenericArrayType) type).getGenericComponentType();
+      if (type instanceof final Class<?> clazz)
+         return clazz;
+      if (type instanceof final ParameterizedType p)
+         return resolveUnderlyingClass(p.getRawType());
+      if (type instanceof final GenericArrayType t) {
+         final var ctype = t.getGenericComponentType();
          final Class<?> cclass = resolveUnderlyingClass(ctype);
          if (cclass != null)
             return Array.newInstance(cclass, 0).getClass();
@@ -602,8 +602,8 @@ public abstract class Types {
          @NonNull
          final Class<?> currentClass;
          final ParameterizedType currentType;
-         if (current instanceof ParameterizedType) {
-            currentType = (ParameterizedType) current;
+         if (current instanceof final ParameterizedType t) {
+            currentType = t;
             currentClass = (Class<?>) currentType.getRawType();
          } else {
             currentType = null;
@@ -616,8 +616,8 @@ public abstract class Types {
          if (visitor.isVisitingSuperclass(currentClass, currentType)) {
             final Type sclass = currentClass.getGenericSuperclass();
             if (sclass != null) {
-               if (sclass instanceof final ParameterizedType sptype) {
-                  if (visitor.isVisiting((Class<?>) sptype.getRawType(), sptype)) {
+               if (sclass instanceof final ParameterizedType t) {
+                  if (visitor.isVisiting((Class<?>) t.getRawType(), t)) {
                      toVisit.add(sclass);
                   }
                } else if (visitor.isVisiting((Class<?>) sclass, null)) {
@@ -628,8 +628,8 @@ public abstract class Types {
 
          if (visitor.isVisitingInterfaces(currentClass, currentType)) {
             for (final Type itype : currentClass.getGenericInterfaces())
-               if (itype instanceof final ParameterizedType iptype) {
-                  if (visitor.isVisiting((Class<?>) iptype.getRawType(), iptype)) {
+               if (itype instanceof final ParameterizedType t) {
+                  if (visitor.isVisiting((Class<?>) t.getRawType(), t)) {
                      toVisit.add(itype);
                   }
                } else if (visitor.isVisiting((Class<?>) itype, null)) {

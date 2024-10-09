@@ -170,9 +170,8 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    @Deprecated
    @Override
    public boolean remove(final @Nullable Object o) {
-      if (o instanceof final Number n) {
+      if (o instanceof final Number n)
          return Numbers.isShort(n) && removeValue(n.shortValue());
-      }
       return false;
    }
 

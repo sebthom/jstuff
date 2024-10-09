@@ -41,8 +41,8 @@ public abstract class Iterables {
       if (it == null)
          return 0;
 
-      if (it instanceof Collection)
-         return ((Collection<?>) it).size();
+      if (it instanceof final Collection<?> coll)
+         return coll.size();
 
       return StreamSupport.stream(it.spliterator(), false).count();
    }
@@ -51,8 +51,8 @@ public abstract class Iterables {
       if (it == null)
          return Collections.emptyList();
 
-      if (it instanceof Collection)
-         return (Collection<T>) it;
+      if (it instanceof final Collection<T> coll)
+         return coll;
 
       final var result = new ArrayList<T>();
       for (final T e : it) {
@@ -79,8 +79,8 @@ public abstract class Iterables {
       if (it == null)
          return Collections.emptySet();
 
-      if (it instanceof Set)
-         return (Set<T>) it;
+      if (it instanceof final Set<T> set)
+         return set;
 
       final var result = new HashSet<T>();
       for (final T e : it) {
@@ -93,8 +93,8 @@ public abstract class Iterables {
       if (it == null)
          return new TreeSet<>();
 
-      if (it instanceof SortedSet)
-         return (SortedSet<T>) it;
+      if (it instanceof final SortedSet<T> set)
+         return set;
 
       final var result = new TreeSet<T>();
       for (final T e : it) {

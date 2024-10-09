@@ -188,9 +188,8 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    @Deprecated
    @Override
    public boolean remove(final @Nullable Object o) {
-      if (o instanceof final Number n) {
+      if (o instanceof final Number n)
          return Numbers.isInteger(n) && removeValue(n.intValue());
-      }
       return false;
    }
 

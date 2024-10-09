@@ -34,8 +34,8 @@ final class SLF4JLogger implements LoggerInternal {
    SLF4JLogger(final String name) {
       logger = LoggerFactory.getLogger(name);
       loggerName = logger.getName();
-      if (logger instanceof LocationAwareLogger) {
-         loggerEx = (LocationAwareLogger) logger;
+      if (logger instanceof final LocationAwareLogger l) {
+         loggerEx = l;
       } else {
          loggerEx = null;
       }

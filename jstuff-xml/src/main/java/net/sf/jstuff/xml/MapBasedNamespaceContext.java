@@ -51,12 +51,16 @@ public class MapBasedNamespaceContext implements NamespaceContext {
    public String getNamespaceURI(final String prefix) {
       Args.notNull("prefix", prefix);
 
-      if (prefix.equals(XMLConstants.DEFAULT_NS_PREFIX))
-         return defaultNamespaceURI;
-      if (prefix.equals(XMLConstants.XML_NS_PREFIX))
-         return XMLConstants.XML_NS_URI;
-      if (prefix.equals(XMLConstants.XMLNS_ATTRIBUTE))
-         return XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+      switch (prefix) {
+         case XMLConstants.DEFAULT_NS_PREFIX:
+            return defaultNamespaceURI;
+         case XMLConstants.XML_NS_PREFIX:
+            return XMLConstants.XML_NS_URI;
+         case XMLConstants.XMLNS_ATTRIBUTE:
+            return XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
+         default:
+            break;
+      }
 
       final var nsURI = namespaceURIsByPrefix.get(prefix);
       return nsURI == null ? XMLConstants.NULL_NS_URI : nsURI.get(0);
