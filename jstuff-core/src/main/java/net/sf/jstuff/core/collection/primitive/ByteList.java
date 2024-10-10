@@ -20,7 +20,7 @@ public interface ByteList extends ByteCollection, List<Byte> {
    void add(int index, byte value);
 
    /**
-    * Use {@link #getAt(int)}
+    * @deprecated Use {@link #getAt(int)}
     */
    @Deprecated
    @Override
@@ -44,14 +44,14 @@ public interface ByteList extends ByteCollection, List<Byte> {
    int indexOf(byte value);
 
    /**
-    * Use {@link #removeAt(int)}
+    * @deprecated Use {@link #removeAt(int)}
     */
    @Deprecated
    @Override
    Byte remove(int index);
 
    /**
-    * Use {@link #removeValue(byte)}
+    * @deprecated Use {@link #removeValue(byte)}
     */
    @Deprecated
    @Override
@@ -74,7 +74,7 @@ public interface ByteList extends ByteCollection, List<Byte> {
    byte set(int index, byte value);
 
    /**
-    * Use {@link #set(int, byte)}
+    * @deprecated Use {@link #set(int, byte)}
     */
    @Deprecated
    @Override

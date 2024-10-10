@@ -20,7 +20,7 @@ public interface IntList extends IntCollection, List<Integer> {
    void add(int index, int value);
 
    /**
-    * Use {@link #getAt(int)}
+    * @deprecated Use {@link #getAt(int)}
     */
    @Deprecated
    @Override
@@ -44,14 +44,14 @@ public interface IntList extends IntCollection, List<Integer> {
    int indexOf(int value);
 
    /**
-    * Use {@link #removeAt(int)}
+    * @deprecated Use {@link #removeAt(int)}
     */
    @Deprecated
    @Override
    Integer remove(int index);
 
    /**
-    * Use {@link #removeValue(int)}
+    * @deprecated Use {@link #removeValue(int)}
     */
    @Deprecated
    @Override
@@ -74,7 +74,7 @@ public interface IntList extends IntCollection, List<Integer> {
    int set(int index, int value);
 
    /**
-    * Use {@link #set(int, int)}
+    * @deprecated Use {@link #set(int, int)}
     */
    @Deprecated
    @Override

@@ -20,7 +20,7 @@ public interface BooleanList extends BooleanCollection, List<Boolean> {
    void add(int index, boolean value);
 
    /**
-    * Use {@link #getAt(int)}
+    * @deprecated Use {@link #getAt(int)}
     */
    @Deprecated
    @Override
@@ -44,14 +44,14 @@ public interface BooleanList extends BooleanCollection, List<Boolean> {
    int indexOf(boolean value);
 
    /**
-    * Use {@link #removeAt(int)}
+    * @deprecated Use {@link #removeAt(int)}
     */
    @Deprecated
    @Override
    Boolean remove(int index);
 
    /**
-    * Use {@link #removeValue(boolean)}
+    * @deprecated Use {@link #removeValue(boolean)}
     */
    @Deprecated
    @Override
@@ -74,7 +74,7 @@ public interface BooleanList extends BooleanCollection, List<Boolean> {
    boolean set(int index, boolean value);
 
    /**
-    * Use {@link #set(int, boolean)}
+    * @deprecated Use {@link #set(int, boolean)}
     */
    @Deprecated
    @Override

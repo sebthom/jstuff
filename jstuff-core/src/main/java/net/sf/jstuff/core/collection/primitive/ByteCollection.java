@@ -28,7 +28,7 @@ public interface ByteCollection extends CollectionExt<Byte> {
    boolean removeIf(IntPredicate filter);
 
    /**
-    * @deprecated use {@link #removeIf(IntPredicate)}
+    * @deprecated Use {@link #removeIf(IntPredicate)}
     */
    @Deprecated
    @Override
@@ -37,7 +37,7 @@ public interface ByteCollection extends CollectionExt<Byte> {
    }
 
    /**
-    * Use {@link #toValueArray()}
+    * @deprecated Use {@link #toValueArray()}
     */
    @Deprecated
    @Override

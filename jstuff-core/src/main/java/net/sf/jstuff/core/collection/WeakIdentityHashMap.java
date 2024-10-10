@@ -76,7 +76,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
          if (obj == null)
             return false;
          final KeyWrapper<?> ref = (KeyWrapper<?>) obj;
-         return get() == ref.get();
+         return super.get() == ref.get();
       }
 
       @Override
@@ -95,7 +95,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
          if (obj == null)
             return false;
          final KeyWrapper<?> ref = (KeyWrapper<?>) obj;
-         return get() == ref.get();
+         return ref.get() == null;
       }
 
       @Nullable

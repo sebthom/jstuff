@@ -122,7 +122,7 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    }
 
    /**
-    * Use {@link #getAt(int)}
+    * @deprecated Use {@link #getAt(int)}
     */
    @Deprecated
    @Override
@@ -156,7 +156,7 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    }
 
    /**
-    * Use {@link #removeAt(int)}
+    * @deprecated Use {@link #removeAt(int)}
     */
    @Deprecated
    @Override
@@ -165,7 +165,7 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    }
 
    /**
-    * Use {@link #removeValue(boolean)}
+    * @deprecated Use {@link #removeValue(boolean)}
     */
    @Deprecated
    @Override
@@ -223,7 +223,7 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    }
 
    /**
-    * Use {@link #set(int, boolean)}
+    * @deprecated Use {@link #set(int, boolean)}
     */
    @Deprecated
    @Override
@@ -238,7 +238,7 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    }
 
    /**
-    * Use {@link #toValueArray()}
+    * @deprecated Use {@link #toValueArray()}
     */
    @Deprecated
    @Override

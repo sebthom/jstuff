@@ -139,7 +139,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    }
 
    /**
-    * Use {@link #getAt(int)}
+    * @deprecated Use {@link #getAt(int)}
     */
    @Deprecated
    @Override
@@ -173,7 +173,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    }
 
    /**
-    * Use {@link #removeAt(int)}
+    * @deprecated Use {@link #removeAt(int)}
     */
    @Deprecated
    @Override
@@ -182,7 +182,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    }
 
    /**
-    * Use {@link #removeValue(byte)}
+    * @deprecated Use {@link #removeValue(byte)}
     */
    @Deprecated
    @Override
@@ -223,7 +223,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    }
 
    /**
-    * @deprecated use {@link #removeIf(IntPredicate)}
+    * @deprecated Use {@link #removeIf(IntPredicate)}
     */
    @Deprecated
    @Override
@@ -266,7 +266,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    }
 
    /**
-    * Use {@link #set(int, byte)}
+    * @deprecated Use {@link #set(int, byte)}
     */
    @Deprecated
    @Override
@@ -281,7 +281,7 @@ public class ByteArrayList extends AbstractList<Byte> implements ByteList, Clone
    }
 
    /**
-    * Use {@link #toValueArray()}
+    * @deprecated Use {@link #toValueArray()}
     */
    @Deprecated
    @Override

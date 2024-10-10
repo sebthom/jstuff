@@ -140,7 +140,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    }
 
    /**
-    * Use {@link #getAt(int)}
+    * @deprecated Use {@link #getAt(int)}
     */
    @Deprecated
    @Override
@@ -174,7 +174,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    }
 
    /**
-    * Use {@link #removeAt(int)}
+    * @deprecated Use {@link #removeAt(int)}
     */
    @Deprecated
    @Override
@@ -183,7 +183,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    }
 
    /**
-    * Use {@link #removeValue(int)}
+    * @deprecated Use {@link #removeValue(int)}
     */
    @Deprecated
    @Override
@@ -224,7 +224,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    }
 
    /**
-    * @deprecated use {@link #removeIf(IntPredicate)}
+    * @deprecated Use {@link #removeIf(IntPredicate)}
     */
    @Deprecated
    @Override
@@ -267,7 +267,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    }
 
    /**
-    * Use {@link #set(int, int)}
+    * @deprecated Use {@link #set(int, int)}
     */
    @Deprecated
    @Override
@@ -282,7 +282,7 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    }
 
    /**
-    * Use {@link #toValueArray()}
+    * @deprecated Use {@link #toValueArray()}
     */
    @Deprecated
    @Override

@@ -28,7 +28,7 @@ public interface LongCollection extends CollectionExt<Long> {
    boolean removeIf(LongPredicate filter);
 
    /**
-    * @deprecated use {@link #removeIf(LongPredicate)}
+    * @deprecated Use {@link #removeIf(LongPredicate)}
     */
    @Deprecated
    @Override
@@ -37,7 +37,7 @@ public interface LongCollection extends CollectionExt<Long> {
    }
 
    /**
-    * Use {@link #toValueArray()}
+    * @deprecated Use {@link #toValueArray()}
     */
    @Deprecated
    @Override

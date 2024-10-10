@@ -20,7 +20,7 @@ public interface BooleanCollection extends CollectionExt<Boolean> {
    boolean containsAll(boolean... values);
 
    /**
-    * Use {@link #toValueArray()}
+    * @deprecated Use {@link #toValueArray()}
     */
    @Deprecated
    @Override

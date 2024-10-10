@@ -122,7 +122,7 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    }
 
    /**
-    * Use {@link #getAt(int)}
+    * @deprecated Use {@link #getAt(int)}
     */
    @Deprecated
    @Override
@@ -156,7 +156,7 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    }
 
    /**
-    * Use {@link #removeAt(int)}
+    * @deprecated Use {@link #removeAt(int)}
     */
    @Deprecated
    @Override
@@ -165,7 +165,7 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    }
 
    /**
-    * Use {@link #removeValue(short)}
+    * @deprecated Use {@link #removeValue(short)}
     */
    @Deprecated
    @Override
@@ -223,7 +223,7 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    }
 
    /**
-    * Use {@link #set(int, short)}
+    * @deprecated Use {@link #set(int, short)}
     */
    @Deprecated
    @Override
@@ -238,7 +238,7 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    }
 
    /**
-    * Use {@link #toValueArray()}
+    * @deprecated Use {@link #toValueArray()}
     */
    @Deprecated
    @Override

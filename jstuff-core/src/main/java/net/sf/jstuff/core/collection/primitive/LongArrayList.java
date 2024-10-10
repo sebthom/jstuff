@@ -139,7 +139,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    }
 
    /**
-    * Use {@link #getAt(int)}
+    * @deprecated Use {@link #getAt(int)}
     */
    @Deprecated
    @Override
@@ -173,7 +173,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    }
 
    /**
-    * Use {@link #removeAt(int)}
+    * @deprecated Use {@link #removeAt(int)}
     */
    @Deprecated
    @Override
@@ -182,7 +182,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    }
 
    /**
-    * Use {@link #removeValue(long)}
+    * @deprecated Use {@link #removeValue(long)}
     */
    @Deprecated
    @Override
@@ -223,7 +223,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    }
 
    /**
-    * @deprecated use {@link #removeIf(LongPredicate)}
+    * @deprecated Use {@link #removeIf(LongPredicate)}
     */
    @Deprecated
    @Override
@@ -266,7 +266,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    }
 
    /**
-    * Use {@link #set(int, long)}
+    * @deprecated Use {@link #set(int, long)}
     */
    @Deprecated
    @Override
@@ -281,7 +281,7 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    }
 
    /**
-    * Use {@link #toValueArray()}
+    * @deprecated Use {@link #toValueArray()}
     */
    @Deprecated
    @Override

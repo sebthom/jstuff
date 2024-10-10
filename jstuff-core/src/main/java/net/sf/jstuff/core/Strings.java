@@ -1065,18 +1065,18 @@ public abstract class Strings {
                break;
             case '*':
                if (Strings.charAt(globPattern, idx + 1, (char) 0) == '*') { // **
-                  if (Strings.charAt(globPattern, idx + 2, (char) 0) == '/') // **/
+                  if (Strings.charAt(globPattern, idx + 2, (char) 0) == '/') { // **/
                      if (Strings.charAt(globPattern, idx + 3, (char) 0) == '*') {
                         // "**/*" => ".*"
                         sb.append(".*");
-                        idx = idx + 3;
+                        idx += 3;
                      } else {
                         // "**/" => "(.*/)?"
                         sb.append("(.*/)?");
-                        idx = idx + 2;
+                        idx += 2;
                         ch = '/';
                      }
-                  else {
+                  } else {
                      // "**" => ".*"
                      sb.append(".*");
                      idx++;

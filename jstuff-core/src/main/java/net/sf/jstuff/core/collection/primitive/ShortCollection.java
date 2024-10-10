@@ -20,7 +20,7 @@ public interface ShortCollection extends CollectionExt<Short> {
    boolean containsAll(short... values);
 
    /**
-    * Use {@link #toValueArray()}
+    * @deprecated Use {@link #toValueArray()}
     */
    @Deprecated
    @Override

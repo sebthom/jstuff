@@ -20,7 +20,7 @@ public interface ShortList extends ShortCollection, List<Short> {
    void add(int index, short value);
 
    /**
-    * Use {@link #getAt(int)}
+    * @deprecated Use {@link #getAt(int)}
     */
    @Deprecated
    @Override
@@ -44,14 +44,14 @@ public interface ShortList extends ShortCollection, List<Short> {
    int indexOf(short value);
 
    /**
-    * Use {@link #removeAt(int)}
+    * @deprecated Use {@link #removeAt(int)}
     */
    @Deprecated
    @Override
    Short remove(int index);
 
    /**
-    * Use {@link #removeValue(short)}
+    * @deprecated Use {@link #removeValue(short)}
     */
    @Deprecated
    @Override
@@ -72,7 +72,7 @@ public interface ShortList extends ShortCollection, List<Short> {
    boolean removeValue(short value);
 
    /**
-    * Use {@link #set(int, short)}
+    * @deprecated Use {@link #set(int, short)}
     */
    @Deprecated
    @Override

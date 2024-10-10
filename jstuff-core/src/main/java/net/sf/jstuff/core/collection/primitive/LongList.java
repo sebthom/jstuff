@@ -20,7 +20,7 @@ public interface LongList extends LongCollection, List<Long> {
    void add(int index, long value);
 
    /**
-    * Use {@link #getAt(int)}
+    * @deprecated Use {@link #getAt(int)}
     */
    @Deprecated
    @Override
@@ -44,14 +44,14 @@ public interface LongList extends LongCollection, List<Long> {
    int indexOf(long value);
 
    /**
-    * Use {@link #removeAt(int)}
+    * @deprecated Use {@link #removeAt(int)}
     */
    @Deprecated
    @Override
    Long remove(int index);
 
    /**
-    * Use {@link #removeValue(long)}
+    * @deprecated Use {@link #removeValue(long)}
     */
    @Deprecated
    @Override
@@ -72,7 +72,7 @@ public interface LongList extends LongCollection, List<Long> {
    boolean removeValue(long value);
 
    /**
-    * Use {@link #set(int, long)}
+    * @deprecated Use {@link #set(int, long)}
     */
    @Deprecated
    @Override
