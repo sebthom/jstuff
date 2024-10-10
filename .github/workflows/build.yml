@@ -127,6 +127,7 @@ jobs:
 
     - name: "Build with Maven 🔨"
       if: ${{ matrix.may_create_release && !env.ACT }}
+      id: maven-build
       env:
         DEPLOY_SNAPSHOTS_TO_GITHUB_BRANCH: true
         GITHUB_USER: ${{ github.actor }}
