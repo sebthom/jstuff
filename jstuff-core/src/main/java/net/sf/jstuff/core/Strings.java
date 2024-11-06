@@ -185,14 +185,14 @@ public abstract class Strings {
    public static final String EMPTY = "";
 
    /**
-    * \r 13 Carriage Return, new line separator on Macintosh
+    * \r 13 Carriage Return, new line separator on MacOS 9 and before see https://en.wikipedia.org/wiki/Newline#Representation
     */
-   public static final char CR = 13;
+   public static final char CR = '\r';
 
    /**
     * \n 10 Line Feed, new line separator on Unix/Linux
     */
-   public static final char LF = 10;
+   public static final char LF = '\n';
 
    /**
     * \r\n new line separator on Windows
