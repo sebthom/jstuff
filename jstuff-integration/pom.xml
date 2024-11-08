@@ -166,7 +166,7 @@ SPDX-License-Identifier: EPL-2.0
          <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.20</version>
+            <version>1.4.21</version>
          </dependency>
          <dependency>
             <!-- https://search.maven.org/artifact/org.apache.tomcat/tomcat-catalina -->
