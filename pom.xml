@@ -16,7 +16,7 @@
 
    <groupId>net.sf.jstuff</groupId>
    <artifactId>jstuff-parent</artifactId>
-   <version>8.0.1</version>
+   <version>8.0.2-SNAPSHOT</version>
    <packaging>pom</packaging>
 
    <name>jstuff</name>
@@ -62,7 +62,7 @@
       <url>https://github.com/sebthom/jstuff</url>
       <connection>scm:git:https://github.com/sebthom/jstuff.git</connection>
       <developerConnection>scm:git:https://github.com/sebthom/jstuff.git</developerConnection>
-      <tag>8.0.1</tag>
+      <tag>HEAD</tag>
    </scm>
 
 
