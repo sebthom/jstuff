@@ -48,6 +48,49 @@ public class RGB implements Serializable {
       return gradient;
    }
 
+   /**
+    * Creates an RGB instance from a hexadecimal color code.
+    *
+    * @param hex the hexadecimal color code, e.g., "#FFAABB", "FFAABB", "#FAB", or "FAB", "0xFFAABB", "xFFAABB"
+    * @return an RGB object representing the color
+    * @throws IllegalArgumentException if the hex string is invalid
+    */
+   public static RGB fromHex(final String hex) {
+      Args.notNull("hex", hex);
+
+      // Detect prefix and determine offset
+      final int offset;
+      if (hex.startsWith("#") || hex.startsWith("x")) {
+         offset = 1;
+      } else if (hex.startsWith("0x")) {
+         offset = 2;
+      } else {
+         offset = 0;
+      }
+
+      final int length = hex.length() - offset;
+      if (length != 3 && length != 6)
+         throw new IllegalArgumentException("Hex color code must be 3 or 6 characters long (excluding prefix), but was [" + hex + "]");
+
+      try {
+         final int red, green, blue;
+
+         if (length == 3) {
+            red = Integer.parseInt("" + hex.charAt(offset) + hex.charAt(offset), 16);
+            green = Integer.parseInt("" + hex.charAt(offset + 1) + hex.charAt(offset + 1), 16);
+            blue = Integer.parseInt("" + hex.charAt(offset + 2) + hex.charAt(offset + 2), 16);
+         } else {
+            red = Integer.parseInt(hex.substring(offset, offset + 2), 16);
+            green = Integer.parseInt(hex.substring(offset + 2, offset + 4), 16);
+            blue = Integer.parseInt(hex.substring(offset + 4, offset + 6), 16);
+         }
+
+         return new RGB(red, green, blue);
+      } catch (final NumberFormatException e) {
+         throw new IllegalArgumentException("Invalid hex color code [" + hex + "]", e);
+      }
+   }
+
    public final int red;
    public final int green;
    public final int blue;
@@ -101,8 +144,8 @@ public class RGB implements Serializable {
    /**
     * @return 0.0-100.0
     *
-    * @see <a href=
-    *      "https://stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color/56678483#56678483">stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color</a>
+    * @see <a href="https://stackoverflow.com/a/56678483">
+    *      stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color</a>
     */
    public double getBrightnessPrecise() {
       // step one: convert 8 bit ints to 0.0-1.0
@@ -144,5 +187,24 @@ public class RGB implements Serializable {
    @Override
    public String toString() {
       return "RGB[" + red + "," + green + "," + blue + "]";
+   }
+
+   /**
+    * Converts this RGB color to its hexadecimal color code representation.
+    *
+    * @return a string representing the hexadecimal color code, e.g., "#FFAABB"
+    */
+   public String toHex() {
+      return toHex("#");
+   }
+
+   /**
+    * Converts this RGB color to its hexadecimal color code representation.
+    *
+    * @param prefix the prefix to use (e.g., "#", "0x", "x", or "")
+    * @return a string representing the hexadecimal color code, e.g., "#FFAABB"
+    */
+   public String toHex(final String prefix) {
+      return String.format("%s%02X%02X%02X", prefix, red, green, blue);
    }
 }
