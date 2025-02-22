@@ -57,13 +57,24 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
       return false;
    }
 
-   public static <T> boolean containsIdentical(final T @Nullable [] array, final T theItem) {
-      if (array == null)
+   public static <T> boolean containsIdentical(final T @Nullable [] searchIn, final T searchFor) {
+      if (searchIn == null)
          return false;
 
-      for (final T t : array)
-         if (t == theItem)
+      for (final T item : searchIn)
+         if (item == searchFor)
             return true;
+      return false;
+   }
+
+   public static boolean containsIgnoringCase(final String @Nullable [] searchIn, final String searchFor) {
+      if (searchIn == null)
+         return false;
+
+      for (final String item : searchIn) {
+         if (searchFor.equalsIgnoreCase(item))
+            return true;
+      }
       return false;
    }
 
