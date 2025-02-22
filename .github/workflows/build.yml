@@ -70,7 +70,7 @@ jobs:
         - java: 21
           may_create_release: false
           experimental: false
-        - java: 22
+        - java: 23
           may_create_release: false
           experimental: false
 
