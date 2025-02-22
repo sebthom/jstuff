@@ -5,6 +5,7 @@
 package net.sf.jstuff.core.graphic;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -17,6 +18,35 @@ import net.sf.jstuff.core.validation.Args;
 public class RGB implements Serializable {
 
    private static final long serialVersionUID = 1L;
+
+   public static RGB[] createLinearGradient(final RGB from, final RGB to, final int steps) {
+      if (steps < 2) {
+         Args.min("steps", steps, 2);
+      }
+
+      final RGB[] gradient = new RGB[steps];
+      gradient[0] = from;
+
+      // Calculate the difference and step increment for each color component
+      final float stepR = (float) (to.red - from.red) / (steps - 1);
+      final float stepG = (float) (to.green - from.green) / (steps - 1);
+      final float stepB = (float) (to.blue - from.blue) / (steps - 1);
+
+      for (int i = 1; i < steps; i++) {
+         int newRed = Math.round(from.red + stepR * i);
+         int newGreen = Math.round(from.green + stepG * i);
+         int newBlue = Math.round(from.blue + stepB * i);
+
+         // Clamp color values to the valid range [0, 255]
+         newRed = Math.max(0, Math.min(255, newRed));
+         newGreen = Math.max(0, Math.min(255, newGreen));
+         newBlue = Math.max(0, Math.min(255, newBlue));
+
+         gradient[i] = new RGB(newRed, newGreen, newBlue);
+      }
+
+      return gradient;
+   }
 
    public final int red;
    public final int green;
@@ -108,12 +138,7 @@ public class RGB implements Serializable {
 
    @Override
    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + blue;
-      result = prime * result + green;
-      result = prime * result + red;
-      return result;
+      return Objects.hash(blue, green, red);
    }
 
    @Override
