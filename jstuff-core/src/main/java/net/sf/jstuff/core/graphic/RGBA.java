@@ -8,7 +8,6 @@ import static java.lang.Integer.parseInt;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -17,47 +16,49 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class RGB implements Serializable {
-
+public class RGBA implements Serializable {
    private static final long serialVersionUID = 1L;
 
-   public static RGB[] createLinearGradient(final RGB from, final RGB to, final int steps) {
+   public static RGBA[] createLinearGradient(final RGBA from, final RGBA to, final int steps) {
       if (steps < 2) {
          Args.min("steps", steps, 2);
       }
 
-      final var gradient = new RGB[steps];
+      final var gradient = new RGBA[steps];
       gradient[0] = from;
 
       // Calculate the difference and step increment for each color component
       final var stepR = (float) (to.red - from.red) / (steps - 1);
       final var stepG = (float) (to.green - from.green) / (steps - 1);
       final var stepB = (float) (to.blue - from.blue) / (steps - 1);
+      final var stepA = (float) (to.alpha - from.alpha) / (steps - 1);
 
       for (int i = 1; i < steps; i++) {
          int newRed = Math.round(from.red + stepR * i);
          int newGreen = Math.round(from.green + stepG * i);
          int newBlue = Math.round(from.blue + stepB * i);
+         int newAlpha = Math.round(from.alpha + stepA * i);
 
          // Clamp color values to the valid range [0, 255]
          newRed = Math.max(0, Math.min(255, newRed));
          newGreen = Math.max(0, Math.min(255, newGreen));
          newBlue = Math.max(0, Math.min(255, newBlue));
+         newAlpha = Math.max(0, Math.min(255, newAlpha));
 
-         gradient[i] = new RGB(newRed, newGreen, newBlue);
+         gradient[i] = new RGBA(newRed, newGreen, newBlue, newAlpha);
       }
 
       return gradient;
    }
 
    /**
-    * Creates an RGB instance from a hexadecimal color code.
+    * Creates an RGBA instance from a hexadecimal color code. If the alpha value is missing, "FF" is assumed.
     *
-    * @param hex the hexadecimal color code, e.g., "#FFAABB", "FFAABB", "#FAB", or "FAB", "0xFFAABB", "xFFAABB"
-    * @return an RGB object representing the color
+    * @param hex the hexadecimal color code, e.g., "#FFAABB88", "FFAABB88", "#FAB8", or "FAB8", "0xFFAABB88", "xFFAABB88"
+    * @return an RGBA object representing the color
     * @throws IllegalArgumentException if the hex string is invalid
     */
-   public static RGB fromHex(final String hex) {
+   public static RGBA fromHex(final String hex) {
       Args.notNull("hex", hex);
 
       // Detect prefix and determine offset
@@ -71,23 +72,26 @@ public class RGB implements Serializable {
       }
 
       final int length = hex.length() - offset;
-      if (length != 3 && length != 6)
-         throw new IllegalArgumentException("Hex color code must be 3 or 6 characters long (excluding prefix), but was [" + hex + "]");
+      if (length != 3 && length != 4 && length != 6 && length != 8)
+         throw new IllegalArgumentException("Hex color code must be 3, 4, 6 or 8 characters long (excluding prefix), but was [" + hex
+               + "]");
 
       try {
-         final int red, green, blue;
+         final int red, green, blue, alpha;
 
-         if (length == 3) {
+         if (length < 5) {
             red = parseInt("" + hex.charAt(offset) + hex.charAt(offset), 16);
             green = parseInt("" + hex.charAt(offset + 1) + hex.charAt(offset + 1), 16);
             blue = parseInt("" + hex.charAt(offset + 2) + hex.charAt(offset + 2), 16);
+            alpha = length == 3 ? 255 : parseInt("" + hex.charAt(offset + 3) + hex.charAt(offset + 3), 16);
          } else {
             red = parseInt(hex.substring(offset, offset + 2), 16);
             green = parseInt(hex.substring(offset + 2, offset + 4), 16);
             blue = parseInt(hex.substring(offset + 4, offset + 6), 16);
+            alpha = length == 6 ? 255 : parseInt(hex.substring(offset + 6, offset + 8), 16);
          }
 
-         return new RGB(red, green, blue);
+         return new RGBA(red, green, blue, alpha);
       } catch (final NumberFormatException e) {
          throw new IllegalArgumentException("Invalid hex color code [" + hex + "]", e);
       }
@@ -96,20 +100,28 @@ public class RGB implements Serializable {
    public final int red;
    public final int green;
    public final int blue;
+   public final int alpha;
 
    /**
     * @param red 0-255
     * @param green 0-255
     * @param blue 0-255
+    * @param alpha 0-255
     */
-   public RGB(final int red, final int green, final int blue) {
+   public RGBA(final int red, final int green, final int blue, final int alpha) {
       Args.inRange("red", red, 0, 255);
       Args.inRange("green", green, 0, 255);
       Args.inRange("blue", blue, 0, 255);
+      Args.inRange("alpha", alpha, 0, 255);
 
       this.red = red;
       this.green = green;
       this.blue = blue;
+      this.alpha = alpha;
+   }
+
+   public int getAlpha() {
+      return alpha;
    }
 
    public int getBlue() {
@@ -124,51 +136,16 @@ public class RGB implements Serializable {
       return red;
    }
 
-   public RGB withBlue(final int blue) {
-      return new RGB(red, green, blue);
+   public RGBA withBlue(final int blue) {
+      return new RGBA(red, green, blue, alpha);
    }
 
-   public RGB withGreen(final int blue) {
-      return new RGB(red, green, blue);
+   public RGBA withGreen(final int blue) {
+      return new RGBA(red, green, blue, alpha);
    }
 
-   public RGB withRed(final int red) {
-      return new RGB(red, green, blue);
-   }
-
-   /**
-    * @see <a href="https://www.w3.org/TR/AERT/#color-contrast">w3.org/TR/AERT/#color-contrast</a>
-    */
-   public int getBrightnessFast() {
-      return (int) (0.299 * red + 0.587 * green + 0.114 * blue);
-   }
-
-   /**
-    * @return 0.0-100.0
-    *
-    * @see <a href="https://stackoverflow.com/a/56678483">
-    *      stackoverflow.com/questions/596216/formula-to-determine-perceived-brightness-of-rgb-color</a>
-    */
-   public double getBrightnessPrecise() {
-      // step one: convert 8 bit ints to 0.0-1.0
-      final double vR = red / 255.0;
-      final double vG = green / 255.0;
-      final double vB = blue / 255.0;
-
-      // step two:
-      final Function<Double, Double> sRGBtoLin = colorChannel -> colorChannel <= 0.04045 //
-            ? colorChannel / 12.92
-            : Math.pow((colorChannel + 0.055) / 1.055, 2.4);
-
-      // step three: find Luminance (Y)
-      final double Y = 0.2126 * sRGBtoLin.apply(vR) // CHECKSTYLE:IGNORE .*
-            + 0.7152 * sRGBtoLin.apply(vG) //
-            + 0.0722 * sRGBtoLin.apply(vB);
-
-      // step four: YtoLstar
-      return Y <= 216 / 24389.0 //
-            ? Y * (24389.0 / 27.0)
-            : Math.pow(Y, 1.0 / 3.0) * 116 - 16;
+   public RGBA withRed(final int red) {
+      return new RGBA(red, green, blue, alpha);
    }
 
    @Override
@@ -177,44 +154,40 @@ public class RGB implements Serializable {
          return true;
       if (obj == null || getClass() != obj.getClass())
          return false;
-      final RGB other = (RGB) obj;
-      return blue == other.blue && green == other.green && red == other.red;
+      final RGBA other = (RGBA) obj;
+      return blue == other.blue && green == other.green && red == other.red && alpha == other.alpha;
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(blue, green, red);
+      return Objects.hash(blue, green, red, alpha);
    }
 
-   public RGBA toRGBA() {
-      return toRGBA(255);
-   }
-
-   public RGBA toRGBA(final int alpha) {
-      return new RGBA(red, green, blue, alpha);
+   public RGB toRGB() {
+      return new RGB(red, green, blue);
    }
 
    /**
-    * Converts this RGB color to its hexadecimal color code representation.
+    * Converts this RGBA color to its hexadecimal color code representation.
     *
-    * @return a string representing the hexadecimal color code, e.g., "#FFAABB"
+    * @return a string representing the hexadecimal color code, e.g., "#FFAABB88"
     */
    public String toHex() {
       return toHex("#");
    }
 
    /**
-    * Converts this RGB color to its hexadecimal color code representation.
+    * Converts this RGBA color to its hexadecimal color code representation.
     *
     * @param prefix the prefix to use (e.g., "#", "0x", "x", or "")
-    * @return a string representing the hexadecimal color code, e.g., "#FFAABB"
+    * @return a string representing the hexadecimal color code, e.g., "#FFAABB88"
     */
    public String toHex(final String prefix) {
-      return String.format("%s%02X%02X%02X", prefix, red, green, blue);
+      return String.format("%s%02X%02X%02X%02X", prefix, red, green, blue, alpha);
    }
 
    @Override
    public String toString() {
-      return "RGB[" + red + "," + green + "," + blue + "]";
+      return "RGBA[" + red + "," + green + "," + blue + "," + alpha + "]";
    }
 }
