@@ -3792,11 +3792,45 @@ public abstract class Strings {
       return StringUtils.stripToNull(str);
    }
 
+   public static String substring(final CharSequence cseq, int start) {
+      final int len = cseq.length();
+      if (start < 0) {
+         start += len;
+      }
+      if (start < 0) {
+         start = 0;
+      }
+      return start > len ? EMPTY : cseq.subSequence(start, len).toString();
+   }
+
    /**
     * See {@link StringUtils#substring(String, int)}
     */
    public static String substring(final String str, final int start) {
       return asNonNullUnsafe(StringUtils.substring(str, start));
+   }
+
+   public static String substring(final CharSequence cseq, int start, int end) {
+      final int len = cseq.length();
+      if (start < 0) {
+         start += len;
+      }
+      if (end < 0) {
+         end += len;
+      }
+      if (end > len) {
+         end = len;
+      }
+      if (start > end)
+         return EMPTY;
+
+      if (start < 0) {
+         start = 0;
+      }
+      if (end < 0) {
+         end = 0;
+      }
+      return cseq.subSequence(start, end).toString();
    }
 
    /**
