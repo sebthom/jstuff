@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>net.sf.jstuff</groupId>
-  <artifactId>jstuff-integration</artifactId>
+  <artifactId>jstuff-parent</artifactId>
   <versioning>
     <versions>
       <version>8.0.2-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20250222062131</lastUpdated>
+    <lastUpdated>20250310044859</lastUpdated>
   </versioning>
 </metadata>
