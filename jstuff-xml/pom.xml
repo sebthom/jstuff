@@ -20,7 +20,16 @@ SPDX-License-Identifier: EPL-2.0
       <!-- https://search.maven.org/search?q=g:org.glassfish.jaxb -->
       <jaxb.version>4.0.5</jaxb.version>
 
-      <maven-bundle-plugin.import-package>com.sun.codemodel;resolution:="optional",com.sun.tools.xjc;resolution:="optional",com.sun.tools.xjc.outline;resolution:="optional",com.sun.tools.xjc.model;resolution:="optional",*</maven-bundle-plugin.import-package>
+      <!-- workaround for bug that does not mark optional dependencies as optional, see https://issues.apache.org/jira/browse/FELIX-2809-->
+      <maven-bundle-plugin.import-package>
+         com.sun.codemodel;resolution:="optional",
+         com.sun.tools.xjc;resolution:="optional",
+         com.sun.tools.xjc.outline;resolution:="optional",
+         com.sun.tools.xjc.model;resolution:="optional",
+         jakarta.xml.bind;resolution:="optional",
+         jakarta.xml.bind.annotation;resolution:="optional",
+         *
+      </maven-bundle-plugin.import-package>
    </properties>
 
    <dependencyManagement>
