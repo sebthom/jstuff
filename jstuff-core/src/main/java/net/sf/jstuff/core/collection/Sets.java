@@ -16,8 +16,6 @@ import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -97,7 +95,6 @@ public abstract class Sets {
    public static <S, T> @Nullable Set<T> transformNullable(final @Nullable Set<S> source, final Function<? super S, ? extends T> op) {
       if (source == null)
          return null;
-      Args.notNull("op", op);
 
       final var target = new HashSet<T>(source.size());
       for (final S sourceItem : source) {

@@ -16,7 +16,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.functional.BiLongConsumer;
 import net.sf.jstuff.core.math.Numbers;
-import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
@@ -67,7 +66,6 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
 
    @Override
    public void add(final int index, final Long value) {
-      Args.notNull("value", value);
       add(index, (long) value);
    }
 
@@ -79,14 +77,12 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
 
    @Override
    public boolean add(final Long value) {
-      Args.notNull("value", value);
       add(size, value);
       return true;
    }
 
    @Override
    public boolean addAll(final long... values) {
-      Args.notNull("values", values);
       for (final long v : values) {
          add(v);
       }
@@ -117,7 +113,6 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
 
    @Override
    public boolean containsAll(final long... values) {
-      Args.notNull("values", values);
       for (final long v : values) {
          if (!contains(v))
             return false;
@@ -271,7 +266,6 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    @Deprecated
    @Override
    public Long set(final int index, final Long value) {
-      Args.notNull("value", value);
       return set(index, (long) value);
    }
 
@@ -296,7 +290,6 @@ public class LongArrayList extends AbstractList<Long> implements LongList, Clone
    @SuppressWarnings("unchecked")
    @Override
    public <T> T[] toArray(final T[] array) {
-      Args.notNull("array", array);
       if (array.getClass().getComponentType() == int.class) {
          if (array.length == size)
             return array;

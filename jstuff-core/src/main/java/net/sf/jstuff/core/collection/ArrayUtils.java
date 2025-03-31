@@ -18,8 +18,6 @@ import java.util.function.Predicate;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -79,8 +77,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static <T> Class<T> getComponentType(final T[] array) {
-      Args.notNull("array", array);
-
       return asNonNullUnsafe(org.apache.commons.lang3.ArrayUtils.getComponentType(array));
    }
 
@@ -99,7 +95,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    public static <T> T @Nullable [] filterNullable(final Predicate<? super T> filter, final T @Nullable... array) {
       if (array == null || array.length == 0)
          return array;
-      Args.notNull("filter", filter);
 
       final var result = new ArrayList<T>();
       for (final T item : array)
@@ -152,8 +147,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
    @SuppressWarnings("unchecked")
    public static <T> T[] toArray(final Collection<T> values, final Class<T> itemType) {
-      Args.notNull("values", values);
-
       return values.toArray((T[]) Array.newInstance(itemType, values.size()));
    }
 
@@ -161,8 +154,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
     * About 30% faster than <code>new String(chars).getBytes("UTF-8")</code>
     */
    public static byte[] toByteArray(final char[] chars, final Charset charset) {
-      Args.notNull("chars", chars);
-
       if (chars.length == 0)
          return EMPTY_BYTE_ARRAY;
 
@@ -174,8 +165,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static byte[] toByteArray(final char[] chars, final int off, final int len, final Charset charset) {
-      Args.notNull("chars", chars);
-
       final CharBuffer charBuff = CharBuffer.wrap(chars, off, len);
       final ByteBuffer bytesBuff = charset.encode(charBuff);
       final var bytes = new byte[bytesBuff.remaining()];
@@ -184,8 +173,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static List<Boolean> toList(final boolean... array) {
-      Args.notNull("array", array);
-
       final var result = new ArrayList<Boolean>(array.length);
       for (final boolean i : array) {
          result.add(i);
@@ -194,8 +181,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static List<Byte> toList(final byte... array) {
-      Args.notNull("array", array);
-
       final var result = new ArrayList<Byte>(array.length);
       for (final byte i : array) {
          result.add(i);
@@ -204,8 +189,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static List<Character> toList(final char... array) {
-      Args.notNull("array", array);
-
       final var result = new ArrayList<Character>(array.length);
       for (final char i : array) {
          result.add(i);
@@ -214,8 +197,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static List<Double> toList(final double... array) {
-      Args.notNull("array", array);
-
       final var result = new ArrayList<Double>(array.length);
       for (final double i : array) {
          result.add(i);
@@ -224,8 +205,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static List<Float> toList(final float... array) {
-      Args.notNull("array", array);
-
       final var result = new ArrayList<Float>(array.length);
       for (final float i : array) {
          result.add(i);
@@ -234,8 +213,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static List<Integer> toList(final int... array) {
-      Args.notNull("array", array);
-
       final var result = new ArrayList<Integer>(array.length);
       for (final int i : array) {
          result.add(i);
@@ -244,8 +221,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static List<Long> toList(final long... array) {
-      Args.notNull("array", array);
-
       final var result = new ArrayList<Long>(array.length);
       for (final long i : array) {
          result.add(i);
@@ -256,8 +231,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
    @SuppressWarnings("unchecked")
    public static <T> List<T> toList(final Object array, @SuppressWarnings("unused") final Class<T> itemType) {
-      Args.notNull("array", array);
-
       if (!array.getClass().isArray())
          throw new IllegalArgumentException("[array] is not an array but of type: " + array.getClass());
 
@@ -270,8 +243,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    }
 
    public static List<Short> toList(final short... array) {
-      Args.notNull("array", array);
-
       final var result = new ArrayList<Short>(array.length);
       for (final short i : array) {
          result.add(i);
@@ -292,8 +263,6 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
          final Function<? super S, ? extends T> op) {
       if (source == null)
          return null;
-      Args.notNull("targetType", targetType);
-      Args.notNull("op", op);
 
       @SuppressWarnings("unchecked")
       final T[] target = (T[]) Array.newInstance(targetType, source.length);

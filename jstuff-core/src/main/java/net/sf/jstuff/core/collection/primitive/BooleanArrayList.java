@@ -12,7 +12,6 @@ import java.util.RandomAccess;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
@@ -63,7 +62,6 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
 
    @Override
    public void add(final int index, final Boolean value) {
-      Args.notNull("value", value);
       add(index, (boolean) value);
    }
 
@@ -75,14 +73,12 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
 
    @Override
    public boolean add(final Boolean value) {
-      Args.notNull("value", value);
       add(size, value);
       return true;
    }
 
    @Override
    public boolean addAll(final boolean... values) {
-      Args.notNull("values", values);
       for (final boolean v : values) {
          add(v);
       }
@@ -113,7 +109,6 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
 
    @Override
    public boolean containsAll(final boolean... values) {
-      Args.notNull("values", values);
       for (final boolean v : values) {
          if (!contains(v))
             return false;
@@ -228,7 +223,6 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    @Deprecated
    @Override
    public Boolean set(final int index, final Boolean value) {
-      Args.notNull("value", value);
       return set(index, (boolean) value);
    }
 
@@ -253,7 +247,6 @@ public class BooleanArrayList extends AbstractList<Boolean> implements BooleanLi
    @SuppressWarnings("unchecked")
    @Override
    public <T> T[] toArray(final T[] array) {
-      Args.notNull("array", array);
       if (array.getClass().getComponentType() == int.class) {
          if (array.length == size)
             return array;

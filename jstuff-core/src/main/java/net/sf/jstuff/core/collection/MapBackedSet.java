@@ -18,8 +18,6 @@ import java.util.stream.Stream;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -34,7 +32,6 @@ public class MapBackedSet<E> implements Set<E>, Serializable {
    private transient Set<E> keys;
 
    public MapBackedSet(final Map<E, Boolean> emptyMap) {
-      Args.notNull("map", emptyMap);
       if (!emptyMap.isEmpty())
          throw new IllegalArgumentException("Argument [map] is not an empty map");
 

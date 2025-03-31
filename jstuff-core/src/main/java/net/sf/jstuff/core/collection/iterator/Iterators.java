@@ -12,8 +12,6 @@ import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -34,8 +32,6 @@ public abstract class Iterators {
    }
 
    public static boolean contains(final Iterator<?> iterator, final Object searchFor) {
-      Args.notNull("iterator", iterator);
-
       while (iterator.hasNext()) {
          final Object elem = iterator.next();
          if (Objects.equals(elem, searchFor))
@@ -45,8 +41,6 @@ public abstract class Iterators {
    }
 
    public static boolean containsIdentical(final Iterator<?> iterator, final Object searchFor) {
-      Args.notNull("iterator", iterator);
-
       while (iterator.hasNext())
          if (searchFor == iterator.next())
             return true;
@@ -54,8 +48,6 @@ public abstract class Iterators {
    }
 
    public static <T> Iterator<T> cycling(final Collection<T> items) {
-      Args.notNull("items", items);
-
       return new Iterator<>() {
          Iterator<T> it = items.iterator();
 
@@ -76,8 +68,6 @@ public abstract class Iterators {
 
    @SafeVarargs
    public static <T> Iterator<T> cycling(final T... items) {
-      Args.notNull("items", items);
-
       final int size = items.length;
 
       if (size == 0)
@@ -108,8 +98,6 @@ public abstract class Iterators {
    }
 
    public static int size(final Iterator<?> iterator) {
-      Args.notNull("iterator", iterator);
-
       int size = 0;
       while (iterator.hasNext()) {
          size++;

@@ -17,7 +17,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.functional.BiIntConsumer;
 import net.sf.jstuff.core.math.Numbers;
-import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
@@ -74,20 +73,17 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
 
    @Override
    public void add(final int index, final Integer value) {
-      Args.notNull("value", value);
       add(index, (int) value);
    }
 
    @Override
    public boolean add(final Integer value) {
-      Args.notNull("value", value);
       add(size, (int) value);
       return true;
    }
 
    @Override
    public boolean addAll(final int... values) {
-      Args.notNull("values", values);
       for (final int v : values) {
          add(v);
       }
@@ -118,7 +114,6 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
 
    @Override
    public boolean containsAll(final int... values) {
-      Args.notNull("values", values);
       for (final int v : values) {
          if (!contains(v))
             return false;
@@ -272,7 +267,6 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    @Deprecated
    @Override
    public Integer set(final int index, final Integer value) {
-      Args.notNull("value", value);
       return set(index, (int) value);
    }
 
@@ -297,7 +291,6 @@ public class IntArrayList extends AbstractList<Integer> implements IntList, Clon
    @SuppressWarnings("unchecked")
    @Override
    public <T> T[] toArray(final T[] array) {
-      Args.notNull("array", array);
       if (array.getClass().getComponentType() == int.class) {
          if (array.length == size)
             return array;

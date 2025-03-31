@@ -32,7 +32,6 @@ import net.sf.jstuff.core.collection.Maps.MapDiff.EntryValueDiff;
 import net.sf.jstuff.core.comparator.SortDirection;
 import net.sf.jstuff.core.functional.IsEqual;
 import net.sf.jstuff.core.reflection.Types;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -97,10 +96,6 @@ public abstract class Maps {
    }
 
    public static <K, V> MapDiff<K, V> diff(final Map<K, V> leftMap, final Map<K, V> rightMap, final IsEqual<? super V> isEqual) {
-      Args.notNull("leftMap", leftMap);
-      Args.notNull("rightMap", rightMap);
-      Args.notNull("isEqual", isEqual);
-
       final var mapDiff = new MapDiff<>(leftMap, rightMap);
       final var processedLeftKeys = new HashSet<K>(Math.max(leftMap.size(), rightMap.size()));
 
@@ -152,8 +147,6 @@ public abstract class Maps {
    }
 
    public static <K, V> ArrayList<K> keysAsArrayList(final Map<K, V> map) {
-      Args.notNull("map", map);
-
       return CollectionUtils.newArrayList(map.keySet());
    }
 
@@ -163,10 +156,6 @@ public abstract class Maps {
     * Opposite to {@link #toMap(String, String, String)}
     */
    public static <K, V> CharSequence map2string(final Map<K, V> values, final String valueSeparator, final String assignmentOperator) {
-      Args.notNull("values", values);
-      Args.notNull("valueSeparator", valueSeparator);
-      Args.notNull("assignmentOperator", assignmentOperator);
-
       final var sb = new StringBuilder();
 
       for (final Iterator<Entry<K, V>> it = values.entrySet().iterator(); it.hasNext();) {
@@ -260,10 +249,6 @@ public abstract class Maps {
    }
 
    public static <K, V, M extends Map<K, V>> M putAll(final M map, final K[] keys, final V[] values) {
-      Args.notNull("map", map);
-      Args.notNull("keys", keys);
-      Args.notNull("values", values);
-
       if (keys.length != values.length)
          throw new IllegalArgumentException("Arguments [keys] and [values] must have the same array size.");
 
@@ -276,8 +261,6 @@ public abstract class Maps {
    @SuppressWarnings("unchecked")
    public static <K, V, KK extends K, VV extends V, M extends Map<K, V>> M putAll(final M map, final KK firstKey, final VV firstValue,
          final Object... moreKeysAndValues) {
-      Args.notNull("map", map);
-
       map.put(firstKey, firstValue);
 
       boolean nextIsValue = false;
@@ -296,8 +279,6 @@ public abstract class Maps {
 
    @SuppressWarnings("unchecked")
    public static <K, V, M extends Map<K, V>> M putAll(final M map, final Object @Nullable [] keysAndValues) {
-      Args.notNull("map", map);
-
       if (keysAndValues == null || keysAndValues.length == 0)
          return map;
 
@@ -316,9 +297,6 @@ public abstract class Maps {
    }
 
    public static <K, V> Map<K, V> putAllIfAbsent(final Map<K, V> map, final Map<? extends K, ? extends V> entriesToAdd) {
-      Args.notNull("map", map);
-      Args.notNull("entriesToAdd", entriesToAdd);
-
       if (entriesToAdd.isEmpty())
          return map;
 
@@ -327,10 +305,6 @@ public abstract class Maps {
    }
 
    public static <K, V, M extends Map<K, V>> M putAllIfAbsent(final M map, final K[] keys, final V[] values) {
-      Args.notNull("map", map);
-      Args.notNull("keys", keys);
-      Args.notNull("values", values);
-
       if (keys.length != values.length)
          throw new IllegalArgumentException("Arguments [keys] and [values] must have the same array size.");
 
@@ -343,8 +317,6 @@ public abstract class Maps {
    @SuppressWarnings("unchecked")
    public static <K, V, KK extends K, VV extends V, M extends Map<K, V>> M putAllIfAbsent(final M map, final KK firstKey,
          final VV firstValue, final Object... moreKeysAndValues) {
-      Args.notNull("map", map);
-
       map.put(firstKey, firstValue);
 
       boolean nextIsValue = false;
@@ -363,8 +335,6 @@ public abstract class Maps {
 
    @SuppressWarnings("unchecked")
    public static <K, V, M extends Map<K, V>> M putAllIfAbsent(final M map, final Object @Nullable [] keysAndValues) {
-      Args.notNull("map", map);
-
       if (keysAndValues == null || keysAndValues.length == 0)
          return map;
 
@@ -421,12 +391,8 @@ public abstract class Maps {
    }
 
    public static <K, V> Map<K, V> sortByValue(final Map<K, V> map, final Comparator<V> comparator) {
-      Args.notNull("map", map);
-
       if (map.isEmpty())
          return map;
-
-      Args.notNull("comparator", comparator);
 
       final var entries = new ArrayList<>(map.entrySet());
       entries.sort((o1, o2) -> comparator.compare(o1.getValue(), o2.getValue()));
@@ -441,12 +407,8 @@ public abstract class Maps {
    @NonNullByDefault({})
    public static <K, V extends Comparable<V>> @NonNull Map<K, V> sortByValue(final @NonNull Map<K, V> map,
          final @NonNull SortDirection direction) {
-      Args.notNull("map", map);
-
       if (map.isEmpty())
          return map;
-
-      Args.notNull("direction", direction);
 
       final var entries = new ArrayList<>(map.entrySet());
       entries.sort((o1, o2) -> {
@@ -482,10 +444,6 @@ public abstract class Maps {
     * E.g. toMap("name1=value1,name2=value2", "\"", "=")
     */
    public static Map<String, String> toMap(final String valuePairs, final String valueSeparator, final String assignmentOperator) {
-      Args.notNull("valuePairs", valuePairs);
-      Args.notNull("valueSeparator", valueSeparator);
-      Args.notNull("assignmentOperator", assignmentOperator);
-
       final var result = new HashMap<String, String>();
       for (final var element : Strings.split(valuePairs, valueSeparator)) {
          final var valuePairSplitted = Strings.split(element, assignmentOperator);
@@ -496,8 +454,6 @@ public abstract class Maps {
 
    @SafeVarargs
    public static <T> Map<T, T> toMap(final T... keysAndValues) {
-      Args.notNull("keysAndValues", keysAndValues);
-
       final var result = new HashMap<T, T>();
       boolean isKey = true;
       T key = lateNonNull();

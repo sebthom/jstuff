@@ -12,7 +12,6 @@ import java.util.RandomAccess;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.math.Numbers;
-import net.sf.jstuff.core.validation.Args;
 import net.sf.jstuff.core.validation.Assert;
 
 /**
@@ -63,7 +62,6 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
 
    @Override
    public void add(final int index, final Short value) {
-      Args.notNull("value", value);
       add(index, (short) value);
    }
 
@@ -75,14 +73,12 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
 
    @Override
    public boolean add(final Short value) {
-      Args.notNull("value", value);
       add(size, value);
       return true;
    }
 
    @Override
    public boolean addAll(final short... values) {
-      Args.notNull("values", values);
       for (final short v : values) {
          add(v);
       }
@@ -113,7 +109,6 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
 
    @Override
    public boolean containsAll(final short... values) {
-      Args.notNull("values", values);
       for (final short v : values) {
          if (!contains(v))
             return false;
@@ -228,7 +223,6 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    @Deprecated
    @Override
    public Short set(final int index, final Short value) {
-      Args.notNull("value", value);
       return set(index, (short) value);
    }
 
@@ -253,7 +247,6 @@ public class ShortArrayList extends AbstractList<Short> implements ShortList, Cl
    @SuppressWarnings("unchecked")
    @Override
    public <T> T[] toArray(final T[] array) {
-      Args.notNull("array", array);
       if (array.getClass().getComponentType() == int.class) {
          if (array.length == size)
             return array;
