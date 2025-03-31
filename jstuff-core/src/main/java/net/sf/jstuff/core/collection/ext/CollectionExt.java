@@ -16,39 +16,57 @@ import net.sf.jstuff.core.collection.CollectionUtils;
 public interface CollectionExt<E> extends Collection<E> {
 
    /**
+    * Adds all items to the collection accepted by the exclude
+    *
+    * @return number of items added
+    */
+   default int addAll(@SuppressWarnings("unchecked") final E... itemsToAdd) {
+      return CollectionUtils.addAll(this, itemsToAdd);
+   }
+
+   /**
+    * Adds all items to the collection accepted by the exclude
+    *
+    * @return number of items added
+    */
+   default int addAll(final E[] itemsToAdd, final Predicate<E> exclude) {
+      return CollectionUtils.addAll(this, itemsToAdd, exclude);
+   }
+
+   /**
     * Adds all items to the collection
     *
     * @return number of items added
     */
-   default int addAll(final Iterator<E> items) {
-      return CollectionUtils.addAll(this, items);
+   default int addAll(final Iterable<? extends E> itemsToAdd) {
+      return CollectionUtils.addAll(this, itemsToAdd);
    }
 
    /**
-    * Adds all items to the collection accepted by the filter
+    * Adds all items to the collection accepted by the exclude
     *
     * @return number of items added
     */
-   default int addAll(final Predicate<E> filter, final Iterator<E> items) {
-      return CollectionUtils.addAll(this, filter, items);
+   default int addAll(final Iterable<? extends E> itemsToAdd, final Predicate<E> exclude) {
+      return CollectionUtils.addAll(this, itemsToAdd, exclude);
    }
 
    /**
-    * Adds all items to the collection accepted by the filter
+    * Adds all items to the collection
     *
     * @return number of items added
     */
-   default int addAll(@SuppressWarnings("unchecked") final E... items) {
-      return CollectionUtils.addAll(this, items);
+   default int addAll(final Iterator<? extends E> itemsToAdd) {
+      return CollectionUtils.addAll(this, itemsToAdd);
    }
 
    /**
-    * Adds all items to the collection accepted by the filter
+    * Adds all items to the collection accepted by the exclude
     *
     * @return number of items added
     */
-   default int addAll(final Predicate<E> filter, @SuppressWarnings("unchecked") final E... items) {
-      return CollectionUtils.addAll(this, filter, items);
+   default int addAll(final Iterator<? extends E> itemsToAdd, final Predicate<E> exclude) {
+      return CollectionUtils.addAll(this, itemsToAdd, exclude);
    }
 
    /**
@@ -60,5 +78,14 @@ public interface CollectionExt<E> extends Collection<E> {
 
    default boolean isNotEmpty() {
       return !isEmpty();
+   }
+
+   /**
+    * Removes all items not accepted by the exclude
+    *
+    * @return number of items removed
+    */
+   default int removeIfNot(final Predicate<E> keep) {
+      return CollectionUtils.removeIfNot(this, keep);
    }
 }

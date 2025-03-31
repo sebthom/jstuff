@@ -5,8 +5,11 @@
 package net.sf.jstuff.core.collection.ext;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.eclipse.jdt.annotation.Nullable;
+
+import net.sf.jstuff.core.collection.CollectionUtils;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -18,23 +21,41 @@ public interface ListExt<E> extends List<E>, CollectionExt<E> {
    }
 
    /**
-    * Gets the n-th element of the list.
-    *
-    * @param index a negative index selects an element from the end of the list
-    *
-    * @throws IndexOutOfBoundsException if index is out of range
+    * @return the first item, or {@code null} if the list is {@code null} or empty.
     */
-   default E getAt(int index) {
-      if (index < 0) {
-         index = size() + index;
-      }
-      return get(index);
+   default @Nullable E findFirst() {
+      return CollectionUtils.findFirst(this);
    }
 
    /**
-    * Gets the n-th element of the list or the default value.
+    * @return the first item matching the given filter, or {@code null} if none.
+    */
+   default @Nullable E findFirstMatching(final Predicate<E> filter) {
+      return CollectionUtils.findFirstMatching(this, filter);
+   }
+
+   /**
+    * @return the last item or null if empty
+    */
+   default @Nullable E findLast() {
+      return CollectionUtils.findLast(this);
+   }
+
+   /**
+    * Gets the n-th item of the list.
     *
-    * @param index a negative index selects an element from the end of the list
+    * @param index a negative index selects an item from the end of the list
+    *
+    * @throws IndexOutOfBoundsException if index is out of range
+    */
+   default E getAt(final int index) {
+      return CollectionUtils.getAt(this, index);
+   }
+
+   /**
+    * Gets the n-th item of the list or the default value.
+    *
+    * @param index a negative index selects an item from the end of the list
     */
    default E getAtOrDefault(int index, final E defaultValue) {
       if (index < 0) {
@@ -44,30 +65,32 @@ public interface ListExt<E> extends List<E>, CollectionExt<E> {
    }
 
    /**
-    * Gets the last element of the list.
+    * Gets the last item of the list.
     *
     * @throws IndexOutOfBoundsException if the list is empty
     */
    default E getLast() {
-      return get(size() - 1);
+      return CollectionUtils.getLast(this);
    }
 
    /**
-    * Gets the last element of the list or null if empty.
-    */
-   @Nullable
-   default E getLastOrNull() {
-      if (isEmpty())
-         return null;
-      return getLast();
-   }
-
-   /**
-    * Removes the last element of the list and returns it.
+    * Removes the last item of the list and returns it.
     *
     * @throws IndexOutOfBoundsException if the list is empty
     */
    default E removeLast() {
-      return remove(size() - 1);
+      return CollectionUtils.removeLast(this);
+   }
+
+   /**
+    * Sets the item at the specified index.
+    * <p>
+    * Supports negative indices ({@code -1} = last item, {@code -2} = second-last, etc.).
+    *
+    * @return the previous item at the index
+    * @throws IndexOutOfBoundsException if index is out of range
+    */
+   default E setAt(final int index, final E item) {
+      return CollectionUtils.setAt(this, index, item);
    }
 }

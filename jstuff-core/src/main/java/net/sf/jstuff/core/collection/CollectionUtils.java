@@ -95,11 +95,28 @@ public abstract class CollectionUtils {
    }
 
    /**
+    * Adds all items to the collection accepted by the predicate
+    *
+    * @return number of items added
+    */
+   public static <T> int addAll(final Collection<T> collection, final @Nullable Iterable<? extends T> items, final Predicate<T> includeIf) {
+      if (items == null)
+         return 0;
+
+      int count = 0;
+      for (final T item : items)
+         if (includeIf.test(item) && collection.add(item)) {
+            count++;
+         }
+      return count;
+   }
+
+   /**
     * Adds all items to the collection
     *
     * @return number of items added
     */
-   public static <T> int addAll(final Collection<T> collection, final @Nullable Iterator<T> items) {
+   public static <T> int addAll(final Collection<T> collection, final @Nullable Iterator<? extends T> items) {
       if (items == null)
          return 0;
 
@@ -113,56 +130,21 @@ public abstract class CollectionUtils {
    }
 
    /**
-    * Adds all items to the collection accepted by the filter
+    * Adds all items to the collection accepted by the predicate
     *
     * @return number of items added
     */
-   public static <T> int addAll(final Collection<T> collection, final Predicate<T> filter, final @Nullable Iterable<T> items) {
-      if (items == null)
-         return 0;
-
-      int count = 0;
-      for (final T item : items)
-         if (filter.test(item) && collection.add(item)) {
-            count++;
-         }
-      return count;
-   }
-
-   /**
-    * Adds all items to the collection accepted by the filter
-    *
-    * @return number of items added
-    */
-   public static <T> int addAll(final Collection<T> collection, final Predicate<T> filter, final @Nullable Iterator<T> items) {
+   public static <T> int addAll(final Collection<T> collection, final @Nullable Iterator<? extends T> items, final Predicate<T> includeIf) {
       if (items == null)
          return 0;
 
       int count = 0;
       while (items.hasNext()) {
          final var item = items.next();
-         if (filter.test(item) && collection.add(item)) {
+         if (includeIf.test(item) && collection.add(item)) {
             count++;
          }
       }
-      return count;
-   }
-
-   /**
-    * Adds all items to the collection accepted by the filter
-    *
-    * @return number of items added
-    */
-   @SafeVarargs
-   public static <T> int addAll(final Collection<T> collection, final Predicate<T> filter, final T @Nullable... items) {
-      if (items == null)
-         return 0;
-
-      int count = 0;
-      for (final T item : items)
-         if (filter.test(item) && collection.add(item)) {
-            count++;
-         }
       return count;
    }
 
@@ -185,6 +167,23 @@ public abstract class CollectionUtils {
    }
 
    /**
+    * Adds all items to the collection accepted by the filter
+    *
+    * @return number of items added
+    */
+   public static <T> int addAll(final Collection<T> collection, final T @Nullable [] items, final Predicate<T> includeIf) {
+      if (items == null)
+         return 0;
+
+      int count = 0;
+      for (final T item : items)
+         if (includeIf.test(item) && collection.add(item)) {
+            count++;
+         }
+      return count;
+   }
+
+   /**
     * @return true if the given item is contained in the collection based on identity comparison
     */
    public static <T> boolean containsIdentical(final @Nullable Collection<T> collection, final T searchFor) {
@@ -198,18 +197,18 @@ public abstract class CollectionUtils {
    }
 
    /**
-    * Extends the given list with null elements to ensure the given minimum size.
+    * Extends the given list with null items to ensure the given minimum size.
     */
    public static <@Nullable T> void ensureSize(final List<T> list, final int minimumSize) {
-      final int newElements = minimumSize - list.size();
-      if (newElements <= 0)
+      final int newItemCount = minimumSize - list.size();
+      if (newItemCount <= 0)
          return;
 
       if (list instanceof final ArrayList<?> arrayList) {
          arrayList.ensureCapacity(minimumSize);
       }
 
-      for (int i = 0; i < newElements; i++) {
+      for (int i = 0; i < newItemCount; i++) {
          list.add(null);
       }
    }
@@ -217,48 +216,28 @@ public abstract class CollectionUtils {
    /**
     * Returns a new list or set with all items accepted by the filter
     */
-   public static <T> Collection<T> filter(final Iterable<T> iterable, final Predicate<T> filter) {
-      return asNonNullUnsafe(filterNullable(iterable, filter));
+   public static <T> Collection<T> filtered(final Iterable<T> iterable, final Predicate<T> includeIf) {
+      return asNonNullUnsafe(filteredNullable(iterable, includeIf));
    }
 
    /**
     * Returns a new list with all items accepted by the filter
     */
-   public static <T> Collection<T> filter(final List<T> list, final Predicate<T> filter) {
-      return asNonNullUnsafe(filterNullable(list, filter));
+   public static <T> Collection<T> filtered(final List<T> list, final Predicate<T> includeIf) {
+      return asNonNullUnsafe(filteredNullable(list, includeIf));
    }
 
    /**
     * Returns a new set with all items accepted by the filter
     */
-   public static <T> Collection<T> filter(final @Nullable Set<T> set, final Predicate<T> filter) {
-      return asNonNullUnsafe(filterNullable(set, filter));
+   public static <T> Collection<T> filtered(final @Nullable Set<T> set, final Predicate<T> includeIf) {
+      return asNonNullUnsafe(filteredNullable(set, includeIf));
    }
 
    /**
-    * removes all items not accepted by the filter
-    *
-    * @return number of items removed
+    * Returns a new list or set with all items accepted by the predicate
     */
-   public static <T> int filterInPlace(final @Nullable Collection<T> collection, final Predicate<T> filter) {
-      if (collection == null)
-         return 0;
-
-      int count = 0;
-      for (final Iterator<T> it = collection.iterator(); it.hasNext();) {
-         final T item = it.next();
-         if (!filter.test(item)) {
-            it.remove();
-            count++;
-         }
-      }
-      return count;
-   }
-
-   /**
-    * Returns a new list or set with all items accepted by the filter
-    */
-   public static <T> @Nullable Collection<T> filterNullable(final @Nullable Iterable<T> iterable, final Predicate<T> filter) {
+   public static <T> @Nullable Collection<T> filteredNullable(final @Nullable Iterable<T> iterable, final Predicate<T> includeIf) {
       if (iterable == null)
          return null;
 
@@ -266,7 +245,7 @@ public abstract class CollectionUtils {
             ? iterable instanceof LinkedHashSet ? new LinkedHashSet<>() : new HashSet<>() //
             : new ArrayList<>();
       for (final T item : iterable)
-         if (filter.test(item)) {
+         if (includeIf.test(item)) {
             result.add(item);
          }
       return result;
@@ -275,7 +254,7 @@ public abstract class CollectionUtils {
    /**
     * Returns a new list with all items accepted by the filter
     */
-   public static <T> @Nullable List<T> filterNullable(final @Nullable List<T> list, final Predicate<T> filter) {
+   public static <T> @Nullable List<T> filteredNullable(final @Nullable List<T> list, final Predicate<T> includeIf) {
       if (list == null)
          return null;
       if (list.isEmpty())
@@ -283,7 +262,7 @@ public abstract class CollectionUtils {
 
       final var result = new ArrayList<T>();
       for (final T item : list)
-         if (filter.test(item)) {
+         if (includeIf.test(item)) {
             result.add(item);
          }
       return result;
@@ -292,7 +271,7 @@ public abstract class CollectionUtils {
    /**
     * Returns a new set with all items accepted by the filter
     */
-   public static <T> @Nullable Set<T> filterNullable(final @Nullable Set<T> set, final Predicate<T> filter) {
+   public static <T> @Nullable Set<T> filteredNullable(final @Nullable Set<T> set, final Predicate<T> includeIf) {
       if (set == null)
          return null;
       if (set.isEmpty())
@@ -300,12 +279,15 @@ public abstract class CollectionUtils {
 
       final Set<T> result = set instanceof LinkedHashSet ? new LinkedHashSet<>() : new HashSet<>();
       for (final T item : set)
-         if (filter.test(item)) {
+         if (includeIf.test(item)) {
             result.add(item);
          }
       return result;
    }
 
+   /**
+    * @return the first item of the given collection, or {@code null} if the list is {@code null} or empty.
+    */
    public static <T> @Nullable T findFirst(final @Nullable Collection<T> coll) {
       if (coll == null || coll.isEmpty())
          return null;
@@ -322,6 +304,9 @@ public abstract class CollectionUtils {
       return null;
    }
 
+   /**
+    * @return the first item of the given list, or {@code null} if the list is {@code null} or empty.
+    */
    public static <T> @Nullable T findFirst(final @Nullable List<T> list) {
       if (list == null || list.isEmpty())
          return null;
@@ -329,6 +314,9 @@ public abstract class CollectionUtils {
       return list.get(0);
    }
 
+   /**
+    * @return the first item in the collection matching the given filter, or {@code null} if none.
+    */
    public static <T> @Nullable T findFirstMatching(final @Nullable Collection<T> coll, final Predicate<T> filter) {
       if (coll == null || coll.isEmpty())
          return null;
@@ -341,18 +329,18 @@ public abstract class CollectionUtils {
    }
 
    /**
-    * @return the last element or null if list is empty
+    * @return the last item or null if list is empty
     */
-   public static <T> @Nullable T findLast(final List<T> list) {
-      if (list.isEmpty())
+   public static <T> @Nullable T findLast(final @Nullable List<T> list) {
+      if (list == null || list.isEmpty())
          return null;
       return getLast(list);
    }
 
    /**
-    * Gets the n-th element of the list.
+    * Gets the n-th item of the list.
     *
-    * @param index a negative index selects an element from the end of the list
+    * @param index a negative index selects an item from the end of the list
     *
     * @throws IndexOutOfBoundsException if index is out of range
     */
@@ -363,7 +351,7 @@ public abstract class CollectionUtils {
    }
 
    /**
-    * @param list a non-empty list with non-nullable elements
+    * @param list a non-empty list with non-nullable items
     * @throws IndexOutOfBoundsException if list is empty
     */
    public static <T> T getLast(final List<T> list) {
@@ -371,25 +359,16 @@ public abstract class CollectionUtils {
    }
 
    /**
-    * @return the last element or null if list is null or empty
-    */
-   public static <T> @Nullable T getLastOrNull(final @Nullable List<T> list) {
-      if (list == null || list.isEmpty())
-         return null;
-      return list.get(list.size() - 1);
-   }
-
-   /**
-    * @param n first n elements to return
-    * @return a new list with the first n elements of the input list
+    * @param n first n items to return
+    * @return a new list with the first n items of the input list
     */
    public static <T> List<T> head(final List<T> list, final int n) {
       return asNonNullUnsafe(headNullable(list, n));
    }
 
    /**
-    * @param n first n elements to return
-    * @return a new list with the first n elements of the input list
+    * @param n first n items to return
+    * @return a new list with the first n items of the input list
     */
    public static <T> @Nullable List<T> headNullable(final @Nullable List<T> list, final int n) {
       if (list == null)
@@ -551,9 +530,23 @@ public abstract class CollectionUtils {
    }
 
    /**
-    * Removes the last element in this list.
+    * removes all items not accepted by the filter
     *
-    * @return the element previously at the specified position
+    * @return number of items removed
+    */
+   public static <T> int removeIfNot(final @Nullable Collection<T> coll, final Predicate<T> filter) {
+      if (coll == null || coll.isEmpty())
+         return 0;
+
+      final int sizeBefore = coll.size();
+      coll.removeIf(filter.negate());
+      return sizeBefore - coll.size();
+   }
+
+   /**
+    * Removes the last item in this list.
+    *
+    * @return the item previously at the specified position
     *
     * @throws IndexOutOfBoundsException if the list is empty
     * @throws UnsupportedOperationException if the {@code remove} operation is not supported by this list
@@ -563,9 +556,9 @@ public abstract class CollectionUtils {
    }
 
    /**
-    * Removes the last element in this list.
+    * Removes the last item in this list.
     *
-    * @return the element previously at the specified position or null if the list is empty
+    * @return the item previously at the specified position or null if the list is empty
     *
     * @throws UnsupportedOperationException if the {@code remove} operation is not supported by this list
     */
@@ -591,25 +584,50 @@ public abstract class CollectionUtils {
    }
 
    /**
-    * Sets the value at the given index. If the index is if the index is out of range (<code>index >= list.size()</code>) the list is
-    * extended by <code>null</code> elements up to the index position.
+    * Sets the item at the specified index in the list.
+    * <p>
+    * Supports negative indices ({@code -1} = last item, {@code -2} = second-last, etc.).
+    *
+    * @return the previous item at the index
+    * @throws IndexOutOfBoundsException if index is out of range
     */
-   public static <@Nullable T> void setAt(final List<T> list, final int index, final T value) {
-      ensureSize(list, index);
-      list.set(index, value);
+   public static <T> T setAt(final List<T> list, final int index, final T item) {
+      final int idx = index < 0 ? list.size() + index : index;
+      if (idx < 0 || idx >= list.size())
+         throw new IndexOutOfBoundsException("index " + index + " out of bounds for list of size " + list.size());
+
+      return list.set(idx, item);
    }
 
    /**
-    * @param n last n elements to return
-    * @return a new list with the last n elements of the input list
+    * Sets the item at the specified index in the list, growing the list with {@code null} items if required.
+    * <p>
+    * Supports negative indices ({@code -1} = last item, {@code -2} = second-last, etc.).
+    *
+    * @return the previous item at the index, or {@code null} if the list was extended
+    * @throws IndexOutOfBoundsException if computed index is negative
+    */
+   public static <@Nullable T> T setAtEnsuringSize(final List<T> list, final int index, final T item) {
+      final int idx = index < 0 ? list.size() + index : index;
+      if (idx < 0)
+         throw new IndexOutOfBoundsException("index " + index + " results in negative position");
+
+      ensureSize(list, idx + 1);
+
+      return list.set(idx, item);
+   }
+
+   /**
+    * @param n last n items to return
+    * @return a new list with the last n items of the input list
     */
    public static <T> List<T> tail(final List<T> list, final int n) {
       return asNonNullUnsafe(tailNullable(list, n));
    }
 
    /**
-    * @param n last n elements to return
-    * @return a new list with the last n elements of the input list
+    * @param n last n items to return
+    * @return a new list with the last n items of the input list
     */
    public static <T> @Nullable List<T> tailNullable(final @Nullable List<T> list, final int n) {
       if (list == null)
