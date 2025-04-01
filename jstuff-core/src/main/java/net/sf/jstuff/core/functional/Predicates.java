@@ -140,7 +140,7 @@ public abstract class Predicates {
          if (locale == null) {
             locale = Locale.getDefault();
          }
-         final var accept = new EndingWith<V>(stringify(suffix));
+         final var accept = new EndingWith<V>(suffix.toLowerCase(locale));
          accept.ignoreCaseLocale = locale;
          return accept;
       }
@@ -349,7 +349,7 @@ public abstract class Predicates {
          if (locale == null) {
             locale = Locale.getDefault();
          }
-         final var accept = new StartingWith<V>(stringify(prefix));
+         final var accept = new StartingWith<V>(prefix.toLowerCase(locale));
          accept.ignoreCaseLocale = locale;
          return accept;
       }
