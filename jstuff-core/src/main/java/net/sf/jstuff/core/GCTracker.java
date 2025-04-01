@@ -29,8 +29,8 @@ import net.sf.jstuff.core.validation.Args;
 @ThreadSafe
 public class GCTracker<EVENT> implements EventListenable<EVENT> {
    /**
-    * http://mindprod.com/jgloss/phantom.html
-    * http://blog.yohanliyanage.com/2010/10/ktjs-3-soft-weak-phantom-references/
+    * https://www.mindprod.com/jgloss/phantom.html
+    * https://medium.com/yohan-liyanage/know-the-jvm-series-3-when-weaker-is-better-understanding-soft-weak-and-phantom-references-cbed297b9e2e
     */
    private final class GCReference extends PhantomReference<Object> {
       private final EVENT eventToFireOnGC;
