@@ -4,9 +4,13 @@
  */
 package net.sf.jstuff.core.reflection;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.tm4e.core.TMException;
@@ -26,10 +30,8 @@ class TypesTest {
    @Test
    @SuppressWarnings("null")
    void testFindLibrary() {
-      File library;
+      File library = Types.findLibrary(String.class);
 
-      // locate JDK class
-      library = Types.findLibrary(String.class);
       assertThat(library) //
          .exists() //
          .isFile();
@@ -71,6 +73,43 @@ class TypesTest {
       assertThat(Types.isAssignableTo(Integer.class, Number.class)).isTrue();
       assertThat(Types.isAssignableTo(Number.class, Integer.class)).isFalse();
       assertThat(Types.isAssignableTo(String.class, Object.class)).isTrue();
+   }
+
+   @Test
+   void testResolveUnderlyingClass() {
+      /** Helper to capture generic type information */
+      abstract class TypeReference<T> {
+         final Type type = asNonNull((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+      }
+
+      // 1. Test with a concrete class.
+      assertThat(Types.resolveUnderlyingClass(String.class)) //
+         .as("Concrete class should resolve to itself") //
+         .isEqualTo(String.class);
+
+      // 2. Test with a parameterized type, e.g. List<String> => should resolve to List
+      assertThat(Types.resolveUnderlyingClass(new TypeReference<List<String>>() {}.type)) //
+         .as("Parameterized type should resolve to its raw type") //
+         .isEqualTo(List.class);
+
+      // 3. Test with a generic array type, e.g. List<String>[] => should resolve to List[]
+      assertThat(Types.resolveUnderlyingClass(new TypeReference<List<String>[]>() {}.type)) //
+         .as("Generic array type should resolve to an array class of the raw type") //
+         .isEqualTo(List[].class);
+
+      // 4. Test with a type variable.
+      class GenericHolder<T extends Number> {
+      }
+
+      assertThat(Types.resolveUnderlyingClass(GenericHolder.class.getTypeParameters()[0])) //
+         .as("Type variable with bound Number should resolve to Number.class") //
+         .isEqualTo(Number.class);
+
+      class GenericHolder2<T extends List<String>> {
+      }
+
+      assertThat(Types.resolveUnderlyingClass(GenericHolder2.class.getTypeParameters()[0])).as(
+         "The underlying raw type for a parameterized bound should be List.class").isEqualTo(List.class);
    }
 
    @Test

@@ -537,8 +537,8 @@ public abstract class Types {
          if (cclass != null)
             return Array.newInstance(cclass, 0).getClass();
       }
-      if (type instanceof TypeVariable)
-         return (Class<?>) resolveBound((TypeVariable<?>) type);
+      if (type instanceof final TypeVariable<?> tv)
+         return resolveUnderlyingClass(resolveBound(tv)); // recursively resolve the bound
 
       return null;
    }
