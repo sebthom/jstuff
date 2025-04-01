@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -27,7 +28,9 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
+import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.io.MoreFiles;
+import net.sf.jstuff.core.io.Processes;
 import net.sf.jstuff.core.logging.Logger;
 
 /**
@@ -36,14 +39,9 @@ import net.sf.jstuff.core.logging.Logger;
 public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    private static final Logger LOG = Logger.create();
 
-   @Nullable
-   private static Boolean isContainerized;
-
-   @Nullable
-   private static Boolean isDockerized;
-
-   @Nullable
-   private static Boolean isRunningAsAdmin;
+   private static volatile @Nullable Boolean isContainerized;
+   private static volatile @Nullable Boolean isDockerized;
+   private static volatile @Nullable Boolean isRunningAsAdmin;
 
    private static final Collection<String> WINDOWS_EXE_FILE_EXTENSIONS = List.of(Strings.splitByWholeSeparator( //
       IS_OS_WINDOWS //
@@ -148,33 +146,42 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
          if (IS_OS_WINDOWS) {
             // https://stackoverflow.com/a/11995662/5116073
 
-            final Process p = Runtime.getRuntime().exec(asNonNull("net", "session"));
-            p.waitFor(10, TimeUnit.SECONDS);
-            if (!p.isAlive() && p.exitValue() == 0) {
-               isRunningAsAdmin = true;
-               return true;
+            final Process p = Runtime.getRuntime().exec(new @NonNull String[] {"net", "session"});
+            try {
+               p.waitFor(10, TimeUnit.SECONDS);
+               if (!p.isAlive() && p.exitValue() == 0) {
+                  isRunningAsAdmin = true;
+                  return true;
+               }
+            } finally {
+               Processes.destroy(p, 0, TimeUnit.SECONDS);
             }
-            p.destroyForcibly();
+
             isRunningAsAdmin = false;
             return false;
          }
 
          if (IS_OS_LINUX) {
-            final Process p = Runtime.getRuntime().exec(asNonNull("id", "-u"));
-            p.waitFor(10, TimeUnit.SECONDS);
-            if (!p.isAlive() && p.exitValue() == 0) {
-               try (var is = p.getInputStream()) {
-                  final var lines = IOUtils.readLines(is, Charset.defaultCharset());
-                  isRunningAsAdmin = !lines.isEmpty() && "0".equals(lines.get(0));
-                  return isRunningAsAdmin;
+            final Process p = Runtime.getRuntime().exec(new @NonNull String[] {"id", "-u"});
+            try {
+               p.waitFor(10, TimeUnit.SECONDS);
+               if (!p.isAlive() && p.exitValue() == 0) {
+                  try (var is = p.getInputStream()) {
+                     final var lines = IOUtils.readLines(is, Charset.defaultCharset());
+                     isRunningAsAdmin = !lines.isEmpty() && "0".equals(lines.get(0));
+                     return isRunningAsAdmin;
+                  }
                }
+            } finally {
+               Processes.destroy(p, 0, TimeUnit.SECONDS);
             }
-            p.destroyForcibly();
+
             isRunningAsAdmin = false;
             return false;
          }
 
          final java.util.logging.Logger prefsLogger = LogManager.getLogManager().getLogger("java.util.prefs.WindowsPreferences");
+         final var oldLevel = prefsLogger != null ? prefsLogger.getLevel() : null;
          if (prefsLogger != null) {
             prefsLogger.setLevel(Level.SEVERE);
          }
@@ -189,15 +196,17 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
             isRunningAsAdmin = true;
             return true;
          } finally {
-            if (prefsLogger != null) {
-               prefsLogger.setLevel(Level.INFO);
+            if (prefsLogger != null && oldLevel != null) {
+               prefsLogger.setLevel(oldLevel);
             }
          }
+      } catch (final InterruptedException ex) {
+         Threads.handleInterruptedException(ex);
       } catch (final Exception ex) {
          LOG.debug(ex);
-         isRunningAsAdmin = false;
-         return false;
       }
+      isRunningAsAdmin = false;
+      return false;
    }
 
    public static boolean isRunningInsideContainer() {
@@ -251,22 +260,39 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    }
 
    /**
-    * opens the given file with the default application handler
+    * Opens the given file with the default application handler of the current platform.
+    *
+    * @param file the file to open
+    * @throws IOException if the platform is unsupported or if launching fails
     */
    public static void launchWithDefaultApplication(final File file) throws IOException {
-      if (IS_OS_WINDOWS) {
-         Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler \"" + file.getAbsolutePath() + "\"");
-      } else if (IS_OS_MAC) {
-         Runtime.getRuntime().exec("open \"" + file.getAbsolutePath() + "\"");
-      }
+      final Process process;
 
-      throw new UnsupportedOperationException("Not supported on platform " + OS_NAME);
+      if (IS_OS_WINDOWS) {
+         process = Runtime.getRuntime().exec(new @NonNull String[] {"rundll32", "url.dll,FileProtocolHandler", file.getAbsolutePath()});
+      } else if (IS_OS_LINUX) {
+         process = Runtime.getRuntime().exec(new @NonNull String[] {"xdg-open", file.getAbsolutePath()});
+      } else if (IS_OS_MAC) {
+         process = Runtime.getRuntime().exec(new @NonNull String[] {"open", file.getAbsolutePath()});
+      } else
+         throw new UnsupportedOperationException("Not supported on platform " + OS_NAME);
+
+      CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS).execute(() -> {
+         if (process.isAlive()) {
+            LOG.debug("Process %s did not exit within timeout. Destroying...", process.pid());
+            try {
+               Processes.destroy(process, 0, TimeUnit.SECONDS);
+            } catch (final InterruptedException e) {
+               Threads.handleInterruptedException(e);
+            }
+         }
+      });
    }
 
    public static boolean openURLInBrowser(final String url) {
       try {
          if (IS_OS_WINDOWS) {
-            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler javascript:location.href='" + url + "'");
+            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler \"" + url + "\"");
          } else if (IS_OS_MAC) {
             Runtime.getRuntime().exec("open " + url);
          } else if (IS_OS_SUN_OS) {
