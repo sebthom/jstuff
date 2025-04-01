@@ -137,7 +137,6 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       }
    }
 
-   @Deprecated
    @Override
    public void checkMulticast(final InetAddress maddr, final byte ttl) {
       if (wrapped != null) {
