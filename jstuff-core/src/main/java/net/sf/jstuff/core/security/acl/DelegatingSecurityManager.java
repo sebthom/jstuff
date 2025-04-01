@@ -5,13 +5,10 @@
 package net.sf.jstuff.core.security.acl;
 
 import java.io.FileDescriptor;
-import java.lang.reflect.Member;
 import java.net.InetAddress;
 import java.security.Permission;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * Security manager that delegates all method invocations to the wrapped security manager instance.
@@ -57,14 +54,6 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       } else {
          super.checkAccess(g);
       }
-   }
-
-   /**
-    * Removed in JDK19
-    */
-   @Deprecated
-   public void checkAwtEventQueueAccess() {
-      checkPermission(new java.awt.AWTPermission("accessEventQueue"));
    }
 
    @Override
@@ -136,20 +125,6 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
          wrapped.checkListen(port);
       } else {
          super.checkListen(port);
-      }
-   }
-
-   /**
-    * Removed in JDK19
-    */
-   @Deprecated
-   public void checkMemberAccess(final Class<?> clazz, final int which) {
-      Args.notNull("clazz", clazz);
-      if (which != Member.PUBLIC) {
-         final Class<?>[] stack = getClassContext();
-         if (stack.length < 4 || stack[3].getClassLoader() != clazz.getClassLoader()) {
-            checkPermission(new RuntimePermission("accessDeclaredMembers"));
-         }
       }
    }
 
@@ -280,28 +255,6 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       }
    }
 
-   /**
-    * Removed in JDK9
-    */
-   @Deprecated
-   public void checkSystemClipboardAccess() {
-      checkPermission(new java.awt.AWTPermission("accessClipboard"));
-   }
-
-   /**
-    * Removed in JDK9
-    */
-   @Deprecated
-   public boolean checkTopLevelWindow(final Object window) {
-      Args.notNull("window", window);
-      try {
-         checkPermission(new java.awt.AWTPermission("showWindowWithoutWarningBanner"));
-         return true;
-      } catch (final SecurityException ex) {
-         return false;
-      }
-   }
-
    @Override
    public void checkWrite(final FileDescriptor fd) {
       if (wrapped != null) {
@@ -318,14 +271,6 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       } else {
          super.checkWrite(file);
       }
-   }
-
-   /**
-    * Removed in JDK9
-    */
-   @Deprecated
-   public boolean getInCheck() {
-      return false;
    }
 
    @Override
