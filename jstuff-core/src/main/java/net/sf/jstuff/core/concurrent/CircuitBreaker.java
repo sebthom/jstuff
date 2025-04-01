@@ -319,7 +319,6 @@ public class CircuitBreaker implements EventListenable<State> {
 
       LOG.info("[%s] Switching from [%s] to [%s]...", name, state, State.CLOSE);
       state = State.CLOSE;
-      tripCount++;
       failureTimestamps.clear();
 
       if (eventDispatcher != null) {
@@ -343,8 +342,9 @@ public class CircuitBreaker implements EventListenable<State> {
       if (state == State.OPEN)
          return;
 
-      LOG.debug("[%s] Switching from [%s] to [%s]...", name, state, State.HALF_OPEN);
+      LOG.debug("[%s] Switching from [%s] to [%s]...", name, state, State.OPEN);
       state = State.OPEN;
+      tripCount++;
       inOpenStateUntil = trippedAt + resetPeriodNS;
 
       if (eventDispatcher != null) {
