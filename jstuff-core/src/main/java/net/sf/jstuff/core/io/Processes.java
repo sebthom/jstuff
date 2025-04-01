@@ -550,20 +550,48 @@ public abstract class Processes {
     *
     * @return false if the given process was not alive, true if it was destroyed by this method.
     */
-   public static boolean destroy(final Process process, final int gracePeriod, final TimeUnit gracePeriodTimeUnit)
+   public static boolean destroy(final Process process, final Duration gracePeriod) throws InterruptedException {
+      return destroy(process, gracePeriod.toMillis(), TimeUnit.MILLISECONDS);
+   }
+
+   /**
+    * First requests graceful termination/shutdown of the process.
+    * If grace period is over and the process is still running, requests forceful termination.
+    * Blocks until process is destroyed.
+    *
+    * @return false if the given process was not alive, true if it was destroyed by this method.
+    */
+   @SuppressWarnings("resource")
+   public static boolean destroy(final Process process, final long gracePeriod, final TimeUnit gracePeriodTimeUnit)
          throws InterruptedException {
       Args.notNegative("gracePeriod", gracePeriod);
       Args.notNull("gracePeriodTimeUnit", gracePeriodTimeUnit);
 
-      if (!process.isAlive())
-         return false;
+      boolean forcibly = false;
 
-      process.destroy();
-      process.waitFor(gracePeriod, gracePeriodTimeUnit);
-      if (process.isAlive()) {
+      try {
+         if (!process.isAlive())
+            return false;
+
+         process.destroy();
+         if (!process.waitFor(gracePeriod, gracePeriodTimeUnit)) {
+            process.destroyForcibly();
+            forcibly = true;
+            process.waitFor();
+         }
+      } catch (final InterruptedException ex) {
          process.destroyForcibly();
+         forcibly = true;
          process.waitFor();
+         throw ex;
+      } finally {
+         // also try to close any dangling streams in case the process is not alive anymore
+         IOUtils.closeQuietly(process.getInputStream());
+         IOUtils.closeQuietly(process.getOutputStream());
+         IOUtils.closeQuietly(process.getErrorStream());
       }
+
+      LOG.debug("Process %s terminated (%s)", process.pid(), forcibly ? "forcefully" : "gracefully");
       return true;
    }
 }
