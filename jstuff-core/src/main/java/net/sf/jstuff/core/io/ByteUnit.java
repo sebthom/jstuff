@@ -55,8 +55,6 @@ public enum ByteUnit {
     */
    public BigDecimal of(final Number value, final ByteUnit sourceUnit, final Rounding rounding) {
       Args.notNull("value", value);
-      Args.notNull("sourceUnit", sourceUnit);
-      Args.notNull("rounding", rounding);
 
       final BigDecimal bd = Numbers.toBigDecimal(value);
 
@@ -122,9 +120,6 @@ public enum ByteUnit {
       if (value == null)
          return "<null> " + symbol;
 
-      Args.notNull("rounding", rounding);
-      Args.notNull("locale", locale);
-
       final BigDecimal bd = Numbers.toBigDecimal(value);
 
       if (BigDecimal.ZERO.equals(bd))
@@ -132,6 +127,8 @@ public enum ByteUnit {
 
       if (Numbers.isWhole(bd) && bd.abs().compareTo(THOUSAND) < 0)
          return toString(bd);
+
+      Args.notNull("locale", locale);
 
       /*
        * Using RoundingMode.HALF_UP instead of RoundingMode.HALF_EVEN which rounds 0.5 to 0 instead of 1.

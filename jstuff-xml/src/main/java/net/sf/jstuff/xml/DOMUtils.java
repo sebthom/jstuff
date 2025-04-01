@@ -289,7 +289,6 @@ public abstract class DOMUtils {
    }
 
    public static Comment createCommentBefore(final Node sibling, final String commentString) {
-      Args.notNull("sibling", sibling);
       Args.notNull("commentString", commentString);
 
       final Node parent = Args.notNull("sibling.parentNode", sibling.getParentNode());
@@ -308,7 +307,6 @@ public abstract class DOMUtils {
     * Creates a new XML element as child of the given parentNode with the given attributes.
     */
    public static Element createElement(final Node parent, final String tagName, final @Nullable Map<String, String> tagAttributes) {
-      Args.notNull("parent", parent);
       Args.notEmpty("tagName", tagName);
 
       final Element elem = (Element) parent.appendChild(_getOwnerDocument(parent).createElement(tagName));
@@ -325,7 +323,6 @@ public abstract class DOMUtils {
    }
 
    public static Element createElementBefore(final Node sibling, final String tagName, final @Nullable Map<String, String> tagAttributes) {
-      Args.notNull("sibling", sibling);
       Args.notEmpty("tagName", tagName);
 
       final Node parent = Args.notNull("sibling.parentNode", sibling.getParentNode());
@@ -463,8 +460,6 @@ public abstract class DOMUtils {
    }
 
    public static List<Attr> getAttributes(final Node node) {
-      Args.notNull("node", node);
-
       final NamedNodeMap nodeMap = node.getAttributes();
       final var result = new ArrayList<Attr>(nodeMap.getLength());
       for (int i = 0, l = nodeMap.getLength(); i < l; i++) {
@@ -486,7 +481,6 @@ public abstract class DOMUtils {
     * @return all child and sub-child nodes with the given tag name, in document order.
     */
    public static <T extends Node> List<T> getElementsByTagName(final Element parent, final String tagName) {
-      Args.notNull("parent", parent);
       Args.notNull("tagName", tagName);
 
       return nodeListToList(parent.getElementsByTagName(tagName));
@@ -499,8 +493,6 @@ public abstract class DOMUtils {
    }
 
    public static List<Attr> getIdAttributes(final Node node) {
-      Args.notNull("node", node);
-
       final NamedNodeMap nodeMap = node.getAttributes();
       final List<Attr> result = CollectionUtils.newArrayList(nodeMap.getLength());
       for (int i = 0, l = nodeMap.getLength(); i < l; i++) {
@@ -540,7 +532,6 @@ public abstract class DOMUtils {
     */
    @SuppressWarnings("unchecked")
    public static <T extends Node> T importNode(final Node parent, final T nodeToImport) {
-      Args.notNull("parent", parent);
       Args.notNull("nodeToImport", nodeToImport);
 
       return (T) parent.appendChild(_getOwnerDocument(parent).importNode(nodeToImport, true));
@@ -548,7 +539,6 @@ public abstract class DOMUtils {
 
    @SuppressWarnings("unchecked")
    public static <T extends Node> T importNodeBefore(final Node sibling, final T nodeToImport) {
-      Args.notNull("sibling", sibling);
       Args.notNull("nodeToImport", nodeToImport);
 
       final Node parent = Args.notNull("sibling.parentNode", sibling.getParentNode());
@@ -559,9 +549,6 @@ public abstract class DOMUtils {
 
    @SuppressWarnings("unchecked")
    public static <T extends Node> List<T> importNodes(final Node parent, final Collection<T> nodesToImport) {
-      Args.notNull("parent", parent);
-      Args.notNull("nodesToImport", nodesToImport);
-
       final Document targetDoc = _getOwnerDocument(parent);
       final var importedNodes = new ArrayList<T>(nodesToImport.size());
       for (final T nodeToImport : nodesToImport) {
@@ -580,9 +567,6 @@ public abstract class DOMUtils {
 
    @SuppressWarnings("unchecked")
    public static <T extends Node> List<T> importNodesBefore(final Node sibling, final Collection<T> nodesToImport) {
-      Args.notNull("sibling", sibling);
-      Args.notNull("nodesToImport", nodesToImport);
-
       final Node parent = Args.notNull("sibling.parentNode", sibling.getParentNode());
 
       final Document targetDoc = _getOwnerDocument(parent);
@@ -602,8 +586,6 @@ public abstract class DOMUtils {
    }
 
    public static Node[] nodeListToArray(final NodeList nodes) {
-      Args.notNull("nodes", nodes);
-
       final var result = new @NonNull Node[nodes.getLength()];
       for (int i = 0, l = nodes.getLength(); i < l; i++) {
          result[i] = asNonNull(nodes.item(i));
@@ -613,8 +595,6 @@ public abstract class DOMUtils {
 
    @SuppressWarnings("unchecked")
    public static <T extends Node> List<T> nodeListToList(final NodeList nodes) {
-      Args.notNull("nodes", nodes);
-
       final List<T> result = CollectionUtils.newArrayList(nodes.getLength());
 
       for (int i = 0, l = nodes.getLength(); i < l; i++) {
@@ -627,8 +607,7 @@ public abstract class DOMUtils {
     * Parses the given file and returns a org.w3c.dom.Document.
     */
    public static Document parseFile(final File xmlFile) throws XMLException {
-      Args.notNull("xmlFile", xmlFile);
-      Assert.isFileReadable(xmlFile);
+      Args.isFileReadable("xmlFile", xmlFile);
 
       return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null, (File[]) null);
    }
@@ -639,8 +618,7 @@ public abstract class DOMUtils {
     * @param xmlSchemaFiles the XML schema files to validate against, the schema files are also required to apply default values
     */
    public static Document parseFile(final File xmlFile, final File... xmlSchemaFiles) throws XMLException {
-      Args.notNull("xmlFile", xmlFile);
-      Assert.isFileReadable(xmlFile);
+      Args.isFileReadable("xmlFile", xmlFile);
 
       return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), null, xmlSchemaFiles);
    }
@@ -653,8 +631,7 @@ public abstract class DOMUtils {
     */
    public static Document parseFile(final File xmlFile, final @Nullable String defaultNamespace, final File @Nullable... xmlSchemaFiles)
          throws XMLException {
-      Args.notNull("xmlFile", xmlFile);
-      Assert.isFileReadable(xmlFile);
+      Args.isFileReadable("xmlFile", xmlFile);
 
       return parseInputSource(new InputSource(xmlFile.toURI().toASCIIString()), xmlFile.getAbsolutePath(), defaultNamespace,
          xmlSchemaFiles);
@@ -873,7 +850,6 @@ public abstract class DOMUtils {
     */
    public static void saveToFileAfterBackup(final Node root, final File targetFile) throws IOException, XMLException {
       Args.notNull("root", root);
-      Args.notNull("targetFile", targetFile);
 
       MoreFiles.backupFile(targetFile.toPath());
 
@@ -979,7 +955,6 @@ public abstract class DOMUtils {
    public static void toXML(final Node root, final OutputStream out, final boolean outputXMLDeclaration, final boolean formatPretty)
          throws XMLException, IOException {
       Args.notNull("root", root);
-      Args.notNull("out", out);
 
       try {
          final Transformer transformer = TRANSFORMER_FACTORY.get().newTransformer();

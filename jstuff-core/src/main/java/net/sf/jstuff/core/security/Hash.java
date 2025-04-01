@@ -344,8 +344,6 @@ public interface Hash<T> {
 
       @Override
       public String hash(final String text) {
-         Args.notNull("text", text);
-
          return hash(text.getBytes(StandardCharsets.UTF_8));
       }
 

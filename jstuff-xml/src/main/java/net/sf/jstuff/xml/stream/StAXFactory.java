@@ -44,7 +44,6 @@ public class StAXFactory {
 
    @SuppressWarnings("resource")
    public AutoCloseableXMLEventReader createXMLEventReader(final File xmlFile) throws FileNotFoundException, XMLStreamException {
-      Args.notNull("xmlFile", xmlFile);
       Args.isFileReadable("xmlFile", xmlFile);
 
       final var is = new BufferedInputStream(new FileInputStream(xmlFile));
@@ -127,7 +126,6 @@ public class StAXFactory {
 
    @SuppressWarnings("resource")
    public AutoCloseableXMLEventWriter createXMLEventWriter(final File xmlFile) throws FileNotFoundException, XMLStreamException {
-      Args.notNull("xmlFile", xmlFile);
       Args.isFileWriteable("xmlFile", xmlFile);
 
       final var is = new BufferedOutputStream(new FileOutputStream(xmlFile));
@@ -148,7 +146,6 @@ public class StAXFactory {
    public AutoCloseableXMLEventWriter createXMLEventWriter(final OutputStream xmlOutput, final Charset encoding, final boolean autoClose)
          throws XMLStreamException {
       Args.notNull("xmlOutput", xmlOutput);
-      Args.notNull("encoding", encoding);
 
       final OutputStream os = xmlOutput instanceof BufferedOutputStream ? xmlOutput : new BufferedOutputStream(xmlOutput);
       final XMLEventWriter reader = xmlOutputFactory.get().createXMLEventWriter(os, encoding.name());
@@ -233,7 +230,6 @@ public class StAXFactory {
 
    @SuppressWarnings("resource")
    public ExtendedXMLStreamReader createXMLStreamReader(final File xmlFile) throws FileNotFoundException, XMLStreamException {
-      Args.notNull("xmlFile", xmlFile);
       Args.isFileReadable("xmlFile", xmlFile);
 
       final var is = new BufferedInputStream(new FileInputStream(xmlFile));
@@ -337,7 +333,6 @@ public class StAXFactory {
    public ExtendedXMLStreamWriter createXMLStreamWriter(final OutputStream xmlOutput, final Charset encoding, final boolean autoClose)
          throws XMLStreamException {
       Args.notNull("xmlOutput", xmlOutput);
-      Args.notNull("encoding", encoding);
 
       final OutputStream os = xmlOutput instanceof BufferedOutputStream ? xmlOutput : new BufferedOutputStream(xmlOutput);
       final XMLStreamWriter reader = xmlOutputFactory.get().createXMLStreamWriter(os, encoding.name());

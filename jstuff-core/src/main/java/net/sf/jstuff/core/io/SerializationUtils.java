@@ -67,8 +67,6 @@ public abstract class SerializationUtils extends org.apache.commons.lang3.Serial
     * @see XMLDecoder
     */
    public static <T> T xml2bean(final String xmlData) throws SerializationException {
-      Args.notNull("xmlData", xmlData);
-
       try (var bis = new FastByteArrayInputStream(xmlData.getBytes(Charset.defaultCharset()));
            var decoder = new XMLDecoder(bis) //
       ) {

@@ -123,7 +123,6 @@ public class ZippedBlockInputStream extends FilterInputStream {
 
    @Override
    public int read(final byte[] b, final int off, final int len) throws IOException {
-      Args.notNull("b", b);
       Args.inRange("off", off, 0, b.length - 1);
       Args.inRange("len", len, 0, b.length - off);
 

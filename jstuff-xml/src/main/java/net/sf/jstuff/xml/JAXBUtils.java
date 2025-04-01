@@ -40,7 +40,6 @@ public abstract class JAXBUtils {
 
    @SuppressWarnings({"rawtypes", "resource", "unchecked"})
    public static void toXML(final Object obj, final OutputStream out) throws XMLException {
-      Args.notNull("obj", obj);
       Args.notNull("out", out);
 
       try {

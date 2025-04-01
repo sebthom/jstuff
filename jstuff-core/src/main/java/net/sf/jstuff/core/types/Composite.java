@@ -15,8 +15,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -36,8 +34,6 @@ public interface Composite<Component> extends Modifiable {
       }
 
       protected Default(final boolean isModifiable, final Collection<? extends @Nullable Component> initialComponents) {
-         Args.notNull("initialComponents", initialComponents);
-
          for (final var component : initialComponents)
             if (component != null) {
                components.add(component);
@@ -47,8 +43,6 @@ public interface Composite<Component> extends Modifiable {
 
       @SafeVarargs
       protected Default(final boolean isModifiable, final @NonNullByDefault({}) Component... initialComponents) {
-         Args.notNull("components", initialComponents);
-
          for (final var component : initialComponents)
             if (component != null) {
                components.add(component);

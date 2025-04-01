@@ -50,16 +50,12 @@ public class NumericalSystem {
    private final BigInteger radix;
 
    public NumericalSystem(final String digits) {
-      Args.notNull("digits", digits);
-
       this.digits = digits;
       digitsArray = digits.toCharArray();
       radix = BigInteger.valueOf(digitsArray.length);
    }
 
    public BigInteger decodeAsBigInteger(final CharSequence encoded) {
-      Args.notNull("encoded", encoded);
-
       if ("0".equals(encoded))
          return BigInteger.ZERO;
 
@@ -74,8 +70,6 @@ public class NumericalSystem {
    }
 
    public int decodeAsInt(final CharSequence encoded) {
-      Args.notNull("encoded", encoded);
-
       if ("0".equals(encoded))
          return 0;
 
@@ -88,8 +82,6 @@ public class NumericalSystem {
    }
 
    public long decodeAsLong(final CharSequence encoded) {
-      Args.notNull("encoded", encoded);
-
       if ("0".equals(encoded))
          return 0;
 
@@ -102,8 +94,6 @@ public class NumericalSystem {
    }
 
    public String encode(final BigInteger value) {
-      Args.notNull("value", value);
-
       switch (value.compareTo(BigInteger.ZERO)) {
          case -1:
             throw new IllegalArgumentException("[value] negative numbers not supported.");
@@ -184,8 +174,6 @@ public class NumericalSystem {
     * non-optimized version of {@link #encode(BigInteger)}
     */
    String encode_slow(final BigInteger value) {
-      Args.notNull("value", value);
-
       switch (value.compareTo(BigInteger.ZERO)) {
          case -1:
             throw new IllegalArgumentException("[value] negative numbers not supported.");

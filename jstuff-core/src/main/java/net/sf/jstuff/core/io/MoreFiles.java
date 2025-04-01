@@ -101,8 +101,6 @@ public abstract class MoreFiles {
     */
    @Nullable
    public static File backupFile(final Path fileToBackup) throws IOException {
-      Args.notNull("fileToBackup", fileToBackup);
-
       final var parentDir = fileToBackup.getParent();
       if (parentDir == null)
          throw new IOException("Cannot backup [" + fileToBackup + "] which has no parent directory!");
@@ -117,8 +115,6 @@ public abstract class MoreFiles {
    @Nullable
    public static File backupFile(final Path fileToBackup, final Path backupFolder) throws IOException {
       Args.notNull("fileToBackup", fileToBackup);
-      Args.notNull("backupFolder", backupFolder);
-
       Args.isDirectoryReadable("backupFolder", backupFolder);
 
       if (Files.exists(fileToBackup)) {
@@ -253,7 +249,6 @@ public abstract class MoreFiles {
    @SuppressWarnings("resource")
    public static void copyContent(final FileChannel source, final FileChannel target, final BiLongConsumer onBytesWritten)
          throws IOException {
-      Args.notNull("source", source);
       Args.notNull("target", target);
       Args.notNull("onBytesWritten", onBytesWritten);
 
@@ -287,7 +282,6 @@ public abstract class MoreFiles {
          throws IOException {
       Args.notNull("source", source);
       Args.notNull("target", target);
-      Args.notNull("onBeforeWrite", onBeforeWrite);
 
       try (var in = Files.newByteChannel(source, DEFAULT_FILE_READ_OPTIONS);
            var out = Files.newByteChannel(target, DEFAULT_FILE_WRITE_OPTIONS)) {
@@ -421,9 +415,6 @@ public abstract class MoreFiles {
     */
    public static void find(Path searchRoot, final String globPattern, final @Nullable Consumer<Path> onDirMatch,
          final @Nullable Consumer<Path> onFileMatch) throws IOException {
-      Args.notNull("searchRoot", searchRoot);
-      Args.notNull("globPattern", globPattern);
-
       searchRoot = searchRoot.toAbsolutePath().normalize();
       final String searchRootPath = searchRoot.toString();
       final int searchRootLen = searchRootPath.length();
@@ -577,8 +568,6 @@ public abstract class MoreFiles {
 
    @SuppressWarnings("resource")
    public static BasicFileAttributes readAttributes(final Path path) throws IOException {
-      Args.notNull("path", path);
-
       final FileSystem fs = path.getFileSystem();
       if (fs.supportedFileAttributeViews().contains("posix")) {
          try {
@@ -602,7 +591,6 @@ public abstract class MoreFiles {
    public static void write(final Path file, final @Nullable CharSequence text, final Charset charset, final OpenOption... options)
          throws IOException {
       Args.notNull("file", file);
-      Args.notNull("charset", charset);
 
       final CharsetEncoder encoder = charset.newEncoder();
       try (OutputStream out = Files.newOutputStream(file, options);

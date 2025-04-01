@@ -108,7 +108,7 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
     * @param eventToFireOnGC an event that is fired on garbage collection of <code>target</code>
     */
    public void track(final Object subject, final EVENT eventToFireOnGC) {
-      Args.notNull("target", subject);
+      Args.notNull("subject", subject);
 
       if (subject == eventToFireOnGC)
          throw new IllegalArgumentException(

@@ -404,7 +404,6 @@ public abstract class Types {
     * initializes the given class
     */
    public static <T> Class<T> initialize(final Class<T> type) {
-      Args.notNull("type", type);
       try {
          Class.forName(type.getName(), true, type.getClassLoader());
       } catch (final ClassNotFoundException e) {
@@ -414,8 +413,6 @@ public abstract class Types {
    }
 
    public static boolean isAbstract(final Class<?> type) {
-      Args.notNull("type", type);
-
       return (type.getModifiers() & Modifier.ABSTRACT) != 0;
    }
 
@@ -434,8 +431,6 @@ public abstract class Types {
    }
 
    public static boolean isInnerClass(final Class<?> type) {
-      Args.notNull("type", type);
-
       return type.getName().indexOf('$') > -1;
    }
 
@@ -452,8 +447,6 @@ public abstract class Types {
    }
 
    public static boolean isScalar(final Class<?> type) {
-      Args.notNull("type", type);
-
       return type == Boolean.class //
             || type == Character.class //
             || type.isPrimitive() //
@@ -500,7 +493,6 @@ public abstract class Types {
     */
    public static <@NonNull T> T readProperty(final Object obj, final String propertyName, final Class<? extends T> compatibleTo)
          throws ReflectionException {
-      Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);
 
       final Class<?> clazz = obj.getClass();
@@ -553,7 +545,6 @@ public abstract class Types {
 
    public static void visit(final Class<?> clazz, final ClassVisitor visitor) {
       Args.notNull("clazz", clazz);
-      Args.notNull("visitor", visitor);
 
       final var toVisit = new LinkedList<Class<?>>();
       toVisit.add(clazz);
@@ -592,7 +583,6 @@ public abstract class Types {
 
    public static void visit(final Class<?> clazz, final ClassVisitorWithTypeArguments visitor) {
       Args.notNull("clazz", clazz);
-      Args.notNull("visitor", visitor);
 
       final var toVisit = new LinkedList<Type>();
       toVisit.add(clazz);
@@ -656,7 +646,6 @@ public abstract class Types {
 
    private static void writeProperty(final Object obj, final String propertyName, final @Nullable Object value, final boolean ignoreFinal)
          throws ReflectionException {
-      Args.notNull("obj", obj);
       Args.notNull("propertyName", propertyName);
 
       final Class<?> clazz = obj.getClass();

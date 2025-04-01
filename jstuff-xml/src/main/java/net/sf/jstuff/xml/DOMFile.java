@@ -76,8 +76,7 @@ public class DOMFile {
     */
    public DOMFile(final File xmlFile, final @Nullable String rootNamespace, final File @Nullable... xmlSchemaFiles) throws IOException,
          XMLException {
-      Args.notNull("xmlFile", xmlFile);
-      Assert.isFileReadable(xmlFile);
+      Args.isFileReadable("xmlFile", xmlFile);
 
       this.xmlFile = xmlFile;
 

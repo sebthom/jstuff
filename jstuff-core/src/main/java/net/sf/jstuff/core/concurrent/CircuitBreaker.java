@@ -385,8 +385,6 @@ public class CircuitBreaker implements EventListenable<State> {
     *         acquired.
     */
    public boolean tryExecute(final Callable<?> callable) throws Exception {
-      Args.notNull("callable", callable);
-
       if (!tryAcquire())
          return false;
 
@@ -411,7 +409,6 @@ public class CircuitBreaker implements EventListenable<State> {
     *         acquired.
     */
    public boolean tryExecute(final Callable<?> callable, final int errorTimeout, final TimeUnit timeUnit) throws Exception {
-      Args.notNull("callable", callable);
       Args.notNull("timeUnit", timeUnit);
 
       if (!tryAcquire())
@@ -442,8 +439,6 @@ public class CircuitBreaker implements EventListenable<State> {
     */
    @SuppressWarnings("unchecked")
    public <A, E extends Exception> boolean tryExecute(final Invocable<?, A, E> invocable, final A args) throws E {
-      Args.notNull("invocable", invocable);
-
       if (!tryAcquire())
          return false;
 
@@ -472,7 +467,6 @@ public class CircuitBreaker implements EventListenable<State> {
     */
    public <A, E extends Exception> boolean tryExecute(final Invocable<?, A, E> invocable, final A args, final int errorTimeout,
          final TimeUnit timeUnit) throws E {
-      Args.notNull("invocable", invocable);
       Args.notNull("timeUnit", timeUnit);
 
       if (!tryAcquire())
@@ -502,8 +496,6 @@ public class CircuitBreaker implements EventListenable<State> {
     *         acquired.
     */
    public boolean tryExecute(final Runnable runnable) {
-      Args.notNull("runnable", runnable);
-
       if (!tryAcquire())
          return false;
 
@@ -528,7 +520,6 @@ public class CircuitBreaker implements EventListenable<State> {
     *         acquired.
     */
    public boolean tryExecute(final Runnable runnable, final int errorTimeout, final TimeUnit timeUnit) {
-      Args.notNull("runnable", runnable);
       Args.notNull("timeUnit", timeUnit);
 
       if (!tryAcquire())

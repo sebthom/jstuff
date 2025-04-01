@@ -9,7 +9,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ReflectPermission;
 
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -31,26 +30,18 @@ public abstract class Members {
    }
 
    public static boolean isAbstract(final Member member) {
-      Args.notNull("member", member);
-
       return (member.getModifiers() & Modifier.ABSTRACT) != 0;
    }
 
    public static boolean isFinal(final Member member) {
-      Args.notNull("member", member);
-
       return (member.getModifiers() & Modifier.FINAL) != 0;
    }
 
    public static boolean isPackage(final Member member) {
-      Args.notNull("member", member);
-
       return (member.getModifiers() & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED)) == 0;
    }
 
    public static boolean isPrivate(final Member member) {
-      Args.notNull("member", member);
-
       return (member.getModifiers() & Modifier.PRIVATE) != 0;
    }
 
@@ -67,26 +58,18 @@ public abstract class Members {
    }
 
    public static boolean isProtected(final Member member) {
-      Args.notNull("member", member);
-
       return (member.getModifiers() & Modifier.PROTECTED) != 0;
    }
 
    public static boolean isPublic(final Member member) {
-      Args.notNull("member", member);
-
       return (member.getModifiers() & Modifier.PUBLIC) != 0;
    }
 
    public static boolean isStatic(final Member member) {
-      Args.notNull("member", member);
-
       return (member.getModifiers() & Modifier.STATIC) != 0;
    }
 
    public static boolean isTransient(final Member member) {
-      Args.notNull("member", member);
-
       return (member.getModifiers() & Modifier.TRANSIENT) != 0;
    }
 }

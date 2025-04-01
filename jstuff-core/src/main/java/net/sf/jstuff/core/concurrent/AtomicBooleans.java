@@ -6,8 +6,6 @@ package net.sf.jstuff.core.concurrent;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -17,8 +15,6 @@ public abstract class AtomicBooleans {
     * https://stackoverflow.com/a/45700319/5116073
     */
    public static boolean negate(final AtomicBoolean ab) {
-      Args.notNull("ab", ab);
-
       boolean newVal = !ab.get();
 
       // try to set the new value if the current value is the opposite of the new value

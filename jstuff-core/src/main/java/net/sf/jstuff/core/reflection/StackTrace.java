@@ -10,7 +10,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -43,8 +42,6 @@ public abstract class StackTrace {
     */
    @Nullable
    public static Class<?> getCallerClass(final Class<?> calledClass) {
-      Args.notNull("calledClass", calledClass);
-
       return getCallerClass(calledClass.getName());
    }
 
@@ -53,8 +50,6 @@ public abstract class StackTrace {
     */
    @Nullable
    public static Class<?> getCallerClass(final String calledClassName) {
-      Args.notNull("calledClassName", calledClassName);
-
       final Class<?>[] stack = CallerResolver.INSTANCE.getClassContext();
       boolean foundInStack = false;
       for (final Class<?> curr : stack)
@@ -108,15 +103,11 @@ public abstract class StackTrace {
 
    @Nullable
    public static StackTraceElement getCallerStackTraceElement(final Class<?> calledClass) {
-      Args.notNull("calledClass", calledClass);
-
       return getCallerStackTraceElement(calledClass.getName());
    }
 
    @Nullable
    public static StackTraceElement getCallerStackTraceElement(final String calledClassName) {
-      Args.notNull("calledClassName", calledClassName);
-
       final var stack = Thread.currentThread().getStackTrace();
       boolean foundInStack = false;
       for (final StackTraceElement curr : stack)
@@ -161,8 +152,6 @@ public abstract class StackTrace {
     * @return the given exception
     */
    public static <T extends Throwable> T removeFirstStackTraceElement(final T ex) {
-      Args.notNull("ex", ex);
-
       final var stack = ex.getStackTrace();
       if (stack.length > 0) {
          final @NonNull StackTraceElement @NonNull [] newStack = Arrays.copyOfRange(stack, 1, stack.length);

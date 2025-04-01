@@ -84,7 +84,6 @@ public class HashLockManager<KeyType> {
    }
 
    public HashLockManager(final int intervalMS, final ScheduledExecutorService executor) {
-      Args.notNull("executor", executor);
       final var cleanup = new CleanUpTask<>(this);
       cleanup.future = executor.scheduleWithFixedDelay(cleanup, intervalMS, intervalMS, TimeUnit.MILLISECONDS);
    }
@@ -94,7 +93,6 @@ public class HashLockManager<KeyType> {
     */
    public <V> V executeReadLocked(final KeyType key, final Callable<V> callable) throws Exception {
       Args.notNull("key", key);
-      Args.notNull("callable", callable);
 
       lockRead(key);
       try {
@@ -110,7 +108,6 @@ public class HashLockManager<KeyType> {
    public <R, A, E extends Exception> R executeReadLocked(final KeyType key, final Invocable<R, A, E> invocable, final A arguments)
          throws E {
       Args.notNull("key", key);
-      Args.notNull("invocable", invocable);
 
       lockRead(key);
       try {
@@ -125,7 +122,6 @@ public class HashLockManager<KeyType> {
     */
    public void executeReadLocked(final KeyType key, final Runnable runnable) {
       Args.notNull("key", key);
-      Args.notNull("runnable", runnable);
 
       lockRead(key);
       try {
@@ -140,7 +136,6 @@ public class HashLockManager<KeyType> {
     */
    public <V> V executeWriteLocked(final KeyType key, final Callable<V> callable) throws Exception {
       Args.notNull("key", key);
-      Args.notNull("callable", callable);
 
       lockWrite(key);
       try {
@@ -155,7 +150,6 @@ public class HashLockManager<KeyType> {
     */
    public <R, A, E extends Exception> R executeWriteLocked(final KeyType key, final Invocable<R, A, E> invocable, final A args) throws E {
       Args.notNull("key", key);
-      Args.notNull("invocable", invocable);
 
       lockWrite(key);
       try {
@@ -170,7 +164,6 @@ public class HashLockManager<KeyType> {
     */
    public void executeWriteLocked(final KeyType key, final Runnable runnable) {
       Args.notNull("key", key);
-      Args.notNull("runnable", runnable);
 
       lockWrite(key);
       try {

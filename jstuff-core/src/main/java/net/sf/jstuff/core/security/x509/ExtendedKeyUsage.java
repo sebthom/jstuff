@@ -10,8 +10,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * See https://tools.ietf.org/html/rfc5280#section-4.2.1.12
  *
@@ -48,8 +46,6 @@ public enum ExtendedKeyUsage {
    }
 
    public boolean isAllowedBy(final X509Certificate cert) throws CertificateParsingException {
-      Args.notNull("cert", cert);
-
       final var oids = cert.getExtendedKeyUsage();
       if (oids == null || oids.isEmpty())
          return false;

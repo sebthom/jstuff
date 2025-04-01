@@ -24,8 +24,6 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Fields extends Members {
 
    public static void assertAssignable(final Field field, final @Nullable Object value) throws IllegalArgumentException {
-      Args.notNull("field", field);
-
       if (value == null) {
          if (field.getType().isPrimitive())
             throw new IllegalArgumentException("Cannot assign null value to primitive field [" + field.getDeclaringClass().getSimpleName()
@@ -60,7 +58,6 @@ public abstract class Fields extends Members {
     */
    @Nullable
    public static Field find(final Class<?> clazz, final String fieldName, final @Nullable Class<?> compatibleWith) {
-      Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
       Field field = null;
@@ -342,7 +339,6 @@ public abstract class Fields extends Members {
 
    public static void writeIgnoringFinal(final Object obj, final String fieldName, final @Nullable Object value)
          throws ReflectionException {
-      Args.notNull("obj", obj);
       Args.notNull("fieldName", fieldName);
 
       final Field field = findRecursive(obj.getClass(), fieldName);

@@ -68,8 +68,6 @@ public class MapBasedNamespaceContext implements NamespaceContext {
 
    @Override
    public @Nullable String getPrefix(final String namespaceURI) {
-      Args.notNull("namespaceURI", namespaceURI);
-
       if (namespaceURI.equals(defaultNamespaceURI))
          return XMLConstants.DEFAULT_NS_PREFIX;
       if (namespaceURI.equals(XMLConstants.XML_NS_URI))

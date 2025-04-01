@@ -11,8 +11,6 @@ import java.util.logging.LogRecord;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -29,10 +27,9 @@ public class DualPrintStreamHandler extends PrintStreamHandler {
    public DualPrintStreamHandler(final PrintStream stdout, final PrintStream stderr, final Formatter formatter,
          final Level maxStdOutLevel) {
       super(stdout, formatter);
-      Args.notNull("maxStdOutLevel", maxStdOutLevel);
 
-      stderrHandler = new PrintStreamHandler(stderr, formatter);
       this.maxStdOutLevel = maxStdOutLevel.intValue();
+      stderrHandler = new PrintStreamHandler(stderr, formatter);
    }
 
    @Override

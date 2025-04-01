@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -17,8 +16,6 @@ import net.sf.jstuff.core.validation.Args;
 public abstract class Base64 {
 
    public static final byte[] decode(final byte[] encoded) {
-      Args.notNull("encoded", encoded);
-
       if (encoded.length == 0)
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
@@ -31,8 +28,6 @@ public abstract class Base64 {
    }
 
    public static final byte[] decode(final String encoded) {
-      Args.notNull("encoded", encoded);
-
       if (encoded.isEmpty())
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
@@ -40,8 +35,6 @@ public abstract class Base64 {
    }
 
    public static String encode(final byte[] plain) {
-      Args.notNull("plain", plain);
-
       if (plain.length == 0)
          return "";
 
@@ -49,8 +42,6 @@ public abstract class Base64 {
    }
 
    public static String encode(final String plain) {
-      Args.notNull("plain", plain);
-
       if (plain.isEmpty())
          return "";
 
@@ -89,8 +80,6 @@ public abstract class Base64 {
    }
 
    private static byte[] sanitizeBytes(final byte[] bytes) {
-      Args.notNull("bytes", bytes);
-
       /*
        * count new line chars
        */
@@ -142,8 +131,6 @@ public abstract class Base64 {
    }
 
    public static byte[] urldecode(final byte[] encoded) {
-      Args.notNull("encoded", encoded);
-
       if (encoded.length == 0)
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
@@ -151,8 +138,6 @@ public abstract class Base64 {
    }
 
    public static byte[] urldecode(final String encoded) {
-      Args.notNull("encoded", encoded);
-
       if (encoded.isEmpty())
          return ArrayUtils.EMPTY_BYTE_ARRAY;
 
@@ -160,8 +145,6 @@ public abstract class Base64 {
    }
 
    public static String urlencode(final byte[] plain) {
-      Args.notNull("plain", plain);
-
       if (plain.length == 0)
          return "";
 
@@ -169,8 +152,6 @@ public abstract class Base64 {
    }
 
    public static String urlencode(final String plain) {
-      Args.notNull("plain", plain);
-
       if (plain.isEmpty())
          return "";
 

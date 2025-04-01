@@ -15,7 +15,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
-import net.sf.jstuff.core.validation.Assert;
 
 /**
  * Extended {@link URLClassLoader} that supports parent-last class-loading strategy and
@@ -50,16 +49,13 @@ public class URLClassLoaderExt extends URLClassLoader {
    }
 
    public void addJAR(final File jarFile) throws IOException {
-      Args.notNull("jarFile", jarFile);
-      Assert.isFileReadable(jarFile);
+      Args.isFileReadable("jarFile", jarFile);
 
       LOG.trace("Adding file [%s] to classpath", jarFile);
       addURL(jarFile.toURI().toURL());
    }
 
    public boolean addJARs(final File jarDirectory, final boolean recursive) throws IOException {
-      Args.notNull("jarDirectory", jarDirectory);
-
       final File[] children = jarDirectory.listFiles();
       if (children == null)
          return false;
@@ -76,7 +72,6 @@ public class URLClassLoaderExt extends URLClassLoader {
    }
 
    public boolean addJARs(final File jarDirectory, final boolean recursive, final Pattern jarNamePattern) throws IOException {
-      Args.notNull("jarDirectory", jarDirectory);
       Args.notNull("jarNamePattern", jarNamePattern);
 
       final File[] children = jarDirectory.listFiles();
@@ -95,7 +90,6 @@ public class URLClassLoaderExt extends URLClassLoader {
    }
 
    public boolean addJARs(final File jarDirectory, final boolean recursive, final String jarNamePattern) throws IOException {
-      Args.notNull("jarDirectory", jarDirectory);
       Args.notNull("jarNamePattern", jarNamePattern);
 
       final File[] children = jarDirectory.listFiles();

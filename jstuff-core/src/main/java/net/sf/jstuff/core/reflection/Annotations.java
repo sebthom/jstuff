@@ -41,8 +41,6 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 
    public static <T extends Annotation> T create(final Class<T> annotationType, final @Nullable Map<String, Object> attributes)
          throws ReflectionException {
-      Args.notNull("annotationType", annotationType);
-
       /*
        * build the final map of attributes to be used
        */
@@ -95,7 +93,6 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
     * @return true if an annotation for the specified annotation type is present on this method, else false
     */
    public static boolean exists(final Method method, final Class<? extends Annotation> annotationClass, final boolean inspectInterfaces) {
-      Args.notNull("method", method);
       Args.notNull("annotationClass", annotationClass);
 
       if (method.isAnnotationPresent(annotationClass))
@@ -120,7 +117,6 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
 
    @SuppressWarnings("unchecked")
    public static <A extends Annotation> A getDefaults(final Class<A> annotation) {
-      Args.notNull("annotation", annotation);
       return (A) Proxy.newProxyInstance(annotation.getClassLoader(), new Class[] {annotation}, (proxy, method, args) -> method
          .getDefaultValue());
    }
@@ -180,8 +176,6 @@ public abstract class Annotations extends org.apache.commons.lang3.AnnotationUti
    }
 
    public static Map<String, @Nullable Object> getParameters(final Annotation annotation) throws ReflectionException {
-      Args.notNull("annotation", annotation);
-
       final var methods = annotation.annotationType().getDeclaredMethods();
       final var parameters = new HashMap<String, @Nullable Object>(methods.length);
       for (final Method m : methods) {

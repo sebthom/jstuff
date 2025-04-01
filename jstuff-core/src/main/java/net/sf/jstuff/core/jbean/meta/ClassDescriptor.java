@@ -29,7 +29,6 @@ public final class ClassDescriptor<T> implements Serializable {
    @SuppressWarnings("unchecked")
    public static <T> ClassDescriptor<T> of(final Class<T> type, final String name, final @Nullable String description,
          final @Nullable ClassDescriptor<?> parent) {
-      Args.notNull("type", type);
       Args.notNull("name", name);
       Assert.isFalse(REGISTRY.containsKey(type), "A meta class for [" + type.getName() + "] exists already.");
       synchronized (type) {

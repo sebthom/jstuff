@@ -8,8 +8,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.function.BooleanSupplier;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * Await methods safe against spurious wake-ups.
  * <p>
@@ -25,7 +23,6 @@ public abstract class SafeAwait {
     * @return value from {@link Condition#await(long, TimeUnit)}
     */
    public static boolean await(final Condition condition, final long timeoutMS) throws InterruptedException {
-      Args.notNull("condition", condition);
 
       long waitForMS = timeoutMS;
       final long started = System.currentTimeMillis();
@@ -38,9 +35,6 @@ public abstract class SafeAwait {
    }
 
    public static void await(final BooleanSupplier condition, final Object waitObject) throws InterruptedException {
-      Args.notNull("condition", condition);
-      Args.notNull("waitObject", waitObject);
-
       synchronized (waitObject) {
          while (!condition.getAsBoolean()) {
             waitObject.wait();
@@ -52,9 +46,6 @@ public abstract class SafeAwait {
     * @return if condition was met
     */
    public static boolean await(final BooleanSupplier condition, final Object waitObject, final long timeoutMS) throws InterruptedException {
-      Args.notNull("condition", condition);
-      Args.notNull("waitObject", waitObject);
-
       synchronized (waitObject) {
          long waitForMS = timeoutMS;
          final long started = System.currentTimeMillis();

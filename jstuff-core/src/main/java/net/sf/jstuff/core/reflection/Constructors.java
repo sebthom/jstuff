@@ -10,7 +10,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.reflection.exception.InvokingConstructorFailedException;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -88,8 +87,6 @@ public abstract class Constructors extends Members {
    }
 
    public static <T> @NonNull T invoke(final Constructor<T> ctor, final Object... args) throws InvokingConstructorFailedException {
-      Args.notNull("ctor", ctor);
-
       try {
          ctor.trySetAccessible();
          return ctor.newInstance(args);

@@ -10,7 +10,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -26,9 +25,6 @@ public abstract class DuckTypes {
     */
    @SuppressWarnings("unchecked")
    public static <T> T duckType(final Object duckLikeObject, final Class<T> duckInterface) {
-      Args.notNull("duckLikeObject", duckLikeObject);
-      Args.notNull("duckInterface", duckInterface);
-
       final Class<?> duckLikeClass = duckLikeObject.getClass();
       if (duckInterface.isAssignableFrom(duckLikeClass))
          return (T) duckLikeObject;
@@ -53,9 +49,6 @@ public abstract class DuckTypes {
     * @return true if <code>duckLikeObject</code> implements all public methods declared on <code>duckType</code>
     */
    public static boolean isDuckType(final Object duckLikeObject, final Class<?> duckType) {
-      Args.notNull("duckLikeObject", duckLikeObject);
-      Args.notNull("duckType", duckType);
-
       final Class<?> duckLikeClass = duckLikeObject.getClass();
       if (duckType.isAssignableFrom(duckLikeClass))
          return true;

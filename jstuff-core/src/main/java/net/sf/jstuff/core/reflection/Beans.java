@@ -100,9 +100,6 @@ public abstract class Beans extends java.beans.Beans {
    }
 
    public static Object[] valuesOf(final @NonNull String[] stringValues, final @NonNull Class<?>[] targetTypes) {
-      Args.notNull("stringValues", stringValues);
-      Args.notNull("targetTypes", targetTypes);
-
       Assert.isTrue(stringValues.length == targetTypes.length, "Arguments [stringValues} and [targetTypes] must have the same length");
 
       final var result = new Object[targetTypes.length];

@@ -89,7 +89,6 @@ public abstract class X509Utils {
     */
    @Deprecated
    public static X509Certificate convert(final javax.security.cert.X509Certificate cert) {
-      Args.notNull("cert", cert);
       try (var bis = new FastByteArrayInputStream(cert.getEncoded())) {
          return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(bis);
       } catch (final Exception ex) {
@@ -102,7 +101,6 @@ public abstract class X509Utils {
     */
    @Deprecated
    public static javax.security.cert.X509Certificate convert(final X509Certificate cert) {
-      Args.notNull("cert", cert);
       try {
          return javax.security.cert.X509Certificate.getInstance(cert.getEncoded());
       } catch (final Exception ex) {
@@ -123,7 +121,6 @@ public abstract class X509Utils {
     * Constructs a X509Certificate instance from a DER or PEM encoded certificate
     */
    public static X509Certificate getCertificate(final File file) throws GeneralSecurityException, IOException {
-      Args.notNull("file", file);
       try (var is = Files.newInputStream(file.toPath(), StandardOpenOption.READ)) {
          return getCertificate(is);
       }
@@ -146,7 +143,6 @@ public abstract class X509Utils {
     * Constructs a X509Certificate instance from a PEM encoded certificate
     */
    public static X509Certificate getCertificateFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
-      Args.notNull("pemFile", pemFile);
       return getCertificateFromPEM(MoreFiles.readAsString(pemFile.toPath()));
    }
 
@@ -185,7 +181,6 @@ public abstract class X509Utils {
    }
 
    public static List<X509Certificate> getCertificates(final KeyStore ks) {
-      Args.notNull("ks", ks);
       final var certs = new ArrayList<X509Certificate>();
       try {
          for (final Enumeration<String> en = ks.aliases(); en.hasMoreElements();) {
@@ -204,7 +199,6 @@ public abstract class X509Utils {
     * @return the first CN found
     */
    public static @Nullable String getCN(final X509Certificate cert) {
-      Args.notNull("cert", cert);
       final String subjectPrincipal = cert.getSubjectX500Principal().getName(X500Principal.RFC2253);
       try {
          for (final Rdn rdn : new LdapName(subjectPrincipal).getRdns()) {
@@ -226,7 +220,6 @@ public abstract class X509Utils {
    }
 
    public static List<String> getCNs(final X509Certificate cert) {
-      Args.notNull("cert", cert);
       final var cns = new ArrayList<String>();
       try {
          final String subjectPrincipal = cert.getSubjectX500Principal().getName(X500Principal.RFC2253);
@@ -253,7 +246,6 @@ public abstract class X509Utils {
     * Constructs a X509CRL instance from a PEM encoded CRL
     */
    public static X509CRL getCRLFromPEM(final File pemFile) throws GeneralSecurityException, IOException {
-      Args.notNull("pemFile", pemFile);
       return getCRLFromPEM(MoreFiles.readAsString(pemFile.toPath()));
    }
 
@@ -342,7 +334,6 @@ public abstract class X509Utils {
    }
 
    public static String getFingerprint(final X509Certificate cert) throws CertificateEncodingException {
-      Args.notNull("cert", cert);
       return Hash.SHA1.hash(cert.getEncoded());
    }
 
@@ -355,7 +346,6 @@ public abstract class X509Utils {
     */
    @Nullable
    public static String getOcspResponderURL(final X509Certificate cert) {
-      Args.notNull("cert", cert);
       // https://tools.ietf.org/html/rfc4325#section-2
       final byte[] ocspExtValueRaw = cert.getExtensionValue("1.3.6.1.5.5.7.1.1");
       if (ocspExtValueRaw == null)
@@ -379,7 +369,6 @@ public abstract class X509Utils {
     * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
     */
    public static PrivateKey getPrivateKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
-      Args.notNull("pemFile", pemFile);
       Args.notNull("algorithm", algorithm);
       return getPrivateKeyFromPEM(MoreFiles.readAsString(pemFile.toPath()), algorithm);
    }
@@ -407,7 +396,6 @@ public abstract class X509Utils {
     * @throws InvalidKeyException if the private key is not PKCS#8 PEM encoded
     */
    public static PrivateKey getPrivateKeyFromPEM(final String pemContent, final String algorithm) throws GeneralSecurityException {
-      Args.notNull("pemContent", pemContent);
       Args.notNull("algorithm", algorithm);
 
       // https://stackoverflow.com/questions/15344125/load-a-rsa-private-key-in-java-algid-parse-error-not-a-sequence
@@ -429,7 +417,6 @@ public abstract class X509Utils {
     * Constructs a public key instance from PEM encoded X509 public key, NOT from a PEM encoded certificate
     */
    public static PublicKey getPublicKeyFromPEM(final File pemFile, final String algorithm) throws GeneralSecurityException, IOException {
-      Args.notNull("pemFile", pemFile);
       Args.notNull("algorithm", algorithm);
       return getPublicKeyFromPEM(MoreFiles.readAsString(pemFile.toPath()), algorithm);
    }
@@ -542,7 +529,6 @@ public abstract class X509Utils {
    }
 
    public static boolean isExpired(final X509Certificate cert) {
-      Args.notNull("cert", cert);
       return cert.getNotAfter().getTime() < System.currentTimeMillis();
    }
 
@@ -557,7 +543,6 @@ public abstract class X509Utils {
    }
 
    public static boolean isSelfSignedCertificate(final X509Certificate cert) {
-      Args.notNull("cert", cert);
       try {
          final PublicKey key = cert.getPublicKey();
          cert.verify(key);

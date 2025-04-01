@@ -13,8 +13,6 @@ import java.util.logging.StreamHandler;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import net.sf.jstuff.core.validation.Args;
-
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -30,10 +28,9 @@ public class DualStreamHandler extends StreamHandler {
 
    public DualStreamHandler(final OutputStream stdout, final OutputStream stderr, final Formatter formatter, final Level maxStdOutLevel) {
       super(stdout, formatter);
-      Args.notNull("maxLevelStdOut", maxStdOutLevel);
 
-      stderrHandler = new StreamHandler(stderr, formatter);
       this.maxStdOutLevel = maxStdOutLevel.intValue();
+      stderrHandler = new StreamHandler(stderr, formatter);
    }
 
    @Override

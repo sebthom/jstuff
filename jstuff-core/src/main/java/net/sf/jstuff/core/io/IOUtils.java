@@ -101,9 +101,6 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
    @SuppressWarnings("resource")
    public static long copy(final InputStream in, final OutputStream out, final byte[] buffer, final ObjIntConsumer<byte[]> onBeforeWrite)
          throws IOException {
-      Args.notNull("in", in);
-      Args.notNull("out", out);
-
       long count = 0;
       int n;
       while (EOF != (n = in.read(buffer))) {
@@ -142,7 +139,6 @@ public abstract class IOUtils extends org.apache.commons.io.IOUtils {
     * @param len the exact number of bytes to read.
     */
    public static void readBytes(final InputStream is, final byte[] b, final int off, final int len) throws IOException {
-      Args.notNull("b", b);
       Args.inRange("off", off, 0, b.length - 1);
       Args.inRange("len", len, 0, b.length - off);
 

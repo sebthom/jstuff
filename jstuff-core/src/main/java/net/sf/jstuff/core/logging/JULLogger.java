@@ -15,7 +15,6 @@ import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.logging.jul.Levels;
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.reflection.Types;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -208,8 +207,6 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void debugNew(final Object newInstance) {
-      Args.notNull("newInstance", newInstance);
-
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_DEBUG)
          return;
@@ -516,8 +513,6 @@ final class JULLogger implements LoggerInternal {
 
    @Override
    public void infoNew(final Object newInstance) {
-      Args.notNull("newInstance", newInstance);
-
       final int effectiveLevel = getLevelInt();
       if (effectiveLevel > L_INFO)
          return;

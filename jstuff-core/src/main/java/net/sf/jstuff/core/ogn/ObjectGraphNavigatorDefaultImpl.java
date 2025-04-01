@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.reflection.Fields;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
@@ -42,7 +43,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
 
       Object parent = null;
       Object target = root;
-      for (final String chunk : path.split("\\.")) {
+      for (final String chunk : Strings.split(path, '.')) {
          parent = target;
          if (parent == null)
             return null;
@@ -78,7 +79,7 @@ public class ObjectGraphNavigatorDefaultImpl implements ObjectGraphNavigator {
       @Nullable
       Object target = root;
       AccessibleObject targetAccessor = null;
-      for (final String chunk : path.split("\\.")) {
+      for (final String chunk : Strings.split(path, '.')) {
          parent = target;
          if (parent == null)
             return null;

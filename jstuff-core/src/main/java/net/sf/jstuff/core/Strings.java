@@ -1785,8 +1785,6 @@ public abstract class Strings {
       if (!it.hasNext())
          return EMPTY;
 
-      Args.notNull("transform", transform);
-
       final T first = it.next();
       if (!it.hasNext())
          return Objects.toString(transform.apply(first), EMPTY);
@@ -1809,8 +1807,6 @@ public abstract class Strings {
          return null;
       if (!it.hasNext())
          return EMPTY;
-
-      Args.notNull("transform", transform);
 
       final T first = it.next();
       if (!it.hasNext())

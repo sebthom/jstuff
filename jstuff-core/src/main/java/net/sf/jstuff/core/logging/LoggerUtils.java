@@ -41,7 +41,6 @@ abstract class LoggerUtils {
 
    @SuppressWarnings("unchecked")
    static <@NonNull I> I createLogged(final I object, final Class<I> primaryInterface, final Class<?> @Nullable... secondaryInterfaces) {
-      Args.notNull("object", object);
       Args.notNull("primaryInterface", primaryInterface);
 
       final Class<?>[] interfaces;

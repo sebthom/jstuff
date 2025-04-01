@@ -32,7 +32,6 @@ public interface Logger {
    }
 
    static Logger create(final Class<?> clazz) {
-      Args.notNull("clazz", clazz);
       return LoggerConfig.create(clazz.getName());
    }
 

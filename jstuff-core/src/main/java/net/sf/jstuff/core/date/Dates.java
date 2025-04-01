@@ -189,14 +189,10 @@ public abstract class Dates extends org.apache.commons.lang3.time.DateUtils {
     * </pre>
     */
    public static String toISO8601(final Date date) {
-      Args.notNull("date", date);
-
       return (date.getTime() % 1000 == 0 ? ISO8601_FORMAT : ISO8601_FORMAT_MS).format(date);
    }
 
    public static String toISO8601_UTC(final Date date) {
-      Args.notNull("date", date);
-
       final Calendar c = Calendar.getInstance();
       c.setTime(date);
       c.setTimeZone(TimeZone.getTimeZone("UTC"));

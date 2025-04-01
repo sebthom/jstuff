@@ -22,7 +22,6 @@ import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -213,8 +212,6 @@ public abstract class Threads {
     * Handles InterruptedException correctly.
     */
    public static void join(final Thread thread) throws RuntimeInterruptedException {
-      Args.notNull("thread", thread);
-
       try {
          LOG.trace("Waiting for thread %s...", thread);
          thread.join();

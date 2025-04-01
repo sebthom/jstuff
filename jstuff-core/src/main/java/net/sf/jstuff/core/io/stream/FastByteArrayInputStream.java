@@ -25,7 +25,6 @@ public class FastByteArrayInputStream extends InputStream {
    }
 
    public FastByteArrayInputStream(final byte[] data, final int offset, final int length) {
-      Args.notNull("data", data);
       Args.notNegative("offset", offset);
       Args.notNegative("length", length);
 

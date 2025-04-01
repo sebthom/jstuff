@@ -25,7 +25,6 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.collection.ArrayUtils;
-import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.reflection.exception.InvokingMethodFailedException;
 import net.sf.jstuff.core.reflection.exception.ReflectionException;
@@ -63,8 +62,6 @@ public abstract class Methods extends Members {
     */
    public static <ACCESSOR> ACCESSOR createPublicMethodAccessor(final Class<ACCESSOR> accessor, final Class<?> targetClass,
          final String methodName) {
-      Args.notNull("accessor", accessor);
-
       if (!accessor.isAnnotationPresent(FunctionalInterface.class))
          throw new IllegalArgumentException("[accessor] must be an interface annotated with @java.lang.FunctionalInterface!");
 
@@ -79,7 +76,6 @@ public abstract class Methods extends Members {
     */
    public static <ACCESSOR> ACCESSOR createPublicMethodAccessor(final Class<ACCESSOR> accessor, final Class<?> targetClass,
          final String methodName, @Nullable Class<?> methodReturnType, final @NonNull Class<?>... methodParameterTypes) {
-      Args.notNull("accessor", accessor);
       Args.notNull("targetClass", targetClass);
       Args.notNull("methodName", methodName);
 
@@ -244,7 +240,6 @@ public abstract class Methods extends Members {
    @Nullable
    public static Method findAnyGetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
       Args.notNull("clazz", clazz);
-      Args.notNull("methodName", propertyName);
 
       final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
@@ -300,7 +295,6 @@ public abstract class Methods extends Members {
    @Nullable
    public static Method findAnySetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
       Args.notNull("clazz", clazz);
-      Args.notNull("methodName", propertyName);
 
       final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
@@ -332,7 +326,6 @@ public abstract class Methods extends Members {
     */
    @Nullable
    public static Method findPublic(final Class<?> clazz, final String methodName, final Class<?> @Nullable... parameterTypes) {
-      Args.notNull("clazz", clazz);
       Args.notNull("methodName", methodName);
       try {
          return clazz.getMethod(methodName, parameterTypes);
@@ -416,9 +409,6 @@ public abstract class Methods extends Members {
     */
    @Nullable
    public static Method findPublicGetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
-      Args.notNull("clazz", clazz);
-      Args.notNull("propertyName", propertyName);
-
       final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
       if (compatibleTo == Boolean.class || compatibleTo == boolean.class) {
@@ -466,9 +456,6 @@ public abstract class Methods extends Members {
     */
    @Nullable
    public static Method findPublicSetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
-      Args.notNull("clazz", clazz);
-      Args.notNull("propertyName", propertyName);
-
       final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
       final var publicMethods = clazz.getMethods();
@@ -605,7 +592,6 @@ public abstract class Methods extends Members {
     * Searches for public method with the exact signature
     */
    public static Method getPublic(final Class<?> clazz, final String methodName, final Class<?> @Nullable... parameterTypes) {
-      Args.notNull("clazz", clazz);
       Args.notNull("methodName", methodName);
       try {
          return clazz.getMethod(methodName, parameterTypes);
@@ -615,7 +601,7 @@ public abstract class Methods extends Members {
    }
 
    public static List<Method> getPublicGetters(final Class<?> clazz) {
-      final List<Method> result = CollectionUtils.newArrayList();
+      final var result = new ArrayList<Method>();
       for (final Method m : clazz.getMethods())
          if (isGetter(m)) {
             result.add(m);
@@ -627,10 +613,7 @@ public abstract class Methods extends Members {
     * Searches for public getters with type compatible signature
     */
    public static List<Method> getPublicGetters(final Class<?> clazz, final @Nullable Class<?> compatibleTo) {
-      Args.notNull("clazz", clazz);
-
-      final List<Method> result = CollectionUtils.newArrayList();
-
+      final var result = new ArrayList<Method>();
       final var publicMethods = clazz.getMethods();
       for (final Method method : publicMethods) {
          if (isStatic(method) || !isGetter(method)) {
@@ -646,7 +629,7 @@ public abstract class Methods extends Members {
    }
 
    public static List<Method> getPublicSetters(final Class<?> clazz) {
-      final List<Method> result = CollectionUtils.newArrayList();
+      final var result = new ArrayList<Method>();
       for (final Method m : clazz.getMethods())
          if (isSetter(m)) {
             result.add(m);
@@ -658,10 +641,7 @@ public abstract class Methods extends Members {
     * Searches for public setters with type compatible signature
     */
    public static List<Method> getPublicSetters(final Class<?> clazz, final @Nullable Class<?> compatibleTo) {
-      Args.notNull("clazz", clazz);
-
-      final List<Method> result = CollectionUtils.newArrayList();
-
+      final var result = new ArrayList<Method>();
       final var publicMethods = clazz.getMethods();
       for (final Method method : publicMethods) {
          if (isStatic(method) || !isSetter(method)) {
@@ -684,8 +664,6 @@ public abstract class Methods extends Members {
    @SuppressWarnings("unchecked")
    public static <T> T invoke(final @Nullable Object obj, final Method method, final Object @Nullable... args)
          throws InvokingMethodFailedException {
-      Args.notNull("method", method);
-
       try {
          method.trySetAccessible();
          return (T) method.invoke(obj, args);
@@ -697,7 +675,6 @@ public abstract class Methods extends Members {
    @SuppressWarnings("unchecked")
    public static <T> T invoke(final Object obj, final String methodName, final Object @Nullable... args)
          throws InvokingMethodFailedException {
-      Args.notNull("obj", obj);
       Args.notNull("methodName", methodName);
 
       final Method method = Methods.findAnyCompatible(obj.getClass(), methodName, args);
@@ -716,8 +693,6 @@ public abstract class Methods extends Members {
     * determines if a method is a JavaBean style getter method
     */
    public static boolean isGetter(final Method method) {
-      Args.notNull("method", method);
-
       if (method.getParameterTypes().length > 0 || isReturningVoid(method))
          return false;
 
@@ -740,8 +715,6 @@ public abstract class Methods extends Members {
     * determines if a method is a void method
     */
    public static boolean isReturningVoid(final Method method) {
-      Args.notNull("method", method);
-
       return method.getReturnType() == void.class;
    }
 
@@ -749,8 +722,6 @@ public abstract class Methods extends Members {
     * determines if a method is a JavaBean style setter method
     */
    public static boolean isSetter(final Method method) {
-      Args.notNull("method", method);
-
       final Class<?>[] methodParameterTypes = method.getParameterTypes();
 
       if (methodParameterTypes.length != 1 //

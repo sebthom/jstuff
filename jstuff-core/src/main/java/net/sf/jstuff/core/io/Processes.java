@@ -208,7 +208,6 @@ public abstract class Processes {
       }
 
       public Builder withArg(final Object arg) {
-         Args.notNull("arg", arg);
          args.add(arg.toString());
          return this;
       }
@@ -532,12 +531,10 @@ public abstract class Processes {
       .ofSeconds(30));
 
    public static Builder builder(final File executable) {
-      Args.notNull("executable", executable);
       return builder(executable.getPath());
    }
 
    public static Builder builder(final Path executable) {
-      Args.notNull("executable", executable);
       return builder(executable.toString());
    }
 
@@ -555,7 +552,6 @@ public abstract class Processes {
     */
    public static boolean destroy(final Process process, final int gracePeriod, final TimeUnit gracePeriodTimeUnit)
          throws InterruptedException {
-      Args.notNull("process", process);
       Args.notNegative("gracePeriod", gracePeriod);
       Args.notNull("gracePeriodTimeUnit", gracePeriodTimeUnit);
 

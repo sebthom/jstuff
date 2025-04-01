@@ -59,8 +59,6 @@ public class RGBA implements Serializable {
     * @throws IllegalArgumentException if the hex string is invalid
     */
    public static RGBA fromHex(final String hex) {
-      Args.notNull("hex", hex);
-
       // Detect prefix and determine offset
       final int offset;
       if (hex.startsWith("#") || hex.startsWith("x")) {

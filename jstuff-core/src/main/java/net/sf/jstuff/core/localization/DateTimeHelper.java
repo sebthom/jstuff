@@ -149,15 +149,10 @@ public class DateTimeHelper implements Serializable {
    }
 
    public DateFormat getDateTimeFormat(final DateFormatStyle style) {
-      Args.notNull("style", style);
-
       return DateFormat.getDateTimeInstance(style.style, style.style, locale);
    }
 
    public DateFormat getDateTimeFormat(final DateFormatStyle dateStyle, final DateFormatStyle timeStyle) {
-      Args.notNull("dateStyle", dateStyle);
-      Args.notNull("timeStyle", timeStyle);
-
       return DateFormat.getDateTimeInstance(dateStyle.style, timeStyle.style, locale);
    }
 
@@ -180,8 +175,6 @@ public class DateTimeHelper implements Serializable {
    }
 
    public DateFormat getTimeFormat(final DateFormatStyle style) {
-      Args.notNull("style", style);
-
       return DateFormat.getTimeInstance(style.style, locale);
    }
 

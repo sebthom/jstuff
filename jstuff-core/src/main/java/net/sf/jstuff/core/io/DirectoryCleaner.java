@@ -25,7 +25,6 @@ import net.sf.jstuff.core.builder.Builder.Property;
 import net.sf.jstuff.core.builder.BuilderFactory;
 import net.sf.jstuff.core.builder.OnPostBuild;
 import net.sf.jstuff.core.logging.Logger;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * Delete all regular files from the given directory.
@@ -136,8 +135,6 @@ public class DirectoryCleaner {
     */
    public void cleanDirectory(final Path directory, final @Nullable BiConsumer<Path, BasicFileAttributes> onFileDeleted)
          throws IOException {
-      Args.notNull("directory", directory);
-
       if (!Files.isDirectory(directory)) {
          LOG.warn("Cannot clean [%s] which is a file and not a directory...", directory);
          return;

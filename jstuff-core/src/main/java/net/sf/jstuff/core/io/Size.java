@@ -69,7 +69,6 @@ public final class Size implements Serializable, Comparable<Size> {
    }
 
    public static Size of(final Path path) throws IOException {
-      Args.notNull("path", path);
       if (!Files.exists(path))
          throw new IllegalArgumentException("[path] does not exist: " + path);
       return of(Files.size(path), BYTES);

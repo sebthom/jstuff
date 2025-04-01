@@ -57,9 +57,6 @@ public abstract class Images {
    }
 
    public static BufferedImage toBufferedImage(final Image image, final GraphicsConfiguration gc) {
-      Args.notNull("image", image);
-      Args.notNull("gc", gc);
-
       if (image instanceof final BufferedImage buffImg)
          return buffImg;
 
@@ -75,8 +72,6 @@ public abstract class Images {
    }
 
    public static BufferedImage toBufferedImage(final RenderedImage image) {
-      Args.notNull("image", image);
-
       if (image instanceof final BufferedImage buffImg)
          return buffImg;
 

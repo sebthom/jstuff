@@ -230,8 +230,6 @@ public class BuilderFactory<TARGET_CLASS, BLDR_IFACE extends Builder<? extends T
    @SuppressWarnings("unchecked")
    protected BuilderFactory(final Class<BLDR_IFACE> builderInterface, @Nullable Class<TARGET_CLASS> targetClass,
          final Object... constructorArgs) {
-      Args.notNull("builderInterface", builderInterface);
-
       if (!builderInterface.isInterface())
          throw new IllegalArgumentException("[builderInterface] '" + builderInterface.getName() + "' is not an interface!");
 

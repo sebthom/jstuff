@@ -16,7 +16,6 @@ import org.slf4j.spi.LocationAwareLogger;
 import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.reflection.StackTrace;
 import net.sf.jstuff.core.reflection.Types;
-import net.sf.jstuff.core.validation.Args;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -228,8 +227,6 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void debugNew(final Object newInstance) {
-      Args.notNull("newInstance", newInstance);
-
       if (!logger.isDebugEnabled())
          return;
 
@@ -493,8 +490,6 @@ final class SLF4JLogger implements LoggerInternal {
 
    @Override
    public void infoNew(final Object newInstance) {
-      Args.notNull("newInstance", newInstance);
-
       if (!logger.isInfoEnabled())
          return;
 
