@@ -63,11 +63,11 @@ public class CrossThreadMethodInvoker {
     */
    private final ConcurrentLinkedQueue<MethodInvocation> invocations = new ConcurrentLinkedQueue<>();
    private volatile @Nullable Thread owner;
-   private final int timeout;
+   private final long timeoutNS;
    private AtomicInteger backgroundThreadCount = new AtomicInteger(Integer.MIN_VALUE);
 
-   public CrossThreadMethodInvoker(final int timeout) {
-      this.timeout = timeout;
+   public CrossThreadMethodInvoker(final int timeoutMS) {
+      timeoutNS = TimeUnit.MILLISECONDS.toNanos(timeoutMS);
    }
 
    /**
@@ -124,7 +124,7 @@ public class CrossThreadMethodInvoker {
    }
 
    public int getTimeout() {
-      return timeout;
+      return (int) TimeUnit.NANOSECONDS.toMillis(timeoutNS);
    }
 
    /**
@@ -140,7 +140,7 @@ public class CrossThreadMethodInvoker {
       final var m = new MethodInvocation(target, method, args);
       invocations.add(m);
 
-      if (!m.isDone.await(timeout, TimeUnit.MILLISECONDS)) //
+      if (!m.isDone.await(timeoutNS, TimeUnit.NANOSECONDS)) //
          throw new IllegalStateException("Method invocation timed out. " + method);
 
       if (m.exception != null)
@@ -183,9 +183,9 @@ public class CrossThreadMethodInvoker {
             throw new IllegalStateException("Can only be invoked by owning thread " + owner);
 
          try {
-            final long startedAt = System.currentTimeMillis();
+            final long startedAt = System.nanoTime();
             while (backgroundThreadCount.get() > 0 // still background threads alive?
-                  && System.currentTimeMillis() - startedAt < timeout) { // timeout not yet reached?
+                  && System.nanoTime() - startedAt < timeoutNS) { // timeout not yet reached?
                final MethodInvocation m = invocations.poll();
                if (m != null) {
                   m.invoke();

@@ -67,15 +67,16 @@ public final class BenchmarkRunner {
          }
 
          final var startFreeMem = RUNTIME.freeMemory(); // CHECKSTYLE:IGNORE .*
-         final var startAt = System.currentTimeMillis();
+         final var startAt = System.nanoTime();
 
          for (int i = 0; i < iterations; i++) {
             benchmark.run();
          }
 
-         final var durationMS = System.currentTimeMillis() - startAt;
-         final var durationMSPerIteration = durationMS / (float) iterations;
-         final var iterationsPerSecond = 60_000 / durationMSPerIteration;
+         final long elapsedNanos = System.nanoTime() - startAt;
+         final float durationMS = elapsedNanos / 1_000_000f;
+         final float durationMSPerIteration = durationMS / iterations;
+         final float iterationsPerSecond = 1_000f / durationMSPerIteration;
 
          if (measureHeapUsage) {
             final var heapBytesPerIteration = (startFreeMem - RUNTIME.freeMemory()) / (float) iterations;

@@ -161,13 +161,13 @@ public class CircuitBreaker implements EventListenable<State> {
    protected EventDispatcher<State> eventDispatcher;
    protected int failureThreshold;
    protected List<Long> failureTimestamps = new ArrayList<>();
-   protected long failureTrackingPeriodMS;
+   protected long failureTrackingPeriodNS;
 
    protected Class<? extends Throwable> @Nullable [] hardTrippingExceptionTypes;
    protected long inOpenStateUntil = -1;
    protected int maxConcurrent = Integer.MAX_VALUE;
    protected String name = lateNonNull();
-   protected long resetPeriodMS;
+   protected long resetPeriodNS;
    protected State state = State.CLOSE;
    protected Object synchronizer = new Object();
    protected int tripCount;
@@ -182,7 +182,7 @@ public class CircuitBreaker implements EventListenable<State> {
 
    public State getState() {
       synchronized (synchronizer) {
-         if (state == State.OPEN && System.currentTimeMillis() > inOpenStateUntil) {
+         if (state == State.OPEN && System.nanoTime() > inOpenStateUntil) {
             switchToHALF_OPEN();
          }
          return state;
@@ -229,7 +229,7 @@ public class CircuitBreaker implements EventListenable<State> {
     * Increments the subsequent failures counter.
     */
    public void reportFailure(final @Nullable Throwable ex) {
-      final long now = System.currentTimeMillis();
+      final long now = System.nanoTime();
 
       synchronized (synchronizer) {
 
@@ -242,7 +242,7 @@ public class CircuitBreaker implements EventListenable<State> {
           * dropping recorded failures outside the tracking time window
           */
          if (!failureTimestamps.isEmpty()) {
-            final long expireFailuresBefore = now - failureTrackingPeriodMS;
+            final long expireFailuresBefore = now - failureTrackingPeriodNS;
             for (final Iterator<Long> it = failureTimestamps.iterator(); it.hasNext();) {
                final Long failureTimestamp = it.next();
                if (failureTimestamp.longValue() < expireFailuresBefore) {
@@ -296,14 +296,14 @@ public class CircuitBreaker implements EventListenable<State> {
     * used by {@link CircuitBreakerBuilder}
     */
    protected void setFailureTrackingPeriod(final int time, final TimeUnit timeUnit) {
-      failureTrackingPeriodMS = timeUnit.toMillis(time);
+      failureTrackingPeriodNS = timeUnit.toNanos(time);
    }
 
    /**
     * used by {@link CircuitBreakerBuilder}
     */
    protected void setResetPeriod(final int time, final TimeUnit timeUnit) {
-      resetPeriodMS = timeUnit.toMillis(time);
+      resetPeriodNS = timeUnit.toNanos(time);
    }
 
    @Override
@@ -345,7 +345,7 @@ public class CircuitBreaker implements EventListenable<State> {
 
       LOG.debug("[%s] Switching from [%s] to [%s]...", name, state, State.HALF_OPEN);
       state = State.OPEN;
-      inOpenStateUntil = trippedAt + resetPeriodMS;
+      inOpenStateUntil = trippedAt + resetPeriodNS;
 
       if (eventDispatcher != null) {
          eventDispatcher.fire(state);
@@ -415,9 +415,9 @@ public class CircuitBreaker implements EventListenable<State> {
          return false;
 
       try {
-         final long start = System.currentTimeMillis();
+         final long start = System.nanoTime();
          callable.call();
-         if (System.currentTimeMillis() - start > timeUnit.toMillis(errorTimeout)) {
+         if (System.nanoTime() - start > timeUnit.toNanos(errorTimeout)) {
             reportFailure();
          } else {
             reportSuccess();
@@ -473,9 +473,9 @@ public class CircuitBreaker implements EventListenable<State> {
          return false;
 
       try {
-         final long start = System.currentTimeMillis();
+         final long start = System.nanoTime();
          invocable.invoke(args);
-         if (System.currentTimeMillis() - start > timeUnit.toMillis(errorTimeout)) {
+         if (System.nanoTime() - start > timeUnit.toNanos(errorTimeout)) {
             reportFailure();
          } else {
             reportSuccess();
@@ -526,9 +526,9 @@ public class CircuitBreaker implements EventListenable<State> {
          return false;
 
       try {
-         final long start = System.currentTimeMillis();
+         final long start = System.nanoTime();
          runnable.run();
-         if (System.currentTimeMillis() - start > timeUnit.toMillis(errorTimeout)) {
+         if (System.nanoTime() - start > timeUnit.toNanos(errorTimeout)) {
             reportFailure();
          } else {
             reportSuccess();

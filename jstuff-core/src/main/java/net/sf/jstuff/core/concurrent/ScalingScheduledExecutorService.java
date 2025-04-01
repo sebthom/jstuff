@@ -40,11 +40,11 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
 
    @Override
    public boolean awaitTermination(final long timeout, final TimeUnit unit) throws InterruptedException {
-      final long startAt = System.currentTimeMillis();
+      final long startAt = System.nanoTime();
       if (!scheduler.awaitTermination(timeout, unit))
          return false;
-      final long elapsed = System.currentTimeMillis() - startAt;
-      return super.awaitTermination(unit.toMillis(timeout) - elapsed, TimeUnit.MILLISECONDS);
+      final long elapsed = System.nanoTime() - startAt;
+      return super.awaitTermination(unit.toNanos(timeout) - elapsed, TimeUnit.NANOSECONDS);
    }
 
    private <V> ScheduledFuture<V> createDelegatingFuture(final ScheduledFuture<?> scheduledFuture,
@@ -75,13 +75,13 @@ public class ScalingScheduledExecutorService extends ScalingThreadPoolExecutor i
 
          @Override
          public V get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-            final long startAt = System.currentTimeMillis();
+            final long startAt = System.nanoTime();
             scheduledFuture.get(timeout, unit);
-            final long elapsed = System.currentTimeMillis() - startAt;
+            final long elapsed = System.nanoTime() - startAt;
             final Future<V> f = workFuture.get();
             if (f == null)
                throw new IllegalStateException("workFuture.get() returned null.");
-            return f.get(unit.toMillis(timeout) - elapsed, TimeUnit.MILLISECONDS);
+            return f.get(unit.toNanos(timeout) - elapsed, TimeUnit.NANOSECONDS);
          }
 
          @Override

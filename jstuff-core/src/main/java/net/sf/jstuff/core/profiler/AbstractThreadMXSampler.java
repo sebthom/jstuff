@@ -55,12 +55,13 @@ public abstract class AbstractThreadMXSampler {
    private final Runnable sampler = new Runnable() {
       @Override
       public void run() {
-         final long startAt = System.currentTimeMillis();
+         final long startAt = System.nanoTime();
          samples.add(threadMBean.getThreadInfo(threadMBean.getAllThreadIds(), Integer.MAX_VALUE));
-         final long elapsed = System.currentTimeMillis() - startAt;
-         if (elapsed > samplingInterval && !isWarningLogged) {
+         final long elapsedNanos = System.nanoTime() - startAt;
+         final long elapsedMS = TimeUnit.NANOSECONDS.toMillis(elapsedNanos);
+         if (elapsedMS > samplingInterval && !isWarningLogged) {
             isWarningLogged = true;
-            LOG.warn("Sampling interval of %s ms is too low. Sampling takes %s ms", samplingInterval, elapsed);
+            LOG.warn("Sampling interval of %s ms is too low. Sampling takes %s ms", samplingInterval, elapsedMS);
          }
       }
    };

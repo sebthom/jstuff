@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -27,11 +28,11 @@ public final class LRUMapWithExpiration<K, V> implements Map<K, V> {
 
       CacheEntry(final V value, final long maxEntryAgeMS) {
          this.value = value;
-         expiresAt = System.currentTimeMillis() + maxEntryAgeMS;
+         expiresAt = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(maxEntryAgeMS);
       }
 
       boolean isExpired() {
-         return System.currentTimeMillis() > expiresAt;
+         return System.nanoTime() > expiresAt;
       }
    }
 

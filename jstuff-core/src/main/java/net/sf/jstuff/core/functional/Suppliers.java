@@ -79,11 +79,11 @@ public abstract class Suppliers {
 
          @Override
          public synchronized T get() {
-            if (cachedAt != -1 && !isExpired.isExpired(cached, System.currentTimeMillis() - cachedAt))
+            if (cachedAt != -1 && !isExpired.isExpired(cached, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - cachedAt)))
                return cached;
 
             cached = provider.get();
-            cachedAt = System.currentTimeMillis();
+            cachedAt = System.nanoTime();
             return cached;
          }
       };
@@ -133,14 +133,14 @@ public abstract class Suppliers {
          public synchronized T get() {
             if (cachedAt != -1) {
                final var obj = cached.get();
-               if ((cachedNull || obj != null) && !isExpired.isExpired(obj, System.currentTimeMillis() - cachedAt))
+               if ((cachedNull || obj != null) && !isExpired.isExpired(obj, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - cachedAt)))
                   return obj;
             }
 
             final T obj = provider.get();
             cachedNull = obj == null;
             cached = new SoftReference<>(obj);
-            cachedAt = System.currentTimeMillis();
+            cachedAt = System.nanoTime();
             return obj;
          }
       };
@@ -190,14 +190,14 @@ public abstract class Suppliers {
          public synchronized T get() {
             if (cachedAt != -1) {
                final var obj = cached.get();
-               if ((cachedNull || obj != null) && !isExpired.isExpired(obj, System.currentTimeMillis() - cachedAt))
+               if ((cachedNull || obj != null) && !isExpired.isExpired(obj, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - cachedAt)))
                   return obj;
             }
 
             final T obj = provider.get();
             cachedNull = obj == null;
             cached = new WeakReference<>(obj);
-            cachedAt = System.currentTimeMillis();
+            cachedAt = System.nanoTime();
             return obj;
          }
       };

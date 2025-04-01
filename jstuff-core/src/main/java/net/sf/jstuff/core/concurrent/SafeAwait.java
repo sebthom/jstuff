@@ -24,12 +24,12 @@ public abstract class SafeAwait {
     */
    public static boolean await(final Condition condition, final long timeoutMS) throws InterruptedException {
 
-      long waitForMS = timeoutMS;
-      final long started = System.currentTimeMillis();
-      while (waitForMS > 0) {
-         if (condition.await(waitForMS, TimeUnit.MILLISECONDS))
+      long waitForNS = TimeUnit.MILLISECONDS.toNanos(timeoutMS);
+      final long started = System.nanoTime();
+      while (waitForNS > 0) {
+         if (condition.await(waitForNS, TimeUnit.NANOSECONDS))
             return true;
-         waitForMS = waitForMS - (System.currentTimeMillis() - started);
+         waitForNS = waitForNS - (System.nanoTime() - started);
       }
       return false;
    }
@@ -47,13 +47,13 @@ public abstract class SafeAwait {
     */
    public static boolean await(final BooleanSupplier condition, final Object waitObject, final long timeoutMS) throws InterruptedException {
       synchronized (waitObject) {
-         long waitForMS = timeoutMS;
-         final long started = System.currentTimeMillis();
-         while (waitForMS > 0) {
+         long waitForNS = TimeUnit.MILLISECONDS.toNanos(timeoutMS);
+         final long started = System.nanoTime();
+         while (waitForNS > 0) {
             if (condition.getAsBoolean())
                return true;
-            waitObject.wait(waitForMS);
-            waitForMS = waitForMS - (System.currentTimeMillis() - started);
+            waitObject.wait(waitForNS / 1_000_000);
+            waitForNS = waitForNS - (System.nanoTime() - started);
          }
          return condition.getAsBoolean();
       }

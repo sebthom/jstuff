@@ -88,7 +88,7 @@ public final class DebouncingEventDispatcher<EVENT> extends AbstractRateLimiting
    }
 
    private final ConcurrentMap<Object /* EventKey */, DebouncedEvent> rateLimitedEvents = new ConcurrentHashMap<>();
-   private final long delayMS;
+   private final long delayNS;
 
    /**
     * Use {@link #builder(Class, Duration)} to create configurable instances.
@@ -105,8 +105,8 @@ public final class DebouncingEventDispatcher<EVENT> extends AbstractRateLimiting
    ) {
       super(delegate, eventKeyProvider, scheduler);
 
-      delayMS = delay.toMillis();
-      Args.greaterThan("delay", delayMS, 0);
+      delayNS = delay.toNanos();
+      Args.greaterThan("delay", delayNS, 0);
    }
 
    /**
@@ -114,21 +114,21 @@ public final class DebouncingEventDispatcher<EVENT> extends AbstractRateLimiting
     */
    @Override
    public CompletableFuture<Integer> fire(final EVENT event) {
-      final long deadline = System.currentTimeMillis() + delayMS;
+      final long deadline = System.nanoTime() + delayNS;
       return asNonNull(rateLimitedEvents.compute(eventKeyProvider.apply(event), (k, debouncedEvent) -> {
          if (debouncedEvent == null) {
             debouncedEvent = new DebouncedEvent(event, deadline);
-            final var remainingMS = Math.max(0, debouncedEvent.deadline - System.currentTimeMillis());
-            debouncedEvent.scheduledFuture = scheduler.schedule(debouncedEvent::fireEvent, remainingMS, TimeUnit.MILLISECONDS);
+            final var remainingNS = Math.max(0, debouncedEvent.deadline - System.nanoTime());
+            debouncedEvent.scheduledFuture = scheduler.schedule(debouncedEvent::fireEvent, remainingNS, TimeUnit.NANOSECONDS);
          } else {
             debouncedEvent.scheduledFuture.cancel(false);
             debouncedEvent.deadline = deadline;
 
-            final var remainingMS = debouncedEvent.deadline - System.currentTimeMillis();
-            debouncedEvent.scheduledFuture = remainingMS < 1 //
+            final var remainingNS = debouncedEvent.deadline - System.nanoTime();
+            debouncedEvent.scheduledFuture = remainingNS < 1 //
                   ? scheduler.submit(debouncedEvent::fireEvent) //
                   : scheduler.schedule(debouncedEvent::fireEvent, //
-                     remainingMS, TimeUnit.MILLISECONDS);
+                     remainingNS, TimeUnit.NANOSECONDS);
          }
          return debouncedEvent;
       })).resultFuture;

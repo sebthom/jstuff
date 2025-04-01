@@ -122,9 +122,9 @@ public class ThreadLocalSecureRandom extends SecureRandom {
 
       @Override
       public SecureRandom get() {
-         if (reseedMS > 0) {
-            final long now = System.currentTimeMillis();
-            if (now - seedTimestamp > reseedMS) {
+         if (reseedNS > 0) {
+            final long now = System.nanoTime();
+            if (now - seedTimestamp > reseedNS) {
                set(initialValue());
             }
          }
@@ -133,7 +133,7 @@ public class ThreadLocalSecureRandom extends SecureRandom {
 
       @Override
       protected SecureRandom initialValue() {
-         seedTimestamp = System.currentTimeMillis();
+         seedTimestamp = System.nanoTime();
          try {
             final var algorithm = ThreadLocalSecureRandom.this.algorithm;
             if (algorithm != null) {
@@ -164,7 +164,7 @@ public class ThreadLocalSecureRandom extends SecureRandom {
       }
    };
 
-   private long reseedMS = -1;
+   private long reseedNS = -1;
 
    @Nullable
    private String algorithm;
@@ -330,10 +330,10 @@ public class ThreadLocalSecureRandom extends SecureRandom {
    }
 
    protected void setReseedEvery(final @Nullable Duration value) {
-      if (value == null || value.toMillis() < 1) {
-         reseedMS = -1;
+      if (value == null || value.toNanos() < 1) {
+         reseedNS = -1;
       } else {
-         reseedMS = value.toMillis();
+         reseedNS = value.toNanos();
       }
    }
 

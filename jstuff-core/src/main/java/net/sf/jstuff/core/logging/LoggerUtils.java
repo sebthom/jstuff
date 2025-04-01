@@ -11,6 +11,7 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -55,12 +56,12 @@ abstract class LoggerUtils {
       final LoggerInternal log = (LoggerInternal) Logger.create(object.getClass());
       return (I) Proxy.newProxyInstance(object.getClass().getClassLoader(), interfaces, (proxy, interfaceMethod, args) -> {
          if (log.isTraceEnabled()) {
-            final long start = System.currentTimeMillis();
+            final long start = System.nanoTime();
             final Method methodWithParameterNames = Methods.getPublic(object.getClass(), interfaceMethod.getName(), interfaceMethod
                .getParameterTypes());
             log.trace(methodWithParameterNames, formatTraceEntry(methodWithParameterNames, args));
             final Object returnValue = interfaceMethod.invoke(object, args);
-            final String elapsed = String.format("%,d", System.currentTimeMillis() - start);
+            final String elapsed = String.format("%,d", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
             if (Methods.isReturningVoid(interfaceMethod)) {
                log.trace(methodWithParameterNames, formatTraceExit() + " " + elapsed + "ms");
             } else {
