@@ -4,12 +4,12 @@
  */
 package net.sf.jstuff.core.date;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class ImmutableDate extends Date {
+public final class ImmutableDate extends Date {
    private static final long serialVersionUID = 1L;
 
    public static ImmutableDate now() {
