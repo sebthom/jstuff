@@ -18,6 +18,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import net.sf.jstuff.core.fluent.Fluent;
 import net.sf.jstuff.core.reflection.Methods;
 import net.sf.jstuff.core.reflection.Proxies;
+import net.sf.jstuff.core.validation.Assert;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -152,6 +153,7 @@ public class CrossThreadMethodInvoker {
    @Fluent
    public CrossThreadMethodInvoker start(final int numberOfBackgroundThreads) {
       synchronized (synchronizer) {
+         Assert.isNull(owner, "Already running!");
          backgroundThreadCount = new AtomicInteger(numberOfBackgroundThreads);
          owner = Thread.currentThread();
          invocations.clear();
@@ -173,7 +175,7 @@ public class CrossThreadMethodInvoker {
     * that they are finished or the {@link #getTimeout()} is reached.
     * N = numberOfBackgroundThreads provided to the {@link #start(int)} method.
     *
-    * @return <code>true</code> if all background threads finished within time, <code>false</code> if a timeout occured
+    * @return <code>true</code> if all background threads finished within time, <code>false</code> if a timeout occurred
     */
    public boolean waitForBackgroundThreads() {
       synchronized (synchronizer) {
