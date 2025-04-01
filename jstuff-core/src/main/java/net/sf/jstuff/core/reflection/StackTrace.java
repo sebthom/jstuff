@@ -4,151 +4,118 @@
  */
 package net.sf.jstuff.core.reflection;
 
+import java.lang.StackWalker.StackFrame;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-
-import net.sf.jstuff.core.Strings;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class StackTrace {
-
-   private static final class CallerResolver extends SecurityManager {
-      private static final CallerResolver INSTANCE = new CallerResolver();
-
-      @Override
-      public Class<?>[] getClassContext() {
-         return super.getClassContext();
-      }
-   }
-
-   private static final String CLASSNAME = StackTrace.class.getName();
+   private static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
    public static Class<?> getCallerClass() {
-      final String callerClassName = getCallerClassName();
-
-      final Class<?>[] stack = CallerResolver.INSTANCE.getClassContext();
-      for (final Class<?> curr : stack)
-         if (callerClassName.equals(curr.getName()))
-            return curr;
-      throw new AssertionError("should never be reached.");
+      return getStackFrame(3).getDeclaringClass();
    }
 
    /**
-    * @return class that called the <code>calledClassName</code>
+    * @return class that called the <code>calledClass</code>
     */
-   @Nullable
-   public static Class<?> getCallerClass(final Class<?> calledClass) {
+   public static @Nullable Class<?> getCallerClass(final Class<?> calledClass) {
       return getCallerClass(calledClass.getName());
    }
 
    /**
     * @return class that called the <code>calledClassName</code>
     */
-   @Nullable
-   public static Class<?> getCallerClass(final String calledClassName) {
-      final Class<?>[] stack = CallerResolver.INSTANCE.getClassContext();
-      boolean foundInStack = false;
-      for (final Class<?> curr : stack)
-         if (calledClassName.equals(curr.getName())) {
-            foundInStack = true;
-         } else if (foundInStack)
-            return curr;
-      return null;
+   public static @Nullable Class<?> getCallerClass(final String calledClassName) {
+      final var frame = getCallerStackFrame(calledClassName);
+      return frame == null ? null : frame.getDeclaringClass();
    }
 
    public static String getCallerClassName() {
-      final StackTraceElement ste = getCallerStackTraceElement();
-      return ste.getClassName();
+      return getStackFrame(3).getClassName();
    }
 
    public static String getCallerClassSimpleName() {
-      final StackTraceElement ste = getCallerStackTraceElement();
-      return Strings.substringAfterLast(ste.getClassName(), ".");
+      return getStackFrame(3).getDeclaringClass().getSimpleName();
    }
 
-   @Nullable
-   public static String getCallerFileName() {
-      final StackTraceElement ste = getCallerStackTraceElement();
-      return ste.getFileName();
+   public static @Nullable String getCallerFileName() {
+      return getStackFrame(3).getFileName();
    }
 
    public static int getCallerLineNumber() {
-      final StackTraceElement ste = getCallerStackTraceElement();
-      return ste.getLineNumber();
+      return getStackFrame(3).getLineNumber();
    }
 
    public static String getCallerMethodName() {
-      final StackTraceElement ste = getCallerStackTraceElement();
-      return ste.getMethodName();
+      return getStackFrame(3).getMethodName();
    }
 
-   public static StackTraceElement getCallerStackTraceElement() {
-      final var stack = Thread.currentThread().getStackTrace();
-      boolean stackTraceClassFound = false;
-      for (int i = 0, l = stack.length; i < l; i++) {
-         final StackTraceElement elem = stack[i];
-         if (CLASSNAME.equals(elem.getClassName())) {
-            stackTraceClassFound = true;
-         } else {
-            if (stackTraceClassFound)
-               return stack[i + 1];
-         }
+   public static StackFrame getCallerStackFrame() {
+      return getStackFrame(3);
+   }
+
+   public static @Nullable StackFrame getCallerStackFrame(final Class<?> calledClass) {
+      return getCallerStackFrame(calledClass.getName());
+   }
+
+   public static @Nullable StackFrame getCallerStackFrame(final String calledClassName) {
+      final var frames = STACK_WALKER.walk(Stream::toList);
+      for (int i = 0, l = frames.size() - 1; i < l; i++) {
+         if (calledClassName.equals(frames.get(i).getClassName()))
+            return frames.get(i + 1);
       }
-      throw new AssertionError("should never be reached.");
-   }
-
-   @Nullable
-   public static StackTraceElement getCallerStackTraceElement(final Class<?> calledClass) {
-      return getCallerStackTraceElement(calledClass.getName());
-   }
-
-   @Nullable
-   public static StackTraceElement getCallerStackTraceElement(final String calledClassName) {
-      final var stack = Thread.currentThread().getStackTrace();
-      boolean foundInStack = false;
-      for (final StackTraceElement curr : stack)
-         if (calledClassName.equals(curr.getClassName())) {
-            foundInStack = true;
-         } else if (foundInStack)
-            return curr;
       return null;
    }
 
-   @Nullable
-   public static String getThisFileName() {
-      final StackTraceElement ste = getThisStackTraceElement();
-      return ste.getFileName();
+   public static StackTraceElement getCallerStackTraceElement() {
+      return getStackFrame(3).toStackTraceElement();
+   }
+
+   public static @Nullable StackTraceElement getCallerStackTraceElement(final Class<?> calledClass) {
+      return getCallerStackTraceElement(calledClass.getName());
+   }
+
+   public static @Nullable StackTraceElement getCallerStackTraceElement(final String calledClassName) {
+      final var frame = getCallerStackFrame(calledClassName);
+      return frame == null ? null : frame.toStackTraceElement();
+   }
+
+   private static StackFrame getStackFrame(final int skip) {
+      return STACK_WALKER.walk(frames -> frames //
+         .skip(skip) //
+         .findFirst() //
+         .orElseThrow(() -> new AssertionError("should never be reached.")));
+   }
+
+   public static @Nullable String getThisFileName() {
+      return getStackFrame(2).getFileName();
    }
 
    public static int getThisLineNumber() {
-      final StackTraceElement ste = getThisStackTraceElement();
-      return ste.getLineNumber();
+      return getStackFrame(2).getLineNumber();
    }
 
    public static String getThisMethodName() {
-      final StackTraceElement ste = getThisStackTraceElement();
-      return ste.getMethodName();
+      return getStackFrame(2).getMethodName();
+   }
+
+   public static StackFrame getThisStackFrame() {
+      return getStackFrame(2);
    }
 
    public static StackTraceElement getThisStackTraceElement() {
-      final StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-      boolean stackTraceClassFound = false;
-      for (final StackTraceElement elem : stack) {
-         if (CLASSNAME.equals(elem.getClassName())) {
-            stackTraceClassFound = true;
-         } else {
-            if (stackTraceClassFound)
-               return elem;
-         }
-      }
-      throw new AssertionError("should never be reached.");
+      return getStackFrame(2).toStackTraceElement();
    }
 
    /**
+    * Removes the first element of the given exception's stack trace.
+    *
     * @return the given exception
     */
    public static <T extends Throwable> T removeFirstStackTraceElement(final T ex) {
@@ -159,5 +126,4 @@ public abstract class StackTrace {
       }
       return ex;
    }
-
 }

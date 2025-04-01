@@ -20,17 +20,26 @@ class StackTraceTest {
          }
 
          void innerMethod() {
+            ensureEquals("StackTraceTest.java", StackTrace.getThisFileName());
+            ensureEquals(Inner.class, StackTrace.getThisStackFrame().getDeclaringClass());
+            ensureEquals("net.sf.jstuff.core.reflection.StackTraceTest$Outer$Inner", StackTrace.getThisStackFrame().getClassName());
             ensureEquals("net.sf.jstuff.core.reflection.StackTraceTest$Outer$Inner", StackTrace.getThisStackTraceElement().getClassName());
             ensureEquals("innerMethod", StackTrace.getThisMethodName());
+            ensureEquals("innerMethod", StackTrace.getThisStackFrame().getMethodName());
             ensureEquals("innerMethod", StackTrace.getThisStackTraceElement().getMethodName());
-            ensureEquals(26, StackTrace.getThisLineNumber());
-            ensureEquals("StackTraceTest.java", StackTrace.getThisFileName());
+            ensureEquals(30, StackTrace.getThisLineNumber());
 
-            ensureEquals("outerMethod", StackTrace.getCallerMethodName());
-            ensureEquals(40, StackTrace.getCallerLineNumber());
             ensureEquals("StackTraceTest.java", StackTrace.getCallerFileName());
             ensureEquals(Outer.class.getName(), StackTrace.getCallerClassName());
+            ensureEquals(Outer.class.getSimpleName(), StackTrace.getCallerClassSimpleName());
             ensureEquals(Outer.class, StackTrace.getCallerClass());
+            ensureEquals("outerMethod", StackTrace.getCallerMethodName());
+            ensureEquals("outerMethod", StackTrace.getCallerStackFrame().getMethodName());
+            ensureEquals("outerMethod", StackTrace.getCallerStackTraceElement().getMethodName());
+            ensureEquals(49, StackTrace.getCallerLineNumber());
+
+            ensureEquals(StackTraceTest.class, StackTrace.getCallerClass(Outer.class));
+            ensureEquals(Outer.class, StackTrace.getCallerClass(Inner.class));
          }
       }
 
