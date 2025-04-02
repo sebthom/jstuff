@@ -33,11 +33,9 @@ public abstract class Threads {
 
    private static final Comparator<Thread> THREAD_PRIORITY_COMPARATOR = (t1, t2) -> t2.getPriority() - t1.getPriority();
 
-   @Nullable
-   private static final ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
+   private static final @Nullable ThreadMXBean TMX = ManagementFactory.getThreadMXBean();
 
-   @Nullable
-   private static ThreadGroup rootTG;
+   private static @Nullable ThreadGroup rootTG;
 
    public static @NonNull Thread[] all() {
       final ThreadGroup root = rootThreadGroup();
@@ -137,8 +135,7 @@ public abstract class Threads {
       return result;
    }
 
-   @Nullable
-   public static Thread findThreadByName(final String threadName) {
+   public static @Nullable Thread findThreadByName(final String threadName) {
       for (final Thread t : all()) {
          if (Strings.equals(threadName, t.getName()))
             return t;
@@ -261,7 +258,7 @@ public abstract class Threads {
     */
    public static void sleep(final long time, final TimeUnit timeUnit) throws RuntimeInterruptedException {
       if (timeUnit == TimeUnit.NANOSECONDS) {
-         sleep(time / 1_000, (int) (time % 1_000));
+         sleep(time / 1_000_000, (int) (time % 1_000_000));
       } else {
          sleep(timeUnit.toMillis(time));
       }
@@ -275,13 +272,20 @@ public abstract class Threads {
    }
 
    /**
-    * Handles InterruptedException correctly.
+    * Handles InterruptedException correctly and is safe against spurious wake-ups.
+    * <p>
+    * See https://errorprone.info/bugpattern/WaitNotInLoop and https://rules.sonarsource.com/java/tag/multi-threading/RSPEC-2274
     */
    public static void wait(final Object obj, final long millis) throws RuntimeInterruptedException {
       try {
          LOG.trace("Waiting for %s ms...", millis);
          synchronized (obj) {
-            obj.wait(millis);
+            long waitForNS = TimeUnit.MILLISECONDS.toNanos(millis);
+            final long started = System.nanoTime();
+            while (waitForNS > 0) {
+               obj.wait(waitForNS / 1_000_000);
+               waitForNS = waitForNS - (System.nanoTime() - started);
+            }
          }
       } catch (final InterruptedException ex) {
          handleInterruptedException(ex);
