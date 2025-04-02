@@ -6,12 +6,11 @@ package net.sf.jstuff.core.concurrent.queue;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 import net.sf.jstuff.core.collection.ArrayUtils;
+import net.sf.jstuff.core.concurrent.SafeAwait;
 
 /**
  * A thread-safe unbounded queue of sorted unique primitive int values.
@@ -28,8 +27,7 @@ public class SortedUniqueIntQueue {
    /** package visibility for tests */
    int[] items;
 
-   private final ReentrantLock lock = new ReentrantLock();
-   private final Condition onElementAdded = lock.newCondition();
+   private final Object lock = new Object();
 
    public SortedUniqueIntQueue() {
       this(10);
@@ -40,25 +38,17 @@ public class SortedUniqueIntQueue {
    }
 
    public void clear() {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          count = 0;
          headIndex = -1;
-      } finally {
-         lock.unlock();
       }
    }
 
    public boolean contains(final int searchFor) {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          if (count == 0)
             return false;
          return indexOf(searchFor) > -1;
-      } finally {
-         lock.unlock();
       }
    }
 
@@ -74,7 +64,9 @@ public class SortedUniqueIntQueue {
       final boolean isInsertAtHead = valueToAdd < items[headIndex];
       final int newHeadIndex = isInsertAtHead ? 1 : 0;
       if (items.length == 1) {
-         items = isInsertAtHead ? new int[] {0, items[0]} : new int[] {items[0], 0};
+         items = isInsertAtHead //
+               ? new int[] {0, items[0]}
+               : new int[] {items[0], 0};
       } else {
          final int[] oldItems = items;
          items = new int[oldItems.length + (oldItems.length >> 1)];
@@ -90,59 +82,43 @@ public class SortedUniqueIntQueue {
    }
 
    public boolean isEmpty() {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          return count == 0;
-      } finally {
-         lock.unlock();
       }
    }
 
    public boolean isFirstElement(final int value) {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          if (count == 0)
             return false;
          return items[headIndex] == value;
-      } finally {
-         lock.unlock();
       }
    }
 
    public boolean isNotEmpty() {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          return count != 0;
-      } finally {
-         lock.unlock();
       }
    }
 
    /**
-    * @return true if inserted into the queue and false if already on the queue
+    * Inserts the given value into the queue in sorted order.
+    *
+    * @return true if the value was inserted, false if it was already present.
     */
    public boolean offer(final int valueToAdd) {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          if (count == 0) {
             ensureCapacity(valueToAdd);
             headIndex = 0;
             items[0] = valueToAdd;
          } else {
-            // append to tail?
             final int lastIndex = headIndex + count - 1;
             if (valueToAdd > items[lastIndex]) {
                ensureCapacity(valueToAdd);
                items[lastIndex + 1] = valueToAdd;
-
-               // insert at head?
             } else if (valueToAdd < items[headIndex]) {
                ensureCapacity(valueToAdd);
-
                if (headIndex > 0) {
                   headIndex--;
                   items[headIndex] = valueToAdd;
@@ -151,14 +127,10 @@ public class SortedUniqueIntQueue {
                   headIndex = 0;
                   items[0] = valueToAdd;
                }
-
-               // insert somewhere in the middle of the queue
             } else {
-               // already in queue?
                final int idx = indexOf(valueToAdd);
                if (idx > -1)
                   return false;
-
                ensureCapacity(valueToAdd);
                final int insertAt = -idx - 1;
                System.arraycopy(items, insertAt, items, insertAt + 1, count - (insertAt - headIndex));
@@ -166,149 +138,93 @@ public class SortedUniqueIntQueue {
             }
          }
          count++;
-         onElementAdded.signal();
+         lock.notifyAll();
          return true;
-      } finally {
-         lock.unlock();
       }
    }
 
    public @Nullable Integer peek() {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          if (count == 0)
             return null;
          return items[headIndex];
-      } finally {
-         lock.unlock();
       }
    }
 
    public int peek(final int valueIfEmpty) {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          if (count == 0)
             return valueIfEmpty;
          return items[headIndex];
-      } finally {
-         lock.unlock();
       }
    }
 
    public @Nullable Integer poll() {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          if (count == 0)
             return null;
          final int val = items[headIndex];
-         if (count == 1) {
-            headIndex = -1;
-            count = 0;
-            return val;
-         }
          count--;
-         headIndex--;
+         headIndex++;
          return val;
-      } finally {
-         lock.unlock();
       }
    }
 
    public int poll(final int valueIfEmpty) {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          if (count == 0)
             return valueIfEmpty;
          final int val = items[headIndex];
-         if (count == 1) {
-            headIndex = -1;
-            count = 0;
-            return val;
-         }
-         count--;
-         headIndex--;
-         return val;
-      } finally {
-         lock.unlock();
-      }
-   }
-
-   public @Nullable Integer poll(final long timeout, final TimeUnit unit) throws InterruptedException {
-      final var lock = this.lock;
-      lock.lockInterruptibly();
-      try {
-         if (count == 0) {
-            headIndex = -1;
-            if (!onElementAdded.await(timeout, unit))
-               return null;
-         }
-         final int val = items[headIndex];
-         if (count == 1) {
-            headIndex = -1;
-            count = 0;
-            return val;
-         }
          count--;
          headIndex++;
          return val;
-      } finally {
-         lock.unlock();
+      }
+   }
+
+   /**
+    * Retrieves and removes the head of the queue, waiting up to the specified timeout if necessary.
+    */
+   public @Nullable Integer poll(final long timeout, final TimeUnit unit) throws InterruptedException {
+      synchronized (lock) {
+         if (count == 0 && !SafeAwait.await(() -> count > 0, lock, unit.toMillis(timeout)))
+            return null;
+
+         final int val = items[headIndex];
+         count--;
+         headIndex++;
+         return val;
       }
    }
 
    public int size() {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          return count;
-      } finally {
-         lock.unlock();
       }
    }
 
    public int take() throws InterruptedException {
-      final var lock = this.lock;
-      lock.lockInterruptibly();
-      try {
+      synchronized (lock) {
          if (count == 0) {
-            headIndex = -1;
-            onElementAdded.await();
+            SafeAwait.await(() -> count > 0, lock);
          }
          final int val = items[headIndex];
-         if (count == 1) {
-            headIndex = -1;
-            count = 0;
-            return val;
-         }
          count--;
          headIndex++;
          return val;
-      } finally {
-         lock.unlock();
       }
    }
 
    public int[] toArray() {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          if (count == 0)
             return ArrayUtils.EMPTY_INT_ARRAY;
          return Arrays.copyOfRange(items, headIndex, headIndex + count);
-      } finally {
-         lock.unlock();
       }
    }
 
    @Override
    public String toString() {
-      final var lock = this.lock;
-      lock.lock();
-      try {
+      synchronized (lock) {
          if (count == 0)
             return "[]";
          final var sb = new StringBuilder("[");
@@ -320,8 +236,6 @@ public class SortedUniqueIntQueue {
             }
          }
          return sb.append(']').toString();
-      } finally {
-         lock.unlock();
       }
    }
 }
