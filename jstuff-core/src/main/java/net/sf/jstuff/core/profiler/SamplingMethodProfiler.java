@@ -27,8 +27,7 @@ public class SamplingMethodProfiler {
    private String profiledClassName = lateNonNull();
    private String profiledMethod = lateNonNull();
 
-   @Nullable
-   private CallTree root;
+   private @Nullable CallTree root;
 
    public SamplingMethodProfiler(final int samplingIntervalInMS) {
       sampler = new AbstractThreadMXSampler(samplingIntervalInMS) {

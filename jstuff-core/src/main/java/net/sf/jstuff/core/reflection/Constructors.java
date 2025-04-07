@@ -18,8 +18,7 @@ public abstract class Constructors extends Members {
    /**
     * @return the constructor or null if the method does not exist
     */
-   @Nullable
-   public static <T> Constructor<T> find(final Class<T> clazz, final Class<?> @Nullable... parameterTypes) {
+   public static <T> @Nullable Constructor<T> find(final Class<T> clazz, final Class<?> @Nullable... parameterTypes) {
       try {
          return clazz.getDeclaredConstructor(parameterTypes);
       } catch (final NoSuchMethodException e) {
@@ -30,9 +29,9 @@ public abstract class Constructors extends Members {
    /**
     * @return the constructor or null if the method does not exist
     */
-   @Nullable
+
    @SuppressWarnings({"unchecked", "null"})
-   public static <T> Constructor<T> findCompatible(final Class<T> clazz, final Class<?> @Nullable... parameterTypes) {
+   public static <T> @Nullable Constructor<T> findCompatible(final Class<T> clazz, final Class<?> @Nullable... parameterTypes) {
       final int parameterTypesLen = parameterTypes == null ? 0 : parameterTypes.length;
 
       ctor_loop: for (final Constructor<T> ctor : (Constructor<T>[]) clazz.getDeclaredConstructors()) {
@@ -57,9 +56,8 @@ public abstract class Constructors extends Members {
    /**
     * @return a constructor compatible with the given arguments or null if none was found
     */
-   @Nullable
    @SuppressWarnings({"unchecked", "null"})
-   public static <T> Constructor<T> findCompatible(final Class<T> clazz, final Object @Nullable... args) {
+   public static <T> @Nullable Constructor<T> findCompatible(final Class<T> clazz, final Object @Nullable... args) {
       final int argsLen = args == null ? 0 : args.length;
 
       ctor_loop: for (final Constructor<T> ctor : (Constructor<T>[]) clazz.getDeclaredConstructors()) {

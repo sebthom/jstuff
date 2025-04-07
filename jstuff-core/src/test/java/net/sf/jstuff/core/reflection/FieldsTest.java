@@ -17,8 +17,7 @@ import org.junit.jupiter.api.Test;
 class FieldsTest {
 
    static class Entity {
-      @Nullable
-      private static final Entity INSTANCE = null;
+      private static final @Nullable Entity INSTANCE = null;
       private final String name;
 
       Entity(final String name) {

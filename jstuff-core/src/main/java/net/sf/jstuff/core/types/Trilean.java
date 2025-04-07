@@ -87,8 +87,7 @@ public enum Trilean {
    /**
     * @return null for {@link #UNKNOWN}
     */
-   @Nullable
-   public Boolean toBoolean() {
+   public @Nullable Boolean toBoolean() {
       return switch (this) {
          case TRUE -> Boolean.TRUE;
          case FALSE -> Boolean.FALSE;

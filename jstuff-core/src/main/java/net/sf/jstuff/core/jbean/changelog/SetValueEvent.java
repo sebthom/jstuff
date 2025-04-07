@@ -15,10 +15,8 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 public class SetValueEvent extends PropertyChangeEvent {
    private static final long serialVersionUID = 1L;
 
-   @Nullable
-   public final Object oldValue;
-   @Nullable
-   public final Object newValue;
+   public final @Nullable Object oldValue;
+   public final @Nullable Object newValue;
 
    public SetValueEvent(final JBean<?> bean, final PropertyDescriptor<?> property, final @Nullable Object oldValue,
          final @Nullable Object newValue) {

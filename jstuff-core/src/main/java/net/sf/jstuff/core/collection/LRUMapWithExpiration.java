@@ -50,12 +50,12 @@ public final class LRUMapWithExpiration<K, V> implements Map<K, V> {
    }
 
    @Override
-   public boolean containsKey(@Nullable final Object key) {
+   public boolean containsKey(final @Nullable Object key) {
       return entriesOrderedByAccess.containsKey(key);
    }
 
    @Override
-   public boolean containsValue(@Nullable final Object value) {
+   public boolean containsValue(final @Nullable Object value) {
       return entriesOrderedByAccess.containsValue(value);
    }
 

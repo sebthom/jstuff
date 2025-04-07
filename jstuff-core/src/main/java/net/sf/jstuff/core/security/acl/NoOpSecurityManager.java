@@ -24,14 +24,12 @@ public class NoOpSecurityManager extends SecurityManager {
       return System.getSecurityManager() == this;
    }
 
-   @Nullable
-   private SecurityManager replacedSM;
+   private @Nullable SecurityManager replacedSM;
 
    /**
     * @return the security manager instance that got replaced by {@link #install()}
     */
-   @Nullable
-   public SecurityManager getReplacedSM() {
+   public @Nullable SecurityManager getReplacedSM() {
       return replacedSM;
    }
 

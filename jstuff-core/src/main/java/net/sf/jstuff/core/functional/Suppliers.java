@@ -101,8 +101,7 @@ public abstract class Suppliers {
       Args.notNull("provider", provider);
 
       return new Supplier<>() {
-         @Nullable
-         private SoftReference<T> cached;
+         private @Nullable SoftReference<T> cached;
 
          @Override
          public synchronized T get() {
@@ -158,8 +157,7 @@ public abstract class Suppliers {
       Args.notNull("provider", provider);
 
       return new Supplier<>() {
-         @Nullable
-         private WeakReference<T> cached;
+         private @Nullable WeakReference<T> cached;
 
          @Override
          public synchronized T get() {

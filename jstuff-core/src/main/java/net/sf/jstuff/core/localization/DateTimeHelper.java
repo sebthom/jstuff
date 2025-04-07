@@ -267,8 +267,7 @@ public class DateTimeHelper implements Serializable {
    /**
     * @param date String containing the date to convert
     */
-   @Nullable
-   public Date parseDate(final String date) {
+   public @Nullable Date parseDate(final String date) {
       if (Strings.isEmpty(date))
          return null;
 

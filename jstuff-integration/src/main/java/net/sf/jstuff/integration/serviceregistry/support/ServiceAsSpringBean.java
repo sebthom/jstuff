@@ -61,8 +61,7 @@ public class ServiceAsSpringBean<T> implements FactoryBean<T>, InitializingBean 
    }
 
    @Override
-   @Nullable
-   public Class<T> getObjectType() {
+   public @Nullable Class<T> getObjectType() {
       return serviceInterface;
    }
 

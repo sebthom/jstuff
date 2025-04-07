@@ -157,8 +157,7 @@ public class CircuitBreaker implements EventListenable<State> {
 
    protected int activePermits;
 
-   @Nullable
-   protected EventDispatcher<State> eventDispatcher;
+   protected @Nullable EventDispatcher<State> eventDispatcher;
    protected int failureThreshold;
    protected List<Long> failureTimestamps = new ArrayList<>();
    protected long failureTrackingPeriodNS;

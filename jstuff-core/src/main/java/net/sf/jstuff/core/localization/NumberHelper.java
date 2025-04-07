@@ -25,10 +25,8 @@ public class NumberHelper implements Serializable {
 
    private final Locale locale;
 
-   @Nullable
-   private transient String currencyCode;
-   @Nullable
-   private transient String currencySymbol;
+   private transient @Nullable String currencyCode;
+   private transient @Nullable String currencySymbol;
 
    /**
     * locale will be set to Locale.getDefault();
@@ -43,8 +41,7 @@ public class NumberHelper implements Serializable {
       this.locale = locale;
    }
 
-   @Nullable
-   public String getCurrencyCode() {
+   public @Nullable String getCurrencyCode() {
       if (currencyCode == null) {
          final var currency = Currency.getInstance(locale);
          if (currency != null) {
@@ -67,8 +64,7 @@ public class NumberHelper implements Serializable {
       return getCurrencyFormat(digits, digits).format(value);
    }
 
-   @Nullable
-   public String getCurrencySymbol() {
+   public @Nullable String getCurrencySymbol() {
       if (currencySymbol == null) {
          final var currency = Currency.getInstance(locale);
          if (currency != null) {

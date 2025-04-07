@@ -41,7 +41,7 @@ public final class HashCodeManager {
       }
 
       @Override
-      public boolean equals(@Nullable final Object obj) {
+      public boolean equals(final @Nullable Object obj) {
          if (this == obj)
             return true;
          if (obj == null || getClass() != obj.getClass())

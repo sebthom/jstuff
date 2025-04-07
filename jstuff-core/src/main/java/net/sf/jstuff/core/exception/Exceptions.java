@@ -44,8 +44,7 @@ public abstract class Exceptions extends ExceptionUtils {
       return true;
    }
 
-   @Nullable
-   public static <T extends Throwable> T getCauseOfType(final @Nullable Throwable ex, final @Nullable Class<T> type) {
+   public static <T extends Throwable> @Nullable T getCauseOfType(final @Nullable Throwable ex, final @Nullable Class<T> type) {
       if (ex == null || type == null)
          return null;
 
@@ -73,8 +72,7 @@ public abstract class Exceptions extends ExceptionUtils {
     * Faster alternative to {@link ExceptionUtils#getStackTrace(Throwable)}
     * as it uses StringBuilder internally instead of StringBuffer.
     */
-   @Nullable
-   public static String getStackTraceNullable(final @Nullable Throwable ex) {
+   public static @Nullable String getStackTraceNullable(final @Nullable Throwable ex) {
       if (ex == null)
          return null;
       return getStackTrace(ex);

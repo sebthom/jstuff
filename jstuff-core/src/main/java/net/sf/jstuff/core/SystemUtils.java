@@ -53,8 +53,7 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
    /**
     * Searches for the given program on PATH
     */
-   @Nullable
-   public static Path findExecutable(final String program, final boolean resolveSymlinks) {
+   public static @Nullable Path findExecutable(final String program, final boolean resolveSymlinks) {
       if (Strings.isEmpty(program))
          return null;
 

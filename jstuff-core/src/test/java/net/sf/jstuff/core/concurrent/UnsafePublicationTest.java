@@ -45,8 +45,7 @@ import net.sf.jstuff.core.reflection.StackTrace;
 @TestMethodOrder(MethodOrderer.MethodName.class)
 class UnsafePublicationTest {
    private abstract static class AbstractConsumingActor implements Runnable {
-      @Nullable
-      protected abstract Subject getSubject();
+      protected abstract @Nullable Subject getSubject();
 
       @Override
       public void run() {
@@ -179,9 +178,8 @@ class UnsafePublicationTest {
             }
          }, //
          new AbstractConsumingActor() {
-            @Nullable
             @Override
-            protected Subject getSubject() {
+            protected @Nullable Subject getSubject() {
                return subject;
             }
          });
@@ -202,9 +200,8 @@ class UnsafePublicationTest {
             }
          }, //
          new AbstractConsumingActor() {
-            @Nullable
             @Override
-            protected Subject getSubject() {
+            protected @Nullable Subject getSubject() {
                return subject;
             }
          });
@@ -228,9 +225,8 @@ class UnsafePublicationTest {
             }
          }, //
          new AbstractConsumingActor() {
-            @Nullable
             @Override
-            protected Subject getSubject() {
+            protected @Nullable Subject getSubject() {
                return subject;
             }
          });
@@ -248,9 +244,8 @@ class UnsafePublicationTest {
             }
          }, //
          new AbstractConsumingActor() {
-            @Nullable
             @Override
-            protected Subject getSubject() {
+            protected @Nullable Subject getSubject() {
                return subjectVolatile;
             }
          });

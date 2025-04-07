@@ -53,15 +53,13 @@ public abstract class DelegatingDeque<V> extends DelegatingQueue<V> implements D
       return delegate.removeLast();
    }
 
-   @Nullable
    @Override
-   public V pollFirst() {
+   public @Nullable V pollFirst() {
       return delegate.pollFirst();
    }
 
-   @Nullable
    @Override
-   public V pollLast() {
+   public @Nullable V pollLast() {
       return delegate.pollLast();
    }
 
@@ -75,15 +73,13 @@ public abstract class DelegatingDeque<V> extends DelegatingQueue<V> implements D
       return delegate.getLast();
    }
 
-   @Nullable
    @Override
-   public V peekFirst() {
+   public @Nullable V peekFirst() {
       return delegate.peekFirst();
    }
 
-   @Nullable
    @Override
-   public V peekLast() {
+   public @Nullable V peekLast() {
       return delegate.peekLast();
    }
 

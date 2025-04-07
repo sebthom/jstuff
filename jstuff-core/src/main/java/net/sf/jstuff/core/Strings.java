@@ -966,8 +966,7 @@ public abstract class Strings {
    /**
     * @return null if input does not contain a new line separator.
     */
-   @Nullable
-   public static String getNewLineSeparator(final @Nullable CharSequence txt) {
+   public static @Nullable String getNewLineSeparator(final @Nullable CharSequence txt) {
       if (txt == null)
          return null;
       char lastChar = 0;
@@ -1550,7 +1549,7 @@ public abstract class Strings {
       return asNonNullUnsafe(joinNullable(it, separator, transform));
    }
 
-   public static <T> String join(final Iterator<T> it, @Nullable final String separator, final Function<T, Object> transform) {
+   public static <T> String join(final Iterator<T> it, final @Nullable String separator, final Function<T, Object> transform) {
       return asNonNullUnsafe(joinNullable(it, separator, transform));
    }
 
@@ -2202,13 +2201,11 @@ public abstract class Strings {
       return StringUtils.normalizeSpace(str);
    }
 
-   @Nullable
-   public static <T extends CharSequence> T nullIfBlank(final @Nullable T txt) {
+   public static <T extends CharSequence> @Nullable T nullIfBlank(final @Nullable T txt) {
       return isBlank(txt) ? null : txt;
    }
 
-   @Nullable
-   public static <T extends CharSequence> T nullIfEmpty(final @Nullable T txt) {
+   public static <T extends CharSequence> @Nullable T nullIfEmpty(final @Nullable T txt) {
       return isEmpty(txt) ? null : txt;
    }
 
@@ -2355,7 +2352,7 @@ public abstract class Strings {
     * See {@link String#regionMatches(boolean, int, String, int, int)}
     */
    public static boolean regionMatches(final @Nullable CharSequence searchIn, final boolean ignoreCase, final int searchInOffset,
-         @Nullable final CharSequence searchFor, final int searchForOffset, int length) {
+         final @Nullable CharSequence searchFor, final int searchForOffset, int length) {
       if (searchIn == null || searchFor == null)
          return false;
 
@@ -2987,8 +2984,8 @@ public abstract class Strings {
     * @return Returns searchIn with all occurrences of searchFor replaced with replaceWith. If any parameter is null, searchIn will be
     *         returned.
     */
-   public static CharSequence replaceIgnoreCase(final String searchIn, @Nullable final String searchFor,
-         @Nullable final CharSequence replaceWith) {
+   public static CharSequence replaceIgnoreCase(final String searchIn, final @Nullable String searchFor,
+         final @Nullable CharSequence replaceWith) {
       return asNonNullUnsafe(replaceIgnoreCaseNullable(searchIn, searchFor, replaceWith));
    }
 
@@ -3018,7 +3015,7 @@ public abstract class Strings {
     *         returned.
     */
    public static @Nullable CharSequence replaceIgnoreCaseNullable(final @Nullable String searchIn, @Nullable String searchFor,
-         @Nullable final CharSequence replaceWith) {
+         final @Nullable CharSequence replaceWith) {
       if (searchIn == null || searchFor == null || replaceWith == null)
          return searchIn;
       final int searchInLen = searchIn.length();

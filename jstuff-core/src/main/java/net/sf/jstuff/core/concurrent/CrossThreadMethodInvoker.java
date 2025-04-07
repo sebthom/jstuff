@@ -119,8 +119,7 @@ public class CrossThreadMethodInvoker {
          throw new IllegalStateException(this + " is not started!");
    }
 
-   @Nullable
-   public Thread getOwner() {
+   public @Nullable Thread getOwner() {
       return owner;
    }
 
@@ -131,8 +130,8 @@ public class CrossThreadMethodInvoker {
    /**
     * performs the given method invocation in the owner thread
     */
-   @Nullable
-   public Object invokeInOwnerThread(final @Nullable Object target, final Method method, final Object @Nullable [] args) throws Exception {
+   public @Nullable Object invokeInOwnerThread(final @Nullable Object target, final Method method, final Object @Nullable [] args)
+         throws Exception {
       if (Thread.currentThread() == owner) //
          return Methods.invoke(target, method, args);
 

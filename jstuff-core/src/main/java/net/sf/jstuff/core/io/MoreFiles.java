@@ -99,8 +99,7 @@ public abstract class MoreFiles {
     *
     * @return a File object representing the backup copy or null if no backup was created because the file to backup did not exist
     */
-   @Nullable
-   public static File backupFile(final Path fileToBackup) throws IOException {
+   public static @Nullable File backupFile(final Path fileToBackup) throws IOException {
       final var parentDir = fileToBackup.getParent();
       if (parentDir == null)
          throw new IOException("Cannot backup [" + fileToBackup + "] which has no parent directory!");
@@ -112,8 +111,7 @@ public abstract class MoreFiles {
     *
     * @return a File object representing the backup copy or null if no backup was created because the file to backup did not exist
     */
-   @Nullable
-   public static File backupFile(final Path fileToBackup, final Path backupFolder) throws IOException {
+   public static @Nullable File backupFile(final Path fileToBackup, final Path backupFolder) throws IOException {
       Args.notNull("fileToBackup", fileToBackup);
       Args.isDirectoryReadable("backupFolder", backupFolder);
 
@@ -522,13 +520,11 @@ public abstract class MoreFiles {
    /**
     * Based on jre/lib/content-types.properties
     */
-   @Nullable
-   public static String getContentTypeByFileExtension(final Path file) {
+   public static @Nullable String getContentTypeByFileExtension(final Path file) {
       return getContentTypeByFileExtension(file.getFileName().toString());
    }
 
-   @Nullable
-   public static String getContentTypeByFileExtension(final String fileName) {
+   public static @Nullable String getContentTypeByFileExtension(final String fileName) {
       return URLConnection.getFileNameMap().getContentTypeFor(fileName);
    }
 

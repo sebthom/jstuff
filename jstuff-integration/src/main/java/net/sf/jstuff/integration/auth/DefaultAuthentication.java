@@ -45,8 +45,7 @@ class DefaultAuthentication implements Authentication {
    }
 
    @Override
-   @Nullable
-   public UserDetails getUserDetails() {
+   public @Nullable UserDetails getUserDetails() {
       return userDetails;
    }
 

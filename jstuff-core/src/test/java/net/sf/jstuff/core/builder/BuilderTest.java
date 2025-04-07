@@ -33,8 +33,7 @@ class BuilderTest {
          return (EntityABuilder<?, ? extends EntityA>) BuilderFactory.of(EntityABuilder.class).create();
       }
 
-      @Nullable
-      protected String propertyA;
+      protected @Nullable String propertyA;
       protected Integer propertyB = -1;
       protected int methodCallCount = 0;
 
@@ -69,10 +68,8 @@ class BuilderTest {
       }
 
       long propertyC = -1;
-      @Nullable
-      private String propertyD;
-      @Nullable
-      protected String propertyE;
+      private @Nullable String propertyD;
+      protected @Nullable String propertyE;
 
       @Override
       protected void onInitialized() {

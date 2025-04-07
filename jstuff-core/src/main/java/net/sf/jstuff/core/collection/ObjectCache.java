@@ -122,8 +122,7 @@ public final class ObjectCache<K, V> {
       }
    }
 
-   @Nullable
-   public V get(final K key) {
+   public @Nullable V get(final K key) {
       expungeStaleEntries();
       final ValueReference<K, V> ref = cache.get(key);
       if (ref == null)

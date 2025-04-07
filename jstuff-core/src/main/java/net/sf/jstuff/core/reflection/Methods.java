@@ -140,8 +140,7 @@ public abstract class Methods extends Members {
    /**
     * Searches for public or non-public method with the exact signature
     */
-   @Nullable
-   public static Method findAny(final Class<?> clazz, final String methodName, final Class<?> @Nullable... parameterTypes) {
+   public static @Nullable Method findAny(final Class<?> clazz, final String methodName, final Class<?> @Nullable... parameterTypes) {
       Args.notNull("clazz", clazz);
       Args.notNull("methodName", methodName);
 
@@ -160,8 +159,7 @@ public abstract class Methods extends Members {
    /**
     * Searches for public or non-public method with type compatible signature
     */
-   @Nullable
-   public static Method findAnyCompatible(final Class<?> clazz, final String methodName, final Class<?> @Nullable... argTypes) {
+   public static @Nullable Method findAnyCompatible(final Class<?> clazz, final String methodName, final Class<?> @Nullable... argTypes) {
       Args.notNull("clazz", clazz);
       Args.notNull("methodName", methodName);
 
@@ -210,8 +208,7 @@ public abstract class Methods extends Members {
    /**
     * Searches for public or non-public method with type compatible signature
     */
-   @Nullable
-   public static Method findAnyCompatible(final Class<?> clazz, final String methodName, final Object @Nullable... args) {
+   public static @Nullable Method findAnyCompatible(final Class<?> clazz, final String methodName, final Object @Nullable... args) {
       Args.notNull("clazz", clazz);
       Args.notNull("methodName", methodName);
 
@@ -229,16 +226,14 @@ public abstract class Methods extends Members {
    /**
     * Searches for public or non-public getter
     */
-   @Nullable
-   public static Method findAnyGetter(final Class<?> clazz, final String propertyName) {
+   public static @Nullable Method findAnyGetter(final Class<?> clazz, final String propertyName) {
       return findAnyGetter(clazz, propertyName, null);
    }
 
    /**
     * Searches for public or non-public getter with type compatible signature
     */
-   @Nullable
-   public static Method findAnyGetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
+   public static @Nullable Method findAnyGetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
       Args.notNull("clazz", clazz);
 
       final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
@@ -284,16 +279,14 @@ public abstract class Methods extends Members {
    /**
     * Searches for public or non-public setter
     */
-   @Nullable
-   public static Method findAnySetter(final Class<?> clazz, final String propertyName) {
+   public static @Nullable Method findAnySetter(final Class<?> clazz, final String propertyName) {
       return findAnySetter(clazz, propertyName, null);
    }
 
    /**
     * Searches for public or non-public setter with type compatible signature
     */
-   @Nullable
-   public static Method findAnySetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
+   public static @Nullable Method findAnySetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
       Args.notNull("clazz", clazz);
 
       final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
@@ -324,8 +317,7 @@ public abstract class Methods extends Members {
    /**
     * Searches for public method with the exact signature
     */
-   @Nullable
-   public static Method findPublic(final Class<?> clazz, final String methodName, final Class<?> @Nullable... parameterTypes) {
+   public static @Nullable Method findPublic(final Class<?> clazz, final String methodName, final Class<?> @Nullable... parameterTypes) {
       Args.notNull("methodName", methodName);
       try {
          return clazz.getMethod(methodName, parameterTypes);
@@ -337,8 +329,8 @@ public abstract class Methods extends Members {
    /**
     * Searches for public method with type compatible signature
     */
-   @Nullable
-   public static Method findPublicCompatible(final Class<?> clazz, final String methodName, final Class<?> @Nullable... argTypes) {
+   public static @Nullable Method findPublicCompatible(final Class<?> clazz, final String methodName,
+         final Class<?> @Nullable... argTypes) {
       Args.notNull("clazz", clazz);
       Args.notNull("methodName", methodName);
 
@@ -380,8 +372,7 @@ public abstract class Methods extends Members {
    /**
     * Searches for public method with type compatible signature
     */
-   @Nullable
-   public static Method findPublicCompatible(final Class<?> clazz, final String methodName, final Object @Nullable... args) {
+   public static @Nullable Method findPublicCompatible(final Class<?> clazz, final String methodName, final Object @Nullable... args) {
       Args.notNull("clazz", clazz);
       Args.notNull("methodName", methodName);
 
@@ -399,16 +390,14 @@ public abstract class Methods extends Members {
    /**
     * Searches for public getter
     */
-   @Nullable
-   public static Method findPublicGetter(final Class<?> clazz, final String propertyName) {
+   public static @Nullable Method findPublicGetter(final Class<?> clazz, final String propertyName) {
       return findPublicGetter(clazz, propertyName, null);
    }
 
    /**
     * Searches for public getter with type compatible signature
     */
-   @Nullable
-   public static Method findPublicGetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
+   public static @Nullable Method findPublicGetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
       final String appendix = propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
       if (compatibleTo == Boolean.class || compatibleTo == boolean.class) {
@@ -446,16 +435,14 @@ public abstract class Methods extends Members {
    /**
     * Searches for public setter
     */
-   @Nullable
-   public static Method findPublicSetter(final Class<?> clazz, final String propertyName) {
+   public static @Nullable Method findPublicSetter(final Class<?> clazz, final String propertyName) {
       return findPublicSetter(clazz, propertyName, null);
    }
 
    /**
     * Searches for public setter with type compatible signature
     */
-   @Nullable
-   public static Method findPublicSetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
+   public static @Nullable Method findPublicSetter(final Class<?> clazz, final String propertyName, final @Nullable Class<?> compatibleTo) {
       final String methodName = "set" + propertyName.substring(0, 1).toUpperCase(Locale.getDefault()) + propertyName.substring(1);
 
       final var publicMethods = clazz.getMethods();
@@ -476,8 +463,7 @@ public abstract class Methods extends Members {
       return null;
    }
 
-   @Nullable
-   public static Method findSuper(final Method method) {
+   public static @Nullable Method findSuper(final Method method) {
       Args.notNull("method", method);
 
       // static methods cannot be overridden

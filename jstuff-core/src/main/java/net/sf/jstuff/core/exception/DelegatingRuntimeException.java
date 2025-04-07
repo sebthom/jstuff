@@ -40,21 +40,19 @@ public class DelegatingRuntimeException extends RuntimeException implements Deco
    /**
     * @return the cause of the wrapped exception
     */
-   @Nullable
+
    @Override
-   public synchronized Throwable getCause() {
+   public synchronized @Nullable Throwable getCause() {
       return wrapped.getCause();
    }
 
-   @Nullable
    @Override
-   public String getLocalizedMessage() {
+   public @Nullable String getLocalizedMessage() {
       return wrapped.getLocalizedMessage();
    }
 
-   @Nullable
    @Override
-   public String getMessage() {
+   public @Nullable String getMessage() {
       return wrapped.getMessage();
    }
 

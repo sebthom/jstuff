@@ -65,7 +65,7 @@ public abstract class Loops {
       }
    }
 
-   public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Enumeration<T> en, @Nullable final ExecutorService workers,
+   public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Enumeration<T> en, final @Nullable ExecutorService workers,
          final @Nullable Consumer<T> consumer) {
       if (en == null || consumer == null)
          return DONE;
@@ -125,7 +125,7 @@ public abstract class Loops {
       }
    }
 
-   public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Iterable<T> it, @Nullable final ExecutorService workers,
+   public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Iterable<T> it, final @Nullable ExecutorService workers,
          final @Nullable Consumer<T> consumer) {
       if (it == null || consumer == null)
          return DONE;
@@ -134,7 +134,7 @@ public abstract class Loops {
    }
 
    public static <T> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Iterable<T> it,
-         @Nullable final ExecutorService workers, final @Nullable ObjIntConsumer<T> consumer) {
+         final @Nullable ExecutorService workers, final @Nullable ObjIntConsumer<T> consumer) {
       if (it == null || consumer == null)
          return DONE;
 
@@ -174,7 +174,7 @@ public abstract class Loops {
       }
    }
 
-   public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Iterator<T> it, @Nullable final ExecutorService workers,
+   public static <T> CompletableFuture<?> forEachConcurrent(final @Nullable Iterator<T> it, final @Nullable ExecutorService workers,
          final @Nullable Consumer<T> consumer) {
       if (it == null || consumer == null)
          return DONE;
@@ -248,7 +248,7 @@ public abstract class Loops {
       forEachWithIndex(map.entrySet(), consumer);
    }
 
-   public static <K, V> CompletableFuture<?> forEachConcurrent(final @Nullable Map<K, V> map, @Nullable final ExecutorService workers,
+   public static <K, V> CompletableFuture<?> forEachConcurrent(final @Nullable Map<K, V> map, final @Nullable ExecutorService workers,
          final @Nullable BiConsumer<K, V> consumer) {
       if (map == null || consumer == null)
          return DONE;
@@ -256,7 +256,7 @@ public abstract class Loops {
       return forEachConcurrent(map.entrySet(), workers, e -> consumer.accept(e.getKey(), e.getValue()));
    }
 
-   public static <K, V> CompletableFuture<?> forEachConcurrent(final @Nullable Map<K, V> map, @Nullable final ExecutorService workers,
+   public static <K, V> CompletableFuture<?> forEachConcurrent(final @Nullable Map<K, V> map, final @Nullable ExecutorService workers,
          final @Nullable Consumer<Entry<K, V>> consumer) {
       if (map == null || consumer == null)
          return DONE;
@@ -265,7 +265,7 @@ public abstract class Loops {
    }
 
    public static <K, V> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Map<K, V> map,
-         @Nullable final ExecutorService workers, final @Nullable BiObjIntConsumer<K, V> consumer) {
+         final @Nullable ExecutorService workers, final @Nullable BiObjIntConsumer<K, V> consumer) {
       if (map == null || consumer == null)
          return DONE;
 
@@ -273,7 +273,7 @@ public abstract class Loops {
    }
 
    public static <K, V> CompletableFuture<?> forEachWithIndexConcurrent(final @Nullable Map<K, V> map,
-         @Nullable final ExecutorService workers, final @Nullable ObjIntConsumer<Entry<K, V>> consumer) {
+         final @Nullable ExecutorService workers, final @Nullable ObjIntConsumer<Entry<K, V>> consumer) {
       if (map == null || consumer == null)
          return DONE;
 

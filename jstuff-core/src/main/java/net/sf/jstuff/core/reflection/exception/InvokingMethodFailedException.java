@@ -18,10 +18,8 @@ public class InvokingMethodFailedException extends ReflectionException {
    private static final long serialVersionUID = 1L;
 
    private final SerializableMethod method;
-   @Nullable
-   private final transient Object targetObject;
-   @Nullable
-   private final Serializable targetSerializableObject;
+   private final transient @Nullable Object targetObject;
+   private final @Nullable Serializable targetSerializableObject;
 
    public InvokingMethodFailedException(final Method method, final @Nullable Object targetObject, final Throwable cause) {
       super("Invoking method [" + method.getDeclaringClass().getName() + "." + method.getName() + "] failed.", cause);

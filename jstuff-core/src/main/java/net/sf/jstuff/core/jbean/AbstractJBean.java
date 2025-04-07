@@ -27,8 +27,7 @@ public abstract class AbstractJBean implements JBean<AbstractJBean>, Serializabl
    /* ******************************************************************************
     * Property Change Event Support
     * ******************************************************************************/
-   @Nullable
-   private volatile SyncEventDispatcher<PropertyChangeEvent> events;
+   private volatile @Nullable SyncEventDispatcher<PropertyChangeEvent> events;
 
    @Override
    public <T> @NonNull T _get(final PropertyDescriptor<T> property) {

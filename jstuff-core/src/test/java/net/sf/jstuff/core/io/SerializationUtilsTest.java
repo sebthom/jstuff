@@ -17,8 +17,7 @@ import org.junit.jupiter.api.Test;
 class SerializationUtilsTest {
 
    public static final class Entity {
-      @Nullable
-      private String name;
+      private @Nullable String name;
 
       public Entity() { // CHECKSTYLE:IGNORE .*
       }
@@ -28,7 +27,7 @@ class SerializationUtilsTest {
       }
 
       @Override
-      public boolean equals(@Nullable final Object obj) {
+      public boolean equals(final @Nullable Object obj) {
          if (this == obj)
             return true;
          if (obj == null || getClass() != obj.getClass())
@@ -39,8 +38,7 @@ class SerializationUtilsTest {
          return true;
       }
 
-      @Nullable
-      public String getName() {
+      public @Nullable String getName() {
          return name;
       }
 
@@ -49,7 +47,7 @@ class SerializationUtilsTest {
          return Objects.hash(name);
       }
 
-      public void setName(@Nullable final String name) {
+      public void setName(final @Nullable String name) {
          this.name = name;
       }
    }

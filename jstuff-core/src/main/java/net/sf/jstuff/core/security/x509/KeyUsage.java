@@ -45,8 +45,7 @@ public enum KeyUsage {
       return usages.isEmpty() ? Collections.emptySet() : usages;
    }
 
-   @Nullable
-   private static KeyUsage getByRFCBit(final int bit) {
+   private static @Nullable KeyUsage getByRFCBit(final int bit) {
       return switch (bit) {
          case 0 -> DIGITAL_SIGNATURE;
          case 1 -> NON_REPUDIATION;

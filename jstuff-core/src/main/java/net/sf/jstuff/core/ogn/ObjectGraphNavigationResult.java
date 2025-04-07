@@ -24,11 +24,10 @@ public class ObjectGraphNavigationResult {
    /**
     * accessor's value
     */
-   @Nullable
-   public final Object target;
+   public final @Nullable Object target;
 
    public ObjectGraphNavigationResult(final Object root, final String path, final Object targetParent,
-         final AccessibleObject targetAccessor, @Nullable final Object target) {
+         final AccessibleObject targetAccessor, final @Nullable Object target) {
       this.root = root;
       this.path = path;
       this.targetParent = targetParent;

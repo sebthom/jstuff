@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 class StackTraceTest {
    private static final class Outer {
       private static final class Inner {
-         private void ensureEquals(@Nullable final Object a, @Nullable final Object b) {
+         private void ensureEquals(final @Nullable Object a, final @Nullable Object b) {
             assertThat(b).isEqualTo(a);
          }
 

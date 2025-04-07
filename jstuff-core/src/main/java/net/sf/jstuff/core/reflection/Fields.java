@@ -47,8 +47,7 @@ public abstract class Fields extends Members {
    /**
     * @return the field or null if the field does not exist
     */
-   @Nullable
-   public static Field find(final Class<?> clazz, final String fieldName) {
+   public static @Nullable Field find(final Class<?> clazz, final String fieldName) {
       return find(clazz, fieldName, null);
    }
 
@@ -56,8 +55,7 @@ public abstract class Fields extends Members {
     * @param compatibleWith objects of type <code>compatibleWith</code> must be assignable to the field
     * @return the field or null if the field does not exist
     */
-   @Nullable
-   public static Field find(final Class<?> clazz, final String fieldName, final @Nullable Class<?> compatibleWith) {
+   public static @Nullable Field find(final Class<?> clazz, final String fieldName, final @Nullable Class<?> compatibleWith) {
       Args.notNull("fieldName", fieldName);
 
       Field field = null;
@@ -89,8 +87,7 @@ public abstract class Fields extends Members {
    /**
     * @return the field or null if the field does not exist
     */
-   @Nullable
-   public static Field findRecursive(final Class<?> clazz, final String fieldName) {
+   public static @Nullable Field findRecursive(final Class<?> clazz, final String fieldName) {
       return findRecursive(clazz, fieldName, null);
    }
 
@@ -98,8 +95,7 @@ public abstract class Fields extends Members {
     * @param compatibleWith the field type must be a super class or interface of <code>compatibleWith</code>
     * @return the field or null if the field does not exist
     */
-   @Nullable
-   public static Field findRecursive(final Class<?> clazz, final String fieldName, final @Nullable Class<?> compatibleWith) {
+   public static @Nullable Field findRecursive(final Class<?> clazz, final String fieldName, final @Nullable Class<?> compatibleWith) {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
@@ -114,16 +110,14 @@ public abstract class Fields extends Members {
       return findRecursive(superclazz, fieldName, compatibleWith);
    }
 
-   @Nullable
-   public static VarHandle findVarHandle(final Class<?> clazz, final String fieldName) {
+   public static @Nullable VarHandle findVarHandle(final Class<?> clazz, final String fieldName) {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
 
       return findVarHandle(clazz, fieldName, null);
    }
 
-   @Nullable
-   public static VarHandle findVarHandle(final Class<?> clazz, final String fieldName, final @Nullable Class<?> fieldType) {
+   public static @Nullable VarHandle findVarHandle(final Class<?> clazz, final String fieldName, final @Nullable Class<?> fieldType) {
       try {
          UnsafeUtils.openModule(clazz.getModule());
          final Lookup lookup = MethodHandles.privateLookupIn(clazz, MethodHandles.lookup());
@@ -224,9 +218,8 @@ public abstract class Fields extends Members {
     * @param obj specify <code>null</code> for static fields
     * @return null if field not found
     */
-   @Nullable
    @SuppressWarnings("unchecked")
-   public static <T> T read(final Object obj, final String fieldName) throws AccessingFieldValueFailedException {
+   public static <T> @Nullable T read(final Object obj, final String fieldName) throws AccessingFieldValueFailedException {
       Args.notNull("obj", obj);
       Args.notNull("field", fieldName);
 

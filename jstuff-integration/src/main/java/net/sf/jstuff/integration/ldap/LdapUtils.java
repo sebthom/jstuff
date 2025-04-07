@@ -47,7 +47,7 @@ public abstract class LdapUtils {
    }
 
    @NonNullByDefault({})
-   public static <T> T getAttributeValue(@Nullable final SearchResult sr, final @NonNull String attrName, final T ifNullOrNotExisting)
+   public static <T> T getAttributeValue(final @Nullable SearchResult sr, final @NonNull String attrName, final T ifNullOrNotExisting)
          throws NamingException {
       if (sr == null)
          return ifNullOrNotExisting;
@@ -56,7 +56,7 @@ public abstract class LdapUtils {
    }
 
    @NonNullByDefault({})
-   public static <T> T getAttributeValue(@Nullable final Attributes attrs, final @NonNull String attrName, final T ifNullOrNotExisting)
+   public static <T> T getAttributeValue(final @Nullable Attributes attrs, final @NonNull String attrName, final T ifNullOrNotExisting)
          throws NamingException {
       if (attrs == null)
          return ifNullOrNotExisting;
@@ -66,7 +66,7 @@ public abstract class LdapUtils {
 
    @SuppressWarnings("unchecked")
    @NonNullByDefault({})
-   public static <T> T getAttributeValue(@Nullable final Attribute attr, final T ifNullOrNotExisting) throws NamingException {
+   public static <T> T getAttributeValue(final @Nullable Attribute attr, final T ifNullOrNotExisting) throws NamingException {
       if (attr == null)
          return ifNullOrNotExisting;
       try {

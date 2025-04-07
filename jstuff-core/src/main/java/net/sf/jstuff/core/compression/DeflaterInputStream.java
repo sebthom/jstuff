@@ -21,8 +21,7 @@ import net.sf.jstuff.core.validation.Args;
  */
 public class DeflaterInputStream extends FilterInputStream {
 
-   @Nullable
-   protected Deflater compressor;
+   protected @Nullable Deflater compressor;
    private final byte[] bufUncompressed;
    private byte[] bufCompressed = new byte[1];
 

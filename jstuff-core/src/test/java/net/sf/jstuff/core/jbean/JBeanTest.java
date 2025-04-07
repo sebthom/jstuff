@@ -37,8 +37,7 @@ class JBeanTest {
             "min-length", 0 //
          ));
 
-      @Nullable
-      private String comment;
+      private @Nullable String comment;
 
       @Override
       @SuppressWarnings("unchecked")

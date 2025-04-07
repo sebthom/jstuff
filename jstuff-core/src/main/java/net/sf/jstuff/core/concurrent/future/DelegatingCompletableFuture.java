@@ -102,7 +102,7 @@ public class DelegatingCompletableFuture<T> extends CompletableFuture<T> {
    }
 
    @Override
-   public boolean equals(@Nullable final Object obj) {
+   public boolean equals(final @Nullable Object obj) {
       return wrapped.equals(obj);
    }
 

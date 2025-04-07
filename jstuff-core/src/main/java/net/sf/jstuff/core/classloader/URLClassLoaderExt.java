@@ -109,9 +109,8 @@ public class URLClassLoaderExt extends URLClassLoader {
       return jarsAdded;
    }
 
-   @Nullable
    @Override
-   public URL getResource(final String name) {
+   public @Nullable URL getResource(final String name) {
       Args.notNull("name", name);
 
       // if class loader strategy is parent first, then use the default resource loading behavior

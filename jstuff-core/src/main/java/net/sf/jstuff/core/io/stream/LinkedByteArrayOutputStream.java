@@ -24,8 +24,7 @@ public class LinkedByteArrayOutputStream extends OutputStream {
 
    private static final int DEFAULT_BLOCK_SIZE = 4096;
 
-   @Nullable
-   private LinkedList<byte[]> blocks;
+   private @Nullable LinkedList<byte[]> blocks;
    private byte[] block;
    private final int blockSize;
    private int blockWritePos;

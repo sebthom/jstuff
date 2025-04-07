@@ -27,8 +27,7 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
 
    private static final class LookupKeyWrapper implements KeyWrapper<@Nullable Object> {
       private final int identityHashCode;
-      @Nullable
-      private final Object key;
+      private final @Nullable Object key;
 
       LookupKeyWrapper(final @Nullable Object key) {
          this.key = key;
@@ -45,9 +44,8 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
          return get() == ref.get();
       }
 
-      @Nullable
       @Override
-      public Object get() {
+      public @Nullable Object get() {
          return key;
       }
 
@@ -98,9 +96,8 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
          return ref.get() == null;
       }
 
-      @Nullable
       @Override
-      public Object get() {
+      public @Nullable Object get() {
          return null;
       }
 
@@ -218,9 +215,8 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       }
    }
 
-   @Nullable
    @Override
-   public V get(final @Nullable Object key) {
+   public @Nullable V get(final @Nullable Object key) {
       expungeStaleEntries();
       return map.get(new LookupKeyWrapper(key));
    }
@@ -250,10 +246,9 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       return Collections.unmodifiableSet(keySet);
    }
 
-   @Nullable
    @Override
    @SuppressWarnings("unchecked")
-   public V put(final K key, final V value) {
+   public @Nullable V put(final K key, final V value) {
       expungeStaleEntries();
       if (key == null)
          return map.put((KeyWrapper<K>) NULL_KEY_WRAPPER, value);
@@ -268,9 +263,8 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
       }
    }
 
-   @Nullable
    @Override
-   public V remove(final @Nullable Object key) {
+   public @Nullable V remove(final @Nullable Object key) {
       expungeStaleEntries();
       return map.remove(new LookupKeyWrapper(key));
    }

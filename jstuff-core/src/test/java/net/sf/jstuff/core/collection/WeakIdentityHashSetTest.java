@@ -18,8 +18,7 @@ import net.sf.jstuff.core.concurrent.Threads;
  */
 class WeakIdentityHashSetTest {
    private static final class Entity {
-      @Nullable
-      private String name;
+      private @Nullable String name;
 
       Entity setName(final String name) {
          this.name = name;
@@ -32,7 +31,7 @@ class WeakIdentityHashSetTest {
       }
 
       @Override
-      public boolean equals(@Nullable final Object obj) {
+      public boolean equals(final @Nullable Object obj) {
          if (this == obj)
             return true;
          if (obj == null || getClass() != obj.getClass())

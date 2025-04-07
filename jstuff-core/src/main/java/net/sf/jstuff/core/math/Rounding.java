@@ -21,8 +21,7 @@ public final class Rounding implements Serializable {
 
    private static final long serialVersionUID = 1L;
 
-   @Nullable
-   private transient BigDecimal divider;
+   private transient @Nullable BigDecimal divider;
    public final int roundAt;
    public final RoundingMode roundingMode;
 

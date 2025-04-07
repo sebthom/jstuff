@@ -47,7 +47,7 @@ public class ObservableSet<E> extends ObservableCollection<E, Set<E>> implements
    }
 
    @Override
-   public boolean remove(@Nullable final Object itemToRemove) {
+   public boolean remove(final @Nullable Object itemToRemove) {
       if (supportsRemovalIndex) {
          if (wrapped.isEmpty())
             return false;

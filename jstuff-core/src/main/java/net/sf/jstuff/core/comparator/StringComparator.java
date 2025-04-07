@@ -19,8 +19,7 @@ public class StringComparator implements Comparator<String>, Serializable {
 
    public static final StringComparator INSTANCE = new StringComparator(Locale.getDefault());
 
-   @Nullable
-   private Collator collator;
+   private @Nullable Collator collator;
    private final Locale locale;
 
    public StringComparator(final Locale locale) {

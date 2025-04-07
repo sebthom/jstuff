@@ -58,9 +58,8 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       return map.entrySet();
    }
 
-   @Nullable
    @Override
-   public V get(final @Nullable Object key) {
+   public @Nullable V get(final @Nullable Object key) {
       return map.get(key);
    }
 
@@ -91,9 +90,8 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       return map.keySet();
    }
 
-   @Nullable
    @Override
-   public V put(final K key, final V value) {
+   public @Nullable V put(final K key, final V value) {
       return map.put(key, value);
    }
 
@@ -102,17 +100,15 @@ public abstract class MapWith<K, V> implements Map<K, V>, Serializable {
       map.putAll(otherMap);
    }
 
-   @Nullable
    @Override
-   public V putIfAbsent(final K key, final V value) {
+   public @Nullable V putIfAbsent(final K key, final V value) {
       if (!containsKey(key))
          return map.put(key, value);
       return map.get(key);
    }
 
-   @Nullable
    @Override
-   public V remove(final @Nullable Object key) {
+   public @Nullable V remove(final @Nullable Object key) {
       return map.remove(key);
    }
 

@@ -78,8 +78,8 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
    }
 
    @Override
-   @Nullable
-   public V get(final @Nullable Object key) {
+
+   public @Nullable V get(final @Nullable Object key) {
       for (final Map<? extends K, ? extends V> m : components)
          if (m.containsKey(key))
             return m.get(key);
@@ -103,9 +103,8 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
       return keys;
    }
 
-   @Nullable
    @Override
-   public V put(final K key, final V value) {
+   public @Nullable V put(final K key, final V value) {
       throw new UnsupportedOperationException();
    }
 
@@ -114,9 +113,8 @@ public class CompositeMap<K, V> extends Composite.Default<Map<? extends K, ? ext
       throw new UnsupportedOperationException();
    }
 
-   @Nullable
    @Override
-   public V remove(final @Nullable Object key) {
+   public @Nullable V remove(final @Nullable Object key) {
       throw new UnsupportedOperationException();
    }
 

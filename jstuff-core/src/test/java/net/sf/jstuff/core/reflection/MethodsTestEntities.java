@@ -15,12 +15,10 @@ import org.eclipse.jdt.annotation.Nullable;
 abstract class MethodsTestEntities {
 
    static class EntityA {
-      @Nullable
-      private EntityA property1;
+      private @Nullable EntityA property1;
       private int property2;
 
-      @Nullable
-      protected EntityA getProperty1() {
+      protected @Nullable EntityA getProperty1() {
          return property1;
       }
 
@@ -44,9 +42,8 @@ abstract class MethodsTestEntities {
 
       private boolean property3;
 
-      @Nullable
       @Override
-      public EntityA getProperty1() {
+      public @Nullable EntityA getProperty1() {
          return super.getProperty1();
       }
 

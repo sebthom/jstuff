@@ -166,10 +166,8 @@ public class ThreadLocalSecureRandom extends SecureRandom {
 
    private long reseedNS = -1;
 
-   @Nullable
-   private String algorithm;
-   @Nullable
-   private Object algorithmProvider;
+   private @Nullable String algorithm;
+   private @Nullable Object algorithmProvider;
    private boolean useStrongInstances;
    private final boolean isInitialized;
 

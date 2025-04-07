@@ -18,11 +18,9 @@ import org.eclipse.jdt.annotation.Nullable;
 public final class SerializableField implements Serializable {
    private static final long serialVersionUID = 1L;
 
-   @Nullable
-   private Class<?> declaringClass;
+   private @Nullable Class<?> declaringClass;
    private transient Field field;
-   @Nullable
-   private String name;
+   private @Nullable String name;
 
    public SerializableField(final Field field) {
       this.field = field;

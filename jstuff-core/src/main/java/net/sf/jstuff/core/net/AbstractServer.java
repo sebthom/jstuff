@@ -25,8 +25,7 @@ public abstract class AbstractServer {
    protected final Executor executor;
    protected volatile boolean isRunning;
    protected final int portNumber;
-   @Nullable
-   protected ServerSocket socketListener;
+   protected @Nullable ServerSocket socketListener;
 
    protected AbstractServer(final int portNumber, final int numberOfThreads) {
       this.portNumber = portNumber;

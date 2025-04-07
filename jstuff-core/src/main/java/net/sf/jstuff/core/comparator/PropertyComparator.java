@@ -47,8 +47,7 @@ public class PropertyComparator<T> implements Comparator<T>, Serializable {
       return ((Comparable) v1).compareTo(v2);
    }
 
-   @Nullable
-   protected Object getValueAt(final Object obj, final String propertyPath) {
+   protected @Nullable Object getValueAt(final Object obj, final String propertyPath) {
       return ObjectGraphNavigatorDefaultImpl.INSTANCE.getValueAt(obj, propertyPath);
    }
 }

@@ -26,8 +26,7 @@ final class SLF4JLogger implements LoggerInternal {
 
    private final org.slf4j.Logger logger;
 
-   @Nullable
-   private final LocationAwareLogger loggerEx;
+   private final @Nullable LocationAwareLogger loggerEx;
    private final String loggerName;
 
    SLF4JLogger(final String name) {

@@ -18,10 +18,8 @@ public class AccessingFieldValueFailedException extends ReflectionException {
    private static final long serialVersionUID = 1L;
 
    private final SerializableField field;
-   @Nullable
-   private final transient Object targetObject;
-   @Nullable
-   private final Serializable targetSerializableObject;
+   private final transient @Nullable Object targetObject;
+   private final @Nullable Serializable targetSerializableObject;
 
    public AccessingFieldValueFailedException(final Field field, final @Nullable Object targetObject, final Throwable cause) {
       super("Accessing value of field " + field.getName() + " failed.", cause);

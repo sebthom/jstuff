@@ -18,10 +18,8 @@ public class SettingFieldValueFailedException extends ReflectionException {
    private static final long serialVersionUID = 1L;
 
    private final SerializableField field;
-   @Nullable
-   private final transient Object targetObject;
-   @Nullable
-   private final Serializable targetSerializableObject;
+   private final transient @Nullable Object targetObject;
+   private final @Nullable Serializable targetSerializableObject;
 
    public SettingFieldValueFailedException(final Field field, final @Nullable Object targetObject, final String message) {
       super(message);
@@ -41,8 +39,7 @@ public class SettingFieldValueFailedException extends ReflectionException {
       return field.getField();
    }
 
-   @Nullable
-   public Object getTargetObject() {
+   public @Nullable Object getTargetObject() {
       return targetObject != null ? targetObject : targetSerializableObject;
    }
 }

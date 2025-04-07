@@ -27,8 +27,7 @@ public class ToStringComparator<@Nullable T> implements Comparator<T>, Serializa
       return (ToStringComparator<T>) INSTANCE;
    }
 
-   @Nullable
-   private transient Collator collator;
+   private transient @Nullable Collator collator;
    private final Locale locale;
 
    public ToStringComparator(final Locale locale) {

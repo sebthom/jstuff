@@ -43,8 +43,7 @@ public class BufferedInputStreamExt extends BufferedInputStream {
     *
     * @throws IOException - if an I/O error occurs
     */
-   @Nullable
-   public CharSequence readLine() throws IOException {
+   public @Nullable CharSequence readLine() throws IOException {
       final var sb = new StringBuilder();
 
       while (true) {
@@ -74,8 +73,7 @@ public class BufferedInputStreamExt extends BufferedInputStream {
     * @param length number of characters to read
     * @throws IOException - if an I/O error occurs
     */
-   @Nullable
-   public String readString(final int length) throws IOException {
+   public @Nullable String readString(final int length) throws IOException {
       final byte[] chars = new byte[length];
       final int countBytes = read(chars);
       if (countBytes == IOUtils.EOF)

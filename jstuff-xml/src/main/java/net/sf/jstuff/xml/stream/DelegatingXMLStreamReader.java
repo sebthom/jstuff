@@ -240,7 +240,7 @@ public class DelegatingXMLStreamReader extends Decorator.Default<XMLStreamReader
    }
 
    @Override
-   public void require(final int type, final @Nullable String namespaceURI, @Nullable final String localName) throws XMLStreamException {
+   public void require(final int type, final @Nullable String namespaceURI, final @Nullable String localName) throws XMLStreamException {
       wrapped.require(type, namespaceURI, localName);
    }
 

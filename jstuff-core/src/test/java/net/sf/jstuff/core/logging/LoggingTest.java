@@ -123,7 +123,7 @@ class LoggingTest {
          }
 
          @Override
-         public void publish(@Nullable final LogRecord entry) {
+         public void publish(final @Nullable LogRecord entry) {
             count[0]++;
          }
       };
@@ -231,7 +231,7 @@ class LoggingTest {
          }
 
          @Override
-         public void publish(@Nullable final LogRecord entry) {
+         public void publish(final @Nullable LogRecord entry) {
             assert entry != null;
             count[0]++;
             switch (count[0]) {

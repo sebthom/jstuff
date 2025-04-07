@@ -55,9 +55,8 @@ public class PrintStreamHandler extends Handler {
    /**
     * Not supported.
     */
-   @Nullable
    @Override
-   public String getEncoding() throws UnsupportedOperationException {
+   public @Nullable String getEncoding() throws UnsupportedOperationException {
       throw new UnsupportedOperationException();
    }
 

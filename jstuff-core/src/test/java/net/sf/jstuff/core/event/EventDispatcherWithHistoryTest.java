@@ -34,12 +34,12 @@ class EventDispatcherWithHistoryTest {
       final var listener2Count = new AtomicLong();
       final var listener2 = new FilteringEventListener<@Nullable String>() {
          @Override
-         public boolean accept(@Nullable final String event) {
+         public boolean accept(final @Nullable String event) {
             return event != null && event.length() < 5;
          }
 
          @Override
-         public void onEvent(@Nullable final String event) {
+         public void onEvent(final @Nullable String event) {
             listener2Count.incrementAndGet();
          }
       };

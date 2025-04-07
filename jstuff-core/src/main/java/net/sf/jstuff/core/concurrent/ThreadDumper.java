@@ -88,8 +88,7 @@ public class ThreadDumper {
 
    public static class ThreadMeta {
 
-      @Nullable
-      private WeakReference<Thread> thread;
+      private @Nullable WeakReference<Thread> thread;
       private final ThreadInfo threadInfo;
 
       public ThreadMeta(final ThreadInfo threadInfo) {
@@ -100,8 +99,7 @@ public class ThreadDumper {
          return threadInfo.getLockedMonitors().length + threadInfo.getLockedSynchronizers().length;
       }
 
-      @Nullable
-      private Thread getThread() {
+      private @Nullable Thread getThread() {
          final var thread = this.thread;
          return thread == null ? null : thread.get();
       }

@@ -18,8 +18,7 @@ import org.eclipse.jdt.annotation.Nullable;
 @Deprecated
 public class DelegatingSecurityManager extends NoOpSecurityManager {
 
-   @Nullable
-   private SecurityManager wrapped;
+   private @Nullable SecurityManager wrapped;
 
    public DelegatingSecurityManager() {
       this(null);
@@ -286,8 +285,7 @@ public class DelegatingSecurityManager extends NoOpSecurityManager {
       return super.getThreadGroup();
    }
 
-   @Nullable
-   public SecurityManager getWrapped() {
+   public @Nullable SecurityManager getWrapped() {
       return wrapped;
    }
 

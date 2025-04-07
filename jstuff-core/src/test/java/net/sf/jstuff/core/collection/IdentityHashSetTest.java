@@ -17,8 +17,7 @@ import org.junit.jupiter.api.Test;
  */
 class IdentityHashSetTest {
    private static final class Entity {
-      @Nullable
-      private String name;
+      private @Nullable String name;
 
       Entity setName(final String name) {
          this.name = name;
@@ -31,7 +30,7 @@ class IdentityHashSetTest {
       }
 
       @Override
-      public boolean equals(@Nullable final Object obj) {
+      public boolean equals(final @Nullable Object obj) {
          if (this == obj)
             return true;
          if (obj == null || getClass() != obj.getClass())

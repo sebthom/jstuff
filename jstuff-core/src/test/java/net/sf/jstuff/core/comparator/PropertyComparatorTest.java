@@ -24,7 +24,7 @@ class PropertyComparatorTest {
       @Nullable
       Entity child;
 
-      private Entity(@Nullable final String name) {
+      private Entity(final @Nullable String name) {
          this.name = name;
       }
 

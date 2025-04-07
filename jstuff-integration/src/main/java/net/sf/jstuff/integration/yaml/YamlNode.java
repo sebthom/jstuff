@@ -196,9 +196,8 @@ public final class YamlNode extends ObjectNode {
     * <p>
     * {@inheritDoc}
     */
-   @Nullable
    @Override
-   public JsonNode remove(final @Nullable String fieldName) {
+   public @Nullable JsonNode remove(final @Nullable String fieldName) {
       final JsonNode removedValue = super.remove(fieldName);
       return removedValue;
    }

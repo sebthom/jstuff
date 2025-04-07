@@ -344,8 +344,7 @@ public abstract class X509Utils {
     *
     * @return null if OCSP URL is not specified or is not a HTTP or LDAP URL
     */
-   @Nullable
-   public static String getOcspResponderURL(final X509Certificate cert) {
+   public static @Nullable String getOcspResponderURL(final X509Certificate cert) {
       // https://tools.ietf.org/html/rfc4325#section-2
       final byte[] ocspExtValueRaw = cert.getExtensionValue("1.3.6.1.5.5.7.1.1");
       if (ocspExtValueRaw == null)
@@ -591,8 +590,7 @@ public abstract class X509Utils {
       return cert instanceof X509Certificate;
    }
 
-   @Nullable
-   private static String toPEM(final byte @Nullable [] data, final String type, final int charsPerLine) {
+   private static @Nullable String toPEM(final byte @Nullable [] data, final String type, final int charsPerLine) {
       if (data == null)
          return null;
 
@@ -611,23 +609,19 @@ public abstract class X509Utils {
       return sb.toString();
    }
 
-   @Nullable
-   public static String toPEM(final @Nullable PrivateKey key) {
+   public static @Nullable String toPEM(final @Nullable PrivateKey key) {
       return key == null ? null : toPEM(key.getEncoded(), "PRIVATE KEY", 64);
    }
 
-   @Nullable
-   public static String toPEM(final @Nullable PublicKey key) {
+   public static @Nullable String toPEM(final @Nullable PublicKey key) {
       return key == null ? null : toPEM(key.getEncoded(), "PUBLIC KEY", 64);
    }
 
-   @Nullable
-   public static String toPEM(final @Nullable X509Certificate cert) throws CertificateEncodingException {
+   public static @Nullable String toPEM(final @Nullable X509Certificate cert) throws CertificateEncodingException {
       return cert == null ? null : toPEM(cert.getEncoded(), "CERTIFICATE", 64);
    }
 
-   @Nullable
-   public static String toPEM(final @Nullable X509CRL crl) throws CRLException {
+   public static @Nullable String toPEM(final @Nullable X509CRL crl) throws CRLException {
       return crl == null ? null : toPEM(crl.getEncoded(), "X509 CRL", 64);
    }
 

@@ -27,7 +27,7 @@ class CrossThreadMethodInvokerTest {
       int invocations = 0;
 
       @Override
-      public String work(@Nullable final String input) {
+      public String work(final @Nullable String input) {
          Args.notNull("input", input);
 
          if (owner != Thread.currentThread())

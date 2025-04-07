@@ -39,8 +39,7 @@ public class GeneratedAnnotationPlugin extends AbstractPlugin {
       return "  -" + OPTION_NAME + "    :  mark the generated types as @javax.annotation.Generated";
    }
 
-   @Nullable
-   private JClass generatedAnnotation;
+   private @Nullable JClass generatedAnnotation;
 
    @Override
    public boolean run(final Outline model, final Options options, final ErrorHandler errorHandler) {

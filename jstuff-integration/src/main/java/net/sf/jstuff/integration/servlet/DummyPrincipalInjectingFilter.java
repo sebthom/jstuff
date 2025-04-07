@@ -122,8 +122,7 @@ public class DummyPrincipalInjectingFilter implements Filter {
       }
    }
 
-   @Nullable
-   public String getUsername() {
+   public @Nullable String getUsername() {
       return username;
    }
 

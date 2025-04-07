@@ -109,8 +109,7 @@ public abstract class Types {
    /**
     * @return null if class not found
     */
-   @Nullable
-   public static <T> Class<T> find(final String className) {
+   public static <T> @Nullable Class<T> find(final String className) {
       return find(className, true);
    }
 
@@ -118,8 +117,7 @@ public abstract class Types {
     * @return null if class not found
     */
    @SuppressWarnings("unchecked")
-   @Nullable
-   public static <T> Class<T> find(final String className, final boolean initialize) {
+   public static <T> @Nullable Class<T> find(final String className, final boolean initialize) {
       Args.notNull("className", className);
 
       LOG.trace("Trying to load class [%s]...", className);
@@ -231,8 +229,7 @@ public abstract class Types {
    /**
     * @return the local JAR or root directory containing the given class or null if not detectable
     */
-   @Nullable
-   public static File findLibrary(final Class<?> clazz) {
+   public static @Nullable File findLibrary(final Class<?> clazz) {
       {
          URI uri = null;
          try {
@@ -333,8 +330,7 @@ public abstract class Types {
    /**
     * @return the implementation version of the archive containing the class
     */
-   @Nullable
-   public static String getVersion(final Class<?> clazz) {
+   public static @Nullable String getVersion(final Class<?> clazz) {
       /*
        * get version from META-INF/MANIFEST.MF
        */
@@ -509,8 +505,7 @@ public abstract class Types {
             + "]");
    }
 
-   @Nullable
-   public static Type resolveBound(final TypeVariable<?> typeVariable) {
+   public static @Nullable Type resolveBound(final TypeVariable<?> typeVariable) {
       final Type[] bounds = typeVariable.getBounds();
       if (bounds.length == 0)
          return null;
@@ -523,8 +518,7 @@ public abstract class Types {
       return bound == Object.class ? null : bound;
    }
 
-   @Nullable
-   public static Class<?> resolveUnderlyingClass(final @Nullable Type type) {
+   public static @Nullable Class<?> resolveUnderlyingClass(final @Nullable Type type) {
       if (type == null)
          return null;
       if (type instanceof final Class<?> clazz)

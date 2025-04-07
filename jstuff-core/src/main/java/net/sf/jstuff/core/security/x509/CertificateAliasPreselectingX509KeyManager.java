@@ -17,10 +17,8 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class CertificateAliasPreselectingX509KeyManager extends DelegatingX509KeyManager {
 
-   @Nullable
-   private final String clientCertAlias;
-   @Nullable
-   private final String serverCertAlias;
+   private final @Nullable String clientCertAlias;
+   private final @Nullable String serverCertAlias;
 
    public CertificateAliasPreselectingX509KeyManager(final X509KeyManager wrapped, final @Nullable String clientCertAlias,
          final @Nullable String serverCertAlias) {

@@ -43,11 +43,9 @@ public final class ClassDescriptor<T> implements Serializable {
    }
 
    private final Class<T> type;
-   @Nullable
-   private final transient ClassDescriptor<?> parent;
+   private final transient @Nullable ClassDescriptor<?> parent;
    private final transient String name;
-   @Nullable
-   private final transient String description;
+   private final transient @Nullable String description;
 
    private final transient Map<String, PropertyDescriptor<?>> properties = Maps.newLinkedHashMap();
    private final transient Map<String, PropertyDescriptor<?>> propertiesReadOnly = Collections.unmodifiableMap(properties);
@@ -68,8 +66,7 @@ public final class ClassDescriptor<T> implements Serializable {
       properties.put(prop.getName(), prop);
    }
 
-   @Nullable
-   public String getDescription() {
+   public @Nullable String getDescription() {
       return description;
    }
 
@@ -77,8 +74,7 @@ public final class ClassDescriptor<T> implements Serializable {
       return name;
    }
 
-   @Nullable
-   public ClassDescriptor<?> getParent() {
+   public @Nullable ClassDescriptor<?> getParent() {
       return parent;
    }
 

@@ -17,8 +17,7 @@ import net.sf.jstuff.core.jbean.meta.PropertyDescriptor;
 public class RemoveItemEvent extends PropertyChangeEvent {
    private static final long serialVersionUID = 1L;
 
-   @Nullable
-   public final Object item;
+   public final @Nullable Object item;
    public final int index;
 
    public RemoveItemEvent(final JBean<?> bean, final PropertyDescriptor<?> property, final @Nullable Object item, final int index) {

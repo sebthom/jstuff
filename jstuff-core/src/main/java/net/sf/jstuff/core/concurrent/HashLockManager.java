@@ -39,9 +39,7 @@ public class HashLockManager<KeyType> {
       private static final Logger LOG = Logger.create();
 
       private final WeakReference<@Nullable HashLockManager<T>> ref;
-
-      @Nullable
-      private ScheduledFuture<?> future;
+      private @Nullable ScheduledFuture<?> future;
 
       CleanUpTask(final HashLockManager<T> mgr) {
          ref = new WeakReference<>(mgr);

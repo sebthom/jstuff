@@ -81,8 +81,7 @@ public class DirectoryCleaner {
 
    private static final Logger LOG = Logger.create();
 
-   @Nullable
-   private static ConcurrentLinkedQueue<DirectoryCleaner> directoryCleanersToRunOnExit;
+   private static @Nullable ConcurrentLinkedQueue<DirectoryCleaner> directoryCleanersToRunOnExit;
 
    protected static synchronized void registerCleanerOnExit(final DirectoryCleaner cleaner) {
       if (directoryCleanersToRunOnExit == null) {
@@ -113,12 +112,10 @@ public class DirectoryCleaner {
    protected boolean cleanOnExit;
    protected Path directory = Path.of("/foobar"); // overridden by mandatory builder argument
    protected boolean recursive;
-   @Nullable
-   protected Duration minimumFileAge;
+   protected @Nullable Duration minimumFileAge;
    protected Size minimumFileSize = Size.ZERO;
    protected BiPredicate<Path, BasicFileAttributes> fileFilter = (path, attr) -> true;
-   @Nullable
-   protected BiConsumer<Path, BasicFileAttributes> onFileDeleted;
+   protected @Nullable BiConsumer<Path, BasicFileAttributes> onFileDeleted;
 
    protected DirectoryCleaner() {
    }

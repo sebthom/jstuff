@@ -15,29 +15,25 @@ import org.eclipse.jdt.annotation.Nullable;
 @SuppressWarnings("deprecation")
 public abstract class FilenameUtils extends org.apache.commons.io.FilenameUtils {
 
-   @Nullable
-   public static String getBaseName(final File file) {
+   public static @Nullable String getBaseName(final File file) {
       return getBaseName(file.getName());
    }
 
    /**
     * @return {@code null} if this path has zero elements
     */
-   @Nullable
-   public static String getBaseName(final Path file) {
+   public static @Nullable String getBaseName(final Path file) {
       return getBaseName(file.getFileName().toString());
    }
 
-   @Nullable
-   public static String getExtension(final File file) {
+   public static @Nullable String getExtension(final File file) {
       return getExtension(file.getName());
    }
 
    /**
     * @return {@code null} if this path has zero elements
     */
-   @Nullable
-   public static String getExtension(final Path file) {
+   public static @Nullable String getExtension(final Path file) {
       return getExtension(file.getFileName().toString());
    }
 }

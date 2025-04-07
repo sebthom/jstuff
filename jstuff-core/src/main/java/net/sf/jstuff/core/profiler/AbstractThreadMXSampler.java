@@ -27,17 +27,15 @@ import net.sf.jstuff.core.validation.Assert;
 public abstract class AbstractThreadMXSampler {
    private static final Logger LOG = Logger.create();
 
-   @Nullable
-   private ScheduledExecutorService executor;
+   private @Nullable ScheduledExecutorService executor;
    private final int samplingInterval;
    private final ThreadMXBean threadMBean;
    private boolean isWarningLogged;
 
    private final Queue<ThreadInfo[]> samples = new ConcurrentLinkedQueue<>();
    private final Callable<@Nullable Void> aggregator = new Callable<>() {
-      @Nullable
       @Override
-      public Void call() throws Exception {
+      public @Nullable Void call() throws Exception {
          while (true) {
             final ThreadInfo[] sample = samples.poll();
             if (sample == null) {

@@ -20,8 +20,7 @@ public class NoExitSecurityManager extends DelegatingSecurityManagerWithThreadLo
 
       private static final long serialVersionUID = 1L;
 
-      @Nullable
-      private final Integer status;
+      private final @Nullable Integer status;
 
       public ExitNotAllowedException() {
          super("Executing java.lang.System.exit(?) is not allowed.");
@@ -33,8 +32,7 @@ public class NoExitSecurityManager extends DelegatingSecurityManagerWithThreadLo
          this.status = status;
       }
 
-      @Nullable
-      public Integer getStatus() {
+      public @Nullable Integer getStatus() {
          return status;
       }
    }

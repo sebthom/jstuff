@@ -37,9 +37,8 @@ public class DelegatingHandler extends Handler {
       wrapped.flush();
    }
 
-   @Nullable
    @Override
-   public String getEncoding() {
+   public @Nullable String getEncoding() {
       return wrapped.getEncoding();
    }
 
@@ -48,15 +47,13 @@ public class DelegatingHandler extends Handler {
       return wrapped.getErrorManager();
    }
 
-   @Nullable
    @Override
-   public Filter getFilter() {
+   public @Nullable Filter getFilter() {
       return wrapped.getFilter();
    }
 
-   @Nullable
    @Override
-   public Formatter getFormatter() {
+   public @Nullable Formatter getFormatter() {
       return wrapped.getFormatter();
    }
 
@@ -99,5 +96,4 @@ public class DelegatingHandler extends Handler {
    public synchronized void setLevel(final Level newLevel) throws SecurityException {
       wrapped.setLevel(newLevel);
    }
-
 }
