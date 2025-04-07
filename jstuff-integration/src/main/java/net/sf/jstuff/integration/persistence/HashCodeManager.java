@@ -144,7 +144,7 @@ public final class HashCodeManager {
    /**
     * @return a new cross-JVM unique hash code tracking id
     */
-   public static <T> String onEntityInstantiated(final Identifiable<T> entity) {
+   public static String onEntityInstantiated(final Identifiable<?> entity) {
       Args.notNull("entity", entity);
 
       final String trackingId = LOCAL_JVM_ID + "#" + LOCAL_ID_GENERATOR.getAndIncrement();
@@ -152,7 +152,7 @@ public final class HashCodeManager {
       return trackingId;
    }
 
-   public static <T> void onIdSet(final Identifiable<T> entity, final String trackingId) {
+   public static void onIdSet(final Identifiable<?> entity, final String trackingId) {
       Args.notNull("entity", entity);
       Args.notNull("trackingId", trackingId);
 

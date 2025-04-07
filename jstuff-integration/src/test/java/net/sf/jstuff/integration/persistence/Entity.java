@@ -14,7 +14,7 @@ import net.sf.jstuff.core.types.Identifiable;
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 @jakarta.persistence.Entity
-class Entity extends Identifiable.Default<Integer> {
+class Entity extends Identifiable.Default<@Nullable Integer> {
    private static final long serialVersionUID = 1L;
 
    @jakarta.persistence.Transient
@@ -25,6 +25,7 @@ class Entity extends Identifiable.Default<Integer> {
    private @Nullable String label;
 
    Entity() {
+      super(null);
       _hashCodeTrackingId = HashCodeManager.onEntityInstantiated(this);
    }
 
@@ -56,7 +57,7 @@ class Entity extends Identifiable.Default<Integer> {
 
    @Override
    public void setId(final Integer id) {
-      if (id.equals(this.id))
+      if (Objects.equals(this.id, id))
          return;
       if (this.id != null)
          throw new IllegalStateException("Id reassignment not allowed");
