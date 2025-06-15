@@ -2,10 +2,9 @@
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sebthom/jstuff/build.yml?logo=github)](https://github.com/sebthom/jstuff/actions/workflows/build.yml)
 [![Javadoc](https://img.shields.io/badge/javadoc-online-green)](https://sebthom.github.io/jstuff/javadoc/)
-[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/sebthom/jstuff)](https://codeclimate.com/github/sebthom/jstuff/maintainability)
-[![Test Coverage](https://img.shields.io/codeclimate/coverage/sebthom/jstuff)](https://codeclimate.com/github/sebthom/jstuff/test_coverage)
-[![License](https://img.shields.io/github/license/sebthom/jstuff.svg?color=blue)](LICENSE.txt)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![codecov](https://codecov.io/github/sebthom/jstuff/graph/badge.svg?token=3R65HYZT0O)](https://codecov.io/github/sebthom/jstuff)
+[![License](https://img.shields.io/github/license/sebthom/jstuff.svg?color=blue)](LICENSE.txt)
 [![Maven Central](https://img.shields.io/maven-central/v/net.sf.jstuff/jstuff-parent)](https://central.sonatype.com/search?namespace=net.sf.jstuff)
 
 
