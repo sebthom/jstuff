@@ -109,7 +109,7 @@ public abstract class NetUtils {
    public static long getLastModified(final URLConnection resourceConnection) throws IOException {
       if (resourceConnection instanceof final JarURLConnection jarURL) {
          final var entry = jarURL.getJarEntry();
-         if (entry != null)
+         if (entry != null && entry.getTime() > -1)
             return entry.getTime();
       }
 
