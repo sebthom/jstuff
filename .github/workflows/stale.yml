@@ -3,9 +3,10 @@ name: Stale issues
 
 on:
   schedule:
-    - cron: '0 16 * * 1'
-  workflow_dispatch:
     # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows
+    - cron: '0 15 1,15 * *'
+  workflow_dispatch:
+    # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#workflow_dispatch
 
 permissions:
   issues: write
@@ -15,7 +16,5 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - name: Git Checkout
-        uses: actions/checkout@v4  # https://github.com/actions/checkout
       - name: Run stale action
-        uses: ./.github/actions/stale@v1
+        uses: sebthom/gha-shared/.github/actions/stale@v1
