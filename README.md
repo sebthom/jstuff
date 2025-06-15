@@ -5,6 +5,7 @@
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/sebthom/jstuff)](https://codeclimate.com/github/sebthom/jstuff/maintainability)
 [![Test Coverage](https://img.shields.io/codeclimate/coverage/sebthom/jstuff)](https://codeclimate.com/github/sebthom/jstuff/test_coverage)
 [![License](https://img.shields.io/github/license/sebthom/jstuff.svg?color=blue)](LICENSE.txt)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Maven Central](https://img.shields.io/maven-central/v/net.sf.jstuff/jstuff-parent)](https://central.sonatype.com/search?namespace=net.sf.jstuff)
 
 
