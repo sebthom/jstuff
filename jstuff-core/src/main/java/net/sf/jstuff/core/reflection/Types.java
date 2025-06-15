@@ -227,7 +227,7 @@ public abstract class Types {
    }
 
    /**
-    * @return the local JAR or root directory containing the given class or null if not detectable
+    * @return the local JAR, jmod or root directory containing the given class or null if not detectable
     */
    public static @Nullable File findLibrary(final Class<?> clazz) {
       {
@@ -268,7 +268,14 @@ public abstract class Types {
 
          case "jrt": // JDK9+
             // e.g. "/java.base/java/lang/String.class" -> "<JAVA_HOME>/jmods/java.base.jmod"
-            return new File(SystemUtils.getJavaHome(), "jmods/" + Strings.substringBetween(location.getPath(), "/") + ".jmod");
+            // extract module name from "/<module>/…"
+            final File jmod = new File(SystemUtils.getJavaHome(), "jmods/" + Strings.substringBetween(location.getPath(), "/") + ".jmod");
+            if (jmod.isFile())
+               return jmod;
+
+            // fallback for JDK 24+ (and always-present on JDK9+)
+            final File modules = new File(SystemUtils.getJavaHome(), "lib/modules");
+            return modules.isFile() ? modules : null;
 
          default:
             LOG.warn("Unknown protocol: %s", location);
