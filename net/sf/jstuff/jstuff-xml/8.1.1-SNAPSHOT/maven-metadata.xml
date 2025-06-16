@@ -3,33 +3,33 @@
   <groupId>net.sf.jstuff</groupId>
   <artifactId>jstuff-xml</artifactId>
   <versioning>
-    <lastUpdated>20250616094413</lastUpdated>
+    <lastUpdated>20250616114813</lastUpdated>
     <snapshot>
-      <timestamp>20250616.094413</timestamp>
-      <buildNumber>5</buildNumber>
+      <timestamp>20250616.114813</timestamp>
+      <buildNumber>6</buildNumber>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>8.1.1-20250616.094413-5</value>
-        <updated>20250616094413</updated>
+        <value>8.1.1-20250616.114813-6</value>
+        <updated>20250616114813</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>jar</extension>
-        <value>8.1.1-20250616.094413-5</value>
-        <updated>20250616094413</updated>
+        <value>8.1.1-20250616.114813-6</value>
+        <updated>20250616114813</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>sources</classifier>
         <extension>jar</extension>
-        <value>8.1.1-20250616.094413-5</value>
-        <updated>20250616094413</updated>
+        <value>8.1.1-20250616.114813-6</value>
+        <updated>20250616114813</updated>
       </snapshotVersion>
       <snapshotVersion>
         <classifier>javadoc</classifier>
         <extension>jar</extension>
-        <value>8.1.1-20250616.094413-5</value>
-        <updated>20250616094413</updated>
+        <value>8.1.1-20250616.114813-6</value>
+        <updated>20250616114813</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
