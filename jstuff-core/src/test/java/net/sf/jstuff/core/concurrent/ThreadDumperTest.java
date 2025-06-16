@@ -126,6 +126,7 @@ class ThreadDumperTest {
       }
 
       // end threads that deadlock on "Lock.lock()"
+      System.err.println("SystemUtils.getJavaMajorVersion() " + SystemUtils.getJavaMajorVersion());
       if (SystemUtils.getJavaMajorVersion() < 20) { // Thread.stop throws UnsupportedOperationException in Java 20+
          for (final Thread deadlocked : Threads.deadlocked()) {
             deadlocked.stop(); // does not end threads that deadlock on "synchronized(lock)"
