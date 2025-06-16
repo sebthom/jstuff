@@ -9,40 +9,40 @@ name: Build
 on:
   schedule:
     # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows
-    - cron: '0 15 1 * *'
+    - cron: "0 15 1 * *"
   push:
     branches-ignore:  # build all branches except:
-    - 'dependabot/**'  # prevent GHA triggered twice (once for commit to the branch and once for opening/syncing the PR)
+    - "dependabot/**"  # prevent GHA triggered twice (once for commit to the branch and once for opening/syncing the PR)
     tags-ignore:  # don't build tags
-    - '**'
+    - "**"
     paths-ignore:
-    - '.act*'
-    - '**/*.adoc'
-    - '**/*.md'
-    - '.editorconfig'
-    - '.git*'
-    - '.github/*.yml'
-    - '.github/ISSUE_TEMPLATE/*'
-    - '.github/workflows/stale.yml'
-    - 'codecov.yml'
+    - ".act*"
+    - "**/*.adoc"
+    - "**/*.md"
+    - ".editorconfig"
+    - ".git*"
+    - ".github/*.yml"
+    - ".github/ISSUE_TEMPLATE/*"
+    - ".github/workflows/stale.yml"
+    - "codecov.yml"
   pull_request:
     paths-ignore:
-    - '.act*'
-    - '**/*.adoc'
-    - '**/*.md'
-    - '.editorconfig'
-    - '.git*'
-    - '.github/*.yml'
-    - '.github/ISSUE_TEMPLATE/*'
-    - '.github/workflows/stale.yml'
-    - 'codecov.yml'
+    - ".act*"
+    - "**/*.adoc"
+    - "**/*.md"
+    - ".editorconfig"
+    - ".git*"
+    - ".github/*.yml"
+    - ".github/ISSUE_TEMPLATE/*"
+    - ".github/workflows/stale.yml"
+    - "codecov.yml"
   workflow_dispatch:
     # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#workflow_dispatch
     inputs:
       extra-maven-args:
-        description: 'Additional Maven Args'
+        description: "Additional command-line arguments to append to all Maven invocations"
         required: false
-        default: ''
+        default: ""
       debug-with-ssh:
         description: "Start an SSH session for debugging purposes at the end of the build:"
         default: never
@@ -58,11 +58,10 @@ on:
         type: string
 
 jobs:
-
   ###########################################################
   maven-build:
   ###########################################################
-    uses: sebthom/gha-shared/.github/workflows/maven-build.yml@v1
+    uses: sebthom/gha-shared/.github/workflows/reusable.maven-build.yml@v1
     with:
       timeout-minutes: 10
 
