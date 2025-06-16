@@ -84,6 +84,7 @@ public class PrintStreamHandler extends Handler {
     * Not supported.
     */
    @Override
+   @SuppressWarnings("sync-override")
    public void setEncoding(final @Nullable String encoding) throws UnsupportedOperationException {
       throw new UnsupportedOperationException();
    }

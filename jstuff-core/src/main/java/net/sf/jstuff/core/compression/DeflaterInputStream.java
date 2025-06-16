@@ -79,6 +79,7 @@ public class DeflaterInputStream extends FilterInputStream {
    }
 
    @Override
+   @SuppressWarnings("sync-override")
    public void mark(final int limit) {
       throw new UnsupportedOperationException();
    }
@@ -138,6 +139,7 @@ public class DeflaterInputStream extends FilterInputStream {
    }
 
    @Override
+   @SuppressWarnings("sync-override")
    public void reset() {
       throw new UnsupportedOperationException();
    }
