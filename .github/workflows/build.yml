@@ -8,6 +8,7 @@ name: Build
 
 on:
   schedule:
+    # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows
     - cron: '0 15 1 * *'
   push:
     branches-ignore:  # build all branches except:
@@ -31,8 +32,8 @@ on:
     - '**/*.md'
     - '.editorconfig'
     - '.git*'
-    - '.github/ISSUE_TEMPLATE/*'
     - '.github/*.yml'
+    - '.github/ISSUE_TEMPLATE/*'
     - '.github/workflows/stale.yml'
     - 'codecov.yml'
   workflow_dispatch:
@@ -69,7 +70,6 @@ jobs:
       test-jdks: 21,24
 
       extra-maven-args: ${{ inputs.extra-maven-args }}
-      maven-settings-file: .ci/maven-settings.xml
       snapshots-branch: mvn-snapshots-repo
       javadoc-branch: javadoc
 
