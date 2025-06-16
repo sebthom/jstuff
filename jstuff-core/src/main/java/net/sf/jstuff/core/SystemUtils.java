@@ -4,8 +4,6 @@
  */
 package net.sf.jstuff.core;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -118,12 +116,12 @@ public abstract class SystemUtils extends org.apache.commons.lang3.SystemUtils {
       }
    }
 
+   /**
+    * @deprecated use Runtime.version().feature()
+    */
+   @Deprecated
    public static int getJavaMajorVersion() {
-      final String version = asNonNull(System.getProperty("java.version"));
-      return Integer.parseInt(version.startsWith("1.") //
-            ? version.substring(2, 3) //
-            : Strings.substringBefore(version, '.') //
-      );
+      return Runtime.version().feature();
    }
 
    public static String getProperty(final String name, final String defaultValue) {

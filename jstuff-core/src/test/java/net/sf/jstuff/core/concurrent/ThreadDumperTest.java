@@ -10,8 +10,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.jupiter.api.Test;
 
-import net.sf.jstuff.core.SystemUtils;
-
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
@@ -87,7 +85,7 @@ class ThreadDumperTest {
    @Test
    @SuppressWarnings("deprecation")
    void testDumpThreads() {
-      if (SystemUtils.getJavaMajorVersion() >= 20)
+      if (Runtime.version().feature() >= 20)
          // https://inside.java/2022/11/09/quality-heads-up/
          // https://bugs.openjdk.org/browse/JDK-8289610
          // https://bugs.openjdk.org/browse/JDK-8249627
