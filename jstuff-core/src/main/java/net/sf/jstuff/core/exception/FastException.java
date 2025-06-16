@@ -29,6 +29,7 @@ public class FastException extends Exception {
    }
 
    @Override
+   @SuppressWarnings("sync-override")
    public Throwable fillInStackTrace() {
       return this;
    }

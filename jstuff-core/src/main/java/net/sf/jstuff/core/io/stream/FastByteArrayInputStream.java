@@ -48,6 +48,7 @@ public class FastByteArrayInputStream extends InputStream {
    }
 
    @Override
+   @SuppressWarnings("sync-override")
    public void mark(final int readLimit) {
       mark = pos;
    }
@@ -84,6 +85,7 @@ public class FastByteArrayInputStream extends InputStream {
    }
 
    @Override
+   @SuppressWarnings("sync-override")
    public void reset() {
       pos = mark;
    }

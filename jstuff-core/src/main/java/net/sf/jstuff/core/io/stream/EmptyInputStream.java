@@ -26,6 +26,7 @@ public final class EmptyInputStream extends InputStream {
    }
 
    @Override
+   @SuppressWarnings("sync-override")
    public void mark(final int readLimit) {
    }
 
@@ -50,6 +51,7 @@ public final class EmptyInputStream extends InputStream {
    }
 
    @Override
+   @SuppressWarnings("sync-override")
    public void reset() {
    }
 

@@ -29,6 +29,7 @@ public class FastRuntimeException extends RuntimeException {
    }
 
    @Override
+   @SuppressWarnings("sync-override")
    public Throwable fillInStackTrace() {
       return this;
    }

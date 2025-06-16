@@ -72,6 +72,7 @@ public class CompositeInputStream extends InputStream implements Composite<Input
    }
 
    @Override
+   @SuppressWarnings("sync-override")
    public void mark(final int readlimit) {
       throw new UnsupportedOperationException();
    }
@@ -109,6 +110,7 @@ public class CompositeInputStream extends InputStream implements Composite<Input
    }
 
    @Override
+   @SuppressWarnings("sync-override")
    public void reset() throws IOException {
       throw new UnsupportedOperationException();
    }
