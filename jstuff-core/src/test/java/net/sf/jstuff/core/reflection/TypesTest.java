@@ -57,6 +57,15 @@ class TypesTest {
    }
 
    @Test
+   void testGetMinimumJavaVersion() {
+      assertThat(Types.getMinimumJavaVersion(String.class)).isEqualTo(Runtime.version().feature());
+      assertThat(Types.getMinimumJavaVersion(Types.class)).isEqualTo(17);
+      assertThat(Types.getMinimumJavaVersion(CDATA.class)).isEqualTo(1);
+      assertThat(Types.getMinimumJavaVersion(TMException.class)).isEqualTo(8);
+      assertThat(Types.getMinimumJavaVersion(IUriSchemeHandler.class)).isEqualTo(8);
+   }
+
+   @Test
    void testGetVersion() {
       // from META-INF/MANIFEST.MF Implementation-Version
       assertThat(Types.getVersion(CDATA.class)).isEqualTo("1.0 beta7");

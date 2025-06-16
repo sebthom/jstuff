@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.core.reflection;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.net.URI;
@@ -332,6 +334,57 @@ public abstract class Types {
          return Void.class;
 
       throw new IllegalArgumentException("Unknown primitive type [" + primitive + "]");
+   }
+
+   /**
+    * @return the major classfile (bytecode) version of the given class, or null if it cannot be determined
+    */
+   public static @Nullable Integer getClassFileMajorVersion(final Class<?> clazz) {
+      final var className = clazz.getName();
+      final String resourcePath = '/' + className.replace('.', '/') + ".class";
+
+      // try Class#getResourceAsStream (handles bootstrap classes)
+      InputStream is = clazz.getResourceAsStream(resourcePath);
+      if (is == null) {
+         // fall back to system loader
+         is = ClassLoader.getSystemResourceAsStream(resourcePath.substring(1));
+      }
+      if (is != null) {
+         try (var dis = new DataInputStream(is)) {
+            // check magic
+            if (dis.readInt() != 0xCA_FE_BA_BE)
+               return null;
+            // skip minor
+            dis.readUnsignedShort();
+            // return major
+            return dis.readUnsignedShort();
+         } catch (final IOException ex) {
+            LOG.debug(ex, "Unexpected exception while reading class bytecode");
+            return null;
+         }
+      }
+
+      // no .class file was found, apply some heuristic to identify potentially runtime-generated classes
+      // and return current JVMs major version
+      if (Proxy.isProxyClass(clazz) //
+            || clazz.isSynthetic() //
+            || className.contains("$$") // CGLIB, some codegens
+            || className.contains("$ByteBuddy")) //
+         return Runtime.version().feature();
+
+      return null;
+   }
+
+   /**
+    * @return the minimum Java release (e.g. "8", "11", "17") required to run the given class,
+    *         or {@code null} if the class's bytecode version can't be read.
+    */
+   public static @Nullable Integer getMinimumJavaVersion(final Class<?> clazz) {
+      final Integer major = getClassFileMajorVersion(clazz);
+      if (major == null)
+         return null;
+      // https://javaalmanac.io/bytecode/versions/
+      return major < 46 ? 1 : major - 44;
    }
 
    /**
