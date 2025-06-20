@@ -18,9 +18,13 @@ import java.util.function.BooleanSupplier;
 public abstract class SafeAwait {
 
    /**
-    * @param condition condition to await for
-    * @param timeoutMS the maximum time to wait in milliseconds
-    * @return value from {@link Condition#await(long, TimeUnit)}
+    * Waits until the given {@link Condition} returns true or the timeout elapses.
+    * This method handles spurious wake-ups by recomputing the remaining wait time.
+    *
+    * @param condition a callback that performs a timed wait and returns true if the condition is met
+    * @param timeoutMS maximum wait time in milliseconds
+    * @return true if the condition was met within the timeout, false otherwise
+    * @throws InterruptedException if the thread is interrupted while waiting
     */
    public static boolean await(final Condition condition, final long timeoutMS) throws InterruptedException {
 
@@ -34,6 +38,13 @@ public abstract class SafeAwait {
       return false;
    }
 
+   /**
+    * Waits indefinitely until the BooleanSupplier returns true.
+    *
+    * @param condition a predicate to check
+    * @param waitObject object on which to wait/notify
+    * @throws InterruptedException if interrupted while waiting
+    */
    public static void await(final BooleanSupplier condition, final Object waitObject) throws InterruptedException {
       synchronized (waitObject) {
          while (!condition.getAsBoolean()) {
@@ -43,7 +54,14 @@ public abstract class SafeAwait {
    }
 
    /**
-    * @return if condition was met
+    * Waits until the BooleanSupplier returns true or the timeout elapses.
+    * This method handles spurious wake-ups and ensures the remaining wait time is correctly updated.
+    *
+    * @param condition a predicate to check
+    * @param waitObject object on which to wait/notify
+    * @param timeoutMS maximum wait time in milliseconds
+    * @return true if the condition was met within the timeout, false otherwise
+    * @throws InterruptedException if interrupted while waiting
     */
    public static boolean await(final BooleanSupplier condition, final Object waitObject, final long timeoutMS) throws InterruptedException {
       synchronized (waitObject) {
