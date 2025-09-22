@@ -81,7 +81,7 @@
    <properties>
       <java.version>17</java.version>
       <skip.japicmp.cmp>true</skip.japicmp.cmp>
-      <assertj.version>3.27.4</assertj.version>
+      <assertj.version>3.27.5</assertj.version>
    </properties>
 
 
