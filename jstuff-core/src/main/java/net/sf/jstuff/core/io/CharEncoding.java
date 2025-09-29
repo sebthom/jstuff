@@ -25,16 +25,16 @@ public enum CharEncoding {
 
    BINARY("application/octet-stream", "binary", "Data"),
 
-   ASCII(/*          */ "text/plain", "us-ascii", /*    */ "ASCII"),
-   UTF_7(/*          */ "text/plain", "utf-7", /*       */ "UTF-7 Unicode"),
-   UTF_8(/*          */ "text/plain", "utf-8", /*       */ "UTF-8 Unicode"),
-   UTF_8_WITH_BOM(/* */ "text/plain", "utf-8", /*       */ "UTF-8 Unicode (with BOM)"),
-   UTF_16_BE(/*      */ "text/plain", "utf-16be", /*    */ "Big-endian UTF-16 Unicode"),
-   UTF_16_LE(/*      */ "text/plain", "utf-16le", /*    */ "Little-endian UTF-16 Unicode"),
-   ISO_8859_1(/*     */ "text/plain", "usi-8859-1", /*  */ "ISO-8859"),
-   UNKNOWN_8BIT(/*   */ "text/plain", "unknown-8bit", /**/ "Non-ISO extended-ASCII"),
-   EBCDIC(/*         */ "text/plain", "ebcdic", /*      */ "EBCDIC"),
-   EBCDIC_INTERNATIONAL("text/plain", "ebcdic", /*      */ "International EBCDIC");
+   ASCII(/*          */"text/plain", "us-ascii", /*    */"ASCII"),
+   UTF_7(/*          */"text/plain", "utf-7", /*       */"UTF-7 Unicode"),
+   UTF_8(/*          */"text/plain", "utf-8", /*       */"UTF-8 Unicode"),
+   UTF_8_WITH_BOM(/* */"text/plain", "utf-8", /*       */"UTF-8 Unicode (with BOM)"),
+   UTF_16_BE(/*      */"text/plain", "utf-16be", /*    */"Big-endian UTF-16 Unicode"),
+   UTF_16_LE(/*      */"text/plain", "utf-16le", /*    */"Little-endian UTF-16 Unicode"),
+   ISO_8859_1(/*     */"text/plain", "usi-8859-1", /*  */"ISO-8859"),
+   UNKNOWN_8BIT(/*   */"text/plain", "unknown-8bit", /**/"Non-ISO extended-ASCII"),
+   EBCDIC(/*         */"text/plain", "ebcdic", /*      */"EBCDIC"),
+   EBCDIC_INTERNATIONAL("text/plain", "ebcdic", /*      */"International EBCDIC");
 
    private static final byte F = 0; /* character never appears in text */
    private static final byte T = 1; /* character appears in plain ASCII text */
