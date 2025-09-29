@@ -71,8 +71,8 @@ public class HashLockManager<KeyType> {
    }
 
    private static final class LazyInitialized {
-      private static final ScheduledExecutorService DEFAULT_CLEANUP_THREAD = Executors.newSingleThreadScheduledExecutor(
-         new BasicThreadFactory.Builder().daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("HashLockManager-thread").build());
+      private static final ScheduledExecutorService DEFAULT_CLEANUP_THREAD = Executors.newSingleThreadScheduledExecutor(BasicThreadFactory
+         .builder().daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("HashLockManager-thread").build());
    }
 
    private final ConcurrentMap<KeyType, ReentrantReadWriteLock> locksByKey = new ConcurrentHashMap<>();

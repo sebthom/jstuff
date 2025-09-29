@@ -45,7 +45,7 @@ public class GCTracker<EVENT> implements EventListenable<EVENT> {
 
    private static final class LazyInitialized {
       private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = Executors.newSingleThreadScheduledExecutor(
-         new BasicThreadFactory.Builder().daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("GCTracker-thread").build());
+         BasicThreadFactory.builder().daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("GCTracker-thread").build());
    }
 
    private static final Logger LOG = Logger.create();

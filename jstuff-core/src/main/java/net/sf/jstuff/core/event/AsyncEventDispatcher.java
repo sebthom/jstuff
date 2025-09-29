@@ -26,7 +26,7 @@ public class AsyncEventDispatcher<EVENT> implements EventDispatcher<EVENT> {
       private static final ScheduledExecutorService DEFAULT_NOTIFICATION_THREAD = new ScalingScheduledExecutorService( //
          1, Math.max(1, Runtime.getRuntime().availableProcessors() - 1), //
          Duration.ofSeconds(5), //
-         new BasicThreadFactory.Builder().daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("EventManager-thread").build());
+         BasicThreadFactory.builder().daemon(true).priority(Thread.NORM_PRIORITY).namingPattern("EventManager-thread").build());
    }
 
    private final Set<EventListener<EVENT>> eventListeners = new CopyOnWriteArraySet<>();

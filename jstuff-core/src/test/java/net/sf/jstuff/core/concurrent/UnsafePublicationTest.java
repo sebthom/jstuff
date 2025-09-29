@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import net.sf.jstuff.core.Strings;
 import net.sf.jstuff.core.SystemUtils;
 import net.sf.jstuff.core.localization.NumberHelper;
 import net.sf.jstuff.core.logging.Logger;
@@ -115,7 +115,7 @@ class UnsafePublicationTest {
          return false;
       }
 
-      if (!StringUtils.contains(System.getProperty("java.vm.name"), "HotSpot")) {
+      if (!Strings.contains(System.getProperty("java.vm.name"), "HotSpot")) {
          LOG.info("This test is only supported on HotSpot JVM");
          return false;
       }
@@ -127,7 +127,7 @@ class UnsafePublicationTest {
             LOG.info("This test requires JVM option -XX:-UseCompressedOops when run on 64bit JVM");
             return false;
          }
-      } else if (!StringUtils.contains(System.getProperty("java.vm.name"), "Server")) {
+      } else if (!Strings.contains(System.getProperty("java.vm.name"), "Server")) {
          LOG.info("This test requires JVM option -server when run on a 32bit JVM");
          return false;
       }

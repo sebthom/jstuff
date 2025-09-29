@@ -24,6 +24,7 @@ import net.sf.jstuff.core.validation.Args;
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
+@SuppressWarnings("javadoc")
 abstract class AbstractCharsInputStream extends InputStream {
 
    protected enum EncoderState {
@@ -131,12 +132,11 @@ abstract class AbstractCharsInputStream extends InputStream {
       final CoderResult result = encoder.flush(byteBuffer);
       byteBuffer.flip();
 
-      if (result.isOverflow()) {
+      if (result.isOverflow())
          // the byteBuffer has been filled, but there are more bytes to be flushed.
          // after reading all available bytes from byteBuffer, flushEncoder() needs to
          // be called again to process the remaining data.
          return true;
-      }
 
       if (result.isError()) {
          result.throwException();
