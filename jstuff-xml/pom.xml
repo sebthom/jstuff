@@ -18,7 +18,7 @@ SPDX-License-Identifier: EPL-2.0
 
    <properties>
       <!-- https://search.maven.org/search?q=g:org.glassfish.jaxb -->
-      <jaxb.version>4.0.5</jaxb.version>
+      <jaxb.version>4.0.6</jaxb.version>
 
       <!-- workaround for bug that does not mark optional dependencies as optional, see https://issues.apache.org/jira/browse/FELIX-2809-->
       <maven-bundle-plugin.import-package>
