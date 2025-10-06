@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <!--
+   SPDX-FileCopyrightText: © Sebastian Thomschke and contributors
+   SPDX-License-Identifier: EPL-2.0
+   -->
+
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <groupId>com.vegardit.maven</groupId>
+      <artifactId>vegardit-maven-parent</artifactId>
+      <version>6.1.11</version>
+   </parent>
+
+   <groupId>net.sf.jstuff</groupId>
+   <artifactId>jstuff-parent</artifactId>
+   <version>8.1.1-SNAPSHOT</version>
+   <packaging>pom</packaging>
+
+   <name>jstuff</name>
+   <description>Toolbox for Java</description>
+   <url>https://github.com/sebthom/jstuff</url>
+   <inceptionYear>2010</inceptionYear>
+   <organization>
+      <!-- used as Specification/Implementation-Vendor in MANIFEST.MF -->
+      <name>Sebastian Thomschke</name>
+   </organization>
+   <licenses>
+      <license>
+         <name>Eclipse Public License 2.0</name>
+         <distribution>repo</distribution>
+         <url>https://spdx.org/licenses/EPL-2.0</url>
+      </license>
+   </licenses>
+
+
+   <developers>
+      <developer>
+         <id>sebthom</id>
+         <name>Sebastian Thomschke</name>
+         <url>https://sebthom.de/</url>
+         <roles>
+            <role>lead</role>
+            <role>developer</role>
+         </roles>
+         <timezone>Europe/Berlin</timezone>
+      </developer>
+   </developers>
+
+
+   <modules>
+      <module>jstuff-core</module>
+      <module>jstuff-integration</module>
+      <module>jstuff-xml</module>
+   </modules>
+
+
+   <scm>
+      <!-- https://maven.apache.org/scm/git.html -->
+      <url>https://github.com/sebthom/jstuff</url>
+      <connection>scm:git:https://github.com/sebthom/jstuff.git</connection>
+      <developerConnection>scm:git:https://github.com/sebthom/jstuff.git</developerConnection>
+      <tag>HEAD</tag>
+   </scm>
+
+
+   <issueManagement>
+      <system>github.com</system>
+      <url>https://github.com/sebthom/jstuff/issues</url>
+   </issueManagement>
+
+
+   <ciManagement>
+      <system>github.com</system>
+      <url>https://github.com/sebthom/jstuff/actions</url>
+   </ciManagement>
+
+
+   <properties>
+      <java.version>17</java.version>
+      <skip.japicmp.cmp>true</skip.japicmp.cmp>
+      <assertj.version>3.27.6</assertj.version>
+   </properties>
+
+
+   <!-- global dependencies -->
+
+   <dependencyManagement>
+      <dependencies>
+         <dependency>
+            <groupId>org.junit</groupId>
+            <artifactId>junit-bom</artifactId>
+            <version>6.0.0</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.eclipse.jdt</groupId>
+         <artifactId>org.eclipse.jdt.annotation</artifactId>
+         <version>2.4.0</version>
+         <scope>provided</scope>
+      </dependency>
+      <!--External Eclipse null Annotations, see https://github.com/vegardit/no-npe-->
+      <dependency>
+         <groupId>com.vegardit.no-npe</groupId>
+         <artifactId>no-npe-eea-all</artifactId>
+         <version>1.3.6</version>
+         <scope>provided</scope>
+       </dependency>
+
+      <!-- test dependencies -->
+      <dependency>
+         <groupId>org.junit.jupiter</groupId>
+         <artifactId>junit-jupiter</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.assertj</groupId>
+         <artifactId>assertj-core</artifactId>
+         <version>${assertj.version}</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>add-license-file-to-jar</id>
+                  <phase>generate-resources</phase>
+                  <goals>
+                     <goal>add-resource</goal>
+                  </goals>
+                  <configuration>
+                     <resources>
+                        <resource>
+                           <directory>./</directory>
+                           <targetPath>META-INF</targetPath>
+                           <includes>
+                              <include>../LICENSE.txt</include>
+                           </includes>
+                        </resource>
+                     </resources>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>aggregate-javadocs</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>aggregate</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <dependencyLinks>
+                  <dependencyLink>
+                     <!--workaround for
+                       https://github.com/assertj/assertj/issues/3476
+                       https://issues.apache.org/jira/projects/MJAVADOC/issues/MJAVADOC-792
+                     -->
+                     <groupId>org.assertj</groupId>
+                     <artifactId>assertj-core</artifactId>
+                     <url>https://www.javadoc.io/doc/org.assertj/assertj-core/${assertj.version}</url>
+                  </dependencyLink>
+               </dependencyLinks>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>
