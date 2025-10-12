@@ -39,7 +39,7 @@ public class SoftHashMap<K, V> extends AbstractMap<K, V> {
    @Override
    public Set<Map.Entry<K, V>> entrySet() {
       if (map.isEmpty())
-         return Collections.<K, V> emptyMap().entrySet(); // CHECKSTYLE:IGNORE .*
+         return Collections.<K, V>emptyMap().entrySet(); // CHECKSTYLE:IGNORE .*
 
       purgeStaleEntries();
       final var snapshot = new HashMap<K, V>();

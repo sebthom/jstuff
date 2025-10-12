@@ -42,7 +42,7 @@ public final class EmptyQueue<E> extends AbstractQueue<E> implements Serializabl
 
    @Override
    public Iterator<E> iterator() {
-      return Collections.<E> emptySet().iterator(); // CHECKSTYLE:IGNORE GenericWhitespace
+      return Collections.<E>emptySet().iterator(); // CHECKSTYLE:IGNORE GenericWhitespace
    }
 
    @Override
