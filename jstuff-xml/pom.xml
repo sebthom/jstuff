@@ -15,6 +15,7 @@ SPDX-License-Identifier: EPL-2.0
    </parent>
 
    <artifactId>jstuff-xml</artifactId>
+   <name>${project.artifactId}</name>
 
    <properties>
       <!-- https://search.maven.org/search?q=g:org.glassfish.jaxb -->

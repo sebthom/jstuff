@@ -15,6 +15,7 @@ SPDX-License-Identifier: EPL-2.0
    </parent>
 
    <artifactId>jstuff-integration</artifactId>
+   <name>${project.artifactId}</name>
 
    <properties>
        <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-core/versions -->
