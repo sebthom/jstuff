@@ -95,7 +95,7 @@ SPDX-License-Identifier: EPL-2.0
             <groupId>org.springframework</groupId>
             <artifactId>spring-framework-bom</artifactId>
             <!-- https://central.sonatype.com/artifact/org.springframework/spring-beans -->
-            <version>6.2.12</version>
+            <version>6.2.13</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
