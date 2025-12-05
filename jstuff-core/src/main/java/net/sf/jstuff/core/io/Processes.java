@@ -154,25 +154,38 @@ public abstract class Processes {
             pb.directory(workDir);
          }
 
+         /*
+          * Configure ProcessBuilder redirects that must be set before start().
+          */
+         if (input instanceof final File f) {
+            pb.redirectInput(f);
+         }
+         if (redirectErrorToOutput) {
+            pb.redirectErrorStream(true);
+         } else if (redirectError instanceof final File f) {
+            pb.redirectError(f);
+         }
+         if (redirectOutput instanceof final File f) {
+            pb.redirectOutput(f);
+         }
+
          final Process proc = pb.start();
 
-         if (input != null) {
+         /*
+          * Handle stdin/output redirection that uses the process streams.
+          */
+         if (input != null && !(input instanceof File)) {
             final var input = this.input;
-            if (input instanceof final File f) {
-               pb.redirectInput(f);
-            } else if (input instanceof final InputStream is) {
+            if (input instanceof final InputStream is) {
                writeToStdIn(is, proc);
             } else if (input instanceof final CharSequence cs) {
                writeToStdIn(cs, proc);
             }
          }
-         if (redirectErrorToOutput) {
-            pb.redirectError();
-         } else if (redirectError != null) {
+
+         if (!redirectErrorToOutput && redirectError != null && !(redirectError instanceof File)) {
             final var redirectError = this.redirectError;
-            if (redirectError instanceof final File f) {
-               pb.redirectError(f);
-            } else if (redirectError instanceof final OutputStream os) {
+            if (redirectError instanceof final OutputStream os) {
                redirect(proc.getErrorStream(), os);
             } else if (redirectError instanceof final Appendable appendable) {
                redirect(proc.getErrorStream(), appendable);
@@ -181,11 +194,9 @@ public abstract class Processes {
             }
          }
 
-         if (redirectOutput != null) {
+         if (redirectOutput != null && !(redirectOutput instanceof File)) {
             final var redirectOutput = this.redirectOutput;
-            if (redirectOutput instanceof final File f) {
-               pb.redirectOutput(f);
-            } else if (redirectOutput instanceof final OutputStream os) {
+            if (redirectOutput instanceof final OutputStream os) {
                redirect(proc.getInputStream(), os);
             } else if (redirectOutput instanceof final Appendable appendable) {
                redirect(proc.getInputStream(), appendable);
@@ -286,6 +297,7 @@ public abstract class Processes {
       public Builder withRedirectErrorToOutput() {
          if (redirectError != null)
             throw new IllegalArgumentException("withRedirectErrorToOutput() and withRedirectError() are mutually exclusive.");
+         redirectErrorToOutput = true;
          return this;
       }
 

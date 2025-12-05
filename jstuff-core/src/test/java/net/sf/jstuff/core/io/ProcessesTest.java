@@ -7,6 +7,9 @@ package net.sf.jstuff.core.io;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -102,5 +105,67 @@ class ProcessesTest {
       assertThat(prc.exitStatus()).isNotZero();
       Threads.sleep(1000);
       assertThat(signal.await(5, TimeUnit.SECONDS)).isTrue();
+   }
+
+   @Test
+   void testRedirectOutputToFile() throws IOException, InterruptedException {
+      final Path outFile = Files.createTempFile("jstuff-processes-out", ".txt");
+      try {
+         final String exe;
+         final List<String> args;
+         if (SystemUtils.IS_OS_WINDOWS) {
+            exe = "cmd";
+            args = List.of("/c", "echo OUT-FILE");
+         } else {
+            exe = "sh";
+            args = List.of("-c", "echo OUT-FILE");
+         }
+
+         final ProcessWrapper prc = Processes.builder(exe) //
+            .withArgs(args) //
+            .withRedirectOutput(outFile) //
+            .start() //
+            .waitForExit(5, TimeUnit.SECONDS);
+
+         assertThat(prc.getState()).isEqualTo(Processes.ProcessState.SUCCEEDED);
+         assertThat(prc.exitStatus()).isZero();
+
+         final String content = Files.readString(outFile);
+         assertThat(content).contains("OUT-FILE");
+      } finally {
+         Files.deleteIfExists(outFile);
+      }
+   }
+
+   @Test
+   void testRedirectErrorToOutputFile() throws IOException, InterruptedException {
+      final Path outFile = Files.createTempFile("jstuff-processes-errout", ".txt");
+      try {
+         final String exe;
+         final List<String> args;
+         if (SystemUtils.IS_OS_WINDOWS) {
+            exe = "cmd";
+            args = List.of("/c", "echo OUT-LINE & echo ERR-LINE 1>&2");
+         } else {
+            exe = "sh";
+            args = List.of("-c", "echo OUT-LINE; echo ERR-LINE 1>&2");
+         }
+
+         final ProcessWrapper prc = Processes.builder(exe) //
+            .withArgs(args) //
+            .withRedirectErrorToOutput() //
+            .withRedirectOutput(outFile) //
+            .start() //
+            .waitForExit(5, TimeUnit.SECONDS);
+
+         assertThat(prc.getState()).isEqualTo(Processes.ProcessState.SUCCEEDED);
+         assertThat(prc.exitStatus()).isZero();
+
+         final String content = Files.readString(outFile);
+         assertThat(content).contains("OUT-LINE");
+         assertThat(content).contains("ERR-LINE");
+      } finally {
+         Files.deleteIfExists(outFile);
+      }
    }
 }
