@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sebthom/jstuff/build.yml?logo=github)](https://github.com/sebthom/jstuff/actions/workflows/build.yml)
 [![codecov](https://codecov.io/github/sebthom/jstuff/graph/badge.svg?token=3R65HYZT0O)](https://codecov.io/github/sebthom/jstuff)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v3.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![Javadoc](https://img.shields.io/badge/javadoc-online-green)](https://sebthom.github.io/jstuff/javadoc/)
 [![License](https://img.shields.io/github/license/sebthom/jstuff.svg?color=blue)](LICENSE.txt)
 [![Maven Central](https://img.shields.io/maven-central/v/net.sf.jstuff/jstuff-parent)](https://central.sonatype.com/search?namespace=net.sf.jstuff)
