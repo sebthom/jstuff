@@ -35,6 +35,7 @@ import net.sf.jstuff.core.collection.CollectionUtils;
 import net.sf.jstuff.core.concurrent.ScalingScheduledExecutorService;
 import net.sf.jstuff.core.concurrent.Threads;
 import net.sf.jstuff.core.functional.ThrowingConsumer;
+import net.sf.jstuff.core.io.stream.FastByteArrayInputStream;
 import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
@@ -43,8 +44,6 @@ import net.sf.jstuff.core.validation.Args;
  */
 public abstract class Processes {
 
-   private static final Logger LOG = Logger.create();
-
    public static class Builder {
 
       private Function<Object, String> stringifier = Objects::toString;
@@ -52,12 +51,17 @@ public abstract class Processes {
       private final String executable;
       private final List<Object> args = new ArrayList<>(2);
       private @Nullable Map<String, Object> env;
-      private @Nullable File workDir;
+      private @Nullable Object /*CharSequence|File|InputStream*/ input;
       private @Nullable Consumer<ProcessWrapper> onExit;
+      private @Nullable File workDir;
+
+      private boolean inheritStdIn;
+      private boolean inheritStdOut;
+      private boolean inheritStdErr;
+
       private boolean redirectErrorToOutput;
-      private @Nullable Object redirectError;
-      private @Nullable Object input;
-      private @Nullable Object redirectOutput;
+      private @Nullable Object /*Appendable|File|OutputStream|Consumer<String>*/ redirectError;
+      private @Nullable Object /*Appendable|File|OutputStream|Consumer<String>*/ redirectOutput;
 
       protected Builder(final String exe) {
          executable = exe;
@@ -65,7 +69,23 @@ public abstract class Processes {
 
       private void assertRedirectErrorToOuputNotConfigured() {
          if (redirectErrorToOutput)
-            throw new IllegalArgumentException("withRedirectError() and withRedirectErrorToOutput() are mutually exclusive.");
+            throw new IllegalStateException("withRedirectError() and withRedirectErrorToOutput() are mutually exclusive.");
+         assertStdErrNotInherited();
+      }
+
+      private void assertStdErrNotInherited() {
+         if (inheritStdErr)
+            throw new IllegalStateException("withRedirectError()/withRedirectErrorToOutput() cannot be combined with withInheritStdErr().");
+      }
+
+      private void assertStdInNotInherited() {
+         if (inheritStdIn)
+            throw new IllegalStateException("withInput() cannot be combined with withInheritStdIn().");
+      }
+
+      private void assertStdOutNotInherited() {
+         if (inheritStdOut)
+            throw new IllegalStateException("withRedirectOutput() cannot be combined with withInheritStdOut().");
       }
 
       public Builder onExit(final @Nullable Consumer<ProcessWrapper> action) {
@@ -109,28 +129,6 @@ public abstract class Processes {
          }, BACKGROUND_THREADS);
       }
 
-      private CompletableFuture<@Nullable Void> writeToStdIn(final CharSequence in, final Process proc) {
-         return CompletableFuture.runAsync(() -> {
-            try (var out = proc.getOutputStream()) {
-               IOUtils.write(in, out, StandardCharsets.UTF_8);
-            } catch (final IOException ex) {
-               throw new RuntimeIOException(ex);
-            }
-         }, BACKGROUND_THREADS);
-      }
-
-      private CompletableFuture<@Nullable Void> writeToStdIn(final InputStream in, final Process proc) {
-         return CompletableFuture.runAsync(() -> {
-            try (var out = proc.getOutputStream()) {
-               IOUtils.copy(in, out);
-            } catch (final IOException ex) {
-               throw new RuntimeIOException(ex);
-            } finally {
-               IOUtils.closeQuietly(in);
-            }
-         }, BACKGROUND_THREADS);
-      }
-
       /**
        * Runs the command in the background and immediately returns.
        */
@@ -157,15 +155,23 @@ public abstract class Processes {
          /*
           * Configure ProcessBuilder redirects that must be set before start().
           */
-         if (input instanceof final File f) {
+         if (inheritStdIn) {
+            pb.redirectInput(ProcessBuilder.Redirect.INHERIT);
+         } else if (input instanceof final File f) {
             pb.redirectInput(f);
          }
+
          if (redirectErrorToOutput) {
             pb.redirectErrorStream(true);
+         } else if (inheritStdErr) {
+            pb.redirectError(ProcessBuilder.Redirect.INHERIT);
          } else if (redirectError instanceof final File f) {
             pb.redirectError(f);
          }
-         if (redirectOutput instanceof final File f) {
+
+         if (inheritStdOut) {
+            pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+         } else if (redirectOutput instanceof final File f) {
             pb.redirectOutput(f);
          }
 
@@ -174,7 +180,7 @@ public abstract class Processes {
          /*
           * Handle stdin/output redirection that uses the process streams.
           */
-         if (input != null && !(input instanceof File)) {
+         if (!inheritStdIn && input != null && !(input instanceof File)) {
             final var input = this.input;
             if (input instanceof final InputStream is) {
                writeToStdIn(is, proc);
@@ -183,7 +189,7 @@ public abstract class Processes {
             }
          }
 
-         if (!redirectErrorToOutput && redirectError != null && !(redirectError instanceof File)) {
+         if (!inheritStdErr && !redirectErrorToOutput && redirectError != null && !(redirectError instanceof File)) {
             final var redirectError = this.redirectError;
             if (redirectError instanceof final OutputStream os) {
                redirect(proc.getErrorStream(), os);
@@ -194,7 +200,7 @@ public abstract class Processes {
             }
          }
 
-         if (redirectOutput != null && !(redirectOutput instanceof File)) {
+         if (!inheritStdOut && redirectOutput != null && !(redirectOutput instanceof File)) {
             final var redirectOutput = this.redirectOutput;
             if (redirectOutput instanceof final OutputStream os) {
                redirect(proc.getInputStream(), os);
@@ -252,80 +258,327 @@ public abstract class Processes {
          return this;
       }
 
+      /**
+       * Inherit stderr of the current process.
+       *
+       * <p>
+       * Cannot be combined with {@code withRedirectError()} or {@code withRedirectErrorToOutput()}.
+       * </p>
+       */
+      public Builder withInheritError() {
+         if (redirectError != null || redirectErrorToOutput)
+            throw new IllegalStateException(
+               "withInheritStdErr() cannot be combined with withRedirectError() or withRedirectErrorToOutput().");
+         inheritStdErr = true;
+         return this;
+      }
+
+      /**
+       * Inherit stdin of the current process.
+       *
+       * <p>
+       * Cannot be combined with {@code withInput()}.
+       * </p>
+       */
+      public Builder withInheritInput() {
+         if (input != null)
+            throw new IllegalStateException("withInheritStdIn() cannot be combined with withInput().");
+         inheritStdIn = true;
+         return this;
+      }
+
+      /**
+       * Inherits stdin, stdout and stderr of the current process.
+       *
+       * <p>
+       * Cannot be combined with {@code withInput()}, {@code withRedirectOutput()}, {@code withRedirectError()}
+       * or {@code withRedirectErrorToOutput()}.
+       * </p>
+       */
+      public Builder withInheritIO() {
+         if (input != null)
+            throw new IllegalStateException("withInheritStdIn() cannot be combined with withInput().");
+         if (redirectOutput != null)
+            throw new IllegalStateException("withInheritStdOut() cannot be combined with withRedirectOutput().");
+         if (redirectError != null || redirectErrorToOutput)
+            throw new IllegalStateException(
+               "withInheritStdErr() cannot be combined with withRedirectError() or withRedirectErrorToOutput().");
+
+         inheritStdIn = true;
+         inheritStdOut = true;
+         inheritStdErr = true;
+         return this;
+      }
+
+      /**
+       * Inherit stdout of the current process.
+       *
+       * <p>
+       * Cannot be combined with {@code withRedirectOutput()}.
+       * </p>
+       */
+      public Builder withInheritOutput() {
+         if (redirectOutput != null)
+            throw new IllegalStateException("withInheritStdOut() cannot be combined with withRedirectOutput().");
+         inheritStdOut = true;
+         return this;
+      }
+
+      /**
+       * Configures stdin content for the process from an input stream.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritInput()} which inherits stdin from the current process.
+       * </p>
+       */
+      @SuppressWarnings("resource")
+      public Builder withInput(final byte @Nullable [] input) {
+         if (input != null) {
+            assertStdInNotInherited();
+         }
+         this.input = input == null ? null : new FastByteArrayInputStream(input);
+         return this;
+      }
+
+      /**
+       * Configures stdin content for the process.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritInput()} which inherits stdin from the current process.
+       * </p>
+       */
       public Builder withInput(final @Nullable CharSequence input) {
+         if (input != null) {
+            assertStdInNotInherited();
+         }
          this.input = input;
          return this;
       }
 
+      /**
+       * Configures stdin content for the process.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritInput()} which inherits stdin from the current process.
+       * </p>
+       */
+      public Builder withInput(final @Nullable File input) {
+         if (input != null) {
+            assertStdInNotInherited();
+         }
+         this.input = input;
+         return this;
+      }
+
+      /**
+       * Configures stdin content for the process from an input stream.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritInput()} which inherits stdin from the current process.
+       * </p>
+       */
       public Builder withInput(final @Nullable InputStream input) {
+         if (input != null) {
+            assertStdInNotInherited();
+         }
          this.input = input;
          return this;
       }
 
+      /**
+       * Configures stdin content for the process.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritInput()} which inherits stdin from the current process.
+       * </p>
+       */
+      public Builder withInput(final @Nullable Path input) {
+         if (input != null) {
+            assertStdInNotInherited();
+         }
+         this.input = input == null ? null : input.toFile();
+         return this;
+      }
+
+      /**
+       * Redirects stderr to the given {@link Appendable}.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritError()} or {@link #withRedirectErrorToOutput()}.
+       * </p>
+       */
       public Builder withRedirectError(final @Nullable Appendable target) {
-         assertRedirectErrorToOuputNotConfigured();
+         if (target != null) {
+            assertRedirectErrorToOuputNotConfigured();
+         }
          redirectError = target;
          return this;
       }
 
+      /**
+       * Redirects stderr line by line to the given consumer.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritError()} or {@link #withRedirectErrorToOutput()}.
+       * </p>
+       */
       public Builder withRedirectError(final @Nullable Consumer<String> lineConsumer) {
-         assertRedirectErrorToOuputNotConfigured();
+         if (lineConsumer != null) {
+            assertRedirectErrorToOuputNotConfigured();
+         }
          redirectError = lineConsumer;
          return this;
       }
 
+      /**
+       * Redirects stderr to the given file.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritError()} or {@link #withRedirectErrorToOutput()}.
+       * </p>
+       */
       public Builder withRedirectError(final @Nullable File target) {
-         assertRedirectErrorToOuputNotConfigured();
+         if (target != null) {
+            assertRedirectErrorToOuputNotConfigured();
+         }
          redirectError = target;
          return this;
       }
 
+      /**
+       * Redirects stderr to the given output stream.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritError()} or {@link #withRedirectErrorToOutput()}.
+       * </p>
+       */
       public Builder withRedirectError(final @Nullable OutputStream target) {
-         assertRedirectErrorToOuputNotConfigured();
+         if (target != null) {
+            assertRedirectErrorToOuputNotConfigured();
+         }
          redirectError = target;
          return this;
       }
 
+      /**
+       * Redirects stderr to the given file.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritError()} or {@link #withRedirectErrorToOutput()}.
+       * </p>
+       */
       public Builder withRedirectError(final @Nullable Path target) {
          return withRedirectError(target == null ? null : target.toFile());
       }
 
+      /**
+       * Redirects stderr to the given print stream.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritError()} or {@link #withRedirectErrorToOutput()}.
+       * </p>
+       */
       public Builder withRedirectError(final @Nullable PrintStream target) {
          return withRedirectError((OutputStream) target);
       }
 
+      /**
+       * Redirects stderr to stdout.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritError()} or <code>#withRedirectError(...)</code>.
+       * </p>
+       */
       public Builder withRedirectErrorToOutput() {
          if (redirectError != null)
             throw new IllegalArgumentException("withRedirectErrorToOutput() and withRedirectError() are mutually exclusive.");
+         assertStdErrNotInherited();
          redirectErrorToOutput = true;
          return this;
       }
 
+      /**
+       * Redirects stdout to the given {@link Appendable}.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritOutput()}.
+       * </p>
+       */
       public Builder withRedirectOutput(final @Nullable Appendable target) {
+         if (target != null) {
+            assertStdOutNotInherited();
+         }
          redirectOutput = target;
          return this;
       }
 
+      /**
+       * Redirects stdout line by line to the given consumer.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritOutput()}.
+       * </p>
+       */
       public Builder withRedirectOutput(final @Nullable Consumer<String> lineConsumer) {
+         if (lineConsumer != null) {
+            assertStdOutNotInherited();
+         }
          redirectOutput = lineConsumer;
          return this;
       }
 
+      /**
+       * Redirects stdout to the given file.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritOutput()}.
+       * </p>
+       */
       public Builder withRedirectOutput(final @Nullable File target) {
+         if (target != null) {
+            assertStdOutNotInherited();
+         }
          redirectOutput = target;
          return this;
       }
 
+      /**
+       * Redirects stdout to the given output stream.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritOutput()}.
+       * </p>
+       */
       public Builder withRedirectOutput(final @Nullable OutputStream target) {
+         if (target != null) {
+            assertStdOutNotInherited();
+         }
          redirectOutput = target;
          return this;
       }
 
+      /**
+       * Redirects stdout to the given file.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritOutput()}.
+       * </p>
+       */
       public Builder withRedirectOutput(final @Nullable Path target) {
+         if (target != null) {
+            assertStdOutNotInherited();
+         }
          redirectOutput = target == null ? null : target.toFile();
          return this;
       }
 
+      /**
+       * Redirects stdout to the given print stream.
+       *
+       * <p>
+       * Cannot be combined with {@link #withInheritOutput()}.
+       * </p>
+       */
       public Builder withRedirectOutput(final @Nullable PrintStream target) {
          return withRedirectOutput((OutputStream) target);
       }
@@ -356,6 +609,28 @@ public abstract class Processes {
             workDir = path.toFile();
          }
          return this;
+      }
+
+      private CompletableFuture<@Nullable Void> writeToStdIn(final CharSequence in, final Process proc) {
+         return CompletableFuture.runAsync(() -> {
+            try (var out = proc.getOutputStream()) {
+               IOUtils.write(in, out, StandardCharsets.UTF_8);
+            } catch (final IOException ex) {
+               throw new RuntimeIOException(ex);
+            }
+         }, BACKGROUND_THREADS);
+      }
+
+      private CompletableFuture<@Nullable Void> writeToStdIn(final InputStream in, final Process proc) {
+         return CompletableFuture.runAsync(() -> {
+            try (var out = proc.getOutputStream()) {
+               IOUtils.copy(in, out);
+            } catch (final IOException ex) {
+               throw new RuntimeIOException(ex);
+            } finally {
+               IOUtils.closeQuietly(in);
+            }
+         }, BACKGROUND_THREADS);
       }
    }
 
@@ -538,6 +813,8 @@ public abstract class Processes {
          return this;
       }
    }
+
+   private static final Logger LOG = Logger.create();
 
    private static final ScheduledExecutorService BACKGROUND_THREADS = new ScalingScheduledExecutorService(0, Integer.MAX_VALUE, Duration
       .ofSeconds(30));
