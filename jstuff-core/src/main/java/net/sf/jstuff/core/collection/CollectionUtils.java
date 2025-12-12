@@ -27,6 +27,45 @@ import org.eclipse.jdt.annotation.Nullable;
 public abstract class CollectionUtils {
 
    /**
+    * Adds the given element to the list only if it is not already present.
+    * <p>
+    * Presence is determined using {@link List#contains(Object)}, which relies on
+    * the {@link Object#equals(Object)} contract of the element type.
+    *
+    * @param collection the collection to modify
+    * @param item the element to add if supported by the list)
+    * @return {@code true} if the element was not already contained in the list and was added;
+    *         {@code false} otherwise
+    */
+   public static <T> boolean addIfAbsent(final Collection<T> collection, final T item) {
+      if (!collection.contains(item)) {
+         collection.add(item);
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Adds the given element to the list only if no identical ({@code ==}) element
+    * is already present.
+    * <p>
+    * Identity comparison ({@code ==}) is used instead of {@link Object#equals(Object)}.
+    *
+    * @param collection the collection to modify
+    * @param item the element to add
+    * @return {@code true} if the list did not already contain the given element by identity
+    *         and it was added; {@code false} otherwise
+    */
+   public static <T> boolean addIfAbsentByIdentity(final Collection<T> collection, final T item) {
+      for (final T existing : collection) {
+         if (existing == item)
+            return false;
+      }
+      collection.add(item);
+      return true;
+   }
+
+   /**
     * Adds all items to the collection
     *
     * @return number of items added

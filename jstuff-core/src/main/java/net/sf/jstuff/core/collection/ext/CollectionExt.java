@@ -16,6 +16,33 @@ import net.sf.jstuff.core.collection.CollectionUtils;
 public interface CollectionExt<E> extends Collection<E> {
 
    /**
+    * Adds the given item to the collection only if it is not already present.
+    * <p>
+    * Equality is determined by {@link Object#equals(Object)}.
+    *
+    * @param item the element to add
+    * @return {@code true} if the item was not already contained in the collection and has been added,
+    *         {@code false} otherwise
+    */
+   default boolean addIfAbsent(final E item) {
+      return CollectionUtils.addIfAbsent(this, item);
+   }
+
+   /**
+    * Adds the given element to the collection only if no identical ({@code ==}) element
+    * is already present.
+    * <p>
+    * Identity comparison ({@code ==}) is used instead of {@link Object#equals(Object)}.
+    *
+    * @param item the element to add
+    * @return {@code true} if the collection did not already contain the given element by identity
+    *         and it was added; {@code false} otherwise
+    */
+   default boolean addIfAbsentByIdentity(final E item) {
+      return CollectionUtils.addIfAbsentByIdentity(this, item);
+   }
+
+   /**
     * Adds all items to the collection accepted by the exclude
     *
     * @return number of items added
