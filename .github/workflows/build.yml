@@ -74,7 +74,6 @@ jobs:
 
       before-build: |
         if [[ $OSTYPE == linux* ]] && ! hash ping &>/dev/null; then
-          (set -x; sudo apt-get update);
           (set -x; sudo apt-get install iputils-ping);
         fi
 
