@@ -186,17 +186,19 @@ public abstract class MoreFiles {
 
       if (sourceSupportedAttrs.contains("posix") && targetSupportedAttrs.contains("posix")) {
          try {
-            final PosixFileAttributes sourcePosixAttrs = sourceFSP.readAttributes(source, PosixFileAttributes.class, NOFOLLOW_LINKS);
             final PosixFileAttributeView targetPosixAttrs = targetFSP.getFileAttributeView(target, PosixFileAttributeView.class,
                NOFOLLOW_LINKS);
-            if (copyACL) {
-               targetPosixAttrs.setOwner(sourcePosixAttrs.owner());
-               targetPosixAttrs.setGroup(sourcePosixAttrs.group());
-               targetPosixAttrs.setPermissions(sourcePosixAttrs.permissions());
+            if (targetPosixAttrs != null) {
+               final PosixFileAttributes sourcePosixAttrs = sourceFSP.readAttributes(source, PosixFileAttributes.class, NOFOLLOW_LINKS);
+               if (copyACL) {
+                  targetPosixAttrs.setOwner(sourcePosixAttrs.owner());
+                  targetPosixAttrs.setGroup(sourcePosixAttrs.group());
+                  targetPosixAttrs.setPermissions(sourcePosixAttrs.permissions());
+               }
+               copyUserDefinedAttrs(source, target);
+               copyTimeAttrs(sourcePosixAttrs, targetPosixAttrs);
+               return;
             }
-            copyUserAttrs(source, target);
-            copyTimeAttrs(sourcePosixAttrs, targetPosixAttrs);
-            return;
          } catch (final java.nio.file.FileSystemException ex) {
             // java.nio.file.FileSystemException: <PATH>: Operation not supported
             LOG.warn(ex);
@@ -205,26 +207,29 @@ public abstract class MoreFiles {
 
       if (sourceSupportedAttrs.contains("dos") && targetSupportedAttrs.contains("dos")) {
          try {
-            final DosFileAttributes sourceDosAttrs = sourceFSP.readAttributes(source, DosFileAttributes.class, NOFOLLOW_LINKS);
             final DosFileAttributeView targetDosAttrs = targetFSP.getFileAttributeView(target, DosFileAttributeView.class, NOFOLLOW_LINKS);
-            targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
-            targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
-            targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
-            targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
-
             if (copyACL && sourceSupportedAttrs.contains("acl") && targetSupportedAttrs.contains("acl")) {
                final AclFileAttributeView sourceAclAttrs = sourceFSP.getFileAttributeView(source, AclFileAttributeView.class,
                   NOFOLLOW_LINKS);
                final AclFileAttributeView targetAclAttrs = targetFSP.getFileAttributeView(target, AclFileAttributeView.class,
                   NOFOLLOW_LINKS);
-               targetAclAttrs.setAcl(sourceAclAttrs.getAcl());
-               if (SystemUtils.isRunningAsAdmin()) {
-                  targetAclAttrs.setOwner(sourceAclAttrs.getOwner());
+               if (sourceAclAttrs != null && targetAclAttrs != null) {
+                  targetAclAttrs.setAcl(sourceAclAttrs.getAcl());
+                  if (SystemUtils.isRunningAsAdmin()) {
+                     targetAclAttrs.setOwner(sourceAclAttrs.getOwner());
+                  }
                }
             }
-            copyUserAttrs(source, target);
-            copyTimeAttrs(sourceDosAttrs, targetDosAttrs);
-            return;
+            if (targetDosAttrs != null) {
+               final DosFileAttributes sourceDosAttrs = sourceFSP.readAttributes(source, DosFileAttributes.class, NOFOLLOW_LINKS);
+               targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
+               targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
+               targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
+               targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
+               copyUserDefinedAttrs(source, target);
+               copyTimeAttrs(sourceDosAttrs, targetDosAttrs);
+               return;
+            }
          } catch (final java.nio.file.FileSystemException ex) {
             // java.nio.file.FileSystemException: <PATH>: Operation not supported
             LOG.warn(ex);
@@ -234,11 +239,12 @@ public abstract class MoreFiles {
       if (copyACL && sourceSupportedAttrs.contains("owner") && targetSupportedAttrs.contains("owner")) {
          Files.setOwner(target, Files.getOwner(source, NOFOLLOW_LINKS));
       }
-      copyUserAttrs(source, target);
-      copyTimeAttrs( //
-         sourceFSP.readAttributes(source, BasicFileAttributes.class, NOFOLLOW_LINKS), //
-         targetFSP.getFileAttributeView(target, BasicFileAttributeView.class, NOFOLLOW_LINKS) //
-      );
+      copyUserDefinedAttrs(source, target);
+      final BasicFileAttributeView targetAttrs = targetFSP.getFileAttributeView(target, BasicFileAttributeView.class, NOFOLLOW_LINKS);
+      if (targetAttrs != null) {
+         final BasicFileAttributes sourceAttrs = sourceFSP.readAttributes(source, BasicFileAttributes.class, NOFOLLOW_LINKS);
+         copyTimeAttrs(sourceAttrs, targetAttrs);
+      }
    }
 
    /**
@@ -316,7 +322,7 @@ public abstract class MoreFiles {
    }
 
    @SuppressWarnings("resource")
-   private static void copyUserAttrs(final Path source, final Path target) throws IOException {
+   private static void copyUserDefinedAttrs(final Path source, final Path target) throws IOException {
       final FileSystem sourceFS = source.getFileSystem();
       final FileSystem targetFS = target.getFileSystem();
 
@@ -327,11 +333,15 @@ public abstract class MoreFiles {
 
          final UserDefinedFileAttributeView sourceUserAttrs = sourceFSP.getFileAttributeView(source, UserDefinedFileAttributeView.class,
             NOFOLLOW_LINKS);
+         if (sourceUserAttrs == null)
+            return;
          final List<String> entries = sourceUserAttrs.list();
          if (!entries.isEmpty()) {
             final FileSystemProvider targetFSP = targetFS.provider();
             final UserDefinedFileAttributeView targetUserAttrs = targetFSP.getFileAttributeView(target, UserDefinedFileAttributeView.class,
                NOFOLLOW_LINKS);
+            if (targetUserAttrs == null)
+               return;
             ByteBuffer buf = null;
             for (final String entry : entries) {
                final int entrySize = sourceUserAttrs.size(entry);
