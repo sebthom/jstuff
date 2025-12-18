@@ -177,41 +177,45 @@ public abstract class Processes {
 
          final Process proc = pb.start();
 
+         CompletableFuture<@Nullable Void> stdInDone = CompletableFuture.completedFuture(null);
+         CompletableFuture<@Nullable Void> stdErrDone = CompletableFuture.completedFuture(null);
+         CompletableFuture<@Nullable Void> stdOutDone = CompletableFuture.completedFuture(null);
+
          /*
           * Handle stdin/output redirection that uses the process streams.
           */
          if (!inheritStdIn && input != null && !(input instanceof File)) {
             final var input = this.input;
             if (input instanceof final InputStream is) {
-               writeToStdIn(is, proc);
+               stdInDone = writeToStdIn(is, proc).exceptionally(ex -> null);
             } else if (input instanceof final CharSequence cs) {
-               writeToStdIn(cs, proc);
+               stdInDone = writeToStdIn(cs, proc).exceptionally(ex -> null);
             }
          }
 
          if (!inheritStdErr && !redirectErrorToOutput && redirectError != null && !(redirectError instanceof File)) {
             final var redirectError = this.redirectError;
             if (redirectError instanceof final OutputStream os) {
-               redirect(proc.getErrorStream(), os);
+               stdErrDone = redirect(proc.getErrorStream(), os).exceptionally(ex -> null);
             } else if (redirectError instanceof final Appendable appendable) {
-               redirect(proc.getErrorStream(), appendable);
+               stdErrDone = redirect(proc.getErrorStream(), appendable).exceptionally(ex -> null);
             } else {
-               redirect(proc.getErrorStream(), (Consumer<String>) redirectError);
+               stdErrDone = redirect(proc.getErrorStream(), (Consumer<String>) redirectError).exceptionally(ex -> null);
             }
          }
 
          if (!inheritStdOut && redirectOutput != null && !(redirectOutput instanceof File)) {
             final var redirectOutput = this.redirectOutput;
             if (redirectOutput instanceof final OutputStream os) {
-               redirect(proc.getInputStream(), os);
+               stdOutDone = redirect(proc.getInputStream(), os).exceptionally(ex -> null);
             } else if (redirectOutput instanceof final Appendable appendable) {
-               redirect(proc.getInputStream(), appendable);
+               stdOutDone = redirect(proc.getInputStream(), appendable).exceptionally(ex -> null);
             } else {
-               redirect(proc.getInputStream(), (Consumer<String>) redirectOutput);
+               stdOutDone = redirect(proc.getInputStream(), (Consumer<String>) redirectOutput).exceptionally(ex -> null);
             }
          }
 
-         return new ProcessWrapper(proc) //
+         return new ProcessWrapper(proc, stdInDone, stdOutDone, stdErrDone) //
             .onExit(onExit);
       }
 
@@ -667,13 +671,29 @@ public abstract class Processes {
    public static class ProcessWrapper {
 
       private final Process process;
+      private final CompletableFuture<@Nullable Void> stdInDone;
+      private final CompletableFuture<@Nullable Void> stdOutDone;
+      private final CompletableFuture<@Nullable Void> stdErrDone;
 
       private volatile boolean isTerminateRequested;
       private volatile boolean isKillRequested;
 
       public ProcessWrapper(final Process process) {
+         this(process, CompletableFuture.completedFuture(null), CompletableFuture.completedFuture(null), CompletableFuture.completedFuture(
+            null));
+      }
+
+      ProcessWrapper(final Process process, final CompletableFuture<@Nullable Void> stdInDone,
+            final CompletableFuture<@Nullable Void> stdOutDone, final CompletableFuture<@Nullable Void> stdErrDone) {
          Args.notNull("process", process);
          this.process = process;
+         this.stdInDone = Args.notNull("stdInDone", stdInDone);
+         this.stdOutDone = Args.notNull("stdOutDone", stdOutDone);
+         this.stdErrDone = Args.notNull("stdErrDone", stdErrDone);
+      }
+
+      private void awaitRedirects() {
+         CompletableFuture.allOf(stdInDone, stdOutDone, stdErrDone).join();
       }
 
       public int exitStatus() {
@@ -724,6 +744,10 @@ public abstract class Processes {
          return this;
       }
 
+      /**
+       * Returns a future that completes when the process has terminated and any configured stdin/stdout/stderr stream
+       * redirection tasks (started by {@link Builder#start()}) have finished.
+       */
       public CompletableFuture<ProcessWrapper> onExit() {
          return CompletableFuture.supplyAsync(() -> {
             try {
@@ -731,6 +755,7 @@ public abstract class Processes {
             } catch (final InterruptedException ex) {
                Threads.handleInterruptedException(ex);
             }
+            awaitRedirects();
             return this;
          }, BACKGROUND_THREADS);
       }
@@ -742,6 +767,7 @@ public abstract class Processes {
          BACKGROUND_THREADS.submit(() -> {
             try {
                process.waitFor();
+               awaitRedirects();
                action.accept(this);
             } catch (final InterruptedException ex) {
                Threads.handleInterruptedException(ex);
@@ -757,6 +783,7 @@ public abstract class Processes {
          BACKGROUND_THREADS.submit(() -> {
             try {
                process.waitFor();
+               awaitRedirects();
                action.accept(this);
             } catch (final InterruptedException ex) {
                Threads.handleInterruptedException(ex);
@@ -799,6 +826,7 @@ public abstract class Processes {
        */
       public ProcessWrapper waitForExit() throws InterruptedException {
          process.waitFor();
+         awaitRedirects();
          return this;
       }
 
@@ -809,7 +837,9 @@ public abstract class Processes {
          Args.notNegative("timeout", timeout);
          Args.notNull("timeUnit", timeUnit);
 
-         process.waitFor(timeout, timeUnit);
+         if (process.waitFor(timeout, timeUnit)) {
+            awaitRedirects();
+         }
          return this;
       }
    }

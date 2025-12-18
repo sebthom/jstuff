@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Test;
@@ -82,6 +83,37 @@ class ProcessesTest {
       prc.terminate(1, TimeUnit.SECONDS) // NO-OP
          .waitForExit();
       assertThat(prc.getState()).isEqualTo(Processes.ProcessState.SUCCEEDED);
+   }
+
+   @Test
+   void testOnExitWaitsForRedirects() throws Exception {
+      final String exe;
+      final List<String> args;
+      if (SystemUtils.IS_OS_WINDOWS) {
+         exe = "cmd";
+         args = List.of("/c", "for /L %i in (1,1,50) do @echo LINE-%i");
+      } else {
+         exe = "sh";
+         args = List.of("-c", "i=1; while [ $i -le 50 ]; do echo LINE-$i; i=$((i+1)); done");
+      }
+
+      final var stdout = new StringBuilder();
+      final var linesSeen = new AtomicInteger();
+
+      final ProcessWrapper prc = Processes.builder(exe) //
+         .withArgs(args) //
+         .withRedirectOutput(line -> {
+            stdout.append(line).append(System.lineSeparator());
+            linesSeen.incrementAndGet();
+            Threads.sleep(5);
+         }) //
+         .start();
+
+      prc.onExit().get(5, TimeUnit.SECONDS);
+
+      assertThat(prc.getState()).isEqualTo(Processes.ProcessState.SUCCEEDED);
+      assertThat(linesSeen.get()).isEqualTo(50);
+      assertThat(stdout).contains("LINE-50");
    }
 
    @Test
