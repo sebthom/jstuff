@@ -22,6 +22,7 @@ public abstract class AtomicBooleans {
          // if the value we try to set was already set in the mean-time (by other code
          // in another thread) then toggle the new value and try again
          newVal = !newVal;
+         Thread.onSpinWait();
       }
       // return the value we finally could set
       return newVal;
