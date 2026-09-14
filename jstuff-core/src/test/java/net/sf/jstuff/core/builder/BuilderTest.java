@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import net.sf.jstuff.core.validation.Args;
 
 /**
+ * Verifies reflective builders, inherited fluent methods, property constraints, and post-build callbacks.
+ *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 class BuilderTest {
@@ -28,8 +30,9 @@ class BuilderTest {
          THIS withMethodCall(String name, int value);
       }
 
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings("cast")
       static EntityABuilder<?, ? extends EntityA> builder() {
+         // ECJ 3.43 erases the factory result for raw generic class literals, so this cast is required.
          return (EntityABuilder<?, ? extends EntityA>) BuilderFactory.of(EntityABuilder.class).create();
       }
 
@@ -62,8 +65,9 @@ class BuilderTest {
 
       }
 
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings("cast")
       static EntityBBuilder<?, ? extends EntityB> builder() {
+         // ECJ 3.43 erases the factory result for raw generic class literals, so this cast is required.
          return (EntityBBuilder<?, ? extends EntityB>) BuilderFactory.of(EntityBBuilder.class).create();
       }
 

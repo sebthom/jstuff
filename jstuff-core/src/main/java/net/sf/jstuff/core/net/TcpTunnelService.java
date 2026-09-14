@@ -28,6 +28,8 @@ import net.sf.jstuff.core.logging.Logger;
 import net.sf.jstuff.core.validation.Args;
 
 /**
+ * Forwards TCP connections to a target server, optionally through a proxy.
+ *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class TcpTunnelService extends Thread {
@@ -82,7 +84,7 @@ public class TcpTunnelService extends Thread {
          if (proxyType == null || Strings.isBlank(proxyAddress)) {
             targetSocket = new Socket();
          } else {
-            targetSocket = new Socket(new Proxy(proxyType, new InetSocketAddress(proxyAddress, proxyPort)));
+            targetSocket = new Socket(new Proxy(proxyType, new InetSocketAddress(asNonNull(proxyAddress), proxyPort)));
          }
          targetSocket.setKeepAlive(false);
          targetSocket.setReuseAddress(true);
@@ -156,8 +158,9 @@ public class TcpTunnelService extends Thread {
 
    private static final Logger LOG = Logger.create();
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("cast")
    public static TcpProxyServerBuilder<?, TcpTunnelService> builder() {
+      // ECJ 3.43 erases the factory result for raw generic class literals, so this cast is required.
       return (TcpProxyServerBuilder<?, TcpTunnelService>) BuilderFactory.of(TcpProxyServerBuilder.class).create();
    }
 

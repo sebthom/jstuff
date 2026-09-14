@@ -19,6 +19,8 @@ import net.sf.jstuff.core.reflection.exception.SettingFieldValueFailedException;
 import net.sf.jstuff.core.validation.Args;
 
 /**
+ * Utilities for finding fields, creating variable handles, and reading or writing field values.
+ *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public abstract class Fields extends Members {
@@ -110,6 +112,11 @@ public abstract class Fields extends Members {
       return findRecursive(superclazz, fieldName, compatibleWith);
    }
 
+   /**
+    * Finds a handle for an instance field, discovering its declared type.
+    *
+    * @return the handle, or null if the field does not exist
+    */
    public static @Nullable VarHandle findVarHandle(final Class<?> clazz, final String fieldName) {
       Args.notNull("clazz", clazz);
       Args.notNull("fieldName", fieldName);
@@ -117,11 +124,25 @@ public abstract class Fields extends Members {
       return findVarHandle(clazz, fieldName, null);
    }
 
+   /**
+    * Finds a handle for an instance field.
+    *
+    * @param fieldType the exact declared field type, or null to discover it
+    * @return the handle, or null if no field with the requested name and type exists
+    */
    public static @Nullable VarHandle findVarHandle(final Class<?> clazz, final String fieldName, final @Nullable Class<?> fieldType) {
       try {
          UnsafeUtils.openModule(clazz.getModule());
          final Lookup lookup = MethodHandles.privateLookupIn(clazz, MethodHandles.lookup());
-         return lookup.findVarHandle(Field.class, fieldName, fieldType);
+         if (fieldType != null)
+            return lookup.findVarHandle(clazz, fieldName, fieldType);
+
+         // Reuse find() so JDK fields hidden by reflection filtering remain discoverable.
+         final Field field = find(clazz, fieldName);
+         if (field == null)
+            return null;
+
+         return lookup.findVarHandle(clazz, fieldName, field.getType());
       } catch (final IllegalAccessException ex) {
          throw new ReflectionException(ex);
       } catch (final NoSuchFieldException e) {

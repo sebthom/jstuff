@@ -89,6 +89,7 @@ public abstract class AbstractJPAEntity<KeyType extends Serializable> implements
    /**
     * @return true if this is a new entity that has not been persisted yet
     */
+   @SuppressWarnings("null")
    public final boolean _isNew() {
       return getId() != null;
    }

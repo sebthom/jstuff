@@ -104,8 +104,9 @@ public class DirectoryCleaner {
       asNonNull(directoryCleanersToRunOnExit).add(cleaner);
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("cast")
    public static Builder<?, ? extends DirectoryCleaner> builder() {
+      // ECJ 3.43 erases the factory result for raw generic class literals, so this cast is required.
       return (Builder<?, ? extends DirectoryCleaner>) BuilderFactory.of(Builder.class).create();
    }
 

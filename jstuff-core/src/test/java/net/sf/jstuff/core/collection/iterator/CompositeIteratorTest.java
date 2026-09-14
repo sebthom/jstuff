@@ -7,8 +7,10 @@ package net.sf.jstuff.core.collection.iterator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,12 +40,13 @@ class CompositeIteratorTest {
       /*
        * list of iterators
        */
-      final var it3 = new CompositeIterator<>(Arrays.asList(list1.iterator(), list2.iterator(), null, list3.iterator()));
+      final var it3 = new CompositeIterator<>(Arrays.<@Nullable Iterator<?>>asList(list1.iterator(), list2.iterator(), null, list3
+         .iterator()));
       assertThat(it3.next()).isEqualTo("a");
       assertThat(it3.next()).isEqualTo("b");
       assertThat(it3.next()).isEqualTo("c");
 
-      final var it4 = Iterators.composite(Arrays.asList(list1.iterator(), list2.iterator(), null, list3.iterator()));
+      final var it4 = Iterators.composite(Arrays.<@Nullable Iterator<?>>asList(list1.iterator(), list2.iterator(), null, list3.iterator()));
       assertThat(it4.next()).isEqualTo("a");
       assertThat(it4.next()).isEqualTo("b");
       assertThat(it4.next()).isEqualTo("c");

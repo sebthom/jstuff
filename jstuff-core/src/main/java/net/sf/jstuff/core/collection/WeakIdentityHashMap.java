@@ -18,10 +18,14 @@ import java.util.WeakHashMap;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
+ * Map with weakly held keys compared by object identity, including support for an explicit null key.
+ *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class WeakIdentityHashMap<K, V> implements Map<K, V> {
    private interface KeyWrapper<K> {
+      /** Returns the key, or null for a cleared reference or the explicit null-key wrapper. */
+      @Nullable
       K get();
    }
 
@@ -161,13 +165,22 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
 
    /**
     * <b>Important:</b> The returned set is unmodifiable and does not reflect later changes to the map.
+    * Cleared weak keys are omitted.
     */
    @Override
    public Set<Map.Entry<K, V>> entrySet() {
       expungeStaleEntries();
       final var entrySet = new HashSet<Map.Entry<K, V>>();
       for (final Map.Entry<KeyWrapper<K>, V> ref : map.entrySet()) {
-         final K key = ref.getKey().get();
+         final KeyWrapper<K> keyWrapper = ref.getKey();
+         final @Nullable K referencedKey = keyWrapper.get();
+         // A weak key can clear after queue cleanup or before its reference is enqueued.
+         if (referencedKey == null && keyWrapper != NULL_KEY_WRAPPER) {
+            continue;
+         }
+         // Only the sentinel can still yield null here, and put() stores it only for a null key admitted by K.
+         @SuppressWarnings("null")
+         final K key = referencedKey;
          final V value = ref.getValue();
          final var entry = new Map.Entry<K, V>() {
             @Override
@@ -235,13 +248,21 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
 
    /**
     * <b>Important:</b> The returned set is unmodifiable and does not reflect later changes to the map.
+    * Cleared weak keys are omitted.
     */
    @Override
    public Set<K> keySet() {
       expungeStaleEntries();
       final var keySet = new IdentityHashSet<K>();
       for (final KeyWrapper<K> ref : map.keySet()) {
-         keySet.add(ref.get());
+         final var referencedKey = ref.get();
+         if (referencedKey == null && ref != NULL_KEY_WRAPPER) {
+            continue;
+         }
+         // Only the sentinel can still yield null here, and put() stores it only for a null key admitted by K.
+         @SuppressWarnings("null")
+         final K key = referencedKey;
+         keySet.add(key);
       }
       return Collections.unmodifiableSet(keySet);
    }

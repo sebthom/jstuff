@@ -13,6 +13,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -31,7 +32,10 @@ public abstract class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
    public static <T> T[] addAll(final T[] arr, final @Nullable Collection<T> coll) {
       if (coll == null)
          return arr;
-      return addAll(arr, coll.toArray((T[]) Array.newInstance(asNonNullUnsafe(arr.getClass().getComponentType()), coll.size())));
+      return Objects.requireNonNull(addAll(//
+         arr, //
+         coll.toArray((T[]) Array.newInstance(asNonNullUnsafe(arr.getClass().getComponentType()), coll.size())) //
+      ));
    }
 
    @SuppressWarnings("unchecked")

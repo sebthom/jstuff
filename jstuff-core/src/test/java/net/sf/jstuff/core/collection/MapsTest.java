@@ -57,13 +57,13 @@ class MapsTest {
       map.put("two", 2);
       map.put("three", 3);
 
-      assertThat(Maps.remap(map, Object::toString)).isNotNull() //
+      assertThat(Maps.<String, Integer>remap(map, Object::toString)).isNotNull() //
          .hasSize(3) //
          .containsEntry("1", 1) //
          .containsEntry("2", 2) //
          .containsEntry("3", 3);
 
-      assertThat(Maps.remap(map, Object::toString, value -> "Number " + value)).isNotNull() //
+      assertThat(Maps.<String, Integer, String>remap(map, Object::toString, value -> "Number " + value)).isNotNull() //
          .hasSize(3) //
          .containsEntry("1", "Number 1") //
          .containsEntry("2", "Number 2") //

@@ -89,7 +89,7 @@ public class LZ4BlockCompression extends AbstractCompression {
    public InputStream createDecompressingInputStream(final InputStream compressed) throws IOException {
       Args.notNull("compressed", compressed);
 
-      return new LZ4BlockInputStream(compressed, DECOMP);
+      return LZ4BlockInputStream.newBuilder().withDecompressor(DECOMP).build(compressed);
    }
 
    @Override
@@ -98,7 +98,7 @@ public class LZ4BlockCompression extends AbstractCompression {
       Args.notNull("compressed", compressed);
       Args.notNull("output", output);
 
-      try (var compIS = new LZ4BlockInputStream(toCloseIgnoring(compressed), DECOMP, CHECKSUM.get())) {
+      try (var compIS = LZ4BlockInputStream.newBuilder().withDecompressor(DECOMP).withChecksum(CHECKSUM.get()).build(compressed)) {
          IOUtils.copyLarge(compIS, output);
          output.flush();
       }

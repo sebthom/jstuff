@@ -44,7 +44,7 @@ public class SoftHashMap<K, V> extends AbstractMap<K, V> {
       purgeStaleEntries();
       final var snapshot = new HashMap<K, V>();
       for (final SoftEntry entry : map.values()) {
-         final V value = entry.get();
+         final @Nullable V value = entry.get();
          if (value != null) {
             snapshot.put(entry.key, value);
          }
@@ -58,7 +58,7 @@ public class SoftHashMap<K, V> extends AbstractMap<K, V> {
       final SoftEntry e = map.get(key);
       if (e == null)
          return null;
-      final V value = e.get();
+      final @Nullable V value = e.get();
       if (value == null) {
          map.remove(e.key);
          return null;

@@ -4,7 +4,7 @@
  */
 package net.sf.jstuff.integration.mail;
 
-import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNullUnsafe;
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.*;
 
 import java.io.File;
 import java.io.Serializable;
@@ -37,12 +37,12 @@ public abstract class MailUtils {
    public static class Mail implements Serializable {
       private static final long serialVersionUID = 1L;
 
-      public File[] attachments;
-      public String[] emailBCC;
-      public String[] emailCC;
+      public @NonNull File[] attachments;
+      public @NonNull String[] emailBCC;
+      public @NonNull String[] emailCC;
       public String emailFrom;
       public String emailReturnReceiptTo;
-      public String[] emailTo;
+      public @NonNull String[] emailTo;
       public boolean isPlainTextMessage = true;
       public String message;
       public String subject;
@@ -59,6 +59,7 @@ public abstract class MailUtils {
 
    public static void sendMail(final @NonNull Mail mail, final @NonNull MailServer mailServer) throws MessagingException {
       Args.notNull("mail", mail);
+      Args.notNull("mail.emailFrom", mail.emailFrom);
       Args.notNull("mailServer", mailServer);
       Args.notNull("mailServer.smtpHostname", mailServer.smtpHostname);
 
@@ -83,7 +84,7 @@ public abstract class MailUtils {
          session = Session.getInstance(props, auth);
       }
       final var msg = new MimeMessage(session);
-      msg.setFrom(new InternetAddress(mail.emailFrom));
+      msg.setFrom(new InternetAddress(asNonNull(mail.emailFrom)));
       msg.setSubject(mail.subject);
       if (mail.emailTo != null) {
          for (final String item : mail.emailTo) {

@@ -4,6 +4,7 @@
  */
 package net.sf.jstuff.core.reflection;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Field;
@@ -12,6 +13,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.junit.jupiter.api.Test;
 
 /**
+ * Verifies reflective field lookup, variable handles, and writes that bypass final modifiers.
+ *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 class FieldsTest {
@@ -25,12 +28,39 @@ class FieldsTest {
       }
    }
 
+   @Test
    void testAccessFieldModifiers() {
+      assertThat(Fields.findVarHandle(Field.class, "modifiers")).isNotNull();
+
       // Field.class.getDeclaredField("modifiers") throws NoSuchFieldException on JDK 12+
       // this is to ensure we can still access it
       assertThat(Fields.find(Field.class, "modifiers")).isNotNull();
+   }
 
-      assertThat(Fields.findVarHandle(Field.class, "modifiers")).isNotNull();
+   @Test
+   void testFindVarHandleWithoutType() {
+      final var handle = asNonNull(Fields.findVarHandle(Entity.class, "name"));
+      assertThat(handle.varType()).isEqualTo(String.class);
+      assertThat(handle.get(new Entity("foo"))).isEqualTo("foo");
+   }
+
+   @Test
+   void testFindVarHandleWithType() {
+      final var handle = asNonNull(Fields.findVarHandle(Entity.class, "name", String.class));
+      assertThat(handle.varType()).isEqualTo(String.class);
+      assertThat(handle.get(new Entity("foo"))).isEqualTo("foo");
+   }
+
+   @Test
+   void testFindVarHandleMissingField() {
+      assertThat(Fields.findVarHandle(Entity.class, "missing")).isNull();
+      assertThat(Fields.findVarHandle(Entity.class, "missing", String.class)).isNull();
+   }
+
+   @Test
+   void testFindVarHandleWithWrongType() {
+      // Lookup requires the declared field type, not an assignable supertype.
+      assertThat(Fields.findVarHandle(Entity.class, "name", Object.class)).isNull();
    }
 
    @Test

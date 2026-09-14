@@ -106,7 +106,7 @@ public abstract class Suppliers {
          @Override
          public synchronized T get() {
             if (cached != null) {
-               final T val = cached.get();
+               final @Nullable T val = cached.get();
                if (val != null)
                   return val;
             }
@@ -131,7 +131,8 @@ public abstract class Suppliers {
          @Override
          public synchronized T get() {
             if (cachedAt != -1) {
-               final var obj = cached.get();
+               @SuppressWarnings("null")
+               final T obj = cached.get();
                if ((cachedNull || obj != null) && !isExpired.isExpired(obj, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - cachedAt)))
                   return obj;
             }
@@ -162,7 +163,7 @@ public abstract class Suppliers {
          @Override
          public synchronized T get() {
             if (cached != null) {
-               final T val = cached.get();
+               final @Nullable T val = cached.get();
                if (val != null)
                   return val;
             }
@@ -187,7 +188,8 @@ public abstract class Suppliers {
          @Override
          public synchronized T get() {
             if (cachedAt != -1) {
-               final var obj = cached.get();
+               @SuppressWarnings("null")
+               final T obj = cached.get();
                if ((cachedNull || obj != null) && !isExpired.isExpired(obj, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - cachedAt)))
                   return obj;
             }

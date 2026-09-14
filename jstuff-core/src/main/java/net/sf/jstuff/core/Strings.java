@@ -4156,7 +4156,7 @@ public abstract class Strings {
    /**
     * See {@link StringUtils#toEncodedString(byte[], Charset)}
     */
-   public static String toEncodedString(final byte @Nullable [] bytes, final @Nullable Charset charset) {
+   public static String toEncodedString(final byte[] bytes, final @Nullable Charset charset) {
       return asNonNullUnsafe(StringUtils.toEncodedString(bytes, charset));
    }
 

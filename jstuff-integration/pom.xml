@@ -19,7 +19,7 @@ SPDX-License-Identifier: EPL-2.0
 
    <properties>
        <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-core/versions -->
-      <jackson.version>2.21.3</jackson.version>
+      <jackson.version>2.22.2</jackson.version>
    </properties>
 
    <dependencyManagement>
@@ -95,7 +95,7 @@ SPDX-License-Identifier: EPL-2.0
             <groupId>org.springframework</groupId>
             <artifactId>spring-framework-bom</artifactId>
             <!-- https://central.sonatype.com/artifact/org.springframework/spring-beans -->
-            <version>6.2.18</version>
+            <version>6.2.19</version>
             <type>pom</type>
             <scope>import</scope>
          </dependency>
@@ -109,13 +109,13 @@ SPDX-License-Identifier: EPL-2.0
             <!-- https://github.com/yawkat/lz4-java -->
             <groupId>at.yawk.lz4</groupId>
             <artifactId>lz4-java</artifactId>
-            <version>1.11.0</version>
+            <version>1.11.2</version>
          </dependency>
          <dependency>
             <!-- https://github.com/luben/zstd-jni -->
             <groupId>com.github.luben</groupId>
             <artifactId>zstd-jni</artifactId>
-            <version>1.5.7-8</version>
+            <version>1.5.7-16</version>
          </dependency>
          <dependency>
             <!-- https://github.com/xerial/snappy-java -->
@@ -127,13 +127,13 @@ SPDX-License-Identifier: EPL-2.0
             <!-- https://github.com/hyperxpro/Brotli4j -->
             <groupId>com.aayushatharva.brotli4j</groupId>
             <artifactId>brotli4j</artifactId>
-            <version>1.22.0</version>
+            <version>1.23.0</version>
          </dependency>
          <dependency>
             <!-- https://github.com/ning/compress -->
             <groupId>com.ning</groupId>
             <artifactId>compress-lzf</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.1</version>
          </dependency>
 
          <!--
@@ -145,7 +145,7 @@ SPDX-License-Identifier: EPL-2.0
             <!-- https://search.maven.org/search?q=g:net.bytebuddy -->
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.18.8</version>
+            <version>1.18.13</version>
          </dependency>
          <dependency>
             <groupId>com.h2database</groupId>
@@ -173,7 +173,7 @@ SPDX-License-Identifier: EPL-2.0
             <!-- https://search.maven.org/artifact/org.apache.tomcat/tomcat-catalina -->
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-catalina</artifactId>
-            <version>11.0.22</version>
+            <version>11.0.25</version>
          </dependency>
          <dependency>
             <groupId>jakarta.persistence</groupId>
@@ -494,7 +494,7 @@ SPDX-License-Identifier: EPL-2.0
       <dependency>
          <groupId>ch.qos.logback</groupId>
          <artifactId>logback-classic</artifactId>
-         <version>1.5.32</version>
+         <version>1.6.3</version>
          <scope>test</scope>
       </dependency>
    </dependencies>

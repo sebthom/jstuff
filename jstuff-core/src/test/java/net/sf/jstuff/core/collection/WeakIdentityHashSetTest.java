@@ -43,7 +43,6 @@ class WeakIdentityHashSetTest {
       }
    }
 
-   @SuppressWarnings("null")
    @Test
    void testWeakIdentityHashSet() {
       final var identitySet = new WeakIdentityHashSet<Entity>();

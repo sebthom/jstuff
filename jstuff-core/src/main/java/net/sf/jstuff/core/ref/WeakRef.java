@@ -7,10 +7,12 @@ package net.sf.jstuff.core.ref;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
-public class WeakRef<V> implements Ref<V>, Serializable {
+public class WeakRef<V> implements Ref<@Nullable V>, Serializable {
    private static final long serialVersionUID = 1L;
 
    public static <V> WeakRef<V> of(final WeakReference<V> value) {
@@ -32,7 +34,7 @@ public class WeakRef<V> implements Ref<V>, Serializable {
    }
 
    @Override
-   public V get() {
+   public @Nullable V get() {
       return ref.get();
    }
 

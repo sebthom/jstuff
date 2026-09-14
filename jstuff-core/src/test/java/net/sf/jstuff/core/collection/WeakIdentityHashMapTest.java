@@ -6,6 +6,8 @@ package net.sf.jstuff.core.collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.ref.Reference;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -14,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import net.sf.jstuff.core.concurrent.Threads;
 
 /**
+ * Verifies identity-based weak-key lookup and snapshots, including cleared references and explicit null keys.
+ *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 class WeakIdentityHashMapTest {
@@ -41,6 +45,55 @@ class WeakIdentityHashMapTest {
             return false;
          return true;
       }
+   }
+
+   private static Reference<?> findWeakKeyReference(final WeakIdentityHashMap<?, ?> identityMap, final Object key)
+         throws ReflectiveOperationException {
+      final var mapField = WeakIdentityHashMap.class.getDeclaredField("map");
+      mapField.setAccessible(true);
+      final var backingMap = (Map<?, ?>) mapField.get(identityMap);
+      if (backingMap != null) {
+         for (final Object wrapper : backingMap.keySet()) {
+            if (wrapper instanceof Reference<?> reference && reference.get() == key)
+               return reference;
+         }
+      }
+      throw new AssertionError("No weak reference found for the key");
+   }
+
+   @Test
+   void testSnapshotsSkipClearedWeakKeys() throws ReflectiveOperationException {
+      final var identityMap = new WeakIdentityHashMap<Object, String>();
+      final var liveKey = new Object();
+      final var clearedKey = new Object();
+      identityMap.put(liveKey, "live");
+      identityMap.put(clearedKey, "cleared");
+
+      // clear() does not enqueue, so queue cleanup cannot hide the stale reference from this test.
+      findWeakKeyReference(identityMap, clearedKey).clear();
+
+      assertThat(identityMap.keySet()).containsExactly(liveKey);
+      assertThat(identityMap.entrySet()).singleElement().satisfies(entry -> {
+         assertThat(entry.getKey()).isSameAs(liveKey);
+         assertThat(entry.getValue()).isEqualTo("live");
+      });
+      Reference.reachabilityFence(liveKey);
+   }
+
+   @Test
+   void testSnapshotsPreserveNullKeyWhenWeakKeyClears() throws ReflectiveOperationException {
+      final var identityMap = new WeakIdentityHashMap<@Nullable Object, String>();
+      final var clearedKey = new Object();
+      identityMap.put(null, "null key");
+      identityMap.put(clearedKey, "cleared");
+
+      findWeakKeyReference(identityMap, clearedKey).clear();
+
+      assertThat(identityMap.keySet()).hasSize(1).containsNull();
+      assertThat(identityMap.entrySet()).singleElement().satisfies(entry -> {
+         assertThat(entry.getKey()).isNull();
+         assertThat(entry.getValue()).isEqualTo("null key");
+      });
    }
 
    @Test

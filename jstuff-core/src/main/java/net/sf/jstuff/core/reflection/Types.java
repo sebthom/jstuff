@@ -27,6 +27,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -427,7 +428,7 @@ public abstract class Types {
                }
 
                if (jarEntryName.endsWith("/pom.properties")) {
-                  try (InputStream is = jar.getInputStream(jarEntry)) {
+                  try (InputStream is = Objects.requireNonNull(jar.getInputStream(jarEntry), "No stream for JAR entry: " + jarEntryName)) {
                      final var p = new Properties();
                      p.load(is);
                      final String version = Strings.trimNullable(p.getProperty("version"));

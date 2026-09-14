@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.integration.json;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
+
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
@@ -92,7 +94,7 @@ public class ExtendedBeanDeserializer extends BeanDeserializer {
                p.assignCurrentValue(bean);
                // deserialize fields
                if (p.hasTokenId(JsonTokenId.ID_FIELD_NAME)) {
-                  String propName = p.currentName();
+                  String propName = asNonNull(p.currentName());
                   do {
                      p.nextToken();
                      final SettableBeanProperty prop = _beanProperties.find(propName);

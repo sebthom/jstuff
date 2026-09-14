@@ -9,6 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 /**
+ * Verifies byte-array and sealed-object AES-GCM round trips.
+ *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 class AESEncryptorTest {
@@ -24,5 +26,14 @@ class AESEncryptorTest {
       aes = new AESEncryptor("mySalt");
       final byte[] decrypted = aes.decrypt(encrypted, "mySecretKey");
       assertThat(plain).isEqualTo(decrypted);
+   }
+
+   @Test
+   void testSealedObject() {
+      final var aes = new AESEncryptor("mySalt");
+      final var sealed = aes.seal("Hello World!", "mySecretKey");
+
+      final String unsealed = aes.unseal(sealed, "mySecretKey");
+      assertThat(unsealed).isEqualTo("Hello World!");
    }
 }

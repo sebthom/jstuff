@@ -7,7 +7,6 @@ package net.sf.jstuff.core.types;
 import java.io.Serializable;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
@@ -30,7 +29,7 @@ public interface Identifiable<ID> {
          return id;
       }
 
-      public void setId(final @NonNull ID id) {
+      public void setId(final ID id) {
          this.id = id;
       }
 

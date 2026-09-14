@@ -87,8 +87,8 @@ public abstract class X509Utils {
    /**
     * Converts a javax.security.cert.X509Certificate to java.security.cert.X509Certificate
     */
-   @Deprecated
-   public static X509Certificate convert(final javax.security.cert.X509Certificate cert) {
+   @Deprecated(forRemoval = true)
+   public static X509Certificate convert(@SuppressWarnings("removal") final javax.security.cert.X509Certificate cert) {
       try (var bis = new FastByteArrayInputStream(cert.getEncoded())) {
          return (X509Certificate) CERTIFICATE_FACTORY.generateCertificate(bis);
       } catch (final Exception ex) {
@@ -99,7 +99,8 @@ public abstract class X509Utils {
    /**
     * Converts a java.security.cert.X509Certificate to javax.security.cert.X509Certificate
     */
-   @Deprecated
+   @SuppressWarnings("removal")
+   @Deprecated(forRemoval = true)
    public static javax.security.cert.X509Certificate convert(final X509Certificate cert) {
       try {
          return javax.security.cert.X509Certificate.getInstance(cert.getEncoded());

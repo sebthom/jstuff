@@ -64,7 +64,7 @@ public abstract class ExtensibleEnum<ID> implements Serializable {
             if (this == obj)
                return true;
             if (obj instanceof final WeakKey<?> other) {
-               final T referent = this.get();
+               final @Nullable T referent = this.get();
                final Object otherReferent = other.get();
                if (referent == otherReferent)
                   return true;

@@ -4,6 +4,8 @@
  */
 package net.sf.jstuff.core.security;
 
+import static net.sf.jstuff.core.validation.NullAnalysisHelper.asNonNull;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -23,23 +25,30 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import net.sf.jstuff.core.collection.ArrayUtils;
 import net.sf.jstuff.core.io.SerializationUtils;
 import net.sf.jstuff.core.validation.Args;
 
 /**
+ * Encrypts byte arrays and serializable objects with passphrase-derived AES-GCM keys.
+ *
  * @author <a href="https://sebthom.de/">Sebastian Thomschke</a>
  */
 public class AESEncryptor {
    public static final class AESSealedObject extends SealedObject {
       private static final long serialVersionUID = 1L;
 
-      private byte @Nullable [] iv;
+      private final byte[] iv;
 
       public AESSealedObject(final Serializable obj, final Cipher cipher) throws IOException, IllegalBlockSizeException {
          super(obj, cipher);
+
+         final byte[] cipherIV = cipher.getIV();
+         if (cipherIV == null)
+            throw new IllegalArgumentException("Cipher did not provide an initialization vector.");
+
+         // Store the provider's actual IV instead of assuming it retained the requested bytes unchanged.
+         iv = cipherIV;
       }
    }
 
@@ -66,7 +75,7 @@ public class AESEncryptor {
    }
 
    /**
-    * @param data first 16 bytes of the array expected to be the initial vector
+    * @param data first 12 bytes of the array expected to be the initialization vector
     */
    public byte[] decrypt(final byte[] data, final String passphrase) throws SecurityException {
       Args.notNull("data", data);
@@ -74,7 +83,7 @@ public class AESEncryptor {
       try {
          final SecretKey key = getKey(passphrase);
          final Cipher cipher = ciphers.get();
-         // the first IV_SIZE bytes are the initial vector
+         // the first IV_SIZE bytes are the initialization vector
          final byte[] iv = Arrays.copyOfRange(data, 0, IV_SIZE);
          final byte[] encrypted = Arrays.copyOfRange(data, IV_SIZE, data.length);
          cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(AUTH_TAG_LEN, iv));
@@ -90,7 +99,7 @@ public class AESEncryptor {
    }
 
    /**
-    * @return first 16 bytes of the array are the initial vector
+    * @return first 12 bytes of the array are the initialization vector
     */
    public byte[] encrypt(final byte[] data, final String passphrase) throws SecurityException {
       Args.notNull("data", data);
@@ -98,12 +107,12 @@ public class AESEncryptor {
       try {
          final SecretKey key = getKey(passphrase);
          final Cipher cipher = ciphers.get();
-         // generate a new initial vector for each encryption
+         // Reusing a GCM IV with the cached passphrase-derived key would break GCM's security guarantees.
          final byte[] iv = Crypto.createRandomBytes(IV_SIZE);
          cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(AUTH_TAG_LEN, iv));
          final byte[] encrypted = cipher.doFinal(data);
-         // the first IV_SIZE bytes are the initial vector
-         return ArrayUtils.addAll(iv, encrypted);
+         // the first IV_SIZE bytes are the initialization vector
+         return asNonNull(ArrayUtils.addAll(iv, encrypted));
       } catch (final GeneralSecurityException ex) {
          throw new SecurityException(ex);
       }
@@ -114,7 +123,10 @@ public class AESEncryptor {
       if (key == null) {
          final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
          final var spec = new PBEKeySpec(passphrase.toCharArray(), keySalt, 1024, 128);
-         key = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+         final byte[] encodedKey = factory.generateSecret(spec).getEncoded();
+         if (encodedKey == null)
+            throw new InvalidKeySpecException("PBKDF2 provider returned a key without an encoding");
+         key = new SecretKeySpec(encodedKey, "AES");
          cachedAESKeys.put(passphrase, key);
       }
       return key;
@@ -126,12 +138,10 @@ public class AESEncryptor {
       try {
          final SecretKey key = getKey(passphrase);
          final Cipher cipher = ciphers.get();
-         // generate a new initial vector on each invocation
-         final byte[] iv = Crypto.createRandomBytes(16);
+         // Reusing a GCM IV with the cached passphrase-derived key would break GCM's security guarantees.
+         final byte[] iv = Crypto.createRandomBytes(IV_SIZE);
          cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(AUTH_TAG_LEN, iv));
-         final var sealedObject = new AESSealedObject(object, cipher);
-         sealedObject.iv = iv;
-         return sealedObject;
+         return new AESSealedObject(object, cipher);
       } catch (final Exception ex) {
          throw new SecurityException(ex);
       }
@@ -148,7 +158,7 @@ public class AESEncryptor {
       try {
          final SecretKey key = getKey(passphrase);
          final Cipher cipher = ciphers.get();
-         cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(AUTH_TAG_LEN, object.iv));
+         cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(AUTH_TAG_LEN, object.iv));
          return (T) object.getObject(cipher);
       } catch (final Exception ex) {
          throw new SecurityException(ex);

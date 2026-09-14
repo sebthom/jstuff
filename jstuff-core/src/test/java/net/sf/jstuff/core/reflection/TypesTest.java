@@ -28,7 +28,6 @@ import net.sf.jstuff.core.reflection.exception.ReflectionException;
 class TypesTest {
 
    @Test
-   @SuppressWarnings("null")
    void testFindLibrary() {
       File library = Types.findLibrary(String.class);
 

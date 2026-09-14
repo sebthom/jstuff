@@ -56,7 +56,7 @@ class Entity extends Identifiable.Default<@Nullable Integer> {
    }
 
    @Override
-   public void setId(final Integer id) {
+   public void setId(final @Nullable Integer id) {
       if (Objects.equals(this.id, id))
          return;
       if (this.id != null)
